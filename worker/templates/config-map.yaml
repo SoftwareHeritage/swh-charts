@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+data:
+  config.yml: |
+    storage:
+      cls: pipeline
+      steps:
+      - cls: buffer
+        min_batch_size:
+          content: 1000
+          content_bytes: 52428800
+          directory: 1000
+          directory_entries: 12000
+          revision: 1000
+          revision_parents: 2000
+          revision_bytes: 52428800
+          release: 1000
+          release_bytes: 52428800
+          extid: 1000
+      - cls: filter
+      - cls: retry
+      - cls: remote
+        url: http://{{ .Values.storage.host }}:5002/
+
+    celery:
+      task_broker: ##amqp_host##
+      task_queues:
+    {{- range .Values.amqp.queues }}
+      - {{ . }}
+    {{- end }}
+  entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    # Create the full config filename
+    cat /etc/softwareheritage/config.yml > $SWH_CONFIG_FILENAME
+    # contains required credentials for git loader (with metadata loader inside)
+    # ignored by the other loaders
+    cat /etc/credentials/metadata-fetcher/data >> $SWH_CONFIG_FILENAME
+
+    # Install the rabbitmq host information
+    sed -i 's,##amqp_host##,'$RABBITMQ_HOST',g' $SWH_CONFIG_FILENAME
+
+    echo Starting the swh Celery worker
+    exec python -m celery \
+                --app=swh.scheduler.celery_backend.config.app \
+                worker \
+                --pool=prefork \
+                --concurrency=${CONCURRENCY} \
+                --max-tasks-per-child=${MAX_TASKS_PER_CHILD} \
+                -Ofair --loglevel=${LOGLEVEL} \
+                --hostname "${HOSTNAME}"

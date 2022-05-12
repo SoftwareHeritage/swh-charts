@@ -1,0 +1,18 @@
+# Default values for worker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+amqp:
+  host: scheduler0.internal.staging.swh.network
+  queue_threshold: 10  # spawn worker per increment of `value` messages
+  queues:
+    - swh.loader.svn.tasks.LoadSvnRepository
+    - swh.loader.svn.tasks.MountAndLoadSvnRepository
+    - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+
+storage:
+  host: storage1.internal.staging.swh.network
+
+loader:
+  name: loaders
+  type: svn

@@ -1,0 +1,91 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+  labels:
+    app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+spec:
+  replicas: {{ .Values.swh.loader.replicas.min }}
+  selector:
+    matchLabels:
+      app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+    spec:
+      containers:
+      - name: loaders
+        image: {{ .Values.swh.loader.image }}:{{ .Values.swh.loader.version }}
+        imagePullPolicy: Always
+        command:
+          - /entrypoint.sh
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "4000Mi"
+            cpu: "1200m"
+        lifecycle:
+          preStop:
+           exec:
+             command: ["kill", "1"]
+        env:
+        - name: CONCURRENCY
+          value: "1"
+        - name: MAX_TASKS_PER_CHILD
+          value: "5"
+        - name: LOGLEVEL
+          value: "INFO"
+        - name: SWH_CONFIG_FILENAME
+          # FIXME: built by entrypoint.sh, determine how to properly declare this
+          value: /tmp/config.yml
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ .Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: {{ .Values.sentry.swhpackage }}
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.loader.name }}-{{ .Values.loader.type }}-sentry-secrets
+              key: sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: false
+        - name: RABBITMQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: amqp-access-credentials
+              key: host
+              # 'name' secret must exist & include key "host"
+              optional: false
+        volumeMounts:
+          - name: config
+            mountPath: /etc/softwareheritage/config.yml
+            subPath: config.yml
+            readOnly: true
+          - name: config
+            mountPath: /entrypoint.sh
+            subPath: entrypoint.sh
+            readOnly: true
+          - name: metadata-fetcher-credentials
+            mountPath: /etc/credentials/metadata-fetcher
+            readOnly: true
+          - mountPath: /tmp
+            name: tmp-volume
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+            defaultMode: 0777
+        - name: tmp-volume
+          emptyDir: {}
+        - name: metadata-fetcher-credentials
+          secret:
+            secretName: metadata-fetcher-credentials

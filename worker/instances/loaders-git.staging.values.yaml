@@ -1,0 +1,27 @@
+# Default values for worker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+amqp:
+  host: scheduler0.internal.staging.swh.network
+  queue_threshold: 5  # spawn worker per increment of `value` messages
+  queues:
+    - swh.loader.git.tasks.UpdateGitRepository
+    - swh.loader.git.tasks.LoadDiskGitRepository
+    - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+
+storage:
+  host: storage1.internal.staging.swh.network
+
+loader:
+  name: loaders
+  type: git
+
+swh:
+  loader:
+    replicas:
+      min: 1
+      max: 10
+
+sentry:
+  swhpackage: swh.loader.git

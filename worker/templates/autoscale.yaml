@@ -1,0 +1,74 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: amqp-authentication
+  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+spec:
+  secretTargetRef: # Optional.
+  - parameter: host
+    name: amqp-access-credentials
+    key: host
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: loaders-{{ .Values.loader.name }}-{{ .Values.loader.type }}-operators
+  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+spec:
+  scaleTargetRef:
+    apiVersion:    apps/v1     # Optional. Default: apps/v1
+    kind:          Deployment  # Optional. Default: Deployment
+    # Mandatory. Must be in same namespace as ScaledObject
+    name:          {{ .Values.loader.name }}-{{ .Values.loader.type }}
+    # envSourceContainerName: {container-name} # Optional. Default:
+                                               # .spec.template.spec.containers[0]
+  pollingInterval:  30                         # Optional. Default: 30 seconds
+  cooldownPeriod:   300                        # Optional. Default: 300 seconds
+  idleReplicaCount: 0                          # Optional. Must be less than
+                                               # minReplicaCount
+  minReplicaCount:  {{ .Values.swh.loader.replicas.min }} # Optional. Default: 0
+  maxReplicaCount:  {{ .Values.swh.loader.replicas.max }} # Optional. Default: 100
+  fallback:                                    # Optional. Section to specify fallback
+                                               # options
+    failureThreshold: 3                        # Mandatory if fallback section is
+                                               # included
+    replicas: 6                                # Mandatory if fallback section is
+                                               # included
+  advanced:                                    # Optional. Section to specify advanced
+                                               # options
+    restoreToOriginalReplicaCount: false       # Optional. Default: false
+    horizontalPodAutoscalerConfig:             # Optional. Section to specify HPA
+                                               # related options
+      behavior:                                # Optional. Use to modify HPA's scaling
+                                               # behavior
+        scaleDown:
+          stabilizationWindowSeconds: 60       # default 300
+          policies:
+          - type: Percent
+            value: 2
+            periodSeconds: 15
+  triggers:
+    {{- range .Values.amqp.queues }}
+  - type: rabbitmq
+    authenticationRef:
+      name: amqp-authentication
+    metadata:
+      host: host
+                                     # Optional. If not specified, it must be done
+                                     # by using TriggerAuthentication.
+      protocol: auto                 # Optional. Specifies protocol to use,
+                                     # either amqp or http, or auto to
+                                     # autodetect based on the `host` value.
+                                     # Default value is auto.
+      mode: QueueLength              # QueueLength or MessageRate
+      value: {{ $.Values.amqp.queue_threshold | quote }} # message backlog or publish/sec.
+                                                 # target per instance
+      queueName: {{ . }}
+      vhostName: /                   # Optional. If not specified, use the vhost in the
+                                     # `host` connection string. Alternatively, you can
+                                     # use existing environment variables to read
+                                     # configuration from: See details in "Parameter
+                                     # list" section hostFromEnv: RABBITMQ_HOST%
+    {{- end }}
