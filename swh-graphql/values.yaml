@@ -1,0 +1,36 @@
+# Default values for graphql.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: default
+
+# Number of graphql pods to deploy
+replicas: 1
+
+image:
+  # The name of the image to use
+  name: softwareheritage/graphql
+  # The version of the image to use
+  version: latest
+  pullPolicy: Always
+
+# The storage url to query
+storageUrl: http://storage.svc.cluster.local:5002
+
+# Deploy or not an ingress controller
+enableIngress: true
+# Specify the ingress class to use if several are available in the cluster
+ingressClassName: {}
+
+# The ingress host to listen for
+ingressHost: graphql.localdomain
+
+# Configure the path of the ingress
+ingressHttpPath: /
+
+# The graphql log level. Possible values TRACE, DEBUG, INFO, ERROR
+logLevel: INFO
+
+gunicornThreads: 4
+gunicornWorkers: 2
+gunicornTimeout: 3600

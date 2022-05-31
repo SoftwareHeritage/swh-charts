@@ -1,0 +1,23 @@
+{{ if .Values.enableIngress }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: graphql  
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  {{- if .Values.ingressClassName }}
+  ingressClassName: {{ .Values.ingressClassName }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.ingressHost }}
+    http:
+      paths:
+      - path: {{ .Values.ingressHttpPath }}
+        pathType: Prefix
+        backend:
+          service:
+            name: graphql
+            port:
+              number: 5013
+{{ end }}

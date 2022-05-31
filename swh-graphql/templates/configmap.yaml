@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: graphql
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml: |
+    storage:
+      cls: remote
+      url: {{ .Values.storageUrl }}
+
+    debug: yes
+
+    server-type: wsgi
