@@ -49,5 +49,5 @@ spec:
         - name: config
           configMap:
             name: graphql
-            defaultMode: 0400
+            defaultMode: 0444
 
