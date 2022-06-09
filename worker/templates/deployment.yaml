@@ -38,6 +38,10 @@ spec:
            exec:
              command: ["kill", "1"]
         env:
+        - name: STATSD_HOST
+          value: "prometheus-statsd-exporter.default"
+        - name: STATSD_PORT
+          value: "9125"
         - name: CONCURRENCY
           value: "1"
         - name: MAX_TASKS_PER_CHILD
