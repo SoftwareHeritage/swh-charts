@@ -102,7 +102,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: prometheus-statsd-exporter
+  name: prometheus-statsd-exporter-svc
+  labels:
+    app: prometheus-statsd-exporter
 spec:
   type: ClusterIP
   selector:
