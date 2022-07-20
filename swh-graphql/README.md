@@ -38,3 +38,14 @@ Possible values can be listed too:
 ```
 swh-charts/swh-graphql $ helm show values .
 ```
+
+# minikube
+
+If you are using minikube locally to play with the chart, you need to provide the image
+to the minikube registry.
+
+Assuming you are using the values.yml provided in the repository, that'd be:
+```
+$ docker pull softwareheritage/graphql:latest
+$ minikube image load softwareheritage/graphql:latest
+```
