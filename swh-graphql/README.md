@@ -19,13 +19,22 @@ We use helm to ease the cluster application management.
 
 Install the worker declaration from this directory in the cluster
 ```
-$ helm install -f my-values.yaml graphql
+swh-charts/swh-graphql $ helm install -f my-values.yaml graphql .
 ```
 
 With `my-values.yaml`  containing some overrides of the default
 values matching your environment.
 
-Detail of the possible values is visible with:
+What's currently deployed can be seen with:
+
 ```
-swh-charts/swh-graphql $ helm show values . 
+swh-charts/swh-graphql $ helm list
+NAME    NAMESPACE       REVISION        UPDATED                                         STATUS          CHART                   APP VERSION
+graphql default         1               2022-07-20 10:40:21.405492989 +0200 CEST        deployed        swh-graphql-0.1.0       1.16.0
+
+```
+
+Possible values can be listed too:
+```
+swh-charts/swh-graphql $ helm show values .
 ```
