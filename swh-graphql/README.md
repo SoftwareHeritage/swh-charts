@@ -49,3 +49,8 @@ Assuming you are using the values.yml provided in the repository, that'd be:
 $ docker pull softwareheritage/graphql:latest
 $ minikube image load softwareheritage/graphql:latest
 ```
+
+You will also need to enable ingress:
+```
+$ minikube addons enable ingress
+```
