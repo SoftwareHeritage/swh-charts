@@ -23,7 +23,7 @@ enableIngress: true
 ingressClassName: {}
 
 # The ingress host to listen for
-ingressHost: graphql.localdomain
+ingressHost: ""
 
 # Configure the path of the ingress
 ingressHttpPath: /

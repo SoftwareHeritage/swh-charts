@@ -3,10 +3,6 @@
 # The storage url to query
 storageUrl: http://webapp.internal.staging.swh.network:5002/
 
-# The ingress host to listen for
-ingressHost: graphql-worker0.internal.staging.swh.network
-# ingressHost: graphql.cluster
-
 # Configure the path of the ingress
 ingressHttpPath: /
 
