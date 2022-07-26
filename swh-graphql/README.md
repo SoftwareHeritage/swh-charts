@@ -19,11 +19,11 @@ We use helm to ease the cluster application management.
 
 Install the worker declaration from this directory in the cluster
 ```
-swh-charts/swh-graphql $ helm install -f my-values.yaml graphql .
+swh-charts/swh-graphql $ helm install -f values/default.yaml values/local.yaml graphql .
 ```
 
-With `my-values.yaml`  containing some overrides of the default
-values matching your environment.
+With `local.yaml` containing some overrides of the default values matching your
+environment.
 
 What's currently deployed can be seen with:
 
