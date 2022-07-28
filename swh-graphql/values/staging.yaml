@@ -9,3 +9,5 @@ ingressHttpPath: /
 # The graphql log level. Possible values TRACE, DEBUG, INFO, ERROR
 logLevel: DEBUG
 
+# Number of graphql pods to deploy
+replicas: 3
