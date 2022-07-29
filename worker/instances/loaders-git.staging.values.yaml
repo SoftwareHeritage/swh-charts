@@ -21,7 +21,7 @@ swh:
   loader:
     replicas:
       min: 1
-      max: 10
+      max: 3
 
 sentry:
   swhpackage: swh.loader.git
