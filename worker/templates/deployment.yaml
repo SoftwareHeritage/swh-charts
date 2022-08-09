@@ -7,7 +7,6 @@ metadata:
   labels:
     app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
 spec:
-  replicas: {{ .Values.swh.loader.replicas.min }}
   selector:
     matchLabels:
       app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
