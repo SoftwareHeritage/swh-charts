@@ -1,0 +1,28 @@
+{{ if .Values.storage_replayer.enabled -}}
+{{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+{{ if get $deployment_config "autoScaling" }}
+{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: storage-replayer-{{ $deployment }}-scaledobject
+  namespace: {{ $.Values.namespace }}
+spec:
+  scaleTargetRef:
+    name: storage-replayer-{{ $deployment }}
+  pollingInterval: {{ get $autoscalingConfig "poolInterval" | default 120 }}
+  minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
+  maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: {{ first $.Values.storage_replayer.journalBrokers.hosts }}
+      consumerGroup: {{ $.Values.storage_replayer.journalBrokers.user }}-cassandra-replayer-{{ $deployment }}
+      lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
+      offsetResetPolicy: earliest
+    authenticationRef:
+      name: keda-storage-replayer-trigger-authentication
+{{ end }}
+{{ end }}
+{{- end -}}

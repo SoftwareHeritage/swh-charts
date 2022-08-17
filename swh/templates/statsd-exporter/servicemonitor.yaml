@@ -1,0 +1,18 @@
+{{ if .Values.statsd_exporter.enabled -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: swh-statsd-exporter
+  namespace: {{ .Values.namespace }}
+spec:
+  endpoints:
+  - path: /metrics
+    port: http
+    interval: 10s
+  selector:
+    matchLabels:
+      app: prometheus-statsd-exporter
+  namespaceSelector:
+    any: true
+{{- end -}}

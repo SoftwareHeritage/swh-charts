@@ -1,0 +1,86 @@
+{{ if .Values.storage_replayer.enabled -}}
+{{- $configurationChecksum := include (print $.Template.BasePath "/storage-replayer/configmap.yaml") . -}}
+{{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: storage-replayer-{{ $deployment }}
+  labels:
+    app: storage-replayer-{{ $deployment }}
+  annotations:
+    checksum/config: {{ $configurationChecksum | sha256sum }}
+spec:
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: storage-replayer-{{ $deployment }}
+  template:
+    metadata:
+      labels:
+        app: storage-replayer-{{ $deployment }}
+    spec:
+      {{- if $.Values.storage_replayer.affinity }}
+      affinity:
+        {{ toYaml $.Values.storage_replayer.affinity | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          envFrom:
+          - secretRef:
+              name: {{ $.Values.storage_replayer.journalBrokers.secretName }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+        {{- if $.Values.storage_replayer.cassandra.initKeyspace }}
+        - name: init-database
+          image: {{ $.Values.swh_storage_replayer_image }}:{{ $.Values.swh_storage_replayer_image_version }}
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first $.Values.storage_replayer.cassandra.seeds }}'], 'swh')\" | python3"
+        {{- end }}
+      containers:
+        - name: storage-replayer
+          resources:
+            requests:
+              memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+              cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          image: {{ $.Values.swh_storage_replayer_image }}:{{ $.Values.swh_storage_replayer_image_version }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: storage-replayer-configuration-{{ $deployment }}-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{ end }}
+{{- end -}}

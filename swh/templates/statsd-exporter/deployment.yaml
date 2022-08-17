@@ -1,0 +1,37 @@
+{{ if .Values.statsd_exporter.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-statsd-exporter
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: prometheus-statsd-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-statsd-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-statsd-exporter
+    spec:
+      containers:
+      - name: prometheus-statsd-exporter
+        image: {{ .Values.statsd_exporter.image }}:{{ .Values.statsd_exporter.imageVersion }}
+        imagePullPolicy: Always
+        args:
+          - "--statsd.mapping-config=/etc/prometheus/statsd-mapping.yml"
+        ports:
+        - containerPort: 9125
+        volumeMounts:
+          - name: config
+            mountPath: /etc/prometheus/statsd-mapping.yml
+            subPath: config.yml
+            readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: prometheus-statsd-exporter
+{{- end -}}

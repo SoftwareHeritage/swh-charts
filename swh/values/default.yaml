@@ -1,0 +1,23 @@
+namespace: swh
+
+storage_replayer:
+  storageClass: cassandra # only cassandra is currently supported
+  maxMessagesBytes: "524288000"
+  journalBrokers:
+    # The name of the secret containing the BROKER_USER_PASSWORD value
+    secretName: storage-replayer-broker-secret
+  cassandra:
+    keySpace: swh
+    consistencyLevel: LOCAL_QUORUM
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/etcd
+            operator: NotIn
+            values:
+            - "true"
+
+statsd_exporter:
+  enabled: true

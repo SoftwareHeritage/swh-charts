@@ -1,0 +1,22 @@
+{{ if .Values.statsd_exporter.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-statsd-exporter
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: prometheus-statsd-exporter
+spec:
+  type: ClusterIP
+  selector:
+    app: prometheus-statsd-exporter
+  ports:
+    - name: statsd
+      port: 9125
+      targetPort: 9125
+      protocol: UDP
+    - name: http
+      port: 9102
+      targetPort: 9102
+{{- end -}}

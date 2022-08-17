@@ -1,0 +1,53 @@
+namespace: swh
+
+# Example of services activation
+# Only implemented for storage_replayer for now
+#storage:
+#  enabled: false
+#
+#graphql:
+#  enabled: false
+
+storage_replayer:
+  enabled: false
+  storageClass: cassandra # only cassandra is currently supported
+  maxMessagesBytes: "524288000"
+  journalBrokers:
+    # The name of the secret containing the BROKER_USER_PASSWORD value
+    secretName: storage-replayer-broker-secret
+    hosts:
+    - broker1
+    - broker2
+    user: myuser
+  cassandra:
+    initKeyspace: false # useful to ensure the cassandra database is bootstrapped
+    seeds:
+    - seed1
+    - seed2
+    keySpace: swh
+    consistencyLevel: LOCAL_QUORUM
+  deployments:
+  # Example of deployments
+  #   origins:
+  #     privileged: false
+  #     objects:
+  #       - origin
+  #       - origin_visits
+  #       - origin_visits_status
+  #     batchSize: 250
+  #   revisions:
+  #     privileged: false
+  #     objects:
+  #       - revision
+  #     batchSize: 1000
+  #     autoScaling:
+  #       poolInterval: 120
+  #       lagThreashold: 1000
+  #       minReplicaCount: 1
+  #       maxReplicaCount: 10
+
+statsd_exporter:
+  enabled: false
+  image: prom/statsd-exporter
+  imageVersion: "v0.22.7"
+
