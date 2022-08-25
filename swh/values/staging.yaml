@@ -9,6 +9,26 @@ loaders:
   amqp:
     host: scheduler0.internal.staging.swh.network
   deployments:
+    # bzr:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.bzr.tasks.LoadBazaar
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.bzr
+    # cvs:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.cvs.tasks.LoadCvsRepository
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.cvs
     git:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -21,4 +41,49 @@ loaders:
         minReplicacount: 1
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
+    # maven:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.package.maven.tasks.LoadMaven
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.core
+    # npm:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.package.npm.tasks.LoadNpm
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.core
+    # pypi:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.package.pypi.tasks.LoadPyPI
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.core
+    # svn:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.svn.tasks.LoadSvnRepository
+    #     - swh.loader.svn.tasks.MountAndLoadSvnRepository
+    #     - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.svn
 
+graphql:
+  enabled: true
+  
