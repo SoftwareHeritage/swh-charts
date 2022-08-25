@@ -1,9 +1,14 @@
+{{ if .Values.loaders.enabled -}}
+{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{ if get $deployment_config "autoScaling" }}
+{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
+{{- $loader_name := ( print "loader-" $loader_type ) -}}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
   name: amqp-authentication
-  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+  namespace: {{ $.Values.namespace }}
 spec:
   secretTargetRef: # Optional.
   - parameter: host
@@ -14,22 +19,22 @@ spec:
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: loaders-{{ .Values.loader.name }}-{{ .Values.loader.type }}-operators
-  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+  name: {{ $loader_name }}-operators
+  namespace: {{ $.Values.namespace }}
 spec:
   scaleTargetRef:
     apiVersion:    apps/v1     # Optional. Default: apps/v1
     kind:          Deployment  # Optional. Default: Deployment
     # Mandatory. Must be in same namespace as ScaledObject
-    name:          {{ .Values.loader.name }}-{{ .Values.loader.type }}
+    name:          {{ $loader_name }}
     # envSourceContainerName: {container-name} # Optional. Default:
                                                # .spec.template.spec.containers[0]
   pollingInterval:  30                         # Optional. Default: 30 seconds
   cooldownPeriod:   300                        # Optional. Default: 300 seconds
   idleReplicaCount: 0                          # Optional. Must be less than
                                                # minReplicaCount
-  minReplicaCount:  {{ .Values.swh.loader.replicas.min }} # Optional. Default: 0
-  maxReplicaCount:  {{ .Values.swh.loader.replicas.max }} # Optional. Default: 100
+  minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
+  maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
   fallback:                                    # Optional. Section to specify fallback
                                                # options
     failureThreshold: 3                        # Mandatory if fallback section is
@@ -50,7 +55,7 @@ spec:
             value: 2
             periodSeconds: 15
   triggers:
-    {{- range .Values.amqp.queues }}
+    {{- range $queue := get $deployment_config "queues" }}
   - type: rabbitmq
     authenticationRef:
       name: amqp-authentication
@@ -63,12 +68,16 @@ spec:
                                      # autodetect based on the `host` value.
                                      # Default value is auto.
       mode: QueueLength              # QueueLength or MessageRate
-      value: {{ $.Values.amqp.queue_threshold | quote }} # message backlog or publish/sec.
-                                                 # target per instance
-      queueName: {{ . }}
+      # message backlog or publish/sec.
+      # target per instance
+      value: {{ get $autoscalingConfig "queueThreshold" | default 100 }}
+      queueName: {{ $queue }}
       vhostName: /                   # Optional. If not specified, use the vhost in the
                                      # `host` connection string. Alternatively, you can
                                      # use existing environment variables to read
                                      # configuration from: See details in "Parameter
                                      # list" section hostFromEnv: RABBITMQ_HOST%
     {{- end }}
+{{ end }}
+{{ end }}
+{{- end -}}

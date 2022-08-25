@@ -1,9 +1,12 @@
+{{ if .Values.loaders.enabled -}}
+{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{- $loader_name := ( print "loader-" $loader_type ) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
-  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+  name: {{ $loader_name }}
+  namespace: {{ $.Values.namespace }}
 data:
   config.yml: |
     storage:
@@ -24,13 +27,13 @@ data:
       - cls: filter
       - cls: retry
       - cls: remote
-        url: http://{{ .Values.storage.host }}:5002/
+        url: http://storage-loaders:{{ $.Values.loaders.storage.port }}/
 
     celery:
       task_broker: ##amqp_host##
       task_queues:
-    {{- range .Values.amqp.queues }}
-      - {{ . }}
+    {{- range $queue := get $deployment_config "queues" }}
+      - {{ $queue }}
     {{- end }}
   entrypoint.sh: |
     #!/bin/bash
@@ -57,3 +60,5 @@ data:
                 --without-gossip \
                 --without-mingle \
                 --hostname "${HOSTNAME}"
+{{ end }}
+{{- end -}}

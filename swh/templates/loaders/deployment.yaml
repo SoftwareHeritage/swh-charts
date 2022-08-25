@@ -1,15 +1,19 @@
+{{ if .Values.loaders.enabled -}}
+{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{- $loader_name := ( print "loader-" $loader_type ) -}}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
-  namespace: ns-{{ .Values.loader.name }}-{{ .Values.loader.type }}
+  name: {{ $loader_name }}
+  namespace: {{ $.Values.namespace }}
   labels:
-    app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+    app: {{ $loader_name }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+      app: {{ $loader_name }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -17,18 +21,22 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+        app: {{ $loader_name }}
     spec:
+      {{- if $.Values.loaders.affinity }}
+      affinity:
+        {{ toYaml $.Values.loaders.affinity | nindent 8 }}
+      {{- end }}
       containers:
       - name: loaders
-        image: {{ .Values.swh.loader.image }}:{{ .Values.swh.loader.version }}
+        image: {{ $.Values.swh_loaders_image }}:{{ $.Values.swh_loaders_image_version }}
         imagePullPolicy: Always
         command:
           - /entrypoint.sh
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "200m"
+            memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+            cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
           limits:
             memory: "4000Mi"
             cpu: "1200m"
@@ -38,9 +46,9 @@ spec:
              command: ["kill", "1"]
         env:
         - name: STATSD_HOST
-          value: "prometheus-statsd-exporter.default"
+          value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
         - name: STATSD_PORT
-          value: "9125"
+          value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: CONCURRENCY
           value: "1"
         - name: MAX_TASKS_PER_CHILD
@@ -51,13 +59,13 @@ spec:
           # FIXME: built by entrypoint.sh, determine how to properly declare this
           value: /tmp/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
-          value: {{ .Values.sentry.environment }}
+          value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
-          value: {{ .Values.sentry.swhpackage }}
+          value: {{ get $deployment_config "sentrySwhPackage" }}
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.loader.name }}-{{ .Values.loader.type }}-sentry-secrets
+              name: {{ $loader_name }}-sentry-secrets
               key: sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
@@ -85,10 +93,12 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ .Values.loader.name }}-{{ .Values.loader.type }}
+            name: {{ $loader_name }}
             defaultMode: 0777
         - name: tmp-volume
           emptyDir: {}
         - name: metadata-fetcher-credentials
           secret:
             secretName: metadata-fetcher-credentials
+{{ end }}
+{{- end -}}

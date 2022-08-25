@@ -19,5 +19,16 @@ storage_replayer:
             values:
             - "true"
 
+loaders:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/worker
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true

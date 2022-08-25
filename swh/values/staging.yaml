@@ -1,0 +1,24 @@
+sentry:
+  environment: staging
+
+loaders:
+  enabled: true
+  storage:
+    host: storage.internal.staging.swh.network
+    port: 5002
+  amqp:
+    host: scheduler0.internal.staging.swh.network
+  deployments:
+    git:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        queueThreshold: 5  # spawn worker per increment of `value` messages
+        minReplicacount: 1
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.git
+

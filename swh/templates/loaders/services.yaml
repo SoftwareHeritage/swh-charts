@@ -1,0 +1,11 @@
+{{ if .Values.loaders.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage-loaders
+  namespace: {{ $.Values.namespace }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.loaders.storage.host }}
+{{- end -}}

@@ -45,6 +45,12 @@ storage_replayer:
   #       lagThreashold: 1000
   #       minReplicaCount: 1
   #       maxReplicaCount: 10
+loaders:
+  enabled: false
+  deployments:
+  # Example of deployments
+  #   git:
+
 
 statsd_exporter:
   enabled: false
