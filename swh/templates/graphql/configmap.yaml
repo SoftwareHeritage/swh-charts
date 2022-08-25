@@ -1,3 +1,4 @@
+{{ if .Values.graphql.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -8,8 +9,9 @@ data:
   config.yml: |
     storage:
       cls: remote
-      url: {{ .Values.storageUrl }}
+      url: {{ .Values.graphql.storageUrl }}
 
     debug: yes
 
     server-type: wsgi
+{{ end }}

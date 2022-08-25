@@ -86,4 +86,14 @@ loaders:
 
 graphql:
   enabled: true
-  
+  storageUrl: http://webapp.internal.staging.swh.network:5002/
+  replicas: 1
+  gunicorn:
+    threads: 4
+    Workers: 2
+    timeout: 3600
+  ingress:
+    enabled: true
+    httpPath: /
+  logLevel: DEBUG
+

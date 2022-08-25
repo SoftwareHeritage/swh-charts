@@ -1,3 +1,4 @@
+{{ if .Values.graphql.enabled -}}
 ---
 apiVersion: v1
 kind: Service
@@ -11,3 +12,4 @@ spec:
   ports:
     - port: 5013
       targetPort: 5013
+{{ end }}

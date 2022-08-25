@@ -1,3 +1,4 @@
+{{ if .Values.graphql.enabled -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -7,7 +8,7 @@ metadata:
   labels:
     app: graphql
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.graphql.replicas }}
   selector:
     matchLabels:
       app: graphql
@@ -21,25 +22,25 @@ spec:
         app: graphql
       annotations:
         # Force a rollout upgrade if the configuration changes
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/graphql/configmap.yaml") . | sha256sum }}
     spec:
       containers:
         - name: graphql
-          image: {{ .Values.image.name }}:{{ .Values.image.version }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: {{ .Values.swh_graphql_image }}:{{ .Values.swh_graphql_image_version }}
+          imagePullPolicy: Always
           ports:
             - containerPort: 5013
           env:
           - name: PORT
             value: "5013"
           - name: THREADS
-            value: {{ .Values.gunicornThreads | quote }}
+            value: {{ .Values.graphql.gunicorn.threads | quote }}
           - name: WORKERS
-            value: {{ .Values.gunicornWorkers | quote }}
+            value: {{ .Values.graphql.gunicorn.workers | quote }}
           - name: LOG_LEVEL
-            value: {{ .Values.logLevel | quote }}
+            value: {{ .Values.graphql.logLevel | quote }}
           - name: TIMEOUT
-            value: {{ .Values.gunicornTimeout | quote }}
+            value: {{ .Values.graphql.gunicorn.timeout | quote }}
           volumeMounts:
             - name: config
               mountPath: /etc/swh/config.yml
@@ -51,3 +52,4 @@ spec:
             name: graphql
             defaultMode: 0444
 
+{{ end }}
