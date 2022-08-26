@@ -90,7 +90,7 @@ graphql:
   replicas: 1
   gunicorn:
     threads: 4
-    Workers: 2
+    workers: 2
     timeout: 3600
   ingress:
     enabled: true
