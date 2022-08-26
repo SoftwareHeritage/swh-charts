@@ -27,7 +27,7 @@ data:
       - cls: filter
       - cls: retry
       - cls: remote
-        url: http://storage-loaders:{{ $.Values.loaders.storage.port }}/
+        url: http://{{ .Values.loaders.storage.host }}:{{ $.Values.loaders.storage.port }}/
 
     celery:
       task_broker: ##amqp_host##
