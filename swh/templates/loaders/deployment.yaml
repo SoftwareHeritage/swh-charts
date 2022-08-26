@@ -1,4 +1,5 @@
 {{ if .Values.loaders.enabled -}}
+{{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
 
@@ -22,6 +23,9 @@ spec:
     metadata:
       labels:
         app: {{ $loader_name }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
       {{- if $.Values.loaders.affinity }}
       affinity:
