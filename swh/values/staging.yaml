@@ -86,7 +86,13 @@ loaders:
 
 graphql:
   enabled: true
-  storageUrl: http://webapp.internal.staging.swh.network:5002/
+  backends:
+    storage:
+      host: webapp.internal.staging.swh.network
+      port: 5002
+    search:
+      host: search0.internal.staging.swh.network
+      port: 5010
   replicas: 1
   gunicorn:
     threads: 4

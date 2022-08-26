@@ -7,10 +7,11 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml: |
-    storage:
+    {{- range $backend, $backend_config := .Values.graphql.backends }}
+    {{ $backend }}:
       cls: remote
-      url: {{ .Values.graphql.storageUrl }}
-
+      url: http://{{ get $backend_config "host" }}:{{ get $backend_config "port" }}
+    {{- end }}
     debug: yes
 
     server-type: wsgi
