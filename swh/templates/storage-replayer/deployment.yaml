@@ -9,8 +9,6 @@ metadata:
   name: storage-replayer-{{ $deployment }}
   labels:
     app: storage-replayer-{{ $deployment }}
-  annotations:
-    checksum/config: {{ $configurationChecksum | sha256sum }}
 spec:
   revisionHistoryLimit: 3
   selector:
@@ -20,6 +18,8 @@ spec:
     metadata:
       labels:
         app: storage-replayer-{{ $deployment }}
+      annotations:
+        checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
       {{- if $.Values.storage_replayer.affinity }}
       affinity:
