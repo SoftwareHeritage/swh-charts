@@ -4,7 +4,7 @@ sentry:
 loaders:
   enabled: true
   storage:
-    host: storage.internal.staging.swh.network
+    host: storage1.internal.staging.swh.network
     port: 5002
   amqp:
     host: scheduler0.internal.staging.swh.network
