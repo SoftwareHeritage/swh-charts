@@ -4,6 +4,6 @@
 swh_storage_replayer_image: softwareheritage/storage-replayer
 swh_storage_replayer_image_version: "20220819.1"
 swh_loaders_image: softwareheritage/loaders
-swh_loaders_image_version: 2022-05-17
+swh_loaders_image_version: "20220826.1"
 swh_graphql_image: softwareheritage/graphql
 swh_graphql_image_version: latest
