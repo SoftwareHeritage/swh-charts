@@ -2,5 +2,8 @@ swh-charts
 ==========
 
 Helm charts for swh packages:
-- worker: elastic worker helm chart
-- swh-graphql: graphql helm chart
+- swh: helm chart for swh services:
+  - storage-replayer
+  - statsd-exporter
+  - loaders: various git loaders
+  - graphql: graphql rpc service
