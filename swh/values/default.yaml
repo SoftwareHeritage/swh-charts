@@ -28,7 +28,7 @@ loaders:
           - key: swh/worker
             operator: In
             values:
-            - "true"
+            - true
 
 statsd_exporter:
   enabled: true
