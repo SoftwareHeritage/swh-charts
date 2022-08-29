@@ -29,6 +29,36 @@ loaders:
     #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.cvs
+    # hg:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.mercurial.tasks.LoadArchiveMercurial
+    #     - swh.loader.mercurial.tasks.LoadMercurial
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.mercurial
+    # high_priority:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+    #     - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+    #     - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+    #     - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+    #     - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+    #     - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+    #     - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+    #     - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+    #     - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+    #     - save_code_now:swh.loader.package.archive.tasks.LoadArchive
+    #   autoScaling:
+    #     queueThreshold: 10
+    #     minReplicacount: 1
+    #     maxReplicaCount: 3
+    #   sentrySwhPackage: swh.loader.highpriority
     git:
       requestedMemory: 256Mi
       requestedCpu: 200m
