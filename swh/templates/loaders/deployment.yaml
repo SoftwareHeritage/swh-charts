@@ -2,7 +2,10 @@
 {{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
-
+{{- $image_name_key := ( print "swh_loader_" $loader_type "_image" ) -}}
+{{- $image_version_key := ( print $image_name_key "_version" ) -}}
+{{- $container_image := get $.Values $image_name_key }}
+{{- $container_image_version := get $.Values $image_version_key }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,7 +36,11 @@ spec:
       {{- end }}
       containers:
       - name: loaders
+        {{ if $container_image -}}
+        image: {{ $container_image }}:{{ $container_image_version }}
+        {{ else -}}
         image: {{ $.Values.swh_loaders_image }}:{{ $.Values.swh_loaders_image_version }}
+        {{ end }}
         imagePullPolicy: Always
         command:
           - /entrypoint.sh
