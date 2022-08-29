@@ -40,7 +40,7 @@ loaders:
     #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.mercurial
-    high_priority:
+    highpriority:
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
