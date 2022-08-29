@@ -56,7 +56,7 @@ loaders:
         - save_code_now:swh.loader.package.archive.tasks.LoadArchive
       autoScaling:
         queueThreshold: 10
-        minReplicacount: 1
+        minReplicacount: 0
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.highpriority
     git:
