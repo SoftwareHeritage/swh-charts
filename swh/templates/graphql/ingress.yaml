@@ -1,5 +1,4 @@
-{{ if .Values.graphql.enabled -}}
-{{ if .Values.graphql.ingress.enabled -}}
+{{ if and .Values.graphql.enabled .Values.graphql.ingress.enabled -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -25,5 +24,4 @@ spec:
     host: {{ .Values.graphql.ingress.host }}
     {{- end }}
 
-{{ end }}
 {{ end }}
