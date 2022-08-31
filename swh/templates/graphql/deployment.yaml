@@ -41,6 +41,19 @@ spec:
             value: {{ .Values.graphql.logLevel | quote }}
           - name: TIMEOUT
             value: {{ .Values.graphql.gunicorn.timeout | quote }}
+          {{ if .Values.graphql.sentry_enabled -}}
+          - name: SWH_SENTRY_ENVIRONMENT
+            value: {{ $.Values.sentry.environment }}
+          - name: SWH_MAIN_PACKAGE
+            value: swh.graphql
+          - name: SWH_SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: graphql-sentry-secrets
+                key: sentry-dsn
+                # 'name' secret must exist & include key "host"
+                optional: false
+          {{ end }}
           volumeMounts:
             - name: config
               mountPath: /etc/swh/config.yml
