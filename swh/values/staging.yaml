@@ -91,16 +91,16 @@ loaders:
     #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.core
-    # pypi:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   queues:
-    #     - swh.loader.package.pypi.tasks.LoadPyPI
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     minReplicacount: 1
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.core
+    pypi:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.package.pypi.tasks.LoadPyPI
+      autoScaling:
+        queueThreshold: 10
+        minReplicacount: 1
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.core
     # svn:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
