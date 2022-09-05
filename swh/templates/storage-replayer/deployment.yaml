@@ -23,7 +23,7 @@ spec:
     spec:
       {{- if $.Values.storage_replayer.affinity }}
       affinity:
-        {{ toYaml $.Values.storage_replayer.affinity | nindent 8 }}
+        {{- toYaml $.Values.storage_replayer.affinity | nindent 8 }}
       {{- end }}
       initContainers:
         - name: prepare-configuration

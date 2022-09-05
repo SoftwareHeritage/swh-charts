@@ -16,6 +16,11 @@ data:
       {{- end }}
       keyspace: {{ $.Values.storage_replayer.cassandra.keySpace }}
       consistency_level: {{ $.Values.storage_replayer.cassandra.consistencyLevel }}
+      {{- if $deployment_config.specific_options -}}
+        {{- range $option, $value := $deployment_config.specific_options }}
+      {{ $option }}: {{ $value }}
+        {{- end }}
+      {{- end }}
       objstorage:
         cls: noop
 
