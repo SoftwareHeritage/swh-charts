@@ -6,7 +6,7 @@ swh_storage_replayer_image_version: "20220819.1"
 swh_loaders_image: softwareheritage/loaders
 swh_loaders_image_version: "20220826.1"
 swh_loader_git_image: softwareheritage/loader_git
-swh_loader_git_image_version: "20220829.1"
+swh_loader_git_image_version: "20220906.1"
 swh_graphql_image: softwareheritage/graphql
 swh_graphql_image_version: "20220826.1"
 
