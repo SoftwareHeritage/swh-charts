@@ -69,7 +69,7 @@ loaders:
       autoScaling:
         queueThreshold: 5  # spawn worker per increment of `value` messages
         minReplicacount: 1
-        maxReplicaCount: 5
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
     # maven:
     #   requestedMemory: 256Mi
@@ -99,7 +99,7 @@ loaders:
       autoScaling:
         queueThreshold: 10
         minReplicacount: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     # svn:
     #   requestedMemory: 256Mi
