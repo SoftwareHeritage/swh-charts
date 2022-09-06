@@ -1,0 +1,107 @@
+{{ if .Values.listers.enabled -}}
+{{- $configurationChecksum := include (print $.Template.BasePath "/listers/configmap.yaml") . -}}
+{{- range $lister_type, $deployment_config := .Values.listers.deployments -}}
+{{- $lister_name := ( print "lister-" $lister_type ) -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $lister_name }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: {{ $lister_name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $lister_name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $lister_name }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if $.Values.listers.affinity }}
+      affinity:
+        {{ toYaml $.Values.listers.affinity | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: listers
+        image: {{ $.Values.swh_listers_image }}:{{ $.Values.swh_listers_image_version }}
+        imagePullPolicy: Always
+        command:
+          - /entrypoint.sh
+        resources:
+          requests:
+            memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+            cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          limits:
+            memory: "4000Mi"
+            cpu: "1200m"
+        lifecycle:
+          preStop:
+           exec:
+             command: ["kill", "1"]
+        env:
+        - name: STATSD_HOST
+          value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+        - name: STATSD_PORT
+          value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: CONCURRENCY
+          value: "1"
+        - name: MAX_TASKS_PER_CHILD
+          value: "1"
+        - name: LOGLEVEL
+          value: "INFO"
+        - name: SWH_CONFIG_FILENAME
+          # FIXME: built by entrypoint.sh, determine how to properly declare this
+          value: /tmp/config.yml
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ $.Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: {{ $.Values.listers.sentrySwhPackage }}
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: lister-sentry-secrets
+              key: sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: false
+        - name: RABBITMQ_HOST
+          valueFrom:
+            secretKeyRef:
+              name: amqp-access-credentials
+              key: host
+              # 'name' secret must exist & include key "host"
+              optional: false
+        volumeMounts:
+          - name: config
+            mountPath: /etc/softwareheritage/config.yml
+            subPath: config.yml
+            readOnly: true
+          - name: config
+            mountPath: /entrypoint.sh
+            subPath: entrypoint.sh
+            readOnly: true
+          - name: lister-credentials-secrets
+            mountPath: /etc/credentials/listers
+            readOnly: true
+          - mountPath: /tmp
+            name: tmp-volume
+      volumes:
+        - name: config
+          configMap:
+            name: {{ $lister_name }}
+            defaultMode: 0777
+        - name: tmp-volume
+          emptyDir: {}
+        - name: lister-credentials-secrets
+          secret:
+            secretName: lister-credentials-secrets
+{{ end }}
+{{- end -}}

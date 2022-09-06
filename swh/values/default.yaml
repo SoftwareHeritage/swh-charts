@@ -30,6 +30,17 @@ loaders:
             values:
             - "true"
 
+listers:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/lister"
+            operator: In
+            values:
+            - "true"
+
 graphql:
   affinity:
     nodeAffinity:

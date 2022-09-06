@@ -114,6 +114,26 @@ loaders:
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.svn
 
+listers:
+  enabled: true
+  sentrySwhPackage: swh.lister
+  storage:
+    host: storage1.internal.staging.swh.network
+    port: 5002
+  scheduler:
+    host: scheduler0.internal.staging.swh.network
+    port: 5008
+  amqp:
+     host: scheduler0.internal.staging.swh.network
+  deployments:
+    gnu-full:
+      queues:
+        - swh.lister.gnu.tasks.GNUListerTask
+      autoScaling:
+        queueThreshold: 10
+        minReplicacount: 0
+        maxReplicaCount: 1
+
 graphql:
   enabled: true
   sentry_enabled: true

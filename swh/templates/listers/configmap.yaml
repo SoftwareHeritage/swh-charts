@@ -1,0 +1,51 @@
+{{ if .Values.listers.enabled -}}
+{{- range $lister_type, $deployment_config := .Values.listers.deployments -}}
+{{- $lister_name := ( print "lister-" $lister_type ) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $lister_name }}
+  namespace: {{ $.Values.namespace }}
+data:
+  config.yml: |
+    storage:
+      cls: remote
+      url: http://{{ $.Values.listers.storage.host }}:{{ $.Values.listers.storage.port }}/
+    scheduler:
+      cls: remote
+      url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
+
+    celery:
+      task_broker: ##amqp_host##
+      task_queues:
+    {{- range $queue := get $deployment_config "queues" }}
+      - {{ $queue }}
+    {{- end }}
+  entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    # Create the full config filename
+    cat /etc/softwareheritage/config.yml > $SWH_CONFIG_FILENAME
+    # contains required credentials for lister
+    cat /etc/credentials/listers/data >> $SWH_CONFIG_FILENAME
+
+    # Install the rabbitmq host information
+    sed -i 's,##amqp_host##,'$RABBITMQ_HOST',g' $SWH_CONFIG_FILENAME
+
+    echo Starting the swh Celery worker
+    exec python -m celery \
+                --app=swh.scheduler.celery_backend.config.app \
+                worker \
+                --pool=prefork \
+                --concurrency=${CONCURRENCY} \
+                --max-tasks-per-child=${MAX_TASKS_PER_CHILD} \
+                -Ofair --loglevel=${LOGLEVEL} \
+                --without-gossip \
+                --without-mingle \
+                --without-heartbeat \
+                --hostname "${HOSTNAME}"
+{{ end }}
+{{- end -}}

@@ -9,4 +9,6 @@ swh_loader_git_image: softwareheritage/loader_git
 swh_loader_git_image_version: "20220906.1"
 swh_graphql_image: softwareheritage/graphql
 swh_graphql_image_version: "20220826.1"
+swh_listers_image: softwareheritage/lister
+swh_listers_image_version: "20220906.1"
 
