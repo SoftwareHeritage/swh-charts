@@ -16,7 +16,6 @@ loaders:
     #     - swh.loader.bzr.tasks.LoadBazaar
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.bzr
     # cvs:
@@ -26,7 +25,6 @@ loaders:
     #     - swh.loader.cvs.tasks.LoadCvsRepository
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.cvs
     # hg:
@@ -37,7 +35,6 @@ loaders:
     #     - swh.loader.mercurial.tasks.LoadMercurial
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.mercurial
     highpriority:
@@ -56,7 +53,6 @@ loaders:
         - save_code_now:swh.loader.package.archive.tasks.LoadArchive
       autoScaling:
         queueThreshold: 10
-        minReplicacount: 0
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.highpriority
     git:
@@ -68,7 +64,6 @@ loaders:
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
         queueThreshold: 5  # spawn worker per increment of `value` messages
-        minReplicacount: 1
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
     # maven:
@@ -78,7 +73,6 @@ loaders:
     #     - swh.loader.package.maven.tasks.LoadMaven
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.core
     # npm:
@@ -88,7 +82,6 @@ loaders:
     #     - swh.loader.package.npm.tasks.LoadNpm
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.core
     pypi:
@@ -98,7 +91,6 @@ loaders:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
         queueThreshold: 10
-        minReplicacount: 1
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     # svn:
@@ -110,7 +102,6 @@ loaders:
     #     - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
     #   autoScaling:
     #     queueThreshold: 10
-    #     minReplicacount: 1
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.svn
 
@@ -131,7 +122,6 @@ listers:
         - swh.lister.gnu.tasks.GNUListerTask
       autoScaling:
         queueThreshold: 10
-        minReplicacount: 0
         maxReplicaCount: 1
 
 graphql:
