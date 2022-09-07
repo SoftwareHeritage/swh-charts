@@ -53,7 +53,7 @@ spec:
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: CONCURRENCY
-          value: "1"
+          value: {{ get $deployment_config "concurrency" | default 1 | quote }}
         - name: MAX_TASKS_PER_CHILD
           value: "1"
         - name: LOGLEVEL
