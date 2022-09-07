@@ -57,7 +57,7 @@ spec:
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
         - name: LOGLEVEL
-          value: "INFO"
+          value: {{ get $deployment_config "logLevel" | default "INFO" }}
         - name: SWH_CONFIG_FILENAME
           # FIXME: built by entrypoint.sh, determine how to properly declare this
           value: /tmp/config.yml
