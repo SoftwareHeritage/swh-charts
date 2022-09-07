@@ -55,7 +55,7 @@ spec:
         - name: CONCURRENCY
           value: {{ get $deployment_config "concurrency" | default 1 | quote }}
         - name: MAX_TASKS_PER_CHILD
-          value: "1"
+          value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
         - name: LOGLEVEL
           value: "INFO"
         - name: SWH_CONFIG_FILENAME
