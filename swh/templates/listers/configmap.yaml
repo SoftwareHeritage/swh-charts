@@ -5,47 +5,37 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $lister_name }}
+  name: {{ $lister_name }}-template
   namespace: {{ $.Values.namespace }}
 data:
-  config.yml: |
+  config.yml.template: |
     storage:
       cls: remote
       url: http://{{ $.Values.listers.storage.host }}:{{ $.Values.listers.storage.port }}/
     scheduler:
       cls: remote
       url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
-
     celery:
-      task_broker: ##amqp_host##
+      task_broker: ${host}
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
     {{- end }}
-  entrypoint.sh: |
+    credentials:
+  init-container-entrypoint.sh: |
     #!/bin/bash
 
     set -e
 
-    # Create the full config filename
-    cat /etc/softwareheritage/config.yml > $SWH_CONFIG_FILENAME
-    # contains required credentials for lister
-    cat /etc/credentials/listers/data >> $SWH_CONFIG_FILENAME
+    CONFIG_FILE=/etc/swh/config.yml
 
-    # Install the rabbitmq host information
-    sed -i 's,##amqp_host##,'$RABBITMQ_HOST',g' $SWH_CONFIG_FILENAME
+    # substitute environment variables when creating the default config.yml
+    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
+      > $CONFIG_FILE
 
-    echo Starting the swh Celery worker
-    exec python -m celery \
-                --app=swh.scheduler.celery_backend.config.app \
-                worker \
-                --pool=prefork \
-                --concurrency=${CONCURRENCY} \
-                --max-tasks-per-child=${MAX_TASKS_PER_CHILD} \
-                -Ofair --loglevel=${LOGLEVEL} \
-                --without-gossip \
-                --without-mingle \
-                --without-heartbeat \
-                --hostname "${HOSTNAME}"
+    CREDS_LISTER_PATH=/etc/credentials/listers/credentials
+    [ -f $CREDS_LISTER_PATH ] && \
+      sed 's/^/  /g' $CREDS_LISTER_PATH >> $CONFIG_FILE
+
 {{ end }}
 {{- end -}}

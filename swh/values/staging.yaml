@@ -122,6 +122,7 @@ listers:
         - swh.lister.gnu.tasks.GNUListerTask
       autoScaling:
         queueThreshold: 10
+        minReplicaCount: 0
         maxReplicaCount: 1
 
 graphql:

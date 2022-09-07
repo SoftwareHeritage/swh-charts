@@ -30,12 +30,30 @@ spec:
       affinity:
         {{ toYaml $.Values.listers.affinity | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          envFrom:
+          - secretRef:
+              # define the ${host) values for configuration "celery > task_broker: " key
+              name: amqp-access-credentials
+          command:
+            - /entrypoint.sh
+          volumeMounts:
+          - name: configuration-template
+            mountPath: /entrypoint.sh
+            subPath: "init-container-entrypoint.sh"
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: lister-credentials-secrets
+            mountPath: /etc/credentials/listers
+            readOnly: true
       containers:
       - name: listers
-        image: {{ $.Values.swh_listers_image }}:{{ $.Values.swh_listers_image_version }}
-        imagePullPolicy: Always
-        command:
-          - /entrypoint.sh
         resources:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
@@ -43,6 +61,13 @@ spec:
           limits:
             memory: "4000Mi"
             cpu: "1200m"
+        image: {{ $.Values.swh_listers_image }}:{{ $.Values.swh_listers_image_version }}
+        imagePullPolicy: Always
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - /opt/swh/entrypoint.sh
         lifecycle:
           preStop:
            exec:
@@ -57,10 +82,9 @@ spec:
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
         - name: LOGLEVEL
-          value: {{ get $deployment_config "logLevel" | default "INFO" }}
+          value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
-          # FIXME: built by entrypoint.sh, determine how to properly declare this
-          value: /tmp/config.yml
+          value: /etc/swh/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
@@ -72,36 +96,24 @@ spec:
               key: sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
-        - name: RABBITMQ_HOST
-          valueFrom:
-            secretKeyRef:
-              name: amqp-access-credentials
-              key: host
-              # 'name' secret must exist & include key "host"
-              optional: false
         volumeMounts:
-          - name: config
-            mountPath: /etc/softwareheritage/config.yml
-            subPath: config.yml
-            readOnly: true
-          - name: config
-            mountPath: /entrypoint.sh
-            subPath: entrypoint.sh
-            readOnly: true
-          - name: lister-credentials-secrets
-            mountPath: /etc/credentials/listers
-            readOnly: true
-          - mountPath: /tmp
-            name: tmp-volume
+          - name: configuration
+            mountPath: /etc/swh
       volumes:
-        - name: config
-          configMap:
-            name: {{ $lister_name }}
-            defaultMode: 0777
-        - name: tmp-volume
-          emptyDir: {}
-        - name: lister-credentials-secrets
-          secret:
-            secretName: lister-credentials-secrets
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $lister_name }}-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+          - key: "init-container-entrypoint.sh"
+            path: "init-container-entrypoint.sh"
+      - name: lister-credentials-secrets
+        secret:
+          secretName: lister-credentials-secrets
+          optional: true
 {{ end }}
 {{- end -}}
