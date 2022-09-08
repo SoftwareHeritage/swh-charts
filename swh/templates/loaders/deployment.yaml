@@ -2,6 +2,12 @@
 {{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
+# if defined at the "typed" loader level
+{{- $local_container_image_key := get $deployment_config "image" }}
+{{- $local_container_image := get $.Values $local_container_image_key }}
+{{- $local_container_image_version_key := ( print $local_container_image_key "_version" ) }}
+{{- $local_container_image_version := get $.Values $local_container_image_version_key }}
+# otherwise if the global image is defined
 {{- $image_name_key := ( print "swh_loader_" $loader_type "_image" ) -}}
 {{- $image_version_key := ( print $image_name_key "_version" ) -}}
 {{- $container_image := get $.Values $image_name_key }}
@@ -59,7 +65,9 @@ spec:
             readOnly: true
       containers:
       - name: loaders
-        {{ if $container_image -}}
+        {{ if $local_container_image -}}
+        image: {{ $local_container_image }}:{{ $local_container_image_version }}
+        {{ else if $container_image -}}
         image: {{ $container_image }}:{{ $container_image_version }}
         {{ else -}}
         image: {{ $.Values.swh_loaders_image }}:{{ $.Values.swh_loaders_image_version }}

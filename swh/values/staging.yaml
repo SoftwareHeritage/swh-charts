@@ -87,6 +87,7 @@ loaders:
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
+      image: swh_loader_highpriority_image
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
