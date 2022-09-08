@@ -69,6 +69,7 @@ loaders:
     # maven:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
+    #   image: swh_loader_package_image
     #   queues:
     #     - swh.loader.package.maven.tasks.LoadMaven
     #   autoScaling:
@@ -78,6 +79,7 @@ loaders:
     # npm:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
+    #   image: swh_loader_package_image
     #   queues:
     #     - swh.loader.package.npm.tasks.LoadNpm
     #   autoScaling:
@@ -87,7 +89,7 @@ loaders:
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
-      image: swh_loader_highpriority_image
+      image: swh_loader_package_image
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
