@@ -10,7 +10,7 @@ metadata:
   labels:
     app: storage-replayer-{{ $deployment }}
 spec:
-  revisionHistoryLimit: 3
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
       app: storage-replayer-{{ $deployment }}
