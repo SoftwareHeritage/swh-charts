@@ -35,6 +35,28 @@ spec:
       affinity:
         {{ toYaml $.Values.loaders.affinity | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          envFrom:
+          - secretRef:
+              # define the ${host) values for configuration "celery > task_broker: " key
+              name: amqp-access-credentials
+          command:
+            - /entrypoint.sh
+          volumeMounts:
+          - name: configuration-template
+            mountPath: /entrypoint.sh
+            subPath: "init-container-entrypoint.sh"
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: metadata-fetcher-credentials
+            mountPath: /etc/credentials/metadata-fetcher
+            readOnly: true
       containers:
       - name: loaders
         {{ if $container_image -}}
@@ -44,7 +66,7 @@ spec:
         {{ end }}
         imagePullPolicy: Always
         command:
-          - /entrypoint.sh
+          - /opt/swh/entrypoint.sh
         resources:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
@@ -62,14 +84,13 @@ spec:
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: CONCURRENCY
-          value: "1"
+          value: {{ get $deployment_config "concurrency" | default 1 | quote }}
         - name: MAX_TASKS_PER_CHILD
-          value: "5"
+          value: {{ get $deployment_config "maxTasksPerChild" | default 5 | quote }}
         - name: LOGLEVEL
-          value: "INFO"
+          value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
-          # FIXME: built by entrypoint.sh, determine how to properly declare this
-          value: /tmp/config.yml
+          value: /etc/swh/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
@@ -81,36 +102,24 @@ spec:
               key: sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
-        - name: RABBITMQ_HOST
-          valueFrom:
-            secretKeyRef:
-              name: amqp-access-credentials
-              key: host
-              # 'name' secret must exist & include key "host"
-              optional: false
         volumeMounts:
-          - name: config
-            mountPath: /etc/softwareheritage/config.yml
-            subPath: config.yml
-            readOnly: true
-          - name: config
-            mountPath: /entrypoint.sh
-            subPath: entrypoint.sh
-            readOnly: true
-          - name: metadata-fetcher-credentials
-            mountPath: /etc/credentials/metadata-fetcher
-            readOnly: true
-          - mountPath: /tmp
-            name: tmp-volume
+          - name: configuration
+            mountPath: /etc/swh
       volumes:
-        - name: config
-          configMap:
-            name: {{ $loader_name }}
-            defaultMode: 0777
-        - name: tmp-volume
-          emptyDir: {}
-        - name: metadata-fetcher-credentials
-          secret:
-            secretName: metadata-fetcher-credentials
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $loader_name }}-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+          - key: "init-container-entrypoint.sh"
+            path: "init-container-entrypoint.sh"
+      - name: metadata-fetcher-credentials
+        secret:
+          secretName: metadata-fetcher-credentials
+          optional: true
 {{ end }}
 {{- end -}}
