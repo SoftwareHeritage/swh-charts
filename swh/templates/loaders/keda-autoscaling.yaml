@@ -35,25 +35,6 @@ spec:
                                                # minReplicaCount
   minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
   maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
-  fallback:                                    # Optional. Section to specify fallback
-                                               # options
-    failureThreshold: 3                        # Mandatory if fallback section is
-                                               # included
-    replicas: 6                                # Mandatory if fallback section is
-                                               # included
-  advanced:                                    # Optional. Section to specify advanced
-                                               # options
-    restoreToOriginalReplicaCount: false       # Optional. Default: false
-    horizontalPodAutoscalerConfig:             # Optional. Section to specify HPA
-                                               # related options
-      behavior:                                # Optional. Use to modify HPA's scaling
-                                               # behavior
-        scaleDown:
-          stabilizationWindowSeconds: 60       # default 300
-          policies:
-          - type: Percent
-            value: 2
-            periodSeconds: 15
   triggers:
     {{- range $queue := get $deployment_config "queues" }}
   - type: rabbitmq
