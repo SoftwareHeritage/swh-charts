@@ -96,6 +96,16 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
+    pubdev:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+      sentrySwhPackage: swh.loader.core
     # svn:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
@@ -123,6 +133,12 @@ listers:
     gnu-full:
       queues:
         - swh.lister.gnu.tasks.GNUListerTask
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+    pubdev:
+      queues:
+        - swh.lister.pubdev.tasks.PubDevListerTask
       autoScaling:
         queueThreshold: 10
         maxReplicaCount: 1
