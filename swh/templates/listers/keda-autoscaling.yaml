@@ -7,7 +7,7 @@
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
 metadata:
-  name: amqp-authentication
+  name: amqp-authentication-{{ $lister_name }}
   namespace: {{ $.Values.namespace }}
 spec:
   secretTargetRef: # Optional.
@@ -58,7 +58,7 @@ spec:
     {{- range $queue := get $deployment_config "queues" }}
   - type: rabbitmq
     authenticationRef:
-      name: amqp-authentication
+      name: amqp-authentication-{{ $lister_name }}
     metadata:
       host: host
                                      # Optional. If not specified, it must be done
