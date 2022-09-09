@@ -9,15 +9,15 @@ loaders:
   amqp:
     host: scheduler0.internal.staging.swh.network
   deployments:
-    # bzr:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   queues:
-    #     - swh.loader.bzr.tasks.LoadBazaar
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.bzr
+    bzr:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.bzr.tasks.LoadBazaar
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+      sentrySwhPackage: swh.loader.bzr
     # cvs:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
