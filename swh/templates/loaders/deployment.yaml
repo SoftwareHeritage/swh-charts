@@ -91,8 +91,6 @@ spec:
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
-        - name: CONCURRENCY
-          value: {{ get $deployment_config "concurrency" | default 1 | quote }}
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 5 | quote }}
         - name: LOGLEVEL
