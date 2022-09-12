@@ -17,6 +17,7 @@ data:
       url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
     celery:
       task_broker: ${host}
+      task_acks_late: true
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
