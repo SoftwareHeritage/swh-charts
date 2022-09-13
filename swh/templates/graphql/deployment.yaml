@@ -31,6 +31,19 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 5013
+              name: rpc
+          startupProbe:
+            httpGet:
+              path: /
+              port: rpc
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
           env:
           - name: PORT
             value: "5013"
