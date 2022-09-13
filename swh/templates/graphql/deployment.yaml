@@ -52,8 +52,9 @@ spec:
               secretKeyRef:
                 name: graphql-sentry-secrets
                 key: sentry-dsn
-                # 'name' secret must exist & include key "host"
-                optional: false
+                # 'name' secret should exist & include key "host"
+                # if the setting doesn't exist, sentry pushes will be disabled
+                optional: true
           {{ end }}
           volumeMounts:
             - name: config
