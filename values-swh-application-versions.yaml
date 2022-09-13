@@ -14,6 +14,6 @@ swh_loader_highpriority_image_version: "20220908.1"
 swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20220909.1"
 swh_graphql_image: softwareheritage/graphql
-swh_graphql_image_version: "20220913.1"
+swh_graphql_image_version: "20220913.2"
 swh_listers_image: softwareheritage/lister
 swh_listers_image_version: "20220908.1"
