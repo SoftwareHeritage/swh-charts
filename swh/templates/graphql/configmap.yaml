@@ -14,5 +14,5 @@ data:
     {{- end }}
     debug: yes
 
-    server-type: wsgi
+    server-type: asgi
 {{ end }}
