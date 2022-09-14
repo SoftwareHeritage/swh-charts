@@ -111,7 +111,11 @@ spec:
         volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: localstorage
+            mountPath: /tmp
       volumes:
+      - name: localstorage
+        emptyDir: {}
       - name: configuration
         emptyDir: {}
       - name: configuration-template
