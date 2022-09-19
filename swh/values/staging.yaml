@@ -27,16 +27,16 @@ loaders:
     #     queueThreshold: 10
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.cvs
-    # hg:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   queues:
-    #     - swh.loader.mercurial.tasks.LoadArchiveMercurial
-    #     - swh.loader.mercurial.tasks.LoadMercurial
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.mercurial
+    mercurial:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - swh.loader.mercurial.tasks.LoadMercurial
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.mercurial
     highpriority:
       requestedMemory: 256Mi
       requestedCpu: 200m
