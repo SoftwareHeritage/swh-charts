@@ -3,6 +3,10 @@
 
 swh_storage_replayer_image: softwareheritage/storage-replayer
 swh_storage_replayer_image_version: "20220819.1"
+swh_graphql_image: softwareheritage/graphql
+swh_graphql_image_version: "20220913.2"
+swh_listers_image: softwareheritage/lister
+swh_listers_image_version: "20220908.1"
 swh_loaders_image: softwareheritage/loaders
 swh_loaders_image_version: "20220826.1"
 swh_loader_bzr_image: softwareheritage/loader_bzr
@@ -11,13 +15,9 @@ swh_loader_cvs_image: softwareheritage/loader_cvs
 swh_loader_cvs_image_version: "20220919.1"
 swh_loader_git_image: softwareheritage/loader_git
 swh_loader_git_image_version: "20220908.1"
-swh_loader_mercurial_image: softwareheritage/loader_mercurial
-swh_loader_mercurial_image_version: "20220919.1"
 swh_loader_highpriority_image: softwareheritage/loader_highpriority
 swh_loader_highpriority_image_version: "20220908.1"
+swh_loader_mercurial_image: softwareheritage/loader_mercurial
+swh_loader_mercurial_image_version: "20220919.1"
 swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20220914.1"
-swh_graphql_image: softwareheritage/graphql
-swh_graphql_image_version: "20220913.2"
-swh_listers_image: softwareheritage/lister
-swh_listers_image_version: "20220908.1"
