@@ -21,3 +21,5 @@ swh_loader_mercurial_image: softwareheritage/loader_mercurial
 swh_loader_mercurial_image_version: "20220919.1"
 swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20220914.1"
+swh_loader_svn_image: softwareheritage/loader_svn
+swh_loader_svn_image_version: "20220919.1"
