@@ -12,7 +12,7 @@ swh_loaders_image_version: "20220826.1"
 swh_loader_bzr_image: softwareheritage/loader_bzr
 swh_loader_bzr_image_version: "20220909.1"
 swh_loader_cvs_image: softwareheritage/loader_cvs
-swh_loader_cvs_image_version: "20220919.1"
+swh_loader_cvs_image_version: "20220919.2"
 swh_loader_git_image: softwareheritage/loader_git
 swh_loader_git_image_version: "20220908.1"
 swh_loader_highpriority_image: softwareheritage/loader_highpriority
