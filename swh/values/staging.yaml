@@ -66,16 +66,16 @@ loaders:
         queueThreshold: 5  # spawn worker per increment of `value` messages
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
-    # maven:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   image: swh_loader_package_image
-    #   queues:
-    #     - swh.loader.package.maven.tasks.LoadMaven
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.core
+    maven:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.maven.tasks.LoadMaven
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.core
     npm:
       requestedMemory: 256Mi
       requestedCpu: 200m
