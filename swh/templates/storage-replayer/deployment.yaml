@@ -69,6 +69,17 @@ spec:
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.storage
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: storage-replayer-sentry-secrets
+                  key: sentry-dsn
+                  # 'name' secret must exist & include key "host"
+                  optional: true
           imagePullPolicy: Always
           volumeMounts:
           - name: configuration
