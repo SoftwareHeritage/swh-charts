@@ -9,6 +9,16 @@ loaders:
   amqp:
     host: scheduler0.internal.staging.swh.network
   deployments:
+    addforgenow:
+      image: swh_loader_git_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 5
+      sentrySwhPackage: swh.loader.git
     bzr:
       requestedMemory: 256Mi
       requestedCpu: 200m

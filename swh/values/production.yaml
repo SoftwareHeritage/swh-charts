@@ -1,0 +1,22 @@
+sentry:
+  environment: production
+
+loaders:
+  enabled: true
+  storage:
+    host: saam.internal.softwareheritage.org
+    port: 5002
+  amqp:
+    host: rabbitmq.internal.softwareheritage.org
+  deployments:
+    addforgenow:
+      image: swh_loader_git_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 5
+      sentrySwhPackage: swh.loader.git
+
