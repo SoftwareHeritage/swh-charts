@@ -106,17 +106,17 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
-    # svn:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   queues:
-    #     - swh.loader.svn.tasks.LoadSvnRepository
-    #     - swh.loader.svn.tasks.MountAndLoadSvnRepository
-    #     - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.svn
+    svn:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.svn.tasks.LoadSvnRepository
+        - swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.svn
 
 listers:
   enabled: true
