@@ -18,15 +18,15 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.bzr
-    # cvs:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   queues:
-    #     - swh.loader.cvs.tasks.LoadCvsRepository
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.cvs
+    cvs:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.cvs.tasks.LoadCvsRepository
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.cvs
     mercurial:
       requestedMemory: 256Mi
       requestedCpu: 200m
