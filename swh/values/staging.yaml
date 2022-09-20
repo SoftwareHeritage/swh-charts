@@ -9,6 +9,16 @@ loaders:
   amqp:
     host: scheduler0.internal.staging.swh.network
   deployments:
+    archive:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.archive.tasks.LoadArchive
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+      sentrySwhPackage: swh.loader.core
     addforgenow:
       image: swh_loader_git_image
       requestedMemory: 256Mi
