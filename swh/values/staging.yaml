@@ -171,16 +171,19 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
-    # opam:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   image: swh_loader_package_image
-    #   queues:
-    #     - swh.loader.package.opam.tasks.LoadOpam
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 1
-    #   sentrySwhPackage: swh.loader.core
+    opam:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.opam.tasks.LoadOpam
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+      sentrySwhPackage: swh.loader.core
+      extraConfig:
+        # FIXME: Find a way to avoid this initialization step in loader task
+        initialize_opam_root: true
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
