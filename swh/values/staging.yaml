@@ -38,6 +38,16 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.bzr
+    cran:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.cran.tasks.LoadCRAN
+      autoScaling:
+        queueThreshold: 10
+        maxReplicaCount: 1
+      sentrySwhPackage: swh.loader.core
     cvs:
       requestedMemory: 256Mi
       requestedCpu: 200m
