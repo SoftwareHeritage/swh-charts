@@ -31,7 +31,7 @@ data:
 
     {{- if $deployment_config.extraConfig -}}
       {{- range $option, $value := $deployment_config.extraConfig }}
-    {{ $option }}: {{ $value }}
+    {{ $option }}: {{ toYaml $value | nindent 6 }}
       {{- end }}
     {{- end }}
 
