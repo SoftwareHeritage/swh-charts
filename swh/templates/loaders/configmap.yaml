@@ -29,6 +29,12 @@ data:
       - cls: remote
         url: http://{{ $.Values.loaders.storage.host }}:{{ $.Values.loaders.storage.port }}/
 
+    {{- if $deployment_config.extraConfig -}}
+      {{- range $option, $value := $deployment_config.extraConfig }}
+    {{ $option }}: {{ $value }}
+      {{- end }}
+    {{- end }}
+
     celery:
       task_broker: ${host}
       task_queues:
