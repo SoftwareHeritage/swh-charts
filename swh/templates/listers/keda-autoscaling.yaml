@@ -51,7 +51,7 @@ spec:
       mode: QueueLength              # QueueLength or MessageRate
       # message backlog or publish/sec.
       # target per instance
-      value: {{ get $autoscalingConfig "queueThreshold" | default 100 | quote }}
+      value: {{ get $autoscalingConfig "queueThreshold" | default 1 | quote }}
       queueName: {{ $queue }}
       vhostName: /                   # Optional. If not specified, use the vhost in the
                                      # `host` connection string. Alternatively, you can

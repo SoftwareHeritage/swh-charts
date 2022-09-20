@@ -144,20 +144,17 @@ listers:
       queues:
         - swh.lister.gnu.tasks.GNUListerTask
       autoScaling:
-        queueThreshold: 10
         maxReplicaCount: 1
     pubdev:
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
       autoScaling:
-        queueThreshold: 10
         maxReplicaCount: 1
     gogs-full:
       logLevel: DEBUG
       queues:
         - swh.lister.gogs.tasks.FullGogsRelister
       autoScaling:
-        queueThreshold: 10
         maxReplicaCount: 1
 
 graphql:
