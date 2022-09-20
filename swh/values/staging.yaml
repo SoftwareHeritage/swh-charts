@@ -35,8 +35,8 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        queueThreshold: 10
-        maxReplicaCount: 1
+        queueThreshold: 3000000
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.bzr
     cran:
       requestedMemory: 256Mi
@@ -102,7 +102,7 @@ loaders:
       queues:
         - swh.loader.package.nixguix.tasks.LoadNixguix
       autoScaling:
-        queueThreshold: 10
+        queueThreshold: 1
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
       extraConfig:
@@ -137,7 +137,7 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_code_now:swh.loader.package.archive.tasks.LoadArchive
       autoScaling:
-        queueThreshold: 10
+        queueThreshold: 1
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.highpriority
     git:
@@ -148,7 +148,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        queueThreshold: 5  # spawn worker per increment of `value` messages
+        queueThreshold: 10  # spawn worker per increment of `value` messages
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
     maven:
@@ -158,7 +158,7 @@ loaders:
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
       autoScaling:
-        queueThreshold: 10
+        queueThreshold: 500
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.core
     npm:
@@ -168,8 +168,8 @@ loaders:
       queues:
         - swh.loader.package.npm.tasks.LoadNpm
       autoScaling:
-        queueThreshold: 10
-        maxReplicaCount: 1
+        queueThreshold: 2000
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.core
     opam:
       requestedMemory: 256Mi
@@ -191,8 +191,8 @@ loaders:
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
-        queueThreshold: 10
-        maxReplicaCount: 1
+        queueThreshold: 1000
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.core
     pubdev:
       requestedMemory: 256Mi
@@ -201,8 +201,8 @@ loaders:
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
-        queueThreshold: 10
-        maxReplicaCount: 1
+        queueThreshold: 3000
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.core
     svn:
       requestedMemory: 256Mi
@@ -212,7 +212,7 @@ loaders:
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
-        queueThreshold: 10
+        queueThreshold: 500
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.svn
 
