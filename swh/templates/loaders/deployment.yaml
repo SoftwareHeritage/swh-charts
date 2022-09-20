@@ -108,6 +108,22 @@ spec:
               key: sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
+        {{ if ( contains "deposit" $loader_name ) -}}
+        - name: DEPOSIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ $loader_name }}-sentry-secrets
+              key: deposit-username
+              # 'name' secret must exist & include key "host"
+              optional: false
+        - name: DEPOSIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ $loader_name }}-sentry-secrets
+              key: deposit-username
+              # 'name' secret must exist & include key "host"
+              optional: false
+        {{ end }}
         volumeMounts:
           - name: configuration
             mountPath: /etc/swh

@@ -67,16 +67,24 @@ loaders:
         queueThreshold: 10
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
-    # deposit:
-    #   requestedMemory: 256Mi
-    #   requestedCpu: 200m
-    #   image: swh_loader_package_image
-    #   queues:
-    #     - swh.loader.package.cran.tasks.LoadCRAN
-    #   autoScaling:
-    #     queueThreshold: 10
-    #     maxReplicaCount: 1
-    #   sentrySwhPackage: swh.loader.core
+    deposit:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.deposit.tasks.LoadDeposit
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 3
+      sentrySwhPackage: swh.loader.core
+      extraConfig:
+        deposit:
+          url: "https://deposit-rp.internal.staging.swh.network/1/private"
+          auth:
+            username: "${DEPOSIT_USERNAME}"
+            password: "${DEPOSIT_PASSWORD}"
+        default_filename: archive.tar
+
     mercurial:
       requestedMemory: 256Mi
       requestedCpu: 200m
