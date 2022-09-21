@@ -235,6 +235,7 @@ listers:
       autoScaling:
         maxReplicaCount: 1
     pubdev:
+      logLevel: DEBUG
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
       autoScaling:
