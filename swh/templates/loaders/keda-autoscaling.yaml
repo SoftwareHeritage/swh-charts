@@ -13,7 +13,7 @@ spec:
   secretTargetRef: # Optional.
   - parameter: host
     name: common-secrets
-    key: rabbitmq-http-host
+    key: rabbitmq-amqp-host
 
 ---
 apiVersion: keda.sh/v1alpha1
@@ -41,7 +41,7 @@ spec:
     authenticationRef:
       name: amqp-authentication-{{ $loader_name }}
     metadata:
-      protocol: http                 # Optional. Specifies protocol to use,
+      protocol: auto                 # Optional. Specifies protocol to use,
                                      # either amqp or http, or auto to
                                      # autodetect based on the `host` value.
                                      # Default value is auto.
