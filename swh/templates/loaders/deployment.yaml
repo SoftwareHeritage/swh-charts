@@ -104,7 +104,7 @@ spec:
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: MAX_TASKS_PER_CHILD
-          value: {{ get $deployment_config "maxTasksPerChild" | default 5 | quote }}
+          value: {{ get $deployment_config "maxTasksPerChild" | default 10 | quote }}
         - name: LOGLEVEL
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME

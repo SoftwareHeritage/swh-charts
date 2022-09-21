@@ -51,7 +51,7 @@ spec:
       mode: QueueLength              # QueueLength to trigger on number of msgs in queue
       excludeUnacknowledged: "false" # QueueLength should include unacked messages
                                      # Implies "http" protocol is used
-      value: {{ get $autoscalingConfig "queueThreshold" | default 100 | quote }}
+      value: {{ get $autoscalingConfig "queueThreshold" | default 10 | quote }}
       queueName: {{ $queue }}
       vhostName: /                   # Optional. If not specified, use the vhost in the
                                      # `host` connection string. Alternatively, you can
