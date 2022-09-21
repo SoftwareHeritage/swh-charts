@@ -11,7 +11,7 @@ metadata:
   namespace: {{ $.Values.namespace }}
 spec:
   secretTargetRef: # Optional.
-  - parameter: HTTP_HOST
+  - parameter: host
     name: common-secrets
     key: rabbitmq-http-host
 
@@ -41,9 +41,6 @@ spec:
     authenticationRef:
       name: amqp-authentication-{{ $loader_name }}
     metadata:
-      host: HTTP_HOST
-                                     # Optional. If not specified, it must be done
-                                     # by using TriggerAuthentication.
       protocol: http                 # Optional. Specifies protocol to use,
                                      # either amqp or http, or auto to
                                      # autodetect based on the `host` value.
