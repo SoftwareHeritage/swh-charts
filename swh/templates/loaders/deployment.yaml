@@ -46,11 +46,21 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: Always
-          envFrom:
-          - secretRef:
-              # define the ${rabbitmq-username) and ${rabbitmq-password} values for
-              # configuration "celery > task_broker: " key
-              name: common-secrets
+          env:
+          - name: AMQP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-username
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          - name: AMQP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-password
+                # 'name' secret must exist & include that ^ key
+                optional: false
           command:
             - /entrypoint.sh
           volumeMounts:
