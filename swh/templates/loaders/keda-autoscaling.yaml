@@ -11,9 +11,9 @@ metadata:
   namespace: {{ $.Values.namespace }}
 spec:
   secretTargetRef: # Optional.
-  - parameter: host
-    name: amqp-access-credentials
-    key: host
+  - parameter: HTTP_HOST
+    name: common-secrets
+    key: rabbitmq-http-host
 
 ---
 apiVersion: keda.sh/v1alpha1
@@ -41,7 +41,7 @@ spec:
     authenticationRef:
       name: amqp-authentication-{{ $loader_name }}
     metadata:
-      host: host
+      host: HTTP_HOST
                                      # Optional. If not specified, it must be done
                                      # by using TriggerAuthentication.
       protocol: auto                 # Optional. Specifies protocol to use,
