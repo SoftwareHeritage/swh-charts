@@ -35,10 +35,21 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: Always
-          envFrom:
-          - secretRef:
-              # define the ${host) values for configuration "celery > task_broker: " key
-              name: amqp-access-credentials
+          env:
+          - name: AMQP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-amqp-username
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          - name: AMQP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-amqp-password
+                # 'name' secret must exist & include that ^ key
+                optional: false
           command:
             - /entrypoint.sh
           volumeMounts:
@@ -91,8 +102,8 @@ spec:
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: lister-sentry-secrets
-              key: sentry-dsn
+              name: common-secrets
+              key: lister-sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
         volumeMounts:

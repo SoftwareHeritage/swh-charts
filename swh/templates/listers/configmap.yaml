@@ -16,7 +16,7 @@ data:
       cls: remote
       url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
     celery:
-      task_broker: ${host}
+      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
       task_acks_late: true
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
