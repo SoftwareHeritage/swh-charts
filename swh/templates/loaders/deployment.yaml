@@ -48,8 +48,9 @@ spec:
           imagePullPolicy: Always
           envFrom:
           - secretRef:
-              # define the ${host) values for configuration "celery > task_broker: " key
-              name: amqp-access-credentials
+              # define the ${rabbitmq-username) and ${rabbitmq-password} values for
+              # configuration "celery > task_broker: " key
+              name: common-secrets
           command:
             - /entrypoint.sh
           volumeMounts:
@@ -105,22 +106,22 @@ spec:
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: {{ $loader_name }}-sentry-secrets
-              key: sentry-dsn
+              name: common-secrets
+              key: {{ $loader_name}}-sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
         {{ if ( contains "deposit" $loader_name ) -}}
         - name: DEPOSIT_USERNAME
           valueFrom:
             secretKeyRef:
-              name: {{ $loader_name }}-sentry-secrets
+              name: common-secrets
               key: deposit-username
               # 'name' secret must exist & include key "host"
               optional: false
         - name: DEPOSIT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ $loader_name }}-sentry-secrets
+              name: common-secrets
               key: deposit-username
               # 'name' secret must exist & include key "host"
               optional: false

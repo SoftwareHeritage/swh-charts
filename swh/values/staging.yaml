@@ -8,6 +8,7 @@ loaders:
     port: 5002
   amqp:
     host: scheduler0.internal.staging.swh.network
+    port: 5672
   deployments:
     archive:
       requestedMemory: 256Mi

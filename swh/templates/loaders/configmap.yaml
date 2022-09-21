@@ -36,7 +36,7 @@ data:
     {{- end }}
 
     celery:
-      task_broker: ${host}
+      task_broker: amqp://${rabbitmq-username}:${rabbitmq-password}@{{ $.Values.loaders.amqp.host }}:/%{{ $.Values.loaders.amqp.port }}/%2f
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
