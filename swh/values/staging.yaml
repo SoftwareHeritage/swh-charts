@@ -35,7 +35,7 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.bzr
     cran:
       requestedMemory: 256Mi
@@ -88,7 +88,7 @@ loaders:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.mercurial
     nixguix:
       requestedMemory: 256Mi
@@ -152,7 +152,7 @@ loaders:
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.core
     npm:
       requestedMemory: 256Mi
@@ -182,7 +182,7 @@ loaders:
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.core
     pubdev:
       requestedMemory: 256Mi
@@ -191,7 +191,7 @@ loaders:
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.core
     svn:
       requestedMemory: 256Mi
@@ -201,7 +201,7 @@ loaders:
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.svn
 
 listers:
