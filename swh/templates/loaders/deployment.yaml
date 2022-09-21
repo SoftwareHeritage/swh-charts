@@ -58,7 +58,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: common-secrets
-                key: rabbitmq-aqmp-password
+                key: rabbitmq-amqp-password
                 # 'name' secret must exist & include that ^ key
                 optional: false
           command:
