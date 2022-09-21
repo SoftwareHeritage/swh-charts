@@ -53,6 +53,7 @@ spec:
                                      # Implies "http" protocol is used
       value: {{ get $autoscalingConfig "queueThreshold" | default 10 | quote }}
       queueName: {{ $queue }}
+      vhostName: '%2f'               # vhost '/' encoded
     {{- end }}
 {{ end }}
 {{ end }}
