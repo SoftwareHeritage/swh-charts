@@ -63,8 +63,8 @@ spec:
           - name: SWH_SENTRY_DSN
             valueFrom:
               secretKeyRef:
-                name: graphql-sentry-secrets
-                key: sentry-dsn
+                name: common-secrets
+                key: graphql-sentry-dsn
                 # 'name' secret should exist & include key "host"
                 # if the setting doesn't exist, sentry pushes will be disabled
                 optional: true
