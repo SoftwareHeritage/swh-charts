@@ -36,7 +36,7 @@ data:
     {{- end }}
 
     celery:
-      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/%2f
+      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}%2f
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
