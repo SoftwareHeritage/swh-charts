@@ -51,14 +51,14 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: common-secrets
-                key: rabbitmq-username
+                key: rabbitmq-amqp-username
                 # 'name' secret must exist & include that ^ key
                 optional: false
           - name: AMQP_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: common-secrets
-                key: rabbitmq-password
+                key: rabbitmq-aqmp-password
                 # 'name' secret must exist & include that ^ key
                 optional: false
           command:
