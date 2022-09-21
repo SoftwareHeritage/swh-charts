@@ -80,6 +80,8 @@ spec:
                   key: sentry-dsn
                   # 'name' secret must exist & include key "host"
                   optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
           imagePullPolicy: Always
           volumeMounts:
           - name: configuration
