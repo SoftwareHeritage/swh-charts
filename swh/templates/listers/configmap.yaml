@@ -38,5 +38,6 @@ data:
     [ -f $CREDS_LISTER_PATH ] && \
       sed 's/^/  /g' $CREDS_LISTER_PATH >> $CONFIG_FILE
 
+    exit 0
 {{ end }}
 {{- end -}}
