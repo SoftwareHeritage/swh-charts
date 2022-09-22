@@ -238,6 +238,12 @@ listers:
       - swh.lister.maven.tasks.IncrementalMavenLister
       autoScaling:
         maxReplicaCount: 1
+    bitbucket:
+      queues:
+      - swh.lister.bitbucket.tasks.IncrementalBitBucketLister
+      - swh.lister.bitbucket.tasks.FullBitBucketRelister
+      autoScaling:
+        maxReplicaCount: 1
 
 graphql:
   enabled: true
