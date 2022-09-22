@@ -232,6 +232,12 @@ listers:
         - swh.lister.gogs.tasks.FullGogsRelister
       autoScaling:
         maxReplicaCount: 1
+    maven:
+      queues:
+      - swh.lister.maven.tasks.FullMavenLister
+      - swh.lister.maven.tasks.IncrementalMavenLister
+      autoScaling:
+        maxReplicaCount: 1
 
 graphql:
   enabled: true
