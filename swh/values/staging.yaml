@@ -147,6 +147,15 @@ loaders:
       autoScaling:
         maxReplicaCount: 2
       sentrySwhPackage: swh.loader.git
+    golang:
+      image: swh_loader_package_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.package.golang.tasks.LoadGolang
+      autoScaling:
+        maxReplicaCount: 2
+      sentrySwhPackage: swh.loader.core
     maven:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -227,6 +236,12 @@ listers:
       logLevel: DEBUG
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    golang:
+      queues:
+      - swh.lister.golang.tasks.FullGolangLister
+      - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
         maxReplicaCount: 1
     gogs-full:
