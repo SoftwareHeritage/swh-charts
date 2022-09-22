@@ -13,7 +13,7 @@ spec:
   secretTargetRef:
   - parameter: host            # "host" is required by the scalerObject trigger metadata
     name: common-secrets
-    key: rabbitmq-amqp-host
+    key: rabbitmq-http-host
 
 ---
 apiVersion: keda.sh/v1alpha1
