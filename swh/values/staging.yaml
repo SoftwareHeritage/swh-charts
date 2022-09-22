@@ -28,7 +28,7 @@ loaders:
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 5
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.git
     bzr:
       requestedMemory: 256Mi
@@ -53,7 +53,7 @@ loaders:
       queues:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.cvs
     debian:
       requestedMemory: 256Mi
@@ -72,7 +72,7 @@ loaders:
         - swh.loader.package.deposit.tasks.LoadDeposit
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.core
       extraConfig:
         deposit:
@@ -89,7 +89,7 @@ loaders:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.mercurial
     nixguix:
       requestedMemory: 256Mi
@@ -135,7 +135,7 @@ loaders:
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.highpriority
     git:
       requestedMemory: 256Mi
@@ -145,7 +145,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 2
       sentrySwhPackage: swh.loader.git
     maven:
       requestedMemory: 256Mi
