@@ -250,6 +250,11 @@ listers:
       - swh.lister.sourceforge.tasks.IncrementalSourceForgeLister
       autoScaling:
         maxReplicaCount: 1
+    opam:
+      queues:
+      - swh.lister.opam.tasks.OpamListerTask
+      autoScaling:
+        maxReplicaCount: 1
 
 graphql:
   enabled: true
