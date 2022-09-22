@@ -82,8 +82,8 @@ spec:
         - /opt/swh/entrypoint.sh
         lifecycle:
           preStop:
-           exec:
-             command: ["kill", "1"]
+            exec:
+              command: ["/pre-stop.sh"]
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -107,6 +107,9 @@ spec:
               # 'name' secret must exist & include key "host"
               optional: false
         volumeMounts:
+          - name: lister-utils
+            mountPath: /pre-stop.sh
+            subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
       volumes:
@@ -121,6 +124,13 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+      - name: lister-utils
+        configMap:
+          name: lister-utils
+          defaultMode: 0777
+          items:
+          - key: "pre-stop-idempotent.sh"
+            path: "pre-stop.sh"
       - name: lister-credentials-secrets
         secret:
           secretName: lister-credentials-secrets
