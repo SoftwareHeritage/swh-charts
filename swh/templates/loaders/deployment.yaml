@@ -96,8 +96,8 @@ spec:
             cpu: "1200m"
         lifecycle:
           preStop:
-           exec:
-             command: ["kill", "1"]
+            exec:
+              command: ["/pre-stop.sh"]
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -137,6 +137,9 @@ spec:
               optional: false
         {{ end }}
         volumeMounts:
+          - name: loader-utils
+            mountPath: /pre-stop.sh
+            subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
           - name: localstorage
@@ -155,6 +158,13 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+      - name: loader-utils
+        configMap:
+          name: loader-utils
+          defaultMode: 0777
+          items:
+          - key: "pre-stop-idempotent.sh"
+            path: "pre-stop.sh"
       - name: metadata-fetcher-credentials
         secret:
           secretName: metadata-fetcher-credentials

@@ -1,6 +1,34 @@
 {{ if .Values.loaders.enabled -}}
-{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
-{{- $loader_name := ( print "loader-" $loader_type ) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loader-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  pre-stop-idempotent.sh: |
+    #!/bin/bash
+
+    # pre-stop hook can be triggered multiple times but we want it to be applied only
+    # once so container can warm-shutdown properly.
+
+    # When celery receives multiple times the sigterm signal, this ends up doing an
+    # immediate shutdown which prevents long-standing tasks to finish properly.
+
+    set -ex
+
+    WITNESS_FILE=/tmp/already-stopped
+
+    # to support near-immediate concurrent calls
+    sleep $(echo | awk '{print rand()})
+
+    if [ ! -e $WITNESS_FILE ]; then
+      touch $WITNESS_FILE
+      kill 1
+    fi
+
+{{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
+{{ $loader_name := ( print "loader-" $loader_type ) }}
 ---
 apiVersion: v1
 kind: ConfigMap
