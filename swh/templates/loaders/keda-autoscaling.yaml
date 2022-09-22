@@ -10,8 +10,8 @@ metadata:
   name: amqp-authentication-{{ $loader_name }}
   namespace: {{ $.Values.namespace }}
 spec:
-  secretTargetRef: # Optional.
-  - parameter: host
+  secretTargetRef:
+  - parameter: host            # "host" is required by the scalerObject trigger metadata
     name: common-secrets
     key: rabbitmq-amqp-host
 

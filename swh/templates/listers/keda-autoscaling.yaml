@@ -10,10 +10,10 @@ metadata:
   name: amqp-authentication-{{ $lister_name }}
   namespace: {{ $.Values.namespace }}
 spec:
-  secretTargetRef: # Optional.
-  - parameter: HTTP_HOST
+  secretTargetRef:
+  - parameter: host            # "host" is required by the scalerObject trigger metadata
     name: common-secrets
-    key: rabbitmq-http-host
+    key: rabbitmq-amqp-host
 
 ---
 apiVersion: keda.sh/v1alpha1
@@ -41,10 +41,7 @@ spec:
     authenticationRef:
       name: amqp-authentication-{{ $lister_name }}
     metadata:
-      host: HTTP_HOST
-                                     # Optional. If not specified, it must be done
-                                     # by using TriggerAuthentication.
-      protocol: http                 # Optional. Specifies protocol to use,
+      protocol: auto                 # Optional. Specifies protocol to use,
                                      # either amqp or http, or auto to
                                      # autodetect based on the `host` value.
                                      # Default value is auto.
