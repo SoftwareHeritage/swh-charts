@@ -37,6 +37,7 @@ data:
 
     celery:
       task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
+      task_acks_late: {{ get $deployment_config "ackLate" | default false }}
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}

@@ -25,6 +25,7 @@ loaders:
       requestedCpu: 200m
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
+      ackLate: true
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 5
@@ -131,6 +132,7 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_code_now:swh.loader.package.archive.tasks.LoadArchive
+      ackLate: true
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 3
