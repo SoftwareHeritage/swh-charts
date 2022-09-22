@@ -244,6 +244,12 @@ listers:
       - swh.lister.bitbucket.tasks.FullBitBucketRelister
       autoScaling:
         maxReplicaCount: 1
+    sourceforge:
+      queues:
+      - swh.lister.sourceforge.tasks.FullSourceForgeLister
+      - swh.lister.sourceforge.tasks.IncrementalSourceForgeLister
+      autoScaling:
+        maxReplicaCount: 1
 
 graphql:
   enabled: true
