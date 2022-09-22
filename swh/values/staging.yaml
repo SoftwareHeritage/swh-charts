@@ -255,6 +255,12 @@ listers:
       - swh.lister.opam.tasks.OpamListerTask
       autoScaling:
         maxReplicaCount: 1
+    launchpad:
+      queues:
+      - swh.lister.launchpad.tasks.FullLaunchpadLister
+      - swh.lister.launchpad.tasks.IncrementalLaunchpadLister
+      autoScaling:
+        maxReplicaCount: 1
 
 graphql:
   enabled: true
