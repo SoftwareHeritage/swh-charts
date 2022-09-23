@@ -36,7 +36,7 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.bzr
     cran:
       requestedMemory: 256Mi
@@ -53,7 +53,7 @@ loaders:
       queues:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.cvs
     debian:
       requestedMemory: 256Mi
@@ -154,7 +154,7 @@ loaders:
       queues:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     maven:
       requestedMemory: 256Mi
@@ -163,7 +163,7 @@ loaders:
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     npm:
       requestedMemory: 256Mi
@@ -172,7 +172,7 @@ loaders:
       queues:
         - swh.loader.package.npm.tasks.LoadNpm
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     opam:
       requestedMemory: 256Mi
@@ -193,7 +193,7 @@ loaders:
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     pubdev:
       requestedMemory: 256Mi
@@ -202,7 +202,7 @@ loaders:
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.core
     svn:
       requestedMemory: 256Mi
@@ -212,7 +212,7 @@ loaders:
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
       sentrySwhPackage: swh.loader.svn
 
 listers:
