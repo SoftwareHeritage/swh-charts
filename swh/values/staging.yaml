@@ -245,7 +245,6 @@ listers:
       autoScaling:
         maxReplicaCount: 1
     gogs-full:
-      logLevel: DEBUG
       queues:
         - swh.lister.gogs.tasks.FullGogsRelister
       autoScaling:
