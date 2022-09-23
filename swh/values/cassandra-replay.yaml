@@ -31,24 +31,23 @@ storage_replayer:
       - cassandra05.internal.softwareheritage.org
       - cassandra06.internal.softwareheritage.org
   deployments:
-    # content:
-      # objects:
-      #   - content
-      # requestedCpu: 425m
-      # requestedMemory: 200Mi
-      # autoScaling:
-      #   maxReplicaCount: 0
-      #   minReplicaCount: 0
-    # directory:
-    #   objects:
-    #     - directory
-    #   batchSize: 250
-    #   requestedCpu: 350m
-    #   requestedMemory: 250Mi
-    #   autoScaling:
-    #     maxReplicaCount: 20
-    #   specific_options:
-    #     directory_entries_insert_algo: batch
+    content:
+      objects:
+        - content
+      requestedCpu: 425m
+      requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 5
+    directory:
+      objects:
+        - directory
+      batchSize: 250
+      requestedCpu: 350m
+      requestedMemory: 250Mi
+      autoScaling:
+        maxReplicaCount: 5
+      specific_options:
+        directory_entries_insert_algo: batch
     extid:
       objects:
         - extid
@@ -107,10 +106,14 @@ storage_replayer:
       objects:
         - origin_visit_status
       batchSize: 1000
-      requestedCpu: 500m
-      requestedMemory: 300Mi
+      # Full replay
+      #requestedCpu: 500m
+      #requestedMemory: 300Mi
+      #Follow up consumption
+      requestedCpu: 55m
+      requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 5
     release:
       objects:
         - release
@@ -150,4 +153,4 @@ storage_replayer:
       requestedCpu: 400m
       requestedMemory: 250Mi
       autoScaling:
-        maxReplicaCount: 10
+        maxReplicaCount: 64
