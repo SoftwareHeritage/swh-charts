@@ -47,7 +47,7 @@ data:
       cls: remote
       url: http://{{ $.Values.cookers.vault.host }}:{{ $.Values.cookers.vault.port }}/
     celery:
-      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
+      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.cookers.amqp.host }}:{{ $.Values.cookers.amqp.port }}/
       task_modules:
         - swh.vault.cooking_tasks
       task_queues:
