@@ -300,6 +300,28 @@ listers:
       autoScaling:
         maxReplicaCount: 1
 
+cookers:
+  enabled: true
+  storage:
+    host: storage1.internal.staging.swh.network
+    port: 5002
+  vault:
+    host: vault.internal.staging.swh.network
+    port: 5005
+  amqp:
+     host: scheduler0.internal.staging.swh.network
+  deployments:
+    simple:
+      queues:
+        - swh.vault.cooking_tasks.SWHCookingTask
+      autoScaling:
+        maxReplicaCount: 2
+    batch:
+      queues:
+        - swh.vault.cooking_tasks.SWHBatchCookingTask
+      autoScaling:
+        maxReplicaCount: 2
+
 graphql:
   enabled: true
   sentry_enabled: true

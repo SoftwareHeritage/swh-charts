@@ -1,0 +1,68 @@
+{{ if .Values.cookers.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cooker-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  pre-stop-idempotent.sh: |
+    #!/bin/bash
+
+    # pre-stop hook can be triggered multiple times but we want it to be applied only
+    # once so container can warm-shutdown properly.
+
+    # When celery receives multiple times the sigterm signal, this ends up doing an
+    # immediate shutdown which prevents long-standing tasks to finish properly.
+
+    set -ex
+
+    WITNESS_FILE=/tmp/already-stopped
+
+    # to support near-immediate concurrent calls
+    sleep $(echo | awk '{print rand()})
+
+    if [ ! -e $WITNESS_FILE ]; then
+      touch $WITNESS_FILE
+      kill 1
+    fi
+
+{{ range $cooker_type, $deployment_config := .Values.cookers.deployments }}
+{{ $cooker_name := ( print "cooker-" $cooker_type ) }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $cooker_name }}-template
+  namespace: {{ $.Values.namespace }}
+data:
+  config.yml.template: |
+    max_bundle_size: 1073741824
+    storage:
+      cls: retry
+      storage:
+        cls: remote
+        url: http://{{ $.Values.cookers.storage.host }}:{{ $.Values.cookers.storage.port }}/
+    vault:
+      cls: remote
+      url: http://{{ $.Values.cookers.vault.host }}:{{ $.Values.cookers.vault.port }}/
+    celery:
+      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
+      task_queues:
+    {{- range $queue := get $deployment_config "queues" }}
+      - {{ $queue }}
+    {{- end }}
+  init-container-entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    CONFIG_FILE=/etc/swh/config.yml
+
+    # substitute environment variables when creating the default config.yml
+    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
+      > $CONFIG_FILE
+
+    exit 0
+{{ end }}
+{{- end -}}

@@ -1,6 +1,8 @@
 # This file references the last version of all the softwareheritage images
 # It's used to manage the automatic update of the environments
 
+swh_cookers_image: softwareheritage/vault_cookers
+swh_cookers_image_version: "20220926.1"
 swh_storage_replayer_image: softwareheritage/storage-replayer
 swh_storage_replayer_image_version: "20220819.1"
 swh_graphql_image: softwareheritage/graphql
