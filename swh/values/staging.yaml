@@ -244,6 +244,11 @@ listers:
       - swh.lister.pypi.tasks.PyPIListerTask
       autoScaling:
         maxReplicaCount: 2
+    bower:
+      queues:
+      - swh.lister.bower.tasks.BowerListerTask
+      autoScaling:
+        maxReplicaCount: 1
     bitbucket:
       queues:
       - swh.lister.bitbucket.tasks.IncrementalBitBucketLister
