@@ -322,6 +322,18 @@ cookers:
       autoScaling:
         maxReplicaCount: 2
 
+checker_deposit:
+  enabled: true
+  storage:
+    host: storage1.internal.staging.swh.network
+    port: 5002
+  deposit:
+    host: deposit-rp.internal.staging.swh.network
+  amqp:
+    host: scheduler0.internal.staging.swh.network
+  autoScaling:
+    maxReplicaCount: 2
+
 graphql:
   enabled: true
   sentry_enabled: true

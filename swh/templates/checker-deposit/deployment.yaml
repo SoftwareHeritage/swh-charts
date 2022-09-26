@@ -1,0 +1,144 @@
+{{- $deployment_config := .Values.checker_deposit -}}
+{{ if $deployment_config.enabled -}}
+{{- $configurationChecksum := include (print $.Template.BasePath "/checker-deposit/configmap.yaml") . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checker-deposit
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: checker-deposit
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: checker-deposit
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: checker-deposit
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if $.Values.checker_deposit.affinity }}
+      affinity:
+        {{ toYaml $.Values.checker_deposit.affinity | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          env:
+          - name: AMQP_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-amqp-username
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          - name: AMQP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: rabbitmq-amqp-password
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          command:
+            - /entrypoint.sh
+          volumeMounts:
+          - name: configuration-template
+            mountPath: /entrypoint.sh
+            subPath: "init-container-entrypoint.sh"
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+      - name: checker-deposit
+        resources:
+          requests:
+            memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+            cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          limits:
+            memory: "4000Mi"
+            cpu: "1200m"
+        image: {{ $.Values.swh_checker_deposit_image }}:{{ $.Values.swh_checker_deposit_image_version }}
+        imagePullPolicy: Always
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - /opt/swh/entrypoint.sh
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/pre-stop.sh"]
+        env:
+        - name: STATSD_HOST
+          value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+        - name: STATSD_PORT
+          value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: MAX_TASKS_PER_CHILD
+          value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
+        - name: LOGLEVEL
+          value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
+        - name: SWH_CONFIG_FILENAME
+          value: /etc/swh/config.yml
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ $.Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: swh.vault
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: checker-deposit-sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: false
+        - name: DEPOSIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: deposit-username
+              # 'name' secret must exist & include key "host"
+              optional: false
+        - name: DEPOSIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: deposit-username
+              # 'name' secret must exist & include key "host"
+              optional: false
+        volumeMounts:
+          - name: checker-deposit-utils
+            mountPath: /pre-stop.sh
+            subPath: "pre-stop.sh"
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: checker-deposit-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+          - key: "init-container-entrypoint.sh"
+            path: "init-container-entrypoint.sh"
+      - name: checker-deposit-utils
+        configMap:
+          name: checker-deposit-utils
+          defaultMode: 0777
+          items:
+          - key: "pre-stop-idempotent.sh"
+            path: "pre-stop.sh"
+{{ end }}

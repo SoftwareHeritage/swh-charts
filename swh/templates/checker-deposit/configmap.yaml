@@ -1,0 +1,66 @@
+{{ if .Values.checker_deposit.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checker-deposit-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  pre-stop-idempotent.sh: |
+    #!/bin/bash
+
+    # pre-stop hook can be triggered multiple times but we want it to be applied only
+    # once so container can warm-shutdown properly.
+
+    # When celery receives multiple times the sigterm signal, this ends up doing an
+    # immediate shutdown which prevents long-standing tasks to finish properly.
+
+    set -ex
+
+    WITNESS_FILE=/tmp/already-stopped
+
+    # to support near-immediate concurrent calls
+    sleep $(echo | awk '{print rand()})
+
+    if [ ! -e $WITNESS_FILE ]; then
+      touch $WITNESS_FILE
+      kill 1
+    fi
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: checker-deposit-template
+  namespace: {{ $.Values.namespace }}
+data:
+  config.yml.template: |
+    extraction_dir: "/tmp/swh.checker.deposit/"
+    storage:
+      cls: remote
+      url: http://{{ .Values.checker_deposit.storage.host }}:{{ .Values.checker_deposit.storage.port }}/
+    celery:
+      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ .Values.checker_deposit.amqp.host }}:{{ .Values.checker_deposit.amqp.port }}/
+      task_acks_late: true
+      task_modules:
+      - swh.deposit.loader.tasks
+      task_queues:
+      - swh.deposit.loader.tasks.ChecksDepositTsk
+    deposit:
+      url: https://{{ .Values.checker_deposit.host }}/1/private/
+      auth:
+        username: ${DEPOSIT_USERNAME}
+        password: ${DEPOSIT_PASSWORD}
+  init-container-entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    CONFIG_FILE=/etc/swh/config.yml
+
+    # substitute environment variables when creating the default config.yml
+    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
+      > $CONFIG_FILE
+
+    exit 0
+{{ end }}
