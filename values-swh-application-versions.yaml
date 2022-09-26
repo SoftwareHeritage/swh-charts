@@ -3,8 +3,6 @@
 
 swh_cookers_image: softwareheritage/vault_cookers
 swh_cookers_image_version: "20220926.2"
-swh_storage_replayer_image: softwareheritage/storage-replayer
-swh_storage_replayer_image_version: "20220819.1"
 swh_graphql_image: softwareheritage/graphql
 swh_graphql_image_version: "20220913.2"
 swh_listers_image: softwareheritage/lister
@@ -25,3 +23,5 @@ swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20220921.1"
 swh_loader_svn_image: softwareheritage/loader_svn
 swh_loader_svn_image_version: "20220919.1"
+swh_storage_replayer_image: softwareheritage/storage-replayer
+swh_storage_replayer_image_version: "20220819.1"
