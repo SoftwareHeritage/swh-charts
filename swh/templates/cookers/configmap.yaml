@@ -48,6 +48,8 @@ data:
       url: http://{{ $.Values.cookers.vault.host }}:{{ $.Values.cookers.vault.port }}/
     celery:
       task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
+      task_modules:
+        - swh.vault.cooking_tasks
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
