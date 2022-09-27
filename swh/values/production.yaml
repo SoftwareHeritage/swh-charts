@@ -1,6 +1,12 @@
 sentry:
   environment: production
 
+graphql:
+  enabled: true
+  ingress:
+    host: archive.softwareheritage.org
+    httpPath: /graphql
+
 loaders:
   enabled: true
   storage:
