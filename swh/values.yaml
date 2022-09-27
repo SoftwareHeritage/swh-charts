@@ -60,6 +60,11 @@ loaders:
     #     maxReplicaCount: 3
     #   sentrySwhPackage: swh.loader.git
 
+cookers:
+  enabled: false
+
+checker_deposit:
+  enabled: false
 
 statsd_exporter:
   enabled: false
