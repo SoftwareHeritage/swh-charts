@@ -3,6 +3,13 @@ sentry:
 
 graphql:
   enabled: true
+  backends:
+    storage:
+      host: moma.internal.softwareheritage.org
+      port: 5002
+    search:
+      host: moma.internal.softwareheritage.org
+      port: 5010
   ingress:
     host: archive.softwareheritage.org
     httpPath: /graphql
