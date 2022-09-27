@@ -49,6 +49,20 @@ spec:
                 key: rabbitmq-amqp-password
                 # 'name' secret must exist & include that ^ key
                 optional: false
+          - name: DEPOSIT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: deposit-username
+                # 'name' secret must exist & include key "host"
+                optional: false
+          - name: DEPOSIT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: deposit-password
+                # 'name' secret must exist & include key "host"
+                optional: false
           command:
             - /entrypoint.sh
           volumeMounts:
@@ -100,20 +114,6 @@ spec:
             secretKeyRef:
               name: common-secrets
               key: checker-deposit-sentry-dsn
-              # 'name' secret must exist & include key "host"
-              optional: false
-        - name: DEPOSIT_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: common-secrets
-              key: deposit-username
-              # 'name' secret must exist & include key "host"
-              optional: false
-        - name: DEPOSIT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: common-secrets
-              key: deposit-username
               # 'name' secret must exist & include key "host"
               optional: false
         volumeMounts:
