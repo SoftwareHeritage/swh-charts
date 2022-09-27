@@ -66,6 +66,9 @@ cookers:
 checker_deposit:
   enabled: false
 
+indexers:
+  enabled: false
+
 statsd_exporter:
   enabled: false
   image: prom/statsd-exporter

@@ -1,0 +1,34 @@
+{{ if .Values.indexers.enabled -}}
+{{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
+{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
+{{ if $autoscalingConfig }}
+{{- $journalUser := $.Values.indexers.journalBrokers.user -}}
+{{- $consumerGroup := get $deployment_config "consumerGroup" -}}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: indexer-{{ $indexer_type }}-scaledobject
+  namespace: {{ $.Values.namespace }}
+spec:
+  scaleTargetRef:
+    name: indexer-{{ $indexer_type }}
+  pollingInterval: {{ get $autoscalingConfig "poolInterval" | default 120 }}
+  minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
+  maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: {{ first $.Values.indexers.journalBrokers.hosts }}
+      {{ if $journalUser }}
+      consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
+      {{ else }}
+      consumerGroup: {{ $consumerGroup }}
+      {{ end }}
+      lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
+      offsetResetPolicy: earliest
+    authenticationRef:
+      name: keda-storage-replayer-trigger-authentication
+{{ end }}
+{{ end }}
+{{- end -}}

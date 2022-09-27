@@ -30,6 +30,17 @@ cookers:
             values:
             - "true"
 
+indexers:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/indexer"
+            operator: In
+            values:
+            - "true"
+
 loaders:
   affinity:
     nodeAffinity:
