@@ -11,6 +11,7 @@ graphql:
       host: moma.internal.softwareheritage.org
       port: 5010
   ingress:
+    enabled: true
     host: archive.softwareheritage.org
     httpPath: /graphql
   gunicorn:
