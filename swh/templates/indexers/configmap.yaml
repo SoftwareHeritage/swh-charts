@@ -45,6 +45,9 @@ data:
       - cls: retry
       - cls: remote
         url: http://{{ $.Values.indexers.storage.host }}:{{ $.Values.indexers.storage.port }}/
+    scheduler:
+      cls: remote
+      url: http://{{ $.Values.indexers.scheduler.host }}:{{ $.Values.indexers.scheduler.port }}/
     indexer_storage:
       cls: remote
       url: http://{{ $.Values.indexers.indexer_storage.host }}:{{ $.Values.indexers.indexer_storage.port }}/
