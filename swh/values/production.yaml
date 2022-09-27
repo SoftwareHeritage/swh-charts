@@ -6,6 +6,10 @@ graphql:
   ingress:
     host: archive.softwareheritage.org
     httpPath: /graphql
+  gunicorn:
+    threads: 4
+    workers: 2
+    timeout: 3600
 
 loaders:
   enabled: true
