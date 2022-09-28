@@ -90,7 +90,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
     golang:
       image: swh_loader_package_image
