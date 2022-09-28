@@ -106,6 +106,7 @@ loaders:
       requestedCpu: 200m
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
         - save_code_now:swh.loader.git.tasks.UpdateGitRepository
         - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
         - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
