@@ -367,21 +367,20 @@ indexers:
         write_batch_size: 1000
       autoScaling:
         maxReplicaCount: 2
-    # FIXME: Dependency on nomossa need to be figured out prior to deploying it
-    # content-fossology-license:
-    #   indexer_type: content_fossology_license
-    #   consumerGroup: swh.indexer.journal_client.content_fossology_license
-    #   prefix: swh.journal.objects
-    #   extraConfig:
-    #     workdir: /tmp/swh/indexer.fossology.license/
-    #     tools:
-    #       name: 'nomos'
-    #       version: '3.1-1~bpo9~swh+1'
-    #       configuration:
-    #         command_line: "nomossa <filepath>"
-    #     write_batch_size: 1000
-    #   autoScaling:
-    #     maxReplicaCount: 2
+    content-fossology-license:
+      indexer_type: content_fossology_license
+      consumerGroup: swh.indexer.journal_client.content_fossology_license
+      prefix: swh.journal.objects
+      extraConfig:
+        workdir: /tmp/swh/indexer.fossology.license/
+        tools:
+          name: 'nomos'
+          version: '3.1-1~bpo9~swh+1'
+          configuration:
+            command_line: "nomossa <filepath>"
+        write_batch_size: 1000
+      autoScaling:
+        maxReplicaCount: 2
     origin-extrinsic:
       indexer_type: extrinsic_metadata
       consumerGroup: swh.indexer.journal_client.extrinsic_metadata
