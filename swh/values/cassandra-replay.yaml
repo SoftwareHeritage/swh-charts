@@ -37,7 +37,7 @@ storage_replayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 10
     directory:
       objects:
         - directory
@@ -131,10 +131,10 @@ storage_replayer:
         - revision
       batchSize: 1000
       privileged: true
-      requestedCpu: 1000m
-      requestedMemory: 300Mi
+      requestedCpu: 750m
+      requestedMemory: 750Mi
       autoScaling:
-        maxReplicaCount: 10
+        maxReplicaCount: 64
     skipped-content:
       objects:
         - skipped_content
@@ -150,7 +150,10 @@ storage_replayer:
       objects:
         - snapshot
       batchSize: 250
-      requestedCpu: 400m
+      # Full replay
+      # requestedCpu: 400m
       requestedMemory: 250Mi
+      # follow up consumption
+      requestedCpu: 80m
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 5
