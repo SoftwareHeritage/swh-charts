@@ -134,7 +134,7 @@ storage_replayer:
       requestedCpu: 750m
       requestedMemory: 750Mi
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 10
     skipped-content:
       objects:
         - skipped_content
