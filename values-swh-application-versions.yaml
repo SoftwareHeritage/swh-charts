@@ -6,7 +6,7 @@ swh_checker_deposit_image_version: "20220927.2"
 swh_cookers_image: softwareheritage/vault_cookers
 swh_cookers_image_version: "20220926.2"
 swh_graphql_image: softwareheritage/graphql
-swh_graphql_image_version: "20221006.1"
+swh_graphql_image_version: "20221006.2"
 swh_indexer_image: softwareheritage/indexer
 swh_indexer_image_version: "20220928.1"
 swh_listers_image: softwareheritage/lister
