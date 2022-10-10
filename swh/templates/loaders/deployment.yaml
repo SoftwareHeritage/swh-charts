@@ -12,6 +12,7 @@
 {{- $image_version_key := ( print $image_name_key "_version" ) -}}
 {{- $container_image := get $.Values $image_name_key }}
 {{- $container_image_version := get $.Values $image_version_key }}
+{{- $loader_affinity := get $deployment_config "affinity" | default $.Values.loaders.affinity }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,9 +38,9 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
-      {{- if $.Values.loaders.affinity }}
+      {{- if $loader_affinity }}
       affinity:
-        {{ toYaml $.Values.loaders.affinity | nindent 8 }}
+        {{- toYaml $loader_affinity | nindent 8 }}
       {{- end }}
       terminationGracePeriodSeconds: 3600
       initContainers:
