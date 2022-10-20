@@ -382,17 +382,17 @@ indexers:
         write_batch_size: 1000
       autoScaling:
         maxReplicaCount: 2
-    # origin-extrinsic:
-    #   indexer_type: extrinsic_metadata
-    #   consumerGroup: swh.indexer.journal_client.extrinsic_metadata
-    #   prefix: swh.journal.objects
-    #   extraConfig:
-    #     tools:
-    #       name: swh-metadata-detector
-    #       version: 0.0.2
-    #       configuration: {}
-    #   autoScaling:
-    #     maxReplicaCount: 2
+    origin-extrinsic:
+      indexer_type: extrinsic_metadata
+      consumerGroup: swh.indexer.journal_client.extrinsic_metadata
+      prefix: swh.journal.objects
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 2
     origin-intrinsic:
       indexer_type: origin_intrinsic_metadata
       consumerGroup: swh.indexer.journal_client.origin_intrinsic_metadata
