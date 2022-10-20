@@ -20,7 +20,7 @@ swh_loader_cvs_image_version: "20220926.1"
 swh_loader_git_image: softwareheritage/loader_git
 swh_loader_git_image_version: "20221020.1"
 swh_loader_highpriority_image: softwareheritage/loader_highpriority
-swh_loader_highpriority_image_version: "20220926.1"
+swh_loader_highpriority_image_version: "20221020.1"
 swh_loader_mercurial_image: softwareheritage/loader_mercurial
 swh_loader_mercurial_image_version: "20220926.1"
 swh_loader_package_image: softwareheritage/loader_package
