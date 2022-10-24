@@ -10,7 +10,7 @@ swh_graphql_image_version: "20221006.2"
 swh_indexer_image: softwareheritage/indexer
 swh_indexer_image_version: "20221020.1"
 swh_listers_image: softwareheritage/lister
-swh_listers_image_version: "20220921.1"
+swh_listers_image_version: "20221024.1"
 swh_loaders_image: softwareheritage/loaders
 swh_loaders_image_version: "20220826.1"
 swh_loader_bzr_image: softwareheritage/loader_bzr
