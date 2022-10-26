@@ -55,6 +55,24 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       sentrySwhPackage: swh.loader.cvs
+    content:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.core.tasks.LoadContent
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
+      sentrySwhPackage: swh.loader.core
+    directory:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.core.tasks.LoadDirectory
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
+      sentrySwhPackage: swh.loader.core
     debian:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -284,6 +302,16 @@ listers:
       - swh.lister.maven.tasks.IncrementalMavenLister
       autoScaling:
         maxReplicaCount: 1
+    nixguix:
+      queues:
+      - swh.lister.nixguix.tasks.NixGuixListerTask
+      autoScaling:
+        maxReplicaCount: 1
+      extraConfig:
+        # extra extensions to ignore
+        extensions_to_ignore:
+          - rock
+
     opam:
       queues:
       - swh.lister.opam.tasks.OpamListerTask

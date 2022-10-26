@@ -43,6 +43,13 @@ data:
     scheduler:
       cls: remote
       url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
+
+    {{- if $deployment_config.extraConfig -}}
+      {{- range $option, $value := $deployment_config.extraConfig }}
+    {{ $option }}: {{ toYaml $value | nindent 6 }}
+      {{- end }}
+    {{- end }}
+
     celery:
       task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
       task_acks_late: true
