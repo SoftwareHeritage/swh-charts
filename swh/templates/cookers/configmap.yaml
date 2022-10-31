@@ -19,8 +19,9 @@ data:
 
     WITNESS_FILE=/tmp/already-stopped
 
-    # to support near-immediate concurrent calls
-    sleep $(echo | awk '{print rand()})
+    # Seed awk with the number of nanoseconds since epoch
+    # and have it generate a number between 0 and 1
+    sleep $(date +%s%N | awk '{srand($1); print rand()}')
 
     if [ ! -e $WITNESS_FILE ]; then
       touch $WITNESS_FILE
