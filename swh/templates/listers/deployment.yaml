@@ -70,9 +70,6 @@ spec:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
             cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
-          limits:
-            memory: "4000Mi"
-            cpu: "1200m"
         image: {{ $.Values.swh_listers_image }}:{{ $.Values.swh_listers_image_version }}
         imagePullPolicy: Always
         command:
