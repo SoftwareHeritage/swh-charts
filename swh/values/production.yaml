@@ -46,7 +46,7 @@ loaders:
         - oneshot2:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 2
+        maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
       affinity:
         nodeAffinity:
