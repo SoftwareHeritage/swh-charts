@@ -35,7 +35,7 @@ loaders:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 5
+        maxReplicaCount: 4
       sentrySwhPackage: swh.loader.git
     large-repository:
       image: swh_loader_git_image
