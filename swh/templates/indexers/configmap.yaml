@@ -25,7 +25,8 @@ data:
 
     if [ ! -e $WITNESS_FILE ]; then
       touch $WITNESS_FILE
-      kill 1
+      # journal clients expect a SIGINT, not a SIGTERM
+      kill -INT 1
     fi
 
 {{ range $indexer_type, $deployment_config := .Values.indexers.deployments }}
