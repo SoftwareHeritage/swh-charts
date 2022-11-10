@@ -338,7 +338,6 @@ checker_deposit:
 
 indexers:
   enabled: true
-  sentrySwhPackage: swh.indexer
   storage:
     host: storage1.internal.staging.swh.network
     port: 5002

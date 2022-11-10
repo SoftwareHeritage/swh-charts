@@ -84,7 +84,7 @@ spec:
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
-          value: {{ get $deployment_config "sentrySwhPackage" }}
+          value: {{ pluck "sentrySwhPackage" $deployment_config $.Values.indexers | first }}
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
