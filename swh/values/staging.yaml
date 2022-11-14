@@ -394,18 +394,18 @@ indexers:
           configuration: {}
       autoScaling:
         maxReplicaCount: 2
-    # origin-intrinsic:
-    #   indexer_type: origin_intrinsic_metadata
-    #   consumerGroup: swh.indexer.journal_client.origin_intrinsic_metadata
-    #   prefix: swh.journal.objects
-    #   batch_size: 200
-    #   extraConfig:
-    #     tools:
-    #       name: swh-metadata-detector
-    #       version: 0.0.2
-    #       configuration: {}
-    #   autoScaling:
-    #     maxReplicaCount: 2
+    origin-intrinsic:
+      indexer_type: origin_intrinsic_metadata
+      consumerGroup: swh.indexer.journal_client.origin_intrinsic_metadata
+      prefix: swh.journal.objects
+      batch_size: 200
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 2
 
 graphql:
   enabled: true
