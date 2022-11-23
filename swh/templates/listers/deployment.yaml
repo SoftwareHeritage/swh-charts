@@ -111,7 +111,7 @@ spec:
             mountPath: /etc/swh
       volumes:
       - name: configuration
-        emptyDir: {}
+{{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
       - name: configuration-template
         configMap:
           name: {{ $lister_name }}-template

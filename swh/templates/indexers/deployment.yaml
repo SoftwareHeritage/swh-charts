@@ -102,7 +102,7 @@ spec:
             mountPath: /tmp
       volumes:
       - name: localstorage
-        emptyDir: {}
+{{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
       - name: configuration
         emptyDir: {}
       - name: configuration-template

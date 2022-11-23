@@ -8,6 +8,28 @@ namespace: swh
 #graphql:
 #  enabled: false
 
+# Allow to specify a specific configuration for pod's /tmp
+# directory. Mostly used to configure the loaders to work
+# on specific tmpfs on the nodes.
+# It can be necessary when using a memory emptyDir is not sufficient
+tmpEphemeralStorage:
+  claimTemplate: {}
+    # ephemeral:
+    #   volumeClaimTemplate:
+    #     metadata:
+    #       labels:
+    #         type: ephemeral-volume
+    #     spec:
+    #       accessModes: [ "ReadWriteOnce" ]
+    #       storageClassName: "local-path"
+    #       resources:
+    #         requests:
+    #           storage: 100Gi # no effects
+  # workaround because helm merges the map values when overridden
+  # It shouldn't have to be modified
+  default:
+    emptyDir: {}
+
 storage_replayer:
   enabled: false
   storageClass: cassandra # only cassandra is currently supported
@@ -73,4 +95,3 @@ statsd_exporter:
   enabled: false
   image: prom/statsd-exporter
   imageVersion: "v0.22.7"
-
