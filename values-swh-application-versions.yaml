@@ -25,7 +25,7 @@ swh_loader_mercurial_image: softwareheritage/loader_mercurial
 swh_loader_mercurial_image_version: "20220926.1"
 swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20221026.1"
-swh_loader_svn_image: softwareheritage/loader_svn
-swh_loader_svn_image_version: "20221031.1"
+swh_loader_svn_image: container-registry.softwareheritage.org/infra/swh-apps/loader_svn
+swh_loader_svn_image_version: "20221122.1"
 swh_storage_replayer_image: softwareheritage/storage-replayer
 swh_storage_replayer_image_version: "20220927.1"
