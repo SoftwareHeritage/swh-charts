@@ -1,7 +1,7 @@
 sentry:
   environment: staging
 
-ephemeralStorage:
+tmpEphemeralStorage:
   claimTemplate:
     ephemeral:
       volumeClaimTemplate:
