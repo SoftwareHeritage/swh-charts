@@ -1,20 +1,6 @@
 sentry:
   environment: staging
 
-tmpEphemeralStorage:
-  claimTemplate:
-    ephemeral:
-      volumeClaimTemplate:
-        metadata:
-          labels:
-            type: ephemeral-volume
-        spec:
-          accessModes: [ "ReadWriteOnce" ]
-          storageClassName: "local-path"
-          resources:
-            requests:
-              storage: 100Gi # no effects
-
 loaders:
   enabled: true
   storage:
