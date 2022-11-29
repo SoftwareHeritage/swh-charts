@@ -351,7 +351,7 @@ checker_deposit:
     maxReplicaCount: 2
 
 indexers:
-  enabled: false
+  enabled: true
   storage:
     host: storage1.internal.staging.swh.network
     port: 5002
