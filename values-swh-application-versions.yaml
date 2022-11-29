@@ -8,7 +8,7 @@ swh_cookers_image_version: "20221107.1"
 swh_graphql_image: softwareheritage/graphql
 swh_graphql_image_version: "20221006.2"
 swh_indexer_image: container-registry.softwareheritage.org/infra/swh-apps/indexer
-swh_indexer_image_version: "20221110.1"
+swh_indexer_image_version: "20221129.1"
 swh_listers_image: softwareheritage/lister
 swh_listers_image_version: "20221026.2"
 swh_loaders_image: softwareheritage/loaders
