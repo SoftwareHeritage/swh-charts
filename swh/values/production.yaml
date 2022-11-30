@@ -48,6 +48,8 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 3
       sentrySwhPackage: swh.loader.git
+      extraConfig:
+        temp_file_cutoff: 10737418240
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
