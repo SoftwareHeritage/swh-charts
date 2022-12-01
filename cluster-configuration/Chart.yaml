@@ -1,0 +1,4 @@
+apiVersion: v2
+name: Argocd applications commonly used in to configure a SWH cluster
+version: 0.1.0
+description: Declare all the Argocd applications commonly deployed on the SWH kubernetes clusters

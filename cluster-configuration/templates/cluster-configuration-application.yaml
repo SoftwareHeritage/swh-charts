@@ -1,0 +1,22 @@
+# Declare the argocd application to apply raw yamls on the cluster
+# Yamls are stored on the k8s-cluster-config repository in the `clusterName` directory
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.clusterName }}-configuration-application
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  project: {{ .Values.defaultProject }}
+  source:
+    repoURL: https://gitlab.softwareheritage.org/infra/ci-cd/k8s-clusters-conf.git
+    targetRevision: master
+    path: {{ .Values.clusterName }}
+    directory:
+      recurse: true
+  destination:
+    server: {{ .Values.clusterUrl }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+      allowEmpty: false

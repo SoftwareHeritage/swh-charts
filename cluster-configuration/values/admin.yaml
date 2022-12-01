@@ -1,0 +1,5 @@
+clusterName: admin
+clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-q2wd4
+
+metallb:
+  enabled: true

@@ -1,0 +1,32 @@
+{{ if .Values.metallb.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.clusterName }}-metallb-application
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: metallb
+    repoURL: https://metallb.github.io/metallb
+    targetRevision: {{ .Values.metallb.version }}
+    helm:
+      releaseName: metallb
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.metallb.namespace }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+      allowEmpty: false
+    syncOptions:
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  # The ca bundle is updated by the controller during the runtime
+  - group: 'apiextensions.k8s.io'
+    kind: 'CustomResourceDefinition'
+    jsonPointers:
+    - /spec/conversion/webhook/clientConfig/caBundle
+{{ end }}

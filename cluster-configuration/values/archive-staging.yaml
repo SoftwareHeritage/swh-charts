@@ -1,0 +1,5 @@
+clusterName: archive-staging
+clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-cx2bq
+
+metallb:
+  enabled: true

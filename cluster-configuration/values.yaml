@@ -1,0 +1,17 @@
+
+# Cluster url as declared in argocd
+clusterUrl: https://cluster/url
+# Common mame of the the cluster
+clusterName: changeme
+
+argocdNamespace: argocd
+defaultProject: default
+
+defaultPrune: false
+defaultSelfHeal: false
+
+metallb:
+  enabled: false
+  namespace: metallb
+  version: 0.13.7
+
