@@ -3,3 +3,11 @@ clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clust
 
 metallb:
   enabled: true
+
+ingressNginx:
+  enabled: true
+  defaultClass: true
+  annotations:
+    # To be able to share the same ip for several services
+    # https://metallb.org/usage/#ip-address-sharing
+    metallb.universe.tf/allow-shared-ip: internalIP

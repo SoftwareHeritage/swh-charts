@@ -1,0 +1,42 @@
+{{ if .Values.ingressNginx.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.clusterName }}-ingress-nginx-application
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: ingress-nginx
+    repoURL: https://kubernetes.github.io/ingress-nginx
+    targetRevision: {{ .Values.ingressNginx.version }}
+    helm:
+      releaseName: ingress-nginx
+      values: |
+        controller:
+          watchIngressWithoutClass: {{ .Values.ingressNginx.watchIngressWithoutClass | default "false" }}
+          service:
+            externalTrafficPolicy: Local
+            {{- if .Values.ingressNginx.loadBalancerIP }}
+            loadBalancerIP: {{ .Values.ingressNginx.loadBalancerIP}}
+            {{- end }}
+            {{- if .Values.ingressNginx.annotations }}
+            annotations:
+{{ .Values.ingressNginx.annotations | toYaml | indent 14 }}
+            {{- end }}
+          ingressClassResource:
+            name: {{ .Values.ingressNginx.ingressClassName | default "nginx" | quote }}
+            default: {{ .Values.ingressNginx.defaultClass }}
+            {{- if .Values.ingressNginx.controllerName }}
+            controllerValue: {{ .Values.ingressNginx.controllerName | quote }}
+            {{- end }}
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.ingressNginx.namespace }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+{{ end }}

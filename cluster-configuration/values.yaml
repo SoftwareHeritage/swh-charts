@@ -1,4 +1,3 @@
-
 # Cluster url as declared in argocd
 clusterUrl: https://cluster/url
 # Common mame of the the cluster
@@ -15,3 +14,16 @@ metallb:
   namespace: metallb
   version: 0.13.7
 
+ingressNginx:
+  enabled: false
+  version: 4.4.0
+  namespace: ingress-nginx
+  defaultClass: false
+  watchIngressWithoutClass: false
+  # ingressClassName: nginx
+  # avoid to overlap with other deployed ingress-nginx ingress controllers
+  # for example, gitlab deploys another ingress-nginx with this default name
+  # controllerName: "k8s.io/ingress-nginx"
+  # loadBalanceIP: xxx.xxx.xxx.xxx
+  # annotations:
+  #   annotation1: value

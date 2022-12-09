@@ -1,2 +1,13 @@
 clusterName: gitlab-staging
 clusterUrl: https://192.168.200.13
+
+ingressNginx:
+  # Needed to internally expose thanos
+  enabled: true
+  defaultClass: false
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    # for kubernetes 1.24+ on azure
+    service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
+  loadBalancerIP: 10.224.0.100
+  controllerName: "k8s.io/internal-ingress-nginx"
