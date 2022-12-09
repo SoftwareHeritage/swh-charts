@@ -1,0 +1,61 @@
+suite: test cluster configuration application
+templates:
+  - templates/cluster-configuration-application.yaml
+  - templates/cluster-secrets-application.yaml
+tests:
+  - it: default values
+    values:
+      - ../values.yaml
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: changeme-(configuration\-application|secrets)$
+      - equal:
+          path: metadata.namespace
+          value: argocd
+      - equal:
+          path: spec.project
+          value: default
+      - equal:
+          path: spec.source.path
+          value: changeme
+      - equal:
+          path: spec.destination.server
+          value: https://cluster/url
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: false
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: false
+
+  - it: updated values
+    set:
+      clusterUrl: https://other/url
+      clusterName: other-name
+      argocdNamespace: other-namespace
+      defaultProject: other-project
+      defaultPrune: true
+      defaultSelfHeal: true
+    asserts:
+      - matchRegex:
+          path: metadata.name
+          pattern: other-name-(configuration\-application|secrets)$
+      - equal:
+          path: metadata.namespace
+          value: other-namespace
+      - equal:
+          path: spec.project
+          value: other-project
+      - equal:
+          path: spec.source.path
+          value: other-name
+      - equal:
+          path: spec.destination.server
+          value: https://other/url
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true

@@ -1,0 +1,84 @@
+suite: test cluster metallb application
+templates:
+  - templates/metallb/metallb-application.yaml
+tests:
+  - it: Metallb is not activated by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
+
+  - it: Metallb default values
+    values:
+      - ../values.yaml
+    set:
+      metallb:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: changeme-metallb-application
+      - equal:
+          path: metadata.namespace
+          value: argocd
+      - equal:
+          path: spec.project
+          value: default
+      - equal:
+          path: spec.source.targetRevision
+          value: 0.13.7
+      - equal:
+          path: spec.destination.server
+          value: https://cluster/url
+      - equal:
+          path: spec.destination.namespace
+          value: metallb
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: false
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: false
+
+
+  - it: Metallb overriden values
+    values:
+      - ../values.yaml
+      - ./values/default-overridden.yaml
+    set:
+      metallb:
+        enabled: true
+        version: 1.1.1
+        namespace: other-namespace
+        defaultPrune: true
+        defaultSelfHeal: true
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: other-name-metallb-application
+      - equal:
+          path: metadata.namespace
+          value: other-namespace
+      - equal:
+          path: spec.project
+          value: other-project
+      - equal:
+          path: spec.source.targetRevision
+          value: 1.1.1
+      - equal:
+          path: spec.destination.server
+          value: https://other/url
+      - equal:
+          path: spec.destination.namespace
+          value: other-namespace
+      - equal:
+          path: spec.syncPolicy.automated.prune
+          value: true
+      - equal:
+          path: spec.syncPolicy.automated.selfHeal
+          value: true

@@ -1,0 +1,11 @@
+clusterUrl: https://other/url
+clusterName: other-name
+argocdNamespace: other-namespace
+defaultProject: other-project
+defaultPrune: true
+defaultSelfHeal: true
+
+metallb:
+  enabled: true
+  version: 1.1.1
+  namespace: other-namespace
