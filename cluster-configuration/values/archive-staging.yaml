@@ -11,3 +11,8 @@ ingressNginx:
     # To be able to share the same ip for several services
     # https://metallb.org/usage/#ip-address-sharing
     metallb.universe.tf/allow-shared-ip: clusterIP
+
+certManager:
+  enabled: true
+  webhookGandiEnabled: true
+  useGandiDNS: true

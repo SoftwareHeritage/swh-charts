@@ -10,3 +10,7 @@ ingressNginx:
     # for kubernetes 1.24+ on azure
     service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
   loadBalancerIP: 10.240.0.100
+
+certManager:
+  enabled: true
+  webhookGandiEnabled: true
