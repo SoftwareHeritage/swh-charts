@@ -9,6 +9,14 @@ defaultProject: default
 defaultPrune: false
 defaultSelfHeal: false
 
+certManager:
+  enabled: false
+  namespace: cert-manager
+  version: v1.10.0
+  webhookGandiEnabled: false
+  webhookGandiVersion: v0.2.0
+  useGandiDNS: false
+
 metallb:
   enabled: false
   namespace: metallb

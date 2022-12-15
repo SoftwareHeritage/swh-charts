@@ -1,0 +1,41 @@
+{{ if and .Values.certManager.enabled .Values.certManager.webhookGandiEnabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.clusterName }}-certmanager-webhook-gandi
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    repoURL: 'https://gitlab.softwareheritage.org/infra/ci-cd/3rdparty/cert-manager-webhook-gandi.git'
+    path: deploy/cert-manager-webhook-gandi
+    targetRevision: {{ .Values.certManager.webhookGandiVersion }}
+    helm:
+      parameters:
+        - name: "installCRDs"
+          value: "true"
+      values: |
+        image:
+          repository: container-registry.softwareheritage.org/infra/ci-cd/3rdparty/cert-manager-webhook-gandi
+          tag: v0.2.0
+          pullPolicy: IfNotPresent
+          features.apiPriorityAndFairness: true
+        certManager:
+          serviceAccountName: {{ .Values.clusterName }}.certmanager-cert-manager
+      releaseName: certmanager-webhook-gandi
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.certManager.namespace }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: cert-manager.io
+      kind: Certificate
+      jqPathExpressions:
+        - .spec.duration
+{{ end }}

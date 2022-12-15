@@ -1,0 +1,47 @@
+{{ if .Values.certManager.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.clusterName }}-certmanager
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: cert-manager
+    repoURL: https://charts.jetstack.io
+    targetRevision: {{ .Values.certManager.version }}
+    helm:
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ .Values.clusterName }}-certmanager
+      parameters:
+        - name: "installCRDs"
+          value: "true"
+      values: |
+          {{- if .Values.certManager.useGandiDNS }}
+          # this is necessary to not retrieve the SOA fields of internal zones
+          # when generating a certificate for a non-public domain, e.g. .internal.admin.swh.network
+          extraArgs:
+            - --dns01-recursive-nameservers=ns-246-a.gandi.net:53,ns-239-b.gandi.net:53,ns-228-c.gandi.net:53
+            - --dns01-recursive-nameservers-only
+          {{- end }}
+          prometheus:
+            enabled: true
+            servicemonitor:
+              enabled: true
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.certManager.namespace | default "cert-manager" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: {{ .Values.clusterName }}-certmanager-cert-manager-webhook
+      jqPathExpressions:
+        - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "control-plane")
+{{ end }}
