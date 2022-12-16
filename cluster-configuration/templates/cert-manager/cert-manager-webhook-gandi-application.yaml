@@ -22,7 +22,7 @@ spec:
           pullPolicy: IfNotPresent
           features.apiPriorityAndFairness: true
         certManager:
-          serviceAccountName: {{ .Values.clusterName }}.certmanager-cert-manager
+          serviceAccountName: {{ .Values.clusterName }}-certmanager-cert-manager
       releaseName: certmanager-webhook-gandi
   destination:
     server: {{ .Values.clusterUrl }}
