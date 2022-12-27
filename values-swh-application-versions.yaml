@@ -27,5 +27,5 @@ swh_loader_package_image: softwareheritage/loader_package
 swh_loader_package_image_version: "20221026.1"
 swh_loader_svn_image: container-registry.softwareheritage.org/infra/swh-apps/loader_svn
 swh_loader_svn_image_version: "20221214.1"
-swh_storage_replayer_image: softwareheritage/storage-replayer
-swh_storage_replayer_image_version: "20220927.1"
+swh_storage_replayer_image: container-registry.softwareheritage.org/infra/swh-apps/storage-replayer
+swh_storage_replayer_image_version: "20221227.1"
