@@ -1,6 +1,9 @@
 clusterName: archive-production
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-2mwgb
 
+clusterConfiguration:
+  selfHeal: true
+
 metallb:
   enabled: true
 

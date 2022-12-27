@@ -9,6 +9,10 @@ defaultProject: default
 defaultPrune: false
 defaultSelfHeal: false
 
+clusterConfiguration:
+  prune: false
+  selfHeal: false
+
 certManager:
   enabled: false
   namespace: cert-manager

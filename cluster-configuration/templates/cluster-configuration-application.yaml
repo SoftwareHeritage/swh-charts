@@ -17,6 +17,6 @@ spec:
     server: {{ .Values.clusterUrl }}
   syncPolicy:
     automated:
-      prune: {{ .Values.defaultPrune }}
-      selfHeal: {{ .Values.defaultSelfHeal }}
+      prune: {{ .Values.clusterConfiguration.prune | default .Values.defaultPrune }}
+      selfHeal: {{ .Values.clusterConfiguration.selfHeal | default .Values.defaultSelfHeal }}
       allowEmpty: false
