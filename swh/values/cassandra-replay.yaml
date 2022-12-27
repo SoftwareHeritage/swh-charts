@@ -37,17 +37,17 @@ storage_replayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 5
-    # directory:
-    #   objects:
-    #     - directory
-    #   batchSize: 250
-    #   requestedCpu: 350m
-    #   requestedMemory: 250Mi
-    #   autoScaling:
-    #     maxReplicaCount: 5
-    #   specific_options:
-    #     directory_entries_insert_algo: batch
+        maxReplicaCount: 32
+    directory:
+      objects:
+        - directory
+      batchSize: 250
+      requestedCpu: 350m
+      requestedMemory: 250Mi
+      autoScaling:
+        maxReplicaCount: 32
+      specific_options:
+        directory_entries_insert_algo: batch
     extid:
       objects:
         - extid
