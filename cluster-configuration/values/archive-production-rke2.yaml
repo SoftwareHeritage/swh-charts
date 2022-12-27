@@ -1,6 +1,9 @@
 clusterName: archive-production-rke2
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-75xcg59s
 
+clusterConfiguration:
+  selfHeal: true
+
 metallb:
   enabled: true
 
