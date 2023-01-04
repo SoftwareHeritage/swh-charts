@@ -37,7 +37,7 @@ storage_replayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 32
     directory:
       objects:
         - directory
@@ -45,7 +45,7 @@ storage_replayer:
       requestedCpu: 350m
       requestedMemory: 250Mi
       autoScaling:
-        maxReplicaCount: 48
+        maxReplicaCount: 1
       specific_options:
         directory_entries_insert_algo: batch
     extid:
