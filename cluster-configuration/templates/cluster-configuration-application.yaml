@@ -8,7 +8,7 @@ metadata:
 spec:
   project: {{ .Values.defaultProject }}
   source:
-    repoURL: https://gitlab.softwareheritage.org/infra/ci-cd/k8s-clusters-conf.git
+    repoURL: https://gitlab.softwareheritage.org/swh/infra/ci-cd/k8s-clusters-conf.git
     targetRevision: master
     path: {{ .Values.clusterName }}
     directory:
