@@ -46,7 +46,7 @@ loaders:
         - oneshot2:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 10
       sentrySwhPackage: swh.loader.git
       extraConfig:
         temp_file_cutoff: 10737418240
