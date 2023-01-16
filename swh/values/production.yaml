@@ -37,30 +37,30 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 4
       sentrySwhPackage: swh.loader.git
-    large-repository:
-      image: swh_loader_git_image
-      requestedMemory: 1024Mi
-      requestedCpu: 800m
-      queues:
-        - oneshot:swh.loader.git.tasks.UpdateGitRepository
-        - oneshot2:swh.loader.git.tasks.UpdateGitRepository
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 10
-      sentrySwhPackage: swh.loader.git
-      extraConfig:
-        temp_file_cutoff: 10737418240
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "swh/loader"
-                operator: In
-                values:
-                - "true"
-              - key: "swh/large-scratch-fs"
-                operator: In
-                values:
-                - "true"
+    # large-repository:
+    #   image: swh_loader_git_image
+    #   requestedMemory: 1024Mi
+    #   requestedCpu: 800m
+    #   queues:
+    #     - oneshot:swh.loader.git.tasks.UpdateGitRepository
+    #     - oneshot2:swh.loader.git.tasks.UpdateGitRepository
+    #   autoScaling:
+    #     queueThreshold: 1
+    #     maxReplicaCount: 10
+    #   sentrySwhPackage: swh.loader.git
+    #   extraConfig:
+    #     temp_file_cutoff: 10737418240
+    #   affinity:
+    #     nodeAffinity:
+    #       requiredDuringSchedulingIgnoredDuringExecution:
+    #         nodeSelectorTerms:
+    #         - matchExpressions:
+    #           - key: "swh/loader"
+    #             operator: In
+    #             values:
+    #             - "true"
+    #           - key: "swh/large-scratch-fs"
+    #             operator: In
+    #             values:
+    #             - "true"
 
