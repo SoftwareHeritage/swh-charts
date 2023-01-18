@@ -425,6 +425,6 @@ graphql:
   ingress:
     enabled: true
     httpPath: /
-    host: graphql.staging.swh.network
+    host: graphql.internal.staging.swh.network
   logLevel: DEBUG
 
