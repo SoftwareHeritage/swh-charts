@@ -236,6 +236,8 @@ listers:
       - swh.lister.pypi.tasks.PyPIListerTask
       autoScaling:
         maxReplicaCount: 2
+      requestedCpu: 500m
+      requestedMemory: 512Mi
     bower:
       queues:
       - swh.lister.bower.tasks.BowerListerTask
@@ -275,6 +277,8 @@ listers:
       - swh.lister.maven.tasks.IncrementalMavenLister
       autoScaling:
         maxReplicaCount: 1
+      requestedCpu: 1000m
+      requestedMemory: 1024Mi
     nixguix:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
@@ -284,7 +288,6 @@ listers:
         # extra extensions to ignore
         extensions_to_ignore:
           - rock
-
     opam:
       queues:
       - swh.lister.opam.tasks.OpamListerTask
