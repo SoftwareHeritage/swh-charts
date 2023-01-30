@@ -123,6 +123,8 @@ spec:
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
+        - name: SWH_LOG_CONFIG
+          value: /etc/swh/logging-configuration.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
@@ -142,6 +144,10 @@ spec:
             mountPath: /etc/swh
           - name: localstorage
             mountPath: /tmp
+          - name: configuration-template
+            mountPath: /etc/swh/logging-configuration.yml
+            subPath: "logging-configuration.yml"
+            readOnly: true
       volumes:
       - name: localstorage
 {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
@@ -156,6 +162,8 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+          - key: "logging-configuration.yml"
+            path: "logging-configuration.yml"
       - name: loader-utils
         configMap:
           name: loader-utils

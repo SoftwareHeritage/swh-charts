@@ -30,6 +30,7 @@ data:
 
 {{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
 {{ $loader_name := ( print "loader-" $loader_type ) }}
+{{ $log_level := get $deployment_config "logLevel" | default "INFO" | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -88,5 +89,39 @@ data:
       sed 's/^/  /g' $CREDS_LISTER_PATH >> $CONFIG_FILE
 
     exit 0
+  logging-configuration.yml: |
+    version: 1
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: json
+        stream: ext://sys.stdout
+
+    formatters:
+      json:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        # python-json-logger parses the format argument to get the variables it actually expands into the json
+        format: "%(asctime)s:%(threadName)s:%(pathname)s:%(lineno)s:%(funcName)s:%(task_name)s:%(task_id)s:%(name)s:%(levelname)s:%(message)s"
+
+    loggers:
+      celery:
+        level: {{ $log_level }}
+      amqp:
+        level: WARNING
+      urllib3:
+        level: WARNING
+      azure.core.pipeline.policies.http_logging_policy:
+        level: WARNING
+      swh:
+        level: {{ $log_level }}
+      celery.task:
+        level: {{ $log_level }}
+
+    root:
+      level: {{ $log_level }}
+      handlers:
+      - console
+
 {{ end }}
 {{- end -}}
