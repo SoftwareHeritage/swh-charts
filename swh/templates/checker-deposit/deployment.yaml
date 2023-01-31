@@ -83,7 +83,7 @@ spec:
           limits:
             memory: "4000Mi"
             cpu: "1200m"
-        image: {{ $.Values.swh_checker_deposit_image }}:{{ $.Values.swh_checker_deposit_image_version }}
+        image: {{ $.Values.swh_deposit_checkers_image }}:{{ $.Values.swh_deposit_checkers_image_version }}
         imagePullPolicy: Always
         command:
         - /bin/bash

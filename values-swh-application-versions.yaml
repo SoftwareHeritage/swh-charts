@@ -1,8 +1,8 @@
 # This file references the last version of all the softwareheritage images
 # It's used to manage the automatic update of the environments
 
-swh_checker_deposit_image: softwareheritage/deposit_checkers
-swh_checker_deposit_image_version: '20220927.2'
+swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
+swh_deposit_checkers_image_version: '20230131.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
 swh_vault_cookers_image_version: '20230131.1'
 swh_graphql_image: softwareheritage/graphql
