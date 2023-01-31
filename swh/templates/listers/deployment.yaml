@@ -70,7 +70,7 @@ spec:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "256Mi" }}
             cpu: {{ get $deployment_config "requestedCpu" | default "250m" }}
-        image: {{ $.Values.swh_listers_image }}:{{ $.Values.swh_listers_image_version }}
+        image: {{ $.Values.swh_lister_image }}:{{ $.Values.swh_lister_image_version }}
         imagePullPolicy: Always
         command:
         - /bin/bash
