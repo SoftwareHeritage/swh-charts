@@ -1,29 +1,26 @@
-# This file references the last version of all the softwareheritage images
-# It's used to manage the automatic update of the environments
-
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
 swh_deposit_checkers_image_version: '20230131.1'
-swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
-swh_vault_cookers_image_version: '20230131.1'
-swh_graphql_image: softwareheritage/graphql
-swh_graphql_image_version: '20221006.2'
+swh_graphql_image: container-registry.softwareheritage.org/swh/infra/graphql
+swh_graphql_image_version: '20230202.2'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
-swh_indexer_image_version: '20221130.1'
+swh_indexer_image_version: '20230202.3'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
 swh_lister_image_version: '20230131.1'
-swh_loader_bzr_image: softwareheritage/loader_bzr
-swh_loader_bzr_image_version: '20220926.1'
-swh_loader_cvs_image: softwareheritage/loader_cvs
-swh_loader_cvs_image_version: '20220926.1'
+swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/loader_bzr
+swh_loader_bzr_image_version: '20230203.1'
+swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/loader_cvs
+swh_loader_cvs_image_version: '20230202.1'
 swh_loader_git_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git
 swh_loader_git_image_version: '20230201.1'
 swh_loader_highpriority_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_highpriority
-swh_loader_highpriority_image_version: '20221214.1'
-swh_loader_mercurial_image: softwareheritage/loader_mercurial
-swh_loader_mercurial_image_version: '20220926.1'
-swh_loader_package_image: softwareheritage/loader_package
-swh_loader_package_image_version: '20221026.1'
+swh_loader_highpriority_image_version: '20230203.1'
+swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/loader_mercurial
+swh_loader_mercurial_image_version: '20230203.1'
+swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/loader_package
+swh_loader_package_image_version: '20230203.1'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
-swh_loader_svn_image_version: '20221214.1'
-swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage-replayer
-swh_storage_replayer_image_version: '20221227.1'
+swh_loader_svn_image_version: '20230203.1'
+swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
+swh_storage_replayer_image_version: '20230203.3'
+swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
+swh_vault_cookers_image_version: '20230131.1'
