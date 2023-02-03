@@ -11,8 +11,6 @@ swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/in
 swh_indexer_image_version: '20221130.1'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
 swh_lister_image_version: '20230131.1'
-swh_loaders_image: softwareheritage/loaders
-swh_loaders_image_version: '20220826.1'
 swh_loader_bzr_image: softwareheritage/loader_bzr
 swh_loader_bzr_image_version: '20220926.1'
 swh_loader_cvs_image: softwareheritage/loader_cvs
