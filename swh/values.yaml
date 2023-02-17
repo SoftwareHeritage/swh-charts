@@ -14,6 +14,8 @@ graphql:
   logLevel: INFO
   debug: no
   introspection: yes
+  # maxQueryCost for anonymous users
+  maxQueryCost: 500
   sentry:
     enabled: false
     # name of the secret containing the $secretKeyName value

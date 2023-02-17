@@ -13,7 +13,11 @@ data:
       cls: remote
       url: http://{{ get $backend_config "host" }}:{{ get $backend_config "port" }}
     {{- end }}
-    debug: yes
 
-    server-type: asgi
+    debug: {{ .Values.graphql.debug }}
+
+    introspection: {{ .Values.graphql.introspection }}
+
+    max_query_cost:
+      anonymous: {{ .Values.graphql.maxQueryCost}}
 {{ end }}

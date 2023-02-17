@@ -421,7 +421,9 @@ graphql:
     search:
       host: search0.internal.staging.swh.network
       port: 5010
-  replicas: 1
+  debug: yes
+  introspection: yes
+  replicas: 2
   gunicorn:
     threads: 4
     workers: 2
