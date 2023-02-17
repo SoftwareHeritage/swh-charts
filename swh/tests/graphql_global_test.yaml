@@ -1,0 +1,13 @@
+suite: test graphql deployment
+templates:
+  - graphql/deployment.yaml
+  - graphql/configmap.yaml
+  - graphql/ingress.yaml
+  - graphql/service.yaml
+tests:
+  - it: Graphql is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

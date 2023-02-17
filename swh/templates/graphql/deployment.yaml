@@ -9,7 +9,7 @@ metadata:
     app: graphql
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .Values.graphql.replicas }}
+  replicas: {{ .Values.graphql.replicas | default 1 }}
   selector:
     matchLabels:
       app: graphql
@@ -47,15 +47,17 @@ spec:
           env:
           - name: PORT
             value: "5013"
-          - name: THREADS
-            value: {{ .Values.graphql.gunicorn.threads | quote }}
-          - name: WORKERS
-            value: {{ .Values.graphql.gunicorn.workers | quote }}
           - name: LOG_LEVEL
             value: {{ .Values.graphql.logLevel | quote }}
+          {{ if .Values.graphql.gunicorn -}}
+          - name: THREADS
+            value: {{ .Values.graphql.gunicorn.threads | default 5 | quote }}
+          - name: WORKERS
+            value: {{ .Values.graphql.gunicorn.workers | default 2 | quote }}
           - name: TIMEOUT
-            value: {{ .Values.graphql.gunicorn.timeout | quote }}
-          {{ if .Values.graphql.sentry_enabled -}}
+            value: {{ .Values.graphql.gunicorn.timeout | default 60 | quote }}
+          {{ end -}}
+          {{ if .Values.graphql.sentry.enabled -}}
           - name: SWH_SENTRY_ENVIRONMENT
             value: {{ $.Values.sentry.environment }}
           - name: SWH_MAIN_PACKAGE
@@ -63,12 +65,12 @@ spec:
           - name: SWH_SENTRY_DSN
             valueFrom:
               secretKeyRef:
-                name: common-secrets
-                key: graphql-sentry-dsn
-                # 'name' secret should exist & include key "host"
+                name: {{ $.Values.graphql.sentry.secretKeyRef }}
+                key: {{ $.Values.graphql.sentry.secretKeyName }}
+                # 'name' secret should exist & include key
                 # if the setting doesn't exist, sentry pushes will be disabled
                 optional: true
-          {{ end }}
+          {{ end -}}
           volumeMounts:
             - name: config
               mountPath: /etc/swh/config.yml

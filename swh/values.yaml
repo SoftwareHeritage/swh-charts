@@ -1,12 +1,38 @@
 namespace: swh
 
+sentry:
+  environment: production
+
 # Example of services activation
 # Only implemented for storage_replayer for now
 #storage:
 #  enabled: false
 #
-#graphql:
-#  enabled: false
+
+graphql:
+  enabled: false
+  logLevel: INFO
+  debug: no
+  introspection: yes
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: graphql-sentry-dsn
+#  ingress:
+#    enabled: false
+#    httpPath: /graphql
+#    host: my_host # Optional
+#  backends:
+#    storage:
+#      host: http://my-storage
+#      port: 5002
+#    search:
+#      host: http://my-search
+#      port: 5010
+
 
 # Allow to specify a specific configuration for pod's /tmp
 # directory. Mostly used to configure the loaders to work
@@ -89,6 +115,9 @@ checker_deposit:
   enabled: false
 
 indexers:
+  enabled: false
+
+listers:
   enabled: false
 
 statsd_exporter:

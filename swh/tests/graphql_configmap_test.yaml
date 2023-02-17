@@ -1,0 +1,28 @@
+suite: test graphql deployment
+templates:
+  - graphql/configmap.yaml
+tests:
+  - it: Graphql configmap is deployed when activated
+    set:
+      graphql.enabled: true
+    asserts:
+        - containsDocument:
+            kind: ConfigMap
+            apiVersion: v1
+        - equal:
+            path: metadata.namespace
+            value: swh
+        # not testable as there is a dot in the entry name
+        # - contains:
+        #     path: data.config.yml
+        #     content:
+        #       debug: false
+        #     count: 1
+  - it: Graphql namespace
+    set:
+      graphql.enabled: true
+      namespace: mynamespace
+    asserts:
+        - equal:
+            path: metadata.namespace
+            value: mynamespace

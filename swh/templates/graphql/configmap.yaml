@@ -6,6 +6,7 @@ metadata:
   name: graphql
   namespace: {{ .Values.namespace }}
 data:
+  # TODO: rename to not have a dot in the name to allow testing
   config.yml: |
     {{- range $backend, $backend_config := .Values.graphql.backends }}
     {{ $backend }}:

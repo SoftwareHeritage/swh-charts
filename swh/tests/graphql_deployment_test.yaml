@@ -1,0 +1,109 @@
+suite: test graphql deployment
+templates:
+  - graphql/configmap.yaml
+  - graphql/deployment.yaml
+tests:
+  - it: Graphql deployment is deployed with default values when activated
+    templates:
+      - graphql/deployment.yaml
+    set:
+      graphql.enabled: true
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+    asserts:
+      - containsDocument:
+          kind: Deployment
+          apiVersion: apps/v1
+      - equal:
+          path: metadata.namespace
+          value: swh
+      - equal:
+          path: spec.replicas
+          value: 1
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].image
+          value: image:version
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "LOG_LEVEL")].value
+          value: "INFO"
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "THREADS")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "WORKERS")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "TIMEOUT")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_MAIN_PACKAGE")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")]
+  - it: Graphql gunicorn workers configuration
+    templates:
+      - graphql/deployment.yaml
+    set:
+      graphql.enabled: true
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+      graphql.gunicorn.threads: 101
+      graphql.gunicorn.workers: 102
+      graphql.gunicorn.timeout: 103
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "THREADS")].value
+          value: "101"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "WORKERS")].value
+          value: "102"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "TIMEOUT")].value
+          value: "103"
+  - it: Graphql sentry default configuration
+    templates:
+      - graphql/deployment.yaml
+    set:
+      graphql.enabled: true
+      graphql.sentry.enabled: true
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: production
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: swh.graphql
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: common-secrets
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: graphql-sentry-dsn
+
+  - it: Graphql sentry default configuration
+    templates:
+      - graphql/deployment.yaml
+    set:
+      sentry.environment: my-environment
+      graphql.enabled: true
+      graphql.sentry.enabled: true
+      graphql.sentry.secretKeyRef: my-secret
+      graphql.sentry.secretKeyName: my-key
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: my-environment
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: swh.graphql
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: my-secret
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: my-key
