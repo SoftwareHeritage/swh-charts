@@ -3,6 +3,7 @@ sentry:
 
 graphql:
   enabled: true
+  replicas: 2
   backends:
     storage:
       host: moma.internal.softwareheritage.org
