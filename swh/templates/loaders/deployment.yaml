@@ -138,6 +138,8 @@ spec:
               key: {{ $loader_name}}-sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
+        - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+          value: {{ get $deployment_config "sentryDisableLoggingEvents" | default true }}
         volumeMounts:
           - name: loader-utils
             mountPath: /pre-stop.sh
