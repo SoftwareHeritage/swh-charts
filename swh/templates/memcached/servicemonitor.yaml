@@ -1,0 +1,20 @@
+{{ if and .Values.memcached.enabled .Values.memcached.prometheus.enabled -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: memcached
+  namespace: {{ .Values.namespace }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  endpoints:
+  - path: /metrics
+    port: metrics
+    interval: 10s
+  selector:
+    matchLabels:
+      app: memcached
+  namespaceSelector:
+    any: true
+{{- end -}}

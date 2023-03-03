@@ -1,0 +1,60 @@
+{{ if .Values.memcached.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+  namespace: {{ .Values.namespace }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: memcached
+
+spec:
+  selector:
+    matchLabels:
+      app: memcached
+  # TODO: allow to deploy clustered memcached
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      containers:
+      - name: memcached
+        image: "{{ .Values.memcached.image }}"
+        args:
+          - -m
+          - {{ .Values.memcached.memory }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: {{ .Values.memcached.requestedMemory | default "300Mi" }}
+            cpu: {{ .Values.memcached.requestedCpu | default "100m" }}
+        readinessProbe:
+            tcpSocket:
+                port: 11211
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        livenessProbe:
+            tcpSocket:
+                port: 11211
+            initialDelaySeconds: 15
+            periodSeconds: 20
+        {{- if .Values.memcached.prometheus.enabled }}
+      - name: metrics-exporter
+        image: {{ .Values.memcached.prometheus.image }}
+        readinessProbe:
+            httpGet:
+                path: /metrics
+                port: 9150
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        livenessProbe:
+            httpGet:
+                path: /metrics
+                port: 9150
+            initialDelaySeconds: 5
+            periodSeconds: 10
+        {{- end }}
+{{- end -}}

@@ -1,0 +1,24 @@
+{{ if .Values.memcached.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: memcached
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: ClusterIP
+  selector:
+    app: memcached
+  ports:
+    - name: memcached
+      port: 11211
+      targetPort: 11212
+    {{- if .Values.memcached.prometheus.enabled }}
+    - name: metrics
+      port: 9150
+      targetPort: 9150
+    {{- end }}
+{{- end -}}

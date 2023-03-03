@@ -1,0 +1,29 @@
+suite: test memcached ServiceMonitor
+templates:
+  - memcached/servicemonitor.yaml
+tests:
+  - it: memcached servicemonitor is deployed with default values when activated
+    set:
+      memcached.enabled: true
+    asserts:
+      - containsDocument:
+          kind: ServiceMonitor
+          apiVersion: monitoring.coreos.com/v1
+      - equal:
+          path: metadata.namespace
+          value: swh
+  - it: memcached servicemonitor namespace
+    set:
+      memcached.enabled: true
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+  - it: memcached servicemonitor not deployed when prometheus is disabled
+    set:
+      memcached.enabled: true
+      memcached.prometheus.enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0

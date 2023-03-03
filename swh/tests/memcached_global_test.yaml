@@ -1,0 +1,12 @@
+suite: test memcached deployment
+templates:
+  - memcached/deployment.yaml
+  - memcached/service.yaml
+  - memcached/servicemonitor.yaml
+tests:
+  - it: memcached service is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

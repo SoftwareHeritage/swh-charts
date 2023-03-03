@@ -1,0 +1,73 @@
+suite: test memcached deployment
+templates:
+  - memcached/deployment.yaml
+tests:
+  - it: memcached deployment is deployed with default values when activated
+    set:
+      memcached.enabled: true
+      memcached.image: myimage:myversion
+    asserts:
+      - containsDocument:
+          kind: Deployment
+          apiVersion: apps/v1
+      - equal:
+          path: metadata.namespace
+          value: swh
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: myimage:myversion
+      - equal:
+          path: spec.template.spec.containers[0].args[1]
+          value: 256m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 100m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 300Mi
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 2
+  - it: memcached memory check
+    set:
+      namespace: mynamespace
+      memcached.enabled: true
+      memcached.memory: 128m
+      memcached.requestedCpu: 1
+      memcached.requestedMemory: 2
+    asserts:
+      - equal:
+          path: .metadata.namespace
+          value: mynamespace
+      -  equal:
+          path: spec.template.spec.containers[0].args[1]
+          value: 128m
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: 2
+  - it: memcached prometheus disabled
+    set:
+      memcached.enabled: true
+      memcached.prometheus.enabled: true
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 2
+  - it: memcached prometheus properties
+    set:
+      memcached.enabled: true
+      memcached.prometheus.enabled: true
+      memcached.prometheus.image: myimage:myversion
+    asserts:
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 2
+      - equal:
+          path: spec.template.spec.containers[1].image
+          value: myimage:myversion

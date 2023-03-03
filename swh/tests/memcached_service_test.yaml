@@ -1,0 +1,29 @@
+suite: test memcached service
+templates:
+  - memcached/service.yaml
+tests:
+  - it: memcached service is deployed with default values when activated
+    set:
+      memcached.enabled: true
+    asserts:
+      - containsDocument:
+          kind: Service
+          apiVersion: v1
+      - equal:
+          path: metadata.namespace
+          value: swh
+      - lengthEqual:
+          path: spec.ports
+          count: 2
+  - it: metrics port disabled when prometheus is disabled
+    set:
+      namespace: mynamespace
+      memcached.enabled: true
+      memcached.prometheus.enabled: false
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - lengthEqual:
+          path: spec.ports
+          count: 1
