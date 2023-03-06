@@ -20,4 +20,13 @@ data:
 
     max_query_cost:
       anonymous: {{ .Values.graphql.maxQueryCost}}
+
+    {{ if .Values.graphql.auth -}}
+    auth:
+      server: {{ .Values.graphql.auth.server | default "" }}
+      realm: {{ .Values.graphql.auth.realm | default "" }}
+      client: {{ .Values.graphql.auth.client | default "swh-web" }}
+      cache:
+        url: {{ .Values.graphql.auth.cacheUrl | default "memory://" }}
+    {{- end }}
 {{ end }}

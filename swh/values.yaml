@@ -34,7 +34,13 @@ graphql:
 #    search:
 #      host: http://my-search
 #      port: 5010
-
+  auth:
+    # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
+    # server: https://auth.backend.url/
+    #realm: MyAuthDomain
+    client: swh-web
+    # memory:// or memcached://memcached:port
+    cacheUrl: memory://
 
 # Allow to specify a specific configuration for pod's /tmp
 # directory. Mostly used to configure the loaders to work
