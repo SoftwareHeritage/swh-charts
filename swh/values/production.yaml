@@ -65,3 +65,5 @@ loaders:
                 values:
                 - "true"
 
+memcached:
+  enabled: true

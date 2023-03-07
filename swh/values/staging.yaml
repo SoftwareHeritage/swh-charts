@@ -434,3 +434,5 @@ graphql:
     host: graphql.internal.staging.swh.network
   logLevel: DEBUG
 
+memcached:
+  enabled: true
