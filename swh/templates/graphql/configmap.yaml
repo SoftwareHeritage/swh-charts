@@ -19,7 +19,8 @@ data:
     introspection: {{ .Values.graphql.introspection }}
 
     max_query_cost:
-      anonymous: {{ .Values.graphql.maxQueryCost}}
+      anonymous: {{ .Values.graphql.anonymousUserMaxQueryCost}}
+      user: {{ .Values.graphql.authenticatedUserMaxQueryCost}}
 
     {{ if .Values.graphql.auth -}}
     auth:
