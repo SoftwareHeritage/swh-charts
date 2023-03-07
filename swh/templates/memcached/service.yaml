@@ -15,7 +15,7 @@ spec:
   ports:
     - name: memcached
       port: 11211
-      targetPort: 11212
+      targetPort: 11211
     {{- if .Values.memcached.prometheus.enabled }}
     - name: metrics
       port: 9150
