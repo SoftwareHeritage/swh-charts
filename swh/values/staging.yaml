@@ -339,6 +339,22 @@ checker_deposit:
   autoScaling:
     maxReplicaCount: 2
 
+loader_metadata:
+  enabled: true
+  storage:
+    host: storage1.internal.staging.swh.network
+    port: 5002
+  scheduler:
+    host: scheduler0.internal.staging.swh.network
+    port: 5008
+  consumerGroup: swh.loader_metadata.journal_client
+  prefix: swh.journal.objects
+  journalBrokers:
+    hosts:
+      - journal1.internal.staging.swh.network:9092
+  autoScaling:
+    maxReplicaCount: 2
+
 indexers:
   enabled: true
   storage:

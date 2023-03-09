@@ -1,0 +1,116 @@
+{{ if .Values.loader_metadata.enabled -}}
+{{- $configurationChecksum := include (print .Template.BasePath "/loader-metadata/configmap.yaml") . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loader-metadata
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: loader-metadata
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: loader-metadata
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: loader-metadata
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if .Values.loader_metadata.affinity }}
+      affinity:
+        {{ toYaml .Values.loader_metadata.affinity | nindent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: 3600
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          env:
+          - name: JOURNAL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: common-secrets
+                key: journal-password
+                optional: true
+          command:
+            - /entrypoint.sh
+          volumeMounts:
+          - name: configuration-template
+            mountPath: /entrypoint.sh
+            subPath: "init-container-entrypoint.sh"
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+      - name: loader_metadata
+        image: {{ .Values.swh_loader_metadata_image }}:{{ .Values.swh_loader_metadata_image_version }}
+        imagePullPolicy: Always
+        command:
+          - /opt/swh/entrypoint.sh
+        resources:
+          requests:
+            memory: {{ .Values.loader_metadata.requestedMemory | default "512Mi" }}
+            cpu: {{ .Values.loader_metadata.requestedCpu | default "500m" }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/pre-stop.sh"]
+        env:
+        - name: STATSD_HOST
+          value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+        - name: STATSD_PORT
+          value: {{ .Values.statsdPort | default "9125" | quote }}
+        - name: LOGLEVEL
+          value: {{ .Values.loader_metadata.logLevel | default "INFO" | quote }}
+        - name: SWH_CONFIG_FILENAME
+          value: /etc/swh/config.yml
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ .Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: {{ .Values.loader_metadata.sentrySwhPackage }}
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: loader-metadata-sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: true
+        volumeMounts:
+          - name: loader-metadata-utils
+            mountPath: /pre-stop.sh
+            subPath: "pre-stop.sh"
+          - name: configuration
+            mountPath: /etc/swh
+          - name: localstorage
+            mountPath: /tmp
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: loader-metadata-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+          - key: "init-container-entrypoint.sh"
+            path: "init-container-entrypoint.sh"
+      - name: loader-metadata-utils
+        configMap:
+          name: loader-metadata-utils
+          defaultMode: 0777
+          items:
+          - key: "pre-stop-idempotent.sh"
+            path: "pre-stop.sh"
+{{ end }}

@@ -1,0 +1,47 @@
+{{ if .Values.loader_metadata.enabled -}}
+{{- $journalUser := .Values.loader_metadata.journalBrokers.user -}}
+{{- $consumerGroup := .Values.loader_metadata.consumerGroup -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loader-metadata-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    storage:
+      cls: pipeline
+      steps:
+      - cls: retry
+      - cls: remote
+        url: http://{{ .Values.loader_metadata.storage.host }}:{{ .Values.loader_metadata.storage.port }}/
+    scheduler:
+      cls: remote
+      url: http://{{ .Values.loader_metadata.scheduler.host }}:{{ .Values.loader_metadata.scheduler.port }}/
+    journal:
+      brokers: {{ toYaml .Values.loader_metadata.journalBrokers.hosts | nindent 8 }}
+      group_id: {{ $journalUser }}-{{ $consumerGroup }}
+      prefix: {{ .Values.loader_metadata.prefix }}
+      sasl.mechanism: SCRAM-SHA-512
+      security.protocol: SASL_SSL
+      sasl.username: {{ $journalUser }}
+      sasl.password: ${JOURNAL_PASSWORD}
+    metadata_fetcher_credentials:
+
+  init-container-entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    CONFIG_FILE=/etc/swh/config.yml
+
+    # substitute environment variables when creating the default config.yml
+    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
+      > $CONFIG_FILE
+
+    CREDS_PATH=/etc/credentials/metadata-fetcher/credentials
+    [ -f $CREDS_PATH ] && \
+      sed 's/^/  /g' $CREDS_PATH >> $CONFIG_FILE
+
+    exit 0
+{{ end }}

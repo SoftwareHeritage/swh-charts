@@ -44,6 +44,18 @@ cookers:
             values:
             - "true"
 
+loader_metadata:
+  sentrySwhPackage: swh.loader.metadata
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/loader_metadata"
+            operator: In
+            values:
+            - "true"
+
 indexers:
   sentrySwhPackage: swh.indexer
   affinity:

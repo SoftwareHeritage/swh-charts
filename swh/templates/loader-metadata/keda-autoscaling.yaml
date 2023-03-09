@@ -1,0 +1,36 @@
+{{ if .Values.loader_metadata.enabled -}}
+{{- $autoscalingConfig := $.Values.loader_metadata.autoScaling -}}
+{{ if $autoscalingConfig }}
+{{- $journalUser := .Values.loader_metadata.journalBrokers.user -}}
+{{- $consumerGroup := .Values.loader_metadata.consumerGroup -}}
+---
+# FIXME: Look into autoscaling from prometheus depending on api authentication
+# token use metrics. See: https://keda.sh/docs/2.9/scalers/prometheus/
+# https://docs.softwareheritage.org/devel/statsd.html#outgoing-requests
+# https://grafana.softwareheritage.org/d/FR9JAYhVk/outgoing-api-requests?orgId=1
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: loader-metadata-scaledobject
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    name: loader-metadata
+  pollingInterval: {{ get $autoscalingConfig "poolInterval" | default 120 }}
+  minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
+  maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
+  triggers:
+  - type: kafka
+    metadata:
+      bootstrapServers: {{ first .Values.loader_metadata.journalBrokers.hosts }}
+      {{ if $journalUser }}
+      consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
+      {{ else }}
+      consumerGroup: {{ $consumerGroup }}
+      {{ end }}
+      lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
+      offsetResetPolicy: earliest
+    authenticationRef:
+      name: {{ .Values.loader_metadata.authenticationRef }}
+{{ end }}
+{{ end }}

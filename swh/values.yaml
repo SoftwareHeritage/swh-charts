@@ -102,6 +102,28 @@ storage_replayer:
   #       lagThreashold: 1000
   #       minReplicaCount: 1
   #       maxReplicaCount: 10
+
+loader_metadata:
+  enabled: false
+  authenticationRef: keda-storage-replayer-trigger-authentication
+  # storage:
+  #   host: ...
+  #   port: 5002
+  # scheduler:
+  #   host: ...
+  #   port: 5008
+  # consumerGroup: ...
+  # prefix: swh.journal.objects
+  # journalBrokers:
+  #   hosts:
+  #     - ...
+  #   user: ...
+  # autoScaling:
+  #   poolInterval: 120
+  #   lagThreashold: 1000
+  #   minReplicaCount: 1
+  #   maxReplicaCount: 10
+
 loaders:
   enabled: false
   deployments:
