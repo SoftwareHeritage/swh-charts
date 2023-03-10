@@ -1,0 +1,60 @@
+suite: test loader_metadata keda-scaling
+tests:
+  - it: Loader metadata keda scaling deployment should be deployed
+    templates:
+      - loader-metadata/keda-autoscaling.yaml
+    values:
+      - ./values/loader-metadata.yaml
+    set:
+      namespace: test
+      loader_metadata:
+        enabled: true
+        logLevel: DEBUG
+        requestedMemory: "256Mi"
+        requestedCpu: "250m"
+        sentrySwhPackage: test.swh.loader.metadata
+        storage:
+          host: test.storage.org
+          port: 2005
+        scheduler:
+          host: test.scheduler.org
+          port: 8005
+        prefix: test.journal.objects
+        consumerGroup: test.consumerGroup
+        journalBrokers:
+          hosts:
+            - journal.test.org
+          user: testuser
+          secretName: test-secret-key
+
+        autoScaling:
+          poolInterval: 10
+          minReplicaCount: 10
+          maxReplicaCount: 50
+          lagThreshold: 200
+
+    asserts:
+      - containsDocument:
+          kind: ScaledObject
+          apiVersion: keda.sh/v1alpha1
+          namespace: test
+          name: loader-metadata-scaledobject
+
+      - equal:
+          path: spec.pollingInterval
+          value: 10
+      - equal:
+          path: spec.minReplicaCount
+          value: 10
+      - equal:
+          path: spec.maxReplicaCount
+          value: 50
+      - equal:
+          path: spec.triggers[?(@.type == "kafka")].metadata.bootstrapServers
+          value: journal.test.org
+      - equal:
+          path: spec.triggers[?(@.type == "kafka")].metadata.consumerGroup
+          value: testuser-test.consumerGroup
+      - equal:
+          path: spec.triggers[?(@.type == "kafka")].metadata.lagThreshold
+          value: "200"

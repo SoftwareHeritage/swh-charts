@@ -1,0 +1,24 @@
+suite: test loader_metadata configmap utils deployment
+templates:
+  - loader-metadata/configmap-utils.yaml
+tests:
+  - it: loader-metadata configmap utils should be deployed when activated
+    values:
+      - values/loader-metadata.yaml
+    asserts:
+      - containsDocument:
+           kind: ConfigMap
+           apiVersion: v1
+           name: loader-metadata-utils
+           namespace: swh
+  - it: loader metadata configmap utils namespace should be overridable
+    values:
+      - values/loader-metadata.yaml
+    set:
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - hasDocuments:
+          count: 1

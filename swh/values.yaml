@@ -105,7 +105,6 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
-  authenticationRef: keda-storage-replayer-trigger-authentication
   # storage:
   #   host: ...
   #   port: 5002

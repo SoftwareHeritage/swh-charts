@@ -1,0 +1,37 @@
+suite: test loader_metadata configmap deployment
+templates:
+  - loader-metadata/configmap.yaml
+tests:
+  - it: loader-metadata configmap should be deployed when activated
+    # set:
+    #   loader_metadata.enabled: true
+    values:
+      - values/loader-metadata.yaml
+    asserts:
+      # - containsDocument:
+      #      kind: ConfigMap
+      #      apiVersion: v1
+      #      name: loader-metadata-utils
+      #      namespace: swh
+       - containsDocument:
+           kind: ConfigMap
+           apiVersion: v1
+           name: loader-metadata-template
+           namespace: swh
+        # not testable as there is a dot in the entry name
+        # - contains:
+        #     path: data.config.yml
+        #     content:
+        #       debug: false
+        #     count: 1
+  - it: loader metadata configmap namespace should be overridable
+    values:
+      - values/loader-metadata.yaml
+    set:
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - hasDocuments:
+          count: 1

@@ -1,6 +1,5 @@
 {{ if .Values.loader_metadata.enabled -}}
 {{- $autoscalingConfig := $.Values.loader_metadata.autoScaling -}}
-{{ if $autoscalingConfig }}
 {{- $journalUser := .Values.loader_metadata.journalBrokers.user -}}
 {{- $consumerGroup := .Values.loader_metadata.consumerGroup -}}
 ---
@@ -23,14 +22,9 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: {{ first .Values.loader_metadata.journalBrokers.hosts }}
-      {{ if $journalUser }}
       consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
-      {{ else }}
-      consumerGroup: {{ $consumerGroup }}
-      {{ end }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
     authenticationRef:
-      name: {{ .Values.loader_metadata.authenticationRef }}
-{{ end }}
-{{ end }}
+      name: keda-loader-metadata-trigger-authentication
+{{- end -}}

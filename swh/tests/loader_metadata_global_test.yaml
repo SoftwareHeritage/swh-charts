@@ -1,0 +1,14 @@
+suite: test global loader metadata deployment
+templates:
+  - loader-metadata/deployment.yaml
+  - loader-metadata/configmap.yaml
+  - loader-metadata/configmap-utils.yaml
+  - loader-metadata/keda-autoscaling.yaml
+  - loader-metadata/keda-secrets.yaml
+tests:
+  - it: Metadata Loader is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

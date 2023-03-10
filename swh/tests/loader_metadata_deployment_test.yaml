@@ -1,0 +1,124 @@
+suite: test loader_metadata deployment
+templates:
+  - loader-metadata/configmap.yaml
+  - loader-metadata/configmap-utils.yaml
+  - loader-metadata/deployment.yaml
+tests:
+  - it: Loader metadata deployment should be deployed with default values
+    templates:
+      - loader-metadata/deployment.yaml
+    values:
+      - ./values/loader-metadata.yaml
+    asserts:
+      - containsDocument:
+          kind: Deployment
+          apiVersion: apps/v1
+          namespace: swh
+          name: loader-metadata
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].image
+          value: image:version
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.memory
+          value: "512Mi"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.cpu
+          value: "500m"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_HOST")].value
+          value: "prometheus-statsd-exporter"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_PORT")].value
+          value: "9125"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "LOGLEVEL")].value
+          value: INFO
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: production
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: common-secrets
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: loader-metadata-sentry-dsn
+
+  - it: Loader metadata deployment should be deployed with overriden values
+    templates:
+      - loader-metadata/deployment.yaml
+    set:
+      # global values
+      namespace: test
+      statsdExternalHost: testing-statsd-exporter
+      statsdPort: 5219
+      sentry:
+        environment: testing
+      swh_loader_metadata_image: test.image
+      swh_loader_metadata_image_version: test.version
+
+      # specific values
+      loader_metadata:
+        enabled: true
+        logLevel: DEBUG
+        storage:
+          host: test.storage.org
+          port: 2005
+        scheduler:
+          host: test.scheduler.org
+          port: 8005
+        consumerGroup: test.loader_metadata.journal_client
+        prefix: test.journal.objects
+        journalBrokers:
+          hosts:
+            - journal.test.org
+          user: ""
+        autoScaling:
+          maxReplicaCount: 2
+        requestedMemory: "256Mi"
+        requestedCpu: "250m"
+        sentrySwhPackage: test.swh.loader.metadata
+
+    asserts:
+      - containsDocument:
+          kind: Deployment
+          apiVersion: apps/v1
+          namespace: test
+          name: loader-metadata
+      - lengthEqual:
+          path: spec.template.spec.containers
+          count: 1
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].image
+          value: test.image:test.version
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.memory
+          value: "256Mi"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.cpu
+          value: "250m"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_HOST")].value
+          value: "testing-statsd-exporter"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_PORT")].value
+          value: "5219"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "LOGLEVEL")].value
+          value: DEBUG
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: testing
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: test.swh.loader.metadata
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: common-secrets
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: loader-metadata-sentry-dsn

@@ -350,10 +350,13 @@ loader_metadata:
   consumerGroup: swh.loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
+    secretName: swh-archive-broker-secret
     hosts:
       - journal1.internal.staging.swh.network:9092
+    user: swh-archive-stg
   autoScaling:
     maxReplicaCount: 2
+    
 
 indexers:
   enabled: true
