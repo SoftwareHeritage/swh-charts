@@ -38,7 +38,7 @@ storage_replayer:
     #   requestedMemory: 200Mi
     #   autoScaling:
     #     maxReplicaCount: 10
-    directory:
+    # directory:
       # objects:
       #   - directory
       # batchSize: 250
