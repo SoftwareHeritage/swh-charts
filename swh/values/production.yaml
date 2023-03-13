@@ -77,6 +77,18 @@ loaders:
       autoScaling:
         maxReplicaCount: 2
       sentrySwhPackage: swh.loader.cvs
+    highpriority:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+      ackLate: true
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 3
+      # HACK: As there is only 1 cvs queue consumed, send cvs issues to sentry
+      # See https://gitlab.softwareheritage.org/swh/meta/-/issues/4949
+      sentrySwhPackage: swh.loader.cvs
 
 memcached:
   enabled: true
