@@ -13,7 +13,7 @@ swh_loader_cvs_image_version: '20230313.1'
 swh_loader_git_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git
 swh_loader_git_image_version: '20230220.1'
 swh_loader_highpriority_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_highpriority
-swh_loader_highpriority_image_version: '20230306.1'
+swh_loader_highpriority_image_version: '20230313.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
 swh_loader_mercurial_image_version: '20230203.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
