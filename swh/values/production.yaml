@@ -69,6 +69,14 @@ loaders:
                 operator: In
                 values:
                 - "true"
+    cvs:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.cvs.tasks.LoadCvsRepository
+      autoScaling:
+        maxReplicaCount: 2
+      sentrySwhPackage: swh.loader.cvs
 
 memcached:
   enabled: true
