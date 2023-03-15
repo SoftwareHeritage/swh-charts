@@ -14,7 +14,7 @@ graphql:
   introspection: yes
   ingress:
     enabled: true
-    host: grahpql.internal.softwareheritage.org
+    host: graphql.internal.softwareheritage.org
     httpPath: /graphql
   gunicorn:
     threads: 4
