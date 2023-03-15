@@ -11,9 +11,10 @@ graphql:
     search:
       host: moma.internal.softwareheritage.org
       port: 5010
+  introspection: yes
   ingress:
     enabled: true
-    host: archive.softwareheritage.org
+    host: grahpql.internal.softwareheritage.org
     httpPath: /graphql
   gunicorn:
     threads: 4
