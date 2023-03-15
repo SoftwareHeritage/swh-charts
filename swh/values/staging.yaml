@@ -356,7 +356,6 @@ loader_metadata:
     user: swh-archive-stg
   autoScaling:
     maxReplicaCount: 2
-    
 
 indexers:
   enabled: true
@@ -373,8 +372,10 @@ indexers:
     host: storage1.internal.staging.swh.network
     port: 5003
   journalBrokers:
+    secretName: swh-archive-broker-secret
     hosts:
       - journal1.internal.staging.swh.network:9092
+    user: swh-archive-stg
   deployments:
     # content-mimetype:
     #   indexer_type: content_mimetype

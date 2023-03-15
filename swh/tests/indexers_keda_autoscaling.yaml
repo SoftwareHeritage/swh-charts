@@ -1,0 +1,16 @@
+suite: test indexer keda-scaling
+tests:
+  - it: Indexer keda scaling deployment should be deployed
+    templates:
+      - indexers/keda-autoscaling.yaml
+    asserts:
+      - containsDocument:
+          kind: ScaledObject
+          apiVersion: keda.sh/v1alpha1
+          namespace: test
+          name: indexer-idx_test0-scaledobject
+      - containsDocument:
+          kind: ScaledObject
+          apiVersion: keda.sh/v1alpha1
+          namespace: test
+          name: indexer-idx_test1-scaledobject

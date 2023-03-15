@@ -20,15 +20,11 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: {{ first $.Values.indexers.journalBrokers.hosts }}
-      {{ if $journalUser }}
       consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
-      {{ else }}
-      consumerGroup: {{ $consumerGroup }}
-      {{ end }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
     authenticationRef:
-      name: keda-storage-replayer-trigger-authentication
+      name: keda-indexers-kafka-secrets
 {{ end }}
 {{ end }}
 {{- end -}}

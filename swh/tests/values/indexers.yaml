@@ -1,0 +1,56 @@
+swh_indexer_image: image
+swh_indexer_image_version: version
+
+indexers:
+  enabled: true
+  storage:
+    host: storage.test.org
+    port: 2005
+  scheduler:
+    host: scheduler.test.org
+    port: 8005
+  indexer_storage:
+    host: indexer.test.org
+    port: 7005
+  objstorage:
+    host: objstorage.test.org
+    port: 3005
+  journalBrokers:
+    secretName: swh-archive-broker-secret
+    hosts:
+      - test.journal:2909
+    user: test-swh
+  deployments:
+    indexer0:
+      indexer_type: idx_test0
+      consumerGroup: test.swh.idx.content_mimetype
+      prefix: swh.journal.objects
+      autoScaling:
+        poolInterval: 10
+        minReplicaCount: 10
+        maxReplicaCount: 50
+        lagThreshold: 200
+      extraConfig:
+        tools:
+          name: file
+          # FIXME: Push this version to be autodetected by indexer
+          version: 2:0.4.15-2
+          configuration:
+            type: library
+            debian-package: python3-magic
+        write_batch_size: 1000
+    indexer1:
+      indexer_type: idx_test1
+      consumerGroup: test.swh.idx.content_fossology
+      prefix: swh.journal.objects
+      autoScaling:
+        poolInterval: 20
+        minReplicaCount: 20
+        maxReplicaCount: 100
+        lagThreshold: 250
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+        write_batch_size: 1000
