@@ -72,7 +72,7 @@ data:
       sasl.mechanism: SCRAM-SHA-512
       security.protocol: SASL_SSL
       sasl.username: {{ $journalUser }}
-      sasl.password: ${JOURNAL_PASSWORD}
+      sasl.password: ${BROKER_USER_PASSWORD}
       {{ end -}}
 
     {{- if $deployment_config.extraConfig -}}

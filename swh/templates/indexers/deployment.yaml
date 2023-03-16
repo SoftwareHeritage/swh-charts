@@ -37,12 +37,12 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-          - name: JOURNAL_PASSWORD
+          - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: common-secrets
-                key: journal-password
-                optional: true
+                name: {{ $.Values.indexers.journalBrokers.secretName }}
+                key: BROKER_USER_PASSWORD
+                optional: false
           command:
             - /entrypoint.sh
           volumeMounts:
