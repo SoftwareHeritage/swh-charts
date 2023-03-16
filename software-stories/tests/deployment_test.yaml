@@ -1,0 +1,35 @@
+suite: test software-stories deployment
+templates:
+  - templates/deployment.yaml
+tests:
+  - it: Software Stories is deployed
+    set:
+      containerImage: image
+      containerVersion: version
+    asserts:
+      - hasDocuments:
+          count: 1
+      - containsDocument:
+          kind: Deployment
+          apiVersion: apps/v1
+      - equal:
+          path: metadata.namespace
+          value: softwarestories
+      - equal:
+          path: metadata.name
+          value: softwarestories
+      - equal:
+          path: metadata.labels.app
+          value: softwarestories
+      - equal:
+          path: spec.replicas
+          value: 2
+      - equal:
+          path: spec.template.metadata.labels.app
+          value: softwarestories
+      - equal:
+          path: spec.template.spec.containers[0].name
+          value: softwarestories
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: image:version

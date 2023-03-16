@@ -1,0 +1,10 @@
+apiVersion: v2
+name: software-stories
+description: A Helm chart for Software Heritage Stories Application
+icon: https://docs.softwareheritage.org/_static/software-heritage-logo-title.svg
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.16.0"
