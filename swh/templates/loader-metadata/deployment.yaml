@@ -92,8 +92,6 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
-          - name: localstorage
-            mountPath: /tmp
       volumes:
       - name: configuration
         emptyDir: {}
