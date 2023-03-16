@@ -45,6 +45,10 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           env:
+          - name: STATSD_HOST
+            value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+          - name: STATSD_PORT
+            value: {{ $.Values.statsdPort | default "9125" | quote }}
           - name: PORT
             value: "5013"
           - name: LOG_LEVEL

@@ -29,6 +29,12 @@ tests:
       - equal:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "LOG_LEVEL")].value
           value: "INFO"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "STATSD_HOST")].value
+          value: prometheus-statsd-exporter
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "STATSD_PORT")].value
+          value: "9125"
       - isNull:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "THREADS")]
       - isNull:
@@ -83,7 +89,7 @@ tests:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
           value: graphql-sentry-dsn
 
-  - it: Graphql sentry default configuration
+  - it: Graphql sentry overridden configuration
     templates:
       - graphql/deployment.yaml
     set:
@@ -107,3 +113,20 @@ tests:
       - equal:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
           value: my-key
+
+  - it: Graphql statsd overridden configuration
+    templates:
+      - graphql/deployment.yaml
+    set:
+      graphql.enabled: true
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+      statsdExternalHost: my-statsd-host
+      statsdPort: 9999
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "STATSD_HOST")].value
+          value: my-statsd-host
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "STATSD_PORT")].value
+          value: "9999"
