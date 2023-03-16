@@ -53,7 +53,7 @@ spec:
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
       containers:
-      - name: loader_metadata
+      - name: loader-metadata
         image: {{ .Values.swh_loader_metadata_image }}:{{ .Values.swh_loader_metadata_image_version }}
         imagePullPolicy: Always
         command:

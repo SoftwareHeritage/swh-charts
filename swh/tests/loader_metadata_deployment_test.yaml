@@ -19,33 +19,33 @@ tests:
           path: spec.template.spec.containers
           count: 1
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].image
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].image
           value: image:version
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.memory
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.memory
           value: "512Mi"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.cpu
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.cpu
           value: "500m"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_HOST")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_HOST")].value
           value: "prometheus-statsd-exporter"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_PORT")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_PORT")].value
           value: "9125"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "LOGLEVEL")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "LOGLEVEL")].value
           value: INFO
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
           value: production
       - isNull:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
           value: common-secrets
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
           value: loader-metadata-sentry-dsn
 
   - it: Loader metadata deployment should be deployed with overriden values
@@ -93,32 +93,32 @@ tests:
           path: spec.template.spec.containers
           count: 1
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].image
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].image
           value: test.image:test.version
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.memory
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.memory
           value: "256Mi"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].resources.requests.cpu
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.cpu
           value: "250m"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_HOST")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_HOST")].value
           value: "testing-statsd-exporter"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "STATSD_PORT")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_PORT")].value
           value: "5219"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "LOGLEVEL")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "LOGLEVEL")].value
           value: DEBUG
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
           value: testing
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
           value: test.swh.loader.metadata
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
           value: common-secrets
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader_metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
           value: loader-metadata-sentry-dsn
