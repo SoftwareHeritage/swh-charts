@@ -51,7 +51,7 @@ loader_metadata:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: "swh/loader_metadata"
+          - key: "swh/loader-metadata"
             operator: In
             values:
             - "true"
