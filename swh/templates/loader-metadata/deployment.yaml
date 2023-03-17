@@ -52,6 +52,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: metadata-fetcher-credentials
+            mountPath: /etc/credentials/metadata-fetcher
+            readOnly: true
       containers:
       - name: loader-metadata
         image: {{ .Values.swh_loader_metadata_image }}:{{ .Values.swh_loader_metadata_image_version }}
@@ -92,9 +95,6 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
-          - name: metadata-fetcher-credentials
-            mountPath: /etc/credentials/metadata-fetcher
-            readOnly: true
       volumes:
       - name: configuration
         emptyDir: {}
