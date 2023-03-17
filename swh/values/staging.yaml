@@ -374,7 +374,7 @@ indexers:
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
-      - journal1.internal.staging.swh.network:9092
+      - journal1.internal.staging.swh.network:9094
     user: swh-archive-stg
   deployments:
     # content-mimetype:
