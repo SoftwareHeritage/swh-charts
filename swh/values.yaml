@@ -113,6 +113,7 @@ loader_metadata:
   #   port: 5008
   # consumerGroup: ...
   # prefix: swh.journal.objects
+  # reload_after_days: 120
   # journalBrokers:
   #   hosts:
   #     - ...
