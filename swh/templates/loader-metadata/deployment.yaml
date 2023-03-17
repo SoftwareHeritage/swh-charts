@@ -38,8 +38,8 @@ spec:
           - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: common-secrets
-                key: journal-password
+                name: {{ .Values.loader_metadata.journalBrokers.secretName }}
+                key: BROKER_USER_PASSWORD
                 optional: true
           command:
             - /entrypoint.sh
