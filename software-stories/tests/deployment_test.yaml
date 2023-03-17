@@ -14,22 +14,22 @@ tests:
           apiVersion: apps/v1
       - equal:
           path: metadata.namespace
-          value: softwarestories
+          value: software-stories
       - equal:
           path: metadata.name
-          value: softwarestories
+          value: software-stories
       - equal:
           path: metadata.labels.app
-          value: softwarestories
+          value: software-stories
       - equal:
           path: spec.replicas
           value: 2
       - equal:
           path: spec.template.metadata.labels.app
-          value: softwarestories
+          value: software-stories
       - equal:
           path: spec.template.spec.containers[0].name
-          value: softwarestories
+          value: software-stories
       - equal:
           path: spec.template.spec.containers[0].image
           value: image:version

@@ -11,10 +11,10 @@ tests:
           apiVersion: v1
       - equal:
           path: metadata.namespace
-          value: softwarestories
+          value: software-stories
       - equal:
           path: metadata.name
-          value: softwarestories
+          value: software-stories
       - equal:
           path: spec.selector.app
-          value: softwarestories
+          value: software-stories
