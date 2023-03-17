@@ -16,7 +16,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: softwarestories
+            name: {{ .Values.name }}
             port:
               number: 3000
     #{{- if .Values.host }}
