@@ -92,6 +92,9 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
+          - name: metadata-fetcher-credentials
+            mountPath: /etc/credentials/metadata-fetcher
+            readOnly: true
       volumes:
       - name: configuration
         emptyDir: {}
@@ -111,4 +114,8 @@ spec:
           items:
           - key: "pre-stop-idempotent.sh"
             path: "pre-stop.sh"
+      - name: metadata-fetcher-credentials
+        secret:
+          secretName: metadata-fetcher-credentials
+          optional: true
 {{ end }}
