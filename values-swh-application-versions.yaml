@@ -17,7 +17,7 @@ swh_loader_highpriority_image_version: '20230313.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
 swh_loader_mercurial_image_version: '20230203.1'
 swh_loader_metadata_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_metadata
-swh_loader_metadata_image_version: '20230309.1'
+swh_loader_metadata_image_version: '20230317.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
 swh_loader_package_image_version: '20230220.1'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
