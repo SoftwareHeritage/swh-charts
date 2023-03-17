@@ -25,7 +25,7 @@ data:
       sasl.mechanism: SCRAM-SHA-512
       security.protocol: SASL_SSL
       sasl.username: {{ $journalUser }}
-      sasl.password: ${JOURNAL_PASSWORD}
+      sasl.password: ${BROKER_USER_PASSWORD}
     reload_after_days: {{ .Values.loader_metadata.reload_after_days | default 120 }}
     metadata_fetcher_credentials:
 
