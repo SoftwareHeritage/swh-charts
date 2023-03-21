@@ -355,7 +355,7 @@ loader_metadata:
       - broker1.journal.staging.swh.network:9093
     user: swh-archive-stg
   autoScaling:
-    maxReplicaCount: 1
+    maxReplicaCount: 2
 
 indexers:
   enabled: true
