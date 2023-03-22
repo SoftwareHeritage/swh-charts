@@ -1,0 +1,157 @@
+namespace: swh-cassandra
+sentry:
+  environment: staging
+
+storage_replayer:
+  enabled: true
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/replayer"
+            operator: In
+            values:
+            - "true"
+  journalBrokers:
+    hosts:
+      - journal1.internal.staging.swh.network:9094
+    user: swh-cassandra-replayer-staging
+  cassandra:
+    initKeyspace: true # only to bootstrap a new cassandra database
+    seeds:
+      - cassandra1.internal.staging.swh.network
+      - cassandra2.internal.staging.swh.network
+      - cassandra3.internal.staging.swh.network
+  deployments:
+    content:
+      objects:
+        - content
+      requestedCpu: 350m
+      requestedMemory: 300Mi
+      autoScaling:
+        maxReplicaCount: 1
+    directory:
+      objects:
+        - directory
+      batchSize: 250
+      requestedCpu: 350m
+      requestedMemory: 250Mi
+      autoScaling:
+        maxReplicaCount: 1
+      specific_options:
+        directory_entries_insert_algo: batch
+    extid:
+      objects:
+        - extid
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      #Follow up consumption
+      #requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 1
+    metadata:
+      objects:
+        - metadata_authority
+        - metadata_fetcher
+      # follow up consumption
+      requestedCpu: 50m
+      requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 1
+    raw-extrinsic-metadata:
+      objects:
+        - raw_extrinsic_metadata
+      batchSize: 250
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      # follow up consumption
+      #requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 1
+    origin:
+      objects:
+        - origin
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      #Follow up consumption
+      #requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 1
+    origin-visit:
+      objects:
+        - origin_visit
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 400Mi
+      #Follow up consumption
+      #requestedCpu: 100m
+      #requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 1
+    origin-visit-status:
+      objects:
+        - origin_visit_status
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 300Mi
+      #Follow up consumption
+      #requestedCpu: 55m
+      #requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 1
+    release:
+      objects:
+        - release
+      batchSize: 1000
+      privileged: true
+      # Full replay
+      requestedCpu: 600m
+      requestedMemory: 300Mi
+      # follow up consumption
+      #requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 1
+    revision:
+      objects:
+        - revision
+      batchSize: 1000
+      privileged: true
+      # Full replay
+      requestedCpu: 750m
+      requestedMemory: 750Mi
+      # follow up consumption
+      #requestedCpu: 50m
+      #requestedMemory: 400Mi
+      autoScaling:
+        maxReplicaCount: 1
+    skipped-content:
+      objects:
+        - skipped_content
+      batchSize: 100
+      # Full replay
+      requestedCpu: 300m
+      requestedMemory: 400Mi
+      # follow up consumption
+      #requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 1
+    snapshot:
+      objects:
+        - snapshot
+      batchSize: 250
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 250Mi
+      # follow up consumption
+      #requestedCpu: 80m
+      autoScaling:
+        maxReplicaCount: 1
