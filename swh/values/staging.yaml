@@ -352,7 +352,7 @@ loader_metadata:
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
-      - broker1.journal.staging.swh.network:9093
+      - journal1.internal.staging.swh.network:9094
     user: swh-archive-stg
   autoScaling:
     maxReplicaCount: 2
@@ -374,7 +374,7 @@ indexers:
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
-      - broker1.journal.staging.swh.network:9093
+      - journal1.internal.staging.swh.network:9094
     user: swh-archive-stg
   deployments:
     # content-mimetype:
