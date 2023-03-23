@@ -108,7 +108,7 @@ storage_replayer:
       #requestedCpu: 55m
       #requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     release:
       objects:
         - release
