@@ -36,8 +36,8 @@ loaders:
   deployments:
     addforgenow:
       image: swh_loader_git_image
-      requestedMemory: 256Mi
-      requestedCpu: 200m
+      requestedMemory: 1024Mi
+      requestedCpu: 500m
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
