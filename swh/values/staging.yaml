@@ -355,7 +355,7 @@ loader_metadata:
       - journal1.internal.staging.swh.network:9094
     user: swh-archive-stg
   autoScaling:
-    maxReplicaCount: 2
+    maxReplicaCount: 1
 
 indexers:
   enabled: true
