@@ -33,6 +33,7 @@ storage_replayer:
     content:
       objects:
         - content
+      privileged: true
       requestedCpu: 350m
       requestedMemory: 300Mi
       autoScaling:
@@ -41,6 +42,7 @@ storage_replayer:
       objects:
         - directory
       batchSize: 250
+      privileged: true
       requestedCpu: 350m
       requestedMemory: 250Mi
       autoScaling:
@@ -51,6 +53,7 @@ storage_replayer:
       objects:
         - extid
       batchSize: 1000
+      privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 200Mi
@@ -62,6 +65,7 @@ storage_replayer:
       objects:
         - metadata_authority
         - metadata_fetcher
+      privileged: true
       # follow up consumption
       requestedCpu: 50m
       requestedMemory: 100Mi
@@ -71,6 +75,7 @@ storage_replayer:
       objects:
         - raw_extrinsic_metadata
       batchSize: 250
+      privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 200Mi
@@ -82,6 +87,7 @@ storage_replayer:
       objects:
         - origin
       batchSize: 1000
+      privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 200Mi
@@ -93,6 +99,7 @@ storage_replayer:
       objects:
         - origin_visit
       batchSize: 1000
+      privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 400Mi
@@ -105,6 +112,7 @@ storage_replayer:
       objects:
         - origin_visit_status
       batchSize: 1000
+      privileged: true
       # Full replay
       requestedCpu: 500m
       requestedMemory: 300Mi
@@ -142,6 +150,7 @@ storage_replayer:
       objects:
         - skipped_content
       batchSize: 100
+      privileged: true
       # Full replay
       requestedCpu: 300m
       requestedMemory: 400Mi
@@ -153,6 +162,7 @@ storage_replayer:
       objects:
         - snapshot
       batchSize: 250
+      privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 250Mi
