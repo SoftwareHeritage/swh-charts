@@ -91,5 +91,26 @@ loaders:
       # See https://gitlab.softwareheritage.org/swh/meta/-/issues/4949
       sentrySwhPackage: swh.loader.cvs
 
+loader_metadata:
+  enabled: true
+  storage:
+    host: saam.internal.softwareheritage.org
+    port: 5002
+  scheduler:
+    host: saatchi.internal.softwareheritage.org
+    port: 5008
+  consumerGroup: loader_metadata.journal_client
+  prefix: swh.journal.objects
+  journalBrokers:
+    secretName: swh-archive-broker-secret
+    hosts:
+      - kafka1.internal.softwareheritage.org:9094
+      - kafka2.internal.softwareheritage.org:9094
+      - kafka3.internal.softwareheritage.org:9094
+      - kafka4.internal.softwareheritage.org:9094
+    user: swh-archive-prod
+  autoScaling:
+    maxReplicaCount: 2
+
 memcached:
   enabled: true
