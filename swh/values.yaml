@@ -83,6 +83,13 @@ storage_replayer:
     - seed2
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
+  # optional 'replayer' configuration may be specified with a 'error_reporter' config
+  # entry allowing to specify redis connection parameters. It will be used to report
+  # non-recoverable replaying issues
+  # error_reporter:
+  #   host: redis.redis
+  #   port: 6379
+  #   db: 1
   deployments:
   # Example of deployments
   #   origins:
