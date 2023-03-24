@@ -37,7 +37,7 @@ storage_replayer:
       requestedCpu: 350m
       requestedMemory: 300Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 10
     directory:
       objects:
         - directory
@@ -46,7 +46,7 @@ storage_replayer:
       requestedCpu: 350m
       requestedMemory: 250Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 10
       specific_options:
         directory_entries_insert_algo: batch
     extid:
@@ -60,7 +60,7 @@ storage_replayer:
       #Follow up consumption
       #requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     metadata:
       objects:
         - metadata_authority
@@ -70,7 +70,7 @@ storage_replayer:
       requestedCpu: 50m
       requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     raw-extrinsic-metadata:
       objects:
         - raw_extrinsic_metadata
@@ -82,7 +82,7 @@ storage_replayer:
       # follow up consumption
       #requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     origin:
       objects:
         - origin
@@ -94,7 +94,7 @@ storage_replayer:
       #Follow up consumption
       #requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     origin-visit:
       objects:
         - origin_visit
@@ -107,7 +107,7 @@ storage_replayer:
       #requestedCpu: 100m
       #requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     origin-visit-status:
       objects:
         - origin_visit_status
@@ -120,7 +120,7 @@ storage_replayer:
       #requestedCpu: 55m
       #requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 5
     release:
       objects:
         - release
@@ -132,7 +132,7 @@ storage_replayer:
       # follow up consumption
       #requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     revision:
       objects:
         - revision
@@ -145,7 +145,7 @@ storage_replayer:
       #requestedCpu: 50m
       #requestedMemory: 400Mi
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     skipped-content:
       objects:
         - skipped_content
@@ -157,7 +157,7 @@ storage_replayer:
       # follow up consumption
       #requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
     snapshot:
       objects:
         - snapshot
@@ -169,4 +169,4 @@ storage_replayer:
       # follow up consumption
       #requestedCpu: 80m
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 5
