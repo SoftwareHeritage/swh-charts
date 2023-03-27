@@ -38,6 +38,8 @@ graphql:
   auth:
     # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
     # server: https://auth.backend.url/
+    # optional, when not provided, graphql defaults to use "server" entry
+    # public_server: https://another.auth.backend.url/
     #realm: MyAuthDomain
     client: swh-web
     # memory:// or memcached://memcached:port

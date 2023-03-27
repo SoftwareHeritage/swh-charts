@@ -25,6 +25,9 @@ data:
     {{ if .Values.graphql.auth -}}
     auth:
       server: {{ .Values.graphql.auth.server | default "" }}
+      {{ if .Values.graphql.auth.publicServer -}}
+      public_server: {{ .Values.graphql.auth.publicServer }}
+      {{ end -}}
       realm: {{ .Values.graphql.auth.realm | default "" }}
       client: {{ .Values.graphql.auth.client | default "swh-web" }}
       cache:
