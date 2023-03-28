@@ -91,6 +91,8 @@ listers:
             - "true"
 
 graphql:
+  sentry:
+    enabled: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

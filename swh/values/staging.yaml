@@ -432,8 +432,6 @@ indexers:
 
 graphql:
   enabled: true
-  sentry:
-    enabled: true
   backends:
     storage:
       host: webapp.internal.staging.swh.network
