@@ -170,3 +170,17 @@ storage_replayer:
       #requestedCpu: 80m
       autoScaling:
         maxReplicaCount: 5
+
+storage:
+  enabled: true
+  replicas: 1
+  requestedCpu: 50m
+  requestedMemory: 100Mi
+  autoScaling:
+    maxReplicaCount: 1
+  storageClass: cassandra
+  cassandra:
+    seeds:
+      - cassandra1.internal.staging.swh.network
+      - cassandra2.internal.staging.swh.network
+      - cassandra3.internal.staging.swh.network

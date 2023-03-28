@@ -201,7 +201,7 @@ statsd_exporter:
   imageVersion: "v0.22.7"
 
 memcached:
-  # Deploy a memcached instance used by the webapp and storage for sessions caching
+  # Deploy a memcached instance used by the webapp and graphql for sessions caching
   enabled: false
   image: memcached:1.6.18
   memory: 256m

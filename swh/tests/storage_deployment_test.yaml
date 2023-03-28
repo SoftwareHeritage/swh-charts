@@ -3,7 +3,7 @@ templates:
   - storage/configmap.yaml
   - storage/deployment.yaml
 tests:
-  - it: Storage is deployed 
+  - it: Storage is deployed
     templates:
       - storage/deployment.yaml
     set:
@@ -23,7 +23,7 @@ tests:
           value: 1
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
-          value: memory 
+          value: memory
       - equal:
           path: spec.template.spec.containers[0].resources.requests.cpu
           value: cpu
