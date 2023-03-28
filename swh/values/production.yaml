@@ -1,7 +1,7 @@
 sentry:
   environment: production
 
-swh_graphql_image_version: 20230314.3
+swh_graphql_image_version: "20230314.3"
 graphql:
   enabled: true
   replicas: 2
