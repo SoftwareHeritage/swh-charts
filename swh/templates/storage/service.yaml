@@ -1,0 +1,15 @@
+{{ if .Values.storage.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: storage
+  ports:
+    - port: 5002
+      targetPort: 5002
+{{ end }}

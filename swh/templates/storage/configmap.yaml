@@ -1,0 +1,25 @@
+{{ if .Values.storage.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: storage-configuration-template
+data:
+  config.yml.template: |
+    storage:
+      cls: {{ .Values.storage.storageClass }}
+      hosts:
+      {{- range $seed := .Values.storage.cassandra.seeds }}
+        - {{ $seed }}
+      {{- end }}
+      keyspace: {{ .Values.storage.cassandra.keySpace }}
+      consistency_level: {{ .Values.storage.cassandra.consistencyLevel }}
+      {{- if .Values.storage.specific_options -}}
+        {{- range $option, $value := .Values.storage.specific_options }}
+      {{ $option }}: {{ $value }}
+        {{- end }}
+      {{- end }}
+      objstorage:
+        cls: noop
+{{- end -}}

@@ -159,13 +159,49 @@ indexers:
 listers:
   enabled: false
 
+storage:
+  enabled: false
+  logLevel: INFO
+  replicas: 1
+  requestedCpu: 50m
+  requestedMemory: 100Mi
+  autoScaling:
+    maxReplicaCount: 1
+  storageClass: cassandra
+#  affinity:
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: "swh/storage"
+#            operator: In
+#            values:
+#            - "true"
+#  gunicorn:
+#    threads: 5
+#    workers: 2
+#    timeout: 60
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: storage-sentry-dsn
+  cassandra:
+    initKeyspace: false # only to bootstrap a new cassandra database
+    seeds:
+      - seed1
+    keySpace: swh
+    consistencyLevel: LOCAL_QUORUM
+
 statsd_exporter:
   enabled: false
   image: prom/statsd-exporter
   imageVersion: "v0.22.7"
 
 memcached:
-  # Deploy a memcached instance used by the webapp and graphql for sessions caching
+  # Deploy a memcached instance used by the webapp and storage for sessions caching
   enabled: false
   image: memcached:1.6.18
   memory: 256m
@@ -175,3 +211,4 @@ memcached:
     # Activate the deployment of the memcached exporter and ServiceMonitor
     enabled: true
     image: quay.io/prometheus/memcached-exporter:v0.11.1
+

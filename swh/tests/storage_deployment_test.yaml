@@ -1,0 +1,134 @@
+suite: test storage deployment
+templates:
+  - storage/configmap.yaml
+  - storage/deployment.yaml
+tests:
+  - it: Storage is deployed 
+    templates:
+      - storage/deployment.yaml
+    set:
+      storage.enabled: true
+      swh_storage_image: image
+      swh_storage_image_version: version
+      storage.requestedMemory: memory
+      storage.requestedCpu: cpu
+    asserts:
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.namespace
+          value: swh
+      - equal:
+          path: spec.replicas
+          value: 1
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.memory
+          value: memory 
+      - equal:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+          value: cpu
+      - equal:
+          path: spec.template.spec.containers[0].image
+          value: image:version
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "LOG_LEVEL")].value
+          value: "INFO"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "STATSD_HOST")].value
+          value: prometheus-statsd-exporter
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "STATSD_PORT")].value
+          value: "9125"
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "THREADS")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "WORKERS")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "TIMEOUT")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_MAIN_PACKAGE")]
+      - isNull:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")]
+  - it: Storage gunicorn workers configuration
+    templates:
+      - storage/deployment.yaml
+    set:
+      storage.enabled: true
+      swh_storage_image: image
+      swh_storage_image_version: version
+      storage.gunicorn.threads: 101
+      storage.gunicorn.workers: 102
+      storage.gunicorn.timeout: 103
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "THREADS")].value
+          value: "101"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "WORKERS")].value
+          value: "102"
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "TIMEOUT")].value
+          value: "103"
+  - it: Storage statsd overridden configuration
+    templates:
+      - storage/deployment.yaml
+    set:
+      storage.enabled: true
+      swh_storage_image: image
+      swh_storage_image_version: version
+      statsdExternalHost: my-statsd-host
+      statsdPort: 9999
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "STATSD_HOST")].value
+          value: my-statsd-host
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "STATSD_PORT")].value
+          value: "9999"
+  - it: Storage sentry default configuration
+    templates:
+      - storage/deployment.yaml
+    set:
+      storage.enabled: true
+      storage.sentry.enabled: true
+      swh_storage_image: image
+      swh_storage_image_version: version
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: production
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: swh.storage
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: common-secrets
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: storage-sentry-dsn
+  - it: Storage sentry overridden configuration
+    templates:
+      - storage/deployment.yaml
+    set:
+      sentry.environment: my-environment
+      storage.enabled: true
+      storage.sentry.enabled: true
+      storage.sentry.secretKeyRef: my-secret
+      storage.sentry.secretKeyName: my-key
+      swh_storage_image: image
+      swh_storage_image_version: version
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
+          value: my-environment
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: swh.storage
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
+          value: my-secret
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
+          value: my-key

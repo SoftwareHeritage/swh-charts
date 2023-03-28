@@ -1,0 +1,28 @@
+suite: test storage configmap deployment
+templates:
+  - storage/configmap.yaml
+tests:
+  - it: storage configmap is deployed when activated
+    set:
+      storage.enabled: true
+    asserts:
+        - containsDocument:
+            kind: ConfigMap
+            apiVersion: v1
+        - equal:
+            path: metadata.namespace
+            value: swh
+        # not testable as there is a dot in the entry name
+        # - contains:
+        #     path: data.config.yml
+        #     content:
+        #       debug: false
+        #     count: 1
+  - it: storage namespace
+    set:
+      storage.enabled: true
+      namespace: mynamespace
+    asserts:
+        - equal:
+            path: metadata.namespace
+            value: mynamespace

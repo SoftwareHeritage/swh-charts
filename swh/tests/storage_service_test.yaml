@@ -1,0 +1,15 @@
+suite: test swh-storage service deployment
+templates:
+  - storage/service.yaml
+tests:
+  - it: swh-storage service is deployed when activated
+    set:
+      storage.enabled: true
+      namespace: mynamespace
+    asserts:
+        - containsDocument:
+            kind: Service
+            apiVersion: v1
+        - equal:
+            path: metadata.namespace
+            value: mynamespace

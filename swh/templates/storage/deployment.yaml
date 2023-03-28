@@ -1,0 +1,127 @@
+{{ if .Values.storage.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: storage
+  labels:
+    app: storage
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .Values.storage.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: storage
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: storage
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/storage/configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.storage.affinity }}
+      affinity:
+        {{- toYaml .Values.storage.affinity | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+        {{- if .Values.storage.cassandra.initKeyspace }}
+        - name: init-database
+          image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first .Values.storage.cassandra.seeds }}'], 'swh')\" | python3"
+        {{- end }}
+      containers:
+        - name: storage
+          resources:
+            requests:
+              memory: {{ .Values.storage.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.storage.requestedCpu | default "500m" }}
+          image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5002
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5          
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            {{ if .Values.storage.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.storage.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.storage.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.storage.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.storage.logLevel | quote }}              
+          {{- if .Values.storage.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.storage
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.storage.sentry.secretKeyRef }}
+                  key: {{ .Values.storage.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: storage-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{- end -}}

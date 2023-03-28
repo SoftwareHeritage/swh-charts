@@ -1,0 +1,12 @@
+suite: test storage deployment
+templates:
+  - storage/deployment.yaml
+  - storage/configmap.yaml
+  - storage/service.yaml
+tests:
+  - it: Storage is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
