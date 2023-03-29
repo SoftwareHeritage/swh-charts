@@ -47,7 +47,7 @@ storage_replayer:
       requestedCpu: 350m
       requestedMemory: 250Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 64
       specific_options:
         directory_entries_insert_algo: batch
     extid:
