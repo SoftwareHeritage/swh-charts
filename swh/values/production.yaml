@@ -80,11 +80,21 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
+        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_code_now:swh.loader.package.archive.tasks.LoadArchive
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 5
 
 loader_metadata:
   enabled: true
