@@ -82,6 +82,7 @@ data:
       sed -i '/__sentry-settings-for-celery-tasks__//g' $CONFIG_FILE
     fi
 
+    CREDS_LISTER_PATH=/etc/credentials/listers/credentials
     if [ -f $CREDS_LISTER_PATH ]; then
       awk "/__lister-credentials__/{system(\"sed 's/^/  /g' $CREDS_LISTER_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
       mv $CONFIG_FILE_WIP $CONFIG_FILE
