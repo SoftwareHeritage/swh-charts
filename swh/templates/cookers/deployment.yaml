@@ -61,6 +61,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: sentry-settings-for-celery-tasks
+            mountPath: /etc/credentials/sentry-settings
+            readOnly: true
       containers:
       - name: cookers
         resources:
@@ -91,15 +94,6 @@ spec:
           value: /etc/swh/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
-        - name: SWH_MAIN_PACKAGE
-          value: swh.vault
-        - name: SWH_SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: common-secrets
-              key: vault-cookers-sentry-dsn
-              # 'name' secret must exist & include key "host"
-              optional: false
         volumeMounts:
           - name: cooker-utils
             mountPath: /pre-stop.sh
@@ -125,5 +119,9 @@ spec:
           items:
           - key: "pre-stop-idempotent.sh"
             path: "pre-stop.sh"
+      - name: sentry-settings-for-celery-tasks
+        secret:
+          secretName: sentry-settings-for-celery-tasks
+          optional: true
 {{ end }}
 {{- end -}}
