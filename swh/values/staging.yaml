@@ -100,16 +100,16 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
 
-    git:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      queues:
-        - swh.loader.git.tasks.UpdateGitRepository
-        - swh.loader.git.tasks.LoadDiskGitRepository
-        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-      autoScaling:
-        maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.git
+    # git:
+    #   requestedMemory: 256Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - swh.loader.git.tasks.UpdateGitRepository
+    #     - swh.loader.git.tasks.LoadDiskGitRepository
+    #     - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+    #   autoScaling:
+    #     maxReplicaCount: 1
+    #   sentrySwhPackage: swh.loader.git
     golang:
       image: swh_loader_package_image
       requestedMemory: 256Mi
