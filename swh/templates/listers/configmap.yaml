@@ -57,10 +57,9 @@ data:
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
+    {{- end }}
       sentry_settings_for_celery_tasks:
         __sentry-settings-for-celery-tasks__
-
-    {{- end }}
     credentials:
       __lister-credentials__
   init-container-entrypoint.sh: |
