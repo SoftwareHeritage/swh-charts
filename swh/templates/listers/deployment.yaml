@@ -64,6 +64,9 @@ spec:
           - name: lister-credentials-secrets
             mountPath: /etc/credentials/listers
             readOnly: true
+          - name: sentry-settings-for-celery-tasks
+            mountPath: /etc/credentials/sentry-settings
+            readOnly: true
       containers:
       - name: listers
         resources:
@@ -94,15 +97,6 @@ spec:
           value: /etc/swh/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
-        - name: SWH_MAIN_PACKAGE
-          value: {{ $.Values.listers.sentrySwhPackage }}
-        - name: SWH_SENTRY_DSN
-          valueFrom:
-            secretKeyRef:
-              name: common-secrets
-              key: lister-sentry-dsn
-              # 'name' secret must exist & include key "host"
-              optional: false
         volumeMounts:
           - name: lister-utils
             mountPath: /pre-stop.sh
@@ -131,6 +125,10 @@ spec:
       - name: lister-credentials-secrets
         secret:
           secretName: lister-credentials-secrets
+          optional: true
+      - name: sentry-settings-for-celery-tasks
+        secret:
+          secretName: sentry-settings-for-celery-tasks
           optional: true
 {{ end }}
 {{- end -}}
