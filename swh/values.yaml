@@ -146,7 +146,6 @@ loaders:
     #     queueThreshold: 5  # spawn worker per increment of `value` messages
     #     minReplicacount: 1
     #     maxReplicaCount: 3
-    #   sentrySwhPackage: swh.loader.git
 
 cookers:
   enabled: false

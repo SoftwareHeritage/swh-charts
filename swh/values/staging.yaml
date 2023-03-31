@@ -20,7 +20,6 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 2
-      sentrySwhPackage: swh.loader.git
     archive:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -29,7 +28,6 @@ loaders:
         - swh.loader.package.archive.tasks.LoadArchive
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     bzr:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -37,7 +35,6 @@ loaders:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.bzr
     cran:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -46,7 +43,6 @@ loaders:
         - swh.loader.package.cran.tasks.LoadCRAN
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     cvs:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -54,7 +50,6 @@ loaders:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.cvs
     content:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -63,7 +58,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
-      sentrySwhPackage: swh.loader.core
     directory:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -72,7 +66,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
-      sentrySwhPackage: swh.loader.core
     debian:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -81,7 +74,6 @@ loaders:
         - swh.loader.package.debian.tasks.LoadDebian
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     deposit:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -91,7 +83,6 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 2
-      sentrySwhPackage: swh.loader.core
       extraConfig:
         deposit:
           url: "https://deposit-rp.internal.staging.swh.network/1/private"
@@ -109,7 +100,6 @@ loaders:
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.git
     golang:
       image: swh_loader_package_image
       requestedMemory: 256Mi
@@ -118,7 +108,6 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     highpriority:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -138,7 +127,6 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 3
-      sentrySwhPackage: swh.loader.highpriority
     maven:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -147,7 +135,6 @@ loaders:
         - swh.loader.package.maven.tasks.LoadMaven
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     mercurial:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -156,7 +143,6 @@ loaders:
         - swh.loader.mercurial.tasks.LoadMercurial
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.mercurial
     npm:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -165,7 +151,6 @@ loaders:
         - swh.loader.package.npm.tasks.LoadNpm
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     opam:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -174,7 +159,6 @@ loaders:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
       extraConfig:
         # FIXME: Find a way to avoid this initialization step in loader task
         initialize_opam_root: true
@@ -186,7 +170,6 @@ loaders:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -195,7 +178,6 @@ loaders:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.core
     svn:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -205,11 +187,9 @@ loaders:
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         maxReplicaCount: 1
-      sentrySwhPackage: swh.loader.svn
 
 listers:
   enabled: true
-  sentrySwhPackage: swh.lister
   storage:
     host: storage1.internal.staging.swh.network
     port: 5002
