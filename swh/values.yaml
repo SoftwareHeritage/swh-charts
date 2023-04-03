@@ -167,7 +167,6 @@ storage:
   requestedMemory: 100Mi
   autoScaling:
     maxReplicaCount: 1
-  storageClass: cassandra
 #  affinity:
 #    nodeAffinity:
 #      requiredDuringSchedulingIgnoredDuringExecution:
@@ -188,12 +187,24 @@ storage:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: storage-sentry-dsn
-  cassandra:
-    initKeyspace: false # only to bootstrap a new cassandra database
-    seeds:
-      - seed1
-    keySpace: swh
-    consistencyLevel: LOCAL_QUORUM
+  # Mandatory: must be 'postgresql' or 'cassandra'
+  storageClass:
+  # if storageClass is 'cassandra'
+  # cassandra:
+  #   initKeyspace: false # only to bootstrap a new cassandra database
+  #   seeds:
+  #     - seed1
+  #   keySpace: swh
+  #   consistencyLevel: LOCAL_QUORUM
+  #  if storageClass is 'postgresql'
+  # postgresql:
+  #   host: postgresql
+  #   port: 5432
+  #   db: softwareheritage
+  #   user: guest
+  #   # name of the secret containing the $secretKeyName value
+  #   secretKeyRef: common-secrets
+  #   secretKeyName: storage-postgresql-password
   objstorage:
     cls: noop
 

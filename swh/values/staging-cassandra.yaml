@@ -172,7 +172,7 @@ storage_replayer:
         maxReplicaCount: 5
 
 storage:
-  enabled: true
+  enabled: false
   replicas: 1
   requestedCpu: 50m
   requestedMemory: 100Mi
@@ -184,3 +184,12 @@ storage:
       - cassandra1.internal.staging.swh.network
       - cassandra2.internal.staging.swh.network
       - cassandra3.internal.staging.swh.network
+    keySpace: swh
+    consistencyLevel: LOCAL_QUORUM
+  objstorage:
+    cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://storage1.internal.staging.swh.network:5003/
+    filters_conf:
+    - type: readonly

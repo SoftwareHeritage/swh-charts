@@ -37,12 +37,23 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          {{- if eq .Values.storage.storageClass "postgresql" }}
+          env:
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.storage.postgresql.secretKeyRef }}
+                key: {{ .Values.storage.postgresql.secretKeyName }}
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{- if .Values.storage.cassandra.initKeyspace }}
+        {{- if eq .Values.storage.storageClass "cassandra" }}
+          {{- if .Values.storage.cassandra.initKeyspace }}
         - name: init-database
           image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
           imagePullPolicy: Always
@@ -51,6 +62,7 @@ spec:
           args:
           - -c
           - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first .Values.storage.cassandra.seeds }}'], 'swh')\" | python3"
+          {{- end }}
         {{- end }}
       containers:
         - name: storage
