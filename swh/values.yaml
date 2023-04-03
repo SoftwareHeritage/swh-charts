@@ -194,6 +194,8 @@ storage:
       - seed1
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
+  objstorage:
+    cls: noop
 
 statsd_exporter:
   enabled: false
