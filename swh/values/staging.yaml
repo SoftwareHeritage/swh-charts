@@ -327,7 +327,7 @@ loader_metadata:
   scheduler:
     host: scheduler0.internal.staging.swh.network
     port: 5008
-  consumerGroup: swh.loader_metadata.journal_client
+  consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
     secretName: swh-archive-broker-secret
