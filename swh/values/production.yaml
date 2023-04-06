@@ -77,7 +77,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 2
     highpriority:
-      requestedMemory: 256Mi
+      requestedMemory: 2048Mi
       requestedCpu: 200m
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
