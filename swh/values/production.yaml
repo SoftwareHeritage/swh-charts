@@ -94,7 +94,7 @@ loaders:
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 5
+        maxReplicaCount: 16
 
 loader_metadata:
   enabled: true
