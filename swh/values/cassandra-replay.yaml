@@ -44,8 +44,11 @@ storage_replayer:
       objects:
         - directory
       batchSize: 250
-      requestedCpu: 350m
-      requestedMemory: 250Mi
+      # Full replay
+      requestedCpu: 500m
+      #requestedMemory: 250Mi
+      #Follow up consumption
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 16
       specific_options:
