@@ -93,6 +93,7 @@ loaders:
         - save_code_now:swh.loader.package.archive.tasks.LoadArchive
       ackLate: true
       autoScaling:
+        stopWhenNoActivity: false
         queueThreshold: 1
         minReplicaCount: 16
         maxReplicaCount: 16
