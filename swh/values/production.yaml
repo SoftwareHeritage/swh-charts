@@ -53,7 +53,7 @@ loaders:
         - oneshot2:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 10
+        maxReplicaCount: 12
       extraConfig:
         temp_file_cutoff: 10737418240
       affinity:
