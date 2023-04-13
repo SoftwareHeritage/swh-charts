@@ -1,0 +1,60 @@
+suite: test loaders keda-autoscaling
+templates:
+  - loaders/keda-autoscaling.yaml
+tests:
+  - it: Loaders keda downscale to 0 activated by default
+    set:
+      namespace: test-namespace
+      loaders:
+        enabled: true
+        deployments:
+          test:
+            queues:
+              - queue
+            autoScaling:
+              queueThreshold: 1
+
+    asserts:
+      - containsDocument:
+          kind: ScaledObject
+          apiVersion: keda.sh/v1alpha1
+          namespace: test-namespace
+          name: loader-test-operators
+      - equal:
+          path: spec.idleReplicaCount
+          value: 0
+
+  - it: Loaders keda downscale deactivated when "stopWhenNoActivity" is false
+    values:
+      - values/loaders-autoscaling.yaml
+    set:
+      namespace: test-namespace
+      loaders:
+        enabled: true
+        deployments:
+          test:
+            queues:
+              - queue
+            autoScaling:
+              stopWhenNoActivity: false
+              queueThreshold: 1
+    asserts:
+      - isNull:
+          path: spec.idleReplicaCount
+
+  - it: Loaders keda downscale activated when "stopWhenNoActivity" is true
+    set:
+      namespace: test-namespace
+      loaders:
+        enabled: true
+        deployments:
+          test:
+            queues:
+              - queue
+            autoScaling:
+              stopWhenNoActivity: true
+              queueThreshold: 1
+    asserts:
+      - equal:
+          path: spec.idleReplicaCount
+          value: 0

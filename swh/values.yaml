@@ -143,7 +143,9 @@ loaders:
     #   queues:
     #     - swh.loader.git.tasks.UpdateGitRepository
     #   autoScaling:
-    #     queueThreshold: 5  # spawn worker per increment of `value` messages
+    #     # Downscale to 0 loaders when the queue is empty
+    #     stopWhenNoActivity: false
+    #     queueThreshold: 10  # spawn worker per increment of `value` messages
     #     minReplicacount: 1
     #     maxReplicaCount: 3
 

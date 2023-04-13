@@ -1,0 +1,17 @@
+{{ if .Values.loaders.enabled -}}
+{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{ if get $deployment_config "autoScaling" }}
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: amqp-authentication-loader-{{ $loader_type }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  secretTargetRef:
+  - parameter: host            # "host" is required by the scalerObject trigger metadata
+    name: common-secrets
+    key: rabbitmq-http-host
+{{ end -}}
+{{ end -}}
+{{ end -}}

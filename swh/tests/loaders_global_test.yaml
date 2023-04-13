@@ -1,0 +1,13 @@
+suite: test global loaders deployment
+templates:
+  - loaders/configmap.yaml
+  - loaders/deployment.yaml
+  - loaders/keda-autoscaling.yaml
+  - loaders/keda-authentication.yaml
+tests:
+  - it: Loader are not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
