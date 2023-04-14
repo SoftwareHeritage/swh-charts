@@ -172,12 +172,11 @@ storage_replayer:
         maxReplicaCount: 5
 
 storage:
-  enabled: false
-  replicas: 1
-  requestedCpu: 50m
-  requestedMemory: 100Mi
-  autoScaling:
-    maxReplicaCount: 1
+  enabled: true
+  replicas: 2
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+
   storageClass: cassandra
   cassandra:
     seeds:
@@ -190,6 +189,6 @@ storage:
     cls: filtered
     storage_conf:
       cls: remote
-      url: http://storage1.internal.staging.swh.network:5003/
+      url: http://objstorage0.internal.staging.swh.network:5003/
     filters_conf:
     - type: readonly
