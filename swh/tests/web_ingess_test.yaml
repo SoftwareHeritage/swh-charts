@@ -1,0 +1,24 @@
+
+suite: test web ingress deployment
+templates:
+  - web/ingress.yaml
+tests:
+  - it: web ingress is deployed when activated
+    set:
+      web.enabled: true
+      namespace: mynamespace
+      ingressClassName: myingressClass
+      host: myhost
+    asserts:
+        - containsDocument:
+            kind: Ingress
+            apiVersion: networking.k8s.io/v1
+        - equal:
+            path: metadata.namespace
+            value: mynamespace
+        - equal:
+            path: spec.ingressClassName
+            value: myingressClass
+        - equal:
+            path: spec.rules[0].host
+            value: myhost

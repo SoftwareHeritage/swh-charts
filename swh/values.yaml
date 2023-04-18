@@ -210,6 +210,36 @@ storage:
   objstorage:
     cls: noop
 
+web:
+  enabled: false
+  logLevel: INFO
+  replicas: 1
+  requestedCpu: 50m
+  requestedMemory: 100Mi
+  autoScaling:
+    maxReplicaCount: 1
+#  affinity:
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: swh/web
+#            operator: In
+#            values:
+#            - "true"
+#  gunicorn:
+#    threads: 5
+#    workers: 2
+#    timeout: 60
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: web-sentry-dsn
+  configSecretRef: swh-cassandra-webapp-config
+
 statsd_exporter:
   enabled: false
   image: prom/statsd-exporter

@@ -1,10 +1,10 @@
-suite: test storage service deployment
+suite: test web service deployment
 templates:
-  - storage/service.yaml
+  - web/service.yaml
 tests:
-  - it: Storage service is deployed when activated
+  - it: web service is deployed when activated
     set:
-      storage.enabled: true
+      web.enabled: true
       namespace: mynamespace
     asserts:
         - containsDocument:

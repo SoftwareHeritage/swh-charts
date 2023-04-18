@@ -1,0 +1,12 @@
+suite: test web default deployment
+templates:
+  - web/deployment.yaml
+  - web/ingress.yaml
+  - web/service.yaml
+tests:
+  - it: Web is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

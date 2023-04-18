@@ -1,0 +1,165 @@
+{{ if .Values.web.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: web
+  labels:
+    app: web
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .Values.web.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      {{- if .Values.web.affinity }}
+      affinity:
+        {{- toYaml .Values.web.affinity | nindent 8 }}
+      {{- end }}
+      initContainers:
+      #  - name: prepare-configuration
+      #    image: debian:bullseye
+      #    imagePullPolicy: Always
+      #    command:
+      #    - /bin/bash
+      #    args:
+      #    - -c
+      #    - eval echo "\"$(</etc/softwareheritage/configuration-template/config.yml.template)\"" > /etc/softwareheritage/config.yml
+      #    volumeMounts:
+      #    - name: configuration
+      #      mountPath: /etc/softwareheritage
+      #    - name: configuration-template
+      #      mountPath: /etc/softwareheritage/configuration-template
+        - name: prepare-static
+          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - cp -r $PWD/.local/share/swh/web/static/ /usr/share/swh/web/static/
+          volumeMounts:
+          - name: static
+            mountPath: /usr/share/swh/web/static
+      containers:
+        - name: web
+          resources:
+            requests:
+              memory: {{ .Values.web.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.web.requestedCpu | default "500m" }}
+          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5004
+              name: webapp
+          readinessProbe:
+            httpGet:
+              path: /
+              port: webapp
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: webapp
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /srv/swh/entrypoint.sh
+          env:
+            {{ if .Values.web.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.web.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.web.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.web.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.web.logLevel | quote }}
+            {{- if .Values.web.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.web
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.web.sentry.secretKeyRef }}
+                  key: {{ .Values.web.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+            {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/softwareheritage
+            readOnly: true
+        - name: nginx
+          resources:
+            requests:
+              memory: {{ .Values.web.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.web.requestedCpu | default "500m" }}
+          image: nginx:bullseye
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+              name: webstatic
+          readinessProbe:
+            httpGet:
+              path: static/robots.txt
+              port: webstatic
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: static/robots.txt
+              port: webstatic
+            initialDelaySeconds: 3
+            periodSeconds: 10
+        #  command:
+        #  - /bin/bash
+        #  args:
+        #  - -c
+        #  - /srv/swh/entrypoint.sh
+          volumeMounts:
+          - name: static
+            mountPath: /usr/share/nginx/html
+      volumes:
+      - name: configuration
+        secret:
+          secretName: {{ .Values.web.configSecretRef }}
+      #- name: configuration
+      #  emptyDir: {}
+      #- name: configuration-template
+      #  configMap:
+      #    name: web-configuration-template
+      #    items:
+      #    - key: "config.yml.template"
+      #      path: "config.yml.template"
+      - name: static
+        emptyDir: {}
+{{ end }}
