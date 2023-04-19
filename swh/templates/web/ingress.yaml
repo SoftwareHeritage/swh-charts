@@ -4,11 +4,13 @@ kind: Ingress
 metadata:
   namespace: {{ .Values.namespace }}
   name: swh-web-ingress
-#  annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
+  {{- if .Values.web.ingressAnnotations }}
+  annotations:
+    {{- toYaml .Values.web.ingressAnnotations | nindent 6 }}
+  {{- end }}
 spec:
-  {{- if .Values.ingressClassName }}
-  ingressClassName: {{ .Values.ingressClassName }}
+  {{- if .Values.web.ingressClassName }}
+  ingressClassName: {{ .Values.web.ingressClassName }}
   {{- end }}
   rules:
   - http:
@@ -27,7 +29,11 @@ spec:
             name: web
             port:
               number: 80
-    {{- if .Values.host }}
-    host: {{ .Values.host }}
-    {{- end }}
+    host: {{ .Values.web.host }}
+  {{- if .Values.web.tlsEnabled }}
+  tls:
+  - hosts:
+    - {{ .Values.web.host }}
+    secretName: swh-web-crt
+  {{- end }}
 {{ end }}

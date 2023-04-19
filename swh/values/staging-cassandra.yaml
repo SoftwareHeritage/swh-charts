@@ -192,3 +192,23 @@ storage:
       url: http://objstorage0.internal.staging.swh.network:5003/
     filters_conf:
     - type: readonly
+
+web:
+  enabled: true
+  logLevel: INFO
+  replicas: 2
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  #autoScaling:
+  #  maxReplicaCount: 5
+  configSecretRef: swh-cassandra-webapp-config
+  host: webapp-cassandra.internal.staging.swh.network
+  ingressAnnotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  tlsEnabled: true
+
+memcached:
+  enabled: true

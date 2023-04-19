@@ -116,5 +116,18 @@ storage:
             values:
             - "true"
 
+web:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/web
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true
