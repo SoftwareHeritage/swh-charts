@@ -22,7 +22,7 @@ spec:
   {{- if or (not (hasKey $autoscalingConfig "stopWhenNoActivity")) (get $autoscalingConfig "stopWhenNoActivity") }}
   idleReplicaCount: 0                          # Set to 0 to stop all the workers when there is
                                                # no activity on the queue
-  {{ end -}}
+  {{- end }}
   minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
   maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
   triggers:
