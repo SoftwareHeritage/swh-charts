@@ -150,6 +150,7 @@ storage_replayer:
     skipped-content:
       objects:
         - skipped_content
+      privileged: true
       batchSize: 100
       # Full replay
       requestedCpu: 300m
