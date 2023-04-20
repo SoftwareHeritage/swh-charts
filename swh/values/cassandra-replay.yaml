@@ -144,17 +144,17 @@ storage_replayer:
       requestedMemory: 400Mi
       autoScaling:
         maxReplicaCount: 5
-    skipped-content:
-      objects:
-        - skipped_content
-      batchSize: 100
-      # Full replay
-      #requestedCpu: 300m
-      requestedMemory: 400Mi
-      # follow up consumption
-      requestedCpu: 50m
-      autoScaling:
-        maxReplicaCount: 5
+    # skipped-content:
+    #   objects:
+    #     - skipped_content
+    #   batchSize: 100
+    #   # Full replay
+    #   #requestedCpu: 300m
+    #   requestedMemory: 400Mi
+    #   # follow up consumption
+    #   requestedCpu: 50m
+    #   autoScaling:
+    #     maxReplicaCount: 5
     snapshot:
       objects:
         - snapshot
