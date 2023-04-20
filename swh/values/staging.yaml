@@ -35,7 +35,6 @@ loaders:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
         maxReplicaCount: 1
-      useJsonLogger: true
     cran:
       requestedMemory: 256Mi
       requestedCpu: 200m
