@@ -87,53 +87,57 @@ storage_replayer:
     #   # requestedCpu: 50m
     #   autoScaling:
     #     maxReplicaCount: 5
-    # origin:
-    #   objects:
-    #     - origin
-    #   batchSize: 1000
-    #   # Full replay
-    #   requestedCpu: 400m
-    #   requestedMemory: 200Mi
-    #   #Follow up consumption
-    #   # requestedCpu: 50m
-    #   autoScaling:
-    #     maxReplicaCount: 5
-    # origin-visit:
-    #   objects:
-    #     - origin_visit
-    #   batchSize: 1000
-    #   # Full replay
-    #   requestedCpu: 400m
-    #   requestedMemory: 400Mi
-    #   #Follow up consumption
-    #   # requestedCpu: 100m
-    #   # requestedMemory: 100Mi
-    #   autoScaling:
-    #     maxReplicaCount: 5
-    # origin-visit-status:
-    #   objects:
-    #     - origin_visit_status
-    #   batchSize: 1000
-    #   # Full replay
-    #   requestedCpu: 500m
-    #   requestedMemory: 300Mi
-    #   #Follow up consumption
-    #   # requestedCpu: 55m
-    #   # requestedMemory: 200Mi
-    #   autoScaling:
-    #     maxReplicaCount: 5
-    # release:
-    #   objects:
-    #     - release
-    #   batchSize: 1000
-    #   privileged: true
-    #   # Full replay
-    #   requestedCpu: 600m
-    #   requestedMemory: 300Mi
-    #   # follow up consumption
-    #   # requestedCpu: 50m
-    #   autoScaling:
-    #     maxReplicaCount: 5
+    origin:
+      objects:
+        - origin
+      privileged: true
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      #Follow up consumption
+      # requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    origin-visit:
+      objects:
+        - origin_visit
+      privileged: true
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 400Mi
+      #Follow up consumption
+      # requestedCpu: 100m
+      # requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 5
+    origin-visit-status:
+      objects:
+        - origin_visit_status
+      privileged: true
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 300Mi
+      #Follow up consumption
+      # requestedCpu: 55m
+      # requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 5
+    release:
+      objects:
+        - release
+      privileged: true
+      batchSize: 1000
+      privileged: true
+      # Full replay
+      requestedCpu: 600m
+      requestedMemory: 300Mi
+      # follow up consumption
+      # requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
     revision:
       objects:
         - revision
