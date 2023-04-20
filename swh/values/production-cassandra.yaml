@@ -3,7 +3,7 @@ sentry:
   environment: production
 
 storage_replayer:
-  enabled: true
+  enabled: false
 
   affinity:
     nodeAffinity:
