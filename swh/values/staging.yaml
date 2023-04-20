@@ -100,6 +100,7 @@ loaders:
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
         maxReplicaCount: 1
+      useJsonLogger: true
     golang:
       image: swh_loader_package_image
       requestedMemory: 256Mi
