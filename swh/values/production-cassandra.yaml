@@ -176,3 +176,48 @@ storage_replayer:
       autoScaling:
         maxReplicaCount: 5
 
+storage:
+  enabled: true
+  replicas: 2
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  storageClass: cassandra
+  cassandra:
+    seeds:
+      - cassandra01.internal.softwareheritage.org
+      - cassandra02.internal.softwareheritage.org
+      - cassandra03.internal.softwareheritage.org
+      - cassandra04.internal.softwareheritage.org
+      - cassandra05.internal.softwareheritage.org
+      - cassandra06.internal.softwareheritage.org
+      - cassandra07.internal.softwareheritage.org
+      - cassandra08.internal.softwareheritage.org
+    keySpace: swh
+    consistencyLevel: LOCAL_QUORUM
+  objstorage:
+    cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://objstorage.internal.softwareheritage.org:5003/
+    filters_conf:
+    - type: readonly
+
+web:
+  enabled: true
+  logLevel: INFO
+  replicas: 2
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  #autoScaling:
+  #  maxReplicaCount: 5
+  configSecretRef: swh-cassandra-webapp-config
+  host: webapp-cassandra.internal.softwareheritage.org
+  ingressAnnotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  tlsEnabled: true
+
+memcached:
+  enabled: true
