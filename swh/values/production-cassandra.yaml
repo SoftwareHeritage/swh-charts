@@ -56,17 +56,17 @@ storage_replayer:
     #     maxReplicaCount: 10
     #   specific_options:
     #     directory_entries_insert_algo: batch
-    # extid:
-    #   objects:
-    #     - extid
-    #   batchSize: 1000
-    #   # Full replay
-    #   requestedCpu: 400m
-    #   requestedMemory: 200Mi
-    #   #Follow up consumption
-    #   # requestedCpu: 50m
-    #   autoScaling:
-    #     maxReplicaCount: 5
+    extid:
+      objects:
+        - extid
+      batchSize: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      #Follow up consumption
+      # requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
     # metadata:
     #   objects:
     #     - metadata_authority
@@ -93,10 +93,10 @@ storage_replayer:
       privileged: true
       batchSize: 1000
       # Full replay
-      requestedCpu: 400m
+      # requestedCpu: 400m
       requestedMemory: 200Mi
       #Follow up consumption
-      # requestedCpu: 50m
+      requestedCpu: 50m
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
@@ -132,10 +132,10 @@ storage_replayer:
       batchSize: 1000
       privileged: true
       # Full replay
-      requestedCpu: 600m
+      # requestedCpu: 600m
       requestedMemory: 300Mi
       # follow up consumption
-      # requestedCpu: 50m
+      requestedCpu: 50m
       autoScaling:
         maxReplicaCount: 5
     revision:
@@ -144,11 +144,11 @@ storage_replayer:
       batchSize: 1000
       privileged: true
       # Full replay
-      requestedCpu: 750m
-      requestedMemory: 750Mi
+      # requestedCpu: 750m
+      # requestedMemory: 750Mi
       # follow up consumption
-      # requestedCpu: 50m
-      # requestedMemory: 400Mi
+      requestedCpu: 50m
+      requestedMemory: 400Mi
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
@@ -157,20 +157,20 @@ storage_replayer:
       privileged: true
       batchSize: 100
       # Full replay
-      requestedCpu: 300m
+      # requestedCpu: 300m
       requestedMemory: 400Mi
       # follow up consumption
-      # requestedCpu: 50m
+      requestedCpu: 50m
       autoScaling:
         maxReplicaCount: 5
-    # snapshot:
-    #   objects:
-    #     - snapshot
-    #   batchSize: 250
-    #   requestedCpu: 400m
-    #   requestedMemory: 250Mi
-    #   # follow up consumption
-    #   # requestedCpu: 80m
-    #   autoScaling:
-    #     maxReplicaCount: 5
+    snapshot:
+      objects:
+        - snapshot
+      batchSize: 250
+      requestedCpu: 400m
+      requestedMemory: 250Mi
+      # follow up consumption
+      # requestedCpu: 80m
+      autoScaling:
+        maxReplicaCount: 5
 
