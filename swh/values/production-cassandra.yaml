@@ -59,6 +59,7 @@ storage_replayer:
     extid:
       objects:
         - extid
+      privileged: true
       batchSize: 1000
       # Full replay
       requestedCpu: 400m
@@ -166,6 +167,7 @@ storage_replayer:
     snapshot:
       objects:
         - snapshot
+      privileged: true
       batchSize: 250
       requestedCpu: 400m
       requestedMemory: 250Mi
