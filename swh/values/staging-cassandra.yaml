@@ -192,6 +192,9 @@ storage:
       url: http://objstorage0.internal.staging.swh.network:5003/
     filters_conf:
     - type: readonly
+  ingress:
+    enabled: true
+    host: storage-cassandra.internal.staging.swh.network
 
 web:
   enabled: true
