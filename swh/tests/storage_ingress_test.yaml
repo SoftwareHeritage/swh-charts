@@ -1,0 +1,40 @@
+suite: test storage deployment
+templates:
+  - storage/ingress.yaml
+tests:
+  - it: Storage ingress not deployed by default
+    set:
+      storage.enabled: true
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: Storage ingress default values
+    set:
+      storage.enabled: true
+      storage.ingress.enabled: true
+      storage.ingress.host: mystorage.localdomain
+    asserts:
+      - containsDocument:
+          kind: Ingress
+          apiVersion: networking.k8s.io/v1
+          namespace: swh
+          name: storage-ingress
+      - isNull:
+          path: spec.ingressClassName
+      - equal:
+          path: spec.rules[0].host
+          value: mystorage.localdomain
+  - it: Storage ingress specific values
+    set:
+      storage.enabled: true
+      storage.ingress.enabled: true
+      storage.ingress.className: my-ingress-class
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: spec.ingressClassName
+          value: my-ingress-class
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+

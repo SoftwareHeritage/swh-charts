@@ -1,7 +1,8 @@
 suite: test storage deployment
 templates:
-  - storage/deployment.yaml
   - storage/configmap.yaml
+  - storage/deployment.yaml
+  - storage/ingress.yaml
   - storage/service.yaml
 tests:
   - it: Storage is not deployed by default
