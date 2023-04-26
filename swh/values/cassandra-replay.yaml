@@ -64,26 +64,26 @@ storage_replayer:
     #   requestedCpu: 50m
     #   autoScaling:
     #     maxReplicaCount: 5
-    metadata:
-      objects:
-        - metadata_authority
-        - metadata_fetcher
-      # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
-      autoScaling:
-        maxReplicaCount: 5
-    raw-extrinsic-metadata:
-      objects:
-        - raw_extrinsic_metadata
-      batchSize: 250
-      # Full replay
-      #requestedCpu: 400m
-      requestedMemory: 200Mi
-      # follow up consumption
-      requestedCpu: 50m
-      autoScaling:
-        maxReplicaCount: 5
+    # metadata:
+    #   objects:
+    #     - metadata_authority
+    #     - metadata_fetcher
+    #   # follow up consumption
+    #   requestedCpu: 50m
+    #   requestedMemory: 100Mi
+    #   autoScaling:
+    #     maxReplicaCount: 5
+    # raw-extrinsic-metadata:
+    #   objects:
+    #     - raw_extrinsic_metadata
+    #   batchSize: 250
+    #   # Full replay
+    #   #requestedCpu: 400m
+    #   requestedMemory: 200Mi
+    #   # follow up consumption
+    #   requestedCpu: 50m
+    #   autoScaling:
+    #     maxReplicaCount: 5
     # origin:
     #   objects:
     #     - origin
@@ -155,14 +155,14 @@ storage_replayer:
     #   requestedCpu: 50m
     #   autoScaling:
     #     maxReplicaCount: 5
-    snapshot:
-      objects:
-        - snapshot
-      batchSize: 250
-      # Full replay
-      # requestedCpu: 400m
-      requestedMemory: 250Mi
-      # follow up consumption
-      requestedCpu: 80m
-      autoScaling:
-        maxReplicaCount: 5
+    # snapshot:
+    #   objects:
+    #     - snapshot
+    #   batchSize: 250
+    #   # Full replay
+    #   # requestedCpu: 400m
+    #   requestedMemory: 250Mi
+    #   # follow up consumption
+    #   requestedCpu: 80m
+    #   autoScaling:
+    #     maxReplicaCount: 5
