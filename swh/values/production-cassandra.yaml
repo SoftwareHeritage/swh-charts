@@ -36,26 +36,28 @@ storage_replayer:
     port: 6379
     db: 1
   deployments:
-    # content:
-    #   objects:
-    #     - content
-    #   requestedCpu: 425m
-    #   requestedMemory: 200Mi
-    #   autoScaling:
-    #     maxReplicaCount: 10
-    # directory:
-    #   objects:
-    #     - directory
-    #   batchSize: 250
-    #   # Full replay
-    #   requestedCpu: 500m
-    #   requestedMemory: 250Mi
-    #   #Follow up consumption
-    #   # requestedMemory: 100Mi
-    #   autoScaling:
-    #     maxReplicaCount: 10
-    #   specific_options:
-    #     directory_entries_insert_algo: batch
+    content:
+      objects:
+        - content
+      privileged: true
+      requestedCpu: 425m
+      requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 5
+    directory:
+      objects:
+        - directory
+      privileged: true
+      batchSize: 250
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 250Mi
+      # Follow up consumption
+      # requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 5
+      specific_options:
+        directory_entries_insert_algo: batch
     extid:
       objects:
         - extid
@@ -133,7 +135,6 @@ storage_replayer:
         - release
       privileged: true
       batchSize: 1000
-      privileged: true
       # Full replay
       # requestedCpu: 600m
       requestedMemory: 300Mi
