@@ -197,8 +197,13 @@ storage:
       - cassandra08.internal.softwareheritage.org
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
-  objstorageClass: multiplexer
-  objstorageConfig: ${OBJSTORAGECONFIG}
+  objstorageClass: filtered
+  objstorageConfig:
+    storage_conf:
+      cls: remote
+      url: http://objstorage.internal.softwareheritage.org:5003/
+    filters_conf:
+    - type: readonly
 
 web:
   enabled: true
