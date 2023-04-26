@@ -37,7 +37,7 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-          {{- if eq .Values.storage.storageClass "postgresql" }}
+        {{- if eq .Values.storage.storageClass "postgresql" }}
           env:
           - name: POSTGRESQL_PASSWORD
             valueFrom:
@@ -46,7 +46,12 @@ spec:
                 key: {{ .Values.storage.postgresql.secretKeyName }}
                 # 'name' secret must exist & include that ^ key
                 optional: false
-          {{- end }}
+        {{- end }}
+        {{- if eq .Values.storage.objstorageClass "multiplexer" }}
+          envFrom:
+          - secretRef:
+              name: swh-cassandra-objstorage-config
+        {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

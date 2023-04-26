@@ -209,6 +209,18 @@ storage:
   #   secretKeyName: storage-postgresql-password
   objstorage:
     cls: noop
+  ##  if objstorage configuration doesn't contains passwords or sensitive data
+  # objstorageClass: filtered
+  # objstorageConfig:
+  #   storage_conf:
+  #     cls: remote
+  #     url: http://storage1.internal.staging.swh.network:5003/
+  #   filters_conf:
+  #   - type: readonly
+  ## if objstorage configuration contains passwords or sensitive data
+  ## /!\ the configmap indentation (10) had to be defined in the secret
+  # objstorageClass: multiplexer
+  # objstorageConfig: ${OBJSTORAGECONFIG}
 
   # Deploy an ingress to access the storage
   ingress:

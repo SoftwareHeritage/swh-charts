@@ -25,5 +25,11 @@ data:
         {{- end }}
       {{- end }}
       objstorage:
-      {{- toYaml .Values.storage.objstorage | nindent 8 }}
+        cls: {{ .Values.storage.objstorageClass }}
+      {{- if eq .Values.storage.objstorageClass "filtered" }}
+        {{- toYaml .Values.storage.objstorageConfig | nindent 8 }}
+      {{- else if eq .Values.storage.objstorageClass "multiplexer" }}
+        objstorages:
+        {{ .Values.storage.objstorageConfig }}
+      {{- end }}
 {{- end -}}

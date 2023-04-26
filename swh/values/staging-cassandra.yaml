@@ -185,8 +185,8 @@ storage:
       - cassandra3.internal.staging.swh.network
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
-  objstorage:
-    cls: filtered
+  objstorageClass: filtered
+  objstorageConfig:
     storage_conf:
       cls: remote
       url: http://objstorage0.internal.staging.swh.network:5003/
