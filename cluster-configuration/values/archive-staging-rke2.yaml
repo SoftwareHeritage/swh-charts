@@ -19,3 +19,21 @@ certManager:
   enabled: true
   webhookGandiEnabled: true
   useGandiDNS: true
+
+otlpCollector:
+  enabled: true
+  debug: false
+  indexes:
+    swh: staging-logs
+    system: staging-system-logs
+  resources:
+    cpu: 256m
+    memory: 2Gi
+    batch: 10
+    timeout: 10s
+  endpoints:
+    - http://esnode1.internal.softwareheritage.org:9200
+    - http://esnode2.internal.softwareheritage.org:9200
+    - http://esnode3.internal.softwareheritage.org:9200
+    - http://esnode7.internal.softwareheritage.org:9200
+
