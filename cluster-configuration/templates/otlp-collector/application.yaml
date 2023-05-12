@@ -22,7 +22,7 @@ spec:
 
   destination:
     server: {{ .Values.clusterUrl }}
-    namespace: {{ .Values.otlpCollector.namespace }}
+    namespace: {{ .Values.otlpCollector.namespace | default "opentelemetry" }}
   syncPolicy:
     automated:
       prune: true

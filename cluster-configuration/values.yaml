@@ -44,6 +44,7 @@ ingressNginx:
 otlpCollector:
   enabled: false
   debug: false
+  # namespace: opentelemetry
   # indexes:
   #   swh: staging-logs
   #   system: staging-system-logs
