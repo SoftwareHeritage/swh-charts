@@ -12,11 +12,11 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    chart: open-telemetry/opentelemetry-operator
+    chart: opentelemetry-collector
     repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
     targetRevision: {{ .Values.otlpCollector.version }}
     helm:
-      releaseName: opentelemetry-operator
+      releaseName: opentelemetry-collector
       values: |
         {{- $collector_config_tpl | nindent 8 }}
 
