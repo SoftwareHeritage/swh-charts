@@ -273,7 +273,6 @@ config:
         receivers:
           - filelog/system
         processors:
-          - memory_limiter
           - batch
           - resource
           - k8sattributes
@@ -285,7 +284,6 @@ config:
         receivers:
           - filelog/swh
         processors:
-          - memory_limiter
           - batch
           - resource
           - k8sattributes
