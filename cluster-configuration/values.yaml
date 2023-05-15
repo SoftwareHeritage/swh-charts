@@ -44,7 +44,7 @@ ingressNginx:
 otlpCollector:
   enabled: false
   debug: false
-  # version: 0.57.0
+  version: 0.57.0
   # namespace: opentelemetry
   # indexes:
   #   swh: staging-logs

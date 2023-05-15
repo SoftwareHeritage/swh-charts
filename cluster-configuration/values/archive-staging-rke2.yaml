@@ -22,7 +22,6 @@ certManager:
 
 otlpCollector:
   enabled: true
-  version: 0.57.0
   debug: false
   indexes:
     swh: staging-logs
