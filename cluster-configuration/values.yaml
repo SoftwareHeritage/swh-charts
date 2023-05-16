@@ -46,7 +46,7 @@ otlpCollector:
   debug: false
   version: 0.57.0
   # namespace: opentelemetry
-  # indexes:
+  indexes: {}
   #   swh: staging-logs
   #   system: staging-system-logs
   # resources:
