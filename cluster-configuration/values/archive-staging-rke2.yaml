@@ -24,6 +24,8 @@ otlpCollector:
   enabled: true
   debug: false
   indexes:
+    # misnamed: should be logs-{swh,system}-staging, kept for retro compatibility with
+    # development tryouts
     swh: staging-logs
     system: staging-system-logs
   resources:
