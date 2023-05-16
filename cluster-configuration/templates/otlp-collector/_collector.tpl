@@ -48,7 +48,7 @@ extraVolumeMounts:
   name: varlogpods
 
 resources:
-  limits:
+  requests:
     cpu: {{ .Values.otlpCollector.resources.cpu | default "256m" }}
     memory: {{ .Values.otlpCollector.resources.memory | default "2Gi" }}
 
