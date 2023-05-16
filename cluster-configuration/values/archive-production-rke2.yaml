@@ -23,9 +23,6 @@ certManager:
 otlpCollector:
   enabled: true
   debug: false
-  indexes:
-    swh: logs-swh-production
-    system: logs-system-production
   resources:
     cpu: 1024m
     memory: 16Gi

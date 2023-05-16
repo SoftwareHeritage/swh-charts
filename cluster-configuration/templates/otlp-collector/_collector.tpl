@@ -3,8 +3,8 @@
 # in the argocd application defined in application.yaml
 {{ if .Values.otlpCollector.enabled -}}
 {{- $environment := get .Values "environment" }}
-{{- $logs_swh := .Values.otlpCollector.indexes.swh | default ( print "logs-swh-" $environment ) -}}
-{{- $logs_system := .Values.otlpCollector.indexes.system | default ( print "logs-system-" $environment ) -}}
+{{- $logs_swh := .Values.otlpCollector.indexes.swh | default ( print $environment "-swh-logs" ) -}}
+{{- $logs_system := .Values.otlpCollector.indexes.system | default ( print $environment "-system-logs" ) -}}
 {{- $activate_debug := .Values.otlpCollector.debug -}}
 ---
 mode: daemonset
