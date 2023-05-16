@@ -21,6 +21,7 @@ storage_replayer:
       - kafka3.internal.softwareheritage.org:9094
       - kafka4.internal.softwareheritage.org:9094
     user: swh-cassandra-prod
+  storageClass: cassandra
   cassandra:
     seeds:
       - cassandra01.internal.softwareheritage.org

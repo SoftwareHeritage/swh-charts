@@ -37,6 +37,18 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+        {{- if eq $.Values.storage_replayer.storageClass "postgresql" }}
+          {{ with .Values.storage_replayer.postgresql }}
+          env:
+          - name: POSTGRESQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .secretKeyRef }}
+                key: {{ .secretKeyName }}
+                # 'name' secret must exist & include that ^ key
+                optional: false
+          {{- end }}
+        {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

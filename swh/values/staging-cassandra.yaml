@@ -19,6 +19,7 @@ storage_replayer:
       - journal1.internal.staging.swh.network:9094
     user: swh-cassandra-stg
     secretName: swh-cassandra-broker-secret
+  storageClass: cassandra
   cassandra:
     initKeyspace: true # only to bootstrap a new cassandra database
     seeds:

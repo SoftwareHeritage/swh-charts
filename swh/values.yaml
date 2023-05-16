@@ -69,7 +69,6 @@ tmpEphemeralStorage:
 
 storage_replayer:
   enabled: false
-  storageClass: cassandra # only cassandra is currently supported
   maxMessagesBytes: "524288000"
   journalBrokers:
     # The name of the secret containing the BROKER_USER_PASSWORD value
@@ -78,6 +77,9 @@ storage_replayer:
     - broker1
     - broker2
     user: myuser
+  ## storage backend must be cassandra or postgresql
+  storageClass: cassandra
+  ## if storageClass is cassandra
   cassandra:
     initKeyspace: false # useful to ensure the cassandra database is bootstrapped
     seeds:
@@ -85,6 +87,17 @@ storage_replayer:
     - seed2
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
+  ## if storageClass is postgresql
+  #postgresql:
+  #  host: db1
+  #  port: '5432'
+  #  user: pg_user
+  #  dbname: swh
+  ## name of the secret containing the $secretKeyName value
+  #  secretKeyRef: swh-postgresql-common-secrets
+  #  secretKeyName: storage-postgresql-password
+  ## if pipeline/filter/retry is needed in storage configuration
+  pipelineFilterRetry: false
   # optional 'replayer' configuration may be specified with a 'error_reporter' config
   # entry allowing to specify redis connection parameters. It will be used to report
   # non-recoverable replaying issues
@@ -205,7 +218,7 @@ storage:
   #   db: softwareheritage
   #   user: guest
   #   # name of the secret containing the $secretKeyName value
-  #   secretKeyRef: common-secrets
+  #   secretKeyRef: swh-postgresql-common-secrets
   #   secretKeyName: storage-postgresql-password
   objstorage:
     cls: noop

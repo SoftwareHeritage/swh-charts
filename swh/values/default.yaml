@@ -15,7 +15,6 @@ tmpEphemeralStorage:
               storage: 100Gi # no effects
 
 storage_replayer:
-  storageClass: cassandra # only cassandra is currently supported
   maxMessagesBytes: "524288000"
   journalBrokers:
     # The name of the secret containing the BROKER_USER_PASSWORD value
