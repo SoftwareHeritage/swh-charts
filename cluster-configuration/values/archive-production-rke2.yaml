@@ -27,8 +27,8 @@ otlpCollector:
     swh: logs-swh-production
     system: logs-system-production
   resources:
-    cpu: 256m
-    memory: 2Gi
+    cpu: 512m
+    memory: 4Gi
     batch: 10
     timeout: 10s
   endpoints:
