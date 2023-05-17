@@ -48,7 +48,9 @@ loaders:
       requestedMemory: 1024Mi
       requestedCpu: 800m
       queues:
-        - oneshot:swh.loader.git.tasks.UpdateGitRepository
+        - large_repository:swh.loader.git.tasks.UpdateGitRepository
+        # for retro-compatibility with running workers
+        # FIXME: To drop when workers are done and queue is empty
         - oneshot2:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
