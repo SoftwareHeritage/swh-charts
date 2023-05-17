@@ -34,7 +34,7 @@ loaders:
   amqp:
     host: rabbitmq.internal.softwareheritage.org
   deployments:
-    addforgenow:
+    add-forge-now:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m

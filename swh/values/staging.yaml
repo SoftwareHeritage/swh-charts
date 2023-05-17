@@ -10,7 +10,7 @@ loaders:
     host: scheduler0.internal.staging.swh.network
     port: 5672
   deployments:
-    addforgenow:
+    add-forge-now:
       image: swh_loader_git_image
       requestedMemory: 256Mi
       requestedCpu: 200m
