@@ -7,8 +7,10 @@
 {{- $local_container_image := get $.Values $local_container_image_key }}
 {{- $local_container_image_version_key := ( print $local_container_image_key "_version" ) }}
 {{- $local_container_image_version := get $.Values $local_container_image_version_key }}
-# otherwise if the global image is defined
-{{- $image_name_key := ( print "swh_loader_" $loader_type "_image" ) -}}
+# otherwise use the global image is defined First this needs to replace - in
+# $loader_type with "" to find the proper image name.
+{{- $loader_type_image_name := regexReplaceAll "[-]+" $loader_type "" -}}
+{{- $image_name_key := ( print "swh_loader_" $loader_type_image_name "_image" ) -}}
 {{- $image_version_key := ( print $image_name_key "_version" ) -}}
 {{- $container_image := get $.Values $image_name_key }}
 {{- $container_image_version := get $.Values $image_version_key }}

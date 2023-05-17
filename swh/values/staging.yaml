@@ -110,7 +110,7 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 1
-    highpriority:
+    save-code-now:
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:

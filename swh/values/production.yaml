@@ -77,7 +77,7 @@ loaders:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
         maxReplicaCount: 2
-    highpriority:
+    save-code-now:
       requestedMemory: 2048Mi
       requestedCpu: 200m
       queues:
