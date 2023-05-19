@@ -233,6 +233,8 @@ listers:
       - swh.lister.bitbucket.tasks.FullBitBucketRelister
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 600Mi
+      requestedCpu: 200m
     gnu-full:
       queues:
         - swh.lister.gnu.tasks.GNUListerTask
