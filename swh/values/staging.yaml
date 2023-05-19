@@ -93,7 +93,7 @@ loaders:
         default_filename: archive.tar
 
     git:
-      requestedMemory: 256Mi
+      requestedMemory: 512Mi
       requestedCpu: 200m
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
