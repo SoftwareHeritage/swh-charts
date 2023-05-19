@@ -60,7 +60,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     directory:
-      requestedMemory: 256Mi
+      requestedMemory: 768Mi
       requestedCpu: 200m
       queues:
         - swh.loader.core.tasks.LoadDirectory
