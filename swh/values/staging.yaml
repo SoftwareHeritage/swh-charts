@@ -264,7 +264,7 @@ listers:
       autoScaling:
         maxReplicaCount: 1
       requestedCpu: 1000m
-      requestedMemory: 1024Mi
+      requestedMemory: 6144Mi
     nixguix:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
