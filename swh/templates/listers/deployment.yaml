@@ -127,7 +127,7 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
-        {{ if $use_json_logger -}}
+        {{ if $use_json_logger }}
           - key: "logging-configuration.yml"
             path: "logging-configuration.yml"
         {{ end }}
