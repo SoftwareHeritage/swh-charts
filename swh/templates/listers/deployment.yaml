@@ -109,6 +109,12 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
+        {{ if $use_json_logger -}}
+          - name: configuration-template
+            mountPath: /etc/swh/logging-configuration.yml
+            subPath: "logging-configuration.yml"
+            readOnly: true
+        {{ end }}
       volumes:
       - name: configuration
 {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
@@ -121,6 +127,10 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+        {{ if $use_json_logger -}}
+          - key: "logging-configuration.yml"
+            path: "logging-configuration.yml"
+        {{ end }}
       - name: lister-utils
         configMap:
           name: lister-utils
