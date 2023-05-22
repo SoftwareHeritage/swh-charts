@@ -5,7 +5,7 @@ swh_graphql_image_version: '20230327.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
 swh_indexer_image_version: '20230202.3'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
-swh_lister_image_version: '20230519.1'
+swh_lister_image_version: '20230522.1'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
 swh_loader_bzr_image_version: '20230503.1'
 swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_cvs
