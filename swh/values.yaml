@@ -92,7 +92,7 @@ storage_replayer:
   #  host: db1
   #  port: '5432'
   #  user: pg_user
-  #  dbname: swh
+  #  db: swh
   ## name of the secret containing the $secretKeyName value
   #  secretKeyRef: swh-postgresql-common-secrets
   #  secretKeyName: storage-postgresql-password

@@ -55,7 +55,7 @@ data:
       security.protocol: sasl_ssl
       sasl.mechanism: SCRAM-SHA-512
       # The prefix must match the username
-      group_id: {{ $.Values.storage_replayer.journalBrokers.user }}-cassandra-replayer-{{ $deployment }}
+      group_id: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ $.Values.storage_replayer.storageClass }}-replayer-{{ $deployment }}
       batch_size: {{ get $deployment_config "batchSize" | default "200" }}
       message.max.bytes: {{ $.Values.storage_replayer.maxMessagesBytes }}
       privileged: {{ get $deployment_config "privileged" | default "false" }}

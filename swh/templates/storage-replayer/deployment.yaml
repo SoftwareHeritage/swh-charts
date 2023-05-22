@@ -38,7 +38,7 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
         {{- if eq $.Values.storage_replayer.storageClass "postgresql" }}
-          {{ with .Values.storage_replayer.postgresql }}
+          {{- with $.Values.storage_replayer.postgresql }}
           env:
           - name: POSTGRESQL_PASSWORD
             valueFrom:
