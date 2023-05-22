@@ -94,7 +94,8 @@ data:
     fi
 
     exit 0
-{{ if $use_json_logger -}}
+
+  {{ if $use_json_logger }}
   logging-configuration.yml: |
     version: 1
 
