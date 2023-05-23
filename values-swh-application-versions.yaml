@@ -1,5 +1,5 @@
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
-swh_deposit_checkers_image_version: '20230523.1'
+swh_deposit_checkers_image_version: '20230523.2'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20230327.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
@@ -15,7 +15,7 @@ swh_loader_git_image_version: '20230502.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
 swh_loader_mercurial_image_version: '20230523.1'
 swh_loader_metadata_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_metadata
-swh_loader_metadata_image_version: '20230517.1'
+swh_loader_metadata_image_version: '20230523.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
 swh_loader_package_image_version: '20230523.1'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
