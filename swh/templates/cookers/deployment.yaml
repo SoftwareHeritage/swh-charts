@@ -101,7 +101,7 @@ spec:
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         volumeMounts:
-          - name: cooker-utils
+          - name: cookers-utils
             mountPath: /pre-stop.sh
             subPath: "pre-stop.sh"
           - name: configuration
