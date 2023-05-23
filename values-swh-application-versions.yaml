@@ -9,7 +9,7 @@ swh_lister_image_version: '20230522.1'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
 swh_loader_bzr_image_version: '20230503.1'
 swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_cvs
-swh_loader_cvs_image_version: '20230331.1'
+swh_loader_cvs_image_version: '20230522.1'
 swh_loader_git_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git
 swh_loader_git_image_version: '20230502.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
