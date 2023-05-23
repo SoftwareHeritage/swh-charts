@@ -15,8 +15,7 @@
 {{- $container_image := get $.Values $image_name_key }}
 {{- $container_image_version := get $.Values $image_version_key }}
 {{- $loader_affinity := get $deployment_config "affinity" | default $.Values.loaders.affinity }}
-# TODO: Temporary ack to remove when logging is properly routed to logstash
-{{- $use_json_logger := get $deployment_config "useJsonLogger" | default false }}
+{{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -144,10 +143,12 @@ spec:
             mountPath: /etc/swh
           - name: localstorage
             mountPath: /tmp
+        {{ if $use_json_logger }}
           - name: configuration-template
             mountPath: /etc/swh/logging-configuration.yml
             subPath: "logging-configuration.yml"
             readOnly: true
+        {{ end }}
       volumes:
       - name: localstorage
 {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
@@ -162,8 +163,10 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+        {{ if $use_json_logger }}
           - key: "logging-configuration.yml"
             path: "logging-configuration.yml"
+        {{ end }}
       - name: loader-utils
         configMap:
           name: loader-utils

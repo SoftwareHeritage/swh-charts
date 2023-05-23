@@ -1,6 +1,7 @@
 suite: test global loaders deployment
 templates:
   - loaders/configmap.yaml
+  - loaders/configmap-utils.yaml
   - loaders/deployment.yaml
   - loaders/keda-autoscaling.yaml
   - loaders/keda-authentication.yaml
