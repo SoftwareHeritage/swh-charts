@@ -2,6 +2,8 @@
 {{- $configurationChecksum := include (print $.Template.BasePath "/cookers/configmap.yaml") . -}}
 {{- range $cooker_type, $deployment_config := .Values.cookers.deployments -}}
 {{- $cooker_name := ( print "cooker-" $cooker_type ) -}}
+# Set useJsonLogger to false to let the logs be plain text
+{{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -92,6 +94,10 @@ spec:
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
+        {{ if $use_json_logger }}
+        - name: SWH_LOG_CONFIG
+          value: /etc/swh/logging-configuration.yml
+        {{ end }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         volumeMounts:
@@ -100,6 +106,12 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
+        {{ if $use_json_logger }}
+          - name: configuration-template
+            mountPath: /etc/swh/logging-configuration.yml
+            subPath: "logging-configuration.yml"
+            readOnly: true
+        {{ end }}
       volumes:
       - name: configuration
         emptyDir: {}
@@ -112,6 +124,10 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
+        {{ if $use_json_logger }}
+          - key: "logging-configuration.yml"
+            path: "logging-configuration.yml"
+        {{ end }}
       - name: cooker-utils
         configMap:
           name: cooker-utils

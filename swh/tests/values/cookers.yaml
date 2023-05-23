@@ -1,0 +1,22 @@
+# namespace: swh
+# sentry.environment: testing
+
+swh_loader_metadata_image: image
+swh_loader_metadata_image_version: version
+
+cookers:
+  enabled: true
+  storage:
+    host: storage.test.org
+    port: 2005
+  vault:
+    host: vault.test.org
+    port: 5005
+  amqp:
+     host: scheduler.test.org
+  deployments:
+    testsimple:
+      queues:
+        - swh.vault.cooking.tasks.cook
+      autoScaling:
+        maxReplicaCount: 2

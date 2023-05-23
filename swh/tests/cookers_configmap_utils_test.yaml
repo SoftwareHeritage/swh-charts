@@ -1,0 +1,24 @@
+suite: test cookers configmap utils deployment
+templates:
+  - cookers/configmap-utils.yaml
+tests:
+  - it: cookers configmap utils should be deployed when activated
+    values:
+      - values/cookers.yaml
+    asserts:
+      - containsDocument:
+           kind: ConfigMap
+           apiVersion: v1
+           name: cookers-utils
+           namespace: swh
+  - it: cookers configmap utils namespace should be overridable
+    values:
+      - values/cookers.yaml
+    set:
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - hasDocuments:
+          count: 1

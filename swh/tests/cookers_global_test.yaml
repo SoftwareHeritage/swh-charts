@@ -1,0 +1,13 @@
+suite: test global cookers deployment
+templates:
+  - cookers/configmap.yaml
+  - cookers/configmap-utils.yaml
+  - cookers/deployment.yaml
+  - cookers/keda-autoscaling.yaml
+tests:
+  - it: Cookers are not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0

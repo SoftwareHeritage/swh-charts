@@ -1,35 +1,8 @@
 {{ if .Values.cookers.enabled -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cooker-utils
-  namespace: {{ $.Values.namespace }}
-data:
-  pre-stop-idempotent.sh: |
-    #!/bin/bash
-
-    # pre-stop hook can be triggered multiple times but we want it to be applied only
-    # once so container can warm-shutdown properly.
-
-    # When celery receives multiple times the sigterm signal, this ends up doing an
-    # immediate shutdown which prevents long-standing tasks to finish properly.
-
-    set -ex
-
-    WITNESS_FILE=/tmp/already-stopped
-
-    # Seed awk with the number of nanoseconds since epoch
-    # and have it generate a number between 0 and 1
-    sleep $(date +%s%N | awk '{srand($1); print rand()}')
-
-    if [ ! -e $WITNESS_FILE ]; then
-      touch $WITNESS_FILE
-      kill 1
-    fi
-
 {{ range $cooker_type, $deployment_config := .Values.cookers.deployments }}
 {{ $cooker_name := ( print "cooker-" $cooker_type ) }}
+{{ $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
+{{ $log_level := get $deployment_config "logLevel" | default "INFO" | quote }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -78,5 +51,40 @@ data:
     fi
 
     exit 0
+  {{ if $use_json_logger }}
+  logging-configuration.yml: |
+    version: 1
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: json
+        stream: ext://sys.stdout
+
+    formatters:
+      json:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        # python-json-logger parses the format argument to get the variables it actually expands into the json
+        format: "%(asctime)s:%(threadName)s:%(pathname)s:%(lineno)s:%(funcName)s:%(task_name)s:%(task_id)s:%(name)s:%(levelname)s:%(message)s"
+
+    loggers:
+      celery:
+        level: {{ $log_level }}
+      amqp:
+        level: WARNING
+      urllib3:
+        level: WARNING
+      azure.core.pipeline.policies.http_logging_policy:
+        level: WARNING
+      swh:
+        level: {{ $log_level }}
+      celery.task:
+        level: {{ $log_level }}
+
+    root:
+      level: {{ $log_level }}
+      handlers:
+      - console
+  {{ end }}
 {{ end }}
 {{- end -}}
