@@ -12,6 +12,7 @@ data:
     storage:
       cls: pipeline
       steps:
+      - cls: buffer
       - cls: retry
       - cls: remote
         url: http://{{ .Values.loader_metadata.storage.host }}:{{ .Values.loader_metadata.storage.port }}/
