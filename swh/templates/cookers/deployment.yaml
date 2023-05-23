@@ -128,9 +128,9 @@ spec:
           - key: "logging-configuration.yml"
             path: "logging-configuration.yml"
         {{ end }}
-      - name: cooker-utils
+      - name: cookers-utils
         configMap:
-          name: cooker-utils
+          name: cookers-utils
           defaultMode: 0777
           items:
           - key: "pre-stop-idempotent.sh"
