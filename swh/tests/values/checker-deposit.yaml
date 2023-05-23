@@ -1,0 +1,11 @@
+checker_deposit:
+  enabled: true
+  storage:
+    host: storage.example.org
+    port: 5002
+  deposit:
+    host: deposit.example.org
+  amqp:
+    host: scheduler.example.org
+  autoScaling:
+    maxReplicaCount: 2

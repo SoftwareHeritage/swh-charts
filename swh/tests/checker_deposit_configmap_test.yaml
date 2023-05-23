@@ -1,0 +1,24 @@
+suite: test checker_deposit configmap deployment
+templates:
+  - checker-deposit/configmap.yaml
+tests:
+  - it: checker-deposit configmap should be deployed when activated
+    values:
+      - values/checker-deposit.yaml
+    asserts:
+       - containsDocument:
+           kind: ConfigMap
+           apiVersion: v1
+           name: checker-deposit-template
+           namespace: swh
+  - it: checker-deposit configmap namespace should be overridable
+    values:
+      - values/checker-deposit.yaml
+    set:
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - hasDocuments:
+          count: 1

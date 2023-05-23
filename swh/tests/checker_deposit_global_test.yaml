@@ -1,0 +1,13 @@
+suite: test global checker deposit deployment
+templates:
+  - checker-deposit/deployment.yaml
+  - checker-deposit/configmap.yaml
+  - checker-deposit/configmap-utils.yaml
+  - checker-deposit/keda-autoscaling.yaml
+tests:
+  - it: Checker deposit is not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
