@@ -493,8 +493,8 @@ storage_replayer:
       requestedMemory: 250Mi
       autoScaling:
         maxReplicaCount: 1
-      specific_options:
-        directory_entries_insert_algo: batch
+    #  specific_options:
+    #    directory_entries_insert_algo: batch
     extid:
       objects:
         - extid
