@@ -40,6 +40,9 @@ ingressNginx:
   # loadBalanceIP: xxx.xxx.xxx.xxx
   # annotations:
   #   annotation1: value
+  # monitoringEnabled: false
+  # requestedCpu: 90m
+  # requestedMemory: 100Mi
 
 otlpCollector:
   enabled: false

@@ -32,6 +32,16 @@ spec:
             {{- if .Values.ingressNginx.controllerName }}
             controllerValue: {{ .Values.ingressNginx.controllerName | quote }}
             {{- end }}
+          {{- if .Values.ingressNginx.monitoringEnabled }}
+          metrics:
+            enabled: true
+            serviceMonitor:
+              enabled: true
+          {{- end }}
+          resources:
+            requests:
+              cpu: {{ .Values.ingressNginx.requestedCpu | default "100m" }}
+              memory: {{ .Values.ingressNginx.requestedMemory | default "90Mi" }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.ingressNginx.namespace }}
