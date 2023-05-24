@@ -1,0 +1,29 @@
+suite: test indexers configmap deployment
+templates:
+  - indexers/configmap.yaml
+tests:
+  - it: indexers configmap should be deployed when activated
+    values:
+      - values/indexers.yaml
+    asserts:
+       - containsDocument:
+           apiVersion: v1
+           kind: ConfigMap
+           name: indexer-indexer0-template
+           namespace: swh
+       - containsDocument:
+           apiVersion: v1
+           kind: ConfigMap
+           name: indexer-indexer1-template
+           namespace: swh
+  - it: indexers configmap namespace should be overridable
+    values:
+      - values/indexers.yaml
+    set:
+      namespace: mynamespace
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: mynamespace
+      - hasDocuments:
+          count: 2

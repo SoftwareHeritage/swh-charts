@@ -1,34 +1,4 @@
 {{ if .Values.indexers.enabled -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: indexer-utils
-  namespace: {{ $.Values.namespace }}
-data:
-  pre-stop-idempotent.sh: |
-    #!/bin/bash
-
-    # pre-stop hook can be triggered multiple times but we want it to be applied only
-    # once so container can warm-shutdown properly.
-
-    # When celery receives multiple times the sigterm signal, this ends up doing an
-    # immediate shutdown which prevents long-standing tasks to finish properly.
-
-    set -ex
-
-    WITNESS_FILE=/tmp/already-stopped
-
-    # Seed awk with the number of nanoseconds since epoch
-    # and have it generate a number between 0 and 1
-    sleep $(date +%s%N | awk '{srand($1); print rand()}')
-
-    if [ ! -e $WITNESS_FILE ]; then
-      touch $WITNESS_FILE
-      # journal clients expect a SIGINT, not a SIGTERM
-      kill -INT 1
-    fi
-
 {{ range $indexer_type, $deployment_config := .Values.indexers.deployments }}
 {{ $indexer_name := ( print "indexer-" $indexer_type ) }}
 {{- $journalUser := $.Values.indexers.journalBrokers.user -}}

@@ -1,0 +1,14 @@
+suite: test indexers deployment
+templates:
+  - indexers/configmap.yaml
+  - indexers/configmap-utils.yaml
+  - indexers/deployment.yaml
+  - indexers/keda-autoscaling.yaml
+  - indexers/keda-secrets.yaml
+tests:
+  - it: Indexers are not deployed by default
+    values:
+      - ../values.yaml
+    asserts:
+      - hasDocuments:
+          count: 0
