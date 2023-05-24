@@ -14,6 +14,7 @@ spec:
     helm:
       releaseName: ingress-nginx
       values: |
+        revisionHistoryLimit: 3
         controller:
           watchIngressWithoutClass: {{ .Values.ingressNginx.watchIngressWithoutClass | default "false" }}
           service:
