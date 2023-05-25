@@ -12,7 +12,9 @@ spec:
     repoURL: https://kubernetes.github.io/ingress-nginx
     targetRevision: {{ .Values.ingressNginx.version }}
     helm:
-      releaseName: ingress-nginx
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      # if not, some selectors like for the ServiceMonitor will not found the services
+      releaseName: {{ .Values.clusterName }}-ingress-nginx-application
       values: |
         revisionHistoryLimit: 3
         controller:
