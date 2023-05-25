@@ -18,7 +18,7 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: {{ first $.Values.storage_replayer.journalBrokers.hosts }}
-      consumerGroup: {{ $.Values.storage_replayer.journalBrokers.user }}-cassandra-replayer-{{ $deployment }}
+      consumerGroup: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ $.Values.storage_replayer.storageClass }}-replayer-{{ $deployment }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
     authenticationRef:
