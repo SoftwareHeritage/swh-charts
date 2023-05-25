@@ -199,6 +199,13 @@ storage:
   gunicorn:
     threads: 4
     workers: 8
+  #journalWriter:
+  #  brokers:
+  #    - journal1.internal.staging.swh.network
+  #    - journal2.internal.staging.swh.network
+  #  clientId: swh.storage.journal_writer.storage
+  #  producerConfig: |-
+  #    message.max.bytes: 1000000000
 
 web:
   enabled: true

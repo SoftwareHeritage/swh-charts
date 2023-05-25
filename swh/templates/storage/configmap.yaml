@@ -32,4 +32,18 @@ data:
         objstorages:
         {{ .Values.storage.objstorageConfig }}
       {{- end }}
+      {{- if .Values.storage.journalWriter }}
+        {{- with .Values.storage.journalWriter }}
+      journal_writer:
+        cls: kafka
+        brokers:
+          {{- range $broker := .brokers }}
+          - {{ $broker }}
+          {{- end}}
+        prefix: {{ .prefix | default "swh.journal.objects" }}
+        client_id: {{ .clientId }}
+        anonymize: {{ .anonymize | default true }}
+        producer_config: {{ .producerConfig | nindent 10 }}
+        {{- end }}
+      {{- end }}
 {{- end -}}

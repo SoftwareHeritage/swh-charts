@@ -245,6 +245,22 @@ storage:
     # the hostname on which the storage must be reachable
     # host: mystorage.localdomain
 
+  ## if journal access is required
+  ## mandatory values
+  #journalWriter:
+  #  brokers:
+  #    - kafka1
+  #    - kafka2
+  #    - kafka3
+  #  clientId: swh.storage.journal_writer.storage1
+  #  producerConfig: |-
+  #    message.max.bytes: 1000000000
+  #    item2: value2
+  #    item3: value3
+  ## optional values with their default value
+  #  prefix: swh.journal.objects
+  #  anonymize: true
+
 web:
   enabled: false
   logLevel: INFO
