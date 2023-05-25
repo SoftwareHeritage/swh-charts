@@ -567,31 +567,31 @@ storage_replayer:
       requestedMemory: 200Mi
       autoScaling:
         maxReplicaCount: 1
-    release:
-      objects:
-        - release
-      batchSize: 1000
-      privileged: true
-      # Full replay
-      #requestedCpu: 600m
-      requestedMemory: 300Mi
-      # follow up consumption
-      requestedCpu: 50m
-      autoScaling:
-        maxReplicaCount: 1
-    revision:
-      objects:
-        - revision
-      batchSize: 1000
-      privileged: true
-      # Full replay
-      #requestedCpu: 750m
-      #requestedMemory: 750Mi
-      # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 400Mi
-      autoScaling:
-        maxReplicaCount: 1
+  #  release:
+  #    objects:
+  #      - release
+  #    batchSize: 1000
+  #    privileged: true
+  #    # Full replay
+  #    #requestedCpu: 600m
+  #    requestedMemory: 300Mi
+  #    # follow up consumption
+  #    requestedCpu: 50m
+  #    autoScaling:
+  #      maxReplicaCount: 1
+  #  revision:
+  #    objects:
+  #      - revision
+  #    batchSize: 1000
+  #    privileged: true
+  #    # Full replay
+  #    #requestedCpu: 750m
+  #    #requestedMemory: 750Mi
+  #    # follow up consumption
+  #    requestedCpu: 50m
+  #    requestedMemory: 400Mi
+  #    autoScaling:
+  #      maxReplicaCount: 1
     skipped-content:
       objects:
         - skipped_content
