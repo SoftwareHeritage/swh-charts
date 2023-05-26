@@ -26,6 +26,23 @@ graphql:
     client: swh-web
     cacheUrl: memcached://memcached:11211
 
+listers:
+  enabled: true
+  storage:
+    host: saam.internal.softwareheritage.org
+    port: 5002
+  scheduler:
+    host: saatchi.internal.softwareheritage.org
+    port: 5008
+  amqp:
+     host: saatchi.internal.softwareheritage.org
+  deployments:
+    pubdev:
+      queues:
+        - swh.lister.pubdev.tasks.PubDevListerTask
+      autoScaling:
+        maxReplicaCount: 1
+
 loaders:
   enabled: true
   storage:
@@ -43,6 +60,14 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 6
+    pubdev:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        maxReplicaCount: 1
     large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
