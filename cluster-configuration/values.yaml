@@ -31,6 +31,10 @@ ingressNginx:
   enabled: false
   version: 4.4.0
   namespace: ingress-nginx
+  # Needed when a chart use the application name to
+  # name deployed objects. The names can't be longer than 63 characters
+  # Must be unique in argocd
+  # applicationNameOverride: my-application-name
   defaultClass: false
   watchIngressWithoutClass: false
   # ingressClassName: nginx

@@ -1,8 +1,10 @@
 {{ if .Values.ingressNginx.enabled }}
+{{- $applicationName := .Values.ingressNginx.applicationNameOverride | default (print .Values.clusterName "-ingress-nginx-application") }}
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: {{ .Values.clusterName }}-ingress-nginx-application
+  name: {{ $applicationName }}
   namespace: {{ .Values.argocdNamespace }}
 spec:
   revisionHistoryLimit: 2
@@ -14,7 +16,7 @@ spec:
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
       # if not, some selectors like for the ServiceMonitor will not found the services
-      releaseName: {{ .Values.clusterName }}-ingress-nginx-application
+      releaseName: {{ $applicationName }}
       values: |
         revisionHistoryLimit: 3
         controller:

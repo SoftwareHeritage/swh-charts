@@ -10,6 +10,7 @@ metallb:
 
 ingressNginx:
   enabled: true
+  applicationNameOverride: archive-staging-rke2-ingress-nginx
   defaultClass: true
   annotations:
     # To be able to share the same ip for several services
