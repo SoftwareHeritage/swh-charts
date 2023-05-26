@@ -4,6 +4,7 @@ clusterUrl: https://192.168.200.4
 ingressNginx:
   # Needed to internally expose thanos
   enabled: true
+  applicationNameOverride: gitlab-production-ingress-nginx
   defaultClass: false
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
