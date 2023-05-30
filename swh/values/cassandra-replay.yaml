@@ -33,26 +33,26 @@ storage_replayer:
       - cassandra07.internal.softwareheritage.org
       - cassandra08.internal.softwareheritage.org
   deployments:
-    content:
-      objects:
-        - content
-      requestedCpu: 425m
-      requestedMemory: 200Mi
-      autoScaling:
-        maxReplicaCount: 64
-    directory:
-      objects:
-        - directory
-      batchSize: 250
-      # Full replay
-      requestedCpu: 500m
-      #requestedMemory: 250Mi
-      #Follow up consumption
-      requestedMemory: 100Mi
-      autoScaling:
-        maxReplicaCount: 5
-      specific_options:
-        directory_entries_insert_algo: batch
+    # content:
+    #   objects:
+    #     - content
+    #   requestedCpu: 425m
+    #   requestedMemory: 200Mi
+    #   autoScaling:
+    #     maxReplicaCount: 64
+    # directory:
+    #   objects:
+    #     - directory
+    #   batchSize: 250
+    #   # Full replay
+    #   requestedCpu: 500m
+    #   #requestedMemory: 250Mi
+    #   #Follow up consumption
+    #   requestedMemory: 100Mi
+    #   autoScaling:
+    #     maxReplicaCount: 5
+    #   specific_options:
+    #     directory_entries_insert_algo: batch
     # extid:
     #   objects:
     #     - extid
@@ -95,30 +95,30 @@ storage_replayer:
     #   requestedCpu: 50m
     #   autoScaling:
     #     maxReplicaCount: 5
-    origin-visit:
-      objects:
-        - origin_visit
-      batchSize: 1000
-      # Full replay
-      # requestedCpu: 400m
-      # requestedMemory: 400Mi
-      #Follow up consumption
-      requestedCpu: 100m
-      requestedMemory: 100Mi
-      autoScaling:
-        maxReplicaCount: 5
-    origin-visit-status:
-      objects:
-        - origin_visit_status
-      batchSize: 1000
-      # Full replay
-      #requestedCpu: 500m
-      #requestedMemory: 300Mi
-      #Follow up consumption
-      requestedCpu: 55m
-      requestedMemory: 200Mi
-      autoScaling:
-        maxReplicaCount: 5
+    # origin-visit:
+    #   objects:
+    #     - origin_visit
+    #   batchSize: 1000
+    #   # Full replay
+    #   # requestedCpu: 400m
+    #   # requestedMemory: 400Mi
+    #   #Follow up consumption
+    #   requestedCpu: 100m
+    #   requestedMemory: 100Mi
+    #   autoScaling:
+    #     maxReplicaCount: 5
+    # origin-visit-status:
+    #   objects:
+    #     - origin_visit_status
+    #   batchSize: 1000
+    #   # Full replay
+    #   #requestedCpu: 500m
+    #   #requestedMemory: 300Mi
+    #   #Follow up consumption
+    #   requestedCpu: 55m
+    #   requestedMemory: 200Mi
+    #   autoScaling:
+    #     maxReplicaCount: 5
     # release:
     #   objects:
     #     - release
