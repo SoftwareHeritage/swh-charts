@@ -1,3 +1,8 @@
+# temporary appversion and graphql image version until this version is validated
+# https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/4889
+appVersion: 37
+swh_graphql_image_version: '20230327.1'
+
 sentry:
   environment: production
 
