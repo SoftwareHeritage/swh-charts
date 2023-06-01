@@ -9,6 +9,89 @@ sentry:
 #  enabled: false
 #
 
+# List of kafka brokers
+# used by storage to store the object inserted in the database
+# and by the journal clients to follow the storage activiiy
+# kafkaBrokers:
+#   - myBroker1
+#   - myBroker2
+
+# Typical storage's journal writer configuration
+# journalWriterConfiguration:
+#   kafkaBrokersRef: kafkaBrokers
+#   prefix: swh.journal.objects
+#   clientId: swh.storage.journal_writer.storage
+#   anonymize: true
+#   producerConfig:
+#     message.max.bytes: 1000000000
+
+# postgresqlStorageConfiguration:
+#   cls: postgresql
+# TODO:
+
+# List of cassandra nodes
+# when cassandra is used a backend
+# cassandraSeeds:
+#   - myCassandraSeeds1
+#   - myCassandraSeeds1
+
+# Typical cassandra storage configuration
+# cassandraStorageConfiguration:
+#   cls: cassandra
+#   cassandraSeedsRef: cassandraSeeds
+#   keyspace: swh
+#   consistencyLevel: LOCAL_QUORUM
+
+# Typical remote storage configuration
+# remoteStorageConfiguration:
+#   cls: remote
+#   host: http://storage:5002
+
+# Example of a storage pipeline configuration
+# Adapt according your platform capabilities
+# Used by loaders and possibly journal client / replayers
+# storageClientPipelineSteps:
+#     - cls: buffer
+#       min_batch_size:
+#         content: 100
+#         content_bytes: 52428800
+#         directory: 100
+#         directory_entries: 500
+#         revision: 100
+#         revision_parents: 200
+#         revision_bytes: 52428800
+#         release: 100
+#         release_bytes: 52428800
+#         extid: 100
+#     - cls: filter
+#     - cls: retry
+
+# Noop object storage configuration
+# noopObjectStorage:
+#   cls: noop
+
+# Typical storage configuration
+# Use references to other entries to assemble
+# a complete storage configuration
+# Only storageConfigurationRef is mandatory if a remote
+# storage is used.
+# objectStorageConfigurationRef is mandatory for all other
+# storage types
+#
+# defaultStorageClientConfiguration:
+#   # pipelineStepsRef: storageClientPipelineSteps
+
+#   # exhaustive supported storage types
+#   # storageConfigurationRef: remoteStorageConfiguration
+#   storageConfigurationRef: cassandraStorageConfiguration
+#   # storageConfigurationRef: postgresqlStorageConfiguration
+
+#   # journalWriterConfigurationRef: journalWriterConfiguration
+#   # objectStorageConfigurationRef: noopObjectStorage
+
+# globalROStorageConfiguration:
+# TODO: define this configuration and use it for the webapp
+
 graphql:
   enabled: false
   logLevel: INFO
@@ -148,6 +231,9 @@ loader_metadata:
 
 loaders:
   enabled: false
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultStorageClientConfiguration
   deployments:
   # Example of deployments
     # git:

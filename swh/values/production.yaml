@@ -6,6 +6,31 @@ swh_graphql_image_version: '20230327.1'
 sentry:
   environment: production
 
+storagePipelineSteps:
+  - cls: buffer
+    min_batch_size:
+      content: 1000
+      content_bytes: 52428800
+      directory: 1000
+      directory_entries: 12000
+      revision: 1000
+      revision_parents: 2000
+      revision_bytes: 52428800
+      release: 1000
+      release_bytes: 52428800
+      extid: 1000
+  - cls: filter
+  - cls: retry
+
+saamStorageConfiguration:
+  cls: remote
+  host: http://saam.internal.softwareheritage.org:5002
+
+remoteStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: saamStorageConfiguration
+
+
 graphql:
   enabled: true
   replicas: 2
@@ -50,9 +75,7 @@ listers:
 
 loaders:
   enabled: true
-  storage:
-    host: saam.internal.softwareheritage.org
-    port: 5002
+  storageConfigurationRef: remoteStorageConfiguration
   amqp:
     host: rabbitmq.internal.softwareheritage.org
   deployments:

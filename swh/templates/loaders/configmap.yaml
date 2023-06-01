@@ -1,4 +1,5 @@
 {{ if .Values.loaders.enabled -}}
+
 {{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
 {{ $loader_name := ( print "loader-" $loader_type ) }}
 {{ $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
@@ -11,25 +12,7 @@ metadata:
   namespace: {{ $.Values.namespace }}
 data:
   config.yml.template: |
-    storage:
-      cls: pipeline
-      steps:
-      - cls: buffer
-        min_batch_size:
-          content: 1000
-          content_bytes: 52428800
-          directory: 1000
-          directory_entries: 12000
-          revision: 1000
-          revision_parents: 2000
-          revision_bytes: 52428800
-          release: 1000
-          release_bytes: 52428800
-          extid: 1000
-      - cls: filter
-      - cls: retry
-      - cls: remote
-        url: http://{{ $.Values.loaders.storage.host }}:{{ $.Values.loaders.storage.port }}/
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.loaders.storageConfigurationRef) | indent 4 }}
 
     {{- if $deployment_config.extraConfig -}}
       {{- range $option, $value := $deployment_config.extraConfig }}

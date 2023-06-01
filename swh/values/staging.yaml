@@ -1,11 +1,33 @@
 sentry:
   environment: staging
 
+storagePipelineSteps:
+  - cls: buffer
+    min_batch_size:
+      content: 100
+      content_bytes: 52428800
+      directory: 100
+      directory_entries: 500
+      revision: 100
+      revision_parents: 200
+      revision_bytes: 52428800
+      release: 100
+      release_bytes: 52428800
+      extid: 100
+  - cls: filter
+  - cls: retry
+
+storage1StorageConfiguration:
+  cls: remote
+  host: http://storage1.internal.staging.swh.network:5002
+
+remoteStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: storage1StorageConfiguration
+
 loaders:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteStorageConfiguration
   amqp:
     host: scheduler0.internal.staging.swh.network
     port: 5672
