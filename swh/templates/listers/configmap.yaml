@@ -41,9 +41,8 @@ metadata:
   namespace: {{ $.Values.namespace }}
 data:
   config.yml.template: |
-    storage:
-      cls: remote
-      url: http://{{ $.Values.listers.storage.host }}:{{ $.Values.listers.storage.port }}/
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.listers.storageConfigurationRef) | indent 4 }}
+
     scheduler:
       cls: remote
       url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/

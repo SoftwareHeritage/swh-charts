@@ -25,6 +25,10 @@ remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: storage1StorageConfiguration
 
+remoteROStorageConfiguration:
+  # TODO: use a real read-only storage configuration
+  storageConfigurationRef: storage1StorageConfiguration
+
 loaders:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
@@ -224,9 +228,7 @@ loaders:
 
 listers:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteROStorageConfiguration
   scheduler:
     host: scheduler0.internal.staging.swh.network
     port: 5008

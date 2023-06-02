@@ -14,7 +14,7 @@ Create a global storage configuration based on configuration section aggregation
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
 {{- $objectStorageConfigurationRef :=  get $storageConfiguration "objectStorageConfigurationRef" -}}
 {{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
-{{- $indent := ternary 0 2 (empty $pipelineStepsRef) -}}
+{{- $indent := 2 -}}
 storage:
 {{ if $pipelineStepsRef -}}
 {{- $pipelineSteps := get $Values $pipelineStepsRef -}}

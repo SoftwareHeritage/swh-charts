@@ -30,6 +30,9 @@ remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: saamStorageConfiguration
 
+remoteROStorageConfiguration:
+  # TODO: use a true read-only storage
+  storageConfigurationRef: saamStorageConfiguration
 
 graphql:
   enabled: true
@@ -58,9 +61,7 @@ graphql:
 
 listers:
   enabled: true
-  storage:
-    host: saam.internal.softwareheritage.org
-    port: 5002
+  storageConfigurationRef: remoteROStorageConfiguration
   scheduler:
     host: saatchi.internal.softwareheritage.org
     port: 5008
