@@ -2,6 +2,32 @@ namespace: swh-cassandra
 sentry:
   environment: production
 
+noopObjectStorage:
+  cls: noop
+
+cassandraSeeds:
+  - cassandra01.internal.softwareheritage.org
+  - cassandra02.internal.softwareheritage.org
+  - cassandra03.internal.softwareheritage.org
+  - cassandra04.internal.softwareheritage.org
+  - cassandra05.internal.softwareheritage.org
+  - cassandra06.internal.softwareheritage.org
+  - cassandra07.internal.softwareheritage.org
+  - cassandra08.internal.softwareheritage.org
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: false
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+
+cassandraReplayerStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objectStorageConfigurationRef: noopObjectStorage
+
 storage_replayer:
   enabled: true
 
@@ -21,17 +47,8 @@ storage_replayer:
       - kafka3.internal.softwareheritage.org:9094
       - kafka4.internal.softwareheritage.org:9094
     user: swh-cassandra-prod
-  storageClass: cassandra
-  cassandra:
-    seeds:
-      - cassandra01.internal.softwareheritage.org
-      - cassandra02.internal.softwareheritage.org
-      - cassandra03.internal.softwareheritage.org
-      - cassandra04.internal.softwareheritage.org
-      - cassandra05.internal.softwareheritage.org
-      - cassandra06.internal.softwareheritage.org
-      - cassandra07.internal.softwareheritage.org
-      - cassandra08.internal.softwareheritage.org
+    groupIdName: cassandra
+  storageConfigurationRef: cassandraReplayerStorageConfiguration
   error_reporter:
     host: redis-cassandra-replayers.redis
     port: 6379
@@ -57,8 +74,6 @@ storage_replayer:
       # requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
-      specific_options:
-        directory_entries_insert_algo: batch
     extid:
       objects:
         - extid

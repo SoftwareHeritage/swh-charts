@@ -28,14 +28,17 @@ storage:
 {{ include "swh.storage.remote" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else if eq $storageType "cassandra" -}}
 {{ include "swh.storage.cassandra" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{- else if eq $storageType "postgresql" -}}
+{{ include "swh.storage.postgresql" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else -}}
 {{- fail (print "Storage " $storageType " not implemented") -}}
 {{- end -}}
+{{/* TODO: specific_options */}}
 {{- if $objectStorageConfigurationRef -}}
 {{- $objectStorageConfiguration := get $Values $objectStorageConfigurationRef -}}
 {{- $objectStorageType := get $objectStorageConfiguration "cls" -}}
 {{- if eq $objectStorageType "noop" }}
-{{ include "swh.objstorage.noop" . | indent (int (add 2 $indent)) }}
+{{ include "swh.objstorage.noop" . | indent (int (add $indent)) }}
 {{- else -}}
 {{- fail (print "Object Storage " $objectStorageType " not implemented") -}}
 {{- end -}}
@@ -70,14 +73,40 @@ Generate the configuration for a cassandra storage
 {{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
 {{- $keyspace := required (print "The keyspace property is mandatory in " $storageConfigurationRef)
                     (get $storageConfiguration "keyspace") -}}
-
-{{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
+{{- $indentationCount := ternary 0 2 (empty $inPipeline) -}}
+{{- $indent := indent $indentationCount "" -}}
 {{- if $inPipeline -}}- {{ end }}cls: cassandra
 {{ $indent }}hosts:
 {{ toYaml $cassandraSeeds | indent 2 }}
 {{ $indent }}keyspace: {{ $keyspace }}
 {{ $indent }}consistency_level: {{ get $storageConfiguration "consistencyLevel" }}
+{{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
 {{- end -}}
+
+{{/*
+Generate the configuration for a postgresql storage
+*/}}
+{{- define "swh.storage.postgresql" -}}
+{{- $Values := index . 0 -}}
+{{- $storageConfigurationRef := index . 1 -}}
+{{- $inPipeline := index . 2 -}}
+{{- $storageConfiguration := get $Values $storageConfigurationRef -}}
+{{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
+{{- $host := required (print "The host property is mandatory in " $storageConfigurationRef)
+                    (get $storageConfiguration "host") -}}
+{{- $port := required (print "The port property is mandatory in " $storageConfigurationRef)
+                    (get $storageConfiguration "port") -}}
+{{- $user := required (print "The user property is mandatory in " $storageConfigurationRef)
+                    (get $storageConfiguration "user") -}}
+{{- $password := required (print "The password property is mandatory in " $storageConfigurationRef)
+                    (get $storageConfiguration "password") -}}
+{{- $db := required (print "The db property is mandatory in " $storageConfigurationRef)
+                    (get $storageConfiguration "db") -}}
+
+{{- if $inPipeline -}}- {{ end }}cls: postgresql
+{{ $indent }}db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{- end -}}
+
 
 {{/*
 Generate the configuration for a null object storage
@@ -109,4 +138,54 @@ journal_writer:
   producer_config:
 {{ toYaml $producerConfig | indent 4 }}
 {{- end }}
+{{- end -}}
+
+{{/* Generate the init keyspace container configuration if needed */}}
+{{- define "swh.storage.cassandra.initKeyspaceContainer" -}}
+  {{- $Values := index . 0 -}}
+  {{- $storageDefinitionRef := index . 1 -}}
+  {{- $imageNamePrefix := index . 2 -}}
+  {{- $storageDefinition := required (print "Storage definition " $storageDefinitionRef " not found") (get $Values $storageDefinitionRef) -}}
+  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " $storageDefinitionRef) (get $storageDefinition "storageConfigurationRef") -}}
+  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get $Values $storageConfigurationRef) -}}
+  {{- $storageClass := required (print "cls entry mandatory in " $storageConfigurationRef) (get $storageConfiguration "cls") -}}
+
+  {{- if eq "cassandra" $storageClass -}}
+    {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
+    {{- if $initKeyspace -}}
+      {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
+      {{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
+- name: init-database
+  image: {{ get $Values $imageNamePrefix }}:{{ get $Values (print $imageNamePrefix "_version") }}
+  imagePullPolicy: Always
+  command:
+  - /bin/bash
+  args:
+  - -c
+  - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first $cassandraSeeds }}'], 'swh')\" | python3"
+    {{- end -}}
+  {{- end -}}
+
+{{- end -}}
+
+{{/* Generate the environment configuration for database configuration if needed */}}
+{{- define "swh.storage.secretsEnvironment" -}}
+  {{- $Values := index . 0 -}}
+  {{- $storageDefinitionRef := index . 1 -}}
+  {{- $storageDefinition := required (print "Storage definition " $storageDefinitionRef " not found") (get $Values $storageDefinitionRef) -}}
+  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " $storageDefinitionRef) (get $storageDefinition "storageConfigurationRef") -}}
+  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get $Values $storageConfigurationRef) -}}
+  {{- $secrets := get $storageConfiguration "secrets" -}}
+  {{- if $secrets -}}
+env:
+    {{- range $secretName, $secretsConfig := $secrets }}
+- name: {{ $secretName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ get $secretsConfig "secretKeyRef" }}
+      key: {{ get $secretsConfig "secretKeyName" }}
+      # 'name' secret must exist & include that ^ key
+      optional: false
+      {{- end -}}
+  {{- end -}}
 {{- end -}}

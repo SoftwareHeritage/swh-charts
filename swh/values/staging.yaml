@@ -17,6 +17,26 @@ storagePipelineSteps:
   - cls: filter
   - cls: retry
 
+noopObjectStorage:
+  cls: noop
+
+postgresqlStorageConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: swh
+  password: ${POSTGRESQL_PASSWORD}
+  db: swh
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-swh-password
+
+directPostgresqlReplayerStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: postgresqlStorageConfiguration
+  objectStorageConfigurationRef: noopObjectStorage
+
 storage1StorageConfiguration:
   cls: remote
   host: http://storage1.internal.staging.swh.network:5002
@@ -486,18 +506,9 @@ storage_replayer:
     hosts:
       - journal1.internal.staging.swh.network:9094
     user: swh-postgresql-stg
+    groupIdName: postgresql
     secretName: swh-postgresql-broker-secret
-  storageClass: postgresql
-  postgresql:
-    host: db1.internal.staging.swh.network
-    port: '5432'
-    user: swh
-    db: swh
-  # name of the secret containing the $secretKeyName value
-    secretKeyRef: swh-postgresql-common-secret
-    secretKeyName: postgres-swh-password
-  # if pipeline/filter/retry is needed in storage configuration
-  pipelineFilterRetry: true
+  storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
   error_reporter:
     host: redis-postgresql.redis
     port: 6379
@@ -520,8 +531,6 @@ storage_replayer:
       requestedMemory: 250Mi
       autoScaling:
         maxReplicaCount: 1
-    #  specific_options:
-    #    directory_entries_insert_algo: batch
     extid:
       objects:
         - extid

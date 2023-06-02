@@ -1,7 +1,6 @@
 {{ if .Values.storage_replayer.enabled -}}
 {{- $error_reporter := .Values.storage_replayer.error_reporter }}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
-{{- $storageConfigIndent := ternary "    " "" $.Values.storage_replayer.pipelineFilterRetry }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -10,51 +9,7 @@ metadata:
   name: storage-replayer-configuration-{{ $deployment }}-template
 data:
   config.yml.template: |
-    storage:
-    {{- with $.Values.storage_replayer }}
-      {{- if not .pipelineFilterRetry }}
-      cls: {{ .storageClass }}
-      {{- else if .pipelineFilterRetry }}
-      cls: pipeline
-      steps:
-        - cls: buffer
-          min_batch_size:
-            content: 1000
-            content_bytes: 52428800  # 50 MB
-            directory: 1000
-            directory_entries: 12000
-            revision: 1000
-            revision_parents: 2000
-            revision_bytes: 52428800
-            release: 1000
-            release_bytes: 52428800
-            extid: 1000
-        - cls: filter
-        - cls: retry
-        - cls: {{ .storageClass }}
-      {{- end }}
-    {{- end }}
-    {{- if eq $.Values.storage_replayer.storageClass "cassandra" }}
-      {{- with $.Values.storage_replayer.cassandra }}
-      {{ $storageConfigIndent }}hosts:
-        {{- range $seed := .seeds }}
-      {{ $storageConfigIndent }}  - {{ $seed }}
-        {{- end }}
-      {{ $storageConfigIndent }}keyspace: {{ .keySpace }}
-      {{ $storageConfigIndent }}consistency_level: {{ .consistencyLevel }}
-      {{- end }}
-    {{- else if eq $.Values.storage_replayer.storageClass "postgresql" }}
-      {{- with $.Values.storage_replayer.postgresql }}
-      {{ $storageConfigIndent }}db: host={{ .host }} port={{ .port | default "5432" }} user={{ .user | default "guest" }} dbname={{ .db | default "swh" }} password=${POSTGRESQL_PASSWORD}
-      {{- end }}
-    {{- end }}
-    {{- if $deployment_config.specific_options -}}
-      {{- range $option, $value := $deployment_config.specific_options }}
-      {{ $storageConfigIndent }}{{ $option }}: {{ $value }}
-      {{- end }}
-    {{- end }}
-    {{ $storageConfigIndent }}  objstorage:
-    {{ $storageConfigIndent }}    cls: noop
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.storage_replayer.storageConfigurationRef) | indent 4 }}
 
     journal_client:
       cls: kafka
@@ -67,7 +22,7 @@ data:
       security.protocol: sasl_ssl
       sasl.mechanism: SCRAM-SHA-512
       # The prefix must match the username
-      group_id: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ $.Values.storage_replayer.storageClass }}-replayer-{{ $deployment }}
+      group_id: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ required "groupIdName not specified" $.Values.storage_replayer.journalBrokers.groupIdName }}-replayer-{{ $deployment }}
       batch_size: {{ get $deployment_config "batchSize" | default "200" }}
       message.max.bytes: {{ $.Values.storage_replayer.maxMessagesBytes }}
       privileged: {{ get $deployment_config "privileged" | default "false" }}

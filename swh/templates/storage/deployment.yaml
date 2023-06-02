@@ -57,18 +57,7 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{- if eq .Values.storage.storageClass "cassandra" }}
-          {{- if .Values.storage.cassandra.initKeyspace }}
-        - name: init-database
-          image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
-          imagePullPolicy: Always
-          command:
-          - /bin/bash
-          args:
-          - -c
-          - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first .Values.storage.cassandra.seeds }}'], 'swh')\" | python3"
-          {{- end }}
-        {{- end }}
+{{ include "swh.storage.cassandra.initKeyspaceContainer" (list $.Values $.Values.storage.storageConfigurationRef "swh_storage_image") | indent 8 }}
       containers:
         - name: storage
           resources:

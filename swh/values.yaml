@@ -27,7 +27,15 @@ sentry:
 
 # postgresqlStorageConfiguration:
 #   cls: postgresql
-# TODO:
+#   host: mydatabasese.server
+#   port: '5432'
+#   user: swh
+#   password: ${POSTGRESQL_PASSWORD}
+#   db: swh
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-postgresql-common-secret
+#       secretKeyName: postgres-swh-password
 
 # List of cassandra nodes
 # when cassandra is used a backend
@@ -40,7 +48,10 @@ sentry:
 #   cls: cassandra
 #   cassandraSeedsRef: cassandraSeeds
 #   keyspace: swh
+#   initKeySpace: false
 #   consistencyLevel: LOCAL_QUORUM
+#   specificOptions:
+#     directory_entries_insert_algo: batch
 
 # Typical remote storage configuration
 # remoteStorageConfiguration:
@@ -158,27 +169,9 @@ storage_replayer:
     - broker1
     - broker2
     user: myuser
-  ## storage backend must be cassandra or postgresql
-  storageClass: cassandra
-  ## if storageClass is cassandra
-  cassandra:
-    initKeyspace: false # useful to ensure the cassandra database is bootstrapped
-    seeds:
-    - seed1
-    - seed2
-    keySpace: swh
-    consistencyLevel: LOCAL_QUORUM
-  ## if storageClass is postgresql
-  #postgresql:
-  #  host: db1
-  #  port: '5432'
-  #  user: pg_user
-  #  db: swh
-  ## name of the secret containing the $secretKeyName value
-  #  secretKeyRef: swh-postgresql-common-secrets
-  #  secretKeyName: storage-postgresql-password
-  ## if pipeline/filter/retry is needed in storage configuration
-  pipelineFilterRetry: false
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultStorageReplayerConfiguration
   # optional 'replayer' configuration may be specified with a 'error_reporter' config
   # entry allowing to specify redis connection parameters. It will be used to report
   # non-recoverable replaying issues

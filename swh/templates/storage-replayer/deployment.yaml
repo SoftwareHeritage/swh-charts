@@ -37,33 +37,13 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-        {{- if eq $.Values.storage_replayer.storageClass "postgresql" }}
-          {{- with $.Values.storage_replayer.postgresql }}
-          env:
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .secretKeyRef }}
-                key: {{ .secretKeyName }}
-                # 'name' secret must exist & include that ^ key
-                optional: false
-          {{- end }}
-        {{- end }}
+{{ include "swh.storage.secretsEnvironment" (list $.Values $.Values.storage_replayer.storageConfigurationRef) | indent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{- if $.Values.storage_replayer.cassandra.initKeyspace }}
-        - name: init-database
-          image: {{ $.Values.swh_storage_replayer_image }}:{{ $.Values.swh_storage_replayer_image_version }}
-          imagePullPolicy: Always
-          command:
-          - /bin/bash
-          args:
-          - -c
-          - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first $.Values.storage_replayer.cassandra.seeds }}'], 'swh')\" | python3"
-        {{- end }}
+{{ include "swh.storage.cassandra.initKeyspaceContainer" (list $.Values $.Values.storage_replayer.storageConfigurationRef "swh_storage_replayer_image") | indent 8 }}
       containers:
         - name: storage-replayer
           resources:

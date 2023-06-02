@@ -2,6 +2,27 @@ namespace: swh-cassandra
 sentry:
   environment: staging
 
+noopObjectStorage:
+  cls: noop
+
+cassandraSeeds:
+  - cassandra1.internal.staging.swh.network
+  - cassandra2.internal.staging.swh.network
+  - cassandra3.internal.staging.swh.network
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+
+cassandraReplayerStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objectStorageConfigurationRef: noopObjectStorage
+
 storage_replayer:
   enabled: true
 
@@ -14,18 +35,13 @@ storage_replayer:
             operator: In
             values:
             - "true"
+  storageConfigurationRef: cassandraReplayerStorageConfiguration
   journalBrokers:
     hosts:
       - journal1.internal.staging.swh.network:9094
     user: swh-cassandra-stg
+    groupIdName: cassandra
     secretName: swh-cassandra-broker-secret
-  storageClass: cassandra
-  cassandra:
-    initKeyspace: true # only to bootstrap a new cassandra database
-    seeds:
-      - cassandra1.internal.staging.swh.network
-      - cassandra2.internal.staging.swh.network
-      - cassandra3.internal.staging.swh.network
   error_reporter:
     host: redis.redis
     port: 6379
@@ -48,8 +64,6 @@ storage_replayer:
       requestedMemory: 250Mi
       autoScaling:
         maxReplicaCount: 10
-      specific_options:
-        directory_entries_insert_algo: batch
     extid:
       objects:
         - extid
