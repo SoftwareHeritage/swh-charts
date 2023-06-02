@@ -8,11 +8,14 @@ metadata:
 data:
   # TODO: rename to not have a dot in the name to allow testing
   config.yml: |
-    {{- range $backend, $backend_config := .Values.graphql.backends }}
-    {{ $backend }}:
+    {{- if .Values.graphql.storageConfigurationRef }}
+{{ include "swh.storageConfiguration" (list .Values . .Values.graphql.storageConfigurationRef) | indent 4 }}
+    {{ end -}}
+    {{- if .Values.graphql.searchConfiguration }}
+    search:
       cls: remote
-      url: http://{{ get $backend_config "host" }}:{{ get $backend_config "port" }}
-    {{- end }}
+      url: http://{{ .Values.graphql.searchConfiguration.host }}:{{ .Values.graphql.searchConfiguration.port }}
+    {{ end }}
 
     debug: {{ .Values.graphql.debug }}
 

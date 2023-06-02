@@ -446,13 +446,10 @@ indexers:
 
 graphql:
   enabled: true
-  backends:
-    storage:
-      host: webapp.internal.staging.swh.network
-      port: 5002
-    search:
-      host: search0.internal.staging.swh.network
-      port: 5010
+  storageConfigurationRef: remoteROStorageConfiguration
+  searchConfiguration:
+    host: search0.internal.staging.swh.network
+    port: 5010
   debug: yes
   introspection: yes
   replicas: 2
