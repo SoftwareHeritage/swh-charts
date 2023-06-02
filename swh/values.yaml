@@ -262,6 +262,9 @@ checker_deposit:
 
 indexers:
   enabled: false
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
 
 listers:
   enabled: false

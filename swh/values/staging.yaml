@@ -375,9 +375,7 @@ loader_metadata:
 
 indexers:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteROStorageConfiguration
   scheduler:
     host: scheduler0.internal.staging.swh.network
     port: 5008

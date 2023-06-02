@@ -1,11 +1,16 @@
 swh_indexer_image: image
 swh_indexer_image_version: version
 
+remoteStorage:
+  cls: remote
+  host: http://test.storage.org:2005
+
+storageConfiguration:
+  storageConfigurationRef: remoteStorage
+
 indexers:
   enabled: true
-  storage:
-    host: storage.test.org
-    port: 2005
+  storageConfigurationRef: storageConfiguration
   scheduler:
     host: scheduler.test.org
     port: 8005

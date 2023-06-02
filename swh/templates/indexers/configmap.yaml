@@ -11,12 +11,7 @@ metadata:
   namespace: {{ $.Values.namespace }}
 data:
   config.yml.template: |
-    storage:
-      cls: pipeline
-      steps:
-      - cls: retry
-      - cls: remote
-        url: http://{{ $.Values.indexers.storage.host }}:{{ $.Values.indexers.storage.port }}/
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.indexers.storageConfigurationRef) | indent 4 }}
     scheduler:
       cls: remote
       url: http://{{ $.Values.indexers.scheduler.host }}:{{ $.Values.indexers.scheduler.port }}/
