@@ -61,13 +61,18 @@ tests:
       swh_loader_metadata_image: test.image
       swh_loader_metadata_image_version: test.version
 
+      remoteStorage:
+        cls: remote
+        host: http://test.storage.org:2005
+
+      storageConfiguration:
+        storageConfigurationRef: remoteStorage
+
       # specific values
       loader_metadata:
         enabled: true
         logLevel: DEBUG
-        storage:
-          host: test.storage.org
-          port: 2005
+        storageConfigurationRef: storageConfiguration
         scheduler:
           host: test.scheduler.org
           port: 8005

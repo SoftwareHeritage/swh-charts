@@ -359,9 +359,7 @@ checker_deposit:
 
 loader_metadata:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteStorageConfiguration
   scheduler:
     host: scheduler0.internal.staging.swh.network
     port: 5008

@@ -1,8 +1,18 @@
+remoteStorage:
+  cls: remote
+  host: https://storage.test.org:2005
+
+pipelineSteps:
+  - cls: buffer
+  - cls: retry
+
+myStorageConfiguration:
+  pipelineStepsRef: pipelineSteps
+  storageConfigurationRef: remoteStorage
+
 loader_metadata:
   enabled: true
-  storage:
-    host: storage.test.org
-    port: 2005
+  storageConfigurationRef: myStorageConfiguration
   scheduler:
     host: scheduler.test.org
     port: 8005

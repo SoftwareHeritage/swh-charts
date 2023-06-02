@@ -170,9 +170,7 @@ loaders:
 
 loader_metadata:
   enabled: true
-  storage:
-    host: saam.internal.softwareheritage.org
-    port: 5002
+  storageConfigurationRef: remoteStorageConfiguration
   scheduler:
     host: saatchi.internal.softwareheritage.org
     port: 5008

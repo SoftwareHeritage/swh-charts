@@ -9,13 +9,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    storage:
-      cls: pipeline
-      steps:
-      - cls: buffer
-      - cls: retry
-      - cls: remote
-        url: http://{{ .Values.loader_metadata.storage.host }}:{{ .Values.loader_metadata.storage.port }}/
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.loader_metadata.storageConfigurationRef) | indent 4 }}
     scheduler:
       cls: remote
       url: http://{{ .Values.loader_metadata.scheduler.host }}:{{ .Values.loader_metadata.scheduler.port }}/

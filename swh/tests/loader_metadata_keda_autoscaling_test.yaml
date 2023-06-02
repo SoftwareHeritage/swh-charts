@@ -7,15 +7,18 @@ tests:
       - ./values/loader-metadata.yaml
     set:
       namespace: test
+      remoteStorage:
+        cls: remote
+        host: http://test.storage.org:2005
+      storageConfiguration:
+        storageConfigurationRef: remoteStorage
       loader_metadata:
         enabled: true
         logLevel: DEBUG
         requestedMemory: "256Mi"
         requestedCpu: "250m"
         sentrySwhPackage: test.swh.loader.metadata
-        storage:
-          host: test.storage.org
-          port: 2005
+        storageConfigurationRef: storageConfiguration
         scheduler:
           host: test.scheduler.org
           port: 8005

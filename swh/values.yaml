@@ -210,9 +210,9 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
-  # storage:
-  #   host: ...
-  #   port: 5002
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultStorageClientConfiguration
   # scheduler:
   #   host: ...
   #   port: 5008
