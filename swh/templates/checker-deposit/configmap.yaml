@@ -11,9 +11,9 @@ metadata:
 data:
   config.yml.template: |
     extraction_dir: "/tmp/swh.checker.deposit/"
-    storage:
-      cls: remote
-      url: http://{{ .Values.checker_deposit.storage.host }}:{{ .Values.checker_deposit.storage.port }}/
+
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.checker_deposit.storageConfigurationRef) | indent 4 }}
+
     celery:
       task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ .Values.checker_deposit.amqp.host }}:{{ .Values.checker_deposit.amqp.port }}/
       task_acks_late: true
@@ -21,6 +21,7 @@ data:
       - swh.deposit.loader.tasks
       task_queues:
       - swh.deposit.loader.tasks.ChecksDepositTsk
+
     deposit:
       url: https://{{ .Values.checker_deposit.deposit.host }}/1/private/
       auth:

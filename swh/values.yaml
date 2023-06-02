@@ -256,6 +256,9 @@ cookers:
 
 checker_deposit:
   enabled: false
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
 
 indexers:
   enabled: false

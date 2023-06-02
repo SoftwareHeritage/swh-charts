@@ -349,9 +349,7 @@ cookers:
 
 checker_deposit:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteROStorageConfiguration
   deposit:
     host: deposit-rp.internal.staging.swh.network
   amqp:
