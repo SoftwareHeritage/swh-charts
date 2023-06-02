@@ -30,7 +30,11 @@ remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: saamStorageConfiguration
 
+roStoragePipelineSteps:
+  - cls: retry
+
 remoteROStorageConfiguration:
+  pipelineStepsRef: roStoragePipelineSteps
   # TODO: use a true read-only storage
   storageConfigurationRef: saamStorageConfiguration
 

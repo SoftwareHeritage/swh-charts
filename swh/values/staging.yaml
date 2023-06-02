@@ -25,7 +25,11 @@ remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: storage1StorageConfiguration
 
+roStoragePipelineSteps:
+  - cls: retry
+
 remoteROStorageConfiguration:
+  pipelineStepsRef: roStoragePipelineSteps
   # TODO: use a real read-only storage configuration
   storageConfigurationRef: storage1StorageConfiguration
 
@@ -325,9 +329,7 @@ listers:
 
 cookers:
   enabled: true
-  storage:
-    host: storage1.internal.staging.swh.network
-    port: 5002
+  storageConfigurationRef: remoteROStorageConfiguration
   vault:
     host: vault.internal.staging.swh.network
     port: 5005
