@@ -1,3 +1,16 @@
+fixtures:
+  default_configuration: &default-configuration
+    swh_storage_image: image
+    swh_storage_image_version: version
+    storageConf:
+      cls: remote
+      host: http://mystorage:2005
+    defaultStorageConfiguration:
+      storageConfigurationRef: storageConf
+    storage.enabled: true
+    storage.storageConfigurationRef: defaultStorageConfiguration
+
+
 suite: test storage deployment
 templates:
   - storage/configmap.yaml
@@ -7,9 +20,7 @@ tests:
     templates:
       - storage/deployment.yaml
     set:
-      storage.enabled: true
-      swh_storage_image: image
-      swh_storage_image_version: version
+      <<: *default-configuration
       storage.requestedMemory: memory
       storage.requestedCpu: cpu
     asserts:
@@ -55,9 +66,7 @@ tests:
     templates:
       - storage/deployment.yaml
     set:
-      storage.enabled: true
-      swh_storage_image: image
-      swh_storage_image_version: version
+      <<: *default-configuration
       storage.gunicorn.threads: 101
       storage.gunicorn.workers: 102
       storage.gunicorn.timeout: 103
@@ -75,9 +84,7 @@ tests:
     templates:
       - storage/deployment.yaml
     set:
-      storage.enabled: true
-      swh_storage_image: image
-      swh_storage_image_version: version
+      <<: *default-configuration
       statsdExternalHost: my-statsd-host
       statsdPort: 9999
     asserts:
@@ -91,10 +98,9 @@ tests:
     templates:
       - storage/deployment.yaml
     set:
+      <<: *default-configuration
       storage.enabled: true
       storage.sentry.enabled: true
-      swh_storage_image: image
-      swh_storage_image_version: version
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
@@ -112,13 +118,11 @@ tests:
     templates:
       - storage/deployment.yaml
     set:
+      <<: *default-configuration
       sentry.environment: my-environment
-      storage.enabled: true
       storage.sentry.enabled: true
       storage.sentry.secretKeyRef: my-secret
       storage.sentry.secretKeyName: my-key
-      swh_storage_image: image
-      swh_storage_image_version: version
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value

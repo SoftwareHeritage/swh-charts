@@ -100,6 +100,10 @@ sentry:
 #   # journalWriterConfigurationRef: journalWriterConfiguration
 #   # objectStorageConfigurationRef: noopObjectStorage
 
+# defaultStorageConfiguration:
+#   storageConfigurationRef: postgresqlStoragecConfiguration
+#   objectStorageConfiguration: remoteObjectStorageConfiguration
+
 # globalROStorageConfiguration:
 # TODO: define this configuration and use it for the webapp
 
@@ -291,24 +295,9 @@ storage:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: storage-sentry-dsn
-  # Mandatory: must be 'postgresql' or 'cassandra'
-  storageClass:
-  # if storageClass is 'cassandra'
-  # cassandra:
-  #   initKeyspace: false # only to bootstrap a new cassandra database
-  #   seeds:
-  #     - seed1
-  #   keySpace: swh
-  #   consistencyLevel: LOCAL_QUORUM
-  #  if storageClass is 'postgresql'
-  # postgresql:
-  #   host: postgresql
-  #   port: 5432
-  #   db: softwareheritage
-  #   user: guest
-  #   # name of the secret containing the $secretKeyName value
-  #   secretKeyRef: swh-postgresql-common-secrets
-  #   secretKeyName: storage-postgresql-password
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  storageConfigurationRef: defaultStorageConfiguration
   objstorage:
     cls: noop
   ##  if objstorage configuration doesn't contains passwords or sensitive data

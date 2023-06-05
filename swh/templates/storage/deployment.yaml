@@ -37,16 +37,7 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-        {{- if eq .Values.storage.storageClass "postgresql" }}
-          env:
-          - name: POSTGRESQL_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.storage.postgresql.secretKeyRef }}
-                key: {{ .Values.storage.postgresql.secretKeyName }}
-                # 'name' secret must exist & include that ^ key
-                optional: false
-        {{- end }}
+{{ include "swh.storage.secretsEnvironment" (list $.Values $.Values.storage.storageConfigurationRef) | indent 10 }}
         {{- if eq .Values.storage.objstorageClass "multiplexer" }}
           envFrom:
           - secretRef:

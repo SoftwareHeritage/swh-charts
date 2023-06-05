@@ -1,10 +1,19 @@
+fixtures:
+  default_configuration: &default-configuration
+    storageConf:
+      cls: remote
+      host: http://mystorage:2005
+    defaultStorageConfiguration:
+      storageConfigurationRef: storageConf
+    storage.enabled: true
+
 suite: test storage configmap deployment
 templates:
   - storage/configmap.yaml
 tests:
   - it: storage configmap is deployed when activated
     set:
-      storage.enabled: true
+      <<: *default-configuration
     asserts:
         - containsDocument:
             kind: ConfigMap
@@ -20,7 +29,7 @@ tests:
         #     count: 1
   - it: storage namespace
     set:
-      storage.enabled: true
+      <<: *default-configuration
       namespace: mynamespace
     asserts:
         - equal:

@@ -28,6 +28,11 @@ cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objectStorageConfigurationRef: noopObjectStorage
 
+cassandraStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  # TODO: add journal_writer
+  # TODO: add objstorage configuration
+
 storage_replayer:
   enabled: true
 
@@ -201,19 +206,10 @@ storage:
   replicas: 2
   requestedCpu: 500m
   requestedMemory: 500Mi
-  storageClass: cassandra
-  cassandra:
-    seeds:
-      - cassandra01.internal.softwareheritage.org
-      - cassandra02.internal.softwareheritage.org
-      - cassandra03.internal.softwareheritage.org
-      - cassandra04.internal.softwareheritage.org
-      - cassandra05.internal.softwareheritage.org
-      - cassandra06.internal.softwareheritage.org
-      - cassandra07.internal.softwareheritage.org
-      - cassandra08.internal.softwareheritage.org
-    keySpace: swh
-    consistencyLevel: LOCAL_QUORUM
+
+  storageConfigurationRef: cassandraStorageConfiguration
+
+  # TODO: move this to a proper objstorage template
   objstorageClass: multiplexer
   objstorageConfig: ${OBJSTORAGECONFIG}
 

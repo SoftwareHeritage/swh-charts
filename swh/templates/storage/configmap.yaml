@@ -7,23 +7,7 @@ metadata:
   name: storage-configuration-template
 data:
   config.yml.template: |
-    storage:
-      cls: {{ .Values.storage.storageClass }}
-      {{- if eq .Values.storage.storageClass "cassandra" }}
-      hosts:
-        {{- range $seed := .Values.storage.cassandra.seeds }}
-        - {{ $seed }}
-        {{- end }}
-      keyspace: {{ .Values.storage.cassandra.keySpace }}
-      consistency_level: {{ .Values.storage.cassandra.consistencyLevel }}
-      {{- else if eq .Values.storage.storageClass "postgresql" }}
-      db: host={{ .Values.storage.postgresql.host }} port={{ .Values.storage.postgresql.port | default "5432" }} user={{ .Values.storage.postgresql.user | default "guest" }} dbname={{ .Values.storage.postgresql.db | default "swh" }} password=${POSTGRESQL_PASSWORD}
-      {{- end }}
-      {{- if .Values.storage.specific_options -}}
-        {{- range $option, $value := .Values.storage.specific_options }}
-      {{ $option }}: {{ $value }}
-        {{- end }}
-      {{- end }}
+{{ include "swh.storageConfiguration" (list $.Values . $.Values.storage.storageConfigurationRef) | indent 4 }}
       objstorage:
         cls: {{ .Values.storage.objstorageClass }}
       {{- if eq .Values.storage.objstorageClass "filtered" }}
