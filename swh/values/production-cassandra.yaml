@@ -44,7 +44,7 @@ storage_replayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 20
     directory:
       objects:
         - directory
