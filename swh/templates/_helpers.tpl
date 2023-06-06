@@ -35,10 +35,11 @@ storage:
 {{- end -}}
 {{/* TODO: specific_options */}}
 {{- if $objectStorageConfigurationRef -}}
+{{- $objectStorageIndent := ternary $indent (int (add $indent 2)) (empty $pipelineStepsRef) -}}
 {{- $objectStorageConfiguration := get $Values $objectStorageConfigurationRef -}}
 {{- $objectStorageType := get $objectStorageConfiguration "cls" -}}
 {{- if eq $objectStorageType "noop" }}
-{{ include "swh.objstorage.noop" . | indent (int (add $indent)) }}
+{{ include "swh.objstorage.noop" . | indent $objectStorageIndent }}
 {{- else -}}
 {{- fail (print "Object Storage " $objectStorageType " not implemented") -}}
 {{- end -}}
