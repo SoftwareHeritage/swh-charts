@@ -122,7 +122,10 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 200m
       queues:
-        - swh.loader.core.tasks.LoadDirectory
+        - swh.loader.core.tasks.LoadTarballDirectory
+        - swh.loader.git.tasks.LoadGitDirectory
+        - swh.loader.mercurial.tasks.LoadHgDirectory
+        - swh.loader.svn.tasks.LoadSvnDirectory
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
