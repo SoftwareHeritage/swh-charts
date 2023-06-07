@@ -2,7 +2,8 @@ sentry:
   environment: staging
 
 storagePipelineSteps:
-  - cls: buffer
+  - &bufferStorage
+    cls: buffer
     min_batch_size:
       content: 100
       content_bytes: 52428800
@@ -16,6 +17,12 @@ storagePipelineSteps:
       extid: 100
   - cls: filter
   - cls: retry
+
+storagePipelineStepsWithRecordReferences:
+  - *bufferStorage
+  - cls: filter
+  - cls: retry
+  - cls: record_references
 
 noopObjectStorage:
   cls: noop
@@ -33,7 +40,7 @@ postgresqlStorageConfiguration:
       secretKeyName: postgres-swh-password
 
 directPostgresqlReplayerStorageConfiguration:
-  pipelineStepsRef: storagePipelineSteps
+  pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
   objectStorageConfigurationRef: noopObjectStorage
 
