@@ -140,6 +140,7 @@ graphql:
     client: swh-web
     # memory:// or memcached://memcached:port
     cacheUrl: memory://
+  # maxRawContentSize: 10000
 
 # Allow to specify a specific configuration for pod's /tmp
 # directory. Mostly used to configure the loaders to work

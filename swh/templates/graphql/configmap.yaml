@@ -21,6 +21,10 @@ data:
 
     introspection: {{ .Values.graphql.introspection }}
 
+    {{- if .Values.graphql.maxRawContentSize }}
+    max_raw_content_size: {{ .Values.graphql.maxRawContentSize }}
+    {{ end }}
+
     max_query_cost:
       anonymous: {{ .Values.graphql.anonymousUserMaxQueryCost}}
       user: {{ .Values.graphql.authenticatedUserMaxQueryCost}}

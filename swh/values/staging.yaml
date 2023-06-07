@@ -490,6 +490,7 @@ graphql:
     realm: SoftwareHeritageStaging
     client: swh-web
     cacheUrl: memcached://memcached:11211
+  maxRawContentSize: 10000
 
 memcached:
   enabled: true
