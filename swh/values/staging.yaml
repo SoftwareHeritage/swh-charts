@@ -128,7 +128,7 @@ loaders:
         - swh.loader.svn.tasks.LoadSvnDirectory
       autoScaling:
         maxReplicaCount: 1
-      image: swh_loader_package_image
+      image: swh_loader_savecodenow_image
     debian:
       requestedMemory: 256Mi
       requestedCpu: 200m
