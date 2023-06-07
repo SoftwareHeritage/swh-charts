@@ -131,7 +131,7 @@ loaders:
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
         - swh.loader.git.tasks.LoadGitDirectory
-        - swh.loader.mercurial.tasks.LoadHgDirectory
+        - swh.loader.mercurial.tasks.LoadMercurialDirectory
         - swh.loader.svn.tasks.LoadSvnDirectory
       autoScaling:
         maxReplicaCount: 1
