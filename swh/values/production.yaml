@@ -91,6 +91,13 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 6
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
     add-forge-now-slow:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
@@ -101,6 +108,13 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -119,7 +133,12 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 12
       extraConfig:
-        temp_file_cutoff: 10737418240
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
