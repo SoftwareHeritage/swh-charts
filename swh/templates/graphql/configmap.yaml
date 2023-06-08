@@ -15,15 +15,15 @@ data:
     search:
       cls: remote
       url: http://{{ .Values.graphql.searchConfiguration.host }}:{{ .Values.graphql.searchConfiguration.port }}
-    {{ end }}
+    {{- end }}
 
     debug: {{ .Values.graphql.debug }}
 
     introspection: {{ .Values.graphql.introspection }}
-
     {{- if .Values.graphql.maxRawContentSize }}
+
     max_raw_content_size: {{ .Values.graphql.maxRawContentSize }}
-    {{ end }}
+    {{- end }}
 
     max_query_cost:
       anonymous: {{ .Values.graphql.anonymousUserMaxQueryCost}}
