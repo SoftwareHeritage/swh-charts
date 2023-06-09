@@ -197,8 +197,8 @@ loaders:
       autoScaling:
         stopWhenNoActivity: false
         queueThreshold: 1
-        minReplicaCount: 4
-        maxReplicaCount: 4
+        minReplicaCount: 2
+        maxReplicaCount: 2
     maven:
       requestedMemory: 256Mi
       requestedCpu: 200m
