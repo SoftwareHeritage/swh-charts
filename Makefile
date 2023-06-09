@@ -14,3 +14,6 @@ test:
 test-with-snapshot:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
 	  $(IMAGE) $(ACTIVATE_SNAPSHOT) swh
+
+helm-diff:
+	cd swh && ./helm-diff.sh
