@@ -134,7 +134,7 @@ loaders:
         - swh.loader.mercurial.tasks.LoadMercurialDirectory
         - swh.loader.svn.tasks.LoadSvnDirectory
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
       image: swh_loader_savecodenow_image
     debian:
       requestedMemory: 256Mi
