@@ -130,14 +130,43 @@ loaders:
     directory:
       requestedMemory: 768Mi
       requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
+    git-checkout:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
+      queues:
         - swh.loader.git.tasks.LoadGitCheckout
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_git_image
+    hg-checkout:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
+      queues:
         - swh.loader.mercurial.tasks.LoadMercurialCheckout
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_mercurial_image
+    svn-export:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
+      queues:
         - swh.loader.svn.tasks.LoadSvnExport
       autoScaling:
-        maxReplicaCount: 2
-      image: swh_loader_savecodenow_image
+        maxReplicaCount: 1
+      image: swh_loader_svn_image
     debian:
       requestedMemory: 256Mi
       requestedCpu: 200m
