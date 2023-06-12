@@ -130,9 +130,9 @@ loaders:
       requestedCpu: 200m
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
-        - swh.loader.git.tasks.LoadGitDirectory
-        - swh.loader.mercurial.tasks.LoadMercurialDirectory
-        - swh.loader.svn.tasks.LoadSvnDirectory
+        - swh.loader.git.tasks.LoadGitCheckout
+        - swh.loader.mercurial.tasks.LoadMercurialCheckout
+        - swh.loader.svn.tasks.LoadSvnExport
       autoScaling:
         maxReplicaCount: 2
       image: swh_loader_savecodenow_image
