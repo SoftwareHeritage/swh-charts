@@ -112,6 +112,15 @@ spec:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
             cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+        {{- if or $deployment_config.limitedMemory $deployment_config.limitedCpu }}
+          limits:
+          {{- if $deployment_config.limitedMemory }}
+            memory: {{ $deployment_config.limitedMemory }}
+          {{- end }}
+          {{- if $deployment_config.limitedCpu }}
+            cpu: {{ $deployment_config.limitedCpu }}
+          {{- end }}
+        {{- end }}
         lifecycle:
           preStop:
             exec:

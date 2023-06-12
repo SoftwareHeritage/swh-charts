@@ -81,6 +81,7 @@ loaders:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
+      limitedMemory: 25600Mi
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
@@ -98,6 +99,7 @@ loaders:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
+      limitedMemory: 25600Mi
       queues:
         - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
@@ -158,6 +160,7 @@ loaders:
     save-code-now:
       requestedMemory: 2048Mi
       requestedCpu: 200m
+      limitedMemory: 25600Mi
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
