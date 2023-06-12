@@ -127,7 +127,7 @@ loaders:
       image: swh_loader_package_image
     directory:
       requestedMemory: 768Mi
-      requestedCpu: 200m
+      requestedCpu: 1000m
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
         - swh.loader.git.tasks.LoadGitCheckout
