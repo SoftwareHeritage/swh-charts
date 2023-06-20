@@ -197,7 +197,7 @@ loader_metadata:
       - kafka4.internal.softwareheritage.org:9094
     user: swh-archive-prod
   autoScaling:
-    maxReplicaCount: 4
+    maxReplicaCount: 6
 
 memcached:
   enabled: true
