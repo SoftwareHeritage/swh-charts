@@ -45,6 +45,9 @@ cookers:
 
 loader_metadata:
   sentrySwhPackage: swh.loader.metadata
+  requestedMemory: 350Mi
+  requestedCpu: 80m
+
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
