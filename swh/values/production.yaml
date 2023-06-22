@@ -65,6 +65,11 @@ listers:
   amqp:
      host: saatchi.internal.softwareheritage.org
   deployments:
+    gogs-full:
+      queues:
+        - swh.lister.gogs.tasks.FullGogsRelister
+      autoScaling:
+        maxReplicaCount: 1
     pubdev:
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
