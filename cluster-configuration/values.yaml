@@ -51,11 +51,11 @@ ingressNginx:
 otlpCollector:
   enabled: false
   debug: false
-  version: 0.57.0
+  version: 0.62.1
   # namespace: opentelemetry
   indexes: {}
-  #   swh: staging-logs
-  #   system: staging-system-logs
+  #   swh: logs
+  #   system: system-logs
   # resources:
   #   cpu: 256m
   #   memory: 2Gi

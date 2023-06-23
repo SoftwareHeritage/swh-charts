@@ -3,8 +3,8 @@
 # in the argocd application defined in application.yaml
 {{ if .Values.otlpCollector.enabled -}}
 {{- $environment := get .Values "environment" }}
-{{- $logs_swh := .Values.otlpCollector.indexes.swh | default ( print $environment "-swh-logs" ) -}}
-{{- $logs_system := .Values.otlpCollector.indexes.system | default ( print $environment "-system-logs" ) -}}
+{{- $logs_swh := .Values.otlpCollector.indexes.swh | default ( print "swh-logs" ) -}}
+{{- $logs_system := .Values.otlpCollector.indexes.system | default ( print "system-logs" ) -}}
 {{- $activate_debug := .Values.otlpCollector.debug -}}
 ---
 mode: daemonset
@@ -72,7 +72,9 @@ config:
     elasticsearch/swh-log:
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ $logs_swh }}
+      logs_index: {{ print ( $logs_swh "-" ) }}
+      logs_dynamic_index:
+        enabled: true
       # Contrary to documentation, this does not work. It fails to parse the configmap
       # error with it enabled
       # retry_on_failure:
@@ -82,7 +84,9 @@ config:
       # can be replaced by using the env variable ELASTICSEARCH_URL
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ $logs_system }}
+      logs_index: {{ print ( $logs_system "-" ) }}
+      logs_dynamic_index:
+        enabled: true
       timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
 
   extensions:
@@ -231,8 +235,8 @@ config:
       {{- else }}
       send_batch_size: {{ .Values.otlpCollector.resources.batch | default "10" }}
       {{- end }}
-    # If set to null, will be overridden with values based on k8s resource limits
-    memory_limiter: null
+    # No longer working with version > 0.52
+    # memory_limiter: null
     attributes/insert:
       actions:
       - key: environment
@@ -241,9 +245,30 @@ config:
       - key: cluster
         value: {{ .Values.clusterName }}
         action: insert
+      # for dynamic indexation, the environment is the index prefix
+      - key: index.prefix
+        value: {{ ( print $environment "-" ) }}
+        action: insert
+    attributes/regexp_insert:
+      actions:
+      # First extract the suffix (we can't name it as we need to, with ".",
+      # otherwise, it's complaining about regexp not being ok)
+      - key: "asctime"
+        pattern: ^(?P<suffix>[\d\-]{10}).*
+        action: extract
+      # Then we need to convert to a string as it's converted as a date (and we don't have a saying in this)
+      - key: suffix
+        action: convert
+        converted_type: string
+      # Finally we move where we need to
+      - key: elasticsearch.index.suffix
+        from_attribute: suffix
+        action: upsert
     attributes/clean-records:
       actions:
       - key: time
+        action: delete
+      - key: suffix
         action: delete
       - key: logtag
         action: delete
@@ -277,7 +302,9 @@ config:
           - resource
           - k8sattributes
           - attributes/insert
+          - attributes/regexp_insert
           - attributes/clean-records
+          - log_statements
         exporters:
           - elasticsearch/system-log
       logs/swh:
@@ -288,7 +315,9 @@ config:
           - resource
           - k8sattributes
           - attributes/insert
+          - attributes/regexp_insert
           - attributes/clean-records
+          - log_statements
         exporters:
           - elasticsearch/swh-log
       # inhibit pipelines
