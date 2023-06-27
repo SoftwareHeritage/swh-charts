@@ -72,15 +72,20 @@ Generate the configuration for a cassandra storage
 {{- $storageConfiguration := get $Values $storageConfigurationRef -}}
 {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
 {{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
+{{- $authProvider := get  $storageConfiguration "authProvider" -}}
 {{- $keyspace := required (print "The keyspace property is mandatory in " $storageConfigurationRef)
                     (get $storageConfiguration "keyspace") -}}
 {{- $indentationCount := ternary 0 2 (empty $inPipeline) -}}
 {{- $indent := indent $indentationCount "" -}}
+{{- $nextLevelIndentCount := (int (add $indentationCount 2)) -}}
 {{- if $inPipeline -}}- {{ end }}cls: cassandra
 {{ $indent }}hosts:
 {{ toYaml $cassandraSeeds | indent 2 }}
 {{ $indent }}keyspace: {{ $keyspace }}
 {{ $indent }}consistency_level: {{ get $storageConfiguration "consistencyLevel" }}
+{{ if $authProvider }}{{ $indent }}auth_provider:
+{{ toYaml $authProvider | indent $nextLevelIndentCount }}
+{{ end -}}
 {{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
 {{- end -}}
 
@@ -160,13 +165,16 @@ journal_writer:
   image: {{ get $Values $imageNamePrefix }}:{{ get $Values (print $imageNamePrefix "_version") }}
   imagePullPolicy: Always
   command:
-  - /bin/bash
+  - /usr/local/bin/python3
   args:
-  - -c
-  - eval "echo \"from swh.storage.cassandra import create_keyspace; create_keyspace(['{{ first $cassandraSeeds }}'], 'swh')\" | python3"
+  - /entrypoints/init-keyspace.py
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: storage-utils
+    mountPath: /entrypoints
     {{- end -}}
   {{- end -}}
-
 {{- end -}}
 
 {{/* Generate the environment configuration for database configuration if needed */}}

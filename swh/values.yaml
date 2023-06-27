@@ -50,6 +50,10 @@ sentry:
 #   keyspace: swh
 #   initKeySpace: false
 #   consistencyLevel: LOCAL_QUORUM
+#   authProvider:
+#     cls: cassandra.auth.PlainTextAuthProvider
+#     username: swh-rw
+#     password: ${CASSANDRA_PASSWORD}
 #   specificOptions:
 #     directory_entries_insert_algo: batch
 

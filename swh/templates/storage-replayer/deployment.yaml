@@ -1,5 +1,6 @@
 {{ if .Values.storage_replayer.enabled -}}
 {{- $configurationChecksum := include (print $.Template.BasePath "/storage-replayer/configmap.yaml") . -}}
+{{- $storageUtilsChecksum := include (print $.Template.BasePath "/utils/storage-utils.yaml") . -}}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
 ---
 apiVersion: apps/v1
@@ -20,6 +21,7 @@ spec:
         app: storage-replayer-{{ $deployment }}
       annotations:
         checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config_utils: {{ $storageUtilsChecksum | sha256sum }}
     spec:
       {{- if $.Values.storage_replayer.affinity }}
       affinity:
@@ -87,5 +89,11 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: storage-utils
+        configMap:
+          name: storage-utils
+          items:
+          - key: "init-keyspace-py"
+            path: "init-keyspace.py"
 {{ end }}
 {{- end -}}
