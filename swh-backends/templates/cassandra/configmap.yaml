@@ -1,0 +1,35 @@
+{{- if .Values.cassandra.enabled -}}
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: swh-test
+  namespace: {{ .Values.cassandra.namespace | default "default" }}
+spec:
+  cassandra:
+    # clusterName: swh-test
+    serverVersion: "4.0.8"
+    datacenters:
+      - metadata:
+          name: dc1
+        size: 1
+        storageConfig:
+            # empyDir: {}
+          cassandraDataVolumeClaimSpec:
+            storageClassName: standard
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
+        # initContainers:
+        #   - name: "server-config-init"
+        #     resources:
+        #         limits:
+        #             memory: 2Gi
+        config:
+            jvmOptions:
+                heapSize: 1G
+            cassandraYaml:
+                num_tokens: 16
+                enable_user_defined_functions: true
+{{- end -}}

@@ -1,0 +1,25 @@
+cert-manager:
+  enabled: true
+  installCRDs: true
+
+prometheus:
+  enabled: true
+  installCRDs: true
+
+ingress:
+  enabled: true
+  namespace: ingress-nginx
+
+keda:
+  enabled: true
+
+# https://github.com/k8ssandra/k8ssandra/blob/main/charts/k8ssandra/values.yaml
+k8ssandraOperator:
+  enabled: false
+  cassandra:
+    stargate:
+      enabled: false
+
+cassandra:
+  enabled: false
+  namespace: default

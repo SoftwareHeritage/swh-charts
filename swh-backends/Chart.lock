@@ -1,0 +1,18 @@
+dependencies:
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.12.0
+- name: k8ssandra-operator
+  repository: https://helm.k8ssandra.io/stable
+  version: 1.6.1
+- name: kube-prometheus-stack
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 47.0.0
+- name: ingress-nginx
+  repository: https://kubernetes.github.io/ingress-nginx
+  version: 4.7.0
+- name: keda
+  repository: https://kedacore.github.io/charts
+  version: 2.11.0
+digest: sha256:c956ab025268780bf1ed2737ce60965d46081b5fefcd83d3efdba79d22955440
+generated: "2023-06-27T12:48:15.023065485+02:00"

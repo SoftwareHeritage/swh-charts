@@ -1,0 +1,117 @@
+# install with:
+#  helm uninstall -n swh swh . --values values.yaml --values ../values-swh-application-versions.yaml --values values/minikube.yaml
+
+namespace: default
+
+noopObjectStorage:
+  cls: noop
+
+storagePipelineSteps:
+  - cls: buffer
+    min_batch_size:
+      content: 100
+      content_bytes: 52428800
+      directory: 100
+      directory_entries: 100
+      revision: 50
+      revision_parents: 100
+      revision_bytes: 52428800
+      release: 50
+      release_bytes: 52428800
+      extid: 100
+  - cls: filter
+  - cls: retry
+
+cassandraSeeds:
+  - swh-test-dc1-all-pods-service.default
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-test-superuser
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: swh-test-superuser
+      secretKeyName: password
+
+remoteROStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+
+cassandraReplayerStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: cassandraStorage
+  objectStorageConfigurationRef: noopObjectStorage
+
+storage:
+  enabled: true
+  replicas: 2
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+
+  storageConfigurationRef: remoteROStorageConfiguration
+
+  # TODO: migrate this to a proper template
+  objstorageClass: filtered
+  objstorageConfig:
+    storage_conf:
+      cls: remote
+      url: http://objstorage0.internal.staging.swh.network:5003/
+    filters_conf:
+    - type: readonly
+  ingress:
+    enabled: false
+    host: storage-cassandra.internal.staging.swh.network
+  gunicorn:
+    threads: 4
+    workers: 8
+  #journalWriter:
+  #  brokers:
+  #    - journal1.internal.staging.swh.network
+  #    - journal2.internal.staging.swh.network
+  #  clientId: swh.storage.journal_writer.storage
+  #  producerConfig: |-
+  #    message.max.bytes: 1000000000
+
+graphql:
+  enabled: true
+  sentry:
+    enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  backends:
+    storage:
+      host: storage
+      port: 5002
+    search:
+      host: search0.internal.staging.swh.network
+      port: 5010
+  debug: yes
+  introspection: yes
+  replicas: 1
+  gunicorn:
+    threads: 4
+    workers: 2
+    timeout: 3600
+  ingress:
+    enabled: true
+    httpPath: /
+    host: graphql.internal.staging.swh.network
+  logLevel: DEBUG
+  auth:
+    server: https://auth.softwareheritage.org/auth/
+    realm: SoftwareHeritageStaging
+    client: swh-web
+    cacheUrl: memcached://memcached:11211
+
+statsd_exporter:
+  enabled: true
+
+memcached:
+  enabled: true
