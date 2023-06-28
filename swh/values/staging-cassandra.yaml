@@ -36,6 +36,47 @@ cassandraStorageConfiguration:
   # TODO: add journal_writer
   # TODO: add objstorage configuration
 
+storagePipelineSteps:
+  - cls: buffer
+    min_batch_size:
+      content: 100
+      content_bytes: 52428800
+      directory: 100
+      directory_entries: 500
+      revision: 100
+      revision_parents: 200
+      revision_bytes: 52428800
+      release: 100
+      release_bytes: 52428800
+      extid: 100
+  - cls: filter
+  - cls: retry
+
+localRpcRWStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
+rpcRWStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
+loaders:
+  enabled: true
+  storageConfigurationRef: rpcRWStorageConfiguration
+  amqp:
+    host: scheduler0.internal.staging.swh.network
+    port: 5672
+  deployments:
+    git:
+      requestedMemory: 512Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        maxReplicaCount: 1
+
 storage_replayer:
   enabled: true
 
