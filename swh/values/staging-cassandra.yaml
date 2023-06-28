@@ -18,6 +18,14 @@ cassandraStorage:
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
     directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-rw
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-rw-password
 
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
@@ -205,21 +213,19 @@ storage:
     storage_conf:
       cls: remote
       url: http://objstorage0.internal.staging.swh.network:5003/
-    filters_conf:
-    - type: readonly
   ingress:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
   gunicorn:
     threads: 4
     workers: 8
-  #journalWriter:
-  #  brokers:
-  #    - journal1.internal.staging.swh.network
-  #    - journal2.internal.staging.swh.network
-  #  clientId: swh.storage.journal_writer.storage
-  #  producerConfig: |-
-  #    message.max.bytes: 1000000000
+  journalWriter:
+   brokers:
+     - journal1.internal.staging.swh.network
+     - journal2.internal.staging.swh.network
+   clientId: swh.storage-cassandra.journal_writer.storage
+   producerConfig: |-
+     message.max.bytes: 1000000000
 
 web:
   enabled: true
