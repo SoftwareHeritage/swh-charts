@@ -15,7 +15,9 @@ data:
       {{- else if eq .Values.storage.objstorageClass "multiplexer" }}
         objstorages:
         {{ .Values.storage.objstorageConfig }}
-      {{- end }}
+      {{- else }}
+        {{ toYaml .Values.storage.objstorageConfig }}
+      {{- end -}}
       {{- if .Values.storage.journalWriter }}
         {{- with .Values.storage.journalWriter }}
       journal_writer:

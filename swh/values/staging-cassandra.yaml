@@ -208,11 +208,9 @@ storage:
   storageConfigurationRef: cassandraStorageConfiguration
 
   # TODO: migrate this to a proper template
-  objstorageClass: filtered
+  objstorageClass: remote
   objstorageConfig:
-    storage_conf:
-      cls: remote
-      url: http://objstorage0.internal.staging.swh.network:5003/
+    url: http://objstorage0.internal.staging.swh.network:5003/
   ingress:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
