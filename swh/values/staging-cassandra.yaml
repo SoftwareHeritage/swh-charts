@@ -71,11 +71,11 @@ loaders:
       requestedMemory: 512Mi
       requestedCpu: 200m
       queues:
-        - swh.loader.git.tasks.UpdateGitRepository
-        - swh.loader.git.tasks.LoadDiskGitRepository
-        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - swh.loader.git.tasks.UpdateGitRepositoryTestCassandra
       autoScaling:
         maxReplicaCount: 1
+        minReplicaCount: 1
+        stopWhenNoActivity: false
 
 storage_replayer:
   enabled: true
@@ -251,7 +251,7 @@ storage:
   # TODO: migrate this to a proper template
   objstorageClass: remote
   objstorageConfig:
-    url: http://objstorage0.internal.staging.swh.network:5003/
+    url: http://storage1.internal.staging.swh.network:5003/
   ingress:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
