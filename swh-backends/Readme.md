@@ -5,6 +5,11 @@ Bootstrap all the necessary components to run the swh stack in a local cluster
 
 - Download the chart dependencies
 ```
+helm repo add k8ssandra https://helm.k8ssandra.io/stable
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add kedacore https://kedacore.github.io/charts
+helm repo update
 helm dependency build
 ```
 
