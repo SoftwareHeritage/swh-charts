@@ -10,6 +10,7 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
+cd swh-backends/
 helm dependency build
 ```
 
@@ -44,5 +45,8 @@ helm upgrade --install swh-backends . -f values/step2.yaml -f values/step3.yaml
 
 - Deploy swh
 ```
-helm upgrade --install swh . --values values.yaml --values values/minikube.yaml --values ../values-swh-application-versions.yaml
+cd ../swh/
+helm upgrade --install swh . --values values.yaml \
+  --values values/minikube.yaml \
+  --values ../values-swh-application-versions.yaml
 ```
