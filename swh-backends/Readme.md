@@ -39,7 +39,7 @@ helm upgrade --install swh-backends  . -f values/step2.yaml
 
 - Deploy cassandra
 ```
-helm upgrade --install swh-backends . -f values/step2.yaml -f values/step3.yam
+helm upgrade --install swh-backends . -f values/step2.yaml -f values/step3.yaml
 ```
 
 - Deploy swh
