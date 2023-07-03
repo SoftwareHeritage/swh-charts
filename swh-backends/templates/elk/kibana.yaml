@@ -1,0 +1,21 @@
+{{- if .Values.kibana.enabled -}}
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+  namespace: {{ .Values.kibana.namespace }}
+spec:
+  version: 7.15.2
+  count: 1
+# Workaroung, the operator does not detect the
+# protocol to use is http
+#   elasticsearchRef:
+#     name: elasticsearch
+  config:
+    elasticsearch.hosts:
+      - http://elasticsearch-es-default:9200
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+{{- end -}}

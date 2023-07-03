@@ -1,2 +1,5 @@
+keda:
+  enable: true
+
 k8ssandraOperator:
   enabled: true

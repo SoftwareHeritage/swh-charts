@@ -44,3 +44,13 @@ dependencies:
   tags:
     - autoScaling
     - swh
+
+- name: eck-operator
+  alias: eck
+  version: 2.8.0
+  repository: https://helm.elastic.co
+  condition: eck-operator.enabled
+  tags:
+    - swh
+    - logs
+    - monitoring

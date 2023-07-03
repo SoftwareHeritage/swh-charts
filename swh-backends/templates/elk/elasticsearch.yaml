@@ -1,0 +1,31 @@
+{{- if .Values.elasticsearch.enabled -}}
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch
+  namespace: {{ .Values.elasticsearch.namespace }}
+spec:
+  version: 7.15.2
+  nodeSets:
+  - name: default
+    count: 1
+    podTemplate:
+      spec:
+        containers:
+        - name: elasticsearch
+          env:
+          - name: ES_JAVA_OPTS
+            value: -Xms1g -Xmx1g
+          - name: READINESS_PROBE_PROTOCOL
+            value: http
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 4
+            limits:
+              memory: 2Gi
+    config:
+      node.store.allow_mmap: false
+      xpack.security.enabled: false
+      xpack.security.http.ssl.enabled: true
+{{- end -}}

@@ -14,5 +14,8 @@ dependencies:
 - name: keda
   repository: https://kedacore.github.io/charts
   version: 2.11.0
-digest: sha256:c956ab025268780bf1ed2737ce60965d46081b5fefcd83d3efdba79d22955440
-generated: "2023-06-27T12:48:15.023065485+02:00"
+- name: eck-operator
+  repository: https://helm.elastic.co
+  version: 2.8.0
+digest: sha256:5097ec6192fc7ee5f12147381b6d97c3be23f125161653158174e8cecdf9d8ea
+generated: "2023-07-02T23:20:03.05254874+02:00"
