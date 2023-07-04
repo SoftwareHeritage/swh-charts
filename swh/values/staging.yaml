@@ -264,9 +264,6 @@ loaders:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
         maxReplicaCount: 1
-      extraConfig:
-        # FIXME: Find a way to avoid this initialization step in loader task
-        initialize_opam_root: true
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
