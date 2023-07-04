@@ -54,3 +54,13 @@ dependencies:
     - swh
     - logs
     - monitoring
+
+- name: eck-operator-crds
+  alias: eck-crds
+  version: 2.8.0
+  repository: https://helm.elastic.co
+  condition: eck-operator.enabled
+  tags:
+    - swh
+    - logs
+    - monitoring

@@ -1,6 +1,3 @@
-eck:
-  enabled: true
-
 elasticsearch:
   enabled: true
 
