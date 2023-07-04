@@ -49,8 +49,8 @@ helm upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml 
 ```
 helm upgrade --install elk . --values values/elasticsearch-step1.yaml
 helm upgrade --install elk . \
-    --values values/elasticsearch-step1.yaml
-    --values values/elasticsearch-step1.yaml
+    --values values/elasticsearch-step1.yaml \
+    --values values/elasticsearch-step2.yaml
 ```
 
 - Deploy swh
