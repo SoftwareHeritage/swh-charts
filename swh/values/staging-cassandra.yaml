@@ -71,7 +71,9 @@ loaders:
       requestedMemory: 512Mi
       requestedCpu: 200m
       queues:
-        - swh.loader.git.tasks.UpdateGitRepositoryTestCassandra
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
         maxReplicaCount: 1
         minReplicaCount: 1
