@@ -1,0 +1,228 @@
+otlpCollector:
+  enabled: true
+  nameOverride: otlp
+  mode: daemonset
+  presets:
+    # Configures the collector to collect logs.
+    # Adds the filelog receiver to the logs pipeline
+    # and adds the necessary volumes and volume mounts.
+    # Best used with mode = daemonset.
+    logsCollection:
+      # Not enabled as this configures too much. Only the necessary is opened below
+      enabled: false
+    # Configures the Kubernetes Processor to add Kubernetes metadata.
+    # Adds the k8sattributes processor to all the pipelines
+    # and adds the necessary rules to ClusteRole.
+    # Best used with mode = daemonset.
+    kubernetesAttributes:
+      enabled: true
+    # Configures the collector to collect host metrics.
+    # Adds the hostmetrics receiver to the metrics pipeline
+    # and adds the necessary volumes and volume mounts.
+    # Best used with mode = daemonset.
+    hostMetrics:
+      # Not enabled as this configures too much. Only the necessary is opened below
+      enabled: false
+
+  extraEnvs:
+  - name: KUBE_NODE_NAME
+    valueFrom:
+      fieldRef:
+        apiVersion: v1
+        fieldPath: spec.nodeName
+
+  extraVolumeMounts:
+    - mountPath: /var/log/pods
+      name: varlogpods
+    - mountPath: /var/lib/docker/containers
+      name: varlibdocker
+  extraVolumes:
+    - name: varlogpods
+      hostPath:
+        path: /var/log/pods
+        type: Directory
+    - name: varlibdocker
+      hostPath:
+        path: /var/lib/docker/containers
+        type: Directory
+
+  resources:
+    requests:
+      cpu: 256m
+      memory: 2Gi
+
+  # The pod monitor by default scrapes the metrics port.
+  # The metrics port needs to be enabled as well.
+  podMonitor:
+    enabled: true
+
+  ports:
+    # The metrics port is disabled by default. So we need to enable the port
+    # in order to use the PodMonitor (PodMonitor.enabled)
+    metrics:
+      enabled: true
+
+  config:
+    exporters:
+      # logging/debug:
+      #   loglevel: debug
+      elasticsearch/swh-log:
+        endpoints:
+          - http://elasticsearch-es-default:9200
+          # - http://elasticsearch-es-http:9200
+        logs_index: minikube-swh
+        timeout: "10s"
+      # elasticsearch/system-log:
+      #   # can be replaced by using the env variable ELASTICSEARCH_URL
+      #   endpoints:
+      #     - http://elasticsearch-es-default:9200
+      #   logs_index: minikube-system
+      #   timeout: "10s"
+
+    extensions:
+      # with port-forward, allows to display the pipeline status to see what's been
+      # deployed
+      zpages:
+        endpoint: "0.0.0.0:8889"
+      # The health_check extension is mandatory for this chart. Without the health_check
+      # extension the collector will fail the readiness and liveliness probes. The
+      # health_check extension can be modified, but should never be removed.
+      health_check: {}
+
+    receivers:
+
+      filelog/swh:
+        include:
+          # Only keep 'swh*' namespaces
+          - /var/log/pods/swh*/*/*.log
+
+        start_at: beginning
+        include_file_path: true
+        include_file_name: false
+        multiline:
+          # as of now, starts as a date pattern (see parser-containerd below)
+          line_start_pattern: '^[^ Z]+Z'
+        operators:
+        # Find out which log format is used to route it to proper parsers
+        # Extract metadata from file path
+        - id: extract_metadata_from_filepath
+          type: regex_parser
+          regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]{36})\/(?P<container_name>[^\._]+)\/(?P<run_id>\d+)\.log$'
+          parse_from: attributes["log.file.path"]
+          parse_to: resource
+        # Parse CRI-Containerd format
+        - id: parser-containerd
+          type: regex_parser
+          regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr)( (?P<logtag>[^ ]*) (?P<message>.*)|.*)$'
+          timestamp:
+            parse_from: attributes.time
+            layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+        # then parse the json formatted message if any
+        - id: parser-json-message
+          type: json_parser
+          parse_from: attributes['message']
+          parse_to: attributes
+          if: attributes.stream == 'stdout' && attributes.message matches "^\\{"
+
+    processors:
+      resource:
+        attributes:
+          - key: k8s.pod.name
+            from_attribute: pod_name
+            action: upsert
+      k8sattributes:
+        filter:
+          node_from_env_var: KUBE_NODE_NAME
+        passthrough: false
+        extract:
+          metadata:
+            # from https://opentelemetry.io/docs/reference/specification/resource/semantic_conventions/k8s/
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.deployment.name
+            - k8s.namespace.name
+            - k8s.node.name
+            - k8s.pod.start_time
+            - k8s.daemonset.name
+            - k8s.job.name
+            - k8s.cronjob.name
+            # Desired properties (but not working for now)
+            # 2023/04/26 08:54:58 collector server run finished with error: failed to
+            # build pipelines: failed to create "k8sattributes" processor, in pipeline
+            # "logs/system": "k8s.cluster.name" (or "deployment.environment" )
+            # - k8s.cluster.name
+            # - deployment.environment
+        pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.name
+          - sources:
+            - from: connection
+              name: k8s.pod.ip
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+      batch:
+        send_batch_size: 1
+      # If set to null, will be overridden with values based on k8s resource limits
+      memory_limiter: null
+      attributes/insert:
+        actions:
+        - key: environment
+          value: minikube
+          action: insert
+        - key: cluster
+          value: minikube
+          action: insert
+      attributes/clean-records:
+        actions:
+        - key: time
+          action: delete
+        - key: logtag
+          action: delete
+        - key: log
+          action: delete
+        - key: log.keyword
+          action: delete
+        - key: log.file.path
+          action: delete
+        - key: log.value
+          action: delete
+
+    service:
+      telemetry:
+        metrics:
+          address: ${MY_POD_IP}:8888
+        # logs:
+        #   level: "debug"
+      extensions:
+        - health_check
+        - memory_ballast
+
+      pipelines:
+        # logs/system:
+        #   receivers:
+        #     - filelog/system
+        #   processors:
+        #     - batch
+        #     - resource
+        #     - k8sattributes
+        #     - attributes/insert
+        #     - attributes/clean-records
+        #   exporters:
+        #     - elasticsearch/system-log
+        logs/swh:
+          receivers:
+            - filelog/swh
+          processors:
+            - batch
+            - resource
+            - k8sattributes
+            - attributes/insert
+            - attributes/clean-records
+          exporters:
+            - elasticsearch/swh-log
+        # inhibit pipelines
+        logs: null
+        metrics: null
+        traces: null

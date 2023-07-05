@@ -34,3 +34,6 @@ elasticsearch:
 kibana:
   enabled: false
   namespace: default
+
+otlpCollector:
+  enabled: false

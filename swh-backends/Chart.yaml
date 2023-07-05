@@ -64,3 +64,12 @@ dependencies:
     - swh
     - logs
     - monitoring
+
+- name: opentelemetry-collector
+  alias: otlpCollector
+  version: 0.57.0
+  repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+  condition: otlpCollector.enabled
+  tags:
+    - logs
+

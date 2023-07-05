@@ -11,6 +11,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo add k8ssandra https://helm.k8ssandra.io/stable
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-charts
 helm repo update
 cd swh-backends/
 helm dependency build
@@ -45,4 +46,11 @@ cd ../swh/
 helm upgrade --install swh . --values values.yaml \
   --values ../values-swh-application-versions.yaml \
   --values values/minikube.yaml
+```
+
+- Deploy opentelemetry cluster configuration
+```
+helm install otlp . \
+  --values values.yaml \
+  --values values/otlp-collector.yaml
 ```
