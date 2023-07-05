@@ -16,20 +16,6 @@ cd swh-backends/
 helm dependency build
 ```
 
-- Apply the prometheus operator crds
-```
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagers.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_podmonitors.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_probes.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusagents.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheuses.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_prometheusrules.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_scrapeconfigs.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml
-kubectl apply --server-side -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.66.0/example/prometheus-operator-crd/monitoring.coreos.com_thanosrulers.yaml
-```
-
 - Deploy the base components
 ```
 helm upgrade --install swh-backends  . -f values/step1.yaml
@@ -40,7 +26,7 @@ helm upgrade --install swh-backends  . -f values/step1.yaml
 helm upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
 ```
 
-- Deploy cassandra
+- Deploy tools (cassandra, rabbitmq, ...)
 ```
 helm upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml -f values/step3.yaml
 ```
@@ -57,6 +43,6 @@ helm upgrade --install elk . \
 ```
 cd ../swh/
 helm upgrade --install swh . --values values.yaml \
-  --values values/minikube.yaml \
-  --values ../values-swh-application-versions.yaml
+  --values ../values-swh-application-versions.yaml \
+  --values values/minikube.yaml
 ```
