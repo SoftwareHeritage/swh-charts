@@ -5,6 +5,7 @@ Bootstrap all the necessary components to run the swh stack in a local cluster
 
 - Download the chart dependencies
 ```
+helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add elastic https://helm.elastic.co
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add jetstack https://charts.jetstack.io
@@ -22,7 +23,7 @@ helm dependency build
 helm upgrade --install swh-backends  . -f values/step1.yaml
 ```
 
-- Deploy the cassandra-operator
+- Deploy the operators
 ```
 helm upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
 ```

@@ -50,22 +50,27 @@ cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objectStorageConfigurationRef: noopObjectStorage
 
+localRpcRWStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
+rpcRWStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
 storage:
   enabled: true
-  replicas: 2
-  requestedCpu: 500m
-  requestedMemory: 500Mi
+  replicas: 1
+  requestedCpu: 250m
+  requestedMemory: 250Mi
 
   storageConfigurationRef: remoteROStorageConfiguration
 
   # TODO: migrate this to a proper template
-  objstorageClass: filtered
+  objstorageClass: noop
   objstorageConfig:
     storage_conf:
-      cls: remote
-      url: http://objstorage0.internal.staging.swh.network:5003/
-    filters_conf:
-    - type: readonly
+      cls: noop
   ingress:
     enabled: false
     host: storage-cassandra.internal.staging.swh.network
@@ -109,6 +114,23 @@ graphql:
     realm: SoftwareHeritageStaging
     client: swh-web
     cacheUrl: memcached://memcached:11211
+
+loaders:
+  enabled: true
+  storageConfigurationRef: rpcRWStorageConfiguration
+  amqp:
+    host: rabbitmq-scheduler
+    port: 5672
+  deployments:
+    git:
+      requestedMemory: 128Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        maxReplicaCount: 1
 
 statsd_exporter:
   enabled: true

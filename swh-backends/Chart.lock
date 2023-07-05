@@ -23,5 +23,8 @@ dependencies:
 - name: opentelemetry-collector
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   version: 0.57.0
-digest: sha256:a71993749ef7f970e1bcf192247f3971740357584f803709734aa3ca92f2f88d
-generated: "2023-07-05T16:35:34.012233753+02:00"
+- name: rabbitmq-cluster-operator
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.4.2
+digest: sha256:89739ddb80bb10c355664428f96b70729f5f4b29f8bfada22f73c6628e03c27b
+generated: "2023-07-05T23:04:58.233216456+02:00"

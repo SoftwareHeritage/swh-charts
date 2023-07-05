@@ -1,2 +1,5 @@
 cassandra:
   enabled: true
+
+rabbitmq:
+  enabled: true

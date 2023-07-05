@@ -73,3 +73,11 @@ dependencies:
   tags:
     - logs
 
+- name: rabbitmq-cluster-operator
+  alias: rabbitmq-operator
+  version: 3.4.2
+  repository: https://charts.bitnami.com/bitnami
+  condition: rabbitmqOperator.enabled
+  tags:
+    - swh
+    - scheduler

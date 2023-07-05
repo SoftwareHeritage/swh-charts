@@ -20,6 +20,12 @@ k8ssandraOperator:
     stargate:
       enabled: false
 
+rabbitmqOperator:
+  enabled: false
+
+rabbitmq:
+  enable: false
+
 cassandra:
   enabled: false
   namespace: default

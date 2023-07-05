@@ -6,3 +6,9 @@ ingress:
 
 prometheus:
   enabled: true
+
+keda:
+  enabled: true
+
+rabbitmqOperator:
+  enabled: true
