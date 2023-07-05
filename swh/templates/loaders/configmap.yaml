@@ -48,7 +48,7 @@ data:
       awk "/__sentry-settings-for-celery-tasks__/{system(\"sed 's/^/    /g' $SENTRY_SETTINGS_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
       mv $CONFIG_FILE_WIP $CONFIG_FILE
     else
-      sed -i '/__sentry-settings-for-celery-tasks__//g' $CONFIG_FILE
+      sed -i 's/__sentry-settings-for-celery-tasks__//g' $CONFIG_FILE
     fi
 
     CREDS_LISTER_PATH=/etc/credentials/metadata-fetcher/credentials
@@ -56,7 +56,7 @@ data:
       awk "/__metadata-fetcher-credentials__/{system(\"sed 's/^/  /g' $CREDS_LISTER_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
       mv $CONFIG_FILE_WIP $CONFIG_FILE
     else
-      sed -i '/__metadata-fetcher-credentials__//g' $CONFIG_FILE
+      sed -i 's/__metadata-fetcher-credentials__//g' $CONFIG_FILE
     fi
 
     exit 0
