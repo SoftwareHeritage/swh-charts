@@ -21,23 +21,23 @@ for ns in swh elastic otlp; do kubectl create namespace $ns; done
 
 - Deploy the base components
 ```
-helm --namespace swh upgrade --install swh-backends  . -f values/step1.yaml
+helm upgrade --install swh-backends  . -f values/step1.yaml
 ```
 
 - Deploy the operators
 ```
-helm --namespace swh upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
+helm upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
 ```
 
 - Deploy tools (cassandra, rabbitmq, ...)
 ```
-helm --namespace swh upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml -f values/step3.yaml
+helm upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml -f values/step3.yaml
 ```
 
 - Deploy ELK
 ```
-helm --namespace elastic upgrade --install elk . --values values/elasticsearch-step1.yaml
-helm --namespace elastic upgrade --install elk . \
+helm upgrade --install elk . --values values/elasticsearch-step1.yaml
+helm upgrade --install elk . \
     --values values/elasticsearch-step1.yaml \
     --values values/elasticsearch-step2.yaml
 ```
@@ -50,10 +50,40 @@ helm --namespace swh upgrade --install swh . --values values.yaml \
   --values values/minikube.yaml
 ```
 
+Note: The secrets for the loader to access amqp need to be installed manually
+for now.
+
+```
+$ cat secrets.yaml
+---  # copy from the one in the default.namespace
+apiVersion: v1
+kind: Secret
+metadata:
+  name: swh-test-superuser
+  namespace: swh
+type: Opaque
+stringData:
+  username: $user0
+  password: $pass0
+--- # copy from the one installed by the rabbitmq operator
+apiVersion: v1
+kind: Secret
+metadata:
+  name: common-secrets
+  namespace: swh
+type: Opaque
+stringData:
+  rabbitmq-amqp-username: $user1
+  rabbitmq-amqp-password: $pass1
+  rabbitmq-amqp-host: amqp://$user1:$pass1@rabbitmq-scheduler:5672/%2f
+  rabbitmq-http-host: http://$user1:$pass1@rabbitmq-scheduler:15672/%2f
+$ kubectl --namespace swh apply -f secret.yaml
+```
+
 - Deploy opentelemetry cluster configuration
 ```
 cd ../swh-backends
-helm --namespace otlp install otlp . \
+helm upgrade --install otlp . \
   --values values.yaml \
   --values values/otlp-collector.yaml
 ```

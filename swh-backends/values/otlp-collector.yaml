@@ -68,7 +68,7 @@ otlpCollector:
       #   loglevel: debug
       elasticsearch/swh-log:
         endpoints:
-          - http://elasticsearch-es-default.elastic:9200
+          - http://elasticsearch-es-default:9200
           # - http://elasticsearch-es-http:9200
         logs_index: minikube-swh
         timeout: "10s"
@@ -90,11 +90,13 @@ otlpCollector:
       health_check: {}
 
     receivers:
-
       filelog/swh:
         include:
           # Only keep 'swh*' namespaces
-          - /var/log/pods/swh*/*/*.log
+          # - /var/log/pods/*-swh_storage*/*/*.log  # minikube with vcluster
+          # - /var/log/pods/*-swh_graphql*/*/*.log  # //
+          # - /var/log/pods/*-swh_loader*/*/*.log   # //
+          - /var/log/pods/swh*/*/*.log         # minikube only (like other clusters)
 
         start_at: beginning
         include_file_path: true

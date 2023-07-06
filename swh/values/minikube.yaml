@@ -21,7 +21,7 @@ storagePipelineSteps:
   - cls: retry
 
 cassandraSeeds:
-  - swh-test-dc1-all-pods-service
+  - swh-test-dc1-all-pods-service.default
 
 cassandraStorage:
   cls: cassandra
