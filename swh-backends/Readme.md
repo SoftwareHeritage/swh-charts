@@ -16,7 +16,7 @@ helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-
 helm repo update
 cd swh-backends/
 helm dependency build
-kubectl create namespace swh
+kubectl create namespace swh ; kubectl create namespace elastic
 ```
 
 - Deploy the base components
@@ -36,8 +36,8 @@ helm --namespace swh upgrade --install swh-backends . -f values/step1.yaml -f va
 
 - Deploy ELK
 ```
-helm upgrade --install elk . --values values/elasticsearch-step1.yaml
-helm upgrade --install elk . \
+helm --namespace elastic upgrade --install elk . --values values/elasticsearch-step1.yaml
+helm --namespace elastic upgrade --install elk . \
     --values values/elasticsearch-step1.yaml \
     --values values/elasticsearch-step2.yaml
 ```

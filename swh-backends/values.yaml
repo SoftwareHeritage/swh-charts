@@ -34,11 +34,9 @@ eck-operator:
 
 elasticsearch:
   enabled: false
-  namespace: default
 
 kibana:
   enabled: false
-  namespace: default
 
 otlpCollector:
   enabled: false

@@ -3,7 +3,6 @@ apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: elasticsearch
-  namespace: {{ .Values.elasticsearch.namespace }}
 spec:
   version: 7.15.2
   nodeSets:
