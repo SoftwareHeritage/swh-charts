@@ -16,7 +16,7 @@ helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-
 helm repo update
 cd swh-backends/
 helm dependency build
-kubectl create namespace swh ; kubectl create namespace elastic
+for ns in swh elastic otlp; do kubectl create namespace $ns; done
 ```
 
 - Deploy the base components
@@ -52,7 +52,8 @@ helm --namespace swh upgrade --install swh . --values values.yaml \
 
 - Deploy opentelemetry cluster configuration
 ```
-helm install otlp . \
+cd ../swh-backends
+helm --namespace otlp install otlp . \
   --values values.yaml \
   --values values/otlp-collector.yaml
 ```
