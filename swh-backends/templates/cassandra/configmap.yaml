@@ -3,7 +3,6 @@ apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
 metadata:
   name: swh-test
-  namespace: {{ .Values.cassandra.namespace | default "default" }}
 spec:
   cassandra:
     # clusterName: swh-test

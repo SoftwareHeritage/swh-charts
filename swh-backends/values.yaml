@@ -28,7 +28,6 @@ rabbitmq:
 
 cassandra:
   enabled: false
-  namespace: default
 
 eck-operator:
   enabled: false

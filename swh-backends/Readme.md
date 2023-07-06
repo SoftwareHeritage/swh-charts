@@ -16,21 +16,22 @@ helm repo add opentelemetry https://open-telemetry.github.io/opentelemetry-helm-
 helm repo update
 cd swh-backends/
 helm dependency build
+kubectl create namespace swh
 ```
 
 - Deploy the base components
 ```
-helm upgrade --install swh-backends  . -f values/step1.yaml
+helm --namespace swh upgrade --install swh-backends  . -f values/step1.yaml
 ```
 
 - Deploy the operators
 ```
-helm upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
+helm --namespace swh upgrade --install swh-backends  . -f values/step1.yaml -f values/step2.yaml
 ```
 
 - Deploy tools (cassandra, rabbitmq, ...)
 ```
-helm upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml -f values/step3.yaml
+helm --namespace swh upgrade --install swh-backends . -f values/step1.yaml -f values/step2.yaml -f values/step3.yaml
 ```
 
 - Deploy ELK
@@ -44,7 +45,7 @@ helm upgrade --install elk . \
 - Deploy swh
 ```
 cd ../swh/
-helm upgrade --install swh . --values values.yaml \
+helm --namespace swh upgrade --install swh . --values values.yaml \
   --values ../values-swh-application-versions.yaml \
   --values values/minikube.yaml
 ```

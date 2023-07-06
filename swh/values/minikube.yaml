@@ -1,8 +1,6 @@
 # install with:
 #  helm uninstall -n swh swh . --values values.yaml --values ../values-swh-application-versions.yaml --values values/minikube.yaml
 
-namespace: default
-
 noopObjectStorage:
   cls: noop
 
@@ -23,7 +21,7 @@ storagePipelineSteps:
   - cls: retry
 
 cassandraSeeds:
-  - swh-test-dc1-all-pods-service.default
+  - swh-test-dc1-all-pods-service
 
 cassandraStorage:
   cls: cassandra
