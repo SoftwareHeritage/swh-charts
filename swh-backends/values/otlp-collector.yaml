@@ -68,7 +68,7 @@ otlpCollector:
       #   loglevel: debug
       elasticsearch/swh-log:
         endpoints:
-          - http://elasticsearch-es-default:9200
+          - http://elasticsearch-es-default.elastic:9200
           # - http://elasticsearch-es-http:9200
         logs_index: minikube-swh
         timeout: "10s"
