@@ -4,4 +4,8 @@ kind: RabbitmqCluster
 metadata:
   name: rabbitmq-scheduler
 spec:
+    rabbitmq:
+        additionalConfig: |
+            default_user=rabbitmq
+            default_pass=mysecret
 {{- end -}}

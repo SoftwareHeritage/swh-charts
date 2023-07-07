@@ -1,0 +1,18 @@
+{{- if .Values.rabbitmq.enabled -}}
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: rabbitmq-scheduler-default-user-backup
+stringData:
+  default_user.conf: |
+    default_user: rabbitmq
+    default_pass: mysecret
+  username: rabbitmq
+  password: mysecret
+  host: rabbitmq-scheduler
+  port: "5672"
+  type: rabbitmq
+  provider: rabbitmq
+{{- end -}}
+

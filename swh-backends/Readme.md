@@ -50,8 +50,8 @@ helm --namespace swh upgrade --install swh . --values values.yaml \
   --values values/minikube.yaml
 ```
 
-Note: The secrets for the loader to access amqp need to be installed manually
-for now.
+Note: If the swh components are not deployed in the same workspace as the backends, the secrets for
+      the loader to access amqp need to be installed manually.
 
 ```
 $ cat secrets.yaml
