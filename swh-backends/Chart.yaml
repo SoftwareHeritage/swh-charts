@@ -67,7 +67,7 @@ dependencies:
 
 - name: opentelemetry-collector
   alias: otlpCollector
-  version: 0.57.0
+  version: 0.62.1
   repository: https://open-telemetry.github.io/opentelemetry-helm-charts
   condition: otlpCollector.enabled
   tags:

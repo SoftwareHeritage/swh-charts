@@ -69,8 +69,9 @@ otlpCollector:
       elasticsearch/swh-log:
         endpoints:
           - http://elasticsearch-es-default:9200
-          # - http://elasticsearch-es-http:9200
-        logs_index: minikube-swh
+        logs_index: swh-
+        logs_dynamic_index:
+          enabled: true
         timeout: "10s"
       # elasticsearch/system-log:
       #   # can be replaced by using the env variable ELASTICSEARCH_URL
@@ -96,16 +97,17 @@ otlpCollector:
           # - /var/log/pods/*-swh_storage*/*/*.log  # minikube with vcluster
           # - /var/log/pods/*-swh_graphql*/*/*.log  # //
           # - /var/log/pods/*-swh_loader*/*/*.log   # //
-          - /var/log/pods/swh*storage*/*/*.log         # minikube only (like other clusters)
-          - /var/log/pods/swh*graphql*/*/*.log         # minikube only (like other clusters)
-          - /var/log/pods/swh*loader*/*/*.log         # minikube only (like other clusters)
+          # Let's focus on loader logs
+          - /var/log/pods/swh*loader*/*/*.log
+          # - /var/log/pods/swh*storage*/*/*.log
+          # - /var/log/pods/swh*graphql*/*/*.log
 
         start_at: beginning
         include_file_path: true
         include_file_name: false
-        # multiline:
-        #   # as of now, starts as a date pattern (see parser-containerd below)
-        #   line_start_pattern: '^[^ Z]+Z'
+        multiline:
+          # as of now, starts as a date pattern (see parser-containerd below)
+          line_start_pattern: '^({|[^ Z]+Z)'
         operators:
         # Find out which log format is used to route it to proper parsers
         # Extract metadata from file path
@@ -114,20 +116,49 @@ otlpCollector:
           regex: '^.*\/(?P<namespace>[^_]+)_(?P<pod_name>[^_]+)_(?P<uid>[a-f0-9\-]{36})\/(?P<container_name>[^\._]+)\/(?P<run_id>\d+)\.log$'
           parse_from: attributes["log.file.path"]
           parse_to: resource
+        - id: get-format
+          type: router
+          routes:
+          - expr: body matches "^\\{"
+            output: parser-json-message
+          - expr: body matches "^[^ Z]+Z"
+            output: parser-containerd
         # Parse CRI-Containerd format
-        # - id: parser-containerd
-        #   type: regex_parser
-        #   regex: '^(?P<message>.*)$'
-          # regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr)( (?P<logtag>[^ ]*) (?P<message>.*)|.*)$'
-          # timestamp:
-          #   parse_from: attributes.time
-          #   layout: '%Y-%m-%dT%H:%M:%S.%LZ'
-        # then parse the json formatted message if any
+        - id: parser-containerd
+          type: regex_parser
+          regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr)( (?P<logtag>[^ ]*) (?P<message>.*)|.*)$'
+          timestamp:
+            parse_from: attributes.time
+            layout: '%Y-%m-%dT%H:%M:%S.%LZ'
         - id: parser-json-message
           type: json_parser
-          # parse_from: attributes['log']
           parse_to: attributes
-          # if: attributes.stream == 'stdout' && attributes.message matches "^\\{"
+        - id: parser-date
+          type: json_parser
+          timestamp:
+            parse_from: attributes.time
+            layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+        - id: parser-log
+          type: json_parser
+          parse_from: attributes.log
+          parse_to: attributes
+          # output: move-message-to-body
+          if: attributes.log matches "^\\{"
+        # - id: move-message-to-body
+        #   from: attributes.message
+        #   to: body
+        #   type: move
+        #   if: ! attributes.message matches "^\\{"
+        # - id: move-suffix-to-es-suffix
+        #   from: attributes.suffix
+        #   to: elasticsearch.index.suffix
+        #   type: move
+        # last workaround for edge case
+        # - id: move-json-log-to-message
+        #   from: body.log
+        #   to: body
+        #   type: move
+        #   if: ! body.log matches "^\\{"
 
     processors:
       resource:
@@ -169,8 +200,9 @@ otlpCollector:
               name: k8s.pod.ip
       batch:
         send_batch_size: 1
-      # If set to null, will be overridden with values based on k8s resource limits
-      memory_limiter: null
+        # If set to null, will be overridden with values based on k8s resource limits
+        # It's no longer supported by the superior version
+        # memory_limiter: null
       attributes/insert:
         actions:
         - key: environment
@@ -179,8 +211,26 @@ otlpCollector:
         - key: cluster
           value: minikube
           action: insert
+        # for dynamic indexation, the environment is the index prefix
+        - key: elasticsearch.index.prefix
+          value: minikube-
+          action: insert
+      attributes/regex_insert:
+        actions:
+        # FIXME: the name of the key may need to change in the real clusters
+        - key: "asctime"
+          pattern: ^(?P<suffix>[\d\-]{10}).*
+          action: extract
+        - key: suffix
+          action: convert
+          converted_type: string
+        - key: elasticsearch.index.suffix
+          from_attribute: suffix
+          action: upsert
       attributes/clean-records:
         actions:
+        # - key: suffix
+        #   action: delete
         - key: time
           action: delete
         - key: logtag
@@ -224,8 +274,10 @@ otlpCollector:
             - resource
             - k8sattributes
             - attributes/insert
+            - attributes/regex_insert
             - attributes/clean-records
           exporters:
+            # - logging/debug
             - elasticsearch/swh-log
         # inhibit pipelines
         logs: null
