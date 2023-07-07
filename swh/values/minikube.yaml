@@ -125,12 +125,21 @@ loaders:
       requestedCpu: 200m
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
-        - swh.loader.git.tasks.LoadDiskGitRepository
-        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
         stopWhenNoActivity: false
         minReplicaCount: 1
         maxReplicaCount: 1
+    # git-nojson:
+    #   image: swh_loader_git_image
+    #   useJsonLogger: false
+    #   requestedMemory: 128Mi
+    #   requestedCpu: 200m
+    #   queues:
+    #     - oneshot-normal-git:swh.loader.git.tasks.UpdateGitRepository
+    #   autoScaling:
+    #     stopWhenNoActivity: false
+    #     minReplicaCount: 1
+    #     maxReplicaCount: 1
 
 statsd_exporter:
   enabled: true

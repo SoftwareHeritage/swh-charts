@@ -96,14 +96,16 @@ otlpCollector:
           # - /var/log/pods/*-swh_storage*/*/*.log  # minikube with vcluster
           # - /var/log/pods/*-swh_graphql*/*/*.log  # //
           # - /var/log/pods/*-swh_loader*/*/*.log   # //
-          - /var/log/pods/swh*/*/*.log         # minikube only (like other clusters)
+          - /var/log/pods/swh*storage*/*/*.log         # minikube only (like other clusters)
+          - /var/log/pods/swh*graphql*/*/*.log         # minikube only (like other clusters)
+          - /var/log/pods/swh*loader*/*/*.log         # minikube only (like other clusters)
 
         start_at: beginning
         include_file_path: true
         include_file_name: false
-        multiline:
-          # as of now, starts as a date pattern (see parser-containerd below)
-          line_start_pattern: '^[^ Z]+Z'
+        # multiline:
+        #   # as of now, starts as a date pattern (see parser-containerd below)
+        #   line_start_pattern: '^[^ Z]+Z'
         operators:
         # Find out which log format is used to route it to proper parsers
         # Extract metadata from file path
@@ -113,18 +115,19 @@ otlpCollector:
           parse_from: attributes["log.file.path"]
           parse_to: resource
         # Parse CRI-Containerd format
-        - id: parser-containerd
-          type: regex_parser
-          regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr)( (?P<logtag>[^ ]*) (?P<message>.*)|.*)$'
-          timestamp:
-            parse_from: attributes.time
-            layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+        # - id: parser-containerd
+        #   type: regex_parser
+        #   regex: '^(?P<message>.*)$'
+          # regex: '^(?P<time>[^ ^Z]+Z) (?P<stream>stdout|stderr)( (?P<logtag>[^ ]*) (?P<message>.*)|.*)$'
+          # timestamp:
+          #   parse_from: attributes.time
+          #   layout: '%Y-%m-%dT%H:%M:%S.%LZ'
         # then parse the json formatted message if any
         - id: parser-json-message
           type: json_parser
-          parse_from: attributes['message']
+          # parse_from: attributes['log']
           parse_to: attributes
-          if: attributes.stream == 'stdout' && attributes.message matches "^\\{"
+          # if: attributes.stream == 'stdout' && attributes.message matches "^\\{"
 
     processors:
       resource:
