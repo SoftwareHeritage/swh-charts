@@ -117,7 +117,7 @@ loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   amqp:
-    host: rabbitmq-scheduler
+    host: rabbitmq-scheduler.default
     port: 5672
   deployments:
     git:
