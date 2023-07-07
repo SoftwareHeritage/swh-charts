@@ -63,7 +63,7 @@ listers:
     host: saatchi.internal.softwareheritage.org
     port: 5008
   amqp:
-     host: saatchi.internal.softwareheritage.org
+     host: rabbitmq.internal.softwareheritage.org
   deployments:
     gogs-full:
       queues:

@@ -289,6 +289,7 @@ listers:
     port: 5008
   amqp:
      host: scheduler0.internal.staging.swh.network
+     port: 5672
   deployments:
     all:
       maxTasksperchild: 3
