@@ -1,0 +1,226 @@
+namespace: swh-cassandra-next-version
+sentry:
+  # TODO: staging-next-version ?
+  environment: staging
+
+loaders:
+  deployments:
+    # Force the deployment of one pod of each type to at least
+    # ensure they start (not enough but it's a first step)
+    add-forge-now:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    add-forge-now-slow:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    archive:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    bzr:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    cran:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    cvs:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    content:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    directory:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    git:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    git-checkout:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    hg-checkout:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    svn-export:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    debian:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    deposit:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    golang:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    save-code-now:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    maven:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    mercurial:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    npm:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    opam:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    pypi:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    pubdev:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+    svn:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        stopWhenNoActivity: false
+
+loader_metadata:
+  autoScaling:
+    queueThreshold: 1
+    maxReplicaCount: 1
+    # TODO: Support this option
+    # stopWhenNoActivity: false
+
+storage_replayer:
+  # Force the deployment of one pod of each type to at least
+  # ensure they start (not enough but it's a first step)
+  deployments:
+    content:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    directory:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    extid:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    metadata:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    raw-extrinsic-metadata:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    origin:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    origin-visit:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    origin-visit-status:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    release:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    revision:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    skipped-content:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+    snapshot:
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+        # TODO: Support this option
+        # stopWhenNoActivity: false
+
+storage:
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 2
+    cpuPercentageUsage: 150
+  ingress:
+    host: storage-cassandra-next-version.internal.staging.swh.network
+
+web:
+  host: webapp-cassandra-next-version.internal.staging.swh.network
+
+# TODO: deploy graphql instance
+# graphql:
+#    ...
+
+memcached:
+  enabled: true
