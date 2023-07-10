@@ -275,11 +275,15 @@ listers:
 storage:
   enabled: false
   logLevel: INFO
-  replicas: 1
+# Don't configure the replicas if autoscaling is configured
+# and vice-versa
+# replicas: 1
   requestedCpu: 50m
   requestedMemory: 100Mi
-  autoScaling:
-    maxReplicaCount: 1
+# autoScaling:
+#   minReplicaCount: 2
+#   maxReplicaCount: 10
+#   cpuPercentageUsage: 100
 #  affinity:
 #    nodeAffinity:
 #      requiredDuringSchedulingIgnoredDuringExecution:

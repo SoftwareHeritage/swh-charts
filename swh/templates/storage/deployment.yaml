@@ -9,7 +9,9 @@ metadata:
     app: storage
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .Values.storage.replicas | default 1 }}
+  {{ if .Values.storage.replicas -}}
+  replicas: {{ .Values.storage.replicas }}
+  {{ end -}}
   selector:
     matchLabels:
       app: storage

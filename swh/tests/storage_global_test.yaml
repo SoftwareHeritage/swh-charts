@@ -1,5 +1,6 @@
 suite: test storage deployment
 templates:
+  - storage/autoscaling.yaml
   - storage/configmap.yaml
   - storage/deployment.yaml
   - storage/ingress.yaml

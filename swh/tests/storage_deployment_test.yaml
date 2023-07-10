@@ -14,6 +14,7 @@ fixtures:
 suite: test storage deployment
 templates:
   - storage/configmap.yaml
+  - utils/storage-utils.yaml
   - storage/deployment.yaml
 tests:
   - it: Storage is deployed
@@ -29,9 +30,8 @@ tests:
       - equal:
           path: metadata.namespace
           value: swh
-      - equal:
+      - isNull:
           path: spec.replicas
-          value: 1
       - equal:
           path: spec.template.spec.containers[0].resources.requests.memory
           value: memory
@@ -136,3 +136,14 @@ tests:
       - equal:
           path: spec.template.spec.containers[?(@.name == "storage")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.key
           value: my-key
+  - it: Storage replicas configuration
+    templates:
+      - storage/deployment.yaml
+    set:
+      <<: *default-configuration
+      storage.sentry.enabled: true
+      storage.replicas: 99
+    asserts:
+      - equal:
+          path: spec.replicas
+          value: 99

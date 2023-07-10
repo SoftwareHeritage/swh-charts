@@ -1,0 +1,49 @@
+suite: test storage autoscaling
+templates:
+  - storage/autoscaling.yaml
+tests:
+  - it: Storage autoscaling default values
+    set:
+      namespace: mynamespace
+      storage.enabled: true
+      storage.autoScaling.fakeProperty: nul
+    asserts:
+        - containsDocument:
+            kind: HorizontalPodAutoscaler
+            apiVersion: autoscaling/v2
+        - equal:
+            path: metadata.namespace
+            value: mynamespace
+        - equal:
+            path: spec.minReplicas
+            value: 2
+        - equal:
+            path: spec.maxReplicas
+            value: 10
+        - isEmpty:
+            path: spec.metrics
+
+  - it: Storage values
+    set:
+      namespace: mynamespace
+      storage.enabled: true
+      storage.autoScaling.minReplicaCount: 90
+      storage.autoScaling.maxReplicaCount: 91
+      storage.autoScaling.cpuPercentageUsage: -10
+    asserts:
+        - containsDocument:
+            kind: HorizontalPodAutoscaler
+            apiVersion: autoscaling/v2
+        - equal:
+            path: metadata.namespace
+            value: mynamespace
+        - equal:
+            path: spec.minReplicas
+            value: 90
+        - equal:
+            path: spec.maxReplicas
+            value: 91
+        - equal:
+            path: spec.metrics[?(@.type == "Resource")].resource[?(@.name == "cpu")].target.averageUtilization
+            value: -10
+
