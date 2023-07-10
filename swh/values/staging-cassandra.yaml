@@ -474,9 +474,12 @@ storage_replayer:
 
 storage:
   enabled: true
-  replicas: 10
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 10
+    cpuPercentageUsage: 150
   requestedCpu: 500m
-  requestedMemory: 500Mi
+  requestedMemory: 1500Mi
 
   storageConfigurationRef: cassandraStorageConfiguration
 
