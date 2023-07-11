@@ -114,6 +114,11 @@ listers:
       - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
         maxReplicaCount: 1
+    gitweb:
+      queues:
+      - swh.lister.gitweb.tasks.GitwebListerTask
+      autoScaling:
+        maxReplicaCount: 1
     launchpad:
       queues:
       - swh.lister.launchpad.tasks.FullLaunchpadLister
