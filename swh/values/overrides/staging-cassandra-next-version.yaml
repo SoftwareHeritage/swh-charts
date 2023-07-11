@@ -217,6 +217,7 @@ storage:
 
 web:
   host: webapp-cassandra-next-version.internal.staging.swh.network
+  replicas: 1
 
 # TODO: deploy graphql instance
 # graphql:
