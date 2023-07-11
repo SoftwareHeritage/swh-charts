@@ -65,6 +65,11 @@ listers:
   amqp:
      host: rabbitmq.internal.softwareheritage.org
   deployments:
+    gitweb:
+      queues:
+      - swh.lister.gitweb.tasks.GitwebListerTask
+      autoScaling:
+        maxReplicaCount: 1
     gogs-full:
       queues:
         - swh.lister.gogs.tasks.FullGogsRelister
