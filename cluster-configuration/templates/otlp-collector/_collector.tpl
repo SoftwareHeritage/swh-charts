@@ -3,8 +3,8 @@
 # in the argocd application defined in application.yaml
 {{ if .Values.otlpCollector.enabled -}}
 {{- $environment := get .Values "environment" }}
-{{- $logs_swh := .Values.otlpCollector.indexes.swh | default ( print "swh-logs" ) -}}
-{{- $logs_system := .Values.otlpCollector.indexes.system | default ( print "system-logs" ) -}}
+{{- $logs_swh := .Values.otlpCollector.indexes.swh | default "swh-logs" -}}
+{{- $logs_system := .Values.otlpCollector.indexes.system | default "system-logs" -}}
 {{- $activate_debug := .Values.otlpCollector.debug -}}
 ---
 mode: daemonset
@@ -72,7 +72,7 @@ config:
     elasticsearch/swh-log:
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ print ( $logs_swh "-" ) }}
+      logs_index: {{ print $logs_swh "-" }}
       logs_dynamic_index:
         enabled: true
       # Contrary to documentation, this does not work. It fails to parse the configmap
@@ -84,7 +84,7 @@ config:
       # can be replaced by using the env variable ELASTICSEARCH_URL
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ print ( $logs_system "-" ) }}
+      logs_index: {{ print $logs_system "-" }}
       logs_dynamic_index:
         enabled: true
       timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
