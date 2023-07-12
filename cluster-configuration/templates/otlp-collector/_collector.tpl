@@ -246,8 +246,8 @@ config:
         value: {{ .Values.clusterName }}
         action: insert
       # for dynamic indexation, the environment is the index prefix
-      - key: index.prefix
-        value: {{ ( print $environment "-" ) }}
+      - key: elasticsearch.index.prefix
+        value: {{ print $environment "-" }}
         action: insert
     attributes/regexp_insert:
       actions:
