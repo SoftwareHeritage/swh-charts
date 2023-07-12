@@ -253,7 +253,7 @@ config:
       actions:
       # First extract the suffix (we can't name it as we need to, with ".",
       # otherwise, it's complaining about regexp not being ok)
-      - key: "asctime"
+      - key: "time"
         pattern: ^(?P<suffix>[\d\-]{10}).*
         action: extract
       # Then we need to convert to a string as it's converted as a date (and we don't have a saying in this)
@@ -266,8 +266,8 @@ config:
         action: upsert
     attributes/clean-records:
       actions:
-      - key: time
-        action: delete
+      # - key: time
+      #   action: delete
       - key: suffix
         action: delete
       - key: logtag
