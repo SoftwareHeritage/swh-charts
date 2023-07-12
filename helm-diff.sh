@@ -9,25 +9,29 @@
 
 CONTEXT_SIZE=10
 MAIN_BRANCH=production
+APP=${1-swh}
 BRANCH="$(git symbolic-ref --quiet HEAD | sed 's|refs/heads/||')"
 
-TMPDIR=$(mktemp -d /tmp/swh-chart.XXXXXXXX)
+TMPDIR=$(mktemp -d /tmp/swh-chart.$APP.XXXXXXXX)
 function cleanup {
     rm -rf $TMPDIR
 }
 
 trap cleanup EXIT
 
-echo "Comparing changes between branches $MAIN_BRANCH and $BRANCH..."
+echo "[$APP] Comparing changes between branches $MAIN_BRANCH and $BRANCH..."
 
-files=$(ls values/*.yaml)
+files=$(ls $APP/values/*.yaml)
 
-HELM_CMD="helm template test . --values ../values-swh-application-versions.yaml --values values.yaml --values values/default.yaml --values"
+EXTRA_CMD=""
+[ -f $APP/values/default.yaml ] && EXTRA_CMD="--values $APP/values/default.yaml"
+
+HELM_CMD="helm template test $APP --values values-swh-application-versions.yaml --values $APP/values.yaml $EXTRA_CMD --values"
 
 # git stash
 git checkout $MAIN_BRANCH
 for f in $files; do
-    echo "Generate config in $MAIN_BRANCH branch for $f..."
+    echo "[$APP] Generate config in $MAIN_BRANCH branch for $f..."
     output="$TMPDIR/$(basename $f).before"
     $HELM_CMD $f > $output
 done
@@ -35,7 +39,7 @@ done
 # git stash pop
 git checkout $BRANCH
 for f in $files; do
-    echo "Generate config in ${BRANCH} branch for $f..."
+    echo "[$APP] Generate config in ${BRANCH} branch for $f..."
     output="$TMPDIR/$(basename $f).after"
     $HELM_CMD $f > $output
 done
