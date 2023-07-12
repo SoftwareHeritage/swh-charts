@@ -33,6 +33,7 @@ spec:
       affinity:
         {{ toYaml $.Values.cookers.affinity | nindent 8 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ $.Values.cookers.terminationGracePeriodSeconds | default 3600 }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye

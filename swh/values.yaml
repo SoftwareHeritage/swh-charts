@@ -210,6 +210,7 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
+  # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
@@ -231,6 +232,7 @@ loader_metadata:
 
 loaders:
   enabled: false
+  # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
@@ -250,6 +252,7 @@ loaders:
 
 cookers:
   enabled: false
+  # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
@@ -262,12 +265,14 @@ checker_deposit:
 
 indexers:
   enabled: false
+  # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
 
 listers:
   enabled: false
+  # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration

@@ -4,6 +4,7 @@ sentry:
   environment: staging
 
 loaders:
+  terminationGracePeriodSeconds: 60
   deployments:
     # Force the deployment of one pod of each type to at least
     # ensure they start (not enough but it's a first step)
@@ -124,6 +125,7 @@ loaders:
         stopWhenNoActivity: false
 
 loader_metadata:
+  terminationGracePeriodSeconds: 60
   autoScaling:
     queueThreshold: 1
     maxReplicaCount: 1

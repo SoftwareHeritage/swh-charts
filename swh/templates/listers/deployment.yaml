@@ -33,6 +33,7 @@ spec:
       affinity:
         {{ toYaml $.Values.listers.affinity | nindent 8 }}
       {{- end }}
+      terminationGracePeriodSeconds: {{ $.Values.listers.terminationGracePeriodSeconds | default 3600 }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
