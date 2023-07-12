@@ -304,7 +304,6 @@ config:
           - attributes/insert
           - attributes/regexp_insert
           - attributes/clean-records
-          - log_statements
         exporters:
           - elasticsearch/system-log
       logs/swh:
@@ -317,7 +316,6 @@ config:
           - attributes/insert
           - attributes/regexp_insert
           - attributes/clean-records
-          - log_statements
         exporters:
           - elasticsearch/swh-log
       # inhibit pipelines
