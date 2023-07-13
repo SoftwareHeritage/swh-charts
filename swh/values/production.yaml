@@ -90,6 +90,11 @@ listers:
         - swh.lister.pubdev.tasks.PubDevListerTask
       autoScaling:
         maxReplicaCount: 1
+    stagit:
+      queues:
+      - swh.lister.stagit.tasks.StagitListerTask
+      autoScaling:
+        maxReplicaCount: 1
 
 loaders:
   enabled: true

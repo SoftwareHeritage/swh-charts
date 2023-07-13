@@ -168,6 +168,11 @@ listers:
       - swh.lister.sourceforge.tasks.IncrementalSourceForgeLister
       autoScaling:
         maxReplicaCount: 1
+    stagit:
+      queues:
+      - swh.lister.stagit.tasks.StagitListerTask
+      autoScaling:
+        maxReplicaCount: 1
 
 cookers:
   enabled: true
