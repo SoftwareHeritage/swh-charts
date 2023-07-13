@@ -132,6 +132,7 @@ loaders:
       limitedMemory: 25600Mi
       queues:
         - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
+        - add-forge-now-slow:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
       autoScaling:
         queueThreshold: 1
