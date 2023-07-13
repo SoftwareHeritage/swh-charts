@@ -65,6 +65,11 @@ listers:
   amqp:
      host: rabbitmq.internal.softwareheritage.org
   deployments:
+    bower:
+      queues:
+      - swh.lister.bower.tasks.BowerListerTask
+      autoScaling:
+        maxReplicaCount: 1
     gitweb:
       queues:
       - swh.lister.gitweb.tasks.GitwebListerTask
