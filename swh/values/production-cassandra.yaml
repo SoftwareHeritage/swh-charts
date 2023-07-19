@@ -34,7 +34,7 @@ cassandraStorageConfiguration:
   # TODO: add objstorage configuration
 
 storage_replayer:
-  enabled: true
+  enabled: false
 
   affinity:
     nodeAffinity:
