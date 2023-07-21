@@ -95,7 +95,7 @@ loaders:
       requestedCpu: 200m
       image: swh_loader_package_image
       queues:
-        - swh.loader.package.archive.tasks.LoadArchive
+        - swh.loader.package.archive.tasks.LoadTarball
       autoScaling:
         maxReplicaCount: 1
     bzr:
@@ -227,7 +227,7 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
         - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-        - save_code_now:swh.loader.package.archive.tasks.LoadArchive
+        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
       ackLate: true
       autoScaling:
         stopWhenNoActivity: false
