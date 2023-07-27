@@ -85,6 +85,12 @@ listers:
         - swh.lister.gogs.tasks.FullGogsRelister
       autoScaling:
         maxReplicaCount: 1
+    golang:
+      queues:
+      - swh.lister.golang.tasks.FullGolangLister
+      - swh.lister.golang.tasks.IncrementalGolangLister
+      autoScaling:
+        maxReplicaCount: 1
     pagure:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
@@ -144,6 +150,14 @@ loaders:
             temp_file_cutoff: 10737418240
             # 32Gib
             pack_size_bytes: 34359738368
+    golang:
+      image: swh_loader_package_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.package.golang.tasks.LoadGolang
+      autoScaling:
+        maxReplicaCount: 1
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
