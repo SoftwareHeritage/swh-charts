@@ -90,7 +90,7 @@ listers:
       - swh.lister.golang.tasks.FullGolangLister
       - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     pagure:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
