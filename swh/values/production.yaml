@@ -90,7 +90,7 @@ listers:
       - swh.lister.golang.tasks.FullGolangLister
       - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
     pagure:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
@@ -157,7 +157,7 @@ loaders:
       queues:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
