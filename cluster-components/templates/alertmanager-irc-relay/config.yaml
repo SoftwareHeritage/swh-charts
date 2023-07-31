@@ -1,0 +1,59 @@
+{{- if .Values.alertmanagerIrcRelay.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: irc-relay-config
+  namespace: cattle-monitoring-system
+spec:
+  route:
+    groupBy: ['...']
+    groupWait: 31s
+    groupInterval: 120s
+    repeatInterval: 12h
+    receiver: ircrelay
+    continue: true
+  receivers:
+    - name: ircrelay
+      webhookConfigs:
+        - sendResolved: true
+          url: "http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/swh-sysadm"
+---
+# See https://gitlab.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay/-/tree/master
+# for more information
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-irc-relay
+  namespace: cattle-monitoring-system
+data:
+  # For more information, check
+  # https://gitlab.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay/-/tree/master#configuring-and-running-the-bot
+  config: |
+    http_host: 0.0.0.0
+    http_port: {{ .Values.alertmanagerIrcRelay.http_port }}
+    irc_host: irc.eu.libera.chat
+    irc_port: 7000
+    irc_nickname: $IRC_USER
+    irc_nickname_password: $IRC_PASSWORD
+    irc_realname: SWH AlertManager IRC Bot
+
+    irc_channels:
+      - name: "#swh-sysadm"
+
+    # Define how IRC messages should be sent.
+    #
+    # Send only one message when webhook data is received.
+    # Note: By default a message is sent for each alert in the webhook data.
+    msg_once_per_alert_group: no
+
+    # Define how IRC messages should be formatted.
+    #
+    # The formatting is based on golang's text/template .
+    msg_template: "Alert {{ "{{" }} .Labels.severity | ToUpper {{ "}}" }} {{ "{{" }} .Status {{ "}}" }} - {{ "{{" }} .Labels.environment {{ "}}" }}/{{ "{{" }} .Labels.cluster {{ "}}" }} - {{ "{{" }} .Labels.alertname {{ "}}" }} - {{ "{{" }} .Annotations.description {{ "}}" }}"
+
+    # Set the internal buffer size for alerts received but not yet sent to IRC.
+    alert_buffer_size: 2048
+
+{{ end }}

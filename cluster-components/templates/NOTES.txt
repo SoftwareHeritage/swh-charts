@@ -1,0 +1,1 @@
+This installed the alert manager irc relay.

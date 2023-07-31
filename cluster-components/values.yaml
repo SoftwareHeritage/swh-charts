@@ -1,0 +1,9 @@
+---
+alertmanagerIrcRelay:
+  enabled: false
+  http_port: 8000
+  # requestedMemory: "128Mi"
+  # requestedCpu: "500"
+  # optional
+  # limitedMemory: "256Mi"
+  # limitedCpu: "1000"

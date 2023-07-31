@@ -1,0 +1,6 @@
+alertmanagerIrcRelay:
+  enabled: true
+  requestedMemory: "32Mi"
+  requestedCpu: "100m"
+  limitedMemory: "64Mi"
+  limitedCpu: "200m"
