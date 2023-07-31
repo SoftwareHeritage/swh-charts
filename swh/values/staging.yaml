@@ -152,6 +152,11 @@ listers:
       - swh.lister.opam.tasks.OpamListerTask
       autoScaling:
         maxReplicaCount: 1
+    packagist:
+      queues:
+        - swh.lister.packagist.tasks.PackagistListerTask
+      autoScaling:
+        maxReplicaCount: 1
     pagure:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
