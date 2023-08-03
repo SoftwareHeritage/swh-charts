@@ -161,7 +161,7 @@ loaders:
       queues:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 4
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
