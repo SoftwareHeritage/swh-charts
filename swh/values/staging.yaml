@@ -79,7 +79,6 @@ listers:
       - swh.lister.gitlab.tasks.RangeGitLabLister
       - swh.lister.gitlab.tasks.FullGitLabRelister
       - swh.lister.phabricator.tasks.FullPhabricatorLister
-      - swh.lister.pypi.tasks.PyPIListerTask
       autoScaling:
         maxReplicaCount: 2
       requestedCpu: 500m
@@ -169,6 +168,11 @@ listers:
     pubdev:
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    pypi:
+      queues:
+      - swh.lister.pypi.tasks.PyPIListerTask
       autoScaling:
         maxReplicaCount: 1
     sourceforge:
