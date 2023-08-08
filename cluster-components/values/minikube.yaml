@@ -1,3 +1,6 @@
+prometheus:
+  enabled: true
+
 alertmanagerIrcRelay:
   enabled: true
   requestedMemory: "32Mi"

@@ -17,3 +17,11 @@ Example of components:
 - nginx
 - alerts
 - ...
+
+## minikube
+
+This requires the cattle-monitoring-system namespace.
+
+```
+kubectl create namespace cattle-monitoring-system
+```

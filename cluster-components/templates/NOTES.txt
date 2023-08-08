@@ -1,1 +1,3 @@
+{{- if .Values.alertmanagerIrcRelay.enabled }}
 This installed the alert manager irc relay.
+{{ end }}
