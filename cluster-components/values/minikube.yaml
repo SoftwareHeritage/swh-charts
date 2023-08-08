@@ -4,3 +4,6 @@ alertmanagerIrcRelay:
   requestedCpu: "100m"
   limitedMemory: "64Mi"
   limitedCpu: "200m"
+
+blackboxExporter:
+  enabled: true

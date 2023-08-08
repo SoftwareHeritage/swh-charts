@@ -1,0 +1,6 @@
+dependencies:
+- name: prometheus-blackbox-exporter
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 7.1.3
+digest: sha256:f828524b6a14907e644c3f84cc07d32b60a4d9bc7c38edf832427b673554bb37
+generated: "2023-08-08T15:51:04.625746816+02:00"
