@@ -19,6 +19,8 @@ prometheus:
 alertmanagerIrcRelay:
   enabled: false
   http_port: 8000
+  # Room to connect to
+  room: swh-sysadm
   # requestedMemory: "128Mi"
   # requestedCpu: "500"
   # optional

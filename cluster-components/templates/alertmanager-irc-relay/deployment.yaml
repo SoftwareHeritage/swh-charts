@@ -31,15 +31,13 @@ spec:
                 secretKeyRef:
                   name: alertmanager-irc-relay
                   key: user
-                  # 'name' secret must exist & include that ^ key
-                  optional: false
+                  optional: true
             - name: IRC_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: alertmanager-irc-relay
                   key: password
-                  # 'name' secret must exist & include that ^ key
-                  optional: false
+                  optional: true
           resources:
             requests:
               memory: {{ .Values.alertmanagerIrcRelay.requestedMemory | default "128Mi" }}

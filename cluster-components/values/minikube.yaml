@@ -3,6 +3,10 @@ prometheus:
 
 alertmanagerIrcRelay:
   enabled: true
+  # Optional username for the bot to use (configured from secrets in other clusters)
+  username: swhprombot
+  # Different room to use than the production one
+  room: minikube-swh-sysadm
   requestedMemory: "32Mi"
   requestedCpu: "100m"
   limitedMemory: "64Mi"

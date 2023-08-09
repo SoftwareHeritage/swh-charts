@@ -17,7 +17,7 @@ spec:
     - name: ircrelay
       webhookConfigs:
         - sendResolved: true
-          url: "http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/swh-sysadm"
+          url: "http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}"
 ---
 # See https://gitlab.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay/-/tree/master
 # for more information
@@ -35,12 +35,16 @@ data:
     http_port: {{ .Values.alertmanagerIrcRelay.http_port }}
     irc_host: irc.eu.libera.chat
     irc_port: 7000
+    {{ if .Values.alertmanagerIrcRelay.username }}
+    irc_nickname: {{ .Values.alertmanagerIrcRelay.username }}
+    {{ else }}
     irc_nickname: $IRC_USER
-    irc_nickname_password: $IRC_PASSWORD
+    {{ end }}
+    irc_nickname_password: "$IRC_PASSWORD"
     irc_realname: SWH AlertManager IRC Bot
 
     irc_channels:
-      - name: "#swh-sysadm"
+      - name: "#{{ .Values.alertmanagerIrcRelay.room }}"
 
     # Define how IRC messages should be sent.
     #
