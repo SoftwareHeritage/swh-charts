@@ -1,3 +1,10 @@
+This installed/upgraded:
 {{- if .Values.alertmanagerIrcRelay.enabled }}
-This installed the alert manager irc relay.
+- the alert manager irc relay. Any alerts sent from alertmanager are propagated to irc's
+  #swh-sysadm room through the relay exposed at http://alertmanager-irc-relay:{{
+  .Values.alertmanagerIrcRelay.http_port }}/swh-sysadm
+{{ end }}
+{{- if .Values.blackboxExporter.enabled }}
+- blackbox exporter. This installs probes to expand monitoring to http(s), DNS, ...
+  endpoints (e.g. https://www.softwareheritage.org, ...)
 {{ end }}
