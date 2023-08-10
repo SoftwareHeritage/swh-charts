@@ -1,9 +1,12 @@
 dependencies:
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.12.0
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
   version: 41.4.0
 - name: prometheus-blackbox-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 7.1.3
-digest: sha256:e1376f54c372ab3d8853daa438a4e21c5ab7567b50090f5929fcd9eda0023ab0
-generated: "2023-08-08T17:01:27.063548638+02:00"
+digest: sha256:175cd07552717515c80d076705cb182ac1984554d9732363f55f5d5b8c1658ea
+generated: "2023-08-10T10:46:18.904674435+02:00"

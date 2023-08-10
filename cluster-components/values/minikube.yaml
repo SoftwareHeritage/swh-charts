@@ -1,3 +1,6 @@
+cert-manager:
+  enabled: true
+
 prometheus:
   enabled: true
 

@@ -1,14 +1,20 @@
 ---
+# Main common configuration for the chart.
+
+# All applications whose 'enabled' flag is false by default are applications that are
+# already installed in the cluster by the main swh provisioning except for the clusters
+# minikube (local dev) and rancher (admin cluster).
+cert-manager:
+  enabled: false
+
 prometheus:
-  # This is already installed by the swh provisioning (terraform) in our clusters
-  # (except for minikube & rancher)
   enabled: false
   namespaceOverride: cattle-monitoring-system
-  # Must be disable the first time prometheus is installed in the cluster
-  # because helm needs the namespace to exist to create the prometheus-operator pre-install hooks
-  prometheusOperator:
-    admissionWebhooks:
-      enabled: false
+  # Must be disable the first time prometheus is installed in the cluster because helm
+  # needs the namespace to exist to create the prometheus-operator pre-install hooks
+  # prometheusOperator:
+  #   admissionWebhooks:
+  #     enabled: false
   grafana:
     namespaceOverride: cattle-monitoring-system
   prometheus-node-exporter:
