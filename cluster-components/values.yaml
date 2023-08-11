@@ -17,7 +17,6 @@ prometheus:
       host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
       # .htaccess or authentication credentials
       # secret:
-
   grafana:
     namespaceOverride: cattle-monitoring-system
   prometheus-node-exporter:
@@ -30,6 +29,8 @@ alertmanagerIrcRelay:
   ingress:
     enabled: true
     host: alertmanager-irc-relay.admin.swh.network
+    # secret holding the .htpasswd information
+    authentication: ingress-nginx/basic-auth
     tls:
       enabled: true
       # clusterIssuer: letsencrypt-production
