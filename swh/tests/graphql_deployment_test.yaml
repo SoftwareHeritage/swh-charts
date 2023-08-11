@@ -27,6 +27,12 @@ tests:
           path: spec.template.spec.containers[?(@.name == "graphql")].image
           value: image:version
       - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].resources.requests.memory
+          value: 150Mi
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].resources.requests.cpu
+          value: 50m
+      - equal:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "LOG_LEVEL")].value
           value: "INFO"
       - equal:
@@ -47,6 +53,22 @@ tests:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_MAIN_PACKAGE")]
       - isNull:
           path: spec.template.spec.containers[?(@.name == "graphql")].env[?(@.name == "SWH_SENTRY_DSN")]
+  - it: Graphql resources configuration
+    templates:
+      - graphql/deployment.yaml
+    set:
+      graphql.enabled: true
+      swh_graphql_image: image
+      swh_graphql_image_version: version
+      graphql.requestedMemory: 99Mi
+      graphql.requestedCpu: 1m
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].resources.requests.memory
+          value: 99Mi
+      - equal:
+          path: spec.template.spec.containers[?(@.name == "graphql")].resources.requests.cpu
+          value: 1m
   - it: Graphql gunicorn workers configuration
     templates:
       - graphql/deployment.yaml

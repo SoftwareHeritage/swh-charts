@@ -116,6 +116,8 @@ graphql:
   logLevel: INFO
   debug: no
   introspection: yes
+  # requestedMemory: 150Mi
+  # requestedCpu: 50m
   # maxQueryCost for anonymous users
   anonymousUserMaxQueryCost: 50
   authenticatedUserMaxQueryCost: 500

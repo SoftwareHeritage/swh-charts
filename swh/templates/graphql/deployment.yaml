@@ -29,6 +29,10 @@ spec:
         - name: graphql
           image: {{ .Values.swh_graphql_image }}:{{ .Values.swh_graphql_image_version }}
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: {{ .Values.graphql.requestedMemory | default "150Mi" }}
+              cpu: {{ .Values.graphql.requestedCpu | default "50m" }}
           ports:
             - containerPort: 5013
               name: rpc
