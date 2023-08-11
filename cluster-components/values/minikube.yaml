@@ -3,9 +3,19 @@ cert-manager:
 
 prometheus:
   enabled: true
+  alertmanager:
+    ircrelay:
+      url: http://minikube-ircrelay:8000/minikube-swh-sysadm
+  # Must be disable the first time prometheus is installed in the cluster because helm
+  # needs the namespace to exist to create the prometheus-operator pre-install hooks
+  # prometheusOperator:
+  #   admissionWebhooks:
+  #     enabled: false
 
 alertmanagerIrcRelay:
   enabled: true
+  ingress:
+    enabled: true
   # Optional username for the bot to use (configured from secrets in other clusters)
   username: swhprombot
   # Different room to use than the production one

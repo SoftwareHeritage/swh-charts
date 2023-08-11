@@ -1,24 +1,5 @@
 {{- if .Values.alertmanagerIrcRelay.enabled }}
 ---
-apiVersion: monitoring.coreos.com/v1alpha1
-kind: AlertmanagerConfig
-metadata:
-  name: irc-relay-config
-  namespace: cattle-monitoring-system
-spec:
-  route:
-    groupBy: ['...']
-    groupWait: 31s
-    groupInterval: 120s
-    repeatInterval: 12h
-    receiver: ircrelay
-    continue: true
-  receivers:
-    - name: ircrelay
-      webhookConfigs:
-        - sendResolved: true
-          url: "http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}"
----
 # See https://gitlab.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay/-/tree/master
 # for more information
 ---

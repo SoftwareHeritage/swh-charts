@@ -1,8 +1,11 @@
 This installed/upgraded:
 {{- if .Values.alertmanagerIrcRelay.enabled }}
-- the alert manager irc relay. Any alerts sent from alertmanager are propagated to irc's
-  #swh-sysadm room through the relay exposed at http://alertmanager-irc-relay:{{
-  .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}
+- An alert manager irc relay. Any alerts sent from alertmanager are propagated to irc's
+  #{{ .Values.alertmanagerIrcRelay.room }} room through the irc relay
+  http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}
+{{ end }}
+{{- if and .Values.prometheus.enabled .Values.prometheus.alertmanager.enabled .Values.prometheus.alertmanager.ircrelay.enabled }}
+- Allows to relay alertmanager's alerts to the relay exposed at {{ .Values.prometheus.alertmanager.ircrelay.url }}
 {{ end }}
 {{- if .Values.blackboxExporter.enabled }}
 - blackbox exporter. This installs probes to expand monitoring to http(s), DNS, ...

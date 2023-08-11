@@ -1,0 +1,30 @@
+{{- if and .Values.alertmanagerIrcRelay.enabled .Values.alertmanagerIrcRelay.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: alertmanager-irc-relay-internal-ingress
+  namespace: cattle-monitoring-system
+  annotations:
+    {{ if .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}
+    {{ end }}
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  rules:
+  - host: {{ .Values.alertmanagerIrcRelay.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: alertmanager-irc-relay
+            port:
+              name: http
+  tls:
+  - hosts:
+    - {{ .Values.alertmanagerIrcRelay.ingress.host }}
+    secretName: alertmanager-irc-relay-crt
+{{- end }}

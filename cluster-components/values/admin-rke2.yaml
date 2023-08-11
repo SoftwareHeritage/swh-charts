@@ -1,5 +1,9 @@
 alertmanagerIrcRelay:
   enabled: true
+  ingress:
+    enabled: true
+    tls:
+      clusterIssuer: letsencrypt-production
 
 blackboxExporter:
   enabled: true

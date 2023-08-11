@@ -10,11 +10,14 @@ cert-manager:
 prometheus:
   enabled: false
   namespaceOverride: cattle-monitoring-system
-  # Must be disable the first time prometheus is installed in the cluster because helm
-  # needs the namespace to exist to create the prometheus-operator pre-install hooks
-  # prometheusOperator:
-  #   admissionWebhooks:
-  #     enabled: false
+  alertmanager:
+    enabled: true
+    ircrelay:
+      enabled: true
+      host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
+      # .htaccess or authentication credentials
+      # secret:
+
   grafana:
     namespaceOverride: cattle-monitoring-system
   prometheus-node-exporter:
@@ -24,6 +27,12 @@ prometheus:
 
 alertmanagerIrcRelay:
   enabled: false
+  ingress:
+    enabled: true
+    host: alertmanager-irc-relay.admin.swh.network
+    tls:
+      enabled: true
+      # clusterIssuer: letsencrypt-production
   http_port: 8000
   # Room to connect to
   room: swh-sysadm

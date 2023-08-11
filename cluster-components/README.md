@@ -37,4 +37,6 @@ helm dependency build
 
 # Create the default namespace we deploy monitoring/alerting services
 kubectl create namespace cattle-monitoring-system
+# (Temporarily) Enable the ingress controller
+minikube addons enable ingress
 ```

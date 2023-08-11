@@ -11,4 +11,5 @@ spec:
   ports:
     - port: {{ .Values.alertmanagerIrcRelay.http_port }}
       targetPort: {{ .Values.alertmanagerIrcRelay.http_port }}
+      name: http
 {{- end }}

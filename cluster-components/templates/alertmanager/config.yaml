@@ -1,0 +1,21 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.alertmanager.enabled .Values.prometheus.alertmanager.ircrelay.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: irc-relay-config
+  namespace: cattle-monitoring-system
+spec:
+  route:
+    groupBy: ['...']
+    groupWait: 31s
+    groupInterval: 120s
+    repeatInterval: 12h
+    receiver: ircrelay
+    continue: true
+  receivers:
+    - name: ircrelay
+      webhookConfigs:
+        - sendResolved: true
+          url: {{ .Values.prometheus.alertmanager.ircrelay.url }}
+{{ end }}
