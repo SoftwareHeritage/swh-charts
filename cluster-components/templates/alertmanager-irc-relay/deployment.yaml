@@ -1,4 +1,5 @@
 {{- if .Values.alertmanagerIrcRelay.enabled }}
+{{- $configurationChecksum := include (print $.Template.BasePath "/alertmanager-irc-relay/config.yaml") . -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -18,6 +19,9 @@ spec:
     metadata:
       labels:
         app: alertmanager-irc-relay
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
       containers:
         - name: irc-relay
