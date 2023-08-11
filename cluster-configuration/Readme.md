@@ -1,4 +1,4 @@
-# cluster configuration templates
+# cluster configuration templates (deprecated in favor of /cluster-components)
 
 ## Tests
 
