@@ -60,6 +60,10 @@ rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: localRpcRWStorageConfiguration
 
+# (Not so) readonly (namespace local) storage
+localRpcROStorageConfiguration:
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
@@ -517,6 +521,34 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
+
+graphql:
+  enabled: true
+  logLevel: DEBUG
+  debug: yes
+  sentry:
+    enabled: true
+  storageConfigurationRef: localRpcROStorageConfiguration
+  searchConfiguration:
+    host: search0.internal.staging.swh.network
+    port: 5010
+  replicas: 2
+  gunicorn:
+    threads: 4
+    workers: 2
+    timeout: 3600
+  ingress:
+    enabled: true
+    httpPath: /graphql/
+    host: webapp-cassandra.internal.staging.swh.network
+  auth:
+    # temporary disable the authentication to avoid a redirect error from keycloak
+    enabled: false
+    server: https://auth.softwareheritage.org/auth/
+    realm: SoftwareHeritageStaging
+    client: swh-web
+    cacheUrl: memcached://memcached:11211
+  maxRawContentSize: 10000
 
 memcached:
   enabled: true

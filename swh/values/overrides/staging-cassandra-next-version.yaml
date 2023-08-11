@@ -221,9 +221,10 @@ web:
   host: webapp-cassandra-next-version.internal.staging.swh.network
   replicas: 1
 
-# TODO: deploy graphql instance
-# graphql:
-#    ...
+graphql:
+  replicas: 1
+  ingress:
+    host: webapp-cassandra-next-version.internal.staging.swh.network
 
 memcached:
   enabled: true

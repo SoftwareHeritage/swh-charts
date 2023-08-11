@@ -50,6 +50,7 @@ graphql:
     workers: 2
     timeout: 3600
   auth:
+    enabled: true
     server: https://auth.softwareheritage.org/auth/
     realm: SoftwareHeritage
     client: swh-web

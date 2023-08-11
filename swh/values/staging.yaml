@@ -307,6 +307,7 @@ graphql:
     host: graphql.internal.staging.swh.network
   logLevel: DEBUG
   auth:
+    enabled: true
     server: https://auth.softwareheritage.org/auth/
     realm: SoftwareHeritageStaging
     client: swh-web

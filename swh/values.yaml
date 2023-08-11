@@ -138,6 +138,7 @@ graphql:
 #    httpPath: /graphql
 #    host: my_host # Optional
   auth:
+    enabled: false
     # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
     # server: https://auth.backend.url/
     # optional, when not provided, graphql defaults to use "server" entry

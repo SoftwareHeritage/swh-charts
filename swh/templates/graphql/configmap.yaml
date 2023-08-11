@@ -29,7 +29,7 @@ data:
       anonymous: {{ .Values.graphql.anonymousUserMaxQueryCost}}
       user: {{ .Values.graphql.authenticatedUserMaxQueryCost}}
 
-    {{ if .Values.graphql.auth -}}
+    {{ if .Values.graphql.auth.enabled -}}
     auth:
       server: {{ .Values.graphql.auth.server | default "" }}
       {{ if .Values.graphql.auth.publicServer -}}
