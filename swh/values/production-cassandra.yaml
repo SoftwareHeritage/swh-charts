@@ -33,6 +33,15 @@ cassandraStorageConfiguration:
   # TODO: add journal_writer
   # TODO: add objstorage configuration
 
+# (Not so) readonly (namespace local) storage
+localRpcROStorageService:
+  cls: remote
+  host: http://storage:5002
+
+localRpcROStorageConfiguration:
+  storageConfigurationRef: localRpcROStorageService
+
+
 storage_replayer:
   enabled: false
 
@@ -229,6 +238,30 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
+
+graphql:
+  enabled: true
+  replicas: 1
+  storageConfigurationRef: localRpcROStorageConfiguration
+  searchConfiguration:
+    host: moma.internal.softwareheritage.org
+    port: 5010
+  introspection: yes
+  ingress:
+    enabled: true
+    host: webapp-cassandra.internal.softwareheritage.org
+    httpPath: /graphql/
+  gunicorn:
+    threads: 4
+    workers: 2
+    timeout: 3600
+  auth:
+    enabled: false
+    server: https://auth.softwareheritage.org/auth/
+    realm: SoftwareHeritage
+    client: swh-web
+    cacheUrl: memcached://memcached:11211
+  maxRawContentSize: 10000
 
 memcached:
   enabled: true
