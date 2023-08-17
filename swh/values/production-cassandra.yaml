@@ -75,7 +75,7 @@ storage_replayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 2
     directory:
       objects:
         - directory
@@ -87,7 +87,7 @@ storage_replayer:
       # Follow up consumption
       # requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 2
     extid:
       objects:
         - extid
