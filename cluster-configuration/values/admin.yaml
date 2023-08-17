@@ -12,6 +12,9 @@ ingressNginx:
     # To be able to share the same ip for several services
     # https://metallb.org/usage/#ip-address-sharing
     metallb.universe.tf/allow-shared-ip: internalIP
+  requestedMemory: 100Mi
+  config:
+    worker-processes: 2
 
 certManager:
   enabled: true
