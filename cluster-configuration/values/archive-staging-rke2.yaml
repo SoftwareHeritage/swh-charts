@@ -18,6 +18,8 @@ ingressNginx:
     metallb.universe.tf/allow-shared-ip: clusterIP
   requestedCpu: 50m
   requestedMemory: 200Mi
+  config:
+    worker-processes: 2
 
 certManager:
   enabled: true
