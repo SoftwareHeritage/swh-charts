@@ -43,6 +43,7 @@ blackboxExporter:
       enabled: true
     prometheusRule:
       enabled: true
+  pspEnabled: false
   config:
     modules:
       swh_www:
