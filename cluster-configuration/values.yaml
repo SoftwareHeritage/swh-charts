@@ -37,6 +37,7 @@ ingressNginx:
   # applicationNameOverride: my-application-name
   defaultClass: false
   watchIngressWithoutClass: false
+  monitoringEnabled: true
   # ingressClassName: nginx
   # avoid to overlap with other deployed ingress-nginx ingress controllers
   # for example, gitlab deploys another ingress-nginx with this default name
@@ -44,7 +45,6 @@ ingressNginx:
   # loadBalanceIP: xxx.xxx.xxx.xxx
   # annotations:
   #   annotation1: value
-  # monitoringEnabled: false
   # requestedCpu: 90m
   # requestedMemory: 100Mi
 
