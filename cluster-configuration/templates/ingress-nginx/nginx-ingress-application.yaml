@@ -44,6 +44,10 @@ spec:
               namespaceSelector:
                 any: true
           {{- end }}
+          {{- if .Values.ingressNginx.config }}
+          config:
+{{ .Values.ingressNginx.config | toYaml | indent 12 }}
+          {{- end }}
           resources:
             requests:
               cpu: {{ .Values.ingressNginx.requestedCpu | default "100m" }}
