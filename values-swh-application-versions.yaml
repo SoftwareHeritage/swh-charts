@@ -29,4 +29,4 @@ swh_storage_replayer_image_version: '20230821.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
 swh_vault_cookers_image_version: '20230821.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20230821.1'
+swh_web_image_version: '20230821.2'
