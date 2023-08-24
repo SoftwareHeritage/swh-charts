@@ -1,7 +1,5 @@
-alertmanagerIrcRelay:
-  enabled: false
-
-# That and the default ../values.yaml should activate enough alertmanager to relay
-# alerts to the cluster's admin's relay
-prometheus:
+# Relay prometheus alerts to the admin cluster's ingress relay
+alertmanager:
   enabled: true
+
+

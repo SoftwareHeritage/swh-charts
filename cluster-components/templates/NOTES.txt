@@ -1,11 +1,17 @@
 This installed/upgraded:
 {{- if .Values.alertmanagerIrcRelay.enabled }}
-- An alert manager irc relay. Any alerts sent from alertmanager are propagated to irc's
-  #{{ .Values.alertmanagerIrcRelay.room }} room through the irc relay
+- An alert manager irc relay. Any alerts sent from the cluster's prometheus are
+  propagated to the irc
+  #{{ .Values.alertmanagerIrcRelay.room }} room through that irc relay
   http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}
 {{ end }}
-{{- if and .Values.prometheus.enabled .Values.prometheus.alertmanager.enabled .Values.prometheus.alertmanager.ircrelay.enabled }}
-- Allows to relay alertmanager's alerts to the relay exposed at {{ .Values.prometheus.alertmanager.ircrelay.url }}
+{{- if and .Values.alertmanagerIrcRelay.enabled .Values.alertmanagerIrcRelay.ingress.enabled }}
+- An alert manager irc relay ingress exposed at {{ .Values.alertmanager.ircrelay.host
+  }}. Any alerts sent from a cluster with access to this ingress will be propagated to
+  irc #{{ .Values.alertmanagerIrcRelay.room }} room
+{{ end }}
+{{- if and .Values.alertmanager.enabled .Values.alertmanager.ircrelay.enabled }}
+- Allows to relay alertmanager's alerts to the relay exposed at {{ .Values.alertmanager.ircrelay.host }}
 {{ end }}
 {{- if .Values.blackboxExporter.enabled }}
 - blackbox exporter. This installs probes to expand monitoring to http(s), DNS, ...

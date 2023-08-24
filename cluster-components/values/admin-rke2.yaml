@@ -1,3 +1,5 @@
+# Activate the alertmanager irc relay and expose as an ingress so other clusters can
+# relay their alerts through irc as well
 alertmanagerIrcRelay:
   enabled: true
   ingress:

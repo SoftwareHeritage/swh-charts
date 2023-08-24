@@ -7,16 +7,20 @@
 cert-manager:
   enabled: false
 
+# This configuration is swh specific (and independent from the prometheus configuration
+# already done during terraform provisioning). When activated, this allows to relay the
+# cluster's prometheus alerts to the cluster admin's alertmanager ingress irc relay
+alertmanager:
+  enabled: false
+  ircrelay:
+    enabled: true
+    host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
+    # .htaccess or authentication credentials
+    # secret:
+
 prometheus:
   enabled: false
   namespaceOverride: cattle-monitoring-system
-  alertmanager:
-    enabled: true
-    ircrelay:
-      enabled: true
-      host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
-      # .htaccess or authentication credentials
-      # secret:
   grafana:
     namespaceOverride: cattle-monitoring-system
   prometheus-node-exporter:
