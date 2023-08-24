@@ -87,7 +87,7 @@ storage_replayer:
       # Follow up consumption
       # requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 10
     extid:
       objects:
         - extid
