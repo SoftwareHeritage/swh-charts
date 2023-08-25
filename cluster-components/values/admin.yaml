@@ -1,5 +1,0 @@
-alertmanagerIrcRelay:
-  enabled: true
-
-blackboxExporter:
-  enabled: true
