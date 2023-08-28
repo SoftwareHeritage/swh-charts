@@ -14,7 +14,7 @@ alertmanager:
   enabled: false
   ircrelay:
     enabled: true
-    host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
+    host: https://alertmanager-irc-relay.internal.admin.swh.network/swh-sysadm
     # .htaccess or authentication credentials
     # secret:
 
@@ -32,7 +32,9 @@ alertmanagerIrcRelay:
   enabled: false
   ingress:
     enabled: true
-    host: alertmanager-irc-relay.admin.swh.network
+    hosts:
+      - alertmanager-irc-relay.admin.swh.network
+      - alertmanager-irc-relay.internal.admin.swh.network
     # secret holding the .htpasswd information
     authentication: ingress-nginx/basic-auth
     tls:
