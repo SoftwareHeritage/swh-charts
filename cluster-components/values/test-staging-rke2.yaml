@@ -1,0 +1,5 @@
+# Relay prometheus alerts to the admin cluster's ingress relay
+alertmanager:
+  enabled: true
+
+
