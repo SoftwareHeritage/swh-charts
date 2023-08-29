@@ -23,6 +23,14 @@ cassandraStorage:
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
     directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-rw
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-rw-password
 
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
