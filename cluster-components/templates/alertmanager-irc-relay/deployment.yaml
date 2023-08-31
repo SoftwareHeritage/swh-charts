@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: irc-relay
-          image: container-registry.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay:v0.5.0
+          image: container-registry.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay:v0.5.1-swh
           command:
             - alertmanager-irc-relay
             - --config=/etc/ircrelay/config.yml
