@@ -15,6 +15,7 @@ ingressNginx:
   requestedMemory: 100Mi
   config:
     worker-processes: 2
+    use-forwarded-headers: true
 
 certManager:
   enabled: true
