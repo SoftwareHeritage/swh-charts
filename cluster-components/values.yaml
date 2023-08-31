@@ -28,6 +28,10 @@ prometheus:
   kube-state-metrics:
     namespaceOverride: cattle-monitoring-system
 
+alertmanagerConfig:
+  enabled: true
+  host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
+
 alertmanagerIrcRelay:
   enabled: false
   ingress:

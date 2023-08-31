@@ -1,4 +1,4 @@
-{{- if and .Values.alertmanager.enabled .Values.alertmanager.ircrelay.enabled }}
+{{- if and .Values.alertmanagerConfig.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
