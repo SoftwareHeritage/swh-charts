@@ -1,0 +1,3 @@
+environment: staging
+clusterName: test-staging-rke2
+clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-hb9j7h5g
