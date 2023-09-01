@@ -18,4 +18,12 @@ spec:
       webhookConfigs:
         - sendResolved: true
           url: {{ .Values.alertmanager.ircrelay.host }}
+          httpConfig:
+            basicAuth:
+              username:
+                key: user
+                name: alertmanager-irc-relay-config
+              password:
+                key: password
+                name: alertmanager-irc-relay-config
 {{ end }}
