@@ -71,6 +71,11 @@ listers:
       - swh.lister.bower.tasks.BowerListerTask
       autoScaling:
         maxReplicaCount: 1
+    cran:
+      queues:
+      - swh.lister.cran.tasks.CRANListerTask
+      autoScaling:
+        maxReplicaCount: 1
     gitweb:
       queues:
       - swh.lister.gitweb.tasks.GitwebListerTask
