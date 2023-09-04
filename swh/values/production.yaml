@@ -160,6 +160,14 @@ loaders:
             temp_file_cutoff: 10737418240
             # 32Gib
             pack_size_bytes: 34359738368
+    cran:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.cran.tasks.LoadCRAN
+      autoScaling:
+        maxReplicaCount: 1
     golang:
       image: swh_loader_package_image
       requestedMemory: 256Mi
