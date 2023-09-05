@@ -1,0 +1,8 @@
+fakeRemoteSchedulerConfiguration:
+  cls: remote
+  host: fake-scheduler.internal.s.n
+  port: 5008
+
+toolbox:
+  enabled: true
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration

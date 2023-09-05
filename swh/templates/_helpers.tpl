@@ -63,6 +63,19 @@ Generate the configuration for a remote storage
 {{- end -}}
 
 {{/*
+Generate the configuration for a remote scheduler
+*/}}
+{{- define "swh.scheduler.remote" -}}
+{{- $Values := index . 0 -}}
+{{- $schedulerConfigurationRefKey := index . 1 -}}
+{{- $indent := indent 2 "" -}}
+{{- $schedulerConfiguration := get $Values $schedulerConfigurationRefKey -}}
+scheduler:
+  cls: {{ get $schedulerConfiguration "cls" }}
+  url: http://{{ get $schedulerConfiguration "host" }}:{{ get $schedulerConfiguration "port" }}
+{{- end -}}
+
+{{/*
 Generate the configuration for a cassandra storage
 */}}
 {{- define "swh.storage.cassandra" -}}

@@ -1,0 +1,12 @@
+{{ if .Values.toolbox.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: toolbox-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml: |
+{{ include "swh.scheduler.remote" (list .Values .Values.toolbox.schedulerConfigurationRef) | indent 4 }}
+
+{{ end }}

@@ -56,6 +56,11 @@ remoteROStorageConfiguration:
   # TODO: use a real read-only storage configuration
   storageConfigurationRef: storage1StorageConfiguration
 
+remoteSchedulerConfiguration:
+  cls: remote
+  host: scheduler0.internal.staging.swh.network
+  port: 5008
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -487,3 +492,7 @@ storage_replayer:
       requestedCpu: 80m
       autoScaling:
         maxReplicaCount: 5
+
+toolbox:
+  enabled: true
+  schedulerConfigurationRef: remoteSchedulerConfiguration

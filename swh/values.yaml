@@ -403,3 +403,8 @@ memcached:
     enabled: true
     image: quay.io/prometheus/memcached-exporter:v0.11.1
 
+toolbox:
+  enabled: false
+  # requestedMemory: 256Mi
+  # requestedCpu: 250m
+  # schedulerConfigurationRef: remoteSchedulerConfiguration

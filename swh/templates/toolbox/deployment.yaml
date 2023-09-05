@@ -1,0 +1,55 @@
+{{ if .Values.toolbox.enabled -}}
+{{- $configurationChecksum := include (print $.Template.BasePath "/toolbox/configmap.yaml") . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swh-toolbox
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: swh-toolbox
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: swh-toolbox
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: swh-toolbox
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      containers:
+      - name: swh-toolbox
+        image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: {{ .Values.toolbox.requestedMemory | default "256Mi" }}
+            cpu: {{ .Values.toolbox.requestedCpu | default "250m" }}
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - /opt/swh/entrypoint.sh
+        env:
+        - name: SWH_CONFIG_FILENAME
+          value: /etc/swh/config.yml
+        volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        configMap:
+          name: toolbox-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml"
+            path: "config.yml"
+{{ end }}
