@@ -187,7 +187,8 @@ listers:
         maxReplicaCount: 1
     rpm:
       queues:
-      - swh.lister.tasks.rpm.IncrementalRPMLister
+        - swh.lister.rpm.tasks.FullRPMLister
+        - swh.lister.rpm.tasks.IncrementalRPMLister
       autoScaling:
         maxReplicaCount: 1
     sourceforge:

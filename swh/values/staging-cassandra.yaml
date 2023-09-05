@@ -291,7 +291,7 @@ loaders:
       requestedCpu: 200m
       image: swh_loader_package_image
       queues:
-        - swh.loader.package.rpm.LoadRpm
+        - swh.loader.package.rpm.tasks.LoadRpm
       autoScaling:
         maxReplicaCount: 1
     svn:
