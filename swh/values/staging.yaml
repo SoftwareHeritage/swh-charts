@@ -64,6 +64,7 @@ remoteSchedulerConfiguration:
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   scheduler:
     host: scheduler0.internal.staging.swh.network
     port: 5008

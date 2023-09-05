@@ -43,9 +43,7 @@ data:
   config.yml.template: |
 {{ include "swh.storageConfiguration" (list $.Values . $.Values.listers.storageConfigurationRef) | indent 4 }}
 
-    scheduler:
-      cls: remote
-      url: http://{{ $.Values.listers.scheduler.host }}:{{ $.Values.listers.scheduler.port }}/
+{{ include "swh.scheduler.remote" (list $.Values $.Values.listers.schedulerConfigurationRef) | indent 4 }}
 
     {{- if $deployment_config.extraConfig -}}
       {{- range $option, $value := $deployment_config.extraConfig }}
