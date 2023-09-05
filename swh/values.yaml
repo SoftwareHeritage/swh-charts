@@ -279,6 +279,7 @@ listers:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
+  # schedulerConfigurationRef: defaultSchedulerConfiguration
 
 storage:
   enabled: false

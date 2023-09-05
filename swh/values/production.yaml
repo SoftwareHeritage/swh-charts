@@ -57,12 +57,15 @@ graphql:
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
 
+remoteSchedulerConfiguration:
+  cls: remote
+  host: saatchi.internal.softwareheritage.org
+  port: 5008
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  scheduler:
-    host: saatchi.internal.softwareheritage.org
-    port: 5008
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   amqp:
      host: rabbitmq.internal.softwareheritage.org
   deployments:
