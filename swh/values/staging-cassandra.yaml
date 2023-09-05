@@ -286,6 +286,14 @@ loaders:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
         maxReplicaCount: 1
+    rpm:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.rpm.LoadRpm
+      autoScaling:
+        maxReplicaCount: 1
     svn:
       requestedMemory: 256Mi
       requestedCpu: 200m

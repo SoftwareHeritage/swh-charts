@@ -179,6 +179,11 @@ listers:
       - swh.lister.pypi.tasks.PyPIListerTask
       autoScaling:
         maxReplicaCount: 1
+    rpm:
+      queues:
+      - swh.lister.tasks.rpm.IncrementalRPMLister
+      autoScaling:
+        maxReplicaCount: 1
     sourceforge:
       queues:
       - swh.lister.sourceforge.tasks.FullSourceForgeLister
