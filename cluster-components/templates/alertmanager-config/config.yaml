@@ -13,6 +13,13 @@ spec:
     repeatInterval: 12h
     receiver: ircrelay
     continue: true
+    routes:
+      - receiver: null
+        continue: false
+        matchers:
+        - name: "alertname"
+          regex: true
+          value: "InfoInhibitor"
   receivers:
     - name: ircrelay
       webhookConfigs:
