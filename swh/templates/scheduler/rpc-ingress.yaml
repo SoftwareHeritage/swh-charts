@@ -1,0 +1,23 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled .Values.scheduler.rpc.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: scheduler-rpc-ingress
+spec:
+  {{- if .Values.scheduler.rpc.ingress.className }}
+  ingressClassName: {{ .Values.scheduler.rpc.ingress.className }}
+  {{- end }}
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: scheduler-rpc
+            port:
+              number: 5008
+    host: {{ .Values.scheduler.rpc.ingress.host }}
+
+{{ end }}

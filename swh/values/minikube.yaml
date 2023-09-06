@@ -23,7 +23,6 @@ scheduler:
   enabled: true
   recurrent:
     enabled: true
-  # schedulerConfigurationRef: fakePostgresSchedulerConfiguration
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
   recurrent:
@@ -35,4 +34,14 @@ scheduler:
       opam:
       - policy: origins_without_last_update
         weight: 100
-
+  rpc:
+    enabled: true
+    schedulerConfigurationRef: fakePostgresSchedulerConfiguration
+    replicas: 1
+    gunicorn:
+      threads: 1
+      workers: 1
+      timeout: 10
+    # ingress:
+    #   enabled: true
+    #   host: myscheduler.domain

@@ -1,0 +1,12 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled  -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: scheduler-rpc-configuration-template
+data:
+  config.yml.template: |
+{{ include "swh.scheduler.postgresql" (list .Values .Values.scheduler.rpc.schedulerConfigurationRef) | indent 4 }}
+
+{{- end -}}
