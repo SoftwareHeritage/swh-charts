@@ -7,6 +7,6 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml: |
-{{ include "swh.scheduler.remote" (list .Values .Values.toolbox.schedulerConfigurationRef) | indent 4 }}
+{{ include "swh.schedulerConfiguration" (list .Values .Values.toolbox.schedulerConfigurationRef) | indent 4 }}
 
 {{ end }}

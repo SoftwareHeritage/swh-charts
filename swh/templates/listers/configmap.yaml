@@ -43,7 +43,7 @@ data:
   config.yml.template: |
 {{ include "swh.storageConfiguration" (list $.Values . $.Values.listers.storageConfigurationRef) | indent 4 }}
 
-{{ include "swh.scheduler.remote" (list $.Values $.Values.listers.schedulerConfigurationRef) | indent 4 }}
+{{ include "swh.schedulerConfiguration" (list $.Values $.Values.listers.schedulerConfigurationRef) | indent 4 }}
 
     {{- if $deployment_config.extraConfig -}}
       {{- range $option, $value := $deployment_config.extraConfig }}
