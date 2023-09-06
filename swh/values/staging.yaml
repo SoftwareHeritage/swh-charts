@@ -61,6 +61,22 @@ remoteSchedulerConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5008
 
+postgresSchedulerConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: swh
+  password: ${POSTGRESQL_PASSWORD}
+  db: swh-scheduler
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scheduler-postgresql-common-secret
+      secretKeyName: postgres-swh-scheduler-password
+
+readonlyCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -500,32 +516,16 @@ toolbox:
   enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
 
-postgresSchedulerConfiguration:
-  cls: postgresql
-  host: db1.internal.staging.swh.network
-  port: '5432'
-  user: swh
-  password: ${POSTGRESQL_PASSWORD}
-  db: swh-scheduler
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scheduler-postgresql-common-secret
-      secretKeyName: postgres-swh-scheduler-password
-
-readonlyCeleryConfiguration:
-  host: scheduler0.internal.staging.swh.network
-  port: 5672
-
 scheduler:
   enabled: false
   sentry:
     secretKeyRef: scheduler-sentry-secrets
     secretKeyName: sentry-dsn
-  schedulerConfigurationRef: postgresSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: readonlyCeleryConfiguration
   recurrent:
     enabled: true
-    scheduling_policy:
+    schedulerPolicies:
       default:
         - policy: already_visited_order_by_lag
           weight: 40
@@ -538,6 +538,10 @@ scheduler:
           weight: 100
   rpc:
     enabled: false
+    # The scheduler instance to use for rpc must be a postgresql one hence the possible
+    # override of this one over the other default schedulerConfigurationRef in the
+    # top-level configuration
+    schedulerConfigurationRef: postgresSchedulerConfiguration
     replicas: 2
     gunicorn:
       threads: 5

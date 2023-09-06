@@ -111,6 +111,27 @@ sentry:
 # globalROStorageConfiguration:
 # TODO: define this configuration and use it for the webapp
 
+# postgresSchedulerConfiguration:
+#   cls: postgresql
+#   host: mydatabasese.server
+#   port: '5432'
+#   user: swh
+#   password: ${POSTGRESQL_PASSWORD}
+#   db: swh
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-postgresql-common-secret
+#       secretKeyName: postgres-swh-password
+
+# remoteSchedulerConfiguration:
+#   cls: remote
+#   host: scheduler0.internal.staging.swh.network
+#   port: 5008
+
+# readonlyCeleryConfiguration:
+#   host: scheduler0.internal.staging.swh.network
+#   port: 5672
+
 graphql:
   enabled: false
   logLevel: INFO
@@ -414,32 +435,11 @@ memcached:
     enabled: true
     image: quay.io/prometheus/memcached-exporter:v0.11.1
 
-# postgresSchedulerConfiguration:
-#   cls: postgresql
-#   host: mydatabasese.server
-#   port: '5432'
-#   user: swh
-#   password: ${POSTGRESQL_PASSWORD}
-#   db: swh
-#   secrets:
-#     POSTGRESQL_PASSWORD:
-#       secretKeyRef: swh-postgresql-common-secret
-#       secretKeyName: postgres-swh-password
-
-# remoteSchedulerConfiguration:
-#   cls: remote
-#   host: scheduler0.internal.staging.swh.network
-#   port: 5008
-
 toolbox:
   enabled: false
   # requestedMemory: 256Mi
   # requestedCpu: 250m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
-
-# readonlyCeleryConfiguration:
-#   host: scheduler0.internal.staging.swh.network
-#   port: 5672
 
 scheduler:
   enabled: false
@@ -453,7 +453,7 @@ scheduler:
   # celeryConfigurationRef: readonlyCeleryConfiguration
   recurrent:
     enabled: false
-    # scheduling_policy:
+    # schedulerPolicies:
     #   default:
     #   - policy: already_visited_order_by_lag
     #     weight: 40
@@ -472,6 +472,9 @@ scheduler:
   #   enabled: false
   rpc:
     enabled: false
+    # The scheduler instance to use for rpc must be a postgresql one hence the possible
+    # override of this one over the other default schedulerConfigurationRef in the
+    # top-level configuration
     # schedulerConfigurationRef: postgresSchedulerConfiguration
     # replicas: 2
     # gunicorn:
