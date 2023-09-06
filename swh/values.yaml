@@ -443,6 +443,12 @@ toolbox:
 
 scheduler:
   enabled: false
+  sentry:
+    enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: scheduler-sentry-dsn
+  # requestedMemory: 512Mi
+  # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # celeryConfigurationRef: readonlyCeleryConfiguration
   recurrent:
@@ -464,5 +470,11 @@ scheduler:
   #   enabled: false
   # listener:
   #   enabled: false
-  # rpc:
-  #   enabled: false
+  rpc:
+    enabled: false
+    port: 5008
+    replicas: 2
+    gunicorn:
+      threads: 5
+      workers: 2
+      timeout: 60
