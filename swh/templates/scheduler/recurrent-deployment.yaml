@@ -1,0 +1,75 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.recurrent.enabled -}}
+{{- $configurationChecksum := include (print .Template.BasePath "/scheduler/recurrent-configmap.yaml") . -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: scheduler-schedule-recurrent
+  labels:
+    app: scheduler-schedule-recurrent
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: scheduler-schedule-recurrent
+  template:
+    metadata:
+      labels:
+        app: scheduler-schedule-recurrent
+      annotations:
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if .Values.scheduler.affinity }}
+      affinity:
+        {{- toYaml .Values.scheduler.affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: scheduler-schedule-recurrent
+          resources:
+            requests:
+              memory: {{ .Values.scheduler.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.scheduler.requestedCpu | default "500m" }}
+          image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
+          command:
+          - /opt/swh/entrypoint.sh
+          args:
+          - swh
+          - scheduler
+          - schedule-recurrent
+          env:
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+            - name: LOG_LEVEL
+              value: {{ .Values.scheduler.recurrent.logLevel | default "INFO" }}
+          {{- if .Values.scheduler.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.scheduler
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.scheduler.sentry.secretKeyRef }}
+                  key: {{ .Values.scheduler.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        configMap:
+          name: scheduler-schedule-recurrent-configuration-template
+          items:
+          - key: "config.yml"
+            path: "config.yml"
+{{- end -}}

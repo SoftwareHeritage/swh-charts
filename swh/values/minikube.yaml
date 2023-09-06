@@ -21,8 +21,6 @@ fakeCeleryConfiguration:
 
 scheduler:
   enabled: true
-  recurrent:
-    enabled: true
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
   recurrent:

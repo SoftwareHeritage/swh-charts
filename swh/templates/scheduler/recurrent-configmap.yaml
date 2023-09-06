@@ -1,18 +1,18 @@
-{{ if and .Values.scheduler.enabled .Values.scheduler.recurrent.enabled  -}}
+{{ if and .Values.scheduler.enabled .Values.scheduler.recurrent.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Values.namespace }}
-  name: scheduler-configuration-template
+  name: scheduler-schedule-recurrent-configuration-template
 data:
-  config.yml.template: |
+  config.yml: |
 {{ include "swh.schedulerConfiguration" (list $.Values $.Values.scheduler.schedulerConfigurationRef) | indent 4 }}
 
 {{ include "swh.celeryConfiguration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 4 }}
 
     scheduling_policy:
-      {{- range $option, $value := $.Values.scheduler.recurrent.scheduling_policy }}
+      {{- range $option, $value := $.Values.scheduler.recurrent.schedulerPolicies }}
       {{ $option }}: {{ toYaml $value | nindent 6 }}
       {{- end }}
 {{- end -}}
