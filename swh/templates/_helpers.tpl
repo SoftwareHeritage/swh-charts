@@ -63,16 +63,66 @@ Generate the configuration for a remote storage
 {{- end -}}
 
 {{/*
+Create a global scheduler configuration based on scheduler section aggregation
+*/}}
+{{- define "swh.schedulerConfiguration" -}}
+{{- $Values := index . 0 -}}
+{{- $schedulerConfigurationRef := index . 1 -}}
+{{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
+{{- if not $schedulerConfiguration -}}{{ fail (print "key schedulerConfigurationRef is mandatory in " $schedulerConfiguration)}}{{- end -}}
+{{- $schedulerType := get $schedulerConfiguration "cls" -}}
+{{- if eq $schedulerType "remote" -}}
+{{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
+{{- else if eq $schedulerType "postgresql" -}}
+{{ include "swh.scheduler.postgresql" (list $Values $schedulerConfigurationRef) }}
+{{- else -}}
+{{- fail (print "Scheduler " $schedulerType " not implemented") -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Generate the configuration for a remote scheduler
 */}}
 {{- define "swh.scheduler.remote" -}}
 {{- $Values := index . 0 -}}
 {{- $schedulerConfigurationRefKey := index . 1 -}}
-{{- $indent := indent 2 "" -}}
 {{- $schedulerConfiguration := get $Values $schedulerConfigurationRefKey -}}
 scheduler:
   cls: {{ get $schedulerConfiguration "cls" }}
   url: http://{{ get $schedulerConfiguration "host" }}:{{ get $schedulerConfiguration "port" }}
+{{- end -}}
+
+{{/*
+Generate the read-only celery configuration
+*/}}
+{{- define "swh.celeryConfiguration" -}}
+{{- $Values := index . 0 -}}
+{{- $celeryConfigurationRefKey := index . 1 -}}
+{{- $celeryConfiguration := get $Values $celeryConfigurationRefKey -}}
+celery:
+  task_broker: amqp://guest:guest@{{ get $celeryConfiguration "host" }}:{{ get $celeryConfiguration "port" }}/%2f
+{{- end -}}
+
+{{/*
+Generate the configuration for a postgresql scheduler
+*/}}
+{{- define "swh.scheduler.postgresql" -}}
+{{- $Values := index . 0 -}}
+{{- $schedulerConfigurationRef := index . 1 -}}
+{{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
+{{- $host := required (print "The host property is mandatory in " $schedulerConfigurationRef)
+                    (get $schedulerConfiguration "host") -}}
+{{- $port := required (print "The port property is mandatory in " $schedulerConfigurationRef)
+                    (get $schedulerConfiguration "port") -}}
+{{- $user := required (print "The user property is mandatory in " $schedulerConfigurationRef)
+                    (get $schedulerConfiguration "user") -}}
+{{- $password := required (print "The password property is mandatory in " $schedulerConfigurationRef)
+                    (get $schedulerConfiguration "password") -}}
+{{- $db := required (print "The db property is mandatory in " $schedulerConfigurationRef)
+                    (get $schedulerConfiguration "db") -}}
+scheduler:
+  cls: postgresql
+  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
 {{- end -}}
 
 {{/*

@@ -1,8 +1,38 @@
 fakeRemoteSchedulerConfiguration:
   cls: remote
-  host: fake-scheduler.internal.s.n
+  host: fake-scheduler.i.s.s.n
   port: 5008
+
+fakePostgresSchedulerConfiguration:
+  cls: postgresql
+  host: db1.i.s.s.n
+  port: 5432
+  user: swh
+  password: test
+  db: swh-scheduler
 
 toolbox:
   enabled: true
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+
+fakeCeleryConfiguration:
+  host: fake-scheduler.i.s.s.n
+  port: 5672
+
+scheduler:
+  enabled: true
+  recurrent:
+    enabled: true
+  # schedulerConfigurationRef: fakePostgresSchedulerConfiguration
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  celeryConfigurationRef: fakeCeleryConfiguration
+  recurrent:
+    enabled: true
+    scheduling_policy:
+      default:
+      - policy: never_visited_oldest_update_first
+        weight: 100
+      opam:
+      - policy: origins_without_last_update
+        weight: 100
+
