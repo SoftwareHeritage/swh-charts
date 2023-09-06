@@ -118,6 +118,19 @@ storage:
             values:
             - "true"
 
+scheduler:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/scheduler
+            operator: In
+            values:
+            - "true"
+
 web:
   sentry:
     enabled: true
