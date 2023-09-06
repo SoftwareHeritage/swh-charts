@@ -14,13 +14,14 @@ spec:
     receiver: ircrelay
     continue: true
     routes:
-      - receiver: null
+      - receiver: "null"
         continue: false
         matchers:
         - name: "alertname"
           regex: true
           value: "InfoInhibitor"
   receivers:
+    - name: "null"
     - name: ircrelay
       webhookConfigs:
         - sendResolved: true
