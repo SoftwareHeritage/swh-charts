@@ -53,6 +53,8 @@ spec:
           # - sleep
           # - infinity
           - swh
+          - --log-level
+          - INFO
           - scheduler
           - --config-file
           - /etc/swh/config.yml
