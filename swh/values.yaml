@@ -469,17 +469,17 @@ scheduler:
   # celeryConfigurationRef: readOnlyCeleryConfiguration
   recurrent:
     enabled: false
-    # schedulerPolicies:
-    #   default:
-    #   - policy: already_visited_order_by_lag
-    #     weight: 40
-    #   - policy: never_visited_oldest_update_first
-    #     weight: 40
-    #   - policy: origins_without_last_update
-    #     weight: 20
-    #   opam:
-    #   - policy: origins_without_last_update
-    #     weight: 100
+    schedulerPolicies:
+      default:
+      - policy: already_visited_order_by_lag
+        weight: 40
+      - policy: never_visited_oldest_update_first
+        weight: 40
+      - policy: origins_without_last_update
+        weight: 20
+      opam:
+      - policy: origins_without_last_update
+        weight: 100
   # runner:
   #   enabled: false
   # runnerPriority:

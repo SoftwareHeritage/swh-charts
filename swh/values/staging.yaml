@@ -540,17 +540,6 @@ scheduler:
   celeryConfigurationRef: readWriteCeleryConfiguration
   recurrent:
     enabled: true
-    schedulerPolicies:
-      default:
-        - policy: already_visited_order_by_lag
-          weight: 40
-        - policy: never_visited_oldest_update_first
-          weight: 40
-        - policy: origins_without_last_update
-          weight: 20
-      opam:
-        - policy: origins_without_last_update
-          weight: 100
   rpc:
     enabled: false
     # The scheduler instance to use for rpc must be a postgresql one hence the possible
