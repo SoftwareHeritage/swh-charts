@@ -523,7 +523,7 @@ toolbox:
   schedulerConfigurationRef: remoteSchedulerConfiguration
 
 scheduler:
-  enabled: false
+  enabled: true
   sentry:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
