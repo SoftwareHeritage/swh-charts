@@ -551,4 +551,24 @@ scheduler:
       threads: 5
       workers: 2
       timeout: 60
+  extraServices:
+    runner:
+      enabled: false
+      logLevel: INFO
+      period: 10
+    runnerPriority:
+      enabled: false
+      logLevel: INFO
+      period: 10
+      extraConfig:
+        - load-bzr
+        - load-cvs
+        - load-git
+        - load-svn
+        - load-archive-files
+        - load-hg
+    listener:
+      enabled: false
+      logLevel: INFO
+
 

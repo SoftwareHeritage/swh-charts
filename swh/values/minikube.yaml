@@ -1,3 +1,6 @@
+sentry:
+  environment: minikube
+
 fakeRemoteSchedulerConfiguration:
   cls: remote
   host: fake-scheduler.i.s.s.n
@@ -49,3 +52,18 @@ scheduler:
     # ingress:
     #   enabled: true
     #   host: myscheduler.domain
+  extraServices:
+    runner:
+      enabled: true
+      logLevel: INFO
+      period: 100
+    runner-priority:
+      enabled: true
+      logLevel: INFO
+      period: 100
+      extraConfig:
+        - load-git
+    listener:
+      enabled: true
+      logLevel: INFO
+

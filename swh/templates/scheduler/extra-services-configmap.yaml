@@ -1,0 +1,15 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.extraServices -}}
+{{ $namespace := .Values.namespace }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: extra-services-configuration-template
+  namespace: {{ $namespace }}
+data:
+  config.yml.template: |
+{{ include "swh.schedulerConfiguration" (list $.Values $.Values.scheduler.schedulerConfigurationRef) | indent 4 }}
+
+{{ include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 4 }}
+
+{{- end -}}

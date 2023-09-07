@@ -516,3 +516,24 @@ scheduler:
       # mandatory if ingress is enabled
       # the hostname on which the storage must be reachable
       # host: myscheduler.localdomain
+  extraServices:
+    runner:
+      enabled: false
+      logLevel: INFO
+      period: 10
+    runner-priority:
+      # Use dashed (-) name to avoid issues when naming (kube) service
+      enabled: false
+      logLevel: INFO
+      period: 10
+      extraConfig:
+        - load-bzr
+        - load-cvs
+        - load-git
+        - load-svn
+        - load-archive-files
+        - load-hg
+    listener:
+      enabled: false
+      logLevel: INFO
+

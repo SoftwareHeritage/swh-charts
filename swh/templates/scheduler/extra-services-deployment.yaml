@@ -1,0 +1,142 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.extraServices -}}
+
+{{- $image := .Values.swh_scheduler_image }}
+{{- $image_version := .Values.swh_scheduler_image_version }}
+{{- $namespace := .Values.namespace }}
+{{- $sentry := .Values.sentry }}
+{{- $affinity := .Values.scheduler.affinity }}
+{{- $configurationChecksum := include (print .Template.BasePath "/scheduler/extra-services-configmap.yaml") . -}}
+
+{{- range $service_type, $deployment_config := .Values.scheduler.extraServices -}}
+{{- $service_name := ( print "scheduler-" $service_type ) -}}
+{{- $log_level := get $deployment_config "logLevel" -}}
+
+{{- $enabled := get $deployment_config "enabled" -}}
+{{- if $enabled -}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $service_name }}
+  labels:
+    app: {{ $service_name }}
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ $service_name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $service_name }}
+      annotations:
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+{{ include "celery.secretsEnvironment" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        - name: {{ $service_name }}
+          resources:
+            requests:
+              memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+              cpu: {{ get $deployment_config "requestedMemory" | default "500m" }}
+          image: {{ $image }}:{{ $image_version }}
+          command:
+          - /opt/swh/entrypoint.sh
+          args:
+          # - shell
+          # - sleep
+          # - infinity
+          - swh
+          - --log-level
+          - {{ $log_level | default "INFO" | quote }}
+          - scheduler
+          - --config-file
+          - /etc/swh/config.yml
+
+          {{ if ( contains "runner" $service_type ) -}}
+          - start-runner
+          - --period
+          - {{ get $deployment_config "period" | default 10 | quote }}
+          {{ end -}}
+
+          {{ if ( eq "runner-priority" $service_type ) -}}
+          - --with-priority
+          {{- $extraConfig := get $deployment_config "extraConfig" -}}
+
+          {{- if $extraConfig }}
+
+          {{- range $task_type := $extraConfig }}
+
+          - --task-type
+          - {{ $task_type }}
+
+          {{- end -}}
+          {{ end }}
+          {{ end }}
+
+          {{ if ( eq "listener" $service_type ) -}}
+          # listener
+          - start-listener
+          {{ end -}}
+
+          env:
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" | quote }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+            - name: LOG_LEVEL
+              value: {{ $log_level | default "INFO" | quote }}
+          {{- if ( get $sentry "enabled" ) }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ get $sentry "environment" }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.scheduler
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ get $sentry "secretKeyRef" }}
+                  key: {{ get $sentry "secretKeyName" }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: extra-services-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+
+{{ end }}
+{{ end }}
+{{- end -}}
