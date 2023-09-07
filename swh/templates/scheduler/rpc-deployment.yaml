@@ -97,7 +97,7 @@ spec:
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: LOG_LEVEL
-              value: {{ .Values.scheduler.logLevel | default "INFO" }}
+              value: {{ .Values.scheduler.rpc.logLevel | default "INFO" }}
           {{- if .Values.scheduler.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}

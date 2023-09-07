@@ -469,6 +469,7 @@ scheduler:
   # celeryConfigurationRef: readOnlyCeleryConfiguration
   recurrent:
     enabled: false
+    logLevel: INFO
     schedulerPolicies:
       default:
       - policy: already_visited_order_by_lag
@@ -488,6 +489,7 @@ scheduler:
   #   enabled: false
   rpc:
     enabled: false
+    logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql one hence the possible
     # override of this one over the other default schedulerConfigurationRef in the
     # top-level configuration

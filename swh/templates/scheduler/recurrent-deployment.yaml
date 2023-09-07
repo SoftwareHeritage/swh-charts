@@ -1,5 +1,6 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.recurrent.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/scheduler/recurrent-configmap.yaml") . -}}
+{{- $log_level := .Values.scheduler.recurrent.logLevel }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -54,7 +55,7 @@ spec:
           # - infinity
           - swh
           - --log-level
-          - INFO
+          - {{ $log_level | default "INFO" }}
           - scheduler
           - --config-file
           - /etc/swh/config.yml
@@ -67,7 +68,7 @@ spec:
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: LOG_LEVEL
-              value: {{ .Values.scheduler.recurrent.logLevel | default "INFO" }}
+              value: {{ $log_level | default "INFO" }}
           {{- if .Values.scheduler.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
