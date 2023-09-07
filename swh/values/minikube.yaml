@@ -18,6 +18,8 @@ toolbox:
 fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n
   port: 5672
+  user: fakeguest
+  pass: fakeguest
 
 scheduler:
   enabled: true

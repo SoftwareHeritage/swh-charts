@@ -6,10 +6,10 @@ metadata:
   namespace: {{ .Values.namespace }}
   name: scheduler-schedule-recurrent-configuration-template
 data:
-  config.yml: |
+  config.yml.template: |
 {{ include "swh.schedulerConfiguration" (list $.Values $.Values.scheduler.schedulerConfigurationRef) | indent 4 }}
 
-{{ include "swh.celeryConfiguration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 4 }}
+{{ include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 4 }}
 
     scheduling_policy:
       {{- range $option, $value := $.Values.scheduler.recurrent.schedulerPolicies }}

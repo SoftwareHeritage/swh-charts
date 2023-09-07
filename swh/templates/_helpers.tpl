@@ -93,14 +93,23 @@ scheduler:
 {{- end -}}
 
 {{/*
-Generate the read-only celery configuration
+Generate the celery configuration. This will need evolution to deal with more celery
+configuration keys.
 */}}
-{{- define "swh.celeryConfiguration" -}}
+{{- define "celery.configuration" -}}
 {{- $Values := index . 0 -}}
 {{- $celeryConfigurationRefKey := index . 1 -}}
 {{- $celeryConfiguration := get $Values $celeryConfigurationRefKey -}}
+{{- $host := required (print "The 'host' property is mandatory in " $celeryConfiguration)
+                    (get $celeryConfiguration "host") -}}
+{{- $port := required (print "The 'port' property is mandatory in " $celeryConfiguration)
+                    (get $celeryConfiguration "port") -}}
+{{- $user := required (print "The 'user' property is mandatory in " $celeryConfiguration)
+                    (get $celeryConfiguration "user") -}}
+{{- $pass := required (print "The 'pass' property is mandatory in " $celeryConfiguration)
+                    (get $celeryConfiguration "pass") -}}
 celery:
-  task_broker: amqp://guest:guest@{{ get $celeryConfiguration "host" }}:{{ get $celeryConfiguration "port" }}/%2f
+  task_broker: amqp://{{ $user }}:{{ $pass }}@{{ $host }}:{{ $port }}/%2f
 {{- end -}}
 
 {{/*
@@ -281,4 +290,24 @@ env:
     mountPath: /etc/swh
   - name: database-utils
     mountPath: /entrypoints
+{{- end -}}
+
+{{/* Generate the celery config for celery configuration if needed */}}
+{{- define "celery.secretsEnvironment" -}}
+  {{- $Values := index . 0 -}}
+  {{- $celeryDefinitionRef := index . 1 -}}
+  {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
+  {{- $secrets := get $celeryConfiguration "secrets" -}}
+  {{- if $secrets -}}
+env:
+    {{- range $secretName, $secretsConfig := $secrets }}
+- name: {{ $secretName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ get $secretsConfig "secretKeyRef" }}
+      key: {{ get $secretsConfig "secretKeyName" }}
+      # 'name' secret must exist & include that ^ key
+      optional: false
+      {{- end -}}
+  {{- end -}}
 {{- end -}}

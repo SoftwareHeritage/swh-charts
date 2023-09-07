@@ -76,6 +76,12 @@ postgresSchedulerConfiguration:
 readonlyCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
+  user: guest
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: read-only
 
 listers:
   enabled: true

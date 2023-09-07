@@ -24,6 +24,21 @@ spec:
       affinity:
         {{- toYaml .Values.scheduler.affinity | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+{{ include "celery.secretsEnvironment" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
       containers:
         - name: scheduler-schedule-recurrent
           resources:
@@ -67,9 +82,11 @@ spec:
             mountPath: /etc/swh
       volumes:
       - name: configuration
+        emptyDir: {}
+      - name: configuration-template
         configMap:
           name: scheduler-schedule-recurrent-configuration-template
           items:
-          - key: "config.yml"
-            path: "config.yml"
+          - key: "config.yml.template"
+            path: "config.yml.template"
 {{- end -}}
