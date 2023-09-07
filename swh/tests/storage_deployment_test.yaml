@@ -14,7 +14,7 @@ fixtures:
 suite: test storage deployment
 templates:
   - storage/configmap.yaml
-  - utils/storage-utils.yaml
+  - utils/database-utils.yaml
   - storage/deployment.yaml
 tests:
   - it: Storage is deployed

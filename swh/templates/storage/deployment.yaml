@@ -25,7 +25,7 @@ spec:
         app: storage
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/storage/configmap.yaml") . | sha256sum }}
-        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/storage-utils.yaml") . | sha256sum }}
+        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
     spec:
       {{- if .Values.storage.affinity }}
       affinity:
@@ -52,6 +52,9 @@ spec:
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
 {{ include "swh.storage.cassandra.initKeyspaceContainer" (list $.Values $.Values.storage.storageConfigurationRef "swh_storage_image") | indent 8 }}
+{{- if .Values.storage.checkDbVersion }}
+{{ include "swh.checkDatabaseVersionContainer" (list $.Values "swh_storage_image" "storage") | indent 8 }}
+{{- end }}
       containers:
         - name: storage
           resources:
@@ -124,10 +127,8 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: storage-utils
+      - name: database-utils
         configMap:
-          name: storage-utils
-          items:
-          - key: "init-keyspace-py"
-            path: "init-keyspace.py"
+          name: database-utils
+          defaultMode: 0555
 {{- end -}}

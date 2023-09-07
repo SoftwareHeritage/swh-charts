@@ -1,6 +1,6 @@
 {{ if .Values.storage_replayer.enabled -}}
 {{- $configurationChecksum := include (print $.Template.BasePath "/storage-replayer/configmap.yaml") . -}}
-{{- $storageUtilsChecksum := include (print $.Template.BasePath "/utils/storage-utils.yaml") . -}}
+{{- $storageUtilsChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . -}}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
 ---
 apiVersion: apps/v1
@@ -46,6 +46,9 @@ spec:
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
 {{ include "swh.storage.cassandra.initKeyspaceContainer" (list $.Values $.Values.storage_replayer.storageConfigurationRef "swh_storage_replayer_image") | indent 8 }}
+{{- if $.Values.storage_replayer.checkDbVersion }}
+{{ include "swh.checkDatabaseVersionContainer" (list $.Values "swh_storage_replayer_image" "storage") | indent 8 }}
+{{- end }}
       containers:
         - name: storage-replayer
           resources:
@@ -80,6 +83,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: database-utils
+            mountPath: /entrypoints
       volumes:
       - name: configuration
         emptyDir: {}
@@ -89,11 +94,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: storage-utils
+      - name: database-utils
         configMap:
-          name: storage-utils
-          items:
-          - key: "init-keyspace-py"
-            path: "init-keyspace.py"
+          name: database-utils
+          defaultMode: 0555
 {{ end }}
 {{- end -}}

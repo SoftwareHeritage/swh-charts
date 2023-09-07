@@ -191,6 +191,11 @@ storage_replayer:
   #   host: redis.redis
   #   port: 6379
   #   db: 1
+
+  # Don't start if code and database versions are not equals
+  # Only supported for postgresql backend
+  checkDbVersion: false
+
   deployments:
   # Example of deployments
   #   origins:
@@ -316,6 +321,11 @@ storage:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageConfiguration
+
+  # Don't start if code and database versions are not equals
+  # Only supported for postgresql backend
+  checkDbVersion: false
+
   objstorage:
     cls: noop
   ##  if objstorage configuration doesn't contains passwords or sensitive data

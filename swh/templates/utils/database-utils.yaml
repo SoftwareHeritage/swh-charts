@@ -1,0 +1,87 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  init-keyspace.py: |
+    from swh.core import config
+    from swh.storage.cassandra import create_keyspace
+
+    c=config.read('/etc/swh/config.yml')
+
+    storage_config = c["storage"]
+    hosts = storage_config.get("hosts")
+
+    # print(f"************ storage_config: {storage_config}" )
+    # print(f"************ hosts: {hosts}" )
+
+    create_keyspace(hosts=hosts, keyspace='swh', auth_provider=storage_config.get("auth_provider"))
+
+  extract-storage-postgresql-config-py: |
+    import yaml
+    from swh.core import config
+
+    def get_postgresql_config(storage_config):
+      if storage_config["cls"] == 'postgresql' :
+        return storage_config
+
+      if storage_config["cls"] == 'pipeline':
+        for config in storage_config["steps"]:
+          c = get_postgresql_config(config)
+          if c:
+            return c
+
+      return None
+
+    full_config = config.read('/etc/swh/config.yml')
+
+    storage_config = full_config["storage"]
+
+    postgresql_conf = get_postgresql_config(storage_config)
+
+    if postgresql_conf is None:
+      print("No posgresql configuration found!\n")
+      exit(1)
+
+    f = open("/tmp/config.yml", "w")
+    f.write(yaml.dump({"storage": postgresql_conf}))
+
+  check-storage-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+
+    if [ -z ${MODULE} ]; then
+      echo The env variable must be defined with the module to check
+      echo for example "storage"
+      exit 1
+    fi
+
+    # extracting the postgresql configuration from a full configuration
+    # possibly with a pipeline
+    python /entrypoints/extract-storage-postgresql-config-py
+
+    # checking the database status
+    swh db --config-file=/tmp/config.yml version "${MODULE}" | tee "${TEMP_FILE}"
+
+    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
+    DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
+
+    if [ -e "${CODE_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ -e "${DB_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ "$DB_VERSION" -ne "$CODE_VERSION" ]; then
+      echo "code and DB versions are different. Blocking the deployment"
+      exit 1
+    fi

@@ -351,6 +351,7 @@ storage_replayer:
     groupIdName: postgresql
     secretName: swh-postgresql-broker-secret
   storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
+  checkDbVersion: true
   error_reporter:
     host: redis-postgresql.redis
     port: 6379
