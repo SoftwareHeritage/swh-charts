@@ -49,8 +49,13 @@ spec:
           command:
           - /opt/swh/entrypoint.sh
           args:
+          # - shell
+          # - sleep
+          # - infinity
           - swh
           - scheduler
+          - --config-file
+          - /etc/swh/config.yml
           - schedule-recurrent
           env:
             - name: STATSD_HOST

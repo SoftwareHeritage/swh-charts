@@ -27,7 +27,7 @@ scheduler:
   celeryConfigurationRef: fakeCeleryConfiguration
   recurrent:
     enabled: true
-    scheduling_policy:
+    schedulerPolicies:
       default:
       - policy: never_visited_oldest_update_first
         weight: 100
