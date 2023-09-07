@@ -487,6 +487,12 @@ scheduler:
     #   threads: 5
     #   workers: 2
     #   timeout: 60
+    # RPC services may have different profiles than the rest so they need their specific
+    # setup
+    # requestedMemory: 512Mi
+    # requestedCpu: 500m
+    # limitedMemory: 512Mi
+    # limitedCpu: 500m
     ingress:
       enabled: false
       # Optional: the ingress classname to use

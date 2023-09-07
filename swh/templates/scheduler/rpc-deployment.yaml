@@ -49,8 +49,17 @@ spec:
         - name: scheduler-rpc
           resources:
             requests:
-              memory: {{ .Values.scheduler.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.scheduler.requestedCpu | default "500m" }}
+              memory: {{ .Values.scheduler.rpc.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.scheduler.rpc.requestedCpu | default "500m" }}
+          {{- if or .Values.scheduler.rpc.limitedMemory .Values.scheduler.rpc.limitedCpu }}
+            limits:
+            {{- if .Values.scheduler.rpc.limitedMemory }}
+              memory: {{ .Values.scheduler.rpc.limitedMemory }}
+            {{- end }}
+            {{- if .Values.scheduler.rpc.limitedCpu }}
+              cpu: {{ .Values.scheduler.rpc.limitedCpu }}
+            {{- end }}
+        {{- end }}
           image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
           imagePullPolicy: Always
           ports:
