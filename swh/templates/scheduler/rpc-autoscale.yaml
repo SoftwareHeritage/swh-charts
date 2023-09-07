@@ -1,0 +1,28 @@
+{{- if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled .Values.scheduler.rpc.autoScaling -}}
+{{- with .Values.scheduler.rpc.autoScaling -}}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: scheduler-rpc
+  labels:
+    app: scheduler-rpc
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: scheduler-rpc
+  minReplicas: {{ .minReplicaCount | default 2 }}
+  maxReplicas: {{ .maxReplicaCount | default 10 }}
+  metrics:
+  {{- if .cpuPercentageUsage }}
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .cpuPercentageUsage }}
+  {{- end -}}
+{{- end -}}
+{{- end -}}

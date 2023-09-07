@@ -493,6 +493,10 @@ scheduler:
     # requestedCpu: 500m
     # limitedMemory: 512Mi
     # limitedCpu: 500m
+    # autoScaling:
+    #   minReplicaCount: 2
+    #   maxReplicaCount: 10
+    #   cpuPercentageUsage: 100
     ingress:
       enabled: false
       # Optional: the ingress classname to use

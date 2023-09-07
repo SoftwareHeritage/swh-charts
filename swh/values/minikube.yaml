@@ -42,6 +42,10 @@ scheduler:
       threads: 1
       workers: 1
       timeout: 10
+    # autoScaling:
+    #   minReplicaCount: 4
+    #   maxReplicaCount: 20
+    #   cpuPercentageUsage: 150
     # ingress:
     #   enabled: true
     #   host: myscheduler.domain
