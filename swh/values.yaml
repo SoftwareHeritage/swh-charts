@@ -450,9 +450,9 @@ toolbox:
 scheduler:
   enabled: false
   sentry:
-    enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: scheduler-sentry-dsn
+    enabled: false
+    secretKeyRef: scheduler-sentry-secrets
+    secretKeyName: sentry-dsn
   # requestedMemory: 512Mi
   # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
