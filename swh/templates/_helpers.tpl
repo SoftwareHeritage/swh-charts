@@ -251,7 +251,7 @@ journal_writer:
   {{- end -}}
 {{- end -}}
 
-{{/* Generate the environment configuration for database configuration if needed */}}
+{{/* Generate the storage environment config for database configuration if needed */}}
 {{- define "swh.storage.secretsEnvironment" -}}
   {{- $Values := index . 0 -}}
   {{- $storageDefinitionRef := index . 1 -}}
@@ -298,6 +298,26 @@ env:
   {{- $celeryDefinitionRef := index . 1 -}}
   {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
   {{- $secrets := get $celeryConfiguration "secrets" -}}
+  {{- if $secrets -}}
+env:
+    {{- range $secretName, $secretsConfig := $secrets }}
+- name: {{ $secretName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ get $secretsConfig "secretKeyRef" }}
+      key: {{ get $secretsConfig "secretKeyName" }}
+      # 'name' secret must exist & include that ^ key
+      optional: false
+      {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* Generate the scheduler environment config for database configuration if needed */}}
+{{- define "swh.scheduler.secretsEnvironment" -}}
+  {{- $Values := index . 0 -}}
+  {{- $schedulerDefinitionRef := index . 1 -}}
+  {{- $schedulerConfiguration := required (print "Scheduler definition " $schedulerDefinitionRef " not found") (get $Values $schedulerDefinitionRef) -}}
+  {{- $secrets := get $schedulerConfiguration "secrets" -}}
   {{- if $secrets -}}
 env:
     {{- range $secretName, $secretsConfig := $secrets }}

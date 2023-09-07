@@ -30,6 +30,21 @@ spec:
       affinity:
         {{- toYaml .Values.scheduler.affinity | nindent 8 }}
       {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+{{ include "swh.scheduler.secretsEnvironment" (list $.Values $.Values.scheduler.rpc.schedulerConfigurationRef) | indent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
       containers:
         - name: scheduler-rpc
           resources:
@@ -90,13 +105,15 @@ spec:
               value: "true"
           {{- end }}
           volumeMounts:
-          - name: configuration-template
+          - name: configuration
             mountPath: /etc/swh
       volumes:
+      - name: configuration
+        emptyDir: {}
       - name: configuration-template
         configMap:
           name: scheduler-rpc-configuration-template
           items:
           - key: "config.yml.template"
-            path: "config.yml"
+            path: "config.yml.template"
 {{- end -}}
