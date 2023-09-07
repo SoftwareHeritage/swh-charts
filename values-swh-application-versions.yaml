@@ -29,7 +29,7 @@ swh_storage_image_version: '20230904.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20230904.1'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20230905.4'
+swh_toolbox_image_version: '20230907.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
 swh_vault_cookers_image_version: '20230904.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
