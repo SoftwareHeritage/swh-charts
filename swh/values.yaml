@@ -128,7 +128,7 @@ sentry:
 #   host: scheduler0.internal.staging.swh.network
 #   port: 5008
 
-# readonlyCeleryConfiguration:
+# readOnlyCeleryConfiguration:
 #   host: scheduler0.internal.staging.swh.network
 #   port: 5672
 #   user: guest
@@ -137,6 +137,16 @@ sentry:
 #     AMQP_PASSWORD:
 #       secretKeyRef: amqp-secrets
 #       secretKeyName: read-only
+
+# readWriteCeleryConfiguration:
+#   host: scheduler0.internal.staging.swh.network
+#   port: 5672
+#   user: guest
+#   pass: ${AMQP_PASSWORD}
+#   secrets:
+#     AMQP_PASSWORD:
+#       secretKeyRef: amqp-secrets
+#       secretKeyName: read-write
 
 graphql:
   enabled: false
@@ -456,7 +466,7 @@ scheduler:
   # requestedMemory: 512Mi
   # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
-  # celeryConfigurationRef: readonlyCeleryConfiguration
+  # celeryConfigurationRef: readOnlyCeleryConfiguration
   recurrent:
     enabled: false
     # schedulerPolicies:

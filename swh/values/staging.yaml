@@ -73,7 +73,7 @@ postgresSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-readonlyCeleryConfiguration:
+readOnlyCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
   user: guest
@@ -82,6 +82,16 @@ readonlyCeleryConfiguration:
     AMQP_PASSWORD:
       secretKeyRef: amqp-secrets
       secretKeyName: read-only
+
+readWriteCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhdev
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: read-write
 
 listers:
   enabled: true
@@ -527,7 +537,7 @@ scheduler:
   sentry:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: readonlyCeleryConfiguration
+  celeryConfigurationRef: readWriteCeleryConfiguration
   recurrent:
     enabled: true
     schedulerPolicies:
