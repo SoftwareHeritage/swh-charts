@@ -27,6 +27,10 @@ spec:
   selector:
     matchLabels:
       app: {{ $service_name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
   template:
     metadata:
       labels:
