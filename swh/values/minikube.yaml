@@ -52,6 +52,11 @@ scheduler:
     # ingress:
     #   enabled: true
     #   host: myscheduler.domain
+  updateMetrics:
+    enabled: true
+    logLevel: INFO
+    # Execute at each minute
+    cron: "* * * * *"
   extraServices:
     runner:
       enabled: true

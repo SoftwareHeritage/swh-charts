@@ -1,0 +1,89 @@
+{{ if and .Values.scheduler.enabled .Values.scheduler.updateMetrics.enabled -}}
+{{- $log_level := .Values.scheduler.updateMetrics.logLevel -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: update-metrics-cronjob
+spec:
+  schedule: {{ .Values.scheduler.updateMetrics.cron | default "0/10 * * * *" | quote}}
+  jobTemplate:
+    spec:
+      concurrencyPolicy: Forbid
+      template:
+        spec:
+          initContainers:
+            - name: prepare-configuration
+              image: debian:bullseye
+              imagePullPolicy: Always
+              command:
+              - /bin/bash
+              args:
+              - -c
+              - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+{{ include "celery.secretsEnvironment" (list .Values .Values.scheduler.celeryConfigurationRef) | indent 14 }}
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+              - name: configuration-template
+                mountPath: /etc/swh/configuration-template
+          containers:
+            - name: scheduler-update-metrics
+              resources:
+                requests:
+                  memory: {{ .Values.scheduler.updateMetrics.requestedMemory | default "512Mi" }}
+                  cpu: {{ .Values.scheduler.updateMetrics.requestedCpu | default "500m" }}
+              image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
+              command:
+              - /opt/swh/entrypoint.sh
+              args:
+              # - shell
+              # - sleep
+              # - infinity
+              - swh
+              - --log-level
+              - {{ $log_level | default "INFO" }}
+              - scheduler
+              - --config-file
+              - /etc/swh/config.yml
+              - origin
+              - update-metrics
+              env:
+                - name: STATSD_HOST
+                  value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+                - name: STATSD_PORT
+                  value: {{ .Values.statsdPort | default "9125" | quote }}
+                - name: SWH_CONFIG_FILENAME
+                  value: /etc/swh/config.yml
+                - name: LOG_LEVEL
+                  value: {{ $log_level | default "INFO" }}
+              {{- if .Values.scheduler.sentry.enabled }}
+                - name: SWH_SENTRY_ENVIRONMENT
+                  value: {{ .Values.sentry.environment }}
+                - name: SWH_MAIN_PACKAGE
+                  value: swh.scheduler
+                - name: SWH_SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ .Values.scheduler.sentry.secretKeyRef }}
+                      key: {{ .Values.scheduler.sentry.secretKeyName }}
+                      # if the setting doesn't exist, sentry issue pushes will be disabled
+                      optional: false
+                - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+                  value: "true"
+              {{- end }}
+              imagePullPolicy: Always
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+          volumes:
+          - name: configuration
+            emptyDir: {}
+          - name: configuration-template
+            configMap:
+              name: update-metrics-configuration-template
+              items:
+              - key: "config.yml.template"
+                path: "config.yml.template"
+          restartPolicy: OnFailure
+
+{{- end -}}

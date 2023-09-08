@@ -516,6 +516,9 @@ scheduler:
       # mandatory if ingress is enabled
       # the hostname on which the storage must be reachable
       # host: myscheduler.localdomain
+  updateMetrics:
+    enabled: false
+    cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
   extraServices:
     runner:
       enabled: false
