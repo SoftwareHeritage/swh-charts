@@ -557,7 +557,7 @@ scheduler:
       logLevel: INFO
       period: 10
     runnerPriority:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
       extraConfig:
