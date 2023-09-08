@@ -553,7 +553,7 @@ scheduler:
       timeout: 60
   extraServices:
     runner:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
     runnerPriority:
