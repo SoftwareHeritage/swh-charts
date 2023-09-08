@@ -568,7 +568,7 @@ scheduler:
         - load-archive-files
         - load-hg
     listener:
-      enabled: false
+      enabled: true
       logLevel: INFO
 
 
