@@ -25,6 +25,10 @@ sentry:
 #   producerConfig:
 #     message.max.bytes: 1000000000
 
+# journalClientConfiguration:
+#   kafkaBrokersRef: kafkaBrokers
+#   groupId: swh.scheduler.journal_client
+
 # postgresqlStorageConfiguration:
 #   cls: postgresql
 #   host: mydatabasese.server
@@ -519,6 +523,9 @@ scheduler:
   updateMetrics:
     enabled: false
     cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
+  journalClient:
+    enabled: false
+    # journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
       enabled: false
@@ -539,4 +546,3 @@ scheduler:
     listener:
       enabled: false
       logLevel: INFO
-

@@ -14,6 +14,14 @@ fakePostgresSchedulerConfiguration:
   password: test
   db: swh-scheduler
 
+kafkaBrokers:
+  - fakeBroker1
+  - fakeBroker2
+
+journalClientConfiguration:
+  kafkaBrokersRef: kafkaBrokers
+  groupId: swh.scheduler.journal_client
+
 toolbox:
   enabled: true
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
@@ -57,6 +65,9 @@ scheduler:
     logLevel: INFO
     # Execute at each minute
     cron: "* * * * *"
+  journalClient:
+    enabled: true
+    journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
       enabled: true

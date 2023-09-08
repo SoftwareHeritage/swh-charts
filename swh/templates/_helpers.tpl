@@ -331,3 +331,19 @@ env:
       {{- end -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Generate the configuration for a journal configuration key
+*/}}
+{{- define "swh.journalClientConfiguration" -}}
+{{- $Values := index . 0 -}}
+{{- $journalConfigurationRef := index . 1 -}}
+{{- $journalConfiguration := get $Values $journalConfigurationRef -}}
+{{- $brokersRef := required (print "kafkaBrokersRef is mandatory in" $journalConfiguration " map" ) (get $journalConfiguration "kafkaBrokersRef") -}}
+{{- $brokers := required (print $brokersRef " is mandatory is mandatory in the global values " $Values " map") (get $Values $brokersRef) -}}
+{{- $groupId := required (print "groupId property is mandatory in " $journalConfigurationRef " map") (get $journalConfiguration "groupId") -}}
+journal:
+  brokers:
+{{ toYaml $brokers | indent 2 }}
+  group_id: {{ $groupId }}
+{{- end -}}
