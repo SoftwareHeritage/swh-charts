@@ -551,6 +551,8 @@ scheduler:
       threads: 5
       workers: 2
       timeout: 60
+  updateMetrics:
+    enabled: true
   extraServices:
     runner:
       enabled: true
