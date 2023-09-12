@@ -93,6 +93,14 @@ readWriteCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: read-write
 
+kafkaBrokers:
+  - journal1.internal.staging.swh.network
+  - journal2.internal.staging.swh.network
+
+journalClientConfiguration:
+  kafkaBrokersRef: kafkaBrokers
+  groupId: swh.scheduler.journal_client
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -553,6 +561,9 @@ scheduler:
       timeout: 60
   updateMetrics:
     enabled: true
+  journalClient:
+    enabled: true
+    journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
       enabled: true
