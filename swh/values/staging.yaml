@@ -553,6 +553,7 @@ scheduler:
       timeout: 60
   updateMetrics:
     enabled: true
+    cron: "* * * * *"  # Make it execute every minute for a start
   extraServices:
     runner:
       enabled: true
