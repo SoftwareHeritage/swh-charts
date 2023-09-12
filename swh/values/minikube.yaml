@@ -6,7 +6,20 @@ fakeRemoteSchedulerConfiguration:
   host: fake-scheduler.i.s.s.n
   port: 5008
 
-fakePostgresSchedulerConfiguration:
+fakeRemoteStorageConfiguration:
+  cls: remote
+  host: fake-storage.i.s.s.n
+  port: 5002
+
+fakePostgresqlStorageConfiguration:
+  cls: postgresql
+  host: db1.i.s.s.n
+  port: 5432
+  user: swh
+  password: test
+  db: swh-storage
+
+fakePostgresqlSchedulerConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
   port: 5432
@@ -24,7 +37,9 @@ journalClientConfiguration:
 
 toolbox:
   enabled: true
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  configs:
+    scheduler: fakePostgresqlSchedulerConfiguration
+    storage: fakePostgresqlSchedulerConfiguration
 
 fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n
@@ -47,7 +62,7 @@ scheduler:
         weight: 100
   rpc:
     enabled: true
-    schedulerConfigurationRef: fakePostgresSchedulerConfiguration
+    schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
     replicas: 1
     gunicorn:
       threads: 1

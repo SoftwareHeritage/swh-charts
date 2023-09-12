@@ -115,7 +115,7 @@ sentry:
 # globalROStorageConfiguration:
 # TODO: define this configuration and use it for the webapp
 
-# postgresSchedulerConfiguration:
+# postgresqlSchedulerConfiguration:
 #   cls: postgresql
 #   host: mydatabasese.server
 #   port: '5432'
@@ -459,7 +459,9 @@ toolbox:
   enabled: false
   # requestedMemory: 256Mi
   # requestedCpu: 250m
-  # schedulerConfigurationRef: remoteSchedulerConfiguration
+  # configs:
+  #   scheduler: postgresqlSchedulerConfiguration
+  #   storage: postgresqlStorageConfiguration
 
 scheduler:
   enabled: false
@@ -495,7 +497,7 @@ scheduler:
     enabled: false
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
-    # schedulerConfigurationRef: postgresSchedulerConfiguration
+    # schedulerConfigurationRef: postgresqlSchedulerConfiguration
     # replicas: 2
     # gunicorn:
     #   threads: 5

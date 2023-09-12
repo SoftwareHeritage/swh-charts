@@ -1,12 +1,22 @@
 {{ if .Values.toolbox.enabled -}}
+{{- $namespace := .Values.namespace -}}
+{{- range $service_type, $deployment_config := .Values.toolbox.configs }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: toolbox-template
-  namespace: {{ .Values.namespace }}
+  name: toolbox-{{ $service_type }}-template
+  namespace: {{ $namespace }}
 data:
-  config.yml: |
-{{ include "swh.schedulerConfiguration" (list .Values .Values.toolbox.schedulerConfigurationRef) | indent 4 }}
+  config.yml.template: |
+    {{ if ( eq "scheduler" $service_type ) }}
+{{ include "swh.scheduler.postgresql" (list $.Values $deployment_config) | indent 4 }}
+    {{ else if ( eq "storage" $service_type ) }}
+    storage:
+ {{ include "swh.storage.postgresql" (list $.Values . $deployment_config) | indent 4 }}
+    {{ else }}
+    {{ fail (print "Configuration " $service_type " unsupported.") }}
+    {{- end -}}
 
 {{ end }}
+{{- end -}}

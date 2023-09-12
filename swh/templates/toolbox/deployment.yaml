@@ -1,5 +1,6 @@
 {{ if .Values.toolbox.enabled -}}
-{{- $configurationChecksum := include (print $.Template.BasePath "/toolbox/configmap.yaml") . -}}
+{{- $configChecksum := include (print $.Template.BasePath "/toolbox/configmap.yaml") . -}}
+{{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/toolbox/script-utils-configmap.yaml") . -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -23,8 +24,26 @@ spec:
         app: swh-toolbox
       annotations:
         # Force a rollout upgrade if the configuration changes
-        checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config: {{ $configChecksum | sha256sum }}
+        checksum/configScript: {{ $configScriptUtilsChecksum | sha256sum }}
     spec:
+      initContainers:
+{{ range $service_type, $deployment_config := .Values.toolbox.configs }}
+        - name: prepare-configuration-{{ $service_type }}
+          image: debian:bullseye
+          imagePullPolicy: Always
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-{{ $service_type }}.yml
+{{ include "celery.secretsEnvironment" (list $.Values $deployment_config) | indent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-{{ $service_type }}-template
+            mountPath: /etc/swh/configuration-template
+{{ end }}
       containers:
       - name: swh-toolbox
         image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
@@ -38,18 +57,26 @@ spec:
         args:
         - -c
         - /opt/swh/entrypoint.sh
-        env:
-        - name: SWH_CONFIG_FILENAME
-          value: /etc/swh/config.yml
         volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: toolbox-script-utils
+            mountPath: /opt/swh/bin
+            readOnly: true
       volumes:
       - name: configuration
+        emptyDir: {}
+{{ range $service_type, $deployment_config := .Values.toolbox.configs }}
+      - name: configuration-{{ $service_type }}-template
         configMap:
-          name: toolbox-template
+          name: toolbox-{{ $service_type }}-template
           defaultMode: 0777
           items:
-          - key: "config.yml"
-            path: "config.yml"
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{ end }}
+      - name: toolbox-script-utils
+        configMap:
+          name: toolbox-script-utils
+          defaultMode: 0555
 {{ end }}

@@ -1,0 +1,89 @@
+{{ if .Values.toolbox.enabled -}}
+{{- $namespace := .Values.namespace -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: toolbox-script-utils
+  namespace: {{ $namespace }}
+data:
+  check-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+
+    MODULE=$1
+    CODE_VERSION=${2-""}
+    DB_VERSION=${3-""}
+
+    if [ -z ${MODULE} ]; then
+      echo The environment variable must be defined with the module to check
+      echo for example "storage"
+      exit 1
+    fi
+
+    # checking the database status
+    swh db --config-file=/etc/swh/config-${MODULE}.yml version "${MODULE}" | \
+      tee "${TEMP_FILE}"
+
+    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
+    DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
+
+    if [ -e "${CODE_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ -e "${DB_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ "$DB_VERSION" -eq "$CODE_VERSION" ]; then
+      echo "Database already configured at the latest version"
+    else
+      echo "Migration required from $CODE_VERSION to $DB_VERSION."
+    fi
+
+  migrate-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+
+    MODULE=$1
+    CODE_VERSION=${2-""}
+
+    if [ -z ${MODULE} ]; then
+      echo The environment variable must be defined with the module to check
+      echo for example "storage"
+      exit 1
+    fi
+
+    if [ ! -z ${CODE_VERSION ]; then
+      swh db --config-file=/etc/swh/config-${MODULE}.yml upgrade "${MODULE}" \
+        --to-version ${CODE_VERSION}
+    else
+      swh db --config-file=/etc/swh/config-${MODULE}.yml upgrade "${MODULE}"
+    fi
+
+{{- range $service_type, $deployment_config := .Values.toolbox.configs }}
+  check-{{ $service_type }}-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    /opt/swh/bin/check-db-version.sh {{ $service_type }}
+
+  migrate-{{ $service_type }}-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    /opt/swh/bin/migrate-db-version.sh {{ $service_type }}
+
+{{ end }}
+{{- end -}}

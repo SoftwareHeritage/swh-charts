@@ -61,7 +61,7 @@ remoteSchedulerConfiguration:
   host: scheduler.internal.staging.swh.network
   port: 80
 
-postgresSchedulerConfiguration:
+postgresqlSchedulerConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
@@ -535,7 +535,9 @@ storage_replayer:
 
 toolbox:
   enabled: true
-  schedulerConfigurationRef: remoteSchedulerConfiguration
+  configs:
+    scheduler: postgresqlSchedulerConfiguration
+    storage: postgresqlStorageConfiguration
 
 scheduler:
   enabled: true
@@ -548,7 +550,7 @@ scheduler:
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
-    schedulerConfigurationRef: postgresSchedulerConfiguration
+    schedulerConfigurationRef: postgresqlSchedulerConfiguration
     replicas: 2
     gunicorn:
       threads: 5

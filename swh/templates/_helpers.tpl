@@ -69,7 +69,7 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- $Values := index . 0 -}}
 {{- $schedulerConfigurationRef := index . 1 -}}
 {{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
-{{- if not $schedulerConfiguration -}}{{ fail (print "key schedulerConfigurationRef is mandatory in " $schedulerConfiguration)}}{{- end -}}
+{{- if not $schedulerConfiguration -}}{{ fail (print "key " $schedulerConfigurationRef " is mandatory in global dict $Values")}}{{- end -}}
 {{- $schedulerType := get $schedulerConfiguration "cls" -}}
 {{- if eq $schedulerType "remote" -}}
 {{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
