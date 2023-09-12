@@ -3,7 +3,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: update-metrics-cronjob
+  name: scheduler-update-metrics-cronjob
 spec:
   schedule: {{ .Values.scheduler.updateMetrics.cron | default "0/10 * * * *" | quote}}
   jobTemplate:
@@ -80,7 +80,7 @@ spec:
             emptyDir: {}
           - name: configuration-template
             configMap:
-              name: update-metrics-configuration-template
+              name: scheduler-update-metrics-configuration-template
               items:
               - key: "config.yml.template"
                 path: "config.yml.template"
