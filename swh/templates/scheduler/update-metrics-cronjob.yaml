@@ -8,7 +8,9 @@ spec:
   schedule: {{ .Values.scheduler.updateMetrics.cron | default "0/10 * * * *" | quote}}
   jobTemplate:
     spec:
-      concurrencyPolicy: Forbid
+      {{- if .Values.scheduler.updateMetrics.concurrencyPolicy }}
+      concurrencyPolicy: {{ .Values.scheduler.updateMetrics.concurrencyPolicy }}
+      {{- end }}
       template:
         spec:
           initContainers:
