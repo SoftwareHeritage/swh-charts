@@ -58,8 +58,8 @@ remoteROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler0.internal.staging.swh.network
-  port: 5008
+  host: scheduler.internal.staging.swh.network
+  port: 80
 
 postgresSchedulerConfiguration:
   cls: postgresql
