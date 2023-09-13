@@ -58,7 +58,8 @@ remoteROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler
+  # Host is the service's name
+  host: scheduler-rpc
   port: 5008
 
 postgresSchedulerConfiguration:
