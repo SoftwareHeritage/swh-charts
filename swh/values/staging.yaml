@@ -66,7 +66,7 @@ postgresSchedulerConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
-  user: swh
+  user: swh-scheduler
   password: ${POSTGRESQL_PASSWORD}
   db: swh-scheduler
   secrets:
@@ -556,8 +556,9 @@ scheduler:
       workers: 2
       timeout: 60
     ingress:
-      host: scheduler.internal.staging.swh.network
       enabled: true
+      host: scheduler.internal.staging.swh.network
+      className: nginx
   updateMetrics:
     enabled: true
   journalClient:

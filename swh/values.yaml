@@ -119,7 +119,7 @@ sentry:
 #   cls: postgresql
 #   host: mydatabasese.server
 #   port: '5432'
-#   user: swh
+#   user: swh-scheduler
 #   password: ${POSTGRESQL_PASSWORD}
 #   db: swh
 #   secrets:
