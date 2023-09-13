@@ -2,7 +2,11 @@ suite: test software-stories ingress
 templates:
   - templates/ingress.yaml
 tests:
-  - it: Software Stories is deployed
+  - it: Software Stories Ingress is deployed
+    set:
+      software_stories_image: image
+      software_stories_image_version: version
+      host: fake-test-software-stories.fqdn
     asserts:
       - hasDocuments:
           count: 1
@@ -22,4 +26,4 @@ tests:
           path: spec.ingressClassName
       - equal:
           path: spec.rules[0].host
-          value: software-stories.staging.swh.network
+          value: fake-test-software-stories.fqdn

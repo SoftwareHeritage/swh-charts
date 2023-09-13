@@ -1,5 +1,5 @@
 replicaCount: 2
 name: software-stories
 namespace: software-stories
-host: software-stories.staging.swh.network
+# host: ingress-fqdn-to-adapt
 # ingressClassName: nginx

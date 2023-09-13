@@ -4,8 +4,8 @@ templates:
 tests:
   - it: Software Stories is deployed
     set:
-      containerImage: image
-      containerVersion: version
+      software_stories_image: image
+      software_stories_image_version: version
     asserts:
       - hasDocuments:
           count: 1
