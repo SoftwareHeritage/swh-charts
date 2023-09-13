@@ -58,8 +58,8 @@ remoteROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler.internal.staging.swh.network
-  port: 80
+  host: scheduler
+  port: 5008
 
 postgresSchedulerConfiguration:
   cls: postgresql
@@ -105,9 +105,6 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  scheduler:
-    host: scheduler0.internal.staging.swh.network
-    port: 5008
   amqp:
      host: scheduler0.internal.staging.swh.network
      port: 5672
