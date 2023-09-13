@@ -28,3 +28,25 @@ Snapshot:    0 passed, 0 total
 Time:        3.844307ms
 
 ```
+
+## minikube
+
+You can run the software-stories on minikube with the following command:
+
+```
+chart=software-stories; helm upgrade --install $chart $chart/ \
+  --values values-swh-application-versions.yaml \
+  --values $chart/values.yaml \
+  --values $chart/values/minikube.yaml \
+   -n software-stories \
+   --create-namespace
+```
+
+Then in your /etc/hosts, reference:
+
+```
+192.168.49.2 fake-software-storage.i.s.s.n
+```
+
+Finally open your browser to https://fake-software-storage.i.s.s.n to enjoy the
+software-stories application.
