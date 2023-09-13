@@ -550,7 +550,6 @@ scheduler:
     enabled: true
   rpc:
     enabled: true
-    host: scheduler.internal.staging.swh.network
     # The scheduler instance to use for rpc must be a postgresql instance
     schedulerConfigurationRef: postgresSchedulerConfiguration
     replicas: 2
@@ -559,6 +558,7 @@ scheduler:
       workers: 2
       timeout: 60
     ingress:
+      host: scheduler.internal.staging.swh.network
       enabled: true
   updateMetrics:
     enabled: true
