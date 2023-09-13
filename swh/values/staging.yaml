@@ -549,10 +549,9 @@ scheduler:
   recurrent:
     enabled: true
   rpc:
-    enabled: false
-    # The scheduler instance to use for rpc must be a postgresql one hence the possible
-    # override of this one over the other default schedulerConfigurationRef in the
-    # top-level configuration
+    enabled: true
+    host: scheduler.internal.staging.swh.network
+    # The scheduler instance to use for rpc must be a postgresql instance
     schedulerConfigurationRef: postgresSchedulerConfiguration
     replicas: 2
     gunicorn:

@@ -494,9 +494,7 @@ scheduler:
   rpc:
     enabled: false
     logLevel: INFO
-    # The scheduler instance to use for rpc must be a postgresql one hence the possible
-    # override of this one over the other default schedulerConfigurationRef in the
-    # top-level configuration
+    # The scheduler instance to use for rpc must be a postgresql instance
     # schedulerConfigurationRef: postgresSchedulerConfiguration
     # replicas: 2
     # gunicorn:
