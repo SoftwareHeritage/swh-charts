@@ -274,8 +274,8 @@ indexers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   scheduler:
-    host: scheduler0.internal.staging.swh.network
-    port: 5008
+    host: scheduler.internal.staging.swh.network
+    port: 80
   indexer_storage:
     host: storage1.internal.staging.swh.network
     port: 5007

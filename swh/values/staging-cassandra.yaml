@@ -309,8 +309,8 @@ loader_metadata:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   scheduler:
-    host: scheduler0.internal.staging.swh.network
-    port: 5008
+    host: scheduler.internal.staging.swh.network
+    port: 80
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
