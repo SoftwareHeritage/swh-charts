@@ -7,13 +7,22 @@ UID=1000
 # to ease troubleshooting
 ACTIVATE_SNAPSHOT=--update-snapshot
 
-test:
+swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
 	  $(IMAGE) swh
 
-test-with-snapshot:
+swh-test-with-snapshot:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
 	  $(IMAGE) $(ACTIVATE_SNAPSHOT) swh
+
+ss-test:
+	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
+	  $(IMAGE) software-stories
+
+ss-test-with-snapshot:
+	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
+	  $(IMAGE) $(ACTIVATE_SNAPSHOT) software-stories
+
 
 swh-helm-diff:
 	./helm-diff.sh swh
@@ -21,4 +30,7 @@ swh-helm-diff:
 cc-helm-diff:
 	./helm-diff.sh cluster-configuration
 
-helm-diff: swh-helm-diff cc-helm-diff
+ss-helm-diff:
+	./helm-diff.sh software-stories
+
+helm-diff: swh-helm-diff cc-helm-diff ss-helm-diff
