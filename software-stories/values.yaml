@@ -1,7 +1,5 @@
 replicaCount: 2
 name: software-stories
-containerImage: container-registry.softwareheritage.org/swh/infra/swh-apps/software-stories
-containerVersion: '20230911.1'
 namespace: software-stories
 host: software-stories.staging.swh.network
 # ingressClassName: nginx

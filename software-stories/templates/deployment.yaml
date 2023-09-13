@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.name }}
-          image: {{ .Values.containerImage }}:{{ .Values.containerVersion }}
+          image: {{ .Values.software_stories_image }}:{{ .Values.software_stories_image_version }}
           ports:
             - containerPort: 3000
           livenessProbe:
