@@ -552,7 +552,7 @@ scheduler:
     replicas: 2
     gunicorn:
       threads: 5
-      workers: 2
+      workers: 4
       timeout: 60
     ingress:
       enabled: true
