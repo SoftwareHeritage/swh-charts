@@ -58,9 +58,8 @@ remoteROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  # Host is the service's name
-  host: scheduler-rpc
-  port: 5008
+  host: scheduler.internal.staging.swh.network
+  port: 80
 
 postgresSchedulerConfiguration:
   cls: postgresql
@@ -558,7 +557,9 @@ scheduler:
     ingress:
       enabled: true
       host: scheduler.internal.staging.swh.network
-      whitelistSourceRange: 192.168.130.0/24
+      # TODO: Improve the authorization internal cluster ip range.
+      # Current internal range retrieved out of the `kubectl cluster-info dump`
+      whitelistSourceRange: 192.168.130.0/24,10.42.0.0/16,10.43.0.0/16
   updateMetrics:
     enabled: true
   journalClient:
