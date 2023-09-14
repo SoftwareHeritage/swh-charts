@@ -249,7 +249,7 @@ loaders:
 loader_metadata:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
-  schedulerConfiguration: remoteSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
