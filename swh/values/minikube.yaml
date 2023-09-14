@@ -9,11 +9,6 @@ fakeRemoteSchedulerConfiguration:
   host: fake-scheduler.i.s.s.n
   port: 5008
 
-fakeRemoteStorageConfiguration:
-  cls: remote
-  host: fake-storage.i.s.s.n
-  port: 5002
-
 fakePostgresqlStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
