@@ -79,7 +79,7 @@ scheduler:
     enabled: true
     logLevel: INFO
     # Execute at each minute
-    cron: "* * * * *"
+    cron: "0/10 * * * *"
   journalClient:
     enabled: true
     journalConfigurationRef: journalClientConfiguration
