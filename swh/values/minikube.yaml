@@ -1,6 +1,9 @@
 sentry:
   environment: minikube
 
+statsd_exporter:
+  enabled: false
+
 fakeRemoteSchedulerConfiguration:
   cls: remote
   host: fake-scheduler.i.s.s.n

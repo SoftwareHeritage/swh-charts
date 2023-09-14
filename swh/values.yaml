@@ -259,6 +259,9 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
+  sentrySwhPackage: swh.loader.metadata
+  requestedMemory: 350Mi
+  requestedCpu: 80m
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
@@ -314,6 +317,7 @@ checker_deposit:
 
 indexers:
   enabled: false
+  sentrySwhPackage: swh.indexer
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
