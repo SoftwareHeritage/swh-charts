@@ -62,11 +62,6 @@ remoteSchedulerConfiguration:
   host: saatchi.internal.softwareheritage.org
   port: 5008
 
-remoteSchedulerConfiguration:
-  cls: remote
-  host: saatchi.internal.softwareheritage.org
-  port: 5008
-
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
