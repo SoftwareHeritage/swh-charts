@@ -121,3 +121,31 @@ loader_metadata:
     user: swh-test-archive-stg
   autoScaling:
     enabled: false
+
+indexers:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  indexer_storage:
+    host: storage1.i.s.s.n
+    port: 7005
+  objstorage:
+    host: storage1.i.s.s.n
+    port: 3005
+  journalBrokers:
+    secretName: swh-archive-broker-secret
+    hosts:
+      - journal1.internal.staging.swh.network:9094
+    user: swh-archive-stg
+  deployments:
+    origin-intrinsic:
+      indexer_type: origin_intrinsic_metadata
+      consumerGroup: swh.test.indexer.journal_client.origin_intrinsic_metadata
+      prefix: swh.test.journal.objects
+      batch_size: 10
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+

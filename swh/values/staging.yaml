@@ -273,9 +273,7 @@ checker_deposit:
 indexers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  scheduler:
-    host: scheduler.internal.staging.swh.network
-    port: 80
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   indexer_storage:
     host: storage1.internal.staging.swh.network
     port: 5007

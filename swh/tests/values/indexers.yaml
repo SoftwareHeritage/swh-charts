@@ -8,12 +8,15 @@ remoteStorage:
 storageConfiguration:
   storageConfigurationRef: remoteStorage
 
+schedulerConfiguration:
+  cls: remote
+  host: scheduler.test.org
+  port: 8005
+
 indexers:
   enabled: true
   storageConfigurationRef: storageConfiguration
-  scheduler:
-    host: scheduler.test.org
-    port: 8005
+  schedulerConfigurationRef: schedulerConfiguration
   indexer_storage:
     host: indexer.test.org
     port: 7005

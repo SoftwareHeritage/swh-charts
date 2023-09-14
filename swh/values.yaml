@@ -321,6 +321,7 @@ checker_deposit:
 indexers:
   enabled: false
   sentrySwhPackage: swh.indexer
+  # schedulerConfigurationRef: remoteSchedulerConfiguration
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
