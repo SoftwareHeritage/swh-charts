@@ -1,4 +1,5 @@
 {{ if .Values.indexers.enabled -}}
+{{- $secretName := $.Values.indexers.journalBrokers.secretName -}}
 {{- $configurationChecksum := include (print $.Template.BasePath "/indexers/configmap.yaml") . -}}
 {{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
 {{- $indexer_name := ( print "indexer-" $indexer_type ) -}}
@@ -36,13 +37,15 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: Always
+          {{ if $secretName }}
           env:
           - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ $.Values.indexers.journalBrokers.secretName }}
+                name: {{ $secretName }}
                 key: BROKER_USER_PASSWORD
                 optional: false
+          {{ end }}
           command:
             - /entrypoint.sh
           volumeMounts:
@@ -81,6 +84,7 @@ spec:
           value: /etc/swh/config.yml
         - name: SWH_INDEXER_TYPE
           value: {{ get $deployment_config "indexer_type" }}
+        {{- if $.Values.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
@@ -92,6 +96,7 @@ spec:
               key: indexer-sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
+        {{- end }}
         volumeMounts:
           - name: indexer-utils
             mountPath: /pre-stop.sh

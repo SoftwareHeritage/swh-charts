@@ -1,4 +1,5 @@
 sentry:
+  enabled: false
   environment: minikube
 
 statsd_exporter:
@@ -128,7 +129,6 @@ indexers:
     host: storage1.i.s.s.n
     port: 3005
   journalBrokers:
-    secretName: swh-archive-broker-secret
     hosts:
       - journal1.internal.staging.swh.network:9094
     user: swh-archive-stg
