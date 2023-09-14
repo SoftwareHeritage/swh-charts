@@ -12,6 +12,10 @@ tests:
         host: http://test.storage.org:2005
       storageConfiguration:
         storageConfigurationRef: remoteStorage
+      remoteSchedulerConfiguration:
+        cls: remote
+        host: scheduler.test.org
+        port: 8005
       loader_metadata:
         enabled: true
         logLevel: DEBUG
@@ -19,9 +23,7 @@ tests:
         requestedCpu: "250m"
         sentrySwhPackage: test.swh.loader.metadata
         storageConfigurationRef: storageConfiguration
-        scheduler:
-          host: test.scheduler.org
-          port: 8005
+        schedulerConfigurationRef: remoteSchedulerConfiguration
         prefix: test.journal.objects
         consumerGroup: test.consumerGroup
         journalBrokers:

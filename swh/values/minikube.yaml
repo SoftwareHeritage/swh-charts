@@ -30,6 +30,13 @@ fakePostgresqlSchedulerConfiguration:
   password: test
   db: swh-scheduler
 
+fakeRemoteStorageConfiguration:
+  cls: remote
+  host: http://fake-storage.i.s.s.n:8002
+
+fakeRemoteStorageConfigurationRef:
+  storageConfigurationRef: fakeRemoteStorageConfiguration
+
 kafkaBrokers:
   - fakeBroker1
   - fakeBroker2
@@ -101,3 +108,16 @@ scheduler:
       enabled: true
       logLevel: INFO
 
+loader_metadata:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  consumerGroup: loader_metadata.test.journal_client
+  prefix: swh.test.journal.objects
+  journalBrokers:
+    hosts:
+      - journal1.internal.s.s.n:4909
+    secretName: swh-archive-broker-secret
+    user: swh-test-archive-stg
+  autoScaling:
+    enabled: false

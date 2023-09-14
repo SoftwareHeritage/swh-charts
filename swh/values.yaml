@@ -1,5 +1,9 @@
 namespace: swh
 
+keda:
+  # Off by default as it's already installed by argocd in all clusters but minikube.
+  enabled: false
+
 sentry:
   environment: production
 
@@ -266,9 +270,7 @@ loader_metadata:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
-  # scheduler:
-  #   host: ...
-  #   port: 5008
+  # schedulerConfigurationRef: defaultSchedulerConfiguration
   # consumerGroup: ...
   # prefix: swh.journal.objects
   # reload_after_days: 120
@@ -276,7 +278,8 @@ loader_metadata:
   #   hosts:
   #     - ...
   #   user: ...
-  # autoScaling:
+  autoScaling:
+    enabled: true
   #   poolInterval: 120
   #   lagThreashold: 1000
   #   minReplicaCount: 1

@@ -64,6 +64,10 @@ rpcRWStorageConfiguration:
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcRWStorageConfiguration
 
+remoteSchedulerConfiguration:
+  host: scheduler.internal.staging.swh.network
+  port: 80
+
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
@@ -308,9 +312,7 @@ loaders:
 loader_metadata:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
-  scheduler:
-    host: scheduler.internal.staging.swh.network
-    port: 80
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:

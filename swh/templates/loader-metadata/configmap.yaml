@@ -10,9 +10,9 @@ metadata:
 data:
   config.yml.template: |
 {{ include "swh.storageConfiguration" (list $.Values . $.Values.loader_metadata.storageConfigurationRef) | indent 4 }}
-    scheduler:
-      cls: remote
-      url: http://{{ .Values.loader_metadata.scheduler.host }}:{{ .Values.loader_metadata.scheduler.port }}/
+
+{{ include "swh.schedulerConfiguration" (list $.Values $.Values.loader_metadata.schedulerConfigurationRef) | indent 4 }}
+
     journal:
       brokers: {{ toYaml .Values.loader_metadata.journalBrokers.hosts | nindent 8 }}
       group_id: {{ $journalUser }}-{{ $consumerGroup }}

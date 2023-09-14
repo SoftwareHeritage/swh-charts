@@ -1,4 +1,4 @@
-{{ if .Values.loader_metadata.enabled -}}
+{{ if and .Values.loader_metadata.enabled .Values.loader_metadata.autoScaling.enabled -}}
 {{- $autoscalingConfig := $.Values.loader_metadata.autoScaling -}}
 {{- $journalUser := .Values.loader_metadata.journalBrokers.user -}}
 {{- $consumerGroup := .Values.loader_metadata.consumerGroup -}}

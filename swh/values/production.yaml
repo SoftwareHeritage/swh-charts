@@ -62,6 +62,11 @@ remoteSchedulerConfiguration:
   host: saatchi.internal.softwareheritage.org
   port: 5008
 
+remoteSchedulerConfiguration:
+  cls: remote
+  host: saatchi.internal.softwareheritage.org
+  port: 5008
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -249,9 +254,7 @@ loaders:
 loader_metadata:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
-  scheduler:
-    host: saatchi.internal.softwareheritage.org
-    port: 5008
+  schedulerConfiguration: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:

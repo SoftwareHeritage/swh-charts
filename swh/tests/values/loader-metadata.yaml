@@ -10,12 +10,15 @@ myStorageConfiguration:
   pipelineStepsRef: pipelineSteps
   storageConfigurationRef: remoteStorage
 
+mySchedulerConfiguration:
+  cls: remote
+  host: scheduler.test.org
+  port: 8005
+
 loader_metadata:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
-  scheduler:
-    host: scheduler.test.org
-    port: 8005
+  schedulerConfigurationRef: mySchedulerConfiguration
   consumerGroup: test.loader_metadata.journal_client
   prefix: test.journal.objects
   journalBrokers:

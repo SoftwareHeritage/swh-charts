@@ -23,10 +23,10 @@ tests:
           value: image:version
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.memory
-          value: "512Mi"
+          value: "350Mi"
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].resources.requests.cpu
-          value: "500m"
+          value: "80m"
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_HOST")].value
           value: "prometheus-statsd-exporter"
@@ -39,8 +39,9 @@ tests:
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
           value: production
-      - isNull:
+      - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_MAIN_PACKAGE")].value
+          value: swh.loader.metadata
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_DSN")].valueFrom.secretKeyRef.name
           value: common-secrets
@@ -68,14 +69,17 @@ tests:
       storageConfiguration:
         storageConfigurationRef: remoteStorage
 
+      schedulerConfiguration:
+        cls: remote
+        host: test.scheduler.org
+        port: 8005
+
       # specific values
       loader_metadata:
         enabled: true
         logLevel: DEBUG
         storageConfigurationRef: storageConfiguration
-        scheduler:
-          host: test.scheduler.org
-          port: 8005
+        schedulerConfigurationRef: schedulerConfiguration
         consumerGroup: test.loader_metadata.journal_client
         prefix: test.journal.objects
         journalBrokers:
