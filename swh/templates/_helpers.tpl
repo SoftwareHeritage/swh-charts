@@ -184,8 +184,8 @@ storage:
   cls: postgresql
   db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
 {{ else }}
-  - cls: postgresql
-    db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+- cls: postgresql
+  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
 {{ end }}
 {{- end -}}
 
