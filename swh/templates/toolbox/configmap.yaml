@@ -12,8 +12,7 @@ data:
     {{ if ( eq "scheduler" $service_type ) }}
 {{ include "swh.scheduler.postgresql" (list $.Values $deployment_config) | indent 4 }}
     {{ else if ( eq "storage" $service_type ) }}
-    storage:
- {{ include "swh.storage.postgresql" (list $.Values . $deployment_config) | indent 4 }}
+{{ include "swh.storage.postgresql" (list $.Values $deployment_config list) | indent 4 }}
     {{ else }}
     {{ fail (print "Configuration " $service_type " unsupported.") }}
     {{- end -}}

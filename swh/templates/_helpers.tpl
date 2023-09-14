@@ -169,7 +169,6 @@ Generate the configuration for a postgresql storage
 {{- $storageConfigurationRef := index . 1 -}}
 {{- $inPipeline := index . 2 -}}
 {{- $storageConfiguration := get $Values $storageConfigurationRef -}}
-{{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
 {{- $host := required (print "The host property is mandatory in " $storageConfigurationRef)
                     (get $storageConfiguration "host") -}}
 {{- $port := required (print "The port property is mandatory in " $storageConfigurationRef)
@@ -180,9 +179,14 @@ Generate the configuration for a postgresql storage
                     (get $storageConfiguration "password") -}}
 {{- $db := required (print "The db property is mandatory in " $storageConfigurationRef)
                     (get $storageConfiguration "db") -}}
-
-{{- if $inPipeline -}}- {{ end }}cls: postgresql
-{{ $indent }}db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{- if (empty $inPipeline) }}
+storage:
+  cls: postgresql
+  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{ else }}
+  - cls: postgresql
+    db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{ end }}
 {{- end -}}
 
 
