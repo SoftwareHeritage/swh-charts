@@ -6,10 +6,10 @@ Create a global storage configuration based on configuration section aggregation
 {{- $top := index . 1 -}}
 {{- $storageConfigurationRef := index . 2 -}}
 {{- $storageConfiguration := get $Values $storageConfigurationRef -}}
-{{- if not $storageConfiguration -}}{{ fail (print "Undeclared " $storageConfigurationRef " storage configuration" )}}{{- end -}}
+{{- if not $storageConfiguration -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" $storageConfigurationRef "> storage configuration" )}}{{- end -}}
 {{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
 {{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}
-{{- if not $storageServiceConfigurationRef -}}{{ fail (print "key storageConfigurationRef is mandatory in " $storageConfigurationRef)}}{{- end -}}
+{{- if not $storageServiceConfigurationRef -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " $storageConfigurationRef)}}{{- end -}}
 {{- $storageServiceConfiguration := get $Values $storageServiceConfigurationRef -}}
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
 {{- $objectStorageConfigurationRef :=  get $storageConfiguration "objectStorageConfigurationRef" -}}
@@ -19,7 +19,7 @@ storage:
 {{ if $pipelineStepsRef -}}
 {{- $pipelineSteps := get $Values $pipelineStepsRef -}}
 {{- if not $pipelineSteps -}}
-  {{ fail (print "No pipeline steps configuraton found:" $pipelineStepsRef) }}
+  {{ fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) }}
 {{- end }}  cls: pipeline
   steps:
 {{ toYaml $pipelineSteps | indent 2 }}
@@ -31,7 +31,7 @@ storage:
 {{- else if eq $storageType "postgresql" -}}
 {{ include "swh.storage.postgresql" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else -}}
-{{- fail (print "Storage " $storageType " not implemented") -}}
+{{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
 {{/* TODO: specific_options */}}
 {{- if $objectStorageConfigurationRef -}}
@@ -41,7 +41,7 @@ storage:
 {{- if eq $objectStorageType "noop" }}
 {{ include "swh.objstorage.noop" . | indent $objectStorageIndent }}
 {{- else -}}
-{{- fail (print "Object Storage " $objectStorageType " not implemented") -}}
+{{- fail (print "_helpers.tpl: swh.storageConfiguration: Object Storage <" $objectStorageType "> not implemented") -}}
 {{- end -}}
 {{- end -}}
 {{- if $journalWriterConfigurationRef }}
@@ -69,14 +69,14 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- $Values := index . 0 -}}
 {{- $schedulerConfigurationRef := index . 1 -}}
 {{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
-{{- if not $schedulerConfiguration -}}{{ fail (print "key " $schedulerConfigurationRef " is mandatory in global dict $Values")}}{{- end -}}
+{{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.tpl:swh.schedulerConfiguration: key <" $schedulerConfigurationRef "> is mandatory in global dict $Values")}}{{- end -}}
 {{- $schedulerType := get $schedulerConfiguration "cls" -}}
 {{- if eq $schedulerType "remote" -}}
 {{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
 {{- else if eq $schedulerType "postgresql" -}}
 {{ include "swh.scheduler.postgresql" (list $Values $schedulerConfigurationRef) }}
 {{- else -}}
-{{- fail (print "Scheduler " $schedulerType " not implemented") -}}
+{{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
 {{- end -}}
 
