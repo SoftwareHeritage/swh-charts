@@ -65,6 +65,7 @@ localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcRWStorageConfiguration
 
 remoteSchedulerConfiguration:
+  cls: remote
   host: scheduler.internal.staging.swh.network
   port: 80
 
