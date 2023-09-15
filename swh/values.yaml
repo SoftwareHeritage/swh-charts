@@ -422,6 +422,7 @@ storage:
 
 web:
   enabled: false
+  priorityClassName: frontend-rpc
   logLevel: INFO
   replicas: 1
   requestedCpu: 50m

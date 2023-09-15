@@ -64,6 +64,9 @@ storage_replayer:
       objects:
         - content
 
+web:
+  enabled: true
+
 toolbox:
   enabled: true
   configs:
