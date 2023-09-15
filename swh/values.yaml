@@ -215,6 +215,7 @@ tmpEphemeralStorage:
 
 storage_replayer:
   enabled: false
+  priorityClassName: background-workload
   maxMessagesBytes: "524288000"
   journalBrokers:
     # The name of the secret containing the BROKER_USER_PASSWORD value

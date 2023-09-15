@@ -1,9 +1,9 @@
 sentry:
-  enabled: false
+  enabled: true
   environment: minikube
 
 statsd_exporter:
-  enabled: false
+  enabled: true
 
 fakeRemoteSchedulerConfiguration:
   cls: remote
@@ -48,6 +48,21 @@ storage:
   enabled: true
   priorityClassName: frontend-rpc
   storageConfigurationRef: fakePostgresqlStorageConfigurationRef
+
+storage_replayer:
+  enabled: true
+  journalBrokers:
+    hosts:
+      - journal1.i.s.s.n:4909
+    user: swh-postgresql-stg
+    groupIdName: postgresql
+    secretName: swh-postgresql-broker-secret
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  checkDbVersion: false
+  deployments:
+    content:
+      objects:
+        - content
 
 toolbox:
   enabled: true
