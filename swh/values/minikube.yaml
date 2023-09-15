@@ -51,12 +51,13 @@ storage:
 
 storage_replayer:
   enabled: true
+  sentry:
+    enabled: false
   journalBrokers:
     hosts:
       - journal1.i.s.s.n:4909
     user: swh-postgresql-stg
     groupIdName: postgresql
-    secretName: swh-postgresql-broker-secret
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   checkDbVersion: false
   deployments:

@@ -215,11 +215,13 @@ tmpEphemeralStorage:
 
 storage_replayer:
   enabled: false
+  sentry:
+    enabled: true
   priorityClassName: background-workload
   maxMessagesBytes: "524288000"
   journalBrokers:
     # The name of the secret containing the BROKER_USER_PASSWORD value
-    secretName: storage-replayer-broker-secret
+    # secretName: storage-replayer-broker-secret
     hosts:
     - broker1
     - broker2
