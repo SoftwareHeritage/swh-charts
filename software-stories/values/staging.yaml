@@ -1,1 +1,4 @@
 host: software-stories.staging.swh.network
+
+podPriority:
+  enabled: true
