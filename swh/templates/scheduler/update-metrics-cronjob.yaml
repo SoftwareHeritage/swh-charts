@@ -13,6 +13,9 @@ spec:
       {{- end }}
       template:
         spec:
+          {{- if and $.Values.podPriority.enabled $.Values.scheduler.priorityClassName }}
+          priorityClassName: {{ $.Values.scheduler.priorityClassName }}
+          {{ end }}
           initContainers:
             - name: prepare-configuration
               image: debian:bullseye

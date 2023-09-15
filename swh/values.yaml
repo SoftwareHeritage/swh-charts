@@ -477,6 +477,7 @@ toolbox:
 
 scheduler:
   enabled: false
+  priorityClassName: frontend-rpc-workload
   sentry:
     enabled: false
     secretKeyRef: scheduler-sentry-secrets
@@ -507,6 +508,7 @@ scheduler:
   #   enabled: false
   rpc:
     enabled: false
+    priorityClassName: frontend-rpc
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
     # schedulerConfigurationRef: postgresqlSchedulerConfiguration
