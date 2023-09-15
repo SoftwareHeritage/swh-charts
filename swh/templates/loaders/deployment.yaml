@@ -1,5 +1,6 @@
 {{ if .Values.loaders.enabled -}}
 {{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
+{{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
 # if defined at the "typed" loader level
@@ -15,6 +16,7 @@
 {{- $container_image := get $.Values $image_name_key }}
 {{- $container_image_version := get $.Values $image_version_key }}
 {{- $loader_affinity := get $deployment_config "affinity" | default $.Values.loaders.affinity }}
+{{- $loader_priority_class_name := get $deployment_config "priorityClassName" -}}
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 ---
 apiVersion: apps/v1
@@ -45,6 +47,11 @@ spec:
       affinity:
         {{- toYaml $loader_affinity | nindent 8 }}
       {{- end }}
+      {{- if and $.Values.podPriority.enabled $loader_priority_class_name }}
+      priorityClassName: {{ $loader_priority_class_name }}
+      {{- else if and $.Values.podPriority.enabled $default_priority_class_name }}
+      priorityClassName: {{ $default_priority_class_name }}
+      {{ end }}
       terminationGracePeriodSeconds: {{ $.Values.loaders.terminationGracePeriodSeconds | default 3600 }}
       initContainers:
         - name: prepare-configuration

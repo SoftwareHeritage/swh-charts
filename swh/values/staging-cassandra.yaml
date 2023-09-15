@@ -148,6 +148,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     git:
+      priorityClassName: low-workload
       requestedMemory: 512Mi
       requestedCpu: 200m
       queues:

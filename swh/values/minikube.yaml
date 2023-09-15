@@ -196,5 +196,21 @@ listers:
       queues:
       - swh.lister.cgit.tasks.CGitListerTask
 
+loaders:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  amqp:
+    host: scheduler0.internal.staging.swh.network
+    port: 5672
+  deployments:
+    git:
+      priorityClassName: low-workload
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+    pypi:
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.pypi.tasks.LoadPyPI
+
 podPriority:
   enabled: true
