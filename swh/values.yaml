@@ -260,6 +260,7 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
+  priorityClassName: normal-workload
   sentrySwhPackage: swh.loader.metadata
   requestedMemory: 350Mi
   requestedCpu: 80m
