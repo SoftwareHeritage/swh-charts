@@ -154,6 +154,7 @@ sentry:
 
 graphql:
   enabled: false
+  priorityClassName: frontend-rpc
   logLevel: INFO
   debug: no
   introspection: yes

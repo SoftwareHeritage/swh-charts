@@ -165,5 +165,24 @@ indexers:
           version: 0.0.2
           configuration: {}
 
+graphql:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  searchConfiguration:
+    host: search0.i.s.s.n
+    port: 5010
+  debug: no
+  introspection: no
+  replicas: 1
+  gunicorn:
+    threads: 1
+    workers: 2
+    timeout: 100
+  ingress:
+    enabled: false
+  auth:
+    enabled: false
+  maxRawContentSize: 10000
+
 podPriority:
   enabled: true

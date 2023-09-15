@@ -25,6 +25,9 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ include (print $.Template.BasePath "/graphql/configmap.yaml") . | sha256sum }}
     spec:
+      {{- if and $.Values.podPriority.enabled $.Values.graphql.priorityClassName }}
+      priorityClassName: {{ $.Values.graphql.priorityClassName }}
+      {{ end }}
       containers:
         - name: graphql
           image: {{ .Values.swh_graphql_image }}:{{ .Values.swh_graphql_image_version }}
