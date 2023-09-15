@@ -31,6 +31,9 @@ spec:
       affinity:
         {{ toYaml $.Values.checker_deposit.affinity | nindent 8 }}
       {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.checker_deposit.priorityClassName }}
+      priorityClassName: {{ $.Values.checker_deposit.priorityClassName }}
+      {{ end }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye

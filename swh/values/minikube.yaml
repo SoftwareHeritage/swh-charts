@@ -118,6 +118,13 @@ loader_metadata:
   autoScaling:
     enabled: false
 
+checker_deposit:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  deposit:
+    host: deposit-rp.i.s.s.n
+  amqp:
+    host: scheduler0.i.s.s.n
 indexers:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
@@ -144,3 +151,5 @@ indexers:
           version: 0.0.2
           configuration: {}
 
+podPriority:
+  enabled: true
