@@ -457,6 +457,7 @@ statsd_exporter:
 memcached:
   # Deploy a memcached instance used by the webapp and graphql for sessions caching
   enabled: false
+  priorityClassName: storages
   image: memcached:1.6.18
   memory: 256m
   requestedCpu: 100m

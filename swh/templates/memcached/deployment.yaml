@@ -20,6 +20,9 @@ spec:
       labels:
         app: memcached
     spec:
+      {{- if and $.Values.podPriority.enabled $.Values.memcached.priorityClassName }}
+      priorityClassName: {{ $.Values.memcached.priorityClassName }}
+      {{ end }}
       containers:
       - name: memcached
         image: "{{ .Values.memcached.image }}"

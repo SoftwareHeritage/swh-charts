@@ -212,5 +212,8 @@ loaders:
       queues:
         - swh.loader.pypi.tasks.LoadPyPI
 
+memcached:
+  enabled: true
+
 podPriority:
   enabled: true
