@@ -471,6 +471,7 @@ memcached:
 
 toolbox:
   enabled: false
+  priorityClassName: tools
   # requestedMemory: 256Mi
   # requestedCpu: 250m
   # configs:
