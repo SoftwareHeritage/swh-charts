@@ -1,9 +1,5 @@
 namespace: swh
 
-keda:
-  # Off by default as it's already installed by argocd in all clusters but minikube.
-  enabled: false
-
 sentry:
   environment: production
 
