@@ -28,3 +28,6 @@ alertmanagerIrcRelay:
 
 blackboxExporter:
   enabled: true
+
+podPriority:
+  enabled: true

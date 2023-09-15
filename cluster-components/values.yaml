@@ -75,3 +75,52 @@ blackboxExporter:
           preferred_ip_protocol: "ip4"
           fail_if_body_not_matches_regexp:
             - '<title>Software Heritage</title>'
+
+podPriority:
+  enabled: false
+  priorities:
+    system:
+      # informational value (not used yet?)
+      range: 50000-100000
+      value: 75000
+      description: Highest pod priorities (ingress, operator, collector, controller
+    storages:
+      range: 25000-26000
+      value: 25500
+      description: Backend storages used by other services (memcached, redis, ...)
+    frontend-rpc:
+      range: 23000-24000
+      value: 24500
+      description: Frontend or RPC services (swh-web, swh-graphql, swh-storage, ...)
+    frontend-rpc-workload:
+      range: 22000-23000
+      value: 22500
+      description: Frontend or RPC services workload (checker-deposit, swh-search-journalclient, ...)
+    high-workload:
+      range: 20000-21000
+      value: 20500
+      description: High priority workload (save-code-now, add-forge-now, graph computations, ...)
+    local-workload:
+      range: 10000-15000
+      value: 12500
+    normal-workload:
+      range: 7000-8000
+      value: 6500
+      description: Normal workload (vault cooker workers, listers, most loaders, ...)
+    low-workload:
+      range: 5000-6000
+      value: 5500
+      description: Normal workload (vault cooker workers, listers, most loaders, ...)
+    background-storage:
+      range: 3000-4000
+      value: 3500
+      description: Background storage maintenance (reaper, scrubber, ...)
+    background-workload:
+      range: 1000-2000
+      value: 1500
+      description: Background workload (replayers cassandra & postgres, redis error reporter, ...)
+    tools:
+      range: 0-100
+      value: 50
+      description: Tooling helper (swh-toolbox)
+
