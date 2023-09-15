@@ -585,4 +585,5 @@ scheduler:
       enabled: true
       logLevel: INFO
 
-
+podPriority:
+  enabled: true
