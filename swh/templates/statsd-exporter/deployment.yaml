@@ -17,6 +17,9 @@ spec:
       labels:
         app: prometheus-statsd-exporter
     spec:
+      {{- if and $.Values.podPriority.enabled $.Values.statsd_exporter.priorityClassName }}
+      priorityClassName: {{ $.Values.statsd_exporter.priorityClassName }}
+      {{ end }}
       containers:
       - name: prometheus-statsd-exporter
         image: {{ .Values.statsd_exporter.image }}:{{ .Values.statsd_exporter.imageVersion }}
