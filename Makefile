@@ -8,6 +8,7 @@ UID=1000
 ACTIVATE_SNAPSHOT=--update-snapshot
 SWH_CHART=swh
 CC_CHART=cluster-components
+SS_CHART=software-stories
 
 swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
@@ -66,3 +67,18 @@ cc-template:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
       -n default --create-namespace --debug
+
+ss-minikube:
+	helm --kube-context minikube upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SS_CHART)/values.yaml \
+      --values $(SS_CHART)/values/minikube.yaml \
+      -n software-stories --create-namespace --debug
+
+ss-uninstall:
+	helm --kube-context minikube uninstall $(SS_CHART) -n software-stories
+
+ss-template:
+	helm template $chart $(SS_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SS_CHART)/values.yaml \
+      --values $(SS_CHART)/values/minikube.yaml \
+      -n software-stories --create-namespace --debug

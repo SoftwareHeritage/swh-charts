@@ -1,1 +1,4 @@
 host: fake-software-storage.i.s.s.n
+
+podPriority:
+  enabled: true

@@ -3,3 +3,7 @@ name: software-stories
 namespace: software-stories
 # host: ingress-fqdn-to-adapt
 # ingressClassName: nginx
+priorityClassName: frontend-rpc
+
+podPriority:
+  enabled: false

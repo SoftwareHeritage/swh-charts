@@ -21,6 +21,9 @@ spec:
       labels:
         app: {{ .Values.name }}
     spec:
+      {{- if and .Values.podPriority.enabled .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
+      {{ end }}
       containers:
         - name: {{ .Values.name }}
           image: {{ .Values.software_stories_image }}:{{ .Values.software_stories_image_version }}
