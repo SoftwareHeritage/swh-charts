@@ -125,6 +125,20 @@ checker_deposit:
     host: deposit-rp.i.s.s.n
   amqp:
     host: scheduler0.i.s.s.n
+
+cookers:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  vault:
+    host: vault.i.s.s.n
+    port: 5005
+  amqp:
+     host: scheduler0.i.s.s
+  deployments:
+    simple:
+      queues:
+        - swh.vault.cooking_tasks.SWHCookingTask
+
 indexers:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
