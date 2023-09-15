@@ -1,17 +1,22 @@
 ---
 # Main common configuration for the chart.
+namespace: cluster-components
 
 # All applications whose 'enabled' flag is false by default are applications that are
 # already installed in the cluster by the main swh provisioning except for the clusters
 # minikube (local dev) and rancher (admin cluster).
 cert-manager:
   enabled: false
+  # Supported in the chart, not seen on the pods...
+  priorityClassName: cluster-components-system
 
 # This configuration is swh specific (and independent from the prometheus configuration
 # already done during terraform provisioning). When activated, this allows to relay the
 # cluster's prometheus alerts to the cluster admin's alertmanager ingress irc relay
 alertmanager:
   enabled: false
+  # Supported in the chart, not seen on the pods...
+  priorityClassName: cluster-components-system
   ircrelay:
     enabled: true
     host: https://alertmanager-irc-relay.internal.admin.swh.network/swh-sysadm
@@ -20,6 +25,8 @@ alertmanager:
 
 prometheus:
   enabled: false
+  # Not working somehow... Charts reference it but it's not seen in minikube
+  priorityClassName: cluster-components-system
   namespaceOverride: cattle-monitoring-system
   grafana:
     namespaceOverride: cattle-monitoring-system
@@ -34,6 +41,7 @@ alertmanagerConfig:
 
 alertmanagerIrcRelay:
   enabled: false
+  priorityClassName: cluster-components-system
   ingress:
     enabled: true
     hosts:
@@ -55,6 +63,7 @@ alertmanagerIrcRelay:
 
 blackboxExporter:
   enabled: false
+  priorityClassName: cluster-components-system
   nameOverride: blackbox-exporter
   namespaceOverride: cattle-monitoring-system
   serviceMonitor:
@@ -79,48 +88,7 @@ blackboxExporter:
 podPriority:
   enabled: false
   priorities:
-    system:
-      # informational value (not used yet?)
+    cluster-components-system:
       range: 50000-100000
       value: 75000
-      description: Highest pod priorities (ingress, operator, collector, controller
-    storages:
-      range: 25000-26000
-      value: 25500
-      description: Backend storages used by other services (memcached, redis, ...)
-    frontend-rpc:
-      range: 23000-24000
-      value: 24500
-      description: Frontend or RPC services (swh-web, swh-graphql, swh-storage, ...)
-    frontend-rpc-workload:
-      range: 22000-23000
-      value: 22500
-      description: Frontend or RPC services workload (checker-deposit, swh-search-journalclient, ...)
-    high-workload:
-      range: 20000-21000
-      value: 20500
-      description: High priority workload (save-code-now, add-forge-now, graph computations, ...)
-    local-workload:
-      range: 10000-15000
-      value: 12500
-    normal-workload:
-      range: 7000-8000
-      value: 6500
-      description: Normal workload (vault cooker workers, listers, most loaders, ...)
-    low-workload:
-      range: 5000-6000
-      value: 5500
-      description: Normal workload (vault cooker workers, listers, most loaders, ...)
-    background-storage:
-      range: 3000-4000
-      value: 3500
-      description: Background storage maintenance (reaper, scrubber, ...)
-    background-workload:
-      range: 1000-2000
-      value: 1500
-      description: Background workload (replayers cassandra & postgres, redis error reporter, ...)
-    tools:
-      range: 0-100
-      value: 50
-      description: Tooling helper (swh-toolbox)
-
+      description: Highest pod priorities (ingress, operator, collector, controller)

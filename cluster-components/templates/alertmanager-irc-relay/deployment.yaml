@@ -23,6 +23,9 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
+      {{- if and .Values.podPriority.enabled .Values.alertmanagerIrcRelay.priorityClassName }}
+      priorityClassName: {{ $.Values.alertmanagerIrcRelay.priorityClassName }}
+      {{ end }}
       containers:
         - name: irc-relay
           image: container-registry.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay:v0.5.1-swh
