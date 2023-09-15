@@ -329,6 +329,7 @@ indexers:
 
 listers:
   enabled: false
+  priorityClassName: normal-workload
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage

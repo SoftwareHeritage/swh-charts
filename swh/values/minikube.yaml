@@ -184,5 +184,17 @@ graphql:
     enabled: false
   maxRawContentSize: 10000
 
+listers:
+  enabled: true
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  amqp:
+     host: scheduler0.i.i.s.n
+     port: 2765
+  deployments:
+    cgit:
+      queues:
+      - swh.lister.cgit.tasks.CGitListerTask
+
 podPriority:
   enabled: true
