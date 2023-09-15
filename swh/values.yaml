@@ -3,12 +3,6 @@ namespace: swh
 sentry:
   environment: production
 
-# Example of swh services activation
-# Only implemented for storage_replayer for now
-storage:
- enabled: false
- priorityClassName: frontend-rpc
-
 # List of kafka brokers
 # used by storage to store the object inserted in the database
 # and by the journal clients to follow the storage activiiy
@@ -343,6 +337,7 @@ listers:
 
 storage:
   enabled: false
+  priorityClassName: frontend-rpc
   logLevel: INFO
 # Don't configure the replicas if autoscaling is configured
 # and vice-versa

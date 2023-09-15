@@ -46,7 +46,6 @@ journalClientConfiguration:
 
 storage:
   enabled: true
-  priorityClassName: frontend-rpc
   storageConfigurationRef: fakePostgresqlStorageConfigurationRef
 
 storage_replayer:
