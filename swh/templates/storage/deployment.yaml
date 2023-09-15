@@ -31,6 +31,10 @@ spec:
       affinity:
         {{- toYaml .Values.storage.affinity | nindent 8 }}
       {{- end }}
+
+      {{- if and .Values.podPriority.enabled .Values.storage.priorityClassName }}
+      priorityClassName: {{ .Values.storage.priorityClassName }}
+      {{- end }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye

@@ -33,6 +33,9 @@ fakeRemoteStorageConfiguration:
 fakeRemoteStorageConfigurationRef:
   storageConfigurationRef: fakeRemoteStorageConfiguration
 
+fakePostgresqlStorageConfigurationRef:
+  storageConfigurationRef: fakePostgresqlStorageConfiguration
+
 kafkaBrokers:
   - fakeBroker1
   - fakeBroker2
@@ -40,6 +43,11 @@ kafkaBrokers:
 journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
   groupId: swh.scheduler.journal_client
+
+storage:
+  enabled: true
+  priorityClassName: frontend-rpc
+  storageConfigurationRef: fakePostgresqlStorageConfigurationRef
 
 toolbox:
   enabled: true

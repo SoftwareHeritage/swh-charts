@@ -3,11 +3,11 @@ namespace: swh
 sentry:
   environment: production
 
-# Example of services activation
+# Example of swh services activation
 # Only implemented for storage_replayer for now
-#storage:
-#  enabled: false
-#
+storage:
+ enabled: false
+ priorityClassName: frontend-rpc
 
 # List of kafka brokers
 # used by storage to store the object inserted in the database
