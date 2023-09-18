@@ -51,8 +51,17 @@ spec:
         - name: scheduler-schedule-recurrent
           resources:
             requests:
-              memory: {{ .Values.scheduler.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.scheduler.requestedCpu | default "500m" }}
+              memory: {{ .Values.scheduler.recurrent.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.scheduler.recurrent.requestedCpu | default "500m" }}
+          {{- if or .Values.scheduler.recurrent.limitedMemory .Values.scheduler.recurrent.limitedCpu }}
+            limits:
+            {{- if .Values.scheduler.recurrent.limitedMemory }}
+              memory: {{ .Values.scheduler.recurrent.limitedMemory }}
+            {{- end }}
+            {{- if .Values.scheduler.recurrent.limitedCpu }}
+              cpu: {{ .Values.scheduler.recurrent.limitedCpu }}
+            {{- end }}
+          {{ end }}
           image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
           command:
           - /opt/swh/entrypoint.sh
