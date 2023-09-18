@@ -37,6 +37,15 @@ spec:
                 requests:
                   memory: {{ .Values.scheduler.updateMetrics.requestedMemory | default "512Mi" }}
                   cpu: {{ .Values.scheduler.updateMetrics.requestedCpu | default "500m" }}
+                {{- if or .Values.scheduler.updateMetrics.limitedMemory .Values.scheduler.updateMetrics.limitedCpu }}
+                limits:
+                {{- if .Values.scheduler.updateMetrics.limitedMemory }}
+                  memory: {{ .Values.scheduler.updateMetrics.limitedMemory }}
+                {{- end }}
+                {{- if .Values.scheduler.updateMetrics.limitedCpu }}
+                  cpu: {{ .Values.scheduler.updateMetrics.limitedCpu }}
+                {{- end }}
+                {{ end }}
               image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
               command:
               - /opt/swh/entrypoint.sh
