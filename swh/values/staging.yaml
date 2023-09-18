@@ -603,6 +603,10 @@ scheduler:
       enabled: true
       logLevel: INFO
       period: 10
+      requestedMemory: 50Mi
+      limitedMemory: 100Mi
+      requestedCpu: 5m
+      limitedCpu: 10m
       extraConfig:
         - load-bzr
         - load-cvs
