@@ -66,6 +66,15 @@ spec:
             requests:
               memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
               cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          {{- if or ( get $deployment_config "limitedMemory" ) ( get $deployment_config "limitedCpu" ) }}
+            limits:
+            {{- if ( get $deployment_config "limitedMemory" ) }}
+              memory: {{ get $deployment_config "limitedMemory" }}
+            {{- end }}
+            {{- if ( get $deployment_config "limitedMemory" ) }}
+              cpu: {{ ( get $deployment_config "limitedCpu" ) }}
+            {{- end }}
+          {{ end }}
           image: {{ $image }}:{{ $image_version }}
           command:
           - /opt/swh/entrypoint.sh
