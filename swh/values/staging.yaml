@@ -595,6 +595,10 @@ scheduler:
       enabled: true
       logLevel: INFO
       period: 10
+      requestedMemory: 100Mi
+      limitedMemory: 200Mi
+      requestedCpu: 10m
+      limitedCpu: 20m
     runner-priority:
       enabled: true
       logLevel: INFO
