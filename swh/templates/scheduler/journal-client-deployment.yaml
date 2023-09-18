@@ -53,6 +53,15 @@ spec:
             requests:
               memory: {{ .Values.scheduler.journalClient.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.scheduler.journalClient.requestedCpu | default "500m" }}
+          {{- if or .Values.scheduler.journalClient.limitedMemory .Values.scheduler.journalClient.limitedCpu }}
+            limits:
+            {{- if .Values.scheduler.journalClient.limitedMemory }}
+              memory: {{ .Values.scheduler.journalClient.limitedMemory }}
+            {{- end }}
+            {{- if .Values.scheduler.journalClient.limitedCpu }}
+              cpu: {{ .Values.scheduler.journalClient.limitedCpu }}
+            {{- end }}
+          {{ end }}
           image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
           command:
           - /opt/swh/entrypoint.sh
