@@ -1,0 +1,16 @@
+{{- if .Values.podPriority.enabled }}
+{{- range $priorityClassName, $priorityConfig := .Values.podPriority.priorities -}}
+{{- $description := get $priorityConfig "description" -}}
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ $.Values.namespace }}-{{ $priorityClassName }}
+  namespace: {{ $.Values.namespace }}
+value: {{ get $priorityConfig "value" }}
+globalDefault: false
+{{- if $description }}
+description: {{ $description }}
+{{ end }}
+{{ end }}
+{{- end -}}

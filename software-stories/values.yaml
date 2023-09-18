@@ -3,7 +3,13 @@ name: software-stories
 namespace: software-stories
 # host: ingress-fqdn-to-adapt
 # ingressClassName: nginx
-priorityClassName: frontend-rpc
+# <namespace>-<priority-name>
+priorityClassName: software-stories-frontend
 
 podPriority:
   enabled: false
+  priorities:
+    frontend:
+      range: 23000-24000
+      value: 24500
+      description: Frontend services (software-stories, ...)
