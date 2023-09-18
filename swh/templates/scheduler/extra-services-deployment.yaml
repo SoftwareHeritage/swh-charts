@@ -65,7 +65,7 @@ spec:
           resources:
             requests:
               memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
-              cpu: {{ get $deployment_config "requestedMemory" | default "500m" }}
+              cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
           image: {{ $image }}:{{ $image_version }}
           command:
           - /opt/swh/entrypoint.sh
