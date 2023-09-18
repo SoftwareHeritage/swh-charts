@@ -586,6 +586,10 @@ scheduler:
   journalClient:
     enabled: true
     journalConfigurationRef: journalClientConfiguration
+    requestedMemory: 100Mi
+    limitedMemory: 200Mi
+    requestedCpu: 10m
+    limitedCpu: 20m
   extraServices:
     runner:
       enabled: true
