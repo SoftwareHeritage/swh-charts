@@ -85,6 +85,10 @@ scheduler:
   celeryConfigurationRef: fakeCeleryConfiguration
   recurrent:
     enabled: true
+    requestedMemory: 10Mi
+    limitedMemory: 20Mi
+    requestedCpu: 10m
+    limitedCpu: 20m
     schedulerPolicies:
       default:
       - policy: never_visited_oldest_update_first
@@ -95,6 +99,10 @@ scheduler:
   rpc:
     enabled: true
     schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
+    requestedMemory: 20Mi
+    limitedMemory: 40Mi
+    requestedCpu: 10m
+    limitedCpu: 20m
     replicas: 1
     gunicorn:
       threads: 1
@@ -115,20 +123,36 @@ scheduler:
   journalClient:
     enabled: true
     journalConfigurationRef: journalClientConfiguration
+    requestedMemory: 15Mi
+    limitedMemory: 30Mi
+    requestedCpu: 10m
+    limitedCpu: 20m
   extraServices:
     runner:
       enabled: true
       logLevel: INFO
       period: 100
+      requestedMemory: 5Mi
+      limitedMemory: 10Mi
+      requestedCpu: 10m
+      limitedCpu: 20m
     runner-priority:
       enabled: true
       logLevel: INFO
       period: 100
+      requestedMemory: 6Mi
+      limitedMemory: 12Mi
+      requestedCpu: 10m
+      limitedCpu: 20m
       extraConfig:
         - load-git
     listener:
       enabled: true
       logLevel: INFO
+      requestedMemory: 7Mi
+      limitedMemory: 14Mi
+      requestedCpu: 10m
+      limitedCpu: 20m
 
 loader_metadata:
   enabled: true
