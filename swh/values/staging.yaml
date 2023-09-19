@@ -112,7 +112,6 @@ listers:
     all:
       maxTasksperchild: 3
       queues:
-      - swh.lister.cgit.tasks.CGitListerTask
       - swh.lister.debian.tasks.DebianListerTask
       - swh.lister.gitea.tasks.IncrementalGiteaLister
       - swh.lister.gitea.tasks.RangeGiteaLister
@@ -138,6 +137,11 @@ listers:
         maxReplicaCount: 1
       requestedMemory: 600Mi
       requestedCpu: 200m
+    cgit:
+      queues:
+        - swh.lister.cgit.tasks.CGitListerTask
+      autoScaling:
+        maxReplicaCount: 1
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
