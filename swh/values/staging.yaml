@@ -584,7 +584,7 @@ scheduler:
       # Current internal range retrieved out of the `kubectl cluster-info dump`
       whitelistSourceRange: 192.168.130.0/24,10.42.0.0/16,10.43.0.0/16
     requestedMemory: 1024Mi
-    requestedCpu: 10m
+    requestedCpu: 50m
   updateMetrics:
     enabled: true
   journalClient:
