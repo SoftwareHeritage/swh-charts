@@ -318,6 +318,8 @@ checker_deposit:
 
 indexers:
   enabled: false
+  sentry:
+    enabled: true
   priorityClassName: frontend-rpc
   sentrySwhPackage: swh.indexer
   # schedulerConfigurationRef: remoteSchedulerConfiguration
