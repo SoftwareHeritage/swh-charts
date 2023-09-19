@@ -68,6 +68,15 @@ spec:
           requests:
             memory: {{ .Values.loader_metadata.requestedMemory | default "512Mi" }}
             cpu: {{ .Values.loader_metadata.requestedCpu | default "500m" }}
+          {{- if or .Values.loader_metadata.limitedMemory .Values.loader_metadata.limitedCpu }}
+          limits:
+            {{- if .Values.loader_metadata.limitedMemory }}
+            memory: {{ .Values.loader_metadata.limitedMemory }}
+            {{- end }}
+            {{- if .Values.loader_metadata.limitedCpu }}
+            cpu: {{ .Values.loader_metadata.limitedCpu }}
+            {{- end }}
+          {{ end }}
         lifecycle:
           preStop:
             exec:
