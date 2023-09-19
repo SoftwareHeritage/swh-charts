@@ -112,7 +112,6 @@ listers:
     all:
       maxTasksperchild: 3
       queues:
-      - swh.lister.debian.tasks.DebianListerTask
       - swh.lister.gitea.tasks.IncrementalGiteaLister
       - swh.lister.gitea.tasks.RangeGiteaLister
       - swh.lister.gitea.tasks.FullGiteaRelister
@@ -145,6 +144,11 @@ listers:
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    debian:
+      queues:
+        - swh.lister.debian.tasks.DebianListerTask
       autoScaling:
         maxReplicaCount: 1
     gnu-full:
