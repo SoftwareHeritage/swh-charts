@@ -245,13 +245,13 @@ loaders:
         minReplicaCount: 2
         maxReplicaCount: 2
     maven:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
       image: swh_loader_package_image
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 600Mi
+      requestedCpu: 500m
     mercurial:
       requestedMemory: 256Mi
       requestedCpu: 200m
