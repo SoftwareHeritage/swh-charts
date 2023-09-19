@@ -293,23 +293,23 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 800m
     rpm:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
       image: swh_loader_package_image
       queues:
         - swh.loader.package.rpm.tasks.LoadRpm
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 3072Mi
+      requestedCpu: 1000m
     svn:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      limitedMemory: 25600Mi
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 6144Mi
+      requestedCpu: 100m
+      limitedMemory: 25600Mi
 
 loader_metadata:
   enabled: true
