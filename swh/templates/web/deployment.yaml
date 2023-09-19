@@ -60,6 +60,15 @@ spec:
             requests:
               memory: {{ .Values.web.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.web.requestedCpu | default "500m" }}
+          {{- if or .Values.web.limitedMemory .Values.web.limitedCpu }}
+            limits:
+            {{- if .Values.web.limitedMemory }}
+              memory: {{ .Values.web.limitedMemory }}
+            {{- end }}
+            {{- if .Values.web.limitedCpu }}
+              cpu: {{ .Values.web.limitedCpu }}
+            {{- end }}
+          {{ end }}
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: Always
           ports:
