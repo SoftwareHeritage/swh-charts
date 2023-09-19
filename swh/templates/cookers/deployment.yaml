@@ -1,4 +1,5 @@
 {{ if .Values.cookers.enabled -}}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.cookers.sentry.enabled }}
 {{- $configurationChecksum := include (print $.Template.BasePath "/cookers/configmap.yaml") . -}}
 {{- range $cooker_type, $deployment_config := .Values.cookers.deployments -}}
 {{- $cooker_name := ( print "cooker-" $cooker_type ) -}}
@@ -67,9 +68,11 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+        {{ if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
             readOnly: true
+        {{- end }}
       containers:
       - name: cookers
         resources:
@@ -111,8 +114,10 @@ spec:
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
         {{ end }}
+        {{ if $enable_sentry }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
+        {{- end }}
         volumeMounts:
           - name: cookers-utils
             mountPath: /pre-stop.sh
@@ -148,9 +153,11 @@ spec:
           items:
           - key: "pre-stop-idempotent.sh"
             path: "pre-stop.sh"
+      {{ if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
           secretName: sentry-settings-for-celery-tasks
           optional: true
+      {{- end }}
 {{ end }}
 {{- end -}}

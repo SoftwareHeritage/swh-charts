@@ -39,6 +39,8 @@ storage_replayer:
             - "true"
 
 cookers:
+  sentry:
+    enabled: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

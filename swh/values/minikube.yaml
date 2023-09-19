@@ -184,6 +184,8 @@ checker_deposit:
 
 cookers:
   enabled: true
+  sentry:
+    enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   vault:
     host: vault.i.s.s.n
