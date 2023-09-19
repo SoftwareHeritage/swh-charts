@@ -187,11 +187,10 @@ cookers:
   sentry:
     enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  celeryConfigurationRef: fakeCeleryConfiguration
   vault:
     host: vault.i.s.s.n
     port: 5005
-  amqp:
-     host: scheduler0.i.s.s
   deployments:
     simple:
       queues:

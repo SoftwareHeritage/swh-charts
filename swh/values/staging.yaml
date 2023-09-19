@@ -256,11 +256,10 @@ listers:
 cookers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
+  celeryConfigurationRef: readWriteCeleryConfiguration
   vault:
     host: vault.internal.staging.swh.network
     port: 5005
-  amqp:
-     host: scheduler0.internal.staging.swh.network
   deployments:
     simple:
       queues:

@@ -43,20 +43,7 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-          - name: AMQP_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: common-secrets
-                key: rabbitmq-amqp-username
-                # 'name' secret must exist & include that ^ key
-                optional: false
-          - name: AMQP_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: common-secrets
-                key: rabbitmq-amqp-password
-                # 'name' secret must exist & include that ^ key
-                optional: false
+{{ include "celery.secretsEnvironment" (list $.Values $.Values.cookers.celeryConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
