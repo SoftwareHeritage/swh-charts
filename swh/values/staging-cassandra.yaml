@@ -139,6 +139,8 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
+      requestedCpu: 350m
+      requestedMemory: 150Mi
     directory:
       requestedMemory: 768Mi
       requestedCpu: 1000m
