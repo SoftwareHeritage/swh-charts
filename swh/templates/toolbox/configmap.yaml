@@ -9,11 +9,12 @@ metadata:
   namespace: {{ $namespace }}
 data:
   config.yml.template: |
-    {{ if ( eq "scheduler" $service_type ) }}
-{{ include "swh.scheduler.postgresql" (list $.Values $deployment_config) | indent 4 }}
-    {{ else if ( eq "storage" $service_type ) }}
+    {{- if ( eq "scheduler" $service_type ) }}
+{{ include "swh.scheduler.postgresql" (list $.Values $deployment_config.schedulerConfigurationRef) | indent 4 }}
+{{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | indent 4 }}
+    {{- else if ( eq "storage" $service_type ) }}
 {{ include "swh.storage.postgresql" (list $.Values $deployment_config list) | indent 4 }}
-    {{ else }}
+    {{- else }}
     {{ fail (print "Configuration " $service_type " unsupported.") }}
     {{- end -}}
 

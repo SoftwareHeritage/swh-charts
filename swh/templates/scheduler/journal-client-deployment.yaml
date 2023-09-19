@@ -41,6 +41,7 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          env:
 {{ include "celery.secretsEnvironment" (list .Values .Values.scheduler.celeryConfigurationRef) | indent 10 }}
           volumeMounts:
           - name: configuration

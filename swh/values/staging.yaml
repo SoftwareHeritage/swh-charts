@@ -553,7 +553,9 @@ storage_replayer:
 toolbox:
   enabled: true
   configs:
-    scheduler: postgresqlSchedulerConfiguration
+    scheduler:
+      schedulerConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: readWriteCeleryConfiguration
     storage: postgresqlStorageConfiguration
 
 scheduler:

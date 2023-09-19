@@ -31,7 +31,7 @@ spec:
       priorityClassName: {{ $.Values.toolbox.priorityClassName }}
       {{ end }}
       initContainers:
-{{ range $service_type, $deployment_config := .Values.toolbox.configs }}
+{{- range $service_type, $deployment_config := .Values.toolbox.configs }}
         - name: prepare-configuration-{{ $service_type }}
           image: debian:bullseye
           imagePullPolicy: Always
@@ -40,13 +40,20 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-{{ $service_type }}.yml
+          env:
+          {{- if eq $service_type "scheduler" }}
+          {{- range $k, $v := $deployment_config }}
+{{ include "celery.secretsEnvironment" (list $.Values $v) | indent 10 }}
+          {{- end }}
+          {{- else }}
 {{ include "celery.secretsEnvironment" (list $.Values $deployment_config) | indent 10 }}
+          {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-{{ $service_type }}-template
             mountPath: /etc/swh/configuration-template
-{{ end }}
+{{- end }}
       containers:
       - name: swh-toolbox
         image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}

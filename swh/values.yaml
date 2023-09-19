@@ -477,7 +477,9 @@ toolbox:
   # requestedMemory: 256Mi
   # requestedCpu: 250m
   # configs:
-  #   scheduler: postgresqlSchedulerConfiguration
+  #   scheduler:
+  #      schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  #      celeryConfigurationRef: readWriteCeleryConfiguration
   #   storage: postgresqlStorageConfiguration
 
 scheduler:

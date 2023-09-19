@@ -303,8 +303,7 @@ env:
   {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
   {{- $secrets := get $celeryConfiguration "secrets" -}}
   {{- if $secrets -}}
-env:
-    {{- range $secretName, $secretsConfig := $secrets }}
+    {{- range $secretName, $secretsConfig := $secrets -}}
 - name: {{ $secretName }}
   valueFrom:
     secretKeyRef:

@@ -74,7 +74,9 @@ web:
 toolbox:
   enabled: true
   configs:
-    scheduler: fakePostgresqlSchedulerConfiguration
+    scheduler:
+      schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
+      celeryConfigurationRef: fakeCeleryConfiguration
     storage: fakePostgresqlSchedulerConfiguration
 
 fakeCeleryConfiguration:
