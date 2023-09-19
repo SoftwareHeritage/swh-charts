@@ -11,14 +11,19 @@ remoteStorage:
 myStorageConfiguration:
   storageConfigurationRef: remoteStorage
 
+myCeleryConfiguration:
+  host: scheduler.test.org
+  port: 5672
+  user: fakeuser
+  pass: fakepass
+
 cookers:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
+  celeryConfigurationRef: myCeleryConfiguration
   vault:
     host: vault.test.org
     port: 5005
-  amqp:
-     host: scheduler.test.org
   deployments:
     testsimple:
       queues:
