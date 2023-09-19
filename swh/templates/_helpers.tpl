@@ -136,19 +136,24 @@ deposit:
 Generate the configuration for a postgresql scheduler
 */}}
 {{- define "swh.scheduler.postgresql" -}}
+{{ include "swh.postgresql" (append . "scheduler") }}
+{{- end -}}
+
+{{/* Generate the yaml for a postgresql configuration */}}
+{{- define "swh.postgresql" -}}
 {{- $Values := index . 0 -}}
-{{- $schedulerConfigurationRef := index . 1 -}}
-{{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
-{{- $host := required (print "The host property is mandatory in " $schedulerConfigurationRef)
-                    (get $schedulerConfiguration "host") -}}
-{{- $port := required (print "The port property is mandatory in " $schedulerConfigurationRef)
-                    (get $schedulerConfiguration "port") -}}
-{{- $user := required (print "The user property is mandatory in " $schedulerConfigurationRef)
-                    (get $schedulerConfiguration "user") -}}
-{{- $password := required (print "The password property is mandatory in " $schedulerConfigurationRef)
-                    (get $schedulerConfiguration "password") -}}
-{{- $db := required (print "The db property is mandatory in " $schedulerConfigurationRef)
-                    (get $schedulerConfiguration "db") -}}
+{{- $configurationRef := index . 1 -}}
+{{- $configuration := get $Values $configurationRef -}}
+{{- $host := required (print "_helpers.tpl:swh.postgresql: The <host> property is mandatory in " $configurationRef)
+                    (get $configuration "host") -}}
+{{- $port := required (print "_helpers.tpl:swh.postgresql: The <port> property is mandatory in " $configurationRef)
+                    (get $configuration "port") -}}
+{{- $user := required (print "_helpers.tpl:swh.postgresql: The <user> property is mandatory in " $configurationRef)
+                    (get $configuration "user") -}}
+{{- $password := required (print "_helpers.tpl:swh.postgresql: The <password> property is mandatory in " $configurationRef)
+                    (get $configuration "password") -}}
+{{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " $configurationRef)
+                    (get $configuration "db") -}}
 scheduler:
   cls: postgresql
   db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
