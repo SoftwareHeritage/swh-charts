@@ -31,7 +31,7 @@ otlpCollector:
   enabled: true
   debug: false
   resources:
-    cpu: 256m
+    cpu: 100m
     memory: 2Gi
     batch: 10
     timeout: 10s
