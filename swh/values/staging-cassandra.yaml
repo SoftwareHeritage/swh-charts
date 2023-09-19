@@ -78,27 +78,24 @@ loaders:
   deployments:
     add-forge-now:
       image: swh_loader_git_image
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      limitedCpu: 1000m
-      limitedMemory: 10240Mi
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 3
+      requestedMemory: 1024Mi
+      requestedCpu: 200m
     add-forge-now-slow:
       image: swh_loader_git_image
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      limitedMemory: 25600Mi
       queues:
         - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
+      requestedMemory: 1024Mi
+      requestedCpu: 200m
     archive:
       requestedMemory: 256Mi
       requestedCpu: 200m
