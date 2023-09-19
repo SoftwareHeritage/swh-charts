@@ -282,6 +282,10 @@ checker_deposit:
     host: scheduler0.internal.staging.swh.network
   autoScaling:
     maxReplicaCount: 2
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  limitedMemory: 1024Mi
+  limitedCpu: 1000m
 
 indexers:
   enabled: true
