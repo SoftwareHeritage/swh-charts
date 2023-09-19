@@ -76,6 +76,15 @@ spec:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
             cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          {{- if or ( get $deployment_config "limitedCpu" ) ( get $deployment_config "limitedMemory" ) }}
+          limits:
+            {{- if ( get $deployment_config "limitedMemory" ) }}
+            memory: {{ get $deployment_config "limitedMemory" }}
+            {{- end }}
+            {{- if ( get $deployment_config "limitedCpu" ) }}
+            cpu: {{ get $deployment_config "limitedCpu" }}
+            {{- end }}
+          {{ end }}
         image: {{ $.Values.swh_vault_cookers_image }}:{{ $.Values.swh_vault_cookers_image_version }}
         imagePullPolicy: Always
         command:
