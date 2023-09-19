@@ -414,8 +414,8 @@ storage_replayer:
       objects:
         - content
       privileged: true
-      requestedCpu: 350m
-      requestedMemory: 300Mi
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     directory:
@@ -423,8 +423,8 @@ storage_replayer:
         - directory
       batchSize: 250
       privileged: true
-      requestedCpu: 350m
-      requestedMemory: 250Mi
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     extid:
@@ -434,9 +434,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 400m
-      requestedMemory: 200Mi
+      # equestedMemory: 200Mi
       #Follow up consumption
       requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     metadata:
@@ -456,9 +457,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 400m
-      requestedMemory: 200Mi
+      #requestedMemory: 200Mi
       # follow up consumption
       requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     origin:
@@ -468,9 +470,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 400m
-      requestedMemory: 200Mi
+      #requestedMemory: 200Mi
       #Follow up consumption
       requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
@@ -482,7 +485,7 @@ storage_replayer:
       #requestedCpu: 400m
       #requestedMemory: 400Mi
       #Follow up consumption
-      requestedCpu: 100m
+      requestedCpu: 50m
       requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
@@ -495,8 +498,8 @@ storage_replayer:
       #requestedCpu: 500m
       #requestedMemory: 300Mi
       #Follow up consumption
-      requestedCpu: 55m
-      requestedMemory: 200Mi
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     release:
@@ -506,9 +509,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 600m
-      requestedMemory: 300Mi
+      # requestedMemory: 300Mi
       # follow up consumption
       requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     revision:
@@ -521,7 +525,7 @@ storage_replayer:
       #requestedMemory: 750Mi
       # follow up consumption
       requestedCpu: 50m
-      requestedMemory: 400Mi
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
@@ -531,9 +535,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 300m
-      requestedMemory: 400Mi
+      #requestedMemory: 400Mi
       # follow up consumption
       requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     snapshot:
@@ -543,9 +548,10 @@ storage_replayer:
       privileged: true
       # Full replay
       #requestedCpu: 400m
-      requestedMemory: 250Mi
+      #requestedMemory: 250Mi
       # follow up consumption
-      requestedCpu: 80m
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
 
