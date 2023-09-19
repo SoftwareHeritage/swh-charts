@@ -219,10 +219,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      limitedCpu: 1000m
-      limitedMemory: 10240Mi
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
@@ -241,6 +237,8 @@ loaders:
         queueThreshold: 1
         minReplicaCount: 2
         maxReplicaCount: 2
+      requestedMemory: 1024Mi
+      requestedCpu: 100m
     maven:
       image: swh_loader_package_image
       queues:
