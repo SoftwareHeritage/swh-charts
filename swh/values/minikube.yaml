@@ -169,6 +169,8 @@ indexers:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  sentry:
+    enabled: false
   indexer_storage:
     host: storage1.i.s.s.n
     port: 7005

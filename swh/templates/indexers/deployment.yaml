@@ -87,7 +87,7 @@ spec:
           value: /etc/swh/config.yml
         - name: SWH_INDEXER_TYPE
           value: {{ get $deployment_config "indexer_type" }}
-        {{- if $.Values.sentry.enabled }}
+        {{- if $.Values.indexers.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
