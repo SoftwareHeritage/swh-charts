@@ -2,6 +2,7 @@
 {{ if $deployment_config.enabled -}}
 {{ if $deployment_config.autoScaling }}
 {{- $autoscalingConfig := $deployment_config.autoScaling -}}
+{{ if $autoscalingConfig }}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
@@ -53,5 +54,6 @@ spec:
                                      # use existing environment variables to read
                                      # configuration from: See details in "Parameter
                                      # list" section hostFromEnv: RABBITMQ_HOST%
+{{ end }}
 {{ end }}
 {{- end -}}
