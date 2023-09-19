@@ -109,14 +109,6 @@ listers:
      host: scheduler0.internal.staging.swh.network
      port: 5672
   deployments:
-    all:
-      maxTasksperchild: 3
-      queues:
-      - swh.lister.phabricator.tasks.FullPhabricatorLister
-      autoScaling:
-        maxReplicaCount: 2
-      requestedCpu: 500m
-      requestedMemory: 512Mi
     bower:
       queues:
       - swh.lister.bower.tasks.BowerListerTask
@@ -226,6 +218,11 @@ listers:
     pagure:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    phabricator:
+      queues:
+      - swh.lister.phabricator.tasks.FullPhabricatorLister
       autoScaling:
         maxReplicaCount: 1
     pubdev:
