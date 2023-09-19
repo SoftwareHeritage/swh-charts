@@ -36,6 +36,15 @@ spec:
             requests:
               memory: {{ .Values.graphql.requestedMemory | default "150Mi" }}
               cpu: {{ .Values.graphql.requestedCpu | default "50m" }}
+          {{- if or .Values.graphql.limitedMemory .Values.graphql.limitedCpu }}
+            limits:
+            {{- if .Values.graphql.limitedMemory }}
+              memory: {{ .Values.graphql.limitedMemory }}
+            {{- end }}
+            {{- if .Values.graphql.limitedCpu }}
+              cpu: {{ .Values.graphql.limitedCpu }}
+            {{- end }}
+          {{ end }}
           ports:
             - containerPort: 5013
               name: rpc
