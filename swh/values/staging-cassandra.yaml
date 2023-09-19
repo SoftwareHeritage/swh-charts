@@ -153,8 +153,6 @@ loaders:
       image: swh_loader_package_image
     git:
       priorityClassName: low-workload
-      requestedMemory: 512Mi
-      requestedCpu: 200m
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
         - swh.loader.git.tasks.LoadDiskGitRepository
@@ -163,6 +161,8 @@ loaders:
         maxReplicaCount: 1
         minReplicaCount: 1
         stopWhenNoActivity: false
+      requestedMemory: 768 Mi
+      requestedCpu: 100m
     git-checkout:
       requestedMemory: 768Mi
       requestedCpu: 1000m
