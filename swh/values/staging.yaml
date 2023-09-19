@@ -625,3 +625,6 @@ scheduler:
       limitedMemory: 200Mi
       requestedCpu: 10m
       limitedCpu: 20m
+
+podPriority:
+  enabled: true
