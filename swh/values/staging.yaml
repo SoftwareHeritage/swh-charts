@@ -112,9 +112,6 @@ listers:
     all:
       maxTasksperchild: 3
       queues:
-      - swh.lister.gitlab.tasks.IncrementalGitLabLister
-      - swh.lister.gitlab.tasks.RangeGitLabLister
-      - swh.lister.gitlab.tasks.FullGitLabRelister
       - swh.lister.phabricator.tasks.FullPhabricatorLister
       autoScaling:
         maxReplicaCount: 2
@@ -153,6 +150,13 @@ listers:
       - swh.lister.gitea.tasks.IncrementalGiteaLister
       - swh.lister.gitea.tasks.RangeGiteaLister
       - swh.lister.gitea.tasks.FullGiteaRelister
+      autoScaling:
+        maxReplicaCount: 1
+    gitlab:
+      queues:
+      - swh.lister.gitlab.tasks.IncrementalGitLabLister
+      - swh.lister.gitlab.tasks.RangeGitLabLister
+      - swh.lister.gitlab.tasks.FullGitLabRelister
       autoScaling:
         maxReplicaCount: 1
     gnu-full:
