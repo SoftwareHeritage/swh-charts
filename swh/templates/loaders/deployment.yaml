@@ -1,4 +1,5 @@
 {{ if .Values.loaders.enabled -}}
+{{- $enable_sentry := and $.Values.sentry.enabled $.values.loaders.sentry.enabled }}
 {{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
@@ -102,9 +103,11 @@ spec:
           - name: metadata-fetcher-credentials
             mountPath: /etc/credentials/metadata-fetcher
             readOnly: true
+        {{ if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
             readOnly: true
+        {{- end }}
       containers:
       - name: loaders
         {{ if $local_container_image -}}
@@ -147,10 +150,12 @@ spec:
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
         {{ end }}
+        {{ if $enable_sentry }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
           value: {{ get $deployment_config "sentryDisableLoggingEvents" | default "yes" | quote }}
+        {{- end }}
         volumeMounts:
           - name: loader-utils
             mountPath: /pre-stop.sh
@@ -194,10 +199,11 @@ spec:
         secret:
           secretName: metadata-fetcher-credentials
           optional: true
+      {{ if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
           secretName: sentry-settings-for-celery-tasks
           optional: true
-
+      {{- end }}
 {{ end }}
 {{- end -}}

@@ -1,5 +1,5 @@
 {{ if .Values.loaders.enabled -}}
-
+{{- $enable_sentry := and $.Values.sentry.enabled $.values.loaders.sentry.enabled }}
 {{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
 {{ $loader_name := ( print "loader-" $loader_type ) }}
 {{ $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
@@ -27,8 +27,10 @@ data:
     {{- range $queue := get $deployment_config "queues" }}
       - {{ $queue }}
     {{- end }}
+    {{ if $enable_sentry }}
       sentry_settings_for_celery_tasks:
         __sentry-settings-for-celery-tasks__
+    {{- end }}
     metadata_fetcher_credentials:
       __metadata-fetcher-credentials__
   init-container-entrypoint.sh: |
@@ -43,6 +45,7 @@ data:
     eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
       > $CONFIG_FILE
 
+    {{ if $enable_sentry }}
     SENTRY_SETTINGS_PATH=/etc/credentials/sentry-settings/sentry_settings_for_celery_tasks
     if [ -f $SENTRY_SETTINGS_PATH ]; then
       awk "/__sentry-settings-for-celery-tasks__/{system(\"sed 's/^/    /g' $SENTRY_SETTINGS_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
@@ -50,6 +53,7 @@ data:
     else
       sed -i 's/__sentry-settings-for-celery-tasks__//g' $CONFIG_FILE
     fi
+    {{- end }}
 
     CREDS_LISTER_PATH=/etc/credentials/metadata-fetcher/credentials
     if [ -f $CREDS_LISTER_PATH ]; then
