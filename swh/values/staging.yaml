@@ -377,6 +377,8 @@ graphql:
     client: swh-web
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
+  requestedCpu: 25m
+  requestedMemory: 150Mi
 
 memcached:
   enabled: true
