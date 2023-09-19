@@ -209,8 +209,6 @@ tmpEphemeralStorage:
 
 storage_replayer:
   enabled: false
-  sentry:
-    enabled: true
   priorityClassName: swh-background-workload
   maxMessagesBytes: "524288000"
   journalBrokers:
@@ -311,8 +309,6 @@ cookers:
 
 checker_deposit:
   enabled: false
-  sentry:
-    enabled: true
   priorityClassName: swh-frontend-rpc-workload
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
@@ -320,8 +316,6 @@ checker_deposit:
 
 indexers:
   enabled: false
-  sentry:
-    enabled: true
   priorityClassName: frontend-rpc
   sentrySwhPackage: swh.indexer
   # schedulerConfigurationRef: remoteSchedulerConfiguration
