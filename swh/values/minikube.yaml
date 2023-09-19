@@ -63,9 +63,13 @@ storage_replayer:
     content:
       objects:
         - content
+  requestedMemory: 50Mi
+  requestedCpu: 50m
 
 web:
   enabled: true
+  requestedMemory: 50Mi
+  requestedCpu: 50m
 
 toolbox:
   enabled: true
@@ -125,8 +129,8 @@ scheduler:
     journalConfigurationRef: journalClientConfiguration
     requestedMemory: 15Mi
     limitedMemory: 30Mi
-    requestedCpu: 10m
-    limitedCpu: 20m
+    requestedCpu: 50m
+    limitedCpu: 100m
   extraServices:
     runner:
       enabled: true
@@ -216,6 +220,8 @@ indexers:
           name: swh-metadata-detector
           version: 0.0.2
           configuration: {}
+      requestedMemory: 50Mi
+      requestedCpu: 50m
 
 graphql:
   enabled: true
@@ -235,6 +241,8 @@ graphql:
   auth:
     enabled: false
   maxRawContentSize: 10000
+  requestedMemory: 50Mi
+  requestedCpu: 50m
 
 listers:
   enabled: true
@@ -247,6 +255,8 @@ listers:
     cgit:
       queues:
       - swh.lister.cgit.tasks.CGitListerTask
+      requestedMemory: 50Mi
+      requestedCpu: 50m
 
 loaders:
   enabled: true
@@ -259,10 +269,14 @@ loaders:
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
+      requestedMemory: 50Mi
+      requestedCpu: 50m
     pypi:
       image: swh_loader_package_image
       queues:
         - swh.loader.pypi.tasks.LoadPyPI
+      requestedMemory: 50Mi
+      requestedCpu: 50m
 
 memcached:
   enabled: true
