@@ -119,6 +119,7 @@ spec:
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
         {{ end }}
+        {{- if and .Values.sentry.enabled .Values.checker_deposit.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
@@ -130,6 +131,7 @@ spec:
               key: checker-deposit-sentry-dsn
               # 'name' secret must exist & include key "host"
               optional: false
+        {{ end }}
         volumeMounts:
           - name: checker-deposit-utils
             mountPath: /pre-stop.sh

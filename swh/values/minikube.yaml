@@ -1,5 +1,5 @@
 sentry:
-  enabled: true
+  enabled: false
   environment: minikube
 
 statsd_exporter:

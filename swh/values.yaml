@@ -311,6 +311,8 @@ cookers:
 
 checker_deposit:
   enabled: false
+  sentry:
+    enabled: true
   priorityClassName: swh-frontend-rpc-workload
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
