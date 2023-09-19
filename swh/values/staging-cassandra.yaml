@@ -164,15 +164,13 @@ loaders:
       requestedMemory: 768 Mi
       requestedCpu: 100m
     git-checkout:
-      requestedMemory: 768Mi
-      requestedCpu: 1000m
-      limitedMemory: 1024Mi
-      limitedCpu: 1500m
+      image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
       autoScaling:
         maxReplicaCount: 1
-      image: swh_loader_git_image
+      requestedMemory: 256Mi
+      requestedCpu: 500m
     hg-checkout:
       requestedMemory: 768Mi
       requestedCpu: 1000m
