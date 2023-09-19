@@ -253,13 +253,13 @@ loaders:
       requestedMemory: 600Mi
       requestedCpu: 500m
     mercurial:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 124Mi
+      requestedCpu: 500m
     npm:
       requestedMemory: 256Mi
       requestedCpu: 200m
