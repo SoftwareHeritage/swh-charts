@@ -269,13 +269,13 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     opam:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
       image: swh_loader_package_image
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 1024Mi
+      requestedCpu: 1000m
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
