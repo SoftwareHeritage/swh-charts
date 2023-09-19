@@ -3,6 +3,7 @@
 {{ if get $deployment_config "autoScaling" }}
 {{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
 {{- $cooker_name := ( print "cooker-" $cooker_type ) -}}
+{{ if $autoscalingConfig }}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
@@ -56,6 +57,7 @@ spec:
                                      # configuration from: See details in "Parameter
                                      # list" section hostFromEnv: RABBITMQ_HOST%
     {{- end }}
+{{ end }}
 {{ end }}
 {{ end }}
 {{- end -}}
