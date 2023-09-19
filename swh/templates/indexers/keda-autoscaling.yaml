@@ -24,7 +24,7 @@ spec:
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
     authenticationRef:
-      name: keda-indexers-kafka-secrets
+      name: keda-indexers-trigger-authentication-{{ $indexer_type }}
 {{ end }}
 {{ end }}
 {{- end -}}
