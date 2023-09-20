@@ -1,4 +1,5 @@
 {{ if .Values.listers.enabled -}}
+{{- $enable_sentry := and .Values.sentry.enabled .values.listers.sentry.enabled }}
 {{- $configurationChecksum := include (print $.Template.BasePath "/listers/configmap.yaml") . -}}
 {{- range $lister_type, $deployment_config := .Values.listers.deployments -}}
 {{- $lister_name := ( print "lister-" $lister_type ) -}}
@@ -70,9 +71,11 @@ spec:
           - name: lister-credentials-secrets
             mountPath: /etc/credentials/listers
             readOnly: true
+        {{ if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
             readOnly: true
+        {{- end }}
       containers:
       - name: listers
         resources:
@@ -114,8 +117,12 @@ spec:
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
         {{ end }}
+        {{ if $enable_sentry }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
+        - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+          value: {{ get $deployment_config "sentryDisableLoggingEvents" | default "yes" | quote }}
+        {{- end }}
         volumeMounts:
           - name: lister-utils
             mountPath: /pre-stop.sh
@@ -155,9 +162,11 @@ spec:
         secret:
           secretName: lister-credentials-secrets
           optional: true
+      {{ if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
           secretName: sentry-settings-for-celery-tasks
           optional: true
+      {{- end }}
 {{ end }}
 {{- end -}}

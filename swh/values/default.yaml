@@ -89,6 +89,8 @@ loaders:
             - "true"
 
 listers:
+  sentry:
+    enabled: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
