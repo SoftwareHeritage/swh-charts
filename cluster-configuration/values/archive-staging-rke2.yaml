@@ -21,6 +21,7 @@ ingressNginx:
   requestedMemory: 200Mi
   config:
     worker-processes: 2
+  replicaCount: 2
 
 certManager:
   enabled: true

@@ -20,6 +20,7 @@ spec:
       values: |
         revisionHistoryLimit: 3
         controller:
+          replicaCount: {{ .Values.ingressNginx.replicaCount | default 1}}
           watchIngressWithoutClass: {{ .Values.ingressNginx.watchIngressWithoutClass | default "false" }}
           service:
             externalTrafficPolicy: Local
