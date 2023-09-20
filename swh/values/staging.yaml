@@ -273,10 +273,9 @@ cookers:
 checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
+  celeryConfigurationRef: readWriteCeleryConfiguration
   deposit:
     host: deposit-rp.internal.staging.swh.network
-  amqp:
-    host: scheduler0.internal.staging.swh.network
   autoScaling:
     maxReplicaCount: 2
   requestedMemory: 100Mi

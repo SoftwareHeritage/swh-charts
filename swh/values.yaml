@@ -316,6 +316,7 @@ checker_deposit:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
+  # celeryConfigurationRef: readWriteCeleryConfiguration
 
 indexers:
   enabled: false
@@ -335,7 +336,7 @@ listers:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # schedulerConfigurationRef: defaultSchedulerConfiguration
-  # celeryConfigurationRef: defaultCeleryConfiguration
+  # celeryConfigurationRef: readWriteCeleryConfiguration
 
 storage:
   enabled: false

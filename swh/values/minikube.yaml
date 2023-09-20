@@ -177,10 +177,9 @@ loader_metadata:
 checker_deposit:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  celeryConfigurationRef: fakeCeleryConfiguration
   deposit:
     host: deposit-rp.i.s.s.n
-  amqp:
-    host: scheduler0.i.s.s.n
 
 cookers:
   enabled: true
