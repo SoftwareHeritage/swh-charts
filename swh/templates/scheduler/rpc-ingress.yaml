@@ -7,6 +7,8 @@ metadata:
   {{- if .Values.scheduler.rpc.ingress.whitelistSourceRange }}
   annotations:
     nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.scheduler.rpc.ingress.whitelistSourceRange }}
+{{ toYaml .Values.scheduler.rpc.ingress.extraAnnotations | indent 4 }}
+
   {{- end }}
 spec:
   {{- if .Values.scheduler.rpc.ingress.className }}

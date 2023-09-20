@@ -552,6 +552,12 @@ scheduler:
       # mandatory if ingress is enabled
       # the hostname on which the storage must be reachable
       # host: myscheduler.localdomain
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+        nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+        nginx.ingress.kubernetes.io/proxy-body-size: "4G"
   updateMetrics:
     enabled: false
     # It seems to be source of sync issues so deactivated (commented) for now. See [1]
