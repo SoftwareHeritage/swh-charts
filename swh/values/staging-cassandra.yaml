@@ -72,7 +72,7 @@ remoteSchedulerConfiguration:
 readWriteCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
-  user: swhdev
+  user: swhconsumer
   pass: ${AMQP_PASSWORD}
   secrets:
     AMQP_PASSWORD:

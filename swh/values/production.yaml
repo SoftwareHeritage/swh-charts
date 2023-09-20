@@ -36,7 +36,7 @@ remoteROStorageConfiguration:
 readWriteCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
   port: 5672
-  user: swhdev
+  user: swhconsumer
   pass: ${AMQP_PASSWORD}
   secrets:
     AMQP_PASSWORD:
