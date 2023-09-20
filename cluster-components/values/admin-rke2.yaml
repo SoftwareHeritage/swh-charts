@@ -12,3 +12,6 @@ alertmanagerConfig:
 
 blackboxExporter:
   enabled: true
+
+podPriority:
+  enabled: true
