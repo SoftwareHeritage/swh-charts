@@ -323,7 +323,7 @@ env:
   {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
   {{- $secrets := get $celeryConfiguration "secrets" -}}
   {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets -}}
+    {{- range $secretName, $secretsConfig := $secrets }}
 - name: {{ $secretName }}
   valueFrom:
     secretKeyRef:
@@ -342,7 +342,7 @@ env:
   {{- $depositConfiguration := required (print "Deposit definition " $depositDefinitionRef " not found") (get $Values $depositDefinitionRef) -}}
   {{- $secrets := get $depositConfiguration "secrets" -}}
   {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets -}}
+    {{- range $secretName, $secretsConfig := $secrets }}
 - name: {{ $secretName }}
   valueFrom:
     secretKeyRef:
