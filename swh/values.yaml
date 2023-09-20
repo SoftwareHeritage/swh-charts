@@ -285,6 +285,7 @@ loaders:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
+  # celeryConfigurationRef: readWriteCeleryConfiguration
   deployments:
   # Example of deployments
     # git:

@@ -20,8 +20,7 @@ data:
       {{- end }}
     {{- end }}
 
-    celery:
-      task_broker: amqp://${AMQP_USERNAME}:${AMQP_PASSWORD}@{{ $.Values.loaders.amqp.host }}:{{ $.Values.loaders.amqp.port }}/
+{{ include "celery.configuration" (list $.Values $.Values.loaders.celeryConfigurationRef) | indent 4 }}
       task_acks_late: {{ get $deployment_config "ackLate" | default false }}
       task_queues:
     {{- range $queue := get $deployment_config "queues" }}

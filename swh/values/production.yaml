@@ -33,6 +33,10 @@ remoteROStorageConfiguration:
   # TODO: use a true read-only storage
   storageConfigurationRef: saamStorageConfiguration
 
+readWriteCeleryConfiguration:
+  host: rabbitmq.internal.softwareheritage.org
+  port: 5672
+
 graphql:
   enabled: true
   replicas: 2
@@ -124,8 +128,7 @@ listers:
 loaders:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
-  amqp:
-    host: rabbitmq.internal.softwareheritage.org
+  celeryConfigurationRef: readWriteCeleryConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
