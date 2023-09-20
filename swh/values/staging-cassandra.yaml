@@ -79,10 +79,23 @@ readWriteCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: read-write
 
+depositConfiguration:
+  host: deposit-rp.internal.staging.swh.network
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USER:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
+
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   celeryConfigurationRef: readWriteCeleryConfiguration
+  depositConfigurationRef: depositConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
