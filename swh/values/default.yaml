@@ -1,5 +1,8 @@
 namespace: swh
 
+sentry:
+  enabled: true
+
 tmpEphemeralStorage:
   claimTemplate:
     ephemeral:
