@@ -5,13 +5,21 @@ remoteStorage:
 myStorageConfiguration:
   storageConfigurationRef: remoteStorage
 
+myCeleryConfiguration:
+  host: scheduler.example.org
+  port: 5762
+  user: fakeguest
+  pass: fakeguest
+
+myDepositConfiguration:
+  host: deposit.example.org
+  user: fakeuser
+  pass: fakepass
 
 checker_deposit:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
-  deposit:
-    host: deposit.example.org
-  amqp:
-    host: scheduler.example.org
+  celeryConfigurationRef: myCeleryConfiguration
+  depositConfigurationRef: myDepositConfiguration
   autoScaling:
     maxReplicaCount: 2
