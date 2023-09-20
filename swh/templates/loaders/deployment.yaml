@@ -1,5 +1,5 @@
 {{ if .Values.loaders.enabled -}}
-{{- $enable_sentry := and $.Values.sentry.enabled $.values.loaders.sentry.enabled }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.loaders.sentry.enabled }}
 {{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}

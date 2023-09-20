@@ -1,5 +1,5 @@
 {{ if .Values.loaders.enabled -}}
-{{- $enable_sentry := and $.Values.sentry.enabled $.values.loaders.sentry.enabled }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.loaders.sentry.enabled }}
 {{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
 {{ $loader_name := ( print "loader-" $loader_type ) }}
 {{ $use_json_logger := get $deployment_config "useJsonLogger" | default true }}

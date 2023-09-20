@@ -1,5 +1,5 @@
 {{ if .Values.listers.enabled -}}
-{{- $enable_sentry := and $.Values.sentry.enabled $.values.listers.sentry.enabled }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.listers.sentry.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
