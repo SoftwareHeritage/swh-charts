@@ -5,7 +5,8 @@ kind: CronJob
 metadata:
   name: scheduler-update-metrics-cronjob
 spec:
-  schedule: {{ .Values.scheduler.updateMetrics.cron | default "0/10 * * * *" | quote}}
+  # By default, every 4h at midnight
+  schedule: {{ .Values.scheduler.updateMetrics.cron | default "0 */4 * * *" | quote}}
   jobTemplate:
     spec:
       {{- if .Values.scheduler.updateMetrics.concurrencyPolicy }}
