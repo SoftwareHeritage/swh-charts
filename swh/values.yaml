@@ -564,7 +564,7 @@ scheduler:
     # for possibly values.
     # [1] # https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#concurrency-policy
     # concurrencyPolicy: Forbid
-    cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
+    # cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
   journalClient:
     enabled: false
     # journalConfigurationRef: journalClientConfiguration
