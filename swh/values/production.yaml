@@ -320,7 +320,7 @@ scheduler:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: readWriteCeleryConfiguration
   recurrent:
-    enabled: false
+    enabled: true
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
@@ -337,17 +337,17 @@ scheduler:
       # Current internal range retrieved out of the `kubectl cluster-info dump`
       whitelistSourceRange: 192.168.100.0/24,10.42.0.0/16,10.43.0.0/16
   updateMetrics:
-    enabled: false
+    enabled: true
   journalClient:
-    enabled: false
+    enabled: true
     journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
     runner-priority:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
       extraConfig:
@@ -358,5 +358,5 @@ scheduler:
         - load-archive-files
         - load-hg
     listener:
-      enabled: false
+      enabled: true
       logLevel: INFO
