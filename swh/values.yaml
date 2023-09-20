@@ -352,7 +352,7 @@ listers:
 
 storage:
   enabled: false
-  priorityClassName: frontend-rpc
+  priorityClassName: swh-frontend-rpc
   logLevel: INFO
 # Don't configure the replicas if autoscaling is configured
 # and vice-versa
