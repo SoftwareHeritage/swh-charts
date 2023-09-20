@@ -60,8 +60,8 @@ spec:
           imagePullPolicy: Always
           env:
 {{ include "celery.secretsEnvironment" (list $.Values $.Values.loaders.celeryConfigurationRef) | indent 10 }}
-          {{ if ( contains "deposit" $loader_name ) -}}
-{{ include "deposit.secretsEnvironment" (list $.Values $.Values.loaders.celeryConfigurationRef) | indent 10 }}
+          {{ if ( eq "deposit" $loader_name ) -}}
+{{ include "deposit.secretsEnvironment" (list $.Values $.Values.loaders.depositConfigurationRef) | indent 10 }}
           {{ end }}
           command:
             - /entrypoint.sh
