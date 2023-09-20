@@ -36,6 +36,12 @@ remoteROStorageConfiguration:
 readWriteCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
   port: 5672
+  user: swhdev
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: read-write
 
 graphql:
   enabled: true
@@ -70,8 +76,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  amqp:
-     host: rabbitmq.internal.softwareheritage.org
+  celeryConfigurationRef: readWriteCeleryConfiguration
   deployments:
     bower:
       queues:

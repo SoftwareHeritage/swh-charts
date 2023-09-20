@@ -251,9 +251,7 @@ listers:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
-  amqp:
-     host: scheduler0.i.i.s.n
-     port: 2765
+  celeryConfigurationRef: fakeCeleryConfiguration
   deployments:
     cgit:
       queues:

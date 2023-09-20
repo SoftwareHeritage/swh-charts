@@ -335,6 +335,7 @@ listers:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # schedulerConfigurationRef: defaultSchedulerConfiguration
+  # celeryConfigurationRef: defaultCeleryConfiguration
 
 storage:
   enabled: false

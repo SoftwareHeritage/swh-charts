@@ -105,9 +105,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  amqp:
-     host: scheduler0.internal.staging.swh.network
-     port: 5672
+  celeryConfigurationRef: readWriteCeleryConfiguration
   deployments:
     bower:
       queues:
