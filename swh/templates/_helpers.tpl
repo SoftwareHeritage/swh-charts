@@ -113,6 +113,26 @@ celery:
 {{- end -}}
 
 {{/*
+Generate the deposit configuration for checkers & loaders.
+*/}}
+{{- define "deposit.configuration" -}}
+{{- $Values := index . 0 -}}
+{{- $depositConfigurationRefKey := index . 1 -}}
+{{- $depositConfiguration := get $Values $depositConfigurationRefKey -}}
+{{- $host := required (print "_helpers.tpl:deposit.configuration: The <host> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "host") -}}
+{{- $user := required (print "_helpers.tpl:deposit.configuration: The <user> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "user") -}}
+{{- $pass := required (print "_helpers.tpl:deposit.configuration: The <pass> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "pass") -}}
+deposit:
+  url: https://{{ $host }}/1/private/
+  auth:
+    username: {{ $user }}
+    password: {{ $pass }}
+{{- end -}}
+
+{{/*
 Generate the configuration for a postgresql scheduler
 */}}
 {{- define "swh.scheduler.postgresql" -}}
@@ -302,6 +322,25 @@ env:
   {{- $celeryDefinitionRef := index . 1 -}}
   {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
   {{- $secrets := get $celeryConfiguration "secrets" -}}
+  {{- if $secrets -}}
+    {{- range $secretName, $secretsConfig := $secrets -}}
+- name: {{ $secretName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ get $secretsConfig "secretKeyRef" }}
+      key: {{ get $secretsConfig "secretKeyName" }}
+      # 'name' secret must exist & include that ^ key
+      optional: false
+      {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* Generate the celery config for celery configuration if needed */}}
+{{- define "deposit.secretsEnvironment" -}}
+  {{- $Values := index . 0 -}}
+  {{- $depositDefinitionRef := index . 1 -}}
+  {{- $depositConfiguration := required (print "Deposit definition " $depositDefinitionRef " not found") (get $Values $depositDefinitionRef) -}}
+  {{- $secrets := get $depositConfiguration "secrets" -}}
   {{- if $secrets -}}
     {{- range $secretName, $secretsConfig := $secrets -}}
 - name: {{ $secretName }}

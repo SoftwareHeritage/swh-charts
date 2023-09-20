@@ -44,6 +44,11 @@ journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
   groupId: swh.scheduler.journal_client
 
+fakeDepositConfiguration:
+  host: deposit.i.i.s.n
+  user: fakeuser
+  pass: fakepass
+
 storage:
   enabled: true
   storageConfigurationRef: fakePostgresqlStorageConfigurationRef
@@ -178,8 +183,7 @@ checker_deposit:
   enabled: true
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
-  deposit:
-    host: deposit-rp.i.s.s.n
+  depositConfigurationRef: fakeDepositConfiguration
 
 cookers:
   enabled: true

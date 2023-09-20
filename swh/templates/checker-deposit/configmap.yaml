@@ -21,11 +21,7 @@ data:
       task_queues:
       - swh.deposit.loader.tasks.ChecksDepositTsk
 
-    deposit:
-      url: https://{{ .Values.checker_deposit.deposit.host }}/1/private/
-      auth:
-        username: ${DEPOSIT_USERNAME}
-        password: ${DEPOSIT_PASSWORD}
+{{ include "deposit.configuration" (list .Values .Values.checker_deposit.depositConfigurationRef) | indent 4 }}
   init-container-entrypoint.sh: |
     #!/bin/bash
 

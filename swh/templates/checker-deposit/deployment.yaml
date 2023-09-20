@@ -40,20 +40,7 @@ spec:
           imagePullPolicy: Always
           env:
 {{ include "celery.secretsEnvironment" (list $.Values $.Values.checker_deposit.celeryConfigurationRef) | indent 10 }}
-          - name: DEPOSIT_USERNAME
-            valueFrom:
-              secretKeyRef:
-                name: common-secrets
-                key: deposit-username
-                # 'name' secret must exist & include key "host"
-                optional: false
-          - name: DEPOSIT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: common-secrets
-                key: deposit-password
-                # 'name' secret must exist & include key "host"
-                optional: false
+{{ include "deposit.secretsEnvironment" (list $.Values $.Values.checker_deposit.depositConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:

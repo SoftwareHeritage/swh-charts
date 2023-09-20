@@ -146,6 +146,18 @@ sentry:
 #       secretKeyRef: amqp-secrets
 #       secretKeyName: read-write
 
+# depositConfiguration:
+#   host:
+#   user: ${DEPOSIT_USERNAME}
+#   pass: ${DEPOSIT_PASSWORD}
+#   secrets:
+#     DEPOSIT_USER:
+#       secretKeyRef: deposit-secrets
+#       secretKeyName: read-write
+#     DEPOSIT_PASSWORD:
+#       secretKeyRef: deposit-secrets
+#       secretKeyName: read-write
+
 graphql:
   enabled: false
   priorityClassName: swh-frontend-rpc
@@ -309,7 +321,6 @@ cookers:
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # celeryConfigurationRef: readWriteCeleryConfiguration
 
-
 checker_deposit:
   enabled: false
   priorityClassName: swh-frontend-rpc-workload
@@ -317,6 +328,7 @@ checker_deposit:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # celeryConfigurationRef: readWriteCeleryConfiguration
+  depositConfigurationRef: depositConfiguration
 
 indexers:
   enabled: false
