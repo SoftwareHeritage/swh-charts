@@ -332,7 +332,7 @@ checker_deposit:
 
 indexers:
   enabled: false
-  priorityClassName: frontend-rpc
+  priorityClassName: swh-frontend-rpc
   sentrySwhPackage: swh.indexer
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # terminationGracePeriodSeconds: 3600
