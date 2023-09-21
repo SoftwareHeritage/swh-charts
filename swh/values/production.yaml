@@ -320,23 +320,7 @@ loaders:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
         maxReplicaCount: 2
-    golang:
-      image: swh_loader_package_image
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      queues:
-        - swh.loader.package.golang.tasks.LoadGolang
-      autoScaling:
-        maxReplicaCount: 4
-    pubdev:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.pubdev.tasks.LoadPubDev
-      autoScaling:
-        maxReplicaCount: 1
-    large-repository:
+    git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 800m
@@ -365,6 +349,22 @@ loaders:
                 operator: In
                 values:
                 - "true"
+    golang:
+      image: swh_loader_package_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.package.golang.tasks.LoadGolang
+      autoScaling:
+        maxReplicaCount: 4
+    pubdev:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        maxReplicaCount: 1
     save-code-now:
       requestedMemory: 2048Mi
       requestedCpu: 200m
