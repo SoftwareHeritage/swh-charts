@@ -130,14 +130,14 @@ listers:
       - swh.lister.cran.tasks.CRANListerTask
       autoScaling:
         maxReplicaCount: 1
-    gitweb:
-      queues:
-      - swh.lister.gitweb.tasks.GitwebListerTask
-      autoScaling:
-        maxReplicaCount: 1
     gitiles:
       queues:
       - swh.lister.gitiles.tasks.GitilesListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    gitweb:
+      queues:
+      - swh.lister.gitweb.tasks.GitwebListerTask
       autoScaling:
         maxReplicaCount: 1
     gogs-full:
