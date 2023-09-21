@@ -125,9 +125,26 @@ listers:
         maxReplicaCount: 1
       requestedMemory: 600Mi
       requestedCpu: 200m
+    cgit:
+      queues:
+        - swh.lister.cgit.tasks.CGitListerTask
+      autoScaling:
+        maxReplicaCount: 1
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    debian:
+      queues:
+        - swh.lister.debian.tasks.DebianListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    gitea:
+      queues:
+      - swh.lister.gitea.tasks.IncrementalGiteaLister
+      - swh.lister.gitea.tasks.RangeGiteaLister
+      - swh.lister.gitea.tasks.FullGiteaRelister
       autoScaling:
         maxReplicaCount: 1
     github-full:
@@ -157,6 +174,11 @@ listers:
       - swh.lister.gitweb.tasks.GitwebListerTask
       autoScaling:
         maxReplicaCount: 1
+    gnu-full:
+      queues:
+        - swh.lister.gnu.tasks.GNUListerTask
+      autoScaling:
+        maxReplicaCount: 1
     gogs-full:
       queues:
         - swh.lister.gogs.tasks.FullGogsRelister
@@ -166,6 +188,30 @@ listers:
       queues:
       - swh.lister.golang.tasks.FullGolangLister
       - swh.lister.golang.tasks.IncrementalGolangLister
+      autoScaling:
+        maxReplicaCount: 1
+    launchpad:
+      queues:
+      - swh.lister.launchpad.tasks.FullLaunchpadLister
+      - swh.lister.launchpad.tasks.IncrementalLaunchpadLister
+      autoScaling:
+        maxReplicaCount: 1
+    maven:
+      queues:
+      - swh.lister.maven.tasks.FullMavenLister
+      - swh.lister.maven.tasks.IncrementalMavenLister
+      autoScaling:
+        maxReplicaCount: 1
+      requestedCpu: 1000m
+      requestedMemory: 6144Mi
+    npm:
+      queues:
+      - swh.lister.npm.tasks.NpmListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    opam:
+      queues:
+      - swh.lister.opam.tasks.OpamListerTask
       autoScaling:
         maxReplicaCount: 1
     packagist:
@@ -178,9 +224,31 @@ listers:
         - swh.lister.pagure.tasks.PagureListerTask
       autoScaling:
         maxReplicaCount: 1
+    phabricator:
+      queues:
+      - swh.lister.phabricator.tasks.FullPhabricatorLister
+      autoScaling:
+        maxReplicaCount: 1
     pubdev:
       queues:
         - swh.lister.pubdev.tasks.PubDevListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    pypi:
+      queues:
+      - swh.lister.pypi.tasks.PyPIListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    rpm:
+      queues:
+        - swh.lister.rpm.tasks.FullRPMLister
+        - swh.lister.rpm.tasks.IncrementalRPMLister
+      autoScaling:
+        maxReplicaCount: 1
+    sourceforge:
+      queues:
+      - swh.lister.sourceforge.tasks.FullSourceForgeLister
+      - swh.lister.sourceforge.tasks.IncrementalSourceForgeLister
       autoScaling:
         maxReplicaCount: 1
     stagit:
