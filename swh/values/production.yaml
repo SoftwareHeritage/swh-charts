@@ -117,6 +117,14 @@ listers:
       - swh.lister.bower.tasks.BowerListerTask
       autoScaling:
         maxReplicaCount: 1
+    bitbucket:
+      queues:
+      - swh.lister.bitbucket.tasks.IncrementalBitBucketLister
+      - swh.lister.bitbucket.tasks.FullBitBucketRelister
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 600Mi
+      requestedCpu: 200m
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
