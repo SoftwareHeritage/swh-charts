@@ -298,6 +298,14 @@ loaders:
             temp_file_cutoff: 10737418240
             # 32Gib
             pack_size_bytes: 34359738368
+    archive:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.archive.tasks.LoadTarball
+      autoScaling:
+        maxReplicaCount: 4
     bzr:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -320,6 +328,14 @@ loaders:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
         maxReplicaCount: 2
+    debian:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.debian.tasks.LoadDebian
+      autoScaling:
+        maxReplicaCount: 1
     git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
@@ -357,6 +373,14 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 4
+    maven:
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.maven.tasks.LoadMaven
+      autoScaling:
+        maxReplicaCount: 4
+      requestedMemory: 600Mi
+      requestedCpu: 500m
     mercurial:
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
@@ -365,6 +389,30 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 128Mi
       requestedCpu: 500m
+    npm:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.npm.tasks.LoadNpm
+      autoScaling:
+        maxReplicaCount: 1
+    opam:
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.opam.tasks.LoadOpam
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 1024Mi
+      requestedCpu: 1000m
+    pypi:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pypi.tasks.LoadPyPI
+      autoScaling:
+        maxReplicaCount: 1
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
