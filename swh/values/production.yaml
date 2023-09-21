@@ -348,6 +348,22 @@ loaders:
         - swh.loader.package.debian.tasks.LoadDebian
       autoScaling:
         maxReplicaCount: 1
+    deposit:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.deposit.tasks.LoadDeposit
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 2
+      extraConfig:
+        deposit:
+          url: "https://deposit.softwareheritage.org/1/private"
+          auth:
+            username: "${DEPOSIT_USERNAME}"
+            password: "${DEPOSIT_PASSWORD}"
+        default_filename: archive.tar
     git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
