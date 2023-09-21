@@ -1,8 +1,8 @@
 {{ if .Values.loaders.enabled -}}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.loaders.sentry.enabled }}
-{{- $configurationChecksum := include (print $.Template.BasePath "/loaders/configmap.yaml") . -}}
 {{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{- $configurationChecksum := include "swh.loader.configmap" (dict "loader_type" $loader_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
 # if defined at the "typed" loader level
 {{- $local_container_image_key := get $deployment_config "image" }}
