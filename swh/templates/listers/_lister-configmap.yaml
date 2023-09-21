@@ -1,0 +1,104 @@
+{{- define "swh.lister.configmap" }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.listers.sentry.enabled }}
+{{- $lister_name := ( print "lister-" .lister_type ) }}
+{{/* Set useJsonLogger to false to let the logs be plain text */}}
+{{- $use_json_logger := get .deployment_config "useJsonLogger" | default true }}
+{{- $log_level := get .deployment_config "logLevel" | default "INFO" | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $lister_name }}-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+{{ include "swh.storageConfiguration" (list .Values . .Values.listers.storageConfigurationRef) | indent 4 }}
+
+{{ include "swh.schedulerConfiguration" (list .Values .Values.listers.schedulerConfigurationRef) | indent 4 }}
+
+    {{- if .deployment_config.extraConfig -}}
+      {{- range $option, $value := .deployment_config.extraConfig }}
+    {{ $option }}: {{ toYaml $value | nindent 6 }}
+      {{- end }}
+    {{- end }}
+
+{{ include "celery.configuration" (list .Values .Values.listers.celeryConfigurationRef) | indent 4 }}
+      task_acks_late: true
+      task_queues:
+    {{- range $queue := get .deployment_config "queues" }}
+      - {{ $queue }}
+    {{- end }}
+    {{ if $enable_sentry }}
+      sentry_settings_for_celery_tasks:
+        __sentry-settings-for-celery-tasks__
+    {{- end }}
+    credentials:
+      __lister-credentials__
+  init-container-entrypoint.sh: |
+    #!/bin/bash
+
+    set -e
+
+    CONFIG_FILE=/etc/swh/config.yml
+    CONFIG_FILE_WIP=/tmp/wip-config.yml
+
+    # substitute environment variables when creating the default config.yml
+    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
+      > $CONFIG_FILE
+
+    {{ if $enable_sentry }}
+    SENTRY_SETTINGS_PATH=/etc/credentials/sentry-settings/sentry_settings_for_celery_tasks
+    if [ -f $SENTRY_SETTINGS_PATH ]; then
+      awk "/__sentry-settings-for-celery-tasks__/{system(\"sed 's/^/    /g' $SENTRY_SETTINGS_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
+      mv $CONFIG_FILE_WIP $CONFIG_FILE
+    else
+      sed -i 's/__sentry-settings-for-celery-tasks__//g' $CONFIG_FILE
+    fi
+    {{- end }}
+
+    CREDS_LISTER_PATH=/etc/credentials/listers/credentials
+    if [ -f $CREDS_LISTER_PATH ]; then
+      awk "/__lister-credentials__/{system(\"sed 's/^/  /g' $CREDS_LISTER_PATH\");next}1" $CONFIG_FILE > $CONFIG_FILE_WIP
+      mv $CONFIG_FILE_WIP $CONFIG_FILE
+    else
+      sed -i 's/__lister-credentials__//g' $CONFIG_FILE
+    fi
+
+    exit 0
+
+  {{ if $use_json_logger }}
+  logging-configuration.yml: |
+    version: 1
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: json
+        stream: ext://sys.stdout
+
+    formatters:
+      json:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        # python-json-logger parses the format argument to get the variables it actually expands into the json
+        format: "%(asctime)s:%(threadName)s:%(pathname)s:%(lineno)s:%(funcName)s:%(task_name)s:%(task_id)s:%(name)s:%(levelname)s:%(message)s"
+
+    loggers:
+      celery:
+        level: {{ $log_level }}
+      amqp:
+        level: WARNING
+      urllib3:
+        level: WARNING
+      azure.core.pipeline.policies.http_logging_policy:
+        level: WARNING
+      swh:
+        level: {{ $log_level }}
+      celery.task:
+        level: {{ $log_level }}
+
+    root:
+      level: {{ $log_level }}
+      handlers:
+      - console
+{{- end -}}
+{{- end -}}

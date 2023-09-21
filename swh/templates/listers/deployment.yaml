@@ -1,7 +1,7 @@
 {{ if .Values.listers.enabled -}}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.listers.sentry.enabled }}
-{{- $configurationChecksum := include (print $.Template.BasePath "/listers/configmap.yaml") . -}}
 {{- range $lister_type, $deployment_config := .Values.listers.deployments -}}
+{{- $configurationChecksum := include "swh.lister.configmap" (dict "lister_type" $lister_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $lister_name := ( print "lister-" $lister_type ) -}}
 # Set useJsonLogger to false to let the logs be plain text
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
