@@ -369,6 +369,18 @@ loaders:
             username: "${DEPOSIT_USERNAME}"
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
+    git:
+      priorityClassName: low-workload
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        maxReplicaCount: 24
+        minReplicaCount: 1
+        stopWhenNoActivity: false
+      requestedMemory: 768Mi
+      requestedCpu: 100m
     git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
