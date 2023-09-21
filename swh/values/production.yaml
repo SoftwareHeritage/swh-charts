@@ -44,7 +44,7 @@ readWriteCeleryConfiguration:
       secretKeyName: read-write
 
 depositConfiguration:
-  host: deposit-rp.internal.staging.swh.network
+  host: deposit.softwareheritage.org
   user: ${DEPOSIT_USERNAME}
   pass: ${DEPOSIT_PASSWORD}
   secrets:
@@ -256,6 +256,18 @@ listers:
       - swh.lister.stagit.tasks.StagitListerTask
       autoScaling:
         maxReplicaCount: 1
+
+checker_deposit:
+  enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  celeryConfigurationRef: readWriteCeleryConfiguration
+  depositConfigurationRef: depositConfiguration
+  autoScaling:
+    maxReplicaCount: 2
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  limitedMemory: 1024Mi
+  limitedCpu: 1000m
 
 loaders:
   enabled: true
