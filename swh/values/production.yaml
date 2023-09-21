@@ -313,6 +313,13 @@ loaders:
         - swh.loader.package.cran.tasks.LoadCRAN
       autoScaling:
         maxReplicaCount: 1
+    cvs:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.cvs.tasks.LoadCvsRepository
+      autoScaling:
+        maxReplicaCount: 2
     golang:
       image: swh_loader_package_image
       requestedMemory: 256Mi
@@ -358,13 +365,6 @@ loaders:
                 operator: In
                 values:
                 - "true"
-    cvs:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      queues:
-        - swh.loader.cvs.tasks.LoadCvsRepository
-      autoScaling:
-        maxReplicaCount: 2
     save-code-now:
       requestedMemory: 2048Mi
       requestedCpu: 200m
