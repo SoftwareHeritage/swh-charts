@@ -179,7 +179,7 @@ loaders:
         maxReplicaCount: 1
         minReplicaCount: 1
         stopWhenNoActivity: false
-      requestedMemory: 768 Mi
+      requestedMemory: 768Mi
       requestedCpu: 100m
     git-checkout:
       image: swh_loader_git_image
