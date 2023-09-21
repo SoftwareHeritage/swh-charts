@@ -263,6 +263,9 @@ checker_deposit:
   celeryConfigurationRef: readWriteCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
+    queueThreshold: 1
+    stopWhenNoActivity: false
+    minReplicaCount: 1
     maxReplicaCount: 2
   requestedMemory: 100Mi
   requestedCpu: 100m
@@ -356,6 +359,8 @@ loaders:
         - swh.loader.package.deposit.tasks.LoadDeposit
       autoScaling:
         queueThreshold: 1
+        stopWhenNoActivity: false
+        minReplicaCount: 1
         maxReplicaCount: 2
       extraConfig:
         deposit:
