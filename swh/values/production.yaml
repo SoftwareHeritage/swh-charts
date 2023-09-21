@@ -395,6 +395,16 @@ loaders:
         queueThreshold: 1
         minReplicaCount: 32
         maxReplicaCount: 32
+    svn:
+      queues:
+        - swh.loader.svn.tasks.LoadSvnRepository
+        - swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        maxReplicaCount: 4
+      requestedMemory: 6144Mi
+      requestedCpu: 100m
+      limitedMemory: 25600Mi
 
 loader_metadata:
   enabled: true
