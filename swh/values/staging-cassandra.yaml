@@ -126,14 +126,12 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     bzr:
-      requestedMemory: 512Mi
-      requestedCpu: 250m
+      requestedMemory: 256Mi
+      requestedCpu: 200m
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
         maxReplicaCount: 1
-      requestedMemory: 256Mi
-      requestedCpu: 200m
     cran:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -150,15 +148,13 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     content:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
+      requestedCpu: 350m
+      requestedMemory: 150Mi
       queues:
         - swh.loader.core.tasks.LoadContent
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
-      requestedCpu: 350m
-      requestedMemory: 150Mi
     directory:
       requestedMemory: 768Mi
       requestedCpu: 1000m
