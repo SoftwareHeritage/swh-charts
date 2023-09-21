@@ -48,7 +48,7 @@ depositConfiguration:
   user: ${DEPOSIT_USERNAME}
   pass: ${DEPOSIT_PASSWORD}
   secrets:
-    DEPOSIT_USER:
+    DEPOSIT_USERNAME:
       secretKeyRef: deposit-secrets
       secretKeyName: username
     DEPOSIT_PASSWORD:
