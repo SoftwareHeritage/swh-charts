@@ -357,6 +357,14 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 4
+    mercurial:
+      queues:
+        - swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - swh.loader.mercurial.tasks.LoadMercurial
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 128Mi
+      requestedCpu: 500m
     pubdev:
       requestedMemory: 256Mi
       requestedCpu: 200m
