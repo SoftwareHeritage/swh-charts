@@ -298,6 +298,13 @@ loaders:
             temp_file_cutoff: 10737418240
             # 32Gib
             pack_size_bytes: 34359738368
+    bzr:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.bzr.tasks.LoadBazaar
+      autoScaling:
+        maxReplicaCount: 4
     cran:
       requestedMemory: 256Mi
       requestedCpu: 200m
