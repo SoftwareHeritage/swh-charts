@@ -106,11 +106,6 @@ graphql:
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
 
-remoteSchedulerConfiguration:
-  cls: remote
-  host: scheduler.internal.softwareheritage.org
-  port: 80
-
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
