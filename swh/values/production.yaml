@@ -130,6 +130,17 @@ listers:
       - swh.lister.cran.tasks.CRANListerTask
       autoScaling:
         maxReplicaCount: 1
+    github-full:
+      queues:
+      - swh.lister.github.tasks.FullGitHubRelister
+      - swh.lister.github.tasks.RangeGitHubLister
+      autoScaling:
+        maxReplicaCount: 12
+    github-incremental:
+      queues:
+      - swh.lister.github.tasks.IncrementalGitHubLister
+      autoScaling:
+        maxReplicaCount: 1
     gitiles:
       queues:
       - swh.lister.gitiles.tasks.GitilesListerTask
