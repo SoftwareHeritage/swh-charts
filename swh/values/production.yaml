@@ -146,6 +146,12 @@ listers:
       - swh.lister.gitiles.tasks.GitilesListerTask
       autoScaling:
         maxReplicaCount: 1
+    gitlab:
+      queues:
+      - swh.lister.gitlab.tasks.IncrementalGitLabLister
+      - swh.lister.gitlab.tasks.FullGitLabRelister
+      autoScaling:
+        maxReplicaCount: 4
     gitweb:
       queues:
       - swh.lister.gitweb.tasks.GitwebListerTask
