@@ -1,1 +1,4 @@
 host: stories.softwareheritage.org
+
+podPriority:
+  enabled: true
