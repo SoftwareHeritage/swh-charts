@@ -33,15 +33,15 @@ remoteROStorageConfiguration:
   # TODO: use a true read-only storage
   storageConfigurationRef: saamStorageConfiguration
 
-readWriteCeleryConfiguration:
+producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
   port: 5672
-  user: swhconsumer
+  user: swhproducer
   pass: ${AMQP_PASSWORD}
   secrets:
     AMQP_PASSWORD:
       secretKeyRef: amqp-secrets
-      secretKeyName: read-write
+      secretKeyName: swhproducer-password
 
 depositConfiguration:
   host: deposit.softwareheritage.org
@@ -110,7 +110,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   deployments:
     bower:
       queues:
@@ -260,7 +260,7 @@ listers:
 checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
     queueThreshold: 1
@@ -275,7 +275,7 @@ checker_deposit:
 loaders:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
@@ -547,7 +547,7 @@ scheduler:
   sentry:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   recurrent:
     enabled: true
   rpc:

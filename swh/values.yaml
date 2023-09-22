@@ -126,7 +126,7 @@ sentry:
 #   host: scheduler0.internal.staging.swh.network
 #   port: 5008
 
-# readOnlyCeleryConfiguration:
+# guestCeleryConfiguration:
 #   host: scheduler0.internal.staging.swh.network
 #   port: 5672
 #   user: guest
@@ -134,17 +134,17 @@ sentry:
 #   secrets:
 #     AMQP_PASSWORD:
 #       secretKeyRef: amqp-secrets
-#       secretKeyName: read-only
+#       secretKeyName: guest-password
 
-# readWriteCeleryConfiguration:
+# producerCeleryConfiguration:
 #   host: scheduler0.internal.staging.swh.network
 #   port: 5672
-#   user: guest
+#   user: swhproducer
 #   pass: ${AMQP_PASSWORD}
 #   secrets:
 #     AMQP_PASSWORD:
 #       secretKeyRef: amqp-secrets
-#       secretKeyName: read-write
+#       secretKeyName: swhproducer-password
 
 # depositConfiguration:
 #   host:
@@ -297,7 +297,7 @@ loaders:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
-  # celeryConfigurationRef: readWriteCeleryConfiguration
+  # celeryConfigurationRef: producerCeleryConfiguration
   deployments:
   # Example of deployments
     # git:
@@ -319,7 +319,7 @@ cookers:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
-  # celeryConfigurationRef: readWriteCeleryConfiguration
+  # celeryConfigurationRef: producerCeleryConfiguration
 
 checker_deposit:
   enabled: false
@@ -327,7 +327,7 @@ checker_deposit:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
-  # celeryConfigurationRef: readWriteCeleryConfiguration
+  # celeryConfigurationRef: producerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
 
 indexers:
@@ -348,7 +348,7 @@ listers:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # schedulerConfigurationRef: defaultSchedulerConfiguration
-  # celeryConfigurationRef: readWriteCeleryConfiguration
+  # celeryConfigurationRef: producerCeleryConfiguration
 
 storage:
   enabled: false
@@ -490,7 +490,7 @@ toolbox:
   # configs:
   #   scheduler:
   #      schedulerConfigurationRef: postgresqlSchedulerConfiguration
-  #      celeryConfigurationRef: readWriteCeleryConfiguration
+  #      celeryConfigurationRef: producerCeleryConfiguration
   #   storage: postgresqlStorageConfiguration
 
 scheduler:
@@ -503,7 +503,7 @@ scheduler:
   # requestedMemory: 512Mi
   # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
-  # celeryConfigurationRef: readOnlyCeleryConfiguration
+  # celeryConfigurationRef: guestCeleryConfiguration
   recurrent:
     enabled: false
     logLevel: INFO

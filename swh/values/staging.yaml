@@ -73,7 +73,7 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-readOnlyCeleryConfiguration:
+guestCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
   user: swhguest
@@ -83,15 +83,15 @@ readOnlyCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: read-only
 
-readWriteCeleryConfiguration:
+producerCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
-  user: swhconsumer
+  user: swhproducer
   pass: ${AMQP_PASSWORD}
   secrets:
     AMQP_PASSWORD:
       secretKeyRef: amqp-secrets
-      secretKeyName: read-write
+      secretKeyName: swhproducer-password
 
 kafkaBrokers:
   - journal1.internal.staging.swh.network
@@ -105,7 +105,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   deployments:
     bower:
       queues:
@@ -254,7 +254,7 @@ listers:
 cookers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   vault:
     host: vault.internal.staging.swh.network
     port: 5005
@@ -285,7 +285,7 @@ depositConfiguration:
 checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
     maxReplicaCount: 2
@@ -568,7 +568,7 @@ toolbox:
   configs:
     scheduler:
       schedulerConfigurationRef: postgresqlSchedulerConfiguration
-      celeryConfigurationRef: readWriteCeleryConfiguration
+      celeryConfigurationRef: producerCeleryConfiguration
     storage: postgresqlStorageConfiguration
 
 scheduler:
@@ -576,7 +576,7 @@ scheduler:
   sentry:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   recurrent:
     enabled: true
     requestedMemory: 400Mi

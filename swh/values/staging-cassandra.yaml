@@ -69,15 +69,15 @@ remoteSchedulerConfiguration:
   host: scheduler.internal.staging.swh.network
   port: 80
 
-readWriteCeleryConfiguration:
+producerCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
-  user: swhconsumer
+  user: swhproducer
   pass: ${AMQP_PASSWORD}
   secrets:
     AMQP_PASSWORD:
       secretKeyRef: amqp-secrets
-      secretKeyName: read-write
+      secretKeyName: swhproducer-password
 
 depositConfiguration:
   host: deposit-rp.internal.staging.swh.network
@@ -94,7 +94,7 @@ depositConfiguration:
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
-  celeryConfigurationRef: readWriteCeleryConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   deployments:
     add-forge-now:
