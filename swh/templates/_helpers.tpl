@@ -1,8 +1,10 @@
 {{/*
 Create a global storage configuration based on configuration section aggregation
 */}}
+{{/* TODO: migrate to dict parameter */}}
 {{- define "swh.storageConfiguration" -}}
 {{- $Values := index . 0 -}}
+{{/* TODO: Remove $top */}}
 {{- $top := index . 1 -}}
 {{- $storageConfigurationRef := index . 2 -}}
 {{- $storageConfiguration := get $Values $storageConfigurationRef -}}

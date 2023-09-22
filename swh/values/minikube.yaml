@@ -102,6 +102,7 @@ web:
   enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
+  storageConfigurationRef: fakeRemoteStorageConfigurationRef
 
 toolbox:
   enabled: false

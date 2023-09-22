@@ -61,6 +61,10 @@ sentry:
 #   cls: remote
 #   host: http://storage:5002
 
+# searchConfiguration:
+#   cls: remote
+#   url: http://myswhsearch.localdomain:5010
+
 # Example of a storage pipeline configuration
 # Adapt according your platform capabilities
 # Used by loaders and possibly journal client / replayers
@@ -108,7 +112,7 @@ sentry:
 #   objectStorageConfiguration: remoteObjectStorageConfiguration
 
 # globalROStorageConfiguration:
-# TODO: define this configuration and use it for the webapp
+# TODO: define this configuration
 
 # postgresqlSchedulerConfiguration:
 #   cls: postgresql
@@ -167,6 +171,18 @@ sentry:
 #     DEPOSIT_PASSWORD:
 #       secretKeyRef: deposit-secrets
 #       secretKeyName: read-write
+
+# remoteVaultConfiguration:
+#   cls: remote
+#   url: http://<vault service url>
+
+# remoteIndexerStorageConfiguration:
+#   cls: remote
+#   url: http://<indexer storage service url>
+
+# remoteCountersConfiguration
+#   cls: remote
+#   url: http://<counters service url>
 
 graphql:
   enabled: false
@@ -449,6 +465,7 @@ storage:
 web:
   enabled: false
   priorityClassName: frontend-rpc
+  # debug: false
   logLevel: INFO
   replicas: 1
   requestedCpu: 50m
@@ -476,6 +493,50 @@ web:
     secretKeyRef: common-secrets
     secretKeyName: web-sentry-dsn
   configSecretRef: swh-cassandra-webapp-config
+
+  # searchConfigurationRef:
+  # The webapp uses the swh-storage search by default, define a swh-search remote configuration
+  # if available
+  # searchConfigurationRef: searchConfiguration
+
+  # metadataSearchBackend: swh-indexer-storage or swh-search
+  metadataSearchBackend: swh-indexer-storage
+
+  # Configure the scheduler instance used for save code now requests
+  # schedulerConfigurationRef: schedulerConfiguration
+
+  storageConfigurationRef: globalROStorageConfiguration
+
+  # vaultConfigurationRef: remoteVaultConfiguration
+
+  # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+
+  # countersConfigurationRef: remoteCountersConfiguration
+
+  djangoSecretKeySecret: common-secrets
+  djangoSecretKeyName: webapp-django-secret-key
+
+  # max content size in bytes
+  # contentDisplayMaxSize: 5242880 # default webapp value
+
+  # throttling:
+  #   # The memcached url, mandatory
+  #   cache_uri: memcached:11211
+  #   scopes:
+  #     # Possible scopes are
+  #     # - swh_api
+  #     # - swh_api_origin_search
+  #     # - swh_api_origin_visit_latest
+  #     # - swh_vault_cooking
+  #     # - swh_save_origin
+  #     # - swh_raw_object
+  #     swh_api:
+  #       limiter_rate:
+  #         default: 120/h
+  #        exempted_networks: # optional
+  #          - 127.0.0.0/8
+  #          - 192.168.100.0/23
+  #          - ...
 
 statsd_exporter:
   enabled: false

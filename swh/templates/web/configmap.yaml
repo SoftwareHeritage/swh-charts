@@ -1,0 +1,44 @@
+{{- if .Values.web.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: web-configuration-template
+data:
+  config.yml.template: |
+    {{- if .Values.web.debug }}
+    debug: {{ .Values.web.debug }}
+    {{- end -}}
+    {{- include "swh.storageConfiguration" (list .Values . .Values.web.storageConfigurationRef) | nindent 4 }}
+    {{- if .Values.web.searchConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "search" "configurationRef" .Values.web.searchConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .Values.web.metadataSearchBackend }}
+    search_config:
+      metadata_backend: {{ .Values.web.metadataSearchBackend }}
+    {{- end -}}
+    {{- if .Values.web.schedulerConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "scheduler" "configurationRef" .Values.web.schedulerConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .Values.web.vaultConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "vault" "configurationRef" .Values.web.vaultConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .Values.web.indexerStorageConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "indexer_storage" "configurationRef" .Values.web.indexerStorageConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .Values.web.countersConfigurationRef }}
+    counters_backend: swh-counters
+    {{- include "swh.service.fromYaml" (dict "service" "counters" "configurationRef" .Values.web.countersConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
+{{/* TODO: Manage the webapp logging */}}
+{{/* log_dir: */}}
+    secret_key: ${DJANGO_SECRET_KEY}
+    {{- if .Values.web.contentDisplayMaxSize }}
+    content_display_max_size: {{ .Values.web.contentDisplayMaxSize }}
+    {{- end -}}
+    {{- if .Values.web.throttling }}
+      {{- toYaml .Values.web.throttling | nindent 4 }}
+    {{- end -}}
+
+{{- end -}}
