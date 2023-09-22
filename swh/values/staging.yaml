@@ -580,9 +580,7 @@ scheduler:
   recurrent:
     enabled: true
     requestedMemory: 400Mi
-    limitedMemory: 512Mi
     requestedCpu: 10m
-    limitedCpu: 20m
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
