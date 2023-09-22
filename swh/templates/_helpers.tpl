@@ -292,9 +292,9 @@ journal_writer:
 {{- define "swh.storage.secretsEnvironment" -}}
   {{- $Values := index . 0 -}}
   {{- $storageDefinitionRef := index . 1 -}}
-  {{- $storageDefinition := required (print "Storage definition " $storageDefinitionRef " not found") (get $Values $storageDefinitionRef) -}}
-  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " $storageDefinitionRef) (get $storageDefinition "storageConfigurationRef") -}}
-  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get $Values $storageConfigurationRef) -}}
+  {{- $storageDefinition := required (print "_helpers.tpl:swh.storage.secretsEnvironment:Storage definition <" $storageDefinitionRef "> not found") (get $Values $storageDefinitionRef) -}}
+  {{- $storageConfigurationRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:storageConfigurationRef key needed in <" $storageDefinitionRef ">") (get $storageDefinition "storageConfigurationRef") -}}
+  {{- $storageConfiguration := required (print "_helpers.tpl:swh.storage.secretsEnvironment: <" $storageConfigurationRef "> declaration not found") (get $Values $storageConfigurationRef) -}}
   {{- $secrets := get $storageConfiguration "secrets" -}}
   {{- if $secrets -}}
 env:
