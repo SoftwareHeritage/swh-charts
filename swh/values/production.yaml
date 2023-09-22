@@ -632,7 +632,8 @@ podPriority:
 toolbox:
   enabled: true
   configs:
-    storage: postgresqlStorageConfiguration
+    storage:
+      storageConfigurationRef: postgresqlStorageConfiguration
     scheduler:
       schedulerConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration

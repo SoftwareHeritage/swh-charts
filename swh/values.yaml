@@ -499,9 +499,10 @@ toolbox:
   # requestedCpu: 250m
   # configs:
   #   scheduler:
-  #      schedulerConfigurationRef: postgresqlSchedulerConfiguration
-  #      celeryConfigurationRef: producerCeleryConfiguration
-  #   storage: postgresqlStorageConfiguration
+  #     schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  #     celeryConfigurationRef: producerCeleryConfiguration
+  #   storage:
+  #     storageConfigurationRef: postgresqlStorageConfiguration
   #   scrubber:
   #     scrubberConfigurationRef: postgresScrubberConfiguration
 
