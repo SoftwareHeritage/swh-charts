@@ -588,3 +588,6 @@ graphql:
 
 memcached:
   enabled: true
+
+podPriority:
+  enabled: true
