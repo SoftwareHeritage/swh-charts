@@ -70,6 +70,18 @@ remoteSchedulerConfiguration:
   host: scheduler.internal.softwareheritage.org
   port: 80
 
+postgresqlStorageConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  port: '5432'
+  user: swhstorage
+  password: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
+
 postgresqlSchedulerConfiguration:
   cls: postgresql
   host: db.internal.softwareheritage.org
@@ -81,6 +93,18 @@ postgresqlSchedulerConfiguration:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
+
+postgresqlScrubberConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  port: '5432'
+  user: swh-scrubber
+  password: ${POSTGRESQL_PASSWORD}
+  db: swh-scrubber
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scrubber-postgresql-common-secret
+      secretKeyName: postgres-swh-scrubber-password
 
 kafkaBrokers:
   - kafka1.internal.softwareheritage.org
@@ -604,3 +628,13 @@ scheduler:
 
 podPriority:
   enabled: true
+
+toolbox:
+  enabled: true
+  configs:
+    storage: postgresqlStorageConfiguration
+    scheduler:
+      schedulerConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: producerCeleryConfiguration
+    scrubber:
+      scrubberConfigurationRef: postgresqlScrubberConfiguration
