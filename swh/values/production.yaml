@@ -410,7 +410,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 32
+        maxReplicaCount: 48
         minReplicaCount: 1
         stopWhenNoActivity: false
       requestedMemory: 768Mi
