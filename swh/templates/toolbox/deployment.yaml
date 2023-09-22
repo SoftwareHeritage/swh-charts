@@ -45,8 +45,6 @@ spec:
           {{- range $k, $v := $deployment_config }}
 {{ include "celery.secretsEnvironment" (list $.Values $v) | indent 10 }}
           {{- end }}
-          {{- else }}
-{{ include "celery.secretsEnvironment" (list $.Values $deployment_config) | indent 10 }}
           {{- end }}
           volumeMounts:
           - name: configuration
