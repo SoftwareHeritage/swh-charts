@@ -44,7 +44,7 @@ producerCeleryConfiguration:
       secretKeyName: swhproducer-password
 
 consumerCeleryConfiguration:
-  host: scheduler0.internal.staging.swh.network
+  host: rabbitmq.internal.softwareheritage.org
   port: 5672
   user: swhconsumer
   pass: ${AMQP_PASSWORD}
