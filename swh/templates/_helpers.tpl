@@ -329,12 +329,12 @@ env:
     mountPath: /entrypoints
 {{- end -}}
 
-{{/* Generate the celery config for celery configuration if needed */}}
-{{- define "celery.secretsEnvironment" -}}
+{{/* Generate the secret environment configuration for a specific dict configuration if needed */}}
+{{- define "swh.secretsEnvironment" -}}
   {{- $Values := index . 0 -}}
-  {{- $celeryDefinitionRef := index . 1 -}}
-  {{- $celeryConfiguration := required (print "Celery definition " $celeryDefinitionRef " not found") (get $Values $celeryDefinitionRef) -}}
-  {{- $secrets := get $celeryConfiguration "secrets" -}}
+  {{- $definitionRef := index . 1 -}}
+  {{- $configuration := required (print "_helpers.tpl:swh.secretsEnvironment: Definition <" $definitionRef "> not found") (get $Values $definitionRef) -}}
+  {{- $secrets := get $configuration "secrets" -}}
   {{- if $secrets -}}
     {{- range $secretName, $secretsConfig := $secrets }}
 - name: {{ $secretName }}
@@ -346,45 +346,23 @@ env:
       optional: false
       {{- end -}}
   {{- end -}}
+{{- end -}}
+
+
+{{/* Generate the celery config for celery configuration if needed */}}
+{{- define "celery.secretsEnvironment" -}}
+{{ include "swh.secretsEnvironment" (append . "celery") }}
 {{- end -}}
 
 {{/* Generate the celery config for celery configuration if needed */}}
 {{- define "deposit.secretsEnvironment" -}}
-  {{- $Values := index . 0 -}}
-  {{- $depositDefinitionRef := index . 1 -}}
-  {{- $depositConfiguration := required (print "Deposit definition " $depositDefinitionRef " not found") (get $Values $depositDefinitionRef) -}}
-  {{- $secrets := get $depositConfiguration "secrets" -}}
-  {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets }}
-- name: {{ $secretName }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ get $secretsConfig "secretKeyRef" }}
-      key: {{ get $secretsConfig "secretKeyName" }}
-      # 'name' secret must exist & include that ^ key
-      optional: false
-      {{- end -}}
-  {{- end -}}
+{{ include "swh.secretsEnvironment" (append . "deposit") }}
 {{- end -}}
 
 {{/* Generate the scheduler environment config for database configuration if needed */}}
 {{- define "swh.scheduler.secretsEnvironment" -}}
-  {{- $Values := index . 0 -}}
-  {{- $schedulerDefinitionRef := index . 1 -}}
-  {{- $schedulerConfiguration := required (print "Scheduler definition " $schedulerDefinitionRef " not found") (get $Values $schedulerDefinitionRef) -}}
-  {{- $secrets := get $schedulerConfiguration "secrets" -}}
-  {{- if $secrets -}}
-env:
-    {{- range $secretName, $secretsConfig := $secrets }}
-- name: {{ $secretName }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ get $secretsConfig "secretKeyRef" }}
-      key: {{ get $secretsConfig "secretKeyName" }}
-      # 'name' secret must exist & include that ^ key
-      optional: false
-      {{- end -}}
-  {{- end -}}
+{{ include "swh.secretsEnvironment" (append . "scheduler") }}
+{{- end -}}
 {{- end -}}
 
 {{/*
