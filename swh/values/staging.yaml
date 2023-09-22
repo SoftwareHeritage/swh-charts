@@ -591,8 +591,8 @@ toolbox:
     scheduler:
       schedulerConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
-      scrubberConfigurationRef: postgresqlScrubberConfiguration
     storage: postgresqlStorageConfiguration
+    scrubberConfigurationRef: postgresqlScrubberConfiguration
 
 scheduler:
   enabled: true
