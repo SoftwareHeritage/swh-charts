@@ -67,8 +67,7 @@ localRpcROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler.internal.staging.swh.network
-  port: 80
+  url: http://scheduler.internal.staging.swh.network
 
 producerCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network

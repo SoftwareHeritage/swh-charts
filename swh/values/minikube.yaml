@@ -8,8 +8,7 @@ statsd_exporter:
 
 fakeRemoteSchedulerConfiguration:
   cls: remote
-  host: fake-scheduler.i.s.s.n
-  port: 5008
+  url: http://fake-scheduler.i.s.s.n:5008
 
 fakePostgresqlStorageConfiguration:
   cls: postgresql

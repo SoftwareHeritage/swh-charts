@@ -68,8 +68,7 @@ depositConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler.internal.softwareheritage.org
-  port: 80
+  url: http://scheduler.internal.softwareheritage.org
 
 postgresqlStorageConfiguration:
   cls: postgresql

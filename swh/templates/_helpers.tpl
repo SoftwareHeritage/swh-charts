@@ -75,7 +75,7 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.tpl:swh.schedulerConfiguration: key <" $schedulerConfigurationRef "> is mandatory in global dict $Values")}}{{- end -}}
 {{- $schedulerType := get $schedulerConfiguration "cls" -}}
 {{- if eq $schedulerType "remote" -}}
-{{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
+{{ include "swh.service.fromYaml" (dict "Values" $Values "configurationRef" $schedulerConfigurationRef "service" "scheduler") }}
 {{- else if eq $schedulerType "postgresql" -}}
 {{ include "swh.postgresql" (dict "serviceType" "scheduler"
                                   "Values" $Values
@@ -83,18 +83,6 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
-{{- end -}}
-
-{{/*
-Generate the configuration for a remote scheduler
-*/}}
-{{- define "swh.scheduler.remote" -}}
-{{- $Values := index . 0 -}}
-{{- $schedulerConfigurationRefKey := index . 1 -}}
-{{- $schedulerConfiguration := get $Values $schedulerConfigurationRefKey -}}
-scheduler:
-  cls: {{ get $schedulerConfiguration "cls" }}
-  url: http://{{ get $schedulerConfiguration "host" }}:{{ get $schedulerConfiguration "port" }}
 {{- end -}}
 
 {{/*
@@ -314,7 +302,6 @@ journal:
 {{ toYaml $brokers | indent 2 }}
   group_id: {{ $groupId }}
 {{- end -}}
-
 
 {{/*
 Generate the configuration for a remote service

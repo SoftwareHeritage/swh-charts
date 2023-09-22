@@ -59,8 +59,7 @@ remoteROStorageConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  host: scheduler.internal.staging.swh.network
-  port: 80
+  url: http://scheduler.internal.staging.swh.network
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
