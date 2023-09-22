@@ -14,8 +14,10 @@ data:
 {{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | indent 4 }}
     {{- else if ( eq "storage" $service_type ) }}
 {{ include "swh.storage.postgresql" (list $.Values $deployment_config list) | indent 4 }}
+    {{- else if ( eq "scrubber" $service_type ) }}
+{{ include "swh.scrubber.postgresql" (list $.Values $deployment_config.scrubberConfigurationRef) | indent 4 }}
     {{- else }}
-    {{ fail (print "Configuration " $service_type " unsupported.") }}
+    {{ fail (print "toolbox.configmap: Configuration <" $service_type "> unsupported.") }}
     {{- end -}}
 
 {{ end }}

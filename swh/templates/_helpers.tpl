@@ -139,10 +139,18 @@ Generate the configuration for a postgresql scheduler
 {{ include "swh.postgresql" (append . "scheduler") }}
 {{- end -}}
 
+{{/*
+Generate the configuration for a postgresql scheduler
+*/}}
+{{- define "swh.scrubber.postgresql" -}}
+{{ include "swh.postgresql" (append . "scrubber") }}
+{{- end -}}
+
 {{/* Generate the yaml for a postgresql configuration */}}
 {{- define "swh.postgresql" -}}
 {{- $Values := index . 0 -}}
 {{- $configurationRef := index . 1 -}}
+{{- $service := index . 2 }}
 {{- $configuration := get $Values $configurationRef -}}
 {{- $host := required (print "_helpers.tpl:swh.postgresql: The <host> property is mandatory in " $configurationRef)
                     (get $configuration "host") -}}
@@ -154,7 +162,7 @@ Generate the configuration for a postgresql scheduler
                     (get $configuration "password") -}}
 {{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " $configurationRef)
                     (get $configuration "db") -}}
-scheduler:
+{{ $service }}:
   cls: postgresql
   db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
 {{- end -}}

@@ -502,6 +502,7 @@ toolbox:
   #      schedulerConfigurationRef: postgresqlSchedulerConfiguration
   #      celeryConfigurationRef: producerCeleryConfiguration
   #   storage: postgresqlStorageConfiguration
+  #   scrubber: postgresScrubberConfiguration
 
 scheduler:
   enabled: false

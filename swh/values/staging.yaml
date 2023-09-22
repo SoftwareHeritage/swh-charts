@@ -73,6 +73,18 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
+postgresqlScrubberConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: swh-scrubber
+  password: ${POSTGRESQL_PASSWORD}
+  db: swh-scrubber
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scrubber-postgresql-common-secret
+      secretKeyName: postgres-swh-scrubber-password
+
 guestCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
   port: 5672
@@ -579,6 +591,7 @@ toolbox:
     scheduler:
       schedulerConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
+      scrubberConfigurationRef: postgresqlScrubberConfiguration
     storage: postgresqlStorageConfiguration
 
 scheduler:
