@@ -31,7 +31,7 @@ spec:
         {{- toYaml .Values.scheduler.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.scheduler.rpc.priorityClassName }}
-      priorityClassName: {{ $.Values.scheduler.rpc.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.scheduler.rpc.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration

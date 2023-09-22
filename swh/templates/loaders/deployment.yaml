@@ -49,9 +49,9 @@ spec:
         {{- toYaml $loader_affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $loader_priority_class_name }}
-      priorityClassName: {{ $loader_priority_class_name }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $loader_priority_class_name }}
       {{- else if and $.Values.podPriority.enabled $default_priority_class_name }}
-      priorityClassName: {{ $default_priority_class_name }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $default_priority_class_name }}
       {{ end }}
       terminationGracePeriodSeconds: {{ $.Values.loaders.terminationGracePeriodSeconds | default 3600 }}
       initContainers:

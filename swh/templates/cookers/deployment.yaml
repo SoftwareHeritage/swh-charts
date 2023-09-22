@@ -35,7 +35,7 @@ spec:
         {{ toYaml $.Values.cookers.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.cookers.priorityClassName }}
-      priorityClassName: {{ $.Values.cookers.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.cookers.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: {{ $.Values.cookers.terminationGracePeriodSeconds | default 3600 }}
       initContainers:

@@ -33,7 +33,7 @@ spec:
       {{- end }}
 
       {{- if and .Values.podPriority.enabled .Values.storage.priorityClassName }}
-      priorityClassName: {{ .Values.storage.priorityClassName }}
+      priorityClassName: {{ .Values.namespace }}-{{ .Values.storage.priorityClassName }}
       {{- end }}
       initContainers:
         - name: prepare-configuration

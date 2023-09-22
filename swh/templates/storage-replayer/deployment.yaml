@@ -29,7 +29,7 @@ spec:
         {{- toYaml $.Values.storage_replayer.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.storage_replayer.priorityClassName }}
-      priorityClassName: {{ $.Values.storage_replayer.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.storage_replayer.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration

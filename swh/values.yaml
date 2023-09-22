@@ -170,7 +170,7 @@ sentry:
 
 graphql:
   enabled: false
-  priorityClassName: swh-frontend-rpc
+  priorityClassName: frontend-rpc
   logLevel: INFO
   debug: no
   introspection: yes
@@ -231,7 +231,7 @@ tmpEphemeralStorage:
 
 storage_replayer:
   enabled: false
-  priorityClassName: swh-background-workload
+  priorityClassName: background-workload
   maxMessagesBytes: "524288000"
   journalBrokers:
     # The name of the secret containing the BROKER_USER_PASSWORD value
@@ -277,7 +277,7 @@ storage_replayer:
 
 loader_metadata:
   enabled: false
-  priorityClassName: swh-normal-workload
+  priorityClassName: normal-workload
   sentrySwhPackage: swh.loader.metadata
   requestedMemory: 350Mi
   requestedCpu: 80m
@@ -302,7 +302,7 @@ loader_metadata:
 
 loaders:
   enabled: false
-  priorityClassName: swh-normal-workload
+  priorityClassName: normal-workload
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
@@ -324,7 +324,7 @@ loaders:
 
 cookers:
   enabled: false
-  priorityClassName: swh-normal-workload
+  priorityClassName: normal-workload
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
@@ -333,7 +333,7 @@ cookers:
 
 checker_deposit:
   enabled: false
-  priorityClassName: swh-frontend-rpc-workload
+  priorityClassName: frontend-rpc-workload
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
@@ -342,7 +342,7 @@ checker_deposit:
 
 indexers:
   enabled: false
-  priorityClassName: swh-frontend-rpc
+  priorityClassName: frontend-rpc
   sentrySwhPackage: swh.indexer
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # terminationGracePeriodSeconds: 3600
@@ -352,7 +352,7 @@ indexers:
 
 listers:
   enabled: false
-  priorityClassName: swh-normal-workload
+  priorityClassName: normal-workload
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
@@ -362,7 +362,7 @@ listers:
 
 storage:
   enabled: false
-  priorityClassName: swh-frontend-rpc
+  priorityClassName: frontend-rpc
   logLevel: INFO
 # Don't configure the replicas if autoscaling is configured
 # and vice-versa
@@ -444,7 +444,7 @@ storage:
 
 web:
   enabled: false
-  priorityClassName: swh-frontend-rpc
+  priorityClassName: frontend-rpc
   logLevel: INFO
   replicas: 1
   requestedCpu: 50m
@@ -475,14 +475,14 @@ web:
 
 statsd_exporter:
   enabled: false
-  priorityClassName: swh-system
+  priorityClassName: system
   image: prom/statsd-exporter
   imageVersion: "v0.22.7"
 
 memcached:
   # Deploy a memcached instance used by the webapp and graphql for sessions caching
   enabled: false
-  priorityClassName: swh-storages
+  priorityClassName: storages
   image: memcached:1.6.18
   memory: 256m
   requestedCpu: 100m
@@ -494,7 +494,7 @@ memcached:
 
 toolbox:
   enabled: false
-  priorityClassName: swh-tools
+  priorityClassName: tools
   # requestedMemory: 256Mi
   # requestedCpu: 250m
   # configs:
@@ -505,7 +505,7 @@ toolbox:
 
 scheduler:
   enabled: false
-  priorityClassName: swh-frontend-rpc-workload
+  priorityClassName: frontend-rpc-workload
   sentry:
     enabled: false
     secretKeyRef: scheduler-sentry-secrets
@@ -536,7 +536,7 @@ scheduler:
   #   enabled: false
   rpc:
     enabled: false
-    priorityClassName: swh-frontend-rpc
+    priorityClassName: frontend-rpc
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
     # schedulerConfigurationRef: postgresqlSchedulerConfiguration
@@ -602,46 +602,49 @@ scheduler:
 podPriority:
   enabled: false
   priorities:
-    swh-system:
+    # Note that each priority will be prefixed with its namespace (when declared in the
+    # deployment). Because priority have a cluster-wide visibility (independently from
+    # its namespace).
+    system:
       range: 50000-100000
       value: 75000
       description: Highest pod priorities (ingress, operator, collector, controller)
-    swh-storages:
+    storages:
       range: 25000-26000
       value: 25500
       description: Backend storages used by other services (memcached, redis, ...)
-    swh-frontend-rpc:
+    frontend-rpc:
       range: 23000-24000
       value: 24500
       description: Frontend or RPC services (swh-web, swh-graphql, swh-storage, ...)
-    swh-frontend-rpc-workload:
+    frontend-rpc-workload:
       range: 22000-23000
       value: 22500
       description: Frontend or RPC services workload (checker-deposit, swh-search-journalclient, ...)
-    swh-high-workload:
+    high-workload:
       range: 20000-21000
       value: 20500
       description: High priority workload (save-code-now, add-forge-now, graph computations, ...)
-    swh-local-workload:
+    local-workload:
       range: 10000-15000
       value: 12500
-    swh-normal-workload:
+    normal-workload:
       range: 7000-8000
       value: 6500
       description: Normal workload (vault cooker workers, listers, most loaders, ...)
-    swh-low-workload:
+    low-workload:
       range: 5000-6000
       value: 5500
       description: Normal workload (vault cooker workers, listers, most loaders, ...)
-    swh-background-storage:
+    background-storage:
       range: 3000-4000
       value: 3500
       description: Background storage maintenance (reaper, scrubber, ...)
-    swh-background-workload:
+    background-workload:
       range: 1000-2000
       value: 1500
       description: Background workload (replayers cassandra & postgres, redis error reporter, ...)
-    swh-tools:
+    tools:
       range: 0-100
       value: 50
       description: Tooling helper (swh-toolbox)

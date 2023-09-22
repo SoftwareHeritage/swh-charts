@@ -21,7 +21,7 @@ spec:
         app: memcached
     spec:
       {{- if and $.Values.podPriority.enabled $.Values.memcached.priorityClassName }}
-      priorityClassName: {{ $.Values.memcached.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.memcached.priorityClassName }}
       {{ end }}
       containers:
       - name: memcached

@@ -30,7 +30,7 @@ spec:
         {{ toYaml .Values.loader_metadata.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.loader_metadata.priorityClassName }}
-      priorityClassName: {{ $.Values.loader_metadata.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.loader_metadata.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: 3600
       initContainers:

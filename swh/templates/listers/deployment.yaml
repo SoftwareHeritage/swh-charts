@@ -35,7 +35,7 @@ spec:
         {{ toYaml $.Values.listers.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.listers.priorityClassName }}
-      priorityClassName: {{ $.Values.listers.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.listers.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: {{ $.Values.listers.terminationGracePeriodSeconds | default 3600 }}
       initContainers:

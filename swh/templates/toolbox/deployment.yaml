@@ -28,7 +28,7 @@ spec:
         checksum/configScript: {{ $configScriptUtilsChecksum | sha256sum }}
     spec:
       {{- if and $.Values.podPriority.enabled $.Values.toolbox.priorityClassName }}
-      priorityClassName: {{ $.Values.toolbox.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.toolbox.priorityClassName }}
       {{ end }}
       initContainers:
 {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
