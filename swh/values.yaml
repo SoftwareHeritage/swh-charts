@@ -146,6 +146,16 @@ sentry:
 #       secretKeyRef: amqp-secrets
 #       secretKeyName: swhproducer-password
 
+# consumerCeleryConfiguration:
+#   host: scheduler0.internal.staging.swh.network
+#   port: 5672
+#   user: swhconsumer
+#   pass: ${AMQP_PASSWORD}
+#   secrets:
+#     AMQP_PASSWORD:
+#       secretKeyRef: amqp-secrets
+#       secretKeyName: swhconsumer-password
+
 # depositConfiguration:
 #   host:
 #   user: ${DEPOSIT_USERNAME}
@@ -297,7 +307,7 @@ loaders:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageClientConfiguration
-  # celeryConfigurationRef: producerCeleryConfiguration
+  # celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
   # Example of deployments
     # git:
@@ -319,7 +329,7 @@ cookers:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
-  # celeryConfigurationRef: producerCeleryConfiguration
+  # celeryConfigurationRef: consumerCeleryConfiguration
 
 checker_deposit:
   enabled: false
@@ -327,7 +337,7 @@ checker_deposit:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
-  # celeryConfigurationRef: producerCeleryConfiguration
+  # celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
 
 indexers:
@@ -348,7 +358,7 @@ listers:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # schedulerConfigurationRef: defaultSchedulerConfiguration
-  # celeryConfigurationRef: producerCeleryConfiguration
+  # celeryConfigurationRef: consumerCeleryConfiguration
 
 storage:
   enabled: false

@@ -93,6 +93,16 @@ producerCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: swhproducer-password
 
+consumerCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhconsumer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhconsumer-password
+
 kafkaBrokers:
   - journal1.internal.staging.swh.network
   - journal2.internal.staging.swh.network
@@ -105,7 +115,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     bower:
       queues:
@@ -254,7 +264,7 @@ listers:
 cookers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   vault:
     host: vault.internal.staging.swh.network
     port: 5005
@@ -285,7 +295,7 @@ depositConfiguration:
 checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
     maxReplicaCount: 2

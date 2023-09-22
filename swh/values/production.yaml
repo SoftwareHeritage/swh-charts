@@ -43,6 +43,16 @@ producerCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: swhproducer-password
 
+consumerCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhconsumer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhconsumer-password
+
 depositConfiguration:
   host: deposit.softwareheritage.org
   user: ${DEPOSIT_USERNAME}
@@ -110,7 +120,7 @@ listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     bower:
       queues:
@@ -260,7 +270,7 @@ listers:
 checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
     queueThreshold: 1
@@ -275,7 +285,7 @@ checker_deposit:
 loaders:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image

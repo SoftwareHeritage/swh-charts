@@ -79,6 +79,16 @@ producerCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: swhproducer-password
 
+consumerCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhconsumer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhconsumer-password
+
 depositConfiguration:
   host: deposit-rp.internal.staging.swh.network
   user: ${DEPOSIT_USERNAME}
@@ -94,7 +104,7 @@ depositConfiguration:
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   deployments:
     add-forge-now:
