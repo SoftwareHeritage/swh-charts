@@ -229,7 +229,9 @@ loaders:
         - swh.loader.package.deposit.tasks.LoadDeposit
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 2
+        stopWhenNoActivity: false
+        minReplicaCount: 1
+        maxReplicaCount: 1
       extraConfig:
         deposit:
           url: "https://deposit-rp.internal.staging.swh.network/1/private"
