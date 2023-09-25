@@ -43,7 +43,9 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "celery.secretsEnvironment" (list $.Values $.Values.cookers.celeryConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" $cooker_name
+                                           "Values" $.Values
+                                           "configurationRef" $.Values.cookers.celeryConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
