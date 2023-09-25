@@ -55,7 +55,10 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
-{{ include "celery.secretsEnvironment" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" $service_type
+                                           "Values" $.Values
+                                           "configurationRef" $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
+
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
