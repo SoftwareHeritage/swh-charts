@@ -310,6 +310,7 @@ loaders:
   enabled: true
   storageConfigurationRef: remoteStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
+  depositConfigurationRef: depositConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
