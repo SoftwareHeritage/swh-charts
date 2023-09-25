@@ -505,7 +505,7 @@ loaders:
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 4
       requestedMemory: 1024Mi
       requestedCpu: 1000m
     pypi:
