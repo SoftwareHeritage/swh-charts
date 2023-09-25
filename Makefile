@@ -42,7 +42,8 @@ swh-minikube:
 	helm --kube-context minikube upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
-      -n swh --create-namespace --debug
+      -n swh --create-namespace --debug && \
+    kubectl --context minikube apply -f $(SWH_CHART)/values/minikube-secrets/*.yaml
 
 swh-uninstall:
 	helm --kube-context minikube uninstall $(SWH_CHART) -n swh

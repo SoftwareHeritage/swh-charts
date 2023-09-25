@@ -99,7 +99,11 @@ fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n
   port: 5672
   user: fakeguest
-  pass: fakeguest
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: guest-password
 
 scheduler:
   enabled: false
