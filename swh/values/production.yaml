@@ -387,6 +387,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     deposit:
+      priorityClassName: frontend-rpc-workload
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image

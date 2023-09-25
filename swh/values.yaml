@@ -623,7 +623,7 @@ podPriority:
     frontend-rpc-workload:
       range: 22000-23000
       value: 22500
-      description: Frontend or RPC services workload (checker-deposit, swh-search-journalclient, ...)
+      description: Frontend or RPC services workload (checker-deposit, loader-deposit, swh-search-journalclient, ...)
     high-workload:
       range: 20000-21000
       value: 20500
