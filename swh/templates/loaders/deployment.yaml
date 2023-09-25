@@ -62,6 +62,7 @@ spec:
 {{ include "celery.secretsEnvironment" (list $.Values $.Values.loaders.celeryConfigurationRef) | indent 10 }}
           {{ if ( eq "deposit" $loader_name ) -}}
 {{ include "deposit.secretsEnvironment" (list $.Values $.Values.loaders.depositConfigurationRef) | indent 10 }}
+          {{ if ( eq "deposit" $loader_type ) -}}
           {{ end }}
           command:
             - /entrypoint.sh
