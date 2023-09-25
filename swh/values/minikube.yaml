@@ -58,8 +58,15 @@ journalClientConfiguration:
 
 fakeDepositConfiguration:
   host: deposit.i.i.s.n
-  user: fakeuser
-  pass: fakepass
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
 
 storage:
   enabled: false

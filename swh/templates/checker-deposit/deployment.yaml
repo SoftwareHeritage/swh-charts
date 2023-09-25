@@ -39,8 +39,12 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "celery.secretsEnvironment" (list $.Values $.Values.checker_deposit.celeryConfigurationRef) | indent 10 }}
-{{ include "deposit.secretsEnvironment" (list $.Values $.Values.checker_deposit.depositConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" "checker-deposit:celery"
+                                           "Values" .Values
+                                           "configurationRef" .Values.checker_deposit.celeryConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" "checker-deposit:deposit"
+                                           "Values" .Values
+                                           "configurationRef" .Values.checker_deposit.depositConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
