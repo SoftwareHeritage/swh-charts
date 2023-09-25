@@ -58,11 +58,11 @@ fakeDepositConfiguration:
   pass: fakepass
 
 storage:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakePostgresqlStorageConfigurationRef
 
 storage_replayer:
-  enabled: true
+  enabled: false
   sentry:
     enabled: false
   journalBrokers:
@@ -80,12 +80,12 @@ storage_replayer:
   requestedCpu: 50m
 
 web:
-  enabled: true
+  enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
 
 toolbox:
-  enabled: true
+  enabled: false
   configs:
     storage:
       storageConfigurationRef: fakePostgresqlStorageConfiguration
@@ -102,11 +102,11 @@ fakeCeleryConfiguration:
   pass: fakeguest
 
 scheduler:
-  enabled: true
+  enabled: false
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
   recurrent:
-    enabled: true
+    enabled: false
     requestedMemory: 10Mi
     limitedMemory: 20Mi
     requestedCpu: 10m
@@ -119,7 +119,7 @@ scheduler:
       - policy: origins_without_last_update
         weight: 100
   rpc:
-    enabled: true
+    enabled: false
     schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
     requestedMemory: 20Mi
     limitedMemory: 40Mi
@@ -135,15 +135,15 @@ scheduler:
     #   maxReplicaCount: 20
     #   cpuPercentageUsage: 150
     # ingress:
-    #   enabled: true
+    #   enabled: false
     #   host: myscheduler.domain
   updateMetrics:
-    enabled: true
+    enabled: false
     logLevel: INFO
     # Execute at each minute
     cron: "0/10 * * * *"
   journalClient:
-    enabled: true
+    enabled: false
     journalConfigurationRef: journalClientConfiguration
     requestedMemory: 15Mi
     limitedMemory: 30Mi
@@ -151,7 +151,7 @@ scheduler:
     limitedCpu: 100m
   extraServices:
     runner:
-      enabled: true
+      enabled: false
       logLevel: INFO
       period: 100
       requestedMemory: 5Mi
@@ -159,7 +159,7 @@ scheduler:
       requestedCpu: 10m
       limitedCpu: 20m
     runner-priority:
-      enabled: true
+      enabled: false
       logLevel: INFO
       period: 100
       requestedMemory: 6Mi
@@ -169,7 +169,7 @@ scheduler:
       extraConfig:
         - load-git
     listener:
-      enabled: true
+      enabled: false
       logLevel: INFO
       requestedMemory: 7Mi
       limitedMemory: 14Mi
@@ -177,7 +177,7 @@ scheduler:
       limitedCpu: 20m
 
 loader_metadata:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   consumerGroup: loader_metadata.test.journal_client
@@ -191,13 +191,13 @@ loader_metadata:
     enabled: false
 
 checker_deposit:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
   depositConfigurationRef: fakeDepositConfiguration
 
 cookers:
-  enabled: true
+  enabled: false
   sentry:
     enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
@@ -211,7 +211,7 @@ cookers:
         - swh.vault.cooking_tasks.SWHCookingTask
 
 indexers:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   sentry:
@@ -241,7 +241,7 @@ indexers:
       requestedCpu: 50m
 
 graphql:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   searchConfiguration:
     host: search0.i.s.s.n
@@ -262,7 +262,7 @@ graphql:
   requestedCpu: 50m
 
 listers:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
@@ -274,7 +274,7 @@ listers:
       requestedCpu: 50m
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
   deployments:
@@ -292,7 +292,7 @@ loaders:
       requestedCpu: 50m
 
 memcached:
-  enabled: true
+  enabled: false
 
 podPriority:
   enabled: true
