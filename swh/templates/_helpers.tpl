@@ -348,6 +348,22 @@ env:
   {{- end -}}
 {{- end -}}
 
+{{/* Generate the secret environment yaml config if present in the config dict */}}
+{{- define "swh.secrets.environment" -}}
+  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment:" .serviceType ": Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
+  {{- $secrets := get $configuration "secrets" -}}
+  {{- if $secrets -}}
+    {{- range $secretName, $secretsConfig := $secrets }}
+- name: {{ $secretName }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ get $secretsConfig "secretKeyRef" }}
+      key: {{ get $secretsConfig "secretKeyName" }}
+      # 'name' secret must exist & include that ^ key
+      optional: false
+      {{- end -}}
+  {{- end -}}
+{{- end -}}
 
 {{/* Generate the celery config for celery configuration if needed */}}
 {{- define "celery.secretsEnvironment" -}}
