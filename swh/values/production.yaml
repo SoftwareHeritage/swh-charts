@@ -451,7 +451,7 @@ loaders:
       queues:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
-        maxReplicaCount: 8
+        maxReplicaCount: 16
     maven:
       image: swh_loader_package_image
       queues:
