@@ -43,7 +43,9 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
-{{ include "swh.scheduler.secretsEnvironment" (list $.Values $.Values.scheduler.rpc.schedulerConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" "scheduler-rpc"
+                                           "Values" .Values
+                                           "configurationRef" .Values.scheduler.rpc.schedulerConfigurationRef) | indent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
