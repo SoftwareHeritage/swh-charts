@@ -365,30 +365,6 @@ env:
   {{- end -}}
 {{- end -}}
 
-{{/* Generate the celery config for celery configuration if needed */}}
-{{- define "celery.secretsEnvironment" -}}
-{{ include "swh.secretsEnvironment" (append . "celery") }}
-{{- end -}}
-
-{{/* Generate the scheduler environment config for database configuration if needed */}}
-{{- define "swh.scheduler.secretsEnvironment" -}}
-{{ include "swh.secretsEnvironment" (append . "scheduler") }}
-{{- end -}}
-
-{{/* Generate the scrubber environment config for database configuration if needed */}}
-{{- define "swh.scrubber.secretsEnvironment" -}}
-{{ include "swh.secretsEnvironment" (append . "scrubber") }}
-{{- end -}}
-
-{{/* Generate the storage environment config for database configuration if needed.
-   * This is another implementation which allows simpler definition in yaml dict than
-   * swh.storage2.secretsEnvironment. This also shares the same behavior as most
-   * secret functions.
-   */}}
-{{- define "swh.storage2.secretsEnvironment" -}}
-{{ include "swh.secretsEnvironment" (append . "storage") }}
-{{- end -}}
-
 {{/*
 Generate the configuration for a journal configuration key
 */}}

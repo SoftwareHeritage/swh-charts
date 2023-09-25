@@ -41,17 +41,15 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-{{ $service_type }}.yml
           env:
-          {{- if eq $service_type "scheduler" }}
           {{- range $k, $v := $deployment_config }}
-{{ include "celery.secretsEnvironment" (list $.Values $v) | indent 10 }}
-          {{- end }}
+{{ include "swh.secrets.environment" (dict "serviceType" $k
+                                           "Values" $.Values
+                                           "configurationRef" $v) | indent 10 }}
           {{- end }}
           {{- if eq $service_type "storage" }}
-{{ include (print "swh.storage2.secretsEnvironment") (list $.Values $deployment_config.storageConfigurationRef) | indent 10 }}
-          {{ else }}
-          {{- range $k, $v := $deployment_config }}
-{{ include (print "swh." $service_type ".secretsEnvironment") (list $.Values $v) | indent 10 }}
-          {{- end }}
+{{ include "swh.secrets.environment" (dict "serviceType" $service_type
+                                           "Values" $.Values
+                                           "configurationRef" $deployment_config.storageConfigurationRef) | indent 10 }}
           {{- end }}
           volumeMounts:
           - name: configuration

@@ -14,29 +14,37 @@ fakePostgresqlStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
   port: 5432
-  user: swh
-  password: test
   db: swh-storage
-
-fakePostgresqlSchedulerConfiguration:
-  cls: postgresql
-  host: db1.i.s.s.n
-  port: 5432
   user: swh
   password: ${POSTGRESQL_PASSWORD}
-  db: swh-scheduler
   secrets:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
 
+fakePostgresqlSchedulerConfiguration:
+  cls: postgresql
+  host: db1.i.s.s.n
+  port: 5432
+  db: swh-scheduler
+  user: swh
+  password: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scheduler-postgresql-common-secret
+      secretKeyName: postgres-swh-scheduler-password
+
 fakePostgresqlScrubberConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
   port: 5432
-  user: swh-scrubber
-  password: test
   db: swh-scrubber
+  user: swh-scrubber
+  password: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
 
 fakeRemoteStorageConfiguration:
   cls: remote
