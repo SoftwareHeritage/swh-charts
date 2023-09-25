@@ -543,8 +543,8 @@ loaders:
       autoScaling:
         stopWhenNoActivity: false
         queueThreshold: 1
-        minReplicaCount: 32
-        maxReplicaCount: 32
+        minReplicaCount: 16
+        maxReplicaCount: 16
     svn:
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
