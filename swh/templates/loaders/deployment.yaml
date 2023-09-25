@@ -59,9 +59,13 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "celery.secretsEnvironment" (list $.Values $.Values.loaders.celeryConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" (print $loader_name ":celery" )
+                                           "Values" $.Values
+                                           "configurationRef" $.Values.loaders.celeryConfigurationRef) | indent 10 }}
           {{ if ( eq "deposit" $loader_type ) -}}
-{{ include "deposit.secretsEnvironment" (list $.Values $.Values.loaders.depositConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "serviceType" (print $loader_name ":deposit" )
+                                           "Values" $.Values
+                                           "configurationRef" $.Values.loaders.depositConfigurationRef) | indent 10 }}
           {{ end }}
           command:
             - /entrypoint.sh

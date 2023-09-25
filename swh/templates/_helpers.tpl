@@ -370,11 +370,6 @@ env:
 {{ include "swh.secretsEnvironment" (append . "celery") }}
 {{- end -}}
 
-{{/* Generate the celery config for celery configuration if needed */}}
-{{- define "deposit.secretsEnvironment" -}}
-{{ include "swh.secretsEnvironment" (append . "deposit") }}
-{{- end -}}
-
 {{/* Generate the scheduler environment config for database configuration if needed */}}
 {{- define "swh.scheduler.secretsEnvironment" -}}
 {{ include "swh.secretsEnvironment" (append . "scheduler") }}

@@ -292,6 +292,7 @@ loaders:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
+  depositConfigurationRef: fakeDepositConfiguration
   deployments:
     git:
       priorityClassName: low-workload
@@ -299,10 +300,17 @@ loaders:
         - swh.loader.git.tasks.UpdateGitRepository
       requestedMemory: 50Mi
       requestedCpu: 50m
-    pypi:
+    deposit:
       image: swh_loader_package_image
       queues:
-        - swh.loader.pypi.tasks.LoadPyPI
+        - swh.loader.package.deposit.tasks.LoadDeposit
+      extraConfig:
+        deposit:
+          url: "https://deposit-rp.i.s.s.n/1/private"
+          auth:
+            username: "${DEPOSIT_USERNAME}"
+            password: "${DEPOSIT_PASSWORD}"
+        default_filename: archive.tar
       requestedMemory: 50Mi
       requestedCpu: 50m
 
