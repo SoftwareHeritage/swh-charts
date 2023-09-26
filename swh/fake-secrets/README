@@ -3,3 +3,6 @@
 It's fake secrets to apply to development/testing clusters (e.g. minikube, test-staging,
 ...). This allows to exercise charts in production-like condition (where we have actual
 secrets to discuss with various backends).
+
+As the destination cluster can vary, the secrets are not declaring their namespace. It's
+up to the helm caller to provide the namespace when installing the chart.
