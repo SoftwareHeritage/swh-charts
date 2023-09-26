@@ -50,7 +50,7 @@ swh-uninstall:
     kubectl --context minikube --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'
 
 swh-template:
-	helm template $chart $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
       -n swh --create-namespace --debug
@@ -65,7 +65,7 @@ cc-uninstall:
 	helm --kube-context minikube uninstall $(CC_CHART) -n default
 
 cc-template:
-	helm template $chart $(CC_CHART)/ --values values-swh-application-versions.yaml \
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
       -n default --create-namespace --debug
@@ -80,7 +80,7 @@ ss-uninstall:
 	helm --kube-context minikube uninstall $(SS_CHART) -n software-stories
 
 ss-template:
-	helm template $chart $(SS_CHART)/ --values values-swh-application-versions.yaml \
+	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/minikube.yaml \
       -n software-stories --create-namespace --debug
