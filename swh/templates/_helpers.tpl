@@ -105,13 +105,13 @@ configuration keys.
 {{- $Values := index . 0 -}}
 {{- $celeryConfigurationRefKey := index . 1 -}}
 {{- $celeryConfiguration := get $Values $celeryConfigurationRefKey -}}
-{{- $host := required (print "The 'host' property is mandatory in " $celeryConfiguration)
+{{- $host := required (print "_helpers.tpl:celery.configuration: The <host> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "host") -}}
-{{- $port := required (print "The 'port' property is mandatory in " $celeryConfiguration)
+{{- $port := required (print "_helpers.tpl:celery.configuration: The <port> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "port") -}}
-{{- $user := required (print "The 'user' property is mandatory in " $celeryConfiguration)
+{{- $user := required (print "_helpers.tpl:celery.configuration: The <user> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "user") -}}
-{{- $pass := required (print "The 'pass' property is mandatory in " $celeryConfiguration)
+{{- $pass := required (print "_helpers.tpl:celery.configuration: The <pass> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "pass") -}}
 celery:
   task_broker: amqp://{{ $user }}:{{ $pass }}@{{ $host }}:{{ $port }}/%2f
