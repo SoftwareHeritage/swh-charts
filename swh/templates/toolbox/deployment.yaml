@@ -42,13 +42,11 @@ spec:
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-{{ $service_type }}.yml
           env:
           {{- range $k, $v := $deployment_config }}
-{{ include "swh.secrets.environment" (dict "serviceType" $k
-                                           "Values" $.Values
+{{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $v) | indent 10 }}
           {{- end }}
           {{- if eq $service_type "storage" }}
-{{ include "swh.secrets.environment" (dict "serviceType" $service_type
-                                           "Values" $.Values
+{{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $deployment_config.storageConfigurationRef) | indent 10 }}
           {{- end }}
           volumeMounts:

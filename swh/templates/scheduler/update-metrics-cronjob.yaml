@@ -27,8 +27,7 @@ spec:
               - -c
               - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
               env:
-{{ include "swh.secrets.environment" (dict "serviceType" "scheduler-update-metrics"
-                                           "Values" .Values
+{{ include "swh.secrets.environment" (dict "Values" .Values
                                            "configurationRef" .Values.scheduler.celeryConfigurationRef) | indent 14 }}
               volumeMounts:
               - name: configuration

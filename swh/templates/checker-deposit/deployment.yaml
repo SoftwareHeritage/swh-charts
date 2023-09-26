@@ -39,11 +39,9 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "swh.secrets.environment" (dict "serviceType" "checker-deposit:celery"
-                                           "Values" .Values
+{{ include "swh.secrets.environment" (dict "Values" .Values
                                            "configurationRef" .Values.checker_deposit.celeryConfigurationRef) | indent 10 }}
-{{ include "swh.secrets.environment" (dict "serviceType" "checker-deposit:deposit"
-                                           "Values" .Values
+{{ include "swh.secrets.environment" (dict "Values" .Values
                                            "configurationRef" .Values.checker_deposit.depositConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh

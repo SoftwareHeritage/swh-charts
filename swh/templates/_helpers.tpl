@@ -350,7 +350,7 @@ env:
 
 {{/* Generate the secret environment yaml config if present in the config dict */}}
 {{- define "swh.secrets.environment" -}}
-  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment:" .serviceType ": Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
+  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
   {{- $secrets := get $configuration "secrets" -}}
   {{- if $secrets -}}
     {{- range $secretName, $secretsConfig := $secrets }}

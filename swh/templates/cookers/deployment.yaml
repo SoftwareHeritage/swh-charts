@@ -43,8 +43,7 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "swh.secrets.environment" (dict "serviceType" $cooker_name
-                                           "Values" $.Values
+{{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.cookers.celeryConfigurationRef) | indent 10 }}
           command:
             - /entrypoint.sh

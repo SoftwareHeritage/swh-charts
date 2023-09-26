@@ -59,12 +59,10 @@ spec:
           image: debian:bullseye
           imagePullPolicy: Always
           env:
-{{ include "swh.secrets.environment" (dict "serviceType" (print $loader_name ":celery" )
-                                           "Values" $.Values
+{{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.loaders.celeryConfigurationRef) | indent 10 }}
           {{ if ( eq "deposit" $loader_type ) -}}
-{{ include "swh.secrets.environment" (dict "serviceType" (print $loader_name ":deposit" )
-                                           "Values" $.Values
+{{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.loaders.depositConfigurationRef) | indent 10 }}
           {{ end }}
           command:
