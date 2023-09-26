@@ -44,7 +44,9 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-{{ include "swh.storage.secretsEnvironment" (list $.Values $.Values.storage.storageConfigurationRef) | indent 10 }}
+          env:
+{{ include "swh.storage.secretsEnvironment" (dict "Values" $.Values
+                                                  "configurationRef" $.Values.storage.storageConfigurationRef) | indent 10 }}
         {{- if eq .Values.storage.objstorageClass "multiplexer" }}
           envFrom:
           - secretRef:

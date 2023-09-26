@@ -288,16 +288,11 @@ journal_writer:
   {{- end -}}
 {{- end -}}
 
-{{/* Generate the storage environment config for database configuration if needed */}}
-{{- define "swh.storage.secretsEnvironment" -}}
-  {{- $Values := index . 0 -}}
-  {{- $storageDefinitionRef := index . 1 -}}
-  {{- $storageDefinition := required (print "_helpers.tpl:swh.storage.secretsEnvironment:Storage definition <" $storageDefinitionRef "> not found") (get $Values $storageDefinitionRef) -}}
-  {{- $storageConfigurationRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:storageConfigurationRef key needed in <" $storageDefinitionRef ">") (get $storageDefinition "storageConfigurationRef") -}}
-  {{- $storageConfiguration := required (print "_helpers.tpl:swh.storage.secretsEnvironment: <" $storageConfigurationRef "> declaration not found") (get $Values $storageConfigurationRef) -}}
-  {{- $secrets := get $storageConfiguration "secrets" -}}
+{{/* Generate the secret environment yaml config if present in the config dict */}}
+{{- define "swh.secrets.environment" -}}
+  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
+  {{- $secrets := get $configuration "secrets" -}}
   {{- if $secrets -}}
-env:
     {{- range $secretName, $secretsConfig := $secrets }}
 - name: {{ $secretName }}
   valueFrom:
@@ -308,6 +303,13 @@ env:
       optional: false
       {{- end -}}
   {{- end -}}
+{{- end -}}
+
+{{/* Generate the storage environment config for database configuration if needed */}}
+{{- define "swh.storage.secretsEnvironment" -}}
+  {{- $storageDefinitionRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:Storage definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
+  {{- $storageConfigurationRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:storageConfigurationRef key needed in <" $storageDefinitionRef ">") (get $storageDefinitionRef "storageConfigurationRef") -}}
+{{ include "swh.secrets.environment" (dict "Values" .Values "configurationRef" $storageConfigurationRef) }}
 {{- end -}}
 
 {{/* Generate the check migration container configuration if needed */}}
@@ -327,42 +329,6 @@ env:
     mountPath: /etc/swh
   - name: database-utils
     mountPath: /entrypoints
-{{- end -}}
-
-{{/* Generate the secret environment configuration for a specific dict configuration if needed */}}
-{{- define "swh.secretsEnvironment" -}}
-  {{- $Values := index . 0 -}}
-  {{- $definitionRef := index . 1 -}}
-  {{- $configuration := required (print "_helpers.tpl:swh.secretsEnvironment: Definition <" $definitionRef "> not found") (get $Values $definitionRef) -}}
-  {{- $secrets := get $configuration "secrets" -}}
-  {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets }}
-- name: {{ $secretName }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ get $secretsConfig "secretKeyRef" }}
-      key: {{ get $secretsConfig "secretKeyName" }}
-      # 'name' secret must exist & include that ^ key
-      optional: false
-      {{- end -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* Generate the secret environment yaml config if present in the config dict */}}
-{{- define "swh.secrets.environment" -}}
-  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
-  {{- $secrets := get $configuration "secrets" -}}
-  {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets }}
-- name: {{ $secretName }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ get $secretsConfig "secretKeyRef" }}
-      key: {{ get $secretsConfig "secretKeyName" }}
-      # 'name' secret must exist & include that ^ key
-      optional: false
-      {{- end -}}
-  {{- end -}}
 {{- end -}}
 
 {{/*
