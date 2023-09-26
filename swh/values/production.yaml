@@ -75,7 +75,7 @@ postgresqlStorageConfiguration:
   host: db.internal.softwareheritage.org
   port: '5432'
   user: swhstorage
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   db: softwareheritage
   secrets:
     POSTGRESQL_PASSWORD:
@@ -87,7 +87,7 @@ postgresqlSchedulerConfiguration:
   host: db.internal.softwareheritage.org
   port: '5432'
   user: swhscheduler
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   db: softwareheritage-scheduler
   secrets:
     POSTGRESQL_PASSWORD:
@@ -99,7 +99,7 @@ postgresqlScrubberConfiguration:
   host: db.internal.softwareheritage.org
   port: '5432'
   user: swh-scrubber
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   db: swh-scrubber
   secrets:
     POSTGRESQL_PASSWORD:

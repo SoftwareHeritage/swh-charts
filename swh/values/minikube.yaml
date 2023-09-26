@@ -16,7 +16,7 @@ fakePostgresqlStorageConfiguration:
   port: 5432
   db: swh-storage
   user: swh
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
@@ -28,7 +28,7 @@ fakePostgresqlSchedulerConfiguration:
   port: 5432
   db: swh-scheduler
   user: swh
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-scheduler-postgresql-common-secret
@@ -40,7 +40,7 @@ fakePostgresqlScrubberConfiguration:
   port: 5432
   db: swh-scrubber
   user: swh-scrubber
-  password: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-scrubber-postgresql-common-secret
