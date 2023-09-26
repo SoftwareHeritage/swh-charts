@@ -139,13 +139,6 @@ Generate the configuration for a postgresql scheduler
 {{ include "swh.postgresql" (append . "scheduler") }}
 {{- end -}}
 
-{{/*
-Generate the configuration for a postgresql scheduler
-*/}}
-{{- define "swh.scrubber.postgresql" -}}
-{{ include "swh.postgresql" (append . "scrubber") }}
-{{- end -}}
-
 {{/* Generate the yaml for a postgresql configuration */}}
 {{- define "swh.postgresql" -}}
 {{- $Values := index . 0 -}}
