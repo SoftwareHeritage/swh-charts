@@ -10,12 +10,18 @@ metadata:
 data:
   config.yml.template: |
     {{- if ( eq "scheduler" $service_type ) }}
-{{ include "swh.postgresql" (list $.Values $deployment_config.schedulerConfigurationRef "scheduler") | indent 4 }}
+{{ include "swh.postgresql" (dict "serviceType" "scheduler"
+                                  "Values" $.Values
+                                  "configurationRef" $deployment_config.schedulerConfigurationRef) | indent 4 }}
 {{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | indent 4 }}
     {{- else if ( eq "storage" $service_type ) }}
-{{ include "swh.storage.postgresql" (list $.Values $deployment_config.storageConfigurationRef list) | indent 4 }}
+{{ include "swh.postgresql" (dict "serviceType" "storage"
+                                   "Values" $.Values
+                                   "configurationRef" $deployment_config.storageConfigurationRef) | indent 4 }}
     {{- else if ( eq "scrubber" $service_type ) }}
-{{ include "swh.postgresql" (list $.Values $deployment_config.scrubberConfigurationRef "scrubber") | indent 4 }}
+{{ include "swh.postgresql" (dict "serviceType" "scrubber"
+                                  "Values" $.Values
+                                  "configurationRef" $deployment_config.scrubberConfigurationRef) | indent 4 }}
     {{- else }}
     {{ fail (print "toolbox.configmap: Configuration <" $service_type "> unsupported.") }}
     {{- end -}}

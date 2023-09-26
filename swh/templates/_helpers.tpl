@@ -29,7 +29,10 @@ storage:
 {{- else if eq $storageType "cassandra" -}}
 {{ include "swh.storage.cassandra" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else if eq $storageType "postgresql" -}}
-{{ include "swh.storage.postgresql" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{ include "swh.postgresql" (dict "serviceType" "storage"
+                                  "Values" $Values
+                                  "configurationRef" $storageServiceConfigurationRef
+                                  "configurationInPipeline" (empty $pipelineStepsRef)) | indent $indent }}
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
@@ -74,7 +77,9 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- if eq $schedulerType "remote" -}}
 {{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
 {{- else if eq $schedulerType "postgresql" -}}
-{{ include "swh.postgresql" (list $Values $schedulerConfigurationRef "scheduler") }}
+{{ include "swh.postgresql" (dict "serviceType" "scheduler"
+                                  "Values" $Values
+                                  "configurationRef" $schedulerConfigurationRef ) }}
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
@@ -132,32 +137,31 @@ deposit:
     password: {{ $pass }}
 {{- end -}}
 
-{{/*
-Generate the configuration for a postgresql scheduler
-*/}}
-{{- define "swh.scheduler.postgresql" -}}
-{{ include "swh.postgresql" (append . "scheduler") }}
-{{- end -}}
-
-{{/* Generate the yaml for a postgresql configuration */}}
+{{/* Generate the configuration for a postgresql service (e.g scheduler, storage,
+   * scrubber, ...). It's also able to deal with multiple configuration (e.g. storage
+   * pipeline.
+   */}}
 {{- define "swh.postgresql" -}}
-{{- $Values := index . 0 -}}
-{{- $configurationRef := index . 1 -}}
-{{- $service := index . 2 }}
-{{- $configuration := get $Values $configurationRef -}}
-{{- $host := required (print "_helpers.tpl:swh.postgresql: The <host> property is mandatory in " $configurationRef)
+{{- $configuration := get .Values .configurationRef -}}
+{{- $configurationInPipeline := .configurationInPipeline | default false -}}
+{{- $host := required (print "_helpers.tpl:swh.postgresql: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
-{{- $port := required (print "_helpers.tpl:swh.postgresql: The <port> property is mandatory in " $configurationRef)
+{{- $port := required (print "_helpers.tpl:swh.postgresql: The <port> property is mandatory in " .configurationRef)
                     (get $configuration "port") -}}
-{{- $user := required (print "_helpers.tpl:swh.postgresql: The <user> property is mandatory in " $configurationRef)
+{{- $user := required (print "_helpers.tpl:swh.postgresql: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $password := required (print "_helpers.tpl:swh.postgresql: The <password> property is mandatory in " $configurationRef)
+{{- $password := required (print "_helpers.tpl:swh.postgresql: The <password> property is mandatory in " .configurationRef)
                     (get $configuration "password") -}}
-{{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " $configurationRef)
+{{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}
-{{ $service }}:
+{{- if $configurationInPipeline -}}
+- cls: postgresql
+  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{- else -}}
+{{ .serviceType }}:
   cls: postgresql
   db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{- end }}
 {{- end -}}
 
 {{/*
@@ -186,35 +190,6 @@ Generate the configuration for a cassandra storage
 {{ end -}}
 {{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
 {{- end -}}
-
-{{/*
-Generate the configuration for a postgresql storage
-*/}}
-{{- define "swh.storage.postgresql" -}}
-{{- $Values := index . 0 -}}
-{{- $storageConfigurationRef := index . 1 -}}
-{{- $inPipeline := index . 2 -}}
-{{- $storageConfiguration := get $Values $storageConfigurationRef -}}
-{{- $host := required (print "The host property is mandatory in " $storageConfigurationRef)
-                    (get $storageConfiguration "host") -}}
-{{- $port := required (print "The port property is mandatory in " $storageConfigurationRef)
-                    (get $storageConfiguration "port") -}}
-{{- $user := required (print "The user property is mandatory in " $storageConfigurationRef)
-                    (get $storageConfiguration "user") -}}
-{{- $password := required (print "The password property is mandatory in " $storageConfigurationRef)
-                    (get $storageConfiguration "password") -}}
-{{- $db := required (print "The db property is mandatory in " $storageConfigurationRef)
-                    (get $storageConfiguration "db") -}}
-{{- if (empty $inPipeline) }}
-storage:
-  cls: postgresql
-  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
-{{ else }}
-- cls: postgresql
-  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
-{{ end }}
-{{- end -}}
-
 
 {{/*
 Generate the configuration for a null object storage
