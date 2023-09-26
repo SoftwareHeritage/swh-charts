@@ -43,10 +43,11 @@ swh-minikube:
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
       -n swh --create-namespace --debug && \
-    kubectl --context minikube apply -f '$(SWH_CHART)/values/minikube-secrets/*.yaml'
+    kubectl --context minikube apply -f '$(SWH_CHART)/fake-secrets/*.yaml'
 
 swh-uninstall:
-	helm --kube-context minikube uninstall $(SWH_CHART) -n swh
+	helm --kube-context minikube uninstall $(SWH_CHART) -n swh && \
+    kubectl --context minikube --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'
 
 swh-template:
 	helm template $chart $(SWH_CHART)/ --values values-swh-application-versions.yaml \

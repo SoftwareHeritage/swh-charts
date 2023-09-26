@@ -1,4 +1,0 @@
-# minikube-secrets
-
-It's only fake secrets applied locally to the minikube cluster so we can entertain the
-charts in production-like condition.

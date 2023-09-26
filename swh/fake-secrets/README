@@ -1,0 +1,5 @@
+# fake-secrets
+
+It's fake secrets to apply to development/testing clusters (e.g. minikube, test-staging,
+...). This allows to exercise charts in production-like condition (where we have actual
+secrets to discuss with various backends).
