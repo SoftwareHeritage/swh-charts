@@ -32,7 +32,7 @@ storage:
 {{ include "swh.postgresql" (dict "serviceType" "storage"
                                   "Values" $Values
                                   "configurationRef" $storageServiceConfigurationRef
-                                  "configurationInPipeline" (empty $pipelineStepsRef)) | indent $indent }}
+                                  "configurationInPipeline" $pipelineStepsRef) | indent $indent }}
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
