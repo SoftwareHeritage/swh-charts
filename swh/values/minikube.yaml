@@ -43,8 +43,8 @@ fakePostgresqlScrubberConfiguration:
   password: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
+      secretKeyRef: swh-scrubber-postgresql-common-secret
+      secretKeyName: postgres-swh-scrubber-password
 
 fakeRemoteStorageConfiguration:
   cls: remote
