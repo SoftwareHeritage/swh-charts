@@ -7,6 +7,6 @@ metadata:
   name: scheduler-rpc-configuration-template
 data:
   config.yml.template: |
-{{ include "swh.scheduler.postgresql" (list .Values .Values.scheduler.rpc.schedulerConfigurationRef) | indent 4 }}
+{{ include "swh.postgresql" (list .Values .Values.scheduler.rpc.schedulerConfigurationRef "scheduler") | indent 4 }}
 
 {{- end -}}

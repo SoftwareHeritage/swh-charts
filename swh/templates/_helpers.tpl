@@ -74,7 +74,7 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- if eq $schedulerType "remote" -}}
 {{ include "swh.scheduler.remote" (list $Values $schedulerConfigurationRef) }}
 {{- else if eq $schedulerType "postgresql" -}}
-{{ include "swh.scheduler.postgresql" (list $Values $schedulerConfigurationRef) }}
+{{ include "swh.postgresql" (list $Values $schedulerConfigurationRef "scheduler") }}
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
