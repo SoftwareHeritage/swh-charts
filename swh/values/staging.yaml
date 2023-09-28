@@ -157,6 +157,11 @@ listers:
         - swh.lister.debian.tasks.DebianListerTask
       autoScaling:
         maxReplicaCount: 1
+    dlang:
+      queues:
+      - swh.lister.dlang.tasks.DlangListerTask
+      autoScaling:
+        maxReplicaCount: 1
     gitea:
       queues:
       - swh.lister.gitea.tasks.IncrementalGiteaLister
