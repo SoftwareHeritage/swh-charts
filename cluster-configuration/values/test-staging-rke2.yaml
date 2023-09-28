@@ -1,3 +1,26 @@
 environment: staging
 clusterName: test-staging-rke2
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-hb9j7h5g
+
+metallb:
+  enabled: true
+
+ingressNginx:
+  enabled: true
+  applicationNameOverride: test-staging-rke2-ingress-nginx
+  defaultClass: true
+  watchIngressWithoutClass: true
+  annotations:
+    # To be able to share the same ip for several services
+    # https://metallb.org/usage/#ip-address-sharing
+    metallb.universe.tf/allow-shared-ip: clusterIP
+  requestedCpu: 50m
+  requestedMemory: 200Mi
+  config:
+    worker-processes: 2
+  replicaCount: 2
+
+certManager:
+  enabled: true
+  webhookGandiEnabled: true
+  useGandiDNS: true
