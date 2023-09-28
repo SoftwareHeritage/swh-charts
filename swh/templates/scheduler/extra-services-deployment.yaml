@@ -129,7 +129,7 @@ spec:
               value: {{ $log_level | default "INFO" | quote }}
           {{- if ( get $sentry "enabled" ) }}
             - name: SWH_SENTRY_ENVIRONMENT
-              value: {{ get $sentry "environment" }}
+              value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
               value: swh.scheduler
             - name: SWH_SENTRY_DSN
