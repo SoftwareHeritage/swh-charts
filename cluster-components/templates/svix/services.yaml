@@ -1,0 +1,46 @@
+{{ if .Values.svix.enabled -}}
+{{- with .Values.svix }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: {{ .namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: svix-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: {{ .namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: svix-redis
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svix
+  namespace: {{ .namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: svix-server
+  ports:
+    - port: 8071
+      targetPort: 8071
+      name: svix
+{{- end }}
+{{- end }}

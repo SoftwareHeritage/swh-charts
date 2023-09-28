@@ -1,0 +1,66 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-svix-ingress
+  namespace: {{ .Values.svix.namespace }}
+spec:
+  podSelector:
+    matchLabels: {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: all-access-svix-http
+  namespace: {{ .Values.svix.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: svix-server
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 192.168.130.0/24
+        - ipBlock:
+            cidr: 192.168.50.0/24
+      ports:
+        - protocol: TCP
+          port: 8071
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: svix-access-redis
+  namespace: {{ .Values.svix.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: svix-redis
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: svix-server
+      ports:
+        - protocol: TCP
+          port: 6379
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: svix-access-postgres
+  namespace: {{ .Values.svix.namespace }}
+spec:
+  podSelector:
+    matchLabels:
+      app: svix-postgres
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+             app: svix-server
+      ports:
+        - protocol: TCP
+          port: 5432

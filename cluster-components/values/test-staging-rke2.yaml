@@ -2,4 +2,18 @@
 alertmanager:
   enabled: true
 
-
+svix:
+  enabled: true
+  name: svix
+  ingress:
+    host: svix-test.internal.staging.swh.network
+    createTLS: true
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  namespace: svix-server
+  postgres:
+    requestedMemory: 100Mi
+    requestedCpu: 100m
+  redis:
+    requestedMemory: 100Mi
+    requestedCpu: 100m
