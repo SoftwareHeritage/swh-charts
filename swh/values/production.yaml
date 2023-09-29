@@ -600,7 +600,7 @@ scheduler:
       host: scheduler.internal.softwareheritage.org
       # TODO: Improve the authorization internal cluster ip range.
       # Current internal range retrieved out of the `kubectl cluster-info dump`
-      whitelistSourceRange: 192.168.100.0/24,192.168.200.0/22,10.42.0.0/16,10.43.0.0/16
+      whitelistSourceRange: 192.168.100.0/24,192.168.101.0/24,192.168.200.0/22,10.42.0.0/16,10.43.0.0/16
   updateMetrics:
     enabled: true
     # At minute 27 past every 4th hour from 3 through 23
