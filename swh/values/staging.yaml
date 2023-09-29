@@ -624,8 +624,23 @@ scheduler:
       enabled: true
       host: scheduler.internal.staging.swh.network
       # TODO: Improve the authorization internal cluster ip range.
-      # Current internal range retrieved out of the `kubectl cluster-info dump`
-      whitelistSourceRange: 192.168.130.0/24,10.42.0.0/16,10.43.0.0/16
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRange:
+        # staging ip
+        - 192.168.130.0/24
+        # cluster internal range ip
+        - 10.42.0.0/16
+        - 10.43.0.0/16
+      ingressDefinitions:
+        default:
+          paths:
+            /
+        read-only:
+          paths:
+            - /scheduler_metrics/get
+          extraWhitelistSourceRange:
+            # vpn network
+            - 192.168.101.0/24
     requestedMemory: 1024Mi
     requestedCpu: 50m
   updateMetrics:

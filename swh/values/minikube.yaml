@@ -157,9 +157,31 @@ scheduler:
     #   minReplicaCount: 4
     #   maxReplicaCount: 20
     #   cpuPercentageUsage: 150
-    # ingress:
-    #   enabled: false
-    #   host: myscheduler.domain
+    ingress:
+      enabled: false
+      host: myscheduler.minikube.domain
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRange:
+        - 192.168.100.0/24
+      ingressDefinitions:
+        default:
+          paths:
+            - /
+        read-only:
+          paths:
+            - /scheduler_metrics/get
+            # - /task_type/get
+            # - /task_type/get_all
+            # - /task_run/get
+            # - /listers/get
+            # - /listers/get_by_id
+            # - /lister/get
+            # - /origins/get
+            - /visit_stats/get
+            # - /visit_scheduler/get
+          extraWhitelistSourceRange:
+            - 192.168.101.0/24
+
   updateMetrics:
     enabled: false
     logLevel: INFO

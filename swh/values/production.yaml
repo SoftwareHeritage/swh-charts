@@ -600,7 +600,25 @@ scheduler:
       host: scheduler.internal.softwareheritage.org
       # TODO: Improve the authorization internal cluster ip range.
       # Current internal range retrieved out of the `kubectl cluster-info dump`
-      whitelistSourceRange: 192.168.100.0/24,192.168.101.0/24,192.168.200.0/22,10.42.0.0/16,10.43.0.0/16
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRange:
+        # rocq production range ip
+        - 192.168.100.0/24
+        # azure production range ip
+        - 192.168.200.0/22
+        # Cluster internal ip
+        - 10.42.0.0/16
+        - 10.43.0.0/16
+      ingressDefinitions:
+        default:
+          paths:
+            /
+        read-only:
+          paths:
+            - /scheduler_metrics/get
+          extraWhitelistSourceRange:
+            # vpn network
+            - 192.168.101.0/24
   updateMetrics:
     enabled: true
     # At minute 27 past every 4th hour from 3 through 23

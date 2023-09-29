@@ -571,6 +571,20 @@ scheduler:
         nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
         nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      #   - xxx.xxx.xxx.xxx/24
+      # ingressDefinitions:
+      #   default:
+      #     paths:
+      #       /
+      #   read-only:
+      #     paths:
+      #       - /scheduler_metrics/get
+      #       - /visit_stats/get
+      #     # Extra allowed ip range for the paths above
+      #     extraWhitelistSourceRange:
+      #       - yyy.yyy.yyy.yyy/24
   updateMetrics:
     enabled: false
     # It seems to be source of sync issues so deactivated (commented) for now. See [1]
