@@ -1,3 +1,4 @@
+environment: production
 sentry:
   environment: production
 
@@ -584,6 +585,8 @@ scheduler:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: producerCeleryConfiguration
+  alerts:
+    enabled: false
   recurrent:
     enabled: true
   rpc:

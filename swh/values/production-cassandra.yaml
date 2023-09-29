@@ -1,4 +1,5 @@
 namespace: swh-cassandra
+environment: production
 sentry:
   environment: production
 

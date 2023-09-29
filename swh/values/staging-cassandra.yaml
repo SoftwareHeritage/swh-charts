@@ -1,4 +1,5 @@
 namespace: swh-cassandra
+environment: staging
 sentry:
   environment: staging
 

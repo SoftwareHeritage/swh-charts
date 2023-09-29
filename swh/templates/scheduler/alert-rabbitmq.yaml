@@ -1,0 +1,29 @@
+{{- if and .Values.scheduler.enabled .Values.scheduler.alerts.enabled .Values.scheduler.alerts.tooManyMessagesInQueue }}
+{{- $environment := .Values.environment -}}
+{{- $severity := .Values.scheduler.alerts.tooManyMessagesInQueue.severity -}}
+{{- $period := .Values.scheduler.alerts.tooManyMessagesInQueue.period -}}
+{{- $threshold := .Values.scheduler.alerts.tooManyMessagesInQueue.threshold -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: swh-alerts
+  name: rabbitmq-too-many-messages-in-queue-alertmanager.rules
+  namespace: {{ .Values.namespace }}
+spec:
+  groups:
+  - name: rabbitmq-too-many-messages-in-queue.rules
+    rules:
+    - alert: RabbitmqTooManyMessagesInQueue
+      expr: |-
+        max_over_time(rabbitmq_queue_messages_ready{environment={{ $environment | quote }}}[5m]) > {{ $threshold }}
+      annotations:
+        description: "{{ $environment }}: High number of messages in rabbitmq queue <{{"{{"}} $labels.name {{"}}"}}> (server: <{{"{{"}} $labels.server {{"}}"}}>)"
+        summary: "A queue exceeds a given threshold in environment {{ $environment }}"
+      for: {{ $period }}
+      labels:
+        severity: {{ $severity }}
+        namespace: cattle-monitoring-system
+
+{{ end }}

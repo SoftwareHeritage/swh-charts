@@ -1,4 +1,5 @@
 namespace: swh
+environment: production
 
 sentry:
   environment: production
@@ -513,6 +514,13 @@ scheduler:
     enabled: false
     secretKeyRef: scheduler-sentry-secrets
     secretKeyName: sentry-dsn
+  alerts:
+    enabled: false
+    tooManyMessagesInQueue:
+      threshold: 100000
+      period: 30m
+      severity: warning
+
   # requestedMemory: 512Mi
   # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -531,12 +539,6 @@ scheduler:
       opam:
       - policy: origins_without_last_update
         weight: 100
-  # runner:
-  #   enabled: false
-  # runnerPriority:
-  #   enabled: false
-  # listener:
-  #   enabled: false
   rpc:
     enabled: false
     priorityClassName: frontend-rpc

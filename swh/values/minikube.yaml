@@ -1,3 +1,4 @@
+environment: minikube
 sentry:
   enabled: false
   environment: minikube
@@ -128,6 +129,8 @@ scheduler:
   enabled: false
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
+  alerts:
+    enabled: false
   recurrent:
     enabled: false
     requestedMemory: 10Mi
