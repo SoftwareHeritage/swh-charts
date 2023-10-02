@@ -500,7 +500,7 @@ loaders:
       queues:
         - swh.loader.package.npm.tasks.LoadNpm
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 4
     opam:
       image: swh_loader_package_image
       queues:
