@@ -362,7 +362,7 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        maxReplicaCount: 16
+        maxReplicaCount: 4
     cran:
       requestedMemory: 256Mi
       requestedCpu: 200m
