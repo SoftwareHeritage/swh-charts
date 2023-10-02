@@ -32,7 +32,7 @@ spec:
       initContainers:
       #  - name: prepare-configuration
       #    image: debian:bullseye
-      #    imagePullPolicy: Always
+      #    imagePullPolicy: ifNotPresent
       #    command:
       #    - /bin/bash
       #    args:
@@ -141,7 +141,7 @@ spec:
               memory: {{ .Values.web.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.web.requestedCpu | default "500m" }}
           image: nginx:bullseye
-          imagePullPolicy: Always
+          imagePullPolicy: ifNotPresent
           ports:
             - containerPort: 80
               name: webstatic

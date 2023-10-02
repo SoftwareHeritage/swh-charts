@@ -34,7 +34,7 @@ spec:
 {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
         - name: prepare-configuration-{{ $service_type }}
           image: debian:bullseye
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           command:
           - /bin/bash
           args:

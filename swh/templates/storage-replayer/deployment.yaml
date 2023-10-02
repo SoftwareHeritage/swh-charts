@@ -34,7 +34,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: Always
+          imagePullPolicy: ifNotPresent
           {{- if $secretName }}
           envFrom:
           - secretRef:

@@ -240,7 +240,7 @@ journal_writer:
       {{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
 - name: init-database
   image: {{ get $Values $imageNamePrefix }}:{{ get $Values (print $imageNamePrefix "_version") }}
-  imagePullPolicy: Always
+  imagePullPolicy: ifNotPresent
   command:
   - /usr/local/bin/python3
   args:

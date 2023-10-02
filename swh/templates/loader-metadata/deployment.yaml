@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: Always
+          imagePullPolicy: ifNotPresent
           env:
           - name: BROKER_USER_PASSWORD
             valueFrom:
