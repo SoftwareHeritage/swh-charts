@@ -23,7 +23,7 @@ spec:
       containers:
       - name: prometheus-statsd-exporter
         image: {{ .Values.statsd_exporter.image }}:{{ .Values.statsd_exporter.imageVersion }}
-        imagePullPolicy: Always
+        imagePullPolicy: ifNotPresent
         args:
           - "--statsd.mapping-config=/etc/prometheus/statsd-mapping.yml"
         ports:
