@@ -63,7 +63,7 @@ spec:
       containers:
       - name: indexers
         image: {{ $.Values.swh_indexer_image }}:{{ $.Values.swh_indexer_image_version }}
-        imagePullPolicy: Always
+        imagePullPolicy: ifNotPresent
         command:
           - /opt/swh/entrypoint.sh
         resources:

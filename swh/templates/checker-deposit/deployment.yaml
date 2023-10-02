@@ -70,7 +70,7 @@ spec:
             {{- end }}
           {{ end }}
         image: {{ $.Values.swh_deposit_checkers_image }}:{{ $.Values.swh_deposit_checkers_image_version }}
-        imagePullPolicy: Always
+        imagePullPolicy: ifNotPresent
         command:
         - /bin/bash
         args:

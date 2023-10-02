@@ -91,7 +91,7 @@ spec:
         {{ else if $container_image -}}
         image: {{ $container_image }}:{{ $container_image_version }}
         {{ end }}
-        imagePullPolicy: Always
+        imagePullPolicy: ifNotPresent
         command:
           - /opt/swh/entrypoint.sh
         resources:

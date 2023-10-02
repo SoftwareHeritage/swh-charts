@@ -142,7 +142,7 @@ spec:
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
               value: "true"
           {{- end }}
-          imagePullPolicy: Always
+          imagePullPolicy: ifNotPresent
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

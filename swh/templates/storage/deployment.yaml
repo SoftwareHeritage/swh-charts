@@ -68,7 +68,7 @@ spec:
               memory: {{ .Values.storage.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.storage.requestedCpu | default "500m" }}
           image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
-          imagePullPolicy: Always
+          imagePullPolicy: ifNotPresent
           ports:
             - containerPort: 5002
               name: rpc
