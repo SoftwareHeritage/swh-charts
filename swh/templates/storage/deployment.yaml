@@ -38,7 +38,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           command:
           - /bin/bash
           args:
@@ -68,7 +68,7 @@ spec:
               memory: {{ .Values.storage.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.storage.requestedCpu | default "500m" }}
           image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5002
               name: rpc

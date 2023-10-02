@@ -36,7 +36,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           env:
           - name: BROKER_USER_PASSWORD
             valueFrom:
@@ -61,7 +61,7 @@ spec:
       containers:
       - name: loader-metadata
         image: {{ .Values.swh_loader_metadata_image }}:{{ .Values.swh_loader_metadata_image_version }}
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         command:
           - /opt/swh/entrypoint.sh
         resources:

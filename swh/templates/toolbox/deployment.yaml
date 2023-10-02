@@ -54,7 +54,7 @@ spec:
       containers:
       - name: swh-toolbox
         image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             memory: {{ .Values.toolbox.requestedMemory | default "256Mi" }}

@@ -41,7 +41,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           env:
 {{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.cookers.celeryConfigurationRef) | indent 10 }}
@@ -77,7 +77,7 @@ spec:
             {{- end }}
           {{ end }}
         image: {{ $.Values.swh_vault_cookers_image }}:{{ $.Values.swh_vault_cookers_image_version }}
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         command:
         - /bin/bash
         args:

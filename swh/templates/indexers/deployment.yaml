@@ -39,7 +39,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           {{ if $secretName }}
           env:
           - name: BROKER_USER_PASSWORD
@@ -63,7 +63,7 @@ spec:
       containers:
       - name: indexers
         image: {{ $.Values.swh_indexer_image }}:{{ $.Values.swh_indexer_image_version }}
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         command:
           - /opt/swh/entrypoint.sh
         resources:

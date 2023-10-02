@@ -57,7 +57,7 @@ spec:
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
-          imagePullPolicy: ifNotPresent
+          imagePullPolicy: IfNotPresent
           env:
 {{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.loaders.celeryConfigurationRef) | indent 10 }}
@@ -91,7 +91,7 @@ spec:
         {{ else if $container_image -}}
         image: {{ $container_image }}:{{ $container_image_version }}
         {{ end }}
-        imagePullPolicy: ifNotPresent
+        imagePullPolicy: IfNotPresent
         command:
           - /opt/swh/entrypoint.sh
         resources:
