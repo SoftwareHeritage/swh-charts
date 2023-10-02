@@ -634,7 +634,7 @@ scheduler:
       ingressDefinitions:
         default:
           paths:
-            /
+            - /
         read-only:
           paths:
             - /scheduler_metrics/get
