@@ -60,38 +60,25 @@ spec:
             initialDelaySeconds: 3
             periodSeconds: 10
           env:
-            - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: svix-server-secrets
-                  key: POSTGRES_PASSWORD
-            - name: APP_DB_USER
+            - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: svix-server-secrets
                   key: APP_DB_USER
-            - name: APP_DB_PASS
+            - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: svix-server-secrets
                   key: APP_DB_PASS
-            - name: APP_DB_NAME
+            - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
                   name: svix-server-secrets
                   key: APP_DB_NAME
           volumeMounts:
-            - name: init-svix-db
-              mountPath: /docker-entrypoint-initdb.d/
             - name: postgres-data
               mountPath: /var/lib/postgresql/data
       volumes:
-      - name: init-svix-db
-        configMap:
-          name: postgres-init-svix-db
-          items:
-          - key: "init.sh.template"
-            path: "init.sh"
       - name: postgres-data
         emptyDir: {}
 {{- end }}
