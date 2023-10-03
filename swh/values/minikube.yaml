@@ -10,6 +10,18 @@ fakeRemoteSchedulerConfiguration:
   cls: remote
   url: http://fake-scheduler.i.s.s.n:5008
 
+fakeRemoteSearchConfiguration:
+  cls: remote
+  url: http://fake-search.i.s.s.n:5005
+
+fakeRemoteVaultConfiguration:
+  cls: remote
+  url: http://fake-vault.i.s.s.n:5006
+
+fakeRemoteCountersConfiguration:
+  cls: remote
+  url: http://fake-counters.i.s.s.n:5006
+
 fakePostgresqlStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
@@ -102,7 +114,22 @@ web:
   enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
+  debug: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  searchConfigurationRef: fakeRemoteSearchConfiguration
+  metadataSearchBackend: swh-indexer-storage
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  vaultConfigurationRef: fakeRemoteVaultConfiguration
+  countersConfigurationRef: fakeRemoteCountersConfiguration
+  djangoSecretKeySecret: webapp-django-secrets
+  djangoSecretKeyName: webapp-django-secret-key
+  # max content size in bytes
+  contentDisplayMaxSize: 5242880 # default webapp value
+  throttling:
+    # The memcached url, mandatory
+    cache_uri: fake-memcached:11211
+    scopes:
+      - swh_api
 
 toolbox:
   enabled: false
