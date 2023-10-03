@@ -154,6 +154,26 @@ deposit:
 {{- end }}
 {{- end -}}
 
+{{- define "django.postgresql" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{- $configurationInPipeline := .configurationInPipeline | default false -}}
+{{- $host := required (print "_helpers.tpl:django.postgresql: The <host> property is mandatory in " .configurationRef)
+                    (get $configuration "host") -}}
+{{- $port := required (print "_helpers.tpl:django.postgresql: The <port> property is mandatory in " .configurationRef)
+                    (get $configuration "port") -}}
+{{- $db := required (print "_helpers.tpl:django.postgresql: The <db> property is mandatory in " .configurationRef)
+                    (get $configuration "db") -}}
+{{- $user := required (print "_helpers.tpl:django.postgresql: The <user> property is mandatory in " .configurationRef)
+                    (get $configuration "user") -}}
+{{- $password := required (print "_helpers.tpl:django.postgresql: The <password> property is mandatory in " .configurationRef)
+                    (get $configuration "pass") }}
+  host: {{ $host }}
+  port: {{ $port }}
+  name: {{ $db }}
+  user: {{ $user }}
+  password: {{ $password }}
+{{- end }}
+
 {{/*
 Generate the configuration for a cassandra storage
 */}}

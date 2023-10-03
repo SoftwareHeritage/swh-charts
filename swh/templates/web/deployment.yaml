@@ -30,27 +30,36 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.web.priorityClassName }}
       {{ end }}
       initContainers:
-      #  - name: prepare-configuration
-      #    image: debian:bullseye
-      #    imagePullPolicy: IfNotPresent
-      #    command:
-      #    - /bin/bash
-      #    args:
-      #    - -c
-      #    - eval echo "\"$(</etc/softwareheritage/configuration-template/config.yml.template)\"" > /etc/softwareheritage/config.yml
-      #    volumeMounts:
-      #    - name: configuration
-      #      mountPath: /etc/softwareheritage
-      #    - name: configuration-template
-      #      mountPath: /etc/softwareheritage/configuration-template
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - eval echo "\"$(</etc/softwareheritage/configuration-template/config.yml.template)\"" > /etc/softwareheritage/config.yml
+          env:
+            {{- if .Values.web.webConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.web.webConfigurationRef) | nindent 12 -}}
+            {{ end }}
+            {{- if .Values.web.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/softwareheritage
+            - name: configuration-template
+              mountPath: /etc/softwareheritage/configuration-template
         - name: prepare-static
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           command:
-          - /bin/bash
+            - /bin/bash
           args:
-          - -c
-          - cp -r $PWD/.local/share/swh/web/static/ /usr/share/swh/web/static/
+            - -c
+            - cp -r $PWD/.local/share/swh/web/static/ /usr/share/swh/web/static/
           volumeMounts:
           - name: static
             mountPath: /usr/share/swh/web/static
@@ -96,10 +105,10 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 30
           command:
-          - /bin/bash
+            - /bin/bash
           args:
-          - -c
-          - /srv/swh/entrypoint.sh
+            - -c
+            - /srv/swh/entrypoint.sh
           env:
             {{ if .Values.web.gunicorn -}}
             - name: THREADS
@@ -115,6 +124,8 @@ spec:
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: LOG_LEVEL
               value: {{ .Values.web.logLevel | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/softwareheritage/config.yml
             {{- if .Values.web.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -131,12 +142,10 @@ spec:
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
               value: "true"
             {{- end }}
-            - name: DJANGO_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.web.djangoSecretKeySecret }}
-                  key: {{ .Values.web.djangoSecretKeyName }}
-                  optional: false
+            {{- if .Values.web.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/softwareheritage
@@ -164,27 +173,21 @@ spec:
               port: webstatic
             initialDelaySeconds: 3
             periodSeconds: 10
-        #  command:
-        #  - /bin/bash
-        #  args:
-        #  - -c
-        #  - /srv/swh/entrypoint.sh
           volumeMounts:
-          - name: static
-            mountPath: /usr/share/nginx/html
+            - name: static
+              mountPath: /usr/share/nginx/html
       volumes:
+      # - name: configuration
+      #   secret:
+      #     secretName: {{ .Values.web.configSecretRef }}
       - name: configuration
-        secret:
-          secretName: {{ .Values.web.configSecretRef }}
-
-      #- name: configuration
-      #  emptyDir: {}
-      #- name: configuration-template
-      #  configMap:
-      #    name: web-configuration-template
-      #    items:
-      #    - key: "config.yml.template"
-      #      path: "config.yml.template"
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+         name: web-configuration-template
+         items:
+         - key: "config.yml.template"
+           path: "config.yml.template"
       - name: static
         emptyDir: {}
 {{ end }}

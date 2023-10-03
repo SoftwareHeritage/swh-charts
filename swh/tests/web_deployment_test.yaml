@@ -5,11 +5,17 @@ tests:
     templates:
       - web/deployment.yaml
     set:
-      web.enabled: true
+      defaultStorageConfiguration:
+        cls: remote
+      defaultStorageConfigurationRef:
+        storageConfigurationRef: defaultStorageConfiguration
+
       swh_web_image: image
       swh_web_image_version: version
+      web.enabled: true
       web.requestedMemory: memory
       web.requestedCpu: cpu
+      web.storageConfigurationRef: defaultStorageConfigurationRef
     asserts:
       - hasDocuments:
           count: 1
@@ -52,19 +58,21 @@ tests:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_MAIN_PACKAGE")]
       - isNull:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_SENTRY_DSN")]
-      - equal:
-          path: spec.template.spec.volumes[?(@.name == "configuration")].secret.secretName
-          value: swh-cassandra-webapp-config
   - it: Web gunicorn workers configuration
     templates:
       - web/deployment.yaml
     set:
+      defaultStorageConfiguration:
+        cls: remote
+      defaultStorageConfigurationRef:
+        storageConfigurationRef: defaultStorageConfiguration
       web.enabled: true
       swh_web_image: image
       swh_web_image_version: version
       web.gunicorn.threads: 101
       web.gunicorn.workers: 102
       web.gunicorn.timeout: 103
+      web.storageConfigurationRef: defaultStorageConfigurationRef
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "THREADS")].value
@@ -79,11 +87,16 @@ tests:
     templates:
       - web/deployment.yaml
     set:
+      defaultStorageConfiguration:
+        cls: remote
+      defaultStorageConfigurationRef:
+        storageConfigurationRef: defaultStorageConfiguration
       web.enabled: true
       swh_web_image: image
       swh_web_image_version: version
       statsdExternalHost: my-statsd-host
       statsdPort: 9999
+      web.storageConfigurationRef: defaultStorageConfigurationRef
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "STATSD_HOST")].value
@@ -95,10 +108,15 @@ tests:
     templates:
       - web/deployment.yaml
     set:
-      web.enabled: true
-      web.sentry.enabled: true
+      defaultStorageConfiguration:
+        cls: remote
+      defaultStorageConfigurationRef:
+        storageConfigurationRef: defaultStorageConfiguration
       swh_web_image: image
       swh_web_image_version: version
+      web.enabled: true
+      web.sentry.enabled: true
+      web.storageConfigurationRef: defaultStorageConfigurationRef
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
@@ -116,6 +134,10 @@ tests:
     templates:
       - web/deployment.yaml
     set:
+      defaultStorageConfiguration:
+        cls: remote
+      defaultStorageConfigurationRef:
+        storageConfigurationRef: defaultStorageConfiguration
       sentry.environment: my-environment
       web.enabled: true
       web.sentry.enabled: true
@@ -123,6 +145,7 @@ tests:
       web.sentry.secretKeyName: my-key
       swh_web_image: image
       swh_web_image_version: version
+      web.storageConfigurationRef: defaultStorageConfigurationRef
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value

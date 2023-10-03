@@ -1,0 +1,14 @@
+postgresqlStorageConfiguration:
+  cls: postgresql
+  host: mydatabasese.server
+  db: swh
+  port: '5432'
+  user: swh
+  pass: pass
+
+defaultStorageConfigurationRef:
+  storageConfigurationRef: postgresqlStorageConfiguration
+
+web:
+  storageConfigurationRef: defaultStorageConfigurationRef
+

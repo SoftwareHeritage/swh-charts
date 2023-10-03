@@ -35,10 +35,15 @@ data:
 {{/* log_dir: */}}
     secret_key: ${DJANGO_SECRET_KEY}
     {{- if .Values.web.contentDisplayMaxSize }}
-    content_display_max_size: {{ .Values.web.contentDisplayMaxSize }}
+    content_display_max_size: {{ .Values.web.contentDisplayMaxSize | quote }}
     {{- end -}}
     {{- if .Values.web.throttling }}
       {{- toYaml .Values.web.throttling | nindent 4 }}
     {{- end -}}
+    {{- if .Values.web.webConfigurationRef }}
+    production_db:
+    {{- include "django.postgresql" (dict "configurationRef" .Values.web.webConfigurationRef
+                                          "Values" .Values) | nindent 4 -}}
+    {{ end }}
 
 {{- end -}}

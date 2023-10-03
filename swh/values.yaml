@@ -65,6 +65,12 @@ sentry:
 #   cls: remote
 #   url: http://myswhsearch.localdomain:5010
 
+# djangoWebConfiguration:
+#   secrets:
+#     DJANGO_SECRET_KEY:
+#       secretKeyRef: common-secrets
+#       secretKeyName: webapp-django-secret-key
+
 # Example of a storage pipeline configuration
 # Adapt according your platform capabilities
 # Used by loaders and possibly journal client / replayers
@@ -108,11 +114,22 @@ sentry:
 #   # objectStorageConfigurationRef: noopObjectStorage
 
 # defaultStorageConfiguration:
-#   storageConfigurationRef: postgresqlStoragecConfiguration
+#   storageConfigurationRef: postgresqlStorageConfiguration
 #   objectStorageConfiguration: remoteObjectStorageConfiguration
 
 # globalROStorageConfiguration:
 # TODO: define this configuration
+
+# postgresqlWebConfiguration:
+#   host: db.internal.softwareheritage.org
+#   port: 5432
+#   db: swh-web
+#   user: swh-web
+#   pass: ${POSTGRESQL_PASSWORD}
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-postgresql-web-secret
+#       secretKeyName: postgres-swh-web-password
 
 # postgresqlSchedulerConfiguration:
 #   cls: postgresql
@@ -505,7 +522,7 @@ web:
   # Configure the scheduler instance used for save code now requests
   # schedulerConfigurationRef: schedulerConfiguration
 
-  storageConfigurationRef: globalROStorageConfiguration
+  # storageConfigurationRef: globalROStorageConfiguration
 
   # vaultConfigurationRef: remoteVaultConfiguration
 
@@ -513,8 +530,7 @@ web:
 
   # countersConfigurationRef: remoteCountersConfiguration
 
-  djangoSecretKeySecret: common-secrets
-  djangoSecretKeyName: webapp-django-secret-key
+  # djangoConfigurationRef: djangoWebConfiguration
 
   # max content size in bytes
   # contentDisplayMaxSize: 5242880 # default webapp value
@@ -537,6 +553,8 @@ web:
   #          - 127.0.0.0/8
   #          - 192.168.100.0/23
   #          - ...
+
+  # webConfigurationRef: postgresqlWebConfiguration
 
 statsd_exporter:
   enabled: false

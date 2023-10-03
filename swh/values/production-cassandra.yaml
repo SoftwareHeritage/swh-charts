@@ -73,6 +73,12 @@ remoteCountersConfiguration:
     cls: remote
     url: http://counters1.internal.softwareheritage.org:5011/
 
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeySecret: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
 storage_replayer:
   enabled: true
 
@@ -276,8 +282,7 @@ web:
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
-  djangoSecretKeySecret: common-secrets
-  djangoSecretKeyName: webapp-django-secret-key
+  djangoConfigurationRef: djangoWebConfiguration
   throttling:
     cache_uri: memcached:11211
     scopes:

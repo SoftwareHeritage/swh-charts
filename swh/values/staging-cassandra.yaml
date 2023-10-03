@@ -560,6 +560,12 @@ storage:
    producerConfig: |-
      message.max.bytes: 1000000000
 
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeySecret: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
 web:
   enabled: true
   logLevel: INFO
@@ -583,8 +589,7 @@ web:
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
-  djangoSecretKeySecret: common-secrets
-  djangoSecretKeyName: webapp-django-secret-key
+  djangoConfigurationRef: djangoWebConfiguration
   throttling:
     cache_uri: memcached:11211
     scopes:
