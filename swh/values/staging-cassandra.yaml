@@ -626,6 +626,7 @@ web:
         - 127.0.0.0/8
         - 192.168.100.0/23
         - 129.168.130.0/24
+  giveConfigurationRef: giveConfiguration
   extraConfig:
     instance_name: webapp-cassandra.internal.staging.swh.network
     allowed_hosts:
@@ -650,6 +651,9 @@ web:
     - swh.web.save_origin_webhooks
     - swh.web.vault
     matomo: {}
+    give:
+      public_key: ${GIVE_PUBLIC_KEY}
+      token: ${GIVE_PRIVATE_TOKEN}
 
 graphql:
   enabled: true

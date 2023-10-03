@@ -143,6 +143,7 @@ web:
   # max content size in bytes
   contentDisplayMaxSize: 5242880 # default webapp value
   depositConfigurationRef: fakeDepositConfiguration
+  giveConfigurationRef: giveConfiguration
   throttling:
     # The memcached url, mandatory
     cache_uri: fake-memcached:11211
@@ -185,6 +186,9 @@ web:
       private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
       private_api_user: "${DEPOSIT_USERNAME}"
       private_api_password: "${DEPOSIT_PASSWORD}"
+    give:
+      public_key: ${GIVE_PUBLIC_KEY}
+      token: ${GIVE_PRIVATE_TOKEN}
 
 toolbox:
   enabled: false

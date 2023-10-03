@@ -201,6 +201,17 @@ sentry:
 #   cls: remote
 #   url: http://<counters service url>
 
+giveConfiguration:
+  public: ${GIVE_PUBLIC_KEY}
+  token: ${GIVE_PRIVATE_TOKEN}
+  secrets:
+    GIVE_PUBLIC_KEY:
+      secretKeyRef: web-give-secrets
+      secretKeyName: public-key
+    GIVE_PRIVATE_TOKEN:
+      secretKeyRef: web-give-secrets
+      secretKeyName: private-token
+
 graphql:
   enabled: false
   priorityClassName: frontend-rpc
@@ -558,6 +569,8 @@ web:
 
   # depositConfigurationRef: depositConfiguration
 
+  # giveConfigurationRef: giveConfiguration
+
   # extraConfig:
   #   instance_name: archive.softwareheritage.org
   #   allowed_hosts:
@@ -588,6 +601,9 @@ web:
   #     private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
   #     private_api_user: "${DEPOSIT_USERNAME}"
   #     private_api_password: "${DEPOSIT_PASSWORD}"
+  #   give:
+  #     public_key: ${GIVE_PUBLIC_KEY}
+  #     token: ${GIVE_PRIVATE_TOKEN}
 
 statsd_exporter:
   enabled: false

@@ -331,6 +331,7 @@ web:
       swh_raw_object:
         limiter_rate:
           default: 120/h
+  giveConfigurationRef: giveConfiguration
   extraConfig:
     instance_name: webapp-cassandra.internal.softwareheritage.org
     allowed_hosts:
@@ -355,6 +356,9 @@ web:
       - swh.web.vault
     add_forge_now:
       email_address: add-forge-now@archive.softwareheritage.org
+    give:
+      public_key: ${GIVE_PUBLIC_KEY}
+      token: ${GIVE_PRIVATE_TOKEN}
 
 graphql:
   enabled: true
