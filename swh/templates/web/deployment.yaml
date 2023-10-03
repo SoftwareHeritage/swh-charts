@@ -21,6 +21,8 @@ spec:
     metadata:
       labels:
         app: web
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}
     spec:
       {{- if .Values.web.affinity }}
       affinity:
