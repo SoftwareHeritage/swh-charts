@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .name }}
+        app: svix-server
     spec:
       {{- if .affinity }}
       affinity:
