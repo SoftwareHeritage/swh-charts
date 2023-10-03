@@ -1,0 +1,79 @@
+{{ if .Values.svix.enabled -}}
+{{ with .Values.svix -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .namespace }}
+  name: svix-server
+  labels:
+    app: svix-server
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: svix-server
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      {{- if .affinity }}
+      affinity:
+        {{- toYaml .affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: svix-server
+          resources:
+            requests:
+              memory: {{ .requestedMemory | default "512Mi" }}
+              cpu: {{ .requestedCpu | default "500m" }}
+          image: svix/svix-server:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8071
+              name: svix
+          readinessProbe:
+            httpGet:
+              path: /
+              port: svix
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: svix
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
+          env:
+            - name: SVIX_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: SVIX_JWT_SECRET
+            - name: SVIX_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: APP_DB_PASS
+            - name: SVIX_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: APP_DB_USER
+            - name: WAIT_FOR
+              value: "true"  # We want to wait for the default services
+            - name: SVIX_REDIS_DSN
+              value: "redis://redis:6379"
+            - name: SVIX_DB_DSN
+              value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@postgres"
+{{- end }}
+{{- end }}

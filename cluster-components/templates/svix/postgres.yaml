@@ -1,0 +1,98 @@
+{{ if .Values.svix.enabled -}}
+{{ with .Values.svix -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .namespace }}
+  name: svix-postgres
+  labels:
+    app: svix-postgres
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: svix-postgres
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: svix-postgres
+    spec:
+      {{- if .affinity }}
+      affinity:
+        {{- toYaml .affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: postgres
+          resources:
+            requests:
+              memory: {{ .postgres.requestedMemory | default "512Mi" }}
+              cpu: {{ .postgres.requestedCpu | default "500m" }}
+          image: postgres:13.12
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+              name: postgres
+          readinessProbe:
+            exec:
+              command:
+                - psql
+                - "-U"
+                - "postgres"
+                - "-c"
+                - "select version();"
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command:
+                - psql
+                - "-U"
+                - "postgres"
+                - "-c"
+                - "select version();"
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: POSTGRES_PASSWORD
+            - name: APP_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: APP_DB_USER
+            - name: APP_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: APP_DB_PASS
+            - name: APP_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: APP_DB_NAME
+          volumeMounts:
+            - name: init-svix-db
+              mountPath: /docker-entrypoint-initdb.d/
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: init-svix-db
+        configMap:
+          name: postgres-init-svix-db
+          items:
+          - key: "init.sh.template"
+            path: "init.sh"
+      - name: postgres-data
+        emptyDir: {}
+{{- end }}
+{{- end }}
