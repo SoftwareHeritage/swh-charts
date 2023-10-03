@@ -626,6 +626,30 @@ web:
         - 127.0.0.0/8
         - 192.168.100.0/23
         - 129.168.130.0/24
+  extraConfig:
+    instance_name: webapp-cassandra.internal.staging.swh.network
+    allowed_hosts:
+    - webapp-cassandra.internal.staging.swh.network
+    keycloak:
+      server_url: https://auth.softwareheritage.org/auth/
+      realm_name: SoftwareHeritageStaging
+    history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
+    add_forge_now:
+      email_address: add-forge-now@webapp.staging.swh.network
+    swh_extra_django_apps:
+    - swh.web.add_forge_now
+    - swh.web.archive_coverage
+    - swh.web.badges
+    - swh.web.banners
+    - swh.web.deposit
+    - swh.web.inbound_email
+    - swh.web.jslicenses
+    - swh.web.mailmap
+    - swh.web.metrics
+    - swh.web.save_code_now
+    - swh.web.save_origin_webhooks
+    - swh.web.vault
+    matomo: {}
 
 graphql:
   enabled: true

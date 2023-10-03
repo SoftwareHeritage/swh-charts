@@ -331,6 +331,30 @@ web:
       swh_raw_object:
         limiter_rate:
           default: 120/h
+  extraConfig:
+    instance_name: webapp-cassandra.internal.softwareheritage.org
+    allowed_hosts:
+    - webapp-cassandra.internal.softwareheritage.org
+    history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
+    es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+    keycloak:
+      server_url: https://auth.softwareheritage.org/auth/
+      realm_name: SoftwareHeritage
+    swh_extra_django_apps:
+      - swh.web.add_forge_now
+      - swh.web.archive_coverage
+      - swh.web.badges
+      - swh.web.banners
+      - swh.web.deposit
+      - swh.web.inbound_email
+      - swh.web.jslicenses
+      - swh.web.mailmap
+      - swh.web.metrics
+      - swh.web.save_code_now
+      - swh.web.save_origin_webhooks
+      - swh.web.vault
+    add_forge_now:
+      email_address: add-forge-now@archive.softwareheritage.org
 
 graphql:
   enabled: true
