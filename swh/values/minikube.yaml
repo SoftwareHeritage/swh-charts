@@ -142,6 +142,7 @@ web:
   djangoConfigurationRef: djangoWebConfiguration
   # max content size in bytes
   contentDisplayMaxSize: 5242880 # default webapp value
+  depositConfigurationRef: fakeDepositConfiguration
   throttling:
     # The memcached url, mandatory
     cache_uri: fake-memcached:11211
@@ -176,6 +177,10 @@ web:
     - swh.web.save_origin_webhooks
     - swh.web.vault
     matomo: {}
+    deposit:
+      private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
+      private_api_user: "${DEPOSIT_USERNAME}"
+      private_api_password: "${DEPOSIT_PASSWORD}"
 
 toolbox:
   enabled: false

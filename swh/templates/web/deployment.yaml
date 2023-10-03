@@ -49,6 +49,10 @@ spec:
             {{- include "swh.secrets.environment" (dict "Values" .Values
                                                         "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
             {{ end }}
+            {{- if .Values.web.depositConfigurationRef -}}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" .Values.web.depositConfigurationRef) | nindent 12 }}
+            {{ end }}
           volumeMounts:
             - name: configuration
               mountPath: /etc/softwareheritage

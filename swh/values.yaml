@@ -555,6 +555,9 @@ web:
   #          - ...
 
   # webConfigurationRef: postgresqlWebConfiguration
+
+  # depositConfigurationRef: depositConfiguration
+
   # extraConfig:
   #   instance_name: archive.softwareheritage.org
   #   allowed_hosts:
@@ -581,7 +584,10 @@ web:
   #     - swh.web.vault
   #   add_forge_now:
   #     email_address: add-forge-now@archive.softwareheritage.org
-
+  #   deposit:
+  #     private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
+  #     private_api_user: "${DEPOSIT_USERNAME}"
+  #     private_api_password: "${DEPOSIT_PASSWORD}"
 
 statsd_exporter:
   enabled: false
