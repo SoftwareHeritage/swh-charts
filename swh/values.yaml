@@ -500,15 +500,6 @@ web:
   requestedMemory: 100Mi
   autoScaling:
     maxReplicaCount: 1
-#  affinity:
-#    nodeAffinity:
-#      requiredDuringSchedulingIgnoredDuringExecution:
-#        nodeSelectorTerms:
-#        - matchExpressions:
-#          - key: swh/web
-#            operator: In
-#            values:
-#            - "true"
 #  gunicorn:
 #    threads: 5
 #    workers: 2
@@ -521,31 +512,24 @@ web:
     secretKeyRef: common-secrets
     secretKeyName: web-sentry-dsn
   configSecretRef: swh-cassandra-webapp-config
-
   # searchConfigurationRef:
   # The webapp uses the swh-storage search by default, define a swh-search remote configuration
   # if available
   # searchConfigurationRef: searchConfiguration
-
   # metadataSearchBackend: swh-indexer-storage or swh-search
   metadataSearchBackend: swh-indexer-storage
-
   # Configure the scheduler instance used for save code now requests
   # schedulerConfigurationRef: schedulerConfiguration
-
   # storageConfigurationRef: globalROStorageConfiguration
-
   # vaultConfigurationRef: remoteVaultConfiguration
-
   # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-
   # countersConfigurationRef: remoteCountersConfiguration
-
   # djangoConfigurationRef: djangoWebConfiguration
-
   # max content size in bytes
   # contentDisplayMaxSize: 5242880 # default webapp value
-
+  # webConfigurationRef: postgresqlWebConfiguration
+  # depositConfigurationRef: depositConfiguration
+  # giveConfigurationRef: giveConfiguration
   # throttling:
   #   # The memcached url, mandatory
   #   cache_uri: memcached:11211
@@ -564,13 +548,6 @@ web:
   #          - 127.0.0.0/8
   #          - 192.168.100.0/23
   #          - ...
-
-  # webConfigurationRef: postgresqlWebConfiguration
-
-  # depositConfigurationRef: depositConfiguration
-
-  # giveConfigurationRef: giveConfiguration
-
   # extraConfig:
   #   instance_name: archive.softwareheritage.org
   #   allowed_hosts:
