@@ -53,6 +53,16 @@ spec:
             {{- include "swh.secrets.environment" (dict "Values" $.Values
                                                         "configurationRef" .Values.web.depositConfigurationRef) | nindent 12 }}
             {{ end }}
+            {{- if .Values.web.sentry.enabled }}
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.web.sentry.secretKeyRef }}
+                  key: {{ .Values.web.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            {{ end }}
           volumeMounts:
             - name: configuration
               mountPath: /etc/softwareheritage
