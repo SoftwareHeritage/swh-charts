@@ -18,6 +18,7 @@
 {{- $container_image_version := get $.Values $image_version_key }}
 {{- $loader_affinity := get $deployment_config "affinity" | default $.Values.loaders.affinity }}
 {{- $loader_priority_class_name := get $deployment_config "priorityClassName" -}}
+{{- $loader_sysctls := get $deployment_config "sysctls" | default $.Values.loaders.sysctls | default (dict) }}
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 ---
 apiVersion: apps/v1
@@ -180,6 +181,14 @@ spec:
         secret:
           secretName: sentry-settings-for-celery-tasks
           optional: true
+      {{- end }}
+      {{- if $loader_sysctls }}
+      securityContext:
+        sysctls:
+          {{ range $name, $value := $loader_sysctls -}}
+          - name: {{ $name | quote }}
+            value: {{ $value | quote }}
+          {{ end }}
       {{- end }}
 {{ end }}
 {{- end -}}
