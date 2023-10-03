@@ -39,15 +39,17 @@ ss-helm-diff:
 helm-diff: swh-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube:
+	kubectl --context minikube create namespace swh ; \
+	kubectl --context minikube --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml' ; \
 	helm --kube-context minikube upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
-      -n swh --create-namespace --debug && \
-    kubectl --context minikube --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'
+      -n swh --debug
 
 swh-uninstall:
-	helm --kube-context minikube uninstall $(SWH_CHART) -n swh && \
-    kubectl --context minikube --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'
+	helm --kube-context minikube uninstall $(SWH_CHART) -n swh ; \
+    kubectl --context minikube --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context minikube delete namespace swh
 
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
