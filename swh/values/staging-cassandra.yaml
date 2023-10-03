@@ -574,7 +574,6 @@ web:
   requestedMemory: 500Mi
   #autoScaling:
   #  maxReplicaCount: 5
-  configSecretRef: swh-cassandra-webapp-config
   host: webapp-cassandra.internal.staging.swh.network
   ingressAnnotations:
     cert-manager.io/cluster-issuer: letsencrypt-production-gandi

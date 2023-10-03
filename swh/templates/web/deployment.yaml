@@ -197,9 +197,6 @@ spec:
             - name: static
               mountPath: /usr/share/nginx/html
       volumes:
-      # - name: configuration
-      #   secret:
-      #     secretName: {{ .Values.web.configSecretRef }}
       - name: configuration
         emptyDir: {}
       - name: configuration-template

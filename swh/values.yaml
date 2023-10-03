@@ -511,7 +511,6 @@ web:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: web-sentry-dsn
-  configSecretRef: swh-cassandra-webapp-config
   # searchConfigurationRef:
   # The webapp uses the swh-storage search by default, define a swh-search remote configuration
   # if available
