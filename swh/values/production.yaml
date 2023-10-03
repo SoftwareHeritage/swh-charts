@@ -418,6 +418,8 @@ loaders:
         stopWhenNoActivity: false
       requestedMemory: 768Mi
       requestedCpu: 100m
+      sysctls:
+        net.ipv4.tcp_dsack: 0
     git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
