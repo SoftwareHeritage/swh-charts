@@ -39,7 +39,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - eval echo "\"$(</etc/softwareheritage/configuration-template/config.yml.template)\"" > /etc/softwareheritage/config.yml
+            - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
             {{- if .Values.web.webConfigurationRef }}
             {{- include "swh.secrets.environment" (dict "Values" .Values
@@ -69,9 +69,9 @@ spec:
             {{ end }}
           volumeMounts:
             - name: configuration
-              mountPath: /etc/softwareheritage
+              mountPath: /etc/swh
             - name: configuration-template
-              mountPath: /etc/softwareheritage/configuration-template
+              mountPath: /etc/swh/configuration-template
         - name: prepare-static
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
@@ -145,7 +145,7 @@ spec:
             - name: LOG_LEVEL
               value: {{ .Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
-              value: /etc/softwareheritage/config.yml
+              value: /etc/swh/config.yml
             {{- if .Values.web.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -168,7 +168,7 @@ spec:
             {{ end }}
           volumeMounts:
           - name: configuration
-            mountPath: /etc/softwareheritage
+            mountPath: /etc/swh
             readOnly: true
         - name: nginx
           resources:
