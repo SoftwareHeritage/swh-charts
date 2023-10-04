@@ -57,13 +57,13 @@ data:
     MODULE=$1
     CODE_VERSION=${2-""}
 
-    if [ -z ${MODULE} ]; then
+    if [ -z "${MODULE}" ]; then
       echo The environment variable must be defined with the module to check
       echo for example "storage"
       exit 1
     fi
 
-    if [ ! -z ${CODE_VERSION ]; then
+    if [ ! -z "${CODE_VERSION}" ]; then
       swh db --config-file=/etc/swh/config-${MODULE}.yml upgrade "${MODULE}" \
         --to-version ${CODE_VERSION}
     else
