@@ -150,7 +150,7 @@ deposit:
                     (get $configuration "port") -}}
 {{- $user := required (print "_helpers.tpl:swh.postgresql: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $password := required (print "_helpers.tpl:swh.postgresql: The <password> property is mandatory in " .configurationRef)
+{{- $password := required (print "_helpers.tpl:swh.postgresql: The <pass> property is mandatory in " .configurationRef)
                     (get $configuration "pass") -}}
 {{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}

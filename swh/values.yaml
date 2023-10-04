@@ -29,7 +29,7 @@ sentry:
 #   host: mydatabasese.server
 #   port: '5432'
 #   user: swh
-#   password: ${POSTGRESQL_PASSWORD}
+#   pass: ${POSTGRESQL_PASSWORD}
 #   db: swh
 #   secrets:
 #     POSTGRESQL_PASSWORD:
@@ -115,7 +115,7 @@ sentry:
 #   host: mydatabasese.server
 #   port: '5432'
 #   user: swh-scheduler
-#   password: ${POSTGRESQL_PASSWORD}
+#   pass: ${POSTGRESQL_PASSWORD}
 #   db: swh
 #   secrets:
 #     POSTGRESQL_PASSWORD:
