@@ -314,3 +314,13 @@ journal:
 {{ toYaml $brokers | indent 2 }}
   group_id: {{ $groupId }}
 {{- end -}}
+
+
+{{/*
+Generate the configuration for a remote service
+*/}}
+{{- define "swh.service.fromYaml" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{ .service }}:
+{{ toYaml (get .Values .configurationRef) | indent 2 }}
+{{- end -}}
