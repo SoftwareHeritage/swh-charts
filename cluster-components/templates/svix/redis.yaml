@@ -44,6 +44,17 @@ spec:
               mountPath: /data
       volumes:
       - name: redis-data
-        emptyDir: {}
+        persistent:
+          volumeClaimTemplate:
+            metadata:
+              labels:
+                type: persistent-volume
+            spec:
+              accessModes:
+              - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 10Gi
+              storageClassName: local-persistent
 {{- end }}
 {{- end }}
