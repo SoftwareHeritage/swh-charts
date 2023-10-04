@@ -500,6 +500,13 @@ web:
   requestedMemory: 100Mi
   autoScaling:
     maxReplicaCount: 1
+  refreshSavecodenowStatus:
+    enabled: false
+    priorityClassName: frontend-rpc-workload
+    logLevel: INFO
+    # concurrencyPolicy: Forbid
+    # At every minute
+    cron: "* * * * *"
 #  gunicorn:
 #    threads: 5
 #    workers: 2

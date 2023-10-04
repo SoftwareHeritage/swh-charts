@@ -140,6 +140,9 @@ web:
   djangoConfigurationRef: djangoWebConfiguration
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
+  refreshSavecodenowStatus:
+    enabled: false
+    cron: "* 9 * * *"
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets
