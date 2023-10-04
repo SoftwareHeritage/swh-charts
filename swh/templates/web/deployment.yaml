@@ -128,7 +128,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - /srv/swh/entrypoint.sh
+            - /opt/swh/entrypoint.sh
           env:
             {{ if .Values.web.gunicorn -}}
             - name: THREADS
