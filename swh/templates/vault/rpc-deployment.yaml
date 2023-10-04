@@ -1,0 +1,133 @@
+{{ if .Values.vault.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: vault-rpc
+  labels:
+    app: vault-rpc
+spec:
+  revisionHistoryLimit: 2
+  {{ if .Values.vault.replicas -}}
+  replicas: {{ .Values.vault.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: vault-rpc
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: vault-rpc
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/vault/rpc-configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.vault.affinity }}
+      affinity:
+        {{- toYaml .Values.vault.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and .Values.podPriority.enabled .Values.vault.priorityClassName }}
+      priorityClassName: {{ .Values.namespace }}-{{ .Values.vault.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          env:
+            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.vault.vaultConfigurationRef
+                                                       "Values" .Values) | nindent 12 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        - name: vault-rpc
+          resources:
+            requests:
+              memory: {{ .Values.vault.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.vault.requestedCpu | default "500m" }}
+          {{- if or .Values.vault.limitedMemory .Values.vault.limitedCpu }}
+            limits:
+            {{- if .Values.vault.limitedMemory }}
+              memory: {{ .Values.vault.limitedMemory }}
+            {{- end }}
+            {{- if .Values.vault.limitedCpu }}
+              cpu: {{ .Values.vault.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          image: {{ .Values.swh_vault_image }}:{{ .Values.swh_vault_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5005
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - /opt/swh/entrypoint.sh
+          env:
+            {{ if .Values.vault.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.vault.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.vault.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.vault.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.vault.logLevel | default "INFO" }}
+          {{- if .Values.vault.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.vault
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.vault.sentry.secretKeyRef }}
+                  key: {{ .Values.vault.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: vault-rpc-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{- end -}}
