@@ -275,71 +275,25 @@ web:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
   searchConfigurationRef: searchConfiguration
-  metadataSearchBackend: swh-search
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
-  throttling:
-    cache_uri: memcached:11211
-    scopes:
-      swh_api:
-        limiter_rate:
-          default: 120/h
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 128.93.166.14
-        - 131.107.174.0/24
-        - 213.135.60.145
-        - 213.135.60.146
-        - 37.187.137.47
-        - 37.187.96.121
-      swh_api_origin_search:
-        limiter_rate:
-          default: 10/m
-      swh_api_origin_visit_latest:
-        limiter_rate:
-          default: 700/m
-      swh_vault_cooking:
-        limiter_rate:
-          default: 120/h
-          GET: 60/m
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 128.93.166.14
-        - 131.107.174.0/24
-        - 213.135.60.145
-        - 213.135.60.146
-        - 37.187.96.121
-      swh_save_origin:
-        limiter_rate:
-          default: 120/h
-          POST: 10/h
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 128.93.166.14
-        - 131.107.174.0/24
-        - 213.135.60.145
-        - 213.135.60.146
-        - 37.187.96.121
-      swh_raw_object:
-        limiter_rate:
-          default: 120/h
   giveConfigurationRef: giveConfiguration
   extraConfig:
     instance_name: webapp-cassandra.internal.softwareheritage.org
     allowed_hosts:
     - webapp-cassandra.internal.softwareheritage.org
-    history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
-    es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritage
+    search_config:
+      metadata_backend: swh-search
+    content_display_max_size: 5242880
+    history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
+    es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
     swh_extra_django_apps:
       - swh.web.add_forge_now
       - swh.web.archive_coverage
@@ -358,6 +312,54 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
+    throttling:
+      cache_uri: memcached:11211
+      scopes:
+        swh_api:
+          limiter_rate:
+            default: 120/h
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 128.93.166.14
+          - 131.107.174.0/24
+          - 213.135.60.145
+          - 213.135.60.146
+          - 37.187.137.47
+          - 37.187.96.121
+        swh_api_origin_search:
+          limiter_rate:
+            default: 10/m
+        swh_api_origin_visit_latest:
+          limiter_rate:
+            default: 700/m
+        swh_vault_cooking:
+          limiter_rate:
+            default: 120/h
+            GET: 60/m
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 128.93.166.14
+          - 131.107.174.0/24
+          - 213.135.60.145
+          - 213.135.60.146
+          - 37.187.96.121
+        swh_save_origin:
+          limiter_rate:
+            default: 120/h
+            POST: 10/h
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 128.93.166.14
+          - 131.107.174.0/24
+          - 213.135.60.145
+          - 213.135.60.146
+          - 37.187.96.121
+        swh_raw_object:
+          limiter_rate:
+            default: 120/h
 
 graphql:
   enabled: true

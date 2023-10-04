@@ -131,40 +131,30 @@ web:
   enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
-  debug: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   searchConfigurationRef: fakeRemoteSearchConfiguration
-  metadataSearchBackend: swh-indexer-storage
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakeRemoteVaultConfiguration
   countersConfigurationRef: fakeRemoteCountersConfiguration
   webConfigurationRef: fakePostgresqlWebConfiguration
   djangoConfigurationRef: djangoWebConfiguration
-  # max content size in bytes
-  contentDisplayMaxSize: 5242880 # default webapp value
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
-  throttling:
-    # The memcached url, mandatory
-    cache_uri: fake-memcached:11211
-    scopes:
-      swh_api:
-        limiter_rate:
-          default: 120/h
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.101.0/24
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets
     secretKeyName: web-sentry-dsn
   extraConfig:
+    debug: false
     instance_name: webapp.internal.minikube
     allowed_hosts:
     - webapp.internal.minikube
     keycloak:
       server_url: https://auth.s.o/auth/
       realm_name: SwhMinikube
+    search_config:
+      metadata_backend: swh-indexer-storage
+    content_display_max_size: 5242880
     history_counters_url: http://counters0.i.s.s.n:5011/counters_history/history.json
     add_forge_now:
       email_address: add-forge-now@webapp.s.s.n
@@ -189,6 +179,16 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
+    throttling:
+      # The memcached url, mandatory
+      cache_uri: fake-memcached:11211
+      scopes:
+        swh_api:
+          limiter_rate:
+            default: 120/h
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.101.0/24
 
 toolbox:
   enabled: false

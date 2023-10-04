@@ -582,49 +582,12 @@ web:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
   searchConfigurationRef: searchConfiguration
-  metadataSearchBackend: swh-search
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
-  throttling:
-    cache_uri: memcached:11211
-    scopes:
-      swh_api:
-        limiter_rate:
-          default: 120/h
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 129.168.130.0/24
-      swh_api_origin_search:
-        limiter_rate:
-          default: 10/m
-      swh_api_origin_visit_latest:
-        limiter_rate:
-          default: 700/m
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 192.168.130.0/24
-      swh_vault_cooking:
-        limiter_rate:
-          default: 120/h
-          GET: 60/m
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 192.168.130.0/24
-      swh_save_origin:
-        limiter_rate:
-          default: 120/h
-          POST: 10/h
-        exempted_networks:
-        - 127.0.0.0/8
-        - 192.168.100.0/23
-        - 129.168.130.0/24
   giveConfigurationRef: giveConfiguration
   extraConfig:
     instance_name: webapp-cassandra.internal.staging.swh.network
@@ -633,6 +596,9 @@ web:
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritageStaging
+    search_config:
+      metadata_backend: swh-search
+    content_display_max_size: 5242880
     history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
     add_forge_now:
       email_address: add-forge-now@webapp.staging.swh.network
@@ -653,6 +619,42 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
+    throttling:
+      cache_uri: memcached:11211
+      scopes:
+        swh_api:
+          limiter_rate:
+            default: 120/h
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 129.168.130.0/24
+        swh_api_origin_search:
+          limiter_rate:
+            default: 10/m
+        swh_api_origin_visit_latest:
+          limiter_rate:
+            default: 700/m
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 192.168.130.0/24
+        swh_vault_cooking:
+          limiter_rate:
+            default: 120/h
+            GET: 60/m
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 192.168.130.0/24
+        swh_save_origin:
+          limiter_rate:
+            default: 120/h
+            POST: 10/h
+          exempted_networks:
+          - 127.0.0.0/8
+          - 192.168.100.0/23
+          - 129.168.130.0/24
 
 graphql:
   enabled: true

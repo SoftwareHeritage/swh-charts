@@ -511,12 +511,7 @@ web:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: web-sentry-dsn
-  # searchConfigurationRef:
-  # The webapp uses the swh-storage search by default, define a swh-search remote configuration
-  # if available
   # searchConfigurationRef: searchConfiguration
-  # metadataSearchBackend: swh-indexer-storage or swh-search
-  metadataSearchBackend: swh-indexer-storage
   # Configure the scheduler instance used for save code now requests
   # schedulerConfigurationRef: schedulerConfiguration
   # storageConfigurationRef: globalROStorageConfiguration
@@ -524,29 +519,9 @@ web:
   # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   # countersConfigurationRef: remoteCountersConfiguration
   # djangoConfigurationRef: djangoWebConfiguration
-  # max content size in bytes
-  # contentDisplayMaxSize: 5242880 # default webapp value
   # webConfigurationRef: postgresqlWebConfiguration
   # depositConfigurationRef: depositConfiguration
   # giveConfigurationRef: giveConfiguration
-  # throttling:
-  #   # The memcached url, mandatory
-  #   cache_uri: memcached:11211
-  #   scopes:
-  #     # Possible scopes are
-  #     # - swh_api
-  #     # - swh_api_origin_search
-  #     # - swh_api_origin_visit_latest
-  #     # - swh_vault_cooking
-  #     # - swh_save_origin
-  #     # - swh_raw_object
-  #     swh_api:
-  #       limiter_rate:
-  #         default: 120/h
-  #        exempted_networks: # optional
-  #          - 127.0.0.0/8
-  #          - 192.168.100.0/23
-  #          - ...
   # extraConfig:
   #   instance_name: archive.softwareheritage.org
   #   allowed_hosts:
@@ -558,6 +533,11 @@ web:
   #   keycloak:
   #     server_url: https://auth.softwareheritage.org/auth/
   #     realm_name: SoftwareHeritage
+  #   search_config:
+  #     # swh-indexer-storage or swh-search
+  #     metadata_backend: swh-indexer-storage
+  #   # max content size in bytes
+  #   content_display_max_size: 5242880
   #   swh_extra_django_apps:
   #     - swh.web.add_forge_now
   #     - swh.web.archive_coverage
@@ -580,6 +560,24 @@ web:
   #   give:
   #     public_key: ${GIVE_PUBLIC_KEY}
   #     token: ${GIVE_PRIVATE_TOKEN}
+  #   throttling:
+  #     # The memcached url, mandatory
+  #     cache_uri: memcached:11211
+  #     scopes:
+  #       # Possible scopes are
+  #       # - swh_api
+  #       # - swh_api_origin_search
+  #       # - swh_api_origin_visit_latest
+  #       # - swh_vault_cooking
+  #       # - swh_save_origin
+  #       # - swh_raw_object
+  #       swh_api:
+  #         limiter_rate:
+  #           default: 120/h
+  #          exempted_networks: # optional
+  #            - 127.0.0.0/8
+  #            - 192.168.100.0/23
+  #            - ...
 
 statsd_exporter:
   enabled: false
