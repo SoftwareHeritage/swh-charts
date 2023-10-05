@@ -415,6 +415,7 @@ loaders:
         maxReplicaCount: 64
         minReplicaCount: 1
         stopWhenNoActivity: false
+        queueThreshold: 200
       requestedMemory: 768Mi
       requestedCpu: 100m
       sysctls:
