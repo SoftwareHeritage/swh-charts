@@ -236,6 +236,8 @@ toolbox:
       celeryConfigurationRef: fakeCeleryConfiguration
     scrubber:
       scrubberConfigurationRef: fakePostgresqlScrubberConfiguration
+    vault:
+      vaultConfigurationRef: fakePostgresqlVaultConfiguration
 
 fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n

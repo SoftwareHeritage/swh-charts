@@ -506,6 +506,8 @@ toolbox:
       storageConfigurationRef: postgresqlStorageConfiguration
     scrubber:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
+    vault:
+      vaultConfigurationRef: postgresqlVaultConfiguration
 
 scheduler:
   enabled: true

@@ -143,7 +143,7 @@ sentry:
 #       secretKeyRef: swh-postgresql-common-secret
 #       secretKeyName: postgres-swh-password
 
-# vaultPostgresqlConfiguration:
+# postgresqlVaultConfiguration:
 #   cls: postgresql
 #   host: mydatabasese.server
 #   port: '5432'
@@ -655,6 +655,8 @@ toolbox:
   #     storageConfigurationRef: postgresqlStorageConfiguration
   #   scrubber:
   #     scrubberConfigurationRef: postgresScrubberConfiguration
+  #   vault:
+  #     vaultConfigurationRef: postgresqlVaultConfiguration
 
 vault:
   enabled: false
@@ -664,7 +666,7 @@ vault:
     secretKeyRef: scheduler-sentry-secrets
     secretKeyName: sentry-dsn
   # schedulerConfigurationRef: remoteSchedulerConfiguration
-  # vaultConfigurationRef: vaultPostgresqlConfiguration
+  # vaultConfigurationRef: postgresqlVaultConfiguration
   # logLevel: INFO
   # extraConfig:
   #   smtp:
