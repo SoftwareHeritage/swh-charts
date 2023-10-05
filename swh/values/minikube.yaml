@@ -127,6 +127,32 @@ storage_replayer:
   requestedMemory: 50Mi
   requestedCpu: 50m
 
+internalNetworkRanges:
+  - 127.0.0.0/8
+  - 192.168.100.0/24
+
+externalAuthorizedNetworkRanges:
+  # Not really external, but to exercise this part
+  - 10.100.100.0/24
+
+webThrottling:
+  # Those are authorized networks to exemple for each scope
+  internalExemptedNetworkRangesRef: internalNetworkRanges
+  externalExemptedNetworkRangesRef: externalAuthorizedNetworkRanges
+  # The memcached url, mandatory
+  cache_uri: fake-memcached:11211
+  scopes_with_exempted_networks:
+    swh_api:
+      limiter_rate:
+        default: 120/h
+      exempted_networks:
+        # Extra specific network ranges to append to the other network
+        - 192.168.102.0/24
+  scopes:
+    swh_api_origin_search:
+      limiter_rate:
+        default: 120/h
+
 web:
   enabled: false
   requestedMemory: 50Mi
@@ -140,6 +166,7 @@ web:
   djangoConfigurationRef: djangoWebConfiguration
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
+  throttlingConfigurationRef: webThrottling
   refreshSavecodenowStatus:
     enabled: false
     cron: "* 9 * * *"
@@ -182,16 +209,6 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
-    throttling:
-      # The memcached url, mandatory
-      cache_uri: fake-memcached:11211
-      scopes:
-        swh_api:
-          limiter_rate:
-            default: 120/h
-          exempted_networks:
-          - 127.0.0.0/8
-          - 192.168.101.0/24
 
 toolbox:
   enabled: false

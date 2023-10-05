@@ -259,6 +259,52 @@ storage:
   objstorageClass: multiplexer
   objstorageConfig: ${OBJSTORAGECONFIG}
 
+internalNetworkRanges:
+  - 127.0.0.0/8
+  # rocq production range ip
+  - 192.168.100.0/24
+  # azure production range ip
+  - 192.168.200.0/22
+  # Cluster internal ip
+  - 10.42.0.0/16
+  - 10.43.0.0/16
+
+externalAuthorizedNetworkRanges:
+  - 128.93.166.14
+  - 131.107.174.0/24
+  - 213.135.60.145
+  - 213.135.60.146
+  - 37.187.96.121
+
+webThrottling:
+  internalExemptedNetworkRangesRef: internalNetworkRanges
+  externalExemptedNetworkRangesRef: externalAuthorizedNetworkRanges
+  cache_uri: memcached:11211
+  scopes_with_exempted_networks:
+    swh_api:
+      limiter_rate:
+        default: 120/h
+      exempted_networks:
+      - 37.187.137.47
+    swh_vault_cooking:
+      limiter_rate:
+        default: 120/h
+        GET: 60/m
+    swh_save_origin:
+      limiter_rate:
+        default: 120/h
+        POST: 10/h
+  scopes:
+    swh_api_origin_search:
+      limiter_rate:
+        default: 10/m
+    swh_api_origin_visit_latest:
+      limiter_rate:
+        default: 700/m
+    swh_raw_object:
+      limiter_rate:
+        default: 120/h
+
 web:
   enabled: true
   logLevel: INFO
@@ -282,6 +328,7 @@ web:
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
   giveConfigurationRef: giveConfiguration
+  throttlingConfigurationRef: webThrottling
   extraConfig:
     instance_name: webapp-cassandra.internal.softwareheritage.org
     allowed_hosts:
@@ -312,54 +359,6 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
-    throttling:
-      cache_uri: memcached:11211
-      scopes:
-        swh_api:
-          limiter_rate:
-            default: 120/h
-          exempted_networks:
-          - 127.0.0.0/8
-          - 192.168.100.0/23
-          - 128.93.166.14
-          - 131.107.174.0/24
-          - 213.135.60.145
-          - 213.135.60.146
-          - 37.187.137.47
-          - 37.187.96.121
-        swh_api_origin_search:
-          limiter_rate:
-            default: 10/m
-        swh_api_origin_visit_latest:
-          limiter_rate:
-            default: 700/m
-        swh_vault_cooking:
-          limiter_rate:
-            default: 120/h
-            GET: 60/m
-          exempted_networks:
-          - 127.0.0.0/8
-          - 192.168.100.0/23
-          - 128.93.166.14
-          - 131.107.174.0/24
-          - 213.135.60.145
-          - 213.135.60.146
-          - 37.187.96.121
-        swh_save_origin:
-          limiter_rate:
-            default: 120/h
-            POST: 10/h
-          exempted_networks:
-          - 127.0.0.0/8
-          - 192.168.100.0/23
-          - 128.93.166.14
-          - 131.107.174.0/24
-          - 213.135.60.145
-          - 213.135.60.146
-          - 37.187.96.121
-        swh_raw_object:
-          limiter_rate:
-            default: 120/h
 
 graphql:
   enabled: true

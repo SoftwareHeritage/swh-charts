@@ -36,6 +36,10 @@ data:
     client_config:
       sentry_dsn: ${SWH_SENTRY_DSN}
     {{- end }}
+    {{- if .Values.web.throttlingConfigurationRef -}}
+    {{- include "swh.web.throttling" (dict "configurationRef" .Values.web.throttlingConfigurationRef
+                                           "Values" .Values) | nindent 4 -}}
+    {{- end }}
     {{- if .Values.web.extraConfig -}}
     {{ toYaml .Values.web.extraConfig | nindent 4 }}
     {{- end }}

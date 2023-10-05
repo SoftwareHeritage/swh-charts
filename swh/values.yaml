@@ -490,6 +490,45 @@ storage:
   #  prefix: swh.journal.objects
   #  anonymize: true
 
+# internalNetworkRanges:
+#   - xxx.xxx.xxx.xxx/24
+#   - yyy.yyy.yyy.yyy/24
+
+# externalNetworkRanges:
+#   - zzz.zzz.zzz.zzz/24
+
+# throttlingConfiguration:
+#   internalExemptedNetworkRangesRef: internalNetworkRanges
+#   externalExemptedNetworkRangesRef: externalNetworkRanges
+#   # The memcached url, mandatory
+#   cache_uri: memcached:11211
+#   # rate limit with some network exception
+#   scopes_with_exempted_networks:
+#     # Possible other scopes are
+#     # - swh_api_origin_visit_latest
+#     # - swh_vault_cooking
+#     # - swh_save_origin
+#     # - swh_raw_object
+#     swh_api:
+#       limiter_rate:
+#         default: 120/h
+#     swh_api_origin_search:
+#       limiter_rate:
+#         default: 120/h
+#       exempted_networks:
+#         - aaa.aaa.aaa.aaa/24
+#   # rate limit without any network exemption
+#   scopes:
+#     # Possible other scopes are
+#     # - swh_save_origin
+#     # - swh_raw_object
+#     swh_api_origin_visit_latest:
+#       limiter_rate:
+#         default: 120/h
+#     swh_vault_cooking:
+#       limiter_rate:
+#         default: 120/h
+
 web:
   enabled: false
   priorityClassName: frontend-rpc
@@ -531,6 +570,7 @@ web:
   # databaseConfigurationRef: postgresqlWebConfiguration
   # depositConfigurationRef: depositConfiguration
   # giveConfigurationRef: giveConfiguration
+  # throttlingConfigurationRef: throttlingConfiguration
   # extraConfig:
   #   instance_name: archive.swh.org
   #   allowed_hosts:
@@ -568,24 +608,6 @@ web:
   #   give:
   #     public_key: ${GIVE_PUBLIC_KEY}
   #     token: ${GIVE_PRIVATE_TOKEN}
-  #   throttling:
-  #     # The memcached url, mandatory
-  #     cache_uri: memcached:11211
-  #     scopes:
-  #       # Possible scopes are
-  #       # - swh_api
-  #       # - swh_api_origin_search
-  #       # - swh_api_origin_visit_latest
-  #       # - swh_vault_cooking
-  #       # - swh_save_origin
-  #       # - swh_raw_object
-  #       swh_api:
-  #         limiter_rate:
-  #           default: 120/h
-  #          exempted_networks: # optional
-  #            - 127.0.0.0/8
-  #            - 192.168.100.0/23
-  #            - ...
 
 statsd_exporter:
   enabled: false
