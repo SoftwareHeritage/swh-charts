@@ -286,8 +286,7 @@ scheduler:
       enabled: false
       host: myscheduler.minikube.domain
       # Default allowed ip ranges that can be extended per ingress definitions paths
-      whitelistSourceRange:
-        - 192.168.100.0/24
+      whitelistSourceRangeRef: internalNetworkRanges
       ingressDefinitions:
         default:
           paths:

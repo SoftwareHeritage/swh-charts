@@ -798,8 +798,7 @@ scheduler:
         nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
         nginx.ingress.kubernetes.io/proxy-body-size: "4G"
       # Default allowed ip ranges that can be extended per ingress definitions paths
-      # Default allowed ip ranges that can be extended per ingress definitions paths
-      #   - xxx.xxx.xxx.xxx/24
+      # whitelistSourceRangeRef: internalNetworkRanges
       # ingressDefinitions:
       #   default:
       #     paths:

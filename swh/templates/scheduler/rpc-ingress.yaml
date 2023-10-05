@@ -1,8 +1,9 @@
 {{- if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled .Values.scheduler.rpc.ingress.enabled -}}
-{{- $defaultWhitelistSourceRange := .Values.scheduler.rpc.ingress.whitelistSourceRange | default list -}}
+{{- $defaultWhitelistSourceRangeRef := .Values.scheduler.rpc.ingress.whitelistSourceRangeRef -}}
+{{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
 {{- range $ingress_definition, $ingress_config := .Values.scheduler.rpc.ingress.ingressDefinitions -}}
 {{- $extraWhitelistSourceRange := get $ingress_config "extraWhitelistSourceRange" | default list -}}
-{{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange) | default "" -}}
+{{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $ingress_config "paths" -}}
 ---
 apiVersion: networking.k8s.io/v1

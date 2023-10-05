@@ -2,6 +2,16 @@ environment: production
 sentry:
   environment: production
 
+internalNetworkRanges:
+  - 127.0.0.0/8
+  # rocq production range ip
+  - 192.168.100.0/24
+  # azure production range ip
+  - 192.168.200.0/22
+  # Cluster internal ip
+  - 10.42.0.0/16
+  - 10.43.0.0/16
+
 memcached:
   enabled: true
 
