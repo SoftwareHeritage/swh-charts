@@ -388,6 +388,7 @@ cookers:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # celeryConfigurationRef: consumerCeleryConfiguration
+  # vaultConfigurationRef: remoteVaultConfiguration
 
 checker_deposit:
   enabled: false

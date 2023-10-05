@@ -205,9 +205,7 @@ cookers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
-  vault:
-    host: vault.internal.staging.swh.network
-    port: 5005
+  vaultConfigurationRef: remoteVaultConfiguration
   deployments:
     simple:
       queues:

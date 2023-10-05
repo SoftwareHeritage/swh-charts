@@ -12,15 +12,15 @@ fakeRemoteSchedulerConfiguration:
 
 fakeRemoteSearchConfiguration:
   cls: remote
-  url: http://fake-search.i.s.s.n:5005
+  url: http://fake-search.i.s.s.n:5010
 
 fakeRemoteVaultConfiguration:
   cls: remote
-  url: http://fake-vault.i.s.s.n:5006
+  url: http://fake-vault.i.s.s.n:5005
 
 fakeRemoteCountersConfiguration:
   cls: remote
-  url: http://fake-counters.i.s.s.n:5006
+  url: http://fake-counters.i.s.s.n:5011
 
 fakePostgresqlStorageConfiguration:
   cls: postgresql
@@ -373,9 +373,7 @@ cookers:
     enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
-  vault:
-    host: vault.i.s.s.n
-    port: 5005
+  vaultConfigurationRef: fakeRemoteVaultConfiguration
   deployments:
     simple:
       queues:
@@ -492,7 +490,7 @@ vault:
       port: 25
     cache:
       cls: pathslicing
-      root: "/srv/softwareheritage/vault_cache"
+      root: /srv/softwareheritage/vault_cache
       slicing: 0:1/1:5
     objstorage:
       cls: filtered

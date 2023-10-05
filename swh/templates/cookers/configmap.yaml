@@ -12,13 +12,13 @@ metadata:
   namespace: {{ $.Values.namespace }}
 data:
   config.yml.template: |
-{{ include "swh.storageConfiguration" (list $.Values . $.Values.cookers.storageConfigurationRef) | indent 4 }}
+    {{ include "swh.storageConfiguration" (list $.Values . $.Values.cookers.storageConfigurationRef) | nindent 4 }}
 
-    vault:
-      cls: remote
-      url: http://{{ $.Values.cookers.vault.host }}:{{ $.Values.cookers.vault.port }}/
+    {{- include "swh.service.fromYaml" (dict "service" "vault"
+                                             "configurationRef" $.Values.cookers.vaultConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
     max_bundle_size: 1073741824
-{{ include "celery.configuration" (list $.Values $.Values.cookers.celeryConfigurationRef) | indent 4 }}
+    {{ include "celery.configuration" (list $.Values $.Values.cookers.celeryConfigurationRef) | nindent 4 }}
       task_modules:
         - swh.vault.cooking_tasks
       task_queues:
