@@ -16,6 +16,8 @@ svix:
   postgres:
     requestedMemory: 100Mi
     requestedCpu: 100m
+    persistentVolume: false
   redis:
     requestedMemory: 100Mi
     requestedCpu: 100m
+    persistentVolume: false

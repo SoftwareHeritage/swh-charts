@@ -80,17 +80,20 @@ spec:
               mountPath: /var/lib/postgresql/data
       volumes:
       - name: postgres-data
-        persistent:
-          volumeClaimTemplate:
-            metadata:
-              labels:
-                type: persistent-volume
-            spec:
-              accessModes:
-              - ReadWriteOnce
-              resources:
-                requests:
-                  storage: 10Gi
-              storageClassName: local-persistent
+      {{- if .postgres.persistentVolume }}
+        volumeClaimTemplate:
+          metadata:
+            labels:
+              type: persistent-volume
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+            storageClassName: local-persistent
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
 {{- end }}
 {{- end }}
