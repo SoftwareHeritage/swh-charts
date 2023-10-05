@@ -17,3 +17,6 @@ This installed/upgraded:
 - blackbox exporter. This installs probes to expand monitoring to http(s), DNS, ...
   endpoints (e.g. https://www.softwareheritage.org, ...)
 {{ end }}
+{{- if .Values.svix.enabled }}
+- svix-server.
+{{ end }}
