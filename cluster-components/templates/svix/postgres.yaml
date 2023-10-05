@@ -43,7 +43,7 @@ spec:
               command:
                 - psql
                 - "-U"
-                - "postgres"
+                - "swh-svix"
                 - "-c"
                 - "select version();"
             initialDelaySeconds: 5
@@ -54,7 +54,7 @@ spec:
               command:
                 - psql
                 - "-U"
-                - "postgres"
+                - "swh-svix"
                 - "-c"
                 - "select version();"
             initialDelaySeconds: 3
