@@ -136,7 +136,7 @@ web:
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakeRemoteVaultConfiguration
   countersConfigurationRef: fakeRemoteCountersConfiguration
-  webConfigurationRef: fakePostgresqlWebConfiguration
+  databaseConfigurationRef: fakePostgresqlWebConfiguration
   djangoConfigurationRef: djangoWebConfiguration
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration

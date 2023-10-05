@@ -526,20 +526,21 @@ web:
   # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   # countersConfigurationRef: remoteCountersConfiguration
   # djangoConfigurationRef: djangoWebConfiguration
-  # webConfigurationRef: postgresqlWebConfiguration
+  # If not specified, this will use a sqlite db which is not performant enough for
+  # production use.
+  # databaseConfigurationRef: postgresqlWebConfiguration
   # depositConfigurationRef: depositConfiguration
   # giveConfigurationRef: giveConfiguration
   # extraConfig:
-  #   instance_name: archive.softwareheritage.org
+  #   instance_name: archive.swh.org
   #   allowed_hosts:
-  #   - archive.softwareheritage.org
-  #   - base.softwareheritage.org
-  #   - archive.internal.softwareheritage.org
-  #   history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
-  #   es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+  #   - archive.swh.org
+  #   debug: false
+  #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json
+  #   es_workers_index_url: http://elastichost.swh.org:9200/swh_workers-*
   #   keycloak:
-  #     server_url: https://auth.softwareheritage.org/auth/
-  #     realm_name: SoftwareHeritage
+  #     server_url: https://auth.swh.org/auth/
+  #     realm_name: SWHRealm
   #   search_config:
   #     # swh-indexer-storage or swh-search
   #     metadata_backend: swh-indexer-storage
@@ -559,7 +560,7 @@ web:
   #     - swh.web.save_origin_webhooks
   #     - swh.web.vault
   #   add_forge_now:
-  #     email_address: add-forge-now@archive.softwareheritage.org
+  #     email_address: add-forge-now@archive.swh.org
   #   deposit:
   #     private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
   #     private_api_user: "${DEPOSIT_USERNAME}"

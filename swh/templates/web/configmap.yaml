@@ -27,9 +27,9 @@ data:
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: ${DJANGO_SECRET_KEY}
-    {{- if .Values.web.webConfigurationRef }}
+    {{- if .Values.web.databaseConfigurationRef }}
     production_db:
-    {{- include "django.postgresql" (dict "configurationRef" .Values.web.webConfigurationRef
+    {{- include "django.postgresql" (dict "configurationRef" .Values.web.databaseConfigurationRef
                                           "Values" .Values) | nindent 4 -}}
     {{ end }}
     {{- if .Values.web.sentry.enabled }}

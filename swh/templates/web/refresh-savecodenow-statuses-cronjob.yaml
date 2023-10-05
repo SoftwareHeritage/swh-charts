@@ -28,9 +28,9 @@ spec:
               - -c
               - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
               env:
-                {{- if $.Values.web.webConfigurationRef }}
+                {{- if $.Values.web.databaseConfigurationRef }}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.Values.web.webConfigurationRef) | nindent 16 -}}
+                                                            "configurationRef" $.Values.web.databaseConfigurationRef) | nindent 16 -}}
                 {{ end }}
                 {{- if $.Values.web.djangoConfigurationRef }}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
