@@ -563,7 +563,7 @@ storage:
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
-      secretKeySecret: swh-webapp-django-secret
+      secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key
 
 internalNetworkRanges:
