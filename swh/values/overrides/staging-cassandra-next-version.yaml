@@ -222,6 +222,12 @@ web:
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
+  ingress:
+    host: webapp-cassandra-next-version.internal.staging.swh.network
+  extraConfig:
+    instance_name: webapp-cassandra-next-version.internal.staging.swh.network
+    allowed_hosts:
+    - webapp-cassandra-next-version.internal.staging.swh.network
 
 graphql:
   replicas: 1
