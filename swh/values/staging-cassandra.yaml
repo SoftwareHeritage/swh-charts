@@ -576,27 +576,26 @@ internalNetworkRanges:
 
 webThrottling:
   internalExemptedNetworkRangesRef: internalNetworkRanges
-  throttling:
-    cache_uri: memcached:11211
-    scopes_with_exempted_networks:
-      swh_api:
-        limiter_rate:
-          default: 120/h
-      swh_vault_cooking:
-        limiter_rate:
-          default: 120/h
-          GET: 60/m
-    scopes:
-      swh_api_origin_search:
-        limiter_rate:
-          default: 10/m
-      swh_api_origin_visit_latest:
-        limiter_rate:
-          default: 700/m
-      swh_save_origin:
-        limiter_rate:
-          default: 120/h
-          POST: 10/h
+  cache_uri: memcached:11211
+  scopes_with_exempted_networks:
+    swh_api:
+      limiter_rate:
+        default: 120/h
+    swh_vault_cooking:
+      limiter_rate:
+        default: 120/h
+        GET: 60/m
+  scopes:
+    swh_api_origin_search:
+      limiter_rate:
+        default: 10/m
+    swh_api_origin_visit_latest:
+      limiter_rate:
+        default: 700/m
+    swh_save_origin:
+      limiter_rate:
+        default: 120/h
+        POST: 10/h
 
 web:
   enabled: true
@@ -621,7 +620,7 @@ web:
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
   giveConfigurationRef: giveConfiguration
-  throttlinConfigurationRef: webThrottling
+  throttlingConfigurationRef: webThrottling
   extraConfig:
     instance_name: webapp-cassandra.internal.staging.swh.network
     allowed_hosts:
