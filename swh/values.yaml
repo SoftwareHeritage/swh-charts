@@ -534,11 +534,13 @@ web:
   priorityClassName: frontend-rpc
   # debug: false
   logLevel: INFO
-  replicas: 1
   requestedCpu: 50m
   requestedMemory: 100Mi
-  autoScaling:
-    maxReplicaCount: 1
+  # replicas: 1
+  # autoScaling:
+  #   minReplicaCount: 2
+  #   maxReplicaCount: 10
+  #   cpuPercentageUsage: 50
   refreshSavecodenowStatus:
     enabled: false
     priorityClassName: frontend-rpc-workload

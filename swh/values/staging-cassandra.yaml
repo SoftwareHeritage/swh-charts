@@ -600,11 +600,12 @@ webThrottling:
 web:
   enabled: true
   logLevel: INFO
-  replicas: 2
   requestedCpu: 500m
   requestedMemory: 500Mi
-  #autoScaling:
-  #  maxReplicaCount: 5
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 3
+    cpuPercentageUsage: 50
   host: webapp-cassandra.internal.staging.swh.network
   ingressAnnotations:
     cert-manager.io/cluster-issuer: letsencrypt-production-gandi

@@ -9,7 +9,9 @@ metadata:
     app: web
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .Values.web.replicas | default 1 }}
+  {{ if .Values.web.replicas -}}
+  replicas: {{ .Values.web.replicas }}
+  {{ end -}}
   selector:
     matchLabels:
       app: web

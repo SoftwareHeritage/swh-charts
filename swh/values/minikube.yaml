@@ -167,6 +167,10 @@ web:
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 2
+    cpuPercentageUsage: 50
   refreshSavecodenowStatus:
     enabled: false
     cron: "* 9 * * *"
