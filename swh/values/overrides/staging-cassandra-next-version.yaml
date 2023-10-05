@@ -219,7 +219,9 @@ storage:
 
 web:
   host: webapp-cassandra-next-version.internal.staging.swh.network
-  replicas: 1
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 1
 
 graphql:
   replicas: 1
