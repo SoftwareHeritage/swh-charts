@@ -92,3 +92,23 @@ podPriority:
       range: 50000-100000
       value: 75000
       description: Highest pod priorities (ingress, operator, collector, controller)
+
+svix:
+  enabled: false
+  ingress:
+    host: svix.example.org
+    createTLS: true
+# IP range that can access svix API
+    allowedIpRange:
+      - 192.168.0.0/24
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  namespace: svix-server
+  postgres:
+    requestedMemory: 100Mi
+    requestedCpu: 100m
+    persistentVolume: false
+  redis:
+    requestedMemory: 100Mi
+    requestedCpu: 100m
+    persistentVolume: false
