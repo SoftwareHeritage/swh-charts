@@ -14,7 +14,9 @@ data:
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                              "configurationRef" .Values.vault.schedulerConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-
+    {{- include "swh.service.fromYaml" (dict "service" "objstorage"
+                                             "configurationRef" .Values.vault.objstorageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
     {{- if .Values.vault.extraConfig -}}
     {{ toYaml .Values.vault.extraConfig | nindent 4 }}
     {{- end }}

@@ -61,6 +61,11 @@ sentry:
 #   cls: remote
 #   host: http://storage:5002
 
+# Typical remote objstorage configuration
+# remoteObjstorageConfiguration:
+#   cls: remote
+#   host: http://objstorage:5003
+
 # searchConfiguration:
 #   cls: remote
 #   url: http://myswhsearch.localdomain:5010
@@ -669,6 +674,7 @@ vault:
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # vaultConfigurationRef: postgresqlVaultConfiguration
   # storageConfigurationRef: remoteStorageConfiguration
+  # objstorageConfigurationRef: remoteObjstorageConfiguration
   # logLevel: INFO
   # extraConfig:
   #   smtp:
@@ -678,13 +684,6 @@ vault:
   #     cls: pathslicing
   #     root: "/srv/softwareheritage/vault_cache"
   #     slicing: 0:1/1:5
-  #   objstorage:
-  #     cls: filtered
-  #     storage_conf:
-  #       cls: remote
-  #       url: http://storage1.internal.staging.swh.network:5003/
-  #     filters_conf:
-  #     - type: readonly
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration
   # replicas: 2
