@@ -98,9 +98,6 @@ svix:
   ingress:
     host: svix.example.org
     createTLS: true
-# IP range that can access svix API
-    allowedIpRange:
-      - 192.168.0.0/24
   requestedMemory: 100Mi
   requestedCpu: 100m
   namespace: svix-server

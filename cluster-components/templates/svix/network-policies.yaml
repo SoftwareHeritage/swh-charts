@@ -22,10 +22,9 @@ spec:
       app: svix-server
   ingress:
     - from:
-    {{- range .Values.svix.ingress.allowedIpRange }}
-        - ipBlock:
-            cidr: {{ . }}
-    {{- end }}
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: ingress-nginx
       ports:
         - protocol: TCP
           port: 8071
