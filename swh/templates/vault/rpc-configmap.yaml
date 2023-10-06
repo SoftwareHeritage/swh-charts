@@ -10,6 +10,7 @@ data:
     {{- include "swh.postgresql" (dict "serviceType" "vault"
                                       "configurationRef" .Values.vault.vaultConfigurationRef
                                        "Values" .Values) | nindent 4 -}}
+    {{ include "swh.storageConfiguration" (list .Values . .Values.vault.storageConfigurationRef) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                              "configurationRef" .Values.vault.schedulerConfigurationRef
                                              "Values" .Values) | nindent 4 }}

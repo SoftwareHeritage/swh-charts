@@ -85,6 +85,13 @@ fakeRemoteStorageConfiguration:
   cls: remote
   host: http://fake-storage.i.s.s.n:8002
 
+roStoragePipelineSteps:
+  - cls: retry
+
+remoteROStorageConfiguration:
+  pipelineStepsRef: roStoragePipelineSteps
+  storageConfigurationRef: fakeRemoteStorageConfiguration
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
@@ -484,6 +491,7 @@ vault:
   logLevel: INFO
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakePostgresqlVaultConfiguration
+  storageConfigurationRef: remoteROStorageConfiguration
   extraConfig:
     smtp:
       host: localhost
@@ -499,11 +507,7 @@ vault:
         url: http://storage1.i.s.s.n:5003/
       filters_conf:
       - type: readonly
-    storage:
-      cls: retry
-      storage:
-        cls: remote
-        url: http://storage1.i.s.s.n:5002/
+
 
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration

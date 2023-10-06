@@ -610,6 +610,7 @@ vault:
   logLevel: INFO
   schedulerConfigurationRef: remoteSchedulerConfiguration
   vaultConfigurationRef: postgresqlVaultConfiguration
+  storageConfigurationRef: remoteROStorageConfiguration
   extraConfig:
     smtp:
       host: localhost
@@ -621,11 +622,6 @@ vault:
         url: http://storage1.internal.staging.swh.network:5003/
       filters_conf:
       - type: readonly
-    storage:
-      cls: retry
-      storage:
-        cls: remote
-        url: http://storage1.internal.staging.swh.network:5002/
     cache:
       cls: pathslicing
       root: "/srv/softwareheritage/vault_cache"
