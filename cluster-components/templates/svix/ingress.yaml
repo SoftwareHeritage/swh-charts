@@ -5,6 +5,10 @@ kind: Ingress
 metadata:
   namespace: {{ .namespace }}
   name: svix-ingress
+  {{- if .ingress.annotations }}
+  annotations:
+    {{- toYaml .ingress.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .ingress.className }}
   ingressClassName: {{ .ingress.className }}

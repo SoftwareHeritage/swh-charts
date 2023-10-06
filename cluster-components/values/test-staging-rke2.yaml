@@ -7,6 +7,10 @@ svix:
   ingress:
     host: svix-test.internal.staging.swh.network
     createTLS: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   requestedMemory: 100Mi
   requestedCpu: 100m
   namespace: svix-server
