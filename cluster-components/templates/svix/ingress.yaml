@@ -1,5 +1,7 @@
 {{ if .Values.svix.enabled -}}
 {{ with .Values.svix -}}
+{{- $whitelistSourceRange := join "," .ingress.whitelistSourceRange | default "" }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -8,6 +10,9 @@ metadata:
   {{- if .ingress.annotations }}
   annotations:
     {{- toYaml .ingress.annotations | nindent 4 }}
+  {{- end }}
+  {{- if $whitelistSourceRange }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRange }}
   {{- end }}
 spec:
   {{- if .ingress.className }}
