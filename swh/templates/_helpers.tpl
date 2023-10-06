@@ -329,7 +329,8 @@ journal:
 Generate the configuration for a remote service
 */}}
 {{- define "swh.service.fromYaml" -}}
-{{- $configuration := get .Values .configurationRef -}}
+{{- $configuration := deepCopy (get .Values .configurationRef) -}}
+{{- $_ := unset $configuration "secrets" -}}
 {{ .service }}:
-{{ toYaml (get .Values .configurationRef) | indent 2 }}
+{{ toYaml $configuration | indent 2 }}
 {{- end -}}

@@ -8,7 +8,7 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.postgresql" (dict "serviceType" "vault"
-                                      "configurationRef" .Values.vault.vaultConfigurationRef
+                                       "configurationRef" .Values.vault.vaultConfigurationRef
                                        "Values" .Values) | nindent 4 -}}
     {{ include "swh.storageConfiguration" (list .Values . .Values.vault.storageConfigurationRef) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
@@ -16,6 +16,9 @@ data:
                                              "Values" .Values) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "objstorage"
                                              "configurationRef" .Values.vault.objstorageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "cache"
+                                             "configurationRef" .Values.vault.cacheConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{- if .Values.vault.extraConfig -}}
     {{ toYaml .Values.vault.extraConfig | nindent 4 }}
