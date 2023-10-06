@@ -481,6 +481,14 @@ memcached:
 podPriority:
   enabled: true
 
+remoteROObjstorageConfiguration:
+  cls: filtered
+  storage_conf:
+    cls: remote
+    url: http://storage1.i.s.s.n:5003/
+  filters_conf:
+    - type: readonly
+
 vault:
   enabled: false
   priorityClassName: frontend-rpc
@@ -492,6 +500,7 @@ vault:
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakePostgresqlVaultConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
+  objstorageConfigurationRef: remoteROObjstorageConfiguration
   extraConfig:
     smtp:
       host: localhost
@@ -500,14 +509,6 @@ vault:
       cls: pathslicing
       root: /srv/softwareheritage/vault_cache
       slicing: 0:1/1:5
-    objstorage:
-      cls: filtered
-      storage_conf:
-        cls: remote
-        url: http://storage1.i.s.s.n:5003/
-      filters_conf:
-      - type: readonly
-
 
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration

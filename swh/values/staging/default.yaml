@@ -48,13 +48,21 @@ remoteROStorageConfiguration:
   # TODO: use a real read-only storage configuration
   storageConfigurationRef: storage1StorageConfiguration
 
+remoteROObjstorageConfiguration:
+  cls: filtered
+  storage_conf:
+    cls: remote
+    url: http://storage1.internal.staging.swh.network:5003
+  filters_conf:
+    - type: readonly
+
 remoteSearchConfiguration:
   cls: remote
   url: http://search0.internal.staging.swh.network:5010
 
 remoteVaultConfiguration:
   cls: remote
-  url: http://vault.internal.staging.swh.network:5005/
+  url: http://vault.internal.staging.swh.network:80/
 
 remoteIndexerStorageConfiguration:
     cls: remote
