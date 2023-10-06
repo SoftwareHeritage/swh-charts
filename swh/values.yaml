@@ -76,6 +76,16 @@ sentry:
 #       secretKeyRef: common-secrets
 #       secretKeyName: webapp-django-secret-key
 
+# azureCacheConfiguration:
+#   cls: azure
+#   account_name: vaultstorageaccount
+#   container_name: contents
+#   api_secret_key: ${API_SECRET_KEY}
+#   secrets:
+#     API_SECRET_KEY:
+#       secretKeyRef: swh-vault-azure-secret
+#       secretKeyName: azure-swh-vault-key
+
 # Example of a storage pipeline configuration
 # Adapt according your platform capabilities
 # Used by loaders and possibly journal client / replayers
@@ -675,15 +685,12 @@ vault:
   # vaultConfigurationRef: postgresqlVaultConfiguration
   # storageConfigurationRef: remoteStorageConfiguration
   # objstorageConfigurationRef: remoteObjstorageConfiguration
+  # cacheConfigurationRef: azureConfigurationRef
   # logLevel: INFO
   # extraConfig:
   #   smtp:
   #     host: localhost
   #     port: 25
-  #   cache:
-  #     cls: pathslicing
-  #     root: "/srv/softwareheritage/vault_cache"
-  #     slicing: 0:1/1:5
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration
   # replicas: 2

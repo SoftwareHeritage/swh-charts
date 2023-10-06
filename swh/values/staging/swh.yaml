@@ -23,6 +23,16 @@ postgresqlVaultConfiguration:
       secretKeyRef: swh-vault-postgresql-secret
       secretKeyName: postgres-swh-vault-password
 
+azureCacheConfiguration:
+  cls: azure
+  account_name: swhvaultstoragestaging
+  api_secret_key: ${API_SECRET_KEY}
+  container_name: contents
+  secrets:
+    API_SECRET_KEY:
+      secretKeyRef: swh-vault-azure-secret
+      secretKeyName: azure-swh-vault-key
+
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
@@ -612,14 +622,11 @@ vault:
   vaultConfigurationRef: postgresqlVaultConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
+  cacheConfigurationRef: azureCacheConfiguration
   extraConfig:
     smtp:
       host: localhost
       port: 25
-    cache:
-      cls: pathslicing
-      root: "/srv/softwareheritage/vault_cache"
-      slicing: 0:1/1:5
 
   # replicas: 2
   gunicorn:

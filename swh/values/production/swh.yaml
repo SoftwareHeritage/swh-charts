@@ -15,6 +15,16 @@ remoteROStorageConfiguration:
   # TODO: use a true read-only storage
   storageConfigurationRef: saamStorageConfiguration
 
+azureCacheConfiguration:
+  cls: azure
+  account_name: swhvaultstorage
+  api_secret_key: ${API_SECRET_KEY}
+  container_name: contents
+  secrets:
+    API_SECRET_KEY:
+      secretKeyRef: swh-vault-azure-secret
+      secretKeyName: azure-swh-vault
+
 postgresqlStorageConfiguration:
   cls: postgresql
   host: db.internal.softwareheritage.org
