@@ -53,7 +53,7 @@ localRpcROStorageService:
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
-searchConfiguration:
+remoteSearchConfiguration:
   cls: remote
   url: http://moma.internal.softwareheritage.org:5010
 
@@ -321,7 +321,7 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
-  searchConfigurationRef: searchConfiguration
+  searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
@@ -365,9 +365,7 @@ graphql:
   enabled: true
   replicas: 1
   storageConfigurationRef: localRpcROStorageConfiguration
-  searchConfiguration:
-    host: moma.internal.softwareheritage.org
-    port: 5010
+  searchConfigurationRef: remoteSearchConfigurationRef
   introspection: yes
   ingress:
     enabled: true

@@ -1,7 +1,4 @@
 namespace: swh-cassandra-next-version
-sentry:
-  # TODO: staging-next-version ?
-  environment: staging
 
 loaders:
   terminationGracePeriodSeconds: 60
@@ -233,6 +230,3 @@ graphql:
   replicas: 1
   ingress:
     host: webapp-cassandra-next-version.internal.staging.swh.network
-
-memcached:
-  enabled: true

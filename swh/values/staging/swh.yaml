@@ -298,9 +298,7 @@ indexers:
 graphql:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  searchConfiguration:
-    host: search0.internal.staging.swh.network
-    port: 5010
+  searchConfigurationRef: remoteSearchConfiguration
   debug: yes
   introspection: yes
   replicas: 2

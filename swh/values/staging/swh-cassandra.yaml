@@ -586,9 +586,7 @@ graphql:
   sentry:
     enabled: true
   storageConfigurationRef: localRpcROStorageConfiguration
-  searchConfiguration:
-    host: search0.internal.staging.swh.network
-    port: 5010
+  searchConfigurationRef: remoteSearchConfiguration
   replicas: 2
   gunicorn:
     threads: 4

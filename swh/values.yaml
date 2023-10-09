@@ -232,9 +232,7 @@ graphql:
     secretKeyName: graphql-sentry-dsn
 #    # check defaultStorageConfiguration example to configure your storage
 #    storageConfigurationRef: defaultROStorageClientConfiguration
-#    searchConfiguration:
-#      host: http://my-search
-#      port: 5010
+#    searchConfigurationRef: searchConfiguration
 #  ingress:
 #    enabled: false
 #    httpPath: /graphql

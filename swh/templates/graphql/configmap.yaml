@@ -9,12 +9,12 @@ data:
   # TODO: rename to not have a dot in the name to allow testing
   config.yml: |
     {{- if .Values.graphql.storageConfigurationRef }}
-{{ include "swh.storageConfiguration" (list .Values . .Values.graphql.storageConfigurationRef) | indent 4 }}
+    {{ include "swh.storageConfiguration" (list .Values . .Values.graphql.storageConfigurationRef) | nindent 4 }}
     {{ end -}}
-    {{- if .Values.graphql.searchConfiguration }}
-    search:
-      cls: remote
-      url: http://{{ .Values.graphql.searchConfiguration.host }}:{{ .Values.graphql.searchConfiguration.port }}
+    {{- if .Values.graphql.searchConfigurationRef }}
+    {{ include "swh.service.fromYaml" (dict "service" "search"
+                                            "configurationRef" .Values.graphql.searchConfigurationRef
+                                            "Values" .Values) | nindent 4 }}
     {{- end }}
 
     debug: {{ .Values.graphql.debug }}

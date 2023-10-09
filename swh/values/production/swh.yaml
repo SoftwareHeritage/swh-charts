@@ -120,9 +120,7 @@ graphql:
   enabled: true
   replicas: 2
   storageConfigurationRef: remoteROStorageConfiguration
-  searchConfiguration:
-    host: moma.internal.softwareheritage.org
-    port: 5010
+  searchConfigurationRef: remoteSearchConfiguration
   introspection: yes
   ingress:
     enabled: true
