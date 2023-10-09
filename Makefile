@@ -28,7 +28,7 @@ ss-test-with-snapshot:
 
 
 swh-helm-diff:
-	./helm-diff.sh swh
+	./swh/helm-diff.sh
 
 cc-helm-diff:
 	./helm-diff.sh cluster-configuration
