@@ -1,0 +1,143 @@
+environment: production
+sentry:
+  environment: production
+
+memcached:
+  enabled: true
+
+podPriority:
+  enabled: true
+
+noopObjectStorage:
+  cls: noop
+
+kafkaBrokers:
+  - kafka1.internal.softwareheritage.org
+  - kafka2.internal.softwareheritage.org
+  - kafka3.internal.softwareheritage.org
+  - kafka4.internal.softwareheritage.org
+
+journalClientConfiguration:
+  kafkaBrokersRef: kafkaBrokers
+  groupId: swh.scheduler.journal_client
+
+storagePipelineSteps:
+  - cls: buffer
+    min_batch_size:
+      content: 1000
+      content_bytes: 52428800
+      directory: 1000
+      directory_entries: 12000
+      revision: 1000
+      revision_parents: 2000
+      revision_bytes: 52428800
+      release: 1000
+      release_bytes: 52428800
+      extid: 1000
+  - cls: filter
+  - cls: retry
+
+remoteSearchConfiguration:
+  cls: remote
+  url: http://moma.internal.softwareheritage.org:5010
+
+remoteSchedulerConfiguration:
+  cls: remote
+  url: http://scheduler.internal.softwareheritage.org
+
+remoteVaultConfiguration:
+  cls: remote
+  url: http://vangogh.euwest.azure.internal.softwareheritage.org:5005/
+
+remoteIndexerStorageConfiguration:
+    cls: remote
+    url: http://saam.internal.softwareheritage.org:5007/
+
+remoteCountersConfiguration:
+    cls: remote
+    url: http://counters1.internal.softwareheritage.org:5011/
+
+producerCeleryConfiguration:
+  host: rabbitmq.internal.softwareheritage.org
+  port: 5672
+  user: swhproducer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhproducer-password
+
+consumerCeleryConfiguration:
+  host: rabbitmq.internal.softwareheritage.org
+  port: 5672
+  user: swhconsumer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhconsumer-password
+
+depositConfiguration:
+  host: deposit.softwareheritage.org
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
+
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
+internalNetworkRanges:
+  - 127.0.0.0/8
+  # rocq production range ip
+  - 192.168.100.0/24
+  # azure production range ip
+  - 192.168.200.0/22
+  # Cluster internal ip
+  - 10.42.0.0/16
+  - 10.43.0.0/16
+
+externalAuthorizedNetworkRanges:
+  - 128.93.166.14
+  - 131.107.174.0/24
+  - 213.135.60.145
+  - 213.135.60.146
+  - 37.187.96.121
+
+
+webThrottling:
+  internalExemptedNetworkRangesRef: internalNetworkRanges
+  externalExemptedNetworkRangesRef: externalAuthorizedNetworkRanges
+  cache_uri: memcached:11211
+  scopes_with_exempted_networks:
+    swh_api:
+      limiter_rate:
+        default: 120/h
+      exempted_networks:
+      - 37.187.137.47
+    swh_vault_cooking:
+      limiter_rate:
+        default: 120/h
+        GET: 60/m
+    swh_save_origin:
+      limiter_rate:
+        default: 120/h
+        POST: 10/h
+  scopes:
+    swh_api_origin_search:
+      limiter_rate:
+        default: 10/m
+    swh_api_origin_visit_latest:
+      limiter_rate:
+        default: 700/m
+    swh_raw_object:
+      limiter_rate:
+        default: 120/h

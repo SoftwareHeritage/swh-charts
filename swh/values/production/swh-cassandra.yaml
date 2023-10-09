@@ -1,10 +1,4 @@
 namespace: swh-cassandra
-environment: production
-sentry:
-  environment: production
-
-noopObjectStorage:
-  cls: noop
 
 cassandraSeeds:
   - cassandra01.internal.softwareheritage.org
@@ -52,32 +46,6 @@ localRpcROStorageService:
 
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
-
-remoteSearchConfiguration:
-  cls: remote
-  url: http://moma.internal.softwareheritage.org:5010
-
-remoteSchedulerConfiguration:
-  cls: remote
-  url: http://scheduler.internal.softwareheritage.org
-
-remoteVaultConfiguration:
-  cls: remote
-  url: http://vangogh.euwest.azure.internal.softwareheritage.org:5005/
-
-remoteIndexerStorageConfiguration:
-    cls: remote
-    url: http://saam.internal.softwareheritage.org:5007/
-
-remoteCountersConfiguration:
-    cls: remote
-    url: http://counters1.internal.softwareheritage.org:5011/
-
-djangoWebConfiguration:
-  secrets:
-    DJANGO_SECRET_KEY:
-      secretKeyRef: swh-webapp-django-secret
-      secretKeyName: webapp-django-secret-key
 
 storage_replayer:
   enabled: true
@@ -259,52 +227,6 @@ storage:
   objstorageClass: multiplexer
   objstorageConfig: ${OBJSTORAGECONFIG}
 
-internalNetworkRanges:
-  - 127.0.0.0/8
-  # rocq production range ip
-  - 192.168.100.0/24
-  # azure production range ip
-  - 192.168.200.0/22
-  # Cluster internal ip
-  - 10.42.0.0/16
-  - 10.43.0.0/16
-
-externalAuthorizedNetworkRanges:
-  - 128.93.166.14
-  - 131.107.174.0/24
-  - 213.135.60.145
-  - 213.135.60.146
-  - 37.187.96.121
-
-webThrottling:
-  internalExemptedNetworkRangesRef: internalNetworkRanges
-  externalExemptedNetworkRangesRef: externalAuthorizedNetworkRanges
-  cache_uri: memcached:11211
-  scopes_with_exempted_networks:
-    swh_api:
-      limiter_rate:
-        default: 120/h
-      exempted_networks:
-      - 37.187.137.47
-    swh_vault_cooking:
-      limiter_rate:
-        default: 120/h
-        GET: 60/m
-    swh_save_origin:
-      limiter_rate:
-        default: 120/h
-        POST: 10/h
-  scopes:
-    swh_api_origin_search:
-      limiter_rate:
-        default: 10/m
-    swh_api_origin_visit_latest:
-      limiter_rate:
-        default: 700/m
-    swh_raw_object:
-      limiter_rate:
-        default: 120/h
-
 web:
   enabled: true
   logLevel: INFO
@@ -365,7 +287,7 @@ graphql:
   enabled: true
   replicas: 1
   storageConfigurationRef: localRpcROStorageConfiguration
-  searchConfigurationRef: remoteSearchConfigurationRef
+  searchConfigurationRef: remoteSearchConfiguration
   introspection: yes
   ingress:
     enabled: true
@@ -382,9 +304,3 @@ graphql:
     client: swh-web
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
-
-memcached:
-  enabled: true
-
-podPriority:
-  enabled: true
