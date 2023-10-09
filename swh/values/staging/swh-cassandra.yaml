@@ -1,10 +1,4 @@
 namespace: swh-cassandra
-environment: staging
-sentry:
-  environment: staging
-
-noopObjectStorage:
-  cls: noop
 
 cassandraSeeds:
   - cassandra1.internal.staging.swh.network
@@ -37,22 +31,6 @@ cassandraStorageConfiguration:
   # TODO: add journal_writer
   # TODO: add objstorage configuration
 
-storagePipelineSteps:
-  - cls: buffer
-    min_batch_size:
-      content: 100
-      content_bytes: 52428800
-      directory: 100
-      directory_entries: 500
-      revision: 100
-      revision_parents: 200
-      revision_bytes: 52428800
-      release: 100
-      release_bytes: 52428800
-      extid: 100
-  - cls: filter
-  - cls: retry
-
 localRpcRWStorageConfiguration:
   cls: remote
   host: http://storage:5002
@@ -64,58 +42,6 @@ rpcRWStorageConfiguration:
 # (Not so) readonly (namespace local) storage
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcRWStorageConfiguration
-
-remoteSchedulerConfiguration:
-  cls: remote
-  url: http://scheduler.internal.staging.swh.network
-
-producerCeleryConfiguration:
-  host: scheduler0.internal.staging.swh.network
-  port: 5672
-  user: swhproducer
-  pass: ${AMQP_PASSWORD}
-  secrets:
-    AMQP_PASSWORD:
-      secretKeyRef: amqp-secrets
-      secretKeyName: swhproducer-password
-
-consumerCeleryConfiguration:
-  host: scheduler0.internal.staging.swh.network
-  port: 5672
-  user: swhconsumer
-  pass: ${AMQP_PASSWORD}
-  secrets:
-    AMQP_PASSWORD:
-      secretKeyRef: amqp-secrets
-      secretKeyName: swhconsumer-password
-
-depositConfiguration:
-  host: deposit-rp.internal.staging.swh.network
-  user: ${DEPOSIT_USERNAME}
-  pass: ${DEPOSIT_PASSWORD}
-  secrets:
-    DEPOSIT_USERNAME:
-      secretKeyRef: deposit-secrets
-      secretKeyName: username
-    DEPOSIT_PASSWORD:
-      secretKeyRef: deposit-secrets
-      secretKeyName: password
-
-searchConfiguration:
-  cls: remote
-  url: http://search0.internal.staging.swh.network:5010
-
-remoteVaultConfiguration:
-  cls: remote
-  url: http://vault.internal.staging.swh.network:5005/
-
-remoteIndexerStorageConfiguration:
-    cls: remote
-    url: http://storage1.internal.staging.swh.network:5007/
-
-remoteCountersConfiguration:
-    cls: remote
-    url: http://counters0.internal.staging.swh.network:5011/
 
 loaders:
   enabled: true
@@ -613,7 +539,7 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
-  searchConfigurationRef: searchConfiguration
+  searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
@@ -680,9 +606,3 @@ graphql:
     client: swh-web
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
-
-memcached:
-  enabled: true
-
-podPriority:
-  enabled: true

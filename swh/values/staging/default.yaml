@@ -1,0 +1,117 @@
+environment: staging
+sentry:
+  environment: staging
+
+noopObjectStorage:
+  cls: noop
+
+storagePipelineSteps:
+  - &bufferStorage
+    cls: buffer
+    min_batch_size:
+      content: 100
+      content_bytes: 52428800
+      directory: 100
+      directory_entries: 500
+      revision: 100
+      revision_parents: 200
+      revision_bytes: 52428800
+      release: 100
+      release_bytes: 52428800
+      extid: 100
+  - cls: filter
+  - cls: retry
+
+storagePipelineStepsWithRecordReferences:
+  - *bufferStorage
+  - cls: filter
+  - cls: retry
+  - cls: record_references
+
+roStoragePipelineSteps:
+  - cls: retry
+
+storage1StorageConfiguration:
+  cls: remote
+  host: http://storage1.internal.staging.swh.network:5002
+
+remoteROStorageConfiguration:
+  pipelineStepsRef: roStoragePipelineSteps
+  # TODO: use a real read-only storage configuration
+  storageConfigurationRef: storage1StorageConfiguration
+
+remoteSearchConfiguration:
+  cls: remote
+  url: http://search0.internal.staging.swh.network:5010
+
+remoteVaultConfiguration:
+  cls: remote
+  url: http://vault.internal.staging.swh.network:5005/
+
+remoteIndexerStorageConfiguration:
+    cls: remote
+    url: http://storage1.internal.staging.swh.network:5007/
+
+remoteCountersConfiguration:
+    cls: remote
+    url: http://counters0.internal.staging.swh.network:5011/
+
+remoteSchedulerConfiguration:
+  cls: remote
+  url: http://scheduler.internal.staging.swh.network
+
+producerCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhproducer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhproducer-password
+
+consumerCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhconsumer
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: swhconsumer-password
+
+guestCeleryConfiguration:
+  host: scheduler0.internal.staging.swh.network
+  port: 5672
+  user: swhguest
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_PASSWORD:
+      secretKeyRef: amqp-secrets
+      secretKeyName: read-only
+
+kafkaBrokers:
+  - journal1.internal.staging.swh.network
+  - journal2.internal.staging.swh.network
+
+journalClientConfiguration:
+  kafkaBrokersRef: kafkaBrokers
+  groupId: swh.scheduler.journal_client
+
+depositConfiguration:
+  host: deposit-rp.internal.staging.swh.network
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
+
+memcached:
+  enabled: true
+
+podPriority:
+  enabled: true
