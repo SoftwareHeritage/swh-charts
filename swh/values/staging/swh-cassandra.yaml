@@ -77,6 +77,12 @@ loaders:
         - swh.loader.package.archive.tasks.LoadTarball
       autoScaling:
         maxReplicaCount: 1
+    bioconductor:
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.bioconductor.tasks.LoadBioconductor
+      autoScaling:
+        maxReplicaCount: 1
     bzr:
       requestedMemory: 256Mi
       requestedCpu: 200m
