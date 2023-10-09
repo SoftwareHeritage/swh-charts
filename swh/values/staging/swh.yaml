@@ -46,6 +46,12 @@ listers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
+    bioconductor:
+      queues:
+        - swh.lister.biocondutor.tasks.BioconductorListerTask
+        - swh.lister.biocondutor.tasks.BioconductorIncrementalListerTask
+      autoScaling:
+        maxReplicaCount: 1
     bower:
       queues:
       - swh.lister.bower.tasks.BowerListerTask
