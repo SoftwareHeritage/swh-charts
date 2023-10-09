@@ -35,7 +35,7 @@ for environment in "staging" "production"; do
 
   if [ "$environment" = "staging" ]; then
     $HELM_CMD $APP/values/$environment/swh-cassandra.yaml \
-              --values $APP/values/$environment/swh-cassandra-next-version.yaml >> $output
+              --values $APP/values/$environment/overrides/swh-cassandra-next-version.yaml >> $output
   fi
 
   # git stash pop
@@ -48,7 +48,7 @@ for environment in "staging" "production"; do
 
   if [ "$environment" = "staging" ]; then
     $HELM_CMD $APP/values/$environment/swh-cassandra.yaml \
-              --values $APP/values/$environment/swh-cassandra-next-version.yaml >> $output
+              --values $APP/values/$environment/overrides/swh-cassandra-next-version.yaml >> $output
   fi
 done
 
