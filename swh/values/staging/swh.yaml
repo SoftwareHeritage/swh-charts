@@ -48,8 +48,8 @@ listers:
   deployments:
     bioconductor:
       queues:
-        - swh.lister.biocondutor.tasks.BioconductorListerTask
-        - swh.lister.biocondutor.tasks.BioconductorIncrementalListerTask
+        - swh.lister.bioconductor.tasks.BioconductorListerTask
+        - swh.lister.bioconductor.tasks.BioconductorIncrementalListerTask
       autoScaling:
         maxReplicaCount: 1
     bower:
