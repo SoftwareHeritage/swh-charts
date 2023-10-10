@@ -13,6 +13,7 @@ tests:
       swh_web_image: image
       swh_web_image_version: version
       web.enabled: true
+      web.replicas: 1
       web.requestedMemory: memory
       web.requestedCpu: cpu
       web.storageConfigurationRef: defaultStorageConfigurationRef
