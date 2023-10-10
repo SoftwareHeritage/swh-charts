@@ -74,6 +74,24 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
+        {{- if .Values.web.migrations.enabled -}}
+        - name: do-migration
+          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            {{- if .Values.web.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
+          command:
+            - django-admin
+          args:
+            - migrate
+            - --settings=swh.web.settings.production
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+        {{ end }}
         - name: prepare-static
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent

@@ -215,6 +215,8 @@ storage:
     host: storage-cassandra-next-version.internal.staging.swh.network
 
 web:
+  migrations:
+    enabled: false
   host: webapp-cassandra-next-version.internal.staging.swh.network
   autoScaling:
     minReplicaCount: 1

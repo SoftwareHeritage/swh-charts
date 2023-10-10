@@ -144,6 +144,8 @@ scheduler:
             - "true"
 
 web:
+  migrations:
+    enabled: true
   sentry:
     enabled: true
   affinity:

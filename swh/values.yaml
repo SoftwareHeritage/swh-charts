@@ -529,6 +529,8 @@ storage:
 
 web:
   enabled: false
+  migrations:
+    enabled: false
   priorityClassName: frontend-rpc
   # debug: false
   logLevel: INFO
