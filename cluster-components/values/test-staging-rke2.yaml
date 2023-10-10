@@ -16,6 +16,8 @@ svix:
       - 192.168.130.0/24
       # admin ip
       - 192.168.50.0/24
+      # VPN ip
+      - 192.168.101.0/24
   requestedMemory: 100Mi
   requestedCpu: 100m
   namespace: svix-server
