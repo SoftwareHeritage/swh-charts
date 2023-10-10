@@ -492,6 +492,17 @@ storage:
    producerConfig: |-
      message.max.bytes: 1000000000
 
+postgresqlWebConfiguration:
+  host: db1.internal.staging.swh.network
+  port: 5432
+  db: swh-web
+  user: swh-web
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
@@ -545,6 +556,7 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
+  databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration

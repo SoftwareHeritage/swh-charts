@@ -227,6 +227,23 @@ storage:
   objstorageClass: multiplexer
   objstorageConfig: ${OBJSTORAGECONFIG}
 
+postgresqlWebConfiguration:
+  host: db.internal.softwareheritage.org
+  port: 5432
+  db: swh-web
+  user: swh-web
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
 web:
   enabled: true
   logLevel: INFO
@@ -243,6 +260,7 @@ web:
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   tlsEnabled: true
+  databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: localRpcROStorageConfiguration

@@ -89,12 +89,6 @@ depositConfiguration:
       secretKeyRef: deposit-secrets
       secretKeyName: password
 
-djangoWebConfiguration:
-  secrets:
-    DJANGO_SECRET_KEY:
-      secretKeyRef: swh-webapp-django-secret
-      secretKeyName: webapp-django-secret-key
-
 internalNetworkRanges:
   - 127.0.0.0/8
   # rocq production range ip
