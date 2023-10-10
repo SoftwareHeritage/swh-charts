@@ -1,4 +1,58 @@
 # Software Heritage stack helm chart
+
+## Folder organization
+
+The folder organization follows the convention of an helm chart:
+
+- Chart.yaml: The main chart definition file for the swh application
+
+- tests/: The folder holding the unit tests of the templates (not exhaustive yet)
+
+- fake-secrets/: For testing purposes, we have secret yaml files installed (e.g. that
+  eases deployment locally within a minikube cluster)
+
+- templates/: the folder holding the various template definitions the charts allows to
+  enable in a cluster (e.g. staging, production, minikube, ...)
+
+- values.yaml: (See next title)
+
+## Values
+
+Helm templates rely on various directory structures declared in yaml file. Those are
+declared in various "value" files (which are provided during chart installation):
+
+- ../values-swh-application-versions.yaml: The current docker images and versions used
+  by the various templates
+
+- values.yaml: The main default and swh agnostic values
+
+- values/default.yaml: the main swh default values we, swh, use in our deployments (node
+  affinities per template, ...)
+
+- values/{environment}/default.yaml: The shared values between namespaces (e.g.
+  scheduler rpc, search rpc, ...)
+
+- values/{environment}/{namespace}.yaml: the specific values the template need to deploy
+  (e.g. postgresql, cassandra, ...)
+
+## Installation
+
+At helm installation time, a composition of those value files is provided to actually
+deploy the chart in a specific way.
+
+For example, to install our chart in our production cluster 'archive-production-rke2' in
+the namespace swh, the following equivalent command is used:
+
+```
+helm --kube-context archive-production-rke2 \
+  install swh swh/ \
+    --values values-swh-application-versions.yaml \
+    --values swh/values.yaml \
+    --values swh/values/default.yaml \
+    --values swh/production/default.yaml \
+    --values swh/production/swh.yaml
+```
+
 ## Unit tests
 
 The test are done with [helm-unittest](https://github.com/quintush/helm-unittest)
