@@ -7,6 +7,14 @@ metadata:
   name: toolbox-script-utils
   namespace: {{ $namespace }}
 data:
+  register-task-types.sh: |
+    #!/bin/bash
+
+    set -eux
+
+    export SWH_CONFIG_FILENAME=/etc/swh/config-scheduler.yml
+
+    swh scheduler -C $SWH_CONFIG_FILENAME task-type register
   check-db-version.sh: |
     #!/bin/bash
 
