@@ -79,10 +79,8 @@ spec:
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           env:
-            {{- if .Values.web.djangoConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" .Values
-                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
-            {{ end }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
           command:
             - django-admin
           args:
