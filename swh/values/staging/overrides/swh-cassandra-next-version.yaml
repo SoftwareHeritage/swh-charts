@@ -214,6 +214,17 @@ storage:
   ingress:
     host: storage-cassandra-next-version.internal.staging.swh.network
 
+postgresqlWebConfiguration:
+  host: db1.internal.staging.swh.network
+  port: 5432
+  db: swh-web-next-version
+  user: swh-web-next-version
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
 web:
   host: webapp-cassandra-next-version.internal.staging.swh.network
   autoScaling:
