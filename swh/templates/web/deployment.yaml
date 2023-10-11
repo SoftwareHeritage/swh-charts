@@ -74,7 +74,7 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
-        {{- if .Values.web.migrations.enabled -}}
+        {{- if .Values.web.migrations.enabled }}
         - name: do-migration
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
