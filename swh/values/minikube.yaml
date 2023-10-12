@@ -512,10 +512,6 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-  extraConfig:
-    smtp:
-      host: localhost
-      port: 25
 
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration

@@ -687,10 +687,10 @@ vault:
   # objstorageConfigurationRef: remoteObjstorageConfiguration
   # cacheConfigurationRef: azureConfigurationRef
   # logLevel: INFO
-  # extraConfig:
-  #   smtp:
-  #     host: localhost
-  #     port: 25
+  extraConfig:
+    smtp:
+      host: smtp.inria.fr
+      port: 25
   # The scheduler instance to use for rpc must be a postgresql instance
   # schedulerConfigurationRef: postgresqlSchedulerConfiguration
   # replicas: 2
