@@ -186,6 +186,31 @@ web:
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
+  ingress:
+    enabled: true
+    host: web.minikube.domain
+    tlsEnabled: true
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+    whitelistSourceRange:
+      - 192.168.100.0/24
+    endpoints:
+      default:
+        paths:
+          - path: /
+          - path: /static
+            port: 80
+      authenticated:
+        paths:
+          - path: /api/1/provenance/
+          - path: /api/1/entity/
+          - path: /api/1/content/[^/]+/symbol/
+        # auth-file with authentication
+        authentication: basic-auth
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 2

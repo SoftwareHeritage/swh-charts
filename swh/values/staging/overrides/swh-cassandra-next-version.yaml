@@ -226,12 +226,10 @@ postgresqlWebConfiguration:
       secretKeyName: postgres-swh-web-password
 
 web:
-  host: webapp-cassandra-next-version.internal.staging.swh.network
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
-  ingress:
-    host: webapp-cassandra-next-version.internal.staging.swh.network
+  host: webapp-cassandra-next-version.internal.staging.swh.network
   extraConfig:
     instance_name: webapp-cassandra-next-version.internal.staging.swh.network
     allowed_hosts:
