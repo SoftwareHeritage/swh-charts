@@ -143,6 +143,12 @@ scheduler:
             values:
             - "true"
 
+vault:
+  extraConfig:
+    smtp:
+      host: smtp.inria.fr
+      port: 25
+
 web:
   migrations:
     enabled: true

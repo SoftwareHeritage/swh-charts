@@ -623,10 +623,6 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-  extraConfig:
-    smtp:
-      host: localhost
-      port: 25
 
   # replicas: 2
   gunicorn:
