@@ -1,16 +1,16 @@
 {{- if and .Values.vault.enabled .Values.vault.ingress.enabled -}}
 {{- $defaultWhitelistSourceRangeRef := .Values.scheduler.rpc.ingress.whitelistSourceRangeRef -}}
 {{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
-{{- range $ingress_definition, $ingress_config := .Values.vault.ingress.ingressDefinitions -}}
-{{- $extraWhitelistSourceRange := get $ingress_config "extraWhitelistSourceRange" | default list -}}
+{{- range $endpoint_definition, $endpoint_config := .Values.vault.ingress.endpoints -}}
+{{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
-{{- $paths := get $ingress_config "paths" -}}
+{{- $paths := get $endpoint_config "paths" -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: vault-rpc-ingress-{{ $ingress_definition }}
+  name: vault-rpc-ingress-{{ $endpoint_definition }}
   annotations:
   {{- if $whitelistSourceRange }}
     nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRange }}

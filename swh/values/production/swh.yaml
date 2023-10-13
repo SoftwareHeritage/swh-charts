@@ -547,7 +547,7 @@ scheduler:
       # Current internal range retrieved out of the `kubectl cluster-info dump`
       # Default allowed ip ranges that can be extended per ingress definitions paths
       whitelistSourceRangeRef: internalNetworkRanges
-      ingressDefinitions:
+      endpoints:
         default:
           paths:
             - /

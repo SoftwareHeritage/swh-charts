@@ -556,7 +556,7 @@ scheduler:
       # TODO: Improve the authorization internal cluster ip range.
       # Default allowed ip ranges that can be extended per ingress definitions paths
       whitelistSourceRangeRef: internalNetworkRanges
-      ingressDefinitions:
+      endpoints:
         default:
           paths:
             - /
@@ -652,7 +652,7 @@ vault:
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
     whitelistSourceRangeDef: internalNetworkRanges
-    ingressDefinitions:
+    endpoints:
       default:
         paths:
           - /

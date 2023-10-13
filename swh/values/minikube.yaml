@@ -186,9 +186,9 @@ web:
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
+  host: web.minikube.domain
   ingress:
     enabled: true
-    host: web.minikube.domain
     tlsEnabled: true
     extraAnnotations:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
@@ -321,7 +321,7 @@ scheduler:
       host: myscheduler.minikube.domain
       # Default allowed ip ranges that can be extended per ingress definitions paths
       whitelistSourceRangeRef: internalNetworkRanges
-      ingressDefinitions:
+      endpoints:
         default:
           paths:
             - /
@@ -570,7 +570,7 @@ vault:
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
     whitelistSourceRangeDef: internalNetworkRanges
-    ingressDefinitions:
+    endpoints:
       default:
         paths:
           - /
