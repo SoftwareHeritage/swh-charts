@@ -1,19 +1,5 @@
 {{ if .Values.web.enabled -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: web
-  namespace: {{ .Values.namespace }}
-spec:
-  type: ClusterIP
-  selector:
-    app: web
-  ports:
-    - port: 5004
-      targetPort: 5004
-      name: webapp
-    - port: 80
-      targetPort: 80
-      name: webstatic
-{{ end }}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "web"
+                                "configuration" .Values.web) -}}
+{{- end -}}

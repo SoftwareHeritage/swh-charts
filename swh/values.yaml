@@ -636,6 +636,9 @@ storage:
 
 web:
   enabled: false
+  port: 5004
+  extraPorts:
+    webstatic: 80
   migrations:
     enabled: false
   priorityClassName: frontend-rpc
@@ -675,8 +678,7 @@ web:
   #     kubernetes.io/tls-acme: "true"
   #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   #   tlsEnabled: true
-  #   whitelistSourceRange:
-  #     - 192.168.100.0/24
+  #   whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
         paths:

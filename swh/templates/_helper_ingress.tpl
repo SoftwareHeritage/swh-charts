@@ -11,6 +11,7 @@ Create a Kind Ingress for service .serviceType
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
 {{- $authenticated := get $endpoint_config "authentication" -}}
+{{- $host := $configuration.ingress.host | default $configuration.host -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -38,7 +39,7 @@ spec:
   ingressClassName: {{ $configuration.ingress.className }}
   {{- end }}
   rules:
-  - host: {{ $configuration.ingress.host }}
+  - host: {{ $host }}
     http:
       paths:
       {{- range $path_config := $paths }}
@@ -51,10 +52,10 @@ spec:
             port:
               number: {{ $port }}
       {{ end }}
-  {{- if and $configuration.ingress.tlsEnabled $configuration.ingress.host $configuration.ingress.secretName }}
+  {{- if and $configuration.ingress.tlsEnabled $host $configuration.ingress.secretName }}
   tls:
   - hosts:
-    - {{ $configuration.ingress.host }}
+    - {{ $host }}
     secretName: {{ $configuration.ingress.secretName }}
   {{- end }}
 {{ end }}

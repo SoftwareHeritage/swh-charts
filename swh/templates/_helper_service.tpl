@@ -16,4 +16,11 @@ spec:
     - port: {{ .configuration.port }}
       targetPort: {{ .configuration.port }}
       name: rpc
+    {{ if .configuration.extraPorts }}
+    {{- range $label_port, $port := .configuration.extraPorts }}
+    - port: {{ $port }}
+      targetPort: {{ $port }}
+      name: {{ $label_port }}
+    {{ end }}
+    {{ end }}
 {{ end }}
