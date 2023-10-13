@@ -62,7 +62,7 @@ remoteSearchConfiguration:
 
 remoteVaultConfiguration:
   cls: remote
-  url: http://vault.internal.staging.swh.network:80/
+  url: http://vault.internal.staging.swh.network:5005/
 
 remoteIndexerStorageConfiguration:
     cls: remote
