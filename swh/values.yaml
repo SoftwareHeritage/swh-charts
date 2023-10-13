@@ -772,7 +772,7 @@ vault:
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
-    secretKeyRef: scheduler-sentry-secrets
+    secretKeyRef: swh-vault-sentry-secret
     secretKeyName: sentry-dsn
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # vaultConfigurationRef: postgresqlVaultConfiguration
