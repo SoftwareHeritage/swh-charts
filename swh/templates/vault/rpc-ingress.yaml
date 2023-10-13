@@ -1,4 +1,4 @@
-{{- if and .Values.vault.enabled .Values.vault.ingress.enabled }}
+{{- if and .Values.vault.enabled .Values.vault.ingress .Values.vault.ingress.enabled }}
 {{- include "swh.ingress" (dict "Values"        .Values
                                 "serviceType"   "vault-rpc"
                                 "configuration" .Values.vault) -}}

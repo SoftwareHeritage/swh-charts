@@ -620,7 +620,7 @@ scheduler:
       limitedCpu: 20m
 
 vault:
-  enabled: false
+  enabled: true
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
@@ -652,7 +652,7 @@ vault:
     # className: nginx
     # mandatory if ingress is enabled
     # the hostname on which the storage must be reachable
-    host: vault.internal.staging.swh.network
+    host: vault-rpc-ingress
     extraAnnotations:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
       nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
@@ -660,7 +660,7 @@ vault:
       nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeDef: internalNetworkRanges
+    whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
         paths:
