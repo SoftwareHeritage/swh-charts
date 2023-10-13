@@ -511,6 +511,7 @@ indexerStorage:
 
 storage:
   enabled: false
+  port: 5002
   priorityClassName: frontend-rpc
   logLevel: INFO
 # Don't configure the replicas if autoscaling is configured
@@ -573,6 +574,10 @@ storage:
     # mandatory if ingress is enabled
     # the hostname on which the storage must be reachable
     # host: mystorage.localdomain
+    endpoints:
+      default:
+        paths:
+          - path: /
 
   ## if journal access is required
   ## mandatory values

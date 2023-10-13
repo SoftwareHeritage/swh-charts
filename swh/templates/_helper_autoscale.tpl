@@ -18,7 +18,7 @@ spec:
   minReplicas: {{ .configuration.autoScaling.minReplicaCount | default 2 }}
   maxReplicas: {{ .configuration.autoScaling.maxReplicaCount | default 10 }}
   metrics:
-  {{- if .cpuPercentageUsage }}
+  {{- if .configuration.autoScaling.cpuPercentageUsage }}
   - type: Resource
     resource:
       name: cpu

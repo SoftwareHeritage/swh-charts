@@ -481,6 +481,7 @@ storage:
   ingress:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
+    whitelistSourceRangeRef: internalNetworkRanges
   gunicorn:
     threads: 4
     workers: 8
