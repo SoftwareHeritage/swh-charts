@@ -282,6 +282,8 @@ toolbox:
       scrubberConfigurationRef: fakePostgresqlScrubberConfiguration
     vault:
       vaultConfigurationRef: fakePostgresqlVaultConfiguration
+    indexer-storage:
+      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
 
 fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n

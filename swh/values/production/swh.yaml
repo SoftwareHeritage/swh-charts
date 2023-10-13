@@ -594,6 +594,8 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
+    indexer-storage:
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
 
 indexerStorage:
   enabled: false

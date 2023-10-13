@@ -528,6 +528,8 @@ toolbox:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
     vault:
       vaultConfigurationRef: postgresqlVaultConfiguration
+    indexer-storage:
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
 
 scheduler:
   enabled: true

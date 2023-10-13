@@ -1,6 +1,9 @@
 {{ if .Values.toolbox.enabled -}}
 {{- $namespace := .Values.namespace -}}
-{{- range $service_type, $deployment_config := .Values.toolbox.configs }}
+{{- range $service_type, $deployment_config := .Values.toolbox.configs -}}
+{{- $prefix_service_type_name := eq $service_type "indexer-storage" | ternary "indexerStorage" $service_type -}}
+{{- $serviceConfigurationRef := print $prefix_service_type_name "ConfigurationRef" -}}
+{{- $service_type_name := eq $service_type "indexer-storage" | ternary "indexer_storage" $service_type -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9,11 +12,11 @@ metadata:
   namespace: {{ $namespace }}
 data:
   config.yml.template: |
-{{ include "swh.postgresql" (dict "serviceType" $service_type
-                                  "Values" $.Values
-                                  "configurationRef" (get $deployment_config (print $service_type "ConfigurationRef"))) | indent 4 }}
+    {{ include "swh.postgresql" (dict "serviceType" $service_type_name
+                                      "configurationRef" (get $deployment_config $serviceConfigurationRef)
+                                      "Values" $.Values) | nindent 4 }}
     {{- if ( eq "scheduler" $service_type ) }}
-{{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | indent 4 }}
+    {{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | nindent 4 }}
     {{ end }}
 {{ end }}
 {{- end -}}
