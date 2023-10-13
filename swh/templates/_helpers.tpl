@@ -292,16 +292,13 @@ journal_writer:
 
 {{/* Generate the check migration container configuration if needed */}}
 {{- define "swh.checkDatabaseVersionContainer" -}}
-  {{- $Values := index . 0 -}}
-  {{- $imageNamePrefix := index . 1 -}}
-  {{- $module := index . 2 -}}
 - name: check-migration
-  image: {{ get $Values $imageNamePrefix }}:{{ get $Values (print $imageNamePrefix "_version") }}
+  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   command:
-  - /entrypoints/check-storage-db-version.sh
+  - /entrypoints/check-{{ .module }}-db-version.sh
   env:
   - name: MODULE
-    value: {{ $module }}
+    value: {{ .module }}
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
