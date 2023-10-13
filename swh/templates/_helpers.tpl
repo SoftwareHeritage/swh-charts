@@ -235,21 +235,18 @@ journal_writer:
 
 {{/* Generate the init keyspace container configuration if needed */}}
 {{- define "swh.storage.cassandra.initKeyspaceContainer" -}}
-  {{- $Values := index . 0 -}}
-  {{- $storageDefinitionRef := index . 1 -}}
-  {{- $imageNamePrefix := index . 2 -}}
-  {{- $storageDefinition := required (print "Storage definition " $storageDefinitionRef " not found") (get $Values $storageDefinitionRef) -}}
-  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " $storageDefinitionRef) (get $storageDefinition "storageConfigurationRef") -}}
-  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get $Values $storageConfigurationRef) -}}
+  {{- $storageDefinition := required (print "Storage definition " .configurationRef " not found") (get .Values .configurationRef) -}}
+  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " .configurationRef) (get $storageDefinition "storageConfigurationRef") -}}
+  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get .Values $storageConfigurationRef) -}}
   {{- $storageClass := required (print "cls entry mandatory in " $storageConfigurationRef) (get $storageConfiguration "cls") -}}
 
   {{- if eq "cassandra" $storageClass -}}
     {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
     {{- if $initKeyspace -}}
       {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
-      {{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
+      {{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
 - name: init-database
-  image: {{ get $Values $imageNamePrefix }}:{{ get $Values (print $imageNamePrefix "_version") }}
+  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   imagePullPolicy: IfNotPresent
   command:
   - /usr/local/bin/python3
@@ -330,4 +327,18 @@ Generate the configuration for a remote service
 {{- $_ := unset $configuration "secrets" -}}
 {{ .service }}:
 {{ toYaml $configuration | indent 2 }}
+{{- end -}}
+
+{{/*
+Generate the configuration for a journal_writer configuration entry
+*/}}
+{{- define "swh.journal.writer.configuration" -}}
+{{- $configuration := deepCopy (get .Values .configurationRef) -}}
+{{- $kafkaBrokers := get .Values (get $configuration "brokersConfigurationRef") -}}
+{{- $_ := unset $configuration "brokersConfigurationRefs" -}}
+{{ .service }}:
+  {{ toYaml $configuration | nindent 2 }}
+  {{- range $broker := $kafkaBrokers }}
+  - {{ $broker }}
+  {{- end}}
 {{- end -}}

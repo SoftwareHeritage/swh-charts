@@ -57,7 +57,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{ include "swh.storage.cassandra.initKeyspaceContainer" (list $.Values $.Values.storage.storageConfigurationRef "swh_storage_image") | nindent 8 }}
+        {{ include "swh.storage.cassandra.initKeyspaceContainer" (dict "Values" $.Values
+                                                                       "configurationRef" $.Values.storage.storageConfigurationRef
+                                                                       "imagePrefixName" "swh_storage_image") | nindent 8 }}
         {{- if .Values.storage.checkDbVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_storage_image"
