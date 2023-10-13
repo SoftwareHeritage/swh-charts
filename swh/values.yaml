@@ -769,6 +769,7 @@ toolbox:
 
 vault:
   enabled: false
+  port: 5005
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
@@ -816,17 +817,17 @@ vault:
   #     nginx.ingress.kubernetes.io/proxy-body-size: "4G"
   #   # Default allowed ip ranges that can be extended per ingress definitions paths
   #   # whitelistSourceRangeRef: internalNetworkRanges
-  #   # endpoints:
-  #   #   default:
-  #   #     paths:
-  #   #       - /
-  #   #   read-only:
-  #   #     paths:
-  #   #       - /scheduler_metrics/get
-  #   #       - /visit_stats/get
-  #   #     # Extra allowed ip range for the paths above
-  #   #     extraWhitelistSourceRange:
-  #   #       - yyy.yyy.yyy.yyy/24
+  #   endpoints:
+  #     default:
+  #       paths:
+  #         - path: /
+  #     read-only:
+  #       paths:
+  #         - path: /scheduler_metrics/get
+  #         - path: /visit_stats/get
+  #       # Extra allowed ip range for the paths above
+  #       extraWhitelistSourceRange:
+  #         - yyy.yyy.yyy.yyy/24
 
 scheduler:
   enabled: false

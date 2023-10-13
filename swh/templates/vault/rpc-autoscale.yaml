@@ -1,28 +1,5 @@
 {{- if and .Values.vault.enabled .Values.vault.autoScaling -}}
-{{- with .Values.vault.autoScaling -}}
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  namespace: {{ $.Values.namespace }}
-  name: vault-rpc
-  labels:
-    app: vault-rpc
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: vault-rpc
-  minReplicas: {{ .minReplicaCount | default 2 }}
-  maxReplicas: {{ .maxReplicaCount | default 10 }}
-  metrics:
-  {{- if .cpuPercentageUsage }}
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: {{ .cpuPercentageUsage }}
-  {{- end -}}
-{{- end -}}
+{{- include "swh.autoscale" (dict "Values"        .Values
+                                  "serviceType"   "vault-rpc"
+                                  "configuration" .Values.vault) -}}
 {{- end -}}

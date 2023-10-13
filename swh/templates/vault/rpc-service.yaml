@@ -1,16 +1,5 @@
 {{ if .Values.vault.enabled -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: vault-rpc
-  namespace: {{ .Values.namespace }}
-spec:
-  type: ClusterIP
-  selector:
-    app: vault-rpc
-  ports:
-    - port: 5005
-      targetPort: 5005
-      name: rpc
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "vault-rpc"
+                                "configuration" .Values.vault) -}}
 {{ end }}

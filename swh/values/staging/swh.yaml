@@ -657,7 +657,7 @@ vault:
     endpoints:
       default:
         paths:
-          - /
+          - path: /
 
 indexerStorage:
   enabled: false
