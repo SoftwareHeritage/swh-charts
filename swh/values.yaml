@@ -132,6 +132,18 @@ sentry:
 #   storageConfigurationRef: postgresqlStorageConfiguration
 #   objectStorageConfiguration: remoteObjectStorageConfiguration
 
+# defaultIndexerStorageConfiguration:
+#   cls: postgresql
+#   host: indexer-storage.server
+#   db: swh-indexer
+#   port: 5432
+#   user: swh
+#   pass: ${POSTGRESQL_PASSWORD}
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-indexer-storage-postgresql-secret
+#       secretKeyName: postgres-swh-indexer-password
+
 # globalROStorageConfiguration:
 # TODO: define this configuration
 
@@ -228,6 +240,17 @@ sentry:
 #   cls: remote
 #   url: http://<counters service url>
 
+# defaultJournalWriterConfiguration:
+#   brokersConfigurationRef: kafkaBrokers
+#   clientId: swh.storage.journal_writer.storage1
+#   producerConfig: |-
+#     message.max.bytes: 1000000000
+#     item2: value2
+#     item3: value3
+#   # optional values with their default value
+#   prefix: swh.journal.objects
+#   anonymize: true
+
 giveConfiguration:
   public: ${GIVE_PUBLIC_KEY}
   token: ${GIVE_PRIVATE_TOKEN}
@@ -320,8 +343,7 @@ storage_replayer:
   #   port: 6379
   #   db: 1
 
-  # Don't start if code and database versions are not equals
-  # Only supported for postgresql backend
+  # When true, check db & code versions and do not start if they diverge
   checkDbVersion: false
 
   deployments:
@@ -434,6 +456,54 @@ listers:
   # schedulerConfigurationRef: defaultSchedulerConfiguration
   # celeryConfigurationRef: consumerCeleryConfiguration
 
+indexerStorage:
+  enabled: false
+  priorityClassName: frontend-rpc
+  logLevel: INFO
+# Don't configure the replicas if autoscaling is configured
+# and vice-versa
+# replicas: 1
+  requestedCpu: 50m
+  requestedMemory: 100Mi
+# autoScaling:
+#   minReplicaCount: 2
+#   maxReplicaCount: 10
+#   cpuPercentageUsage: 100
+#  affinity:
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: "swh/rpc"
+#            operator: In
+#            values:
+#            - "true"
+#  gunicorn:
+#    threads: 5
+#    workers: 2
+#    timeout: 60
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: indexer-storage-sentry-dsn
+  # mandatory
+  # check defaultStorageConfiguration example to configure your storage
+  indexerStorageConfigurationRef: defaultIndexerStorageConfiguration
+  journalWriteConfigurationRef: defaultJournalWriterConfiguration
+  # When true, check db & code versions and do not start if they diverge
+  checkDbVersion: false
+  # Deploy an ingress to access the storage
+  ingress:
+    enabled: false
+    # Optional: the ingress classname to use
+    # className: nginx
+    # mandatory if ingress is enabled
+    # the hostname on which the storage must be reachable
+    # host: mystorage.localdomain
+
 storage:
   enabled: false
   priorityClassName: frontend-rpc
@@ -471,8 +541,7 @@ storage:
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageConfiguration
 
-  # Don't start if code and database versions are not equals
-  # Only supported for postgresql backend
+  # When true, check db & code versions and do not start if they diverge
   checkDbVersion: false
 
   objstorage:

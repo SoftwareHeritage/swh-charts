@@ -34,6 +34,18 @@ fakePostgresqlStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
 
+fakePostgresqlIndexerStorageConfiguration:
+  cls: postgresql
+  host: db1.i.s.s.n
+  port: 5432
+  db: swh-indexer
+  user: swh-indexer
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
+
 fakePostgresqlSchedulerConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
@@ -580,3 +592,30 @@ vault:
         # Extra allowed ip range for the paths above
         extraWhitelistSourceRange:
           - 192.168.101.0/24
+
+journalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  cls: kafka
+  anonymize: true
+  client_id: swh.indexer-storage.journal_writer.storage
+  prefix: swh.journal.objects
+  producer_config:
+    message.max.bytes: 1000000000
+
+indexerStorage:
+  enabled: false
+  checkDbVersion: false
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 2
+    cpuPercentageUsage: 90
+  requestedCpu: 500m
+  requestedMemory: 512Mi
+  indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+  journalWriterConfigurationRef: journalWriterConfiguration
+  ingress:
+    enabled: true
+    host: indexer-storage.i.s.s.n
+  gunicorn:
+    threads: 2
+    workers: 4

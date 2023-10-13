@@ -106,6 +106,18 @@ guestCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: read-only
 
+postgresqlIndexerStorageConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  db: swh-indexer
+  port: 5432
+  user: swh-indexer
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-indexer-storage-postgresql-secret
+      secretKeyName: postgres-swh-indexer-password
+
 kafkaBrokers:
   - journal1.internal.staging.swh.network
   - journal2.internal.staging.swh.network
@@ -125,6 +137,14 @@ depositConfiguration:
     DEPOSIT_PASSWORD:
       secretKeyRef: deposit-secrets
       secretKeyName: password
+
+journalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  cls: kafka
+  prefix: swh.journal.indexed
+  client_id: swh.idx_storage.journal_writer.storage1
+  producer_config:
+    message.max.bytes: 1000000000
 
 memcached:
   enabled: true

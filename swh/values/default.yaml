@@ -175,5 +175,18 @@ web:
             values:
             - "true"
 
+indexerStorage:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/rpc
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true

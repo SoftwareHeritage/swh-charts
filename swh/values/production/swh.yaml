@@ -594,3 +594,21 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
+
+indexerStorage:
+  enabled: false
+  checkDbVersion: true
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 4
+    cpuPercentageUsage: 90
+  requestedCpu: 500m
+  requestedMemory: 512Mi
+  indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+  journalWriterConfigurationRef: journalWriterConfiguration
+  ingress:
+    enabled: true
+    host: saam.internal.softwareheritage.org
+  gunicorn:
+    threads: 2
+    workers: 4

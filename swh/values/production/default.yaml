@@ -99,6 +99,18 @@ depositConfiguration:
       secretKeyRef: deposit-secrets
       secretKeyName: password
 
+postgresqlIndexerStorageConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  db: softwareheritage-indexer
+  port: 5432
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-indexer-storage-postgresql-secret
+      secretKeyName: postgres-swh-indexer-password
+
 internalNetworkRanges:
   - 127.0.0.0/8
   # rocq production range ip
@@ -115,7 +127,6 @@ externalAuthorizedNetworkRanges:
   - 213.135.60.145
   - 213.135.60.146
   - 37.187.96.121
-
 
 webThrottling:
   internalExemptedNetworkRangesRef: internalNetworkRanges
@@ -145,3 +156,11 @@ webThrottling:
     swh_raw_object:
       limiter_rate:
         default: 120/h
+
+journalWriteConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  cls: kafka
+  prefix: swh.journal.indexed
+  client_id: swh.idx_storage.journal_writer.saam
+  producer_config:
+    message.max.bytes: 1000000000

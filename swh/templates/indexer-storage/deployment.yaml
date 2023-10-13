@@ -1,0 +1,145 @@
+{{ if .Values.indexerStorage.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: indexer-storage
+  labels:
+    app: indexer-storage
+spec:
+  revisionHistoryLimit: 2
+  {{ if .Values.indexerStorage.replicas -}}
+  replicas: {{ .Values.indexerStorage.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: indexer-storage
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: indexer-storage
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/indexer-storage/configmap.yaml") . | sha256sum }}
+        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.indexerStorage.affinity }}
+      affinity:
+        {{- toYaml .Values.indexerStorage.affinity | nindent 8 }}
+      {{- end }}
+
+      {{- if and .Values.podPriority.enabled .Values.indexerStorage.priorityClassName }}
+      priorityClassName: {{ .Values.namespace }}-{{ .Values.indexerStorage.priorityClassName }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          env:
+            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.indexerStorage.indexerStorageConfigurationRef
+                                                       "Values" .Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+        {{- if .Values.indexerStorage.checkDbVersion }}
+        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" .Values
+                                                             "imagePrefixName" "swh_indexer_storage_image"
+                                                             "module" "indexer-storage") | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: indexer-storage
+          resources:
+            requests:
+              memory: {{ .Values.indexerStorage.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.indexerStorage.requestedCpu | default "500m" }}
+          {{- if or .Values.indexerStorage.limitedMemory .Values.indexerStorage.limitedCpu }}
+            limits:
+            {{- if .Values.indexerStorage.limitedMemory }}
+              memory: {{ .Values.indexerStorage.limitedMemory }}
+            {{- end }}
+            {{- if .Values.indexerStorage.limitedCpu }}
+              cpu: {{ .Values.indexerStorage.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          image: {{ .Values.swh_indexer_storage_image }}:{{ .Values.swh_indexer_storage_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5007
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            {{ if .Values.indexerStorage.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.indexerStorage.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.indexerStorage.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.indexerStorage.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.indexerStorage.logLevel | quote }}
+          {{- if .Values.indexerStorage.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.indexer
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.indexerStorage.sentry.secretKeyRef }}
+                  key: {{ .Values.indexerStorage.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: indexer-storage-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: database-utils
+        configMap:
+          name: database-utils
+          defaultMode: 0555
+{{- end -}}
