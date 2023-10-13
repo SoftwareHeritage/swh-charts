@@ -1,16 +1,5 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: scheduler-rpc
-  namespace: {{ .Values.namespace }}
-spec:
-  type: ClusterIP
-  selector:
-    app: scheduler-rpc
-  ports:
-    - port: 5008
-      targetPort: 5008
-      name: rpc
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "scheduler-rpc"
+                                "configuration" .Values.scheduler.rpc) -}}
 {{ end }}

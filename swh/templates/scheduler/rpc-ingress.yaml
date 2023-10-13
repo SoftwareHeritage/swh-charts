@@ -1,38 +1,5 @@
 {{- if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled .Values.scheduler.rpc.ingress.enabled -}}
-{{- $defaultWhitelistSourceRangeRef := .Values.scheduler.rpc.ingress.whitelistSourceRangeRef -}}
-{{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
-{{- range $endpoint_definition, $endpoint_config := .Values.scheduler.rpc.ingress.endpoints -}}
-{{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
-{{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
-{{- $paths := get $endpoint_config "paths" -}}
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  namespace: {{ $.Values.namespace }}
-  name: scheduler-rpc-ingress-{{ $endpoint_definition }}
-  annotations:
-  {{- if $whitelistSourceRange }}
-    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRange }}
-  {{- end }}
-{{ toYaml $.Values.scheduler.rpc.ingress.extraAnnotations | indent 4 }}
-
-spec:
-  {{- if $.Values.scheduler.rpc.ingress.className }}
-  ingressClassName: {{ $.Values.scheduler.rpc.ingress.className }}
-  {{- end }}
-  rules:
-  - host: {{ $.Values.scheduler.rpc.ingress.host }}
-    http:
-      paths:
-{{- range $path := $paths }}
-      - path: {{ $path }}
-        pathType: Prefix
-        backend:
-          service:
-            name: scheduler-rpc
-            port:
-              number: 5008
-{{ end }}
-{{ end }}
+{{- include "swh.ingress" (dict "Values"        .Values
+                                "serviceType"   "scheduler-rpc"
+                                "configuration" .Values.scheduler.rpc) -}}
 {{ end }}

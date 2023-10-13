@@ -863,6 +863,7 @@ scheduler:
         weight: 100
   rpc:
     enabled: false
+    port: 5008
     priorityClassName: frontend-rpc
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
@@ -900,11 +901,11 @@ scheduler:
       # endpoints:
       #   default:
       #     paths:
-      #       - /
+      #       - path: /
       #   read-only:
       #     paths:
-      #       - /scheduler_metrics/get
-      #       - /visit_stats/get
+      #       - path: /scheduler_metrics/get
+      #       - path: /visit_stats/get
       #     # Extra allowed ip range for the paths above
       #     extraWhitelistSourceRange:
       #       - yyy.yyy.yyy.yyy/24

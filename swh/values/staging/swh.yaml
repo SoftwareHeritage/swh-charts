@@ -561,10 +561,10 @@ scheduler:
       endpoints:
         default:
           paths:
-            - /
+            - path: /
         read-only:
           paths:
-            - /scheduler_metrics/get
+            - path: /scheduler_metrics/get
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
