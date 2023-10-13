@@ -144,10 +144,21 @@ scheduler:
             - "true"
 
 vault:
+  sentry:
+    enabled: true
   extraConfig:
     smtp:
       host: smtp.inria.fr
       port: 25
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/rpc
+            operator: In
+            values:
+            - "true"
 
 web:
   migrations:
