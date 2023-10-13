@@ -122,6 +122,19 @@ kafkaBrokers:
   - journal1.internal.staging.swh.network
   - journal2.internal.staging.swh.network
 
+elasticsearchInstances:
+  - host: search-esnode0.internal.staging.swh.network
+    port: 9200
+
+elasticsearchConfiguration:
+  elasticsearchInstancesRef: elasticsearchInstances
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.11
+      read_alias: origin-read
+      write_alias: origin-write
+
 journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
   groupId: swh.scheduler.journal_client

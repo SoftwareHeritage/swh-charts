@@ -343,3 +343,16 @@ Generate the configuration for a journal_writer configuration entry
   - {{ $broker }}
   {{- end}}
 {{- end -}}
+
+{{/*
+Generate the configuration for search
+*/}}
+{{- define "swh.search.configuration" -}}
+{{- $configuration := deepCopy (get .Values .configurationRef) -}}
+{{- $elasticsearchInstances := get .Values (get $configuration "elasticsearchInstancesRef") -}}
+{{- $_ := unset $configuration "elasticsearchInstancesRef" -}}
+{{ .serviceType }}:
+  {{ toYaml $configuration | nindent 2 }}
+  hosts:
+  {{ toYaml $elasticsearchInstances | nindent 4 }}
+{{- end -}}

@@ -1,0 +1,13 @@
+{{ if .Values.search.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: search-rpc-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.search.configuration" (dict "serviceType" "search"
+                                                 "configurationRef" .Values.search.elasticsearchConfigurationRef
+                                                 "Values" .Values) | nindent 4 -}}
+{{- end -}}

@@ -1,0 +1,5 @@
+{{ if .Values.search.enabled -}}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "search-rpc"
+                                "configuration" .Values.search) -}}
+{{ end }}

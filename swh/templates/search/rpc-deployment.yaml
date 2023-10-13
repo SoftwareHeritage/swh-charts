@@ -1,0 +1,130 @@
+{{ if .Values.search.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: search-rpc
+  labels:
+    app: search-rpc
+spec:
+  revisionHistoryLimit: 2
+  {{ if .Values.search.replicas -}}
+  replicas: {{ .Values.search.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: search-rpc
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: search-rpc
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/search/rpc-configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.search.affinity }}
+      affinity:
+        {{- toYaml .Values.search.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and .Values.podPriority.enabled .Values.search.priorityClassName }}
+      priorityClassName: {{ .Values.namespace }}-{{ .Values.search.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        - name: search-rpc
+          resources:
+            requests:
+              memory: {{ .Values.search.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.search.requestedCpu | default "500m" }}
+          {{- if or .Values.search.limitedMemory .Values.search.limitedCpu }}
+            limits:
+            {{- if .Values.search.limitedMemory }}
+              memory: {{ .Values.search.limitedMemory }}
+            {{- end }}
+            {{- if .Values.search.limitedCpu }}
+              cpu: {{ .Values.search.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          image: {{ .Values.swh_search_image }}:{{ .Values.swh_search_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5005
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - /opt/swh/entrypoint.sh
+          env:
+            {{ if .Values.search.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.search.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.search.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.search.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.search.logLevel | default "INFO" }}
+          {{- if .Values.search.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.search
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.search.sentry.secretKeyRef }}
+                  key: {{ .Values.search.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: search-rpc-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{- end -}}

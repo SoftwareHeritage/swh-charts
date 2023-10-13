@@ -27,6 +27,23 @@ kafkaBrokers:
   - kafka3.internal.softwareheritage.org
   - kafka4.internal.softwareheritage.org
 
+elasticsearchInstances:
+  - host: search-esnode4.internal.softwareheritage.org
+    port: 9200
+  - host: search-esnode5.internal.softwareheritage.org
+    port: 9200
+  - host: search-esnode6.internal.softwareheritage.org
+    port: 9200
+
+elasticsearchConfiguration:
+  elasticsearchInstancesRef: elasticsearchInstances
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.11
+      read_alias: origin-read
+      write_alias: origin-write
+
 journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
   groupId: swh.scheduler.journal_client
