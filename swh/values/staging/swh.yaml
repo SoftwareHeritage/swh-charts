@@ -334,8 +334,12 @@ graphql:
     timeout: 3600
   ingress:
     enabled: true
-    httpPath: /
     host: graphql.internal.staging.swh.network
+    whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
   logLevel: DEBUG
   auth:
     enabled: true

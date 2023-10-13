@@ -1,15 +1,5 @@
 {{ if .Values.graphql.enabled -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: graphql
-  namespace: {{ .Values.namespace }}
-spec:
-  type: ClusterIP
-  selector:
-    app: graphql
-  ports:
-    - port: 5013
-      targetPort: 5013
-{{ end }}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "graphql"
+                                "configuration" .Values.graphql) -}}
+{{- end -}}

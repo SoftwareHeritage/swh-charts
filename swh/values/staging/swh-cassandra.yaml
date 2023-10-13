@@ -617,8 +617,12 @@ graphql:
     timeout: 3600
   ingress:
     enabled: true
-    httpPath: /graphql/
     host: webapp-cassandra.internal.staging.swh.network
+    whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /graphql/
   auth:
     # temporary disable the authentication to avoid a redirect error from keycloak
     enabled: false

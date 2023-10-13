@@ -264,6 +264,7 @@ giveConfiguration:
 
 graphql:
   enabled: false
+  port: 5013
   priorityClassName: frontend-rpc
   logLevel: INFO
   debug: no
@@ -283,10 +284,15 @@ graphql:
 #    # check defaultStorageConfiguration example to configure your storage
 #    storageConfigurationRef: defaultROStorageClientConfiguration
 #    searchConfigurationRef: searchConfiguration
-#  ingress:
-#    enabled: false
-#    httpPath: /graphql
-#    host: my_host # Optional
+#    ingress:
+#      enabled: false
+#      host: my_host # Optional
+#      extraAnnotations:
+#        nginx.ingress.kubernetes.io/rewrite-target: /
+#      endpoints:
+#        default:
+#          paths:
+#            - path: /
   auth:
     enabled: false
     # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
