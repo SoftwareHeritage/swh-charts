@@ -458,6 +458,7 @@ listers:
 
 indexerStorage:
   enabled: false
+  port: 5007
   priorityClassName: frontend-rpc
   logLevel: INFO
 # Don't configure the replicas if autoscaling is configured
@@ -503,6 +504,10 @@ indexerStorage:
     # mandatory if ingress is enabled
     # the hostname on which the storage must be reachable
     # host: mystorage.localdomain
+    endpoints:
+      default:
+        paths:
+          - path: /
 
 storage:
   enabled: false

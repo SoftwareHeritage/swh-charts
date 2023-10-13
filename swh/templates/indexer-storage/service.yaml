@@ -1,16 +1,5 @@
 {{ if .Values.indexerStorage.enabled -}}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: indexer-storage
-  namespace: {{ .Values.namespace }}
-spec:
-  type: ClusterIP
-  selector:
-    app: indexer-storage
-  ports:
-    - port: 5007
-      targetPort: 5007
-      name: rpc
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "indexer-storage-rpc"
+                                "configuration" .Values.indexerStorage) -}}
 {{ end }}
