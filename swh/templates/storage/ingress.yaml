@@ -1,25 +1,5 @@
-{{ if .Values.storage.enabled -}}
-{{ if and .Values.storage.ingress .Values.storage.ingress.enabled -}}
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  namespace: {{ .Values.namespace }}
-  name: storage-ingress
-spec:
-  {{- if .Values.storage.ingress.className }}
-  ingressClassName: {{ .Values.storage.ingress.className }}
-  {{- end }}
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: storage
-            port:
-              number: 5002
-    host: {{ .Values.storage.ingress.host }}
-
-{{ end }}
+{{ if and .Values.storage.enabled .Values.storage.ingress .Values.storage.ingress.enabled -}}
+{{- include "swh.ingress" (dict "Values"        .Values
+                                "serviceType"   "storage"
+                                "configuration" .Values.storage) -}}
 {{ end }}
