@@ -318,6 +318,9 @@ graphql:
     whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         paths:
           - path: /graphql/
   gunicorn:
