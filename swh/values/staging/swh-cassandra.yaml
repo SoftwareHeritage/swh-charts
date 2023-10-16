@@ -623,6 +623,9 @@ graphql:
       default:
         paths:
           - path: /graphql/
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
   auth:
     # temporary disable the authentication to avoid a redirect error from keycloak
     enabled: false

@@ -340,6 +340,9 @@ graphql:
       default:
         paths:
           - path: /
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
   logLevel: DEBUG
   auth:
     enabled: true
