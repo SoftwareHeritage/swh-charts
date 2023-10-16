@@ -482,6 +482,13 @@ storage:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
     whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
   gunicorn:
     threads: 4
     workers: 8
