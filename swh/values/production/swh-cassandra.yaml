@@ -264,6 +264,15 @@ web:
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     tlsEnabled: true
     whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
+          - path: /static
+            port: 80
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
 
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
