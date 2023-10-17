@@ -72,6 +72,23 @@ postgresqlVaultConfiguration:
       secretKeyRef: swh-vault-postgresql-secret
       secretKeyName: postgres-swh-vault-password
 
+postgresqlWebConfiguration:
+  host: db1.internal.staging.swh.network
+  port: 5432
+  db: swh-web
+  user: swh-web
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
 remoteSearchConfiguration:
   cls: remote
   url: http://search0.internal.staging.swh.network:5010
@@ -174,6 +191,42 @@ journalWriterConfiguration:
   client_id: swh.idx_storage.journal_writer.storage1
   producer_config:
     message.max.bytes: 1000000000
+
+
+localRpcRWStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
+rpcRWStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
+# (Not so) readonly (namespace local) storage
+localRpcROStorageConfiguration:
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
+webThrottling:
+  internalExemptedNetworkRangesRef: stagingNetworkRanges
+  cache_uri: memcached:11211
+  scopes_with_exempted_networks:
+    swh_api:
+      limiter_rate:
+        default: 120/h
+    swh_vault_cooking:
+      limiter_rate:
+        default: 120/h
+        GET: 60/m
+  scopes:
+    swh_api_origin_search:
+      limiter_rate:
+        default: 10/m
+    swh_api_origin_visit_latest:
+      limiter_rate:
+        default: 700/m
+    swh_save_origin:
+      limiter_rate:
+        default: 120/h
+        POST: 10/h
 
 memcached:
   enabled: true

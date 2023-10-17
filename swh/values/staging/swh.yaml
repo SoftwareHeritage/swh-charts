@@ -623,3 +623,83 @@ search:
     # mandatory if ingress is enabled
     # the hostname on which the storage must be reachable
     host: search.internal.staging.swh.network
+
+web:
+  enabled: true
+  logLevel: INFO
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 3
+    cpuPercentageUsage: 50
+  host: webapp-postgresql.internal.staging.swh.network
+  ingress:
+    enabled: true
+    secretName: swh-web-crt
+    extraAnnotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    tlsEnabled: true
+    whitelistSourceRangeRef: stagingNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
+          - path: /static
+            port: 80
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
+      authenticated:
+        paths:
+          - path: /api/1/provenance/
+          - path: /api/1/entity/
+          - path: /api/1/content/[^/]+/symbol/
+        # auth-file with authentication
+        authentication: swh-cassandra/web-auth-secrets
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
+  databaseConfigurationRef: postgresqlWebConfiguration
+  searchConfigurationRef: remoteSearchConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  storageConfigurationRef: localRpcROStorageConfiguration
+  vaultConfigurationRef: remoteVaultConfiguration
+  indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+  countersConfigurationRef: remoteCountersConfiguration
+  djangoConfigurationRef: djangoWebConfiguration
+  giveConfigurationRef: giveConfiguration
+  throttlingConfigurationRef: webThrottling
+  extraConfig:
+    instance_name: webapp-postgresql.internal.staging.swh.network
+    allowed_hosts:
+    - webapp-postgresql.internal.staging.swh.network
+    keycloak:
+      server_url: https://auth.softwareheritage.org/auth/
+      realm_name: SoftwareHeritageStaging
+    search_config:
+      metadata_backend: swh-search
+    content_display_max_size: 5242880
+    history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
+    add_forge_now:
+      email_address: add-forge-now@webapp.staging.swh.network
+    swh_extra_django_apps:
+    - swh.web.add_forge_now
+    - swh.web.archive_coverage
+    - swh.web.badges
+    - swh.web.banners
+    - swh.web.deposit
+    - swh.web.inbound_email
+    - swh.web.jslicenses
+    - swh.web.mailmap
+    - swh.web.metrics
+    - swh.web.save_code_now
+    - swh.web.save_origin_webhooks
+    - swh.web.vault
+    matomo: {}
+    give:
+      public_key: ${GIVE_PUBLIC_KEY}
+      token: ${GIVE_PRIVATE_TOKEN}
