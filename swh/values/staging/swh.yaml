@@ -1,4 +1,8 @@
 
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage1.internal.staging.swh.network:5002
+
 postgresqlStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
@@ -670,7 +674,7 @@ web:
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: localRpcROStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
