@@ -52,7 +52,7 @@ data:
     if [ "$DB_VERSION" -eq "$CODE_VERSION" ]; then
       echo "Database already configured at the latest version"
     else
-      echo "Migration required from $CODE_VERSION to $DB_VERSION."
+      echo "Migration required from $DB_VERSION to $CODE_VERSION."
     fi
 
   migrate-db-version.sh: |
