@@ -60,6 +60,18 @@ remoteROObjstorageConfiguration:
   filters_conf:
     - type: readonly
 
+postgresqlVaultConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh
+  user: swh-vault
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-vault-postgresql-secret
+      secretKeyName: postgres-swh-vault-password
+
 remoteSearchConfiguration:
   cls: remote
   url: http://search0.internal.staging.swh.network:5010
