@@ -208,8 +208,7 @@ web:
       nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
       nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    whitelistSourceRange:
-      - 192.168.100.0/24
+    whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
         paths:
@@ -229,7 +228,10 @@ web:
     cpuPercentageUsage: 50
   refreshSavecodenowStatus:
     enabled: false
-    cron: "* 9 * * *"
+    cron: "* 5 * * *"
+  syncMailmaps:
+    enabled: false
+    cron: "* 30 * * *"
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets

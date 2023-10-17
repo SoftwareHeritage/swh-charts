@@ -1,0 +1,5 @@
+{{ if and .Values.web.enabled .Values.web.syncMailmaps.enabled -}}
+{{- include "swh.web.cronjob" (dict "Values"        .Values
+                                    "serviceType"   "sync-mailmaps"
+                                    "configuration" .Values.web.syncMailmaps) -}}
+{{- end -}}
