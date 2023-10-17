@@ -826,7 +826,11 @@ vault:
   #   # className: nginx
   #   # mandatory if ingress is enabled
   #   # the hostname on which the storage must be reachable
-  #   # host: myscheduler.localdomain
+  #   # host: vault-rpc
+  #   # (optional) Configure to create a CNAME equivalent to the ingress controller service. This
+  #   # allows to use the ingress internally and avoid recording an external dns entry in
+  #   # our swh DNS server (pergamon). Unstable & subject to change
+  #   ingressControllerServiceUrl: ingress-nginx-controller.ingress-nginx.svc.cluster.local
   #   extraAnnotations:
   #     nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
   #     nginx.ingress.kubernetes.io/proxy-send-timeout: "90"

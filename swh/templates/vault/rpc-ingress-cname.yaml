@@ -1,0 +1,11 @@
+{{- if and .Values.vault.enabled .Values.vault.ingress .Values.vault.ingress.enabled .Values.vault.ingress.ingressControllerServiceUrl }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.vault.ingress.host }}
+  namespace: {{ .Values.namespace }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.vault.ingress.ingressControllerServiceUrl }}
+{{ end }}
