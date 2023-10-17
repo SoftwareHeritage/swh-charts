@@ -47,6 +47,10 @@ localRpcROStorageService:
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
+remoteStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
 storage_replayer:
   enabled: true
 
@@ -277,7 +281,7 @@ web:
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: localRpcROStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration

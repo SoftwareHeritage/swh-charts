@@ -192,19 +192,6 @@ journalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
-
-localRpcRWStorageConfiguration:
-  cls: remote
-  host: http://storage:5002
-
-rpcRWStorageConfiguration:
-  pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: localRpcRWStorageConfiguration
-
-# (Not so) readonly (namespace local) storage
-localRpcROStorageConfiguration:
-  storageConfigurationRef: localRpcRWStorageConfiguration
-
 webThrottling:
   internalExemptedNetworkRangesRef: stagingNetworkRanges
   cache_uri: memcached:11211

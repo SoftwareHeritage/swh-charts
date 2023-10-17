@@ -1,5 +1,21 @@
 namespace: swh-cassandra
 
+remoteStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
+localRpcRWStorageConfiguration:
+  cls: remote
+  host: http://storage:5002
+
+rpcRWStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
+# (Not so) readonly (namespace local) storage
+localRpcROStorageConfiguration:
+  storageConfigurationRef: localRpcRWStorageConfiguration
+
 cassandraSeeds:
   - cassandra1.internal.staging.swh.network
   - cassandra2.internal.staging.swh.network
@@ -540,7 +556,7 @@ web:
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: localRpcROStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration

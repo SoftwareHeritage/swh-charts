@@ -7,7 +7,9 @@ metadata:
   name: web-configuration-template
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (list .Values . .Values.web.storageConfigurationRef) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage"
+                                             "configurationRef" .Values.web.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
     {{- if .Values.web.searchConfigurationRef }}
       {{- include "swh.service.fromYaml" (dict "service" "search" "configurationRef" .Values.web.searchConfigurationRef "Values" .Values) | nindent 4 }}
     {{- end -}}
