@@ -481,7 +481,7 @@ storage:
   ingress:
     enabled: true
     host: storage-cassandra.internal.staging.swh.network
-    whitelistSourceRangeRef: internalNetworkRanges
+    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
@@ -517,16 +517,8 @@ djangoWebConfiguration:
       secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key
 
-internalNetworkRanges:
-  - 127.0.0.0/8
-  # staging ip
-  - 192.168.130.0/24
-  # cluster internal range ip
-  - 10.42.0.0/16
-  - 10.43.0.0/16
-
 webThrottling:
-  internalExemptedNetworkRangesRef: internalNetworkRanges
+  internalExemptedNetworkRangesRef: stagingNetworkRanges
   cache_uri: memcached:11211
   scopes_with_exempted_networks:
     swh_api:
@@ -567,7 +559,7 @@ web:
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     tlsEnabled: true
-    whitelistSourceRangeRef: internalNetworkRanges
+    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
@@ -635,7 +627,7 @@ graphql:
   ingress:
     enabled: true
     host: webapp-cassandra.internal.staging.swh.network
-    whitelistSourceRangeRef: internalNetworkRanges
+    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:

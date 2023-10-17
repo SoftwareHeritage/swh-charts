@@ -335,7 +335,7 @@ graphql:
   ingress:
     enabled: true
     host: graphql.internal.staging.swh.network
-    whitelistSourceRangeRef: internalNetworkRanges
+    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
@@ -564,7 +564,7 @@ scheduler:
       host: scheduler.internal.staging.swh.network
       # TODO: Improve the authorization internal cluster ip range.
       # Default allowed ip ranges that can be extended per ingress definitions paths
-      whitelistSourceRangeRef: internalNetworkRanges
+      whitelistSourceRangeRef: stagingNetworkRanges
       endpoints:
         default:
           paths:
@@ -660,7 +660,7 @@ vault:
       nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: internalNetworkRanges
+    whitelistSourceRangeRef: clusterNetworkRanges
     endpoints:
       default:
         paths:
