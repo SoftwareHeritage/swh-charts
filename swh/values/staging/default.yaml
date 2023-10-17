@@ -63,8 +63,8 @@ remoteROObjstorageConfiguration:
 postgresqlVaultConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
-  port: '5432'
-  db: swh
+  port: 5432
+  db: swh-vault
   user: swh-vault
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
