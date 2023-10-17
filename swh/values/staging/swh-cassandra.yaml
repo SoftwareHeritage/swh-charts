@@ -2,7 +2,7 @@ namespace: swh-cassandra
 
 remoteStorageConfiguration:
   cls: remote
-  host: http://storage:5002
+  url: http://storage:5002
 
 localRpcRWStorageConfiguration:
   cls: remote
