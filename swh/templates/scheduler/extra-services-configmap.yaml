@@ -8,9 +8,10 @@ metadata:
   namespace: {{ $namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.schedulerConfiguration" (dict "configurationRef" $.Values.scheduler.schedulerConfigurationRef
-                                                  "Values" $.Values) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.scheduler.schedulerConfigurationRef
+                                                   "Values" .Values) | nindent 4 }}
 
-    {{- include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | nindent 4 }}
+    {{- include "celery.configuration" (dict "configurationRef" .Values.scheduler.celeryConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
 
 {{- end -}}

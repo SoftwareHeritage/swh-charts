@@ -15,7 +15,8 @@ data:
     {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.checker_deposit.storageConfigurationRef
                                                  "Values" $.Values) | nindent 4 }}
 
-    {{- include "celery.configuration" (list $.Values $.Values.checker_deposit.celeryConfigurationRef) | nindent 4 }}
+    {{- include "celery.configuration" (dict "configurationRef" .Values.checker_deposit.celeryConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
       task_acks_late: true
       task_modules:
       - swh.deposit.loader.tasks

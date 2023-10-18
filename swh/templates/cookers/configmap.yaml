@@ -19,7 +19,8 @@ data:
                                              "configurationRef" $.Values.cookers.vaultConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
     max_bundle_size: 1073741824
-    {{- include "celery.configuration" (list $.Values $.Values.cookers.celeryConfigurationRef) | nindent 4 }}
+    {{- include "celery.configuration" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
       task_modules:
         - swh.vault.cooking_tasks
       task_queues:

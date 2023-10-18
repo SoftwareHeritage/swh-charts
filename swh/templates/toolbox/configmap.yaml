@@ -16,7 +16,8 @@ data:
                                       "configurationRef" (get $deployment_config $serviceConfigurationRef)
                                       "Values" $.Values) | nindent 4 }}
     {{- if ( eq "scheduler" $service_type ) }}
-    {{ include "celery.configuration" (list $.Values $deployment_config.celeryConfigurationRef) | nindent 4 }}
+    {{- include "celery.configuration" (dict "configurationRef" $deployment_config.celeryConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
     {{ end }}
 {{ end }}
 {{- end -}}

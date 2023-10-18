@@ -10,7 +10,8 @@ data:
     {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.scheduler.schedulerConfigurationRef
                                                    "Values" .Values) | nindent 4 }}
 
-    {{- include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | nindent 4 }}
+    {{- include "celery.configuration" (dict "configurationRef" .Values.scheduler.celeryConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
 
     scheduling_policy:
       {{- range $option, $value := $.Values.scheduler.recurrent.schedulerPolicies }}

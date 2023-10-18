@@ -89,9 +89,7 @@ Generate the celery configuration. This will need evolution to deal with more ce
 configuration keys.
 */}}
 {{- define "celery.configuration" -}}
-{{- $Values := index . 0 -}}
-{{- $celeryConfigurationRefKey := index . 1 -}}
-{{- $celeryConfiguration := get $Values $celeryConfigurationRefKey -}}
+{{- $celeryConfiguration := get .Values .configurationRef -}}
 {{- $host := required (print "_helpers.tpl:celery.configuration: The <host> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "host") -}}
 {{- $port := required (print "_helpers.tpl:celery.configuration: The <port> property is mandatory in " $celeryConfiguration)
