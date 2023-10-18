@@ -49,7 +49,8 @@ storage:
 {{- end -}}
 {{- end -}}
 {{- if $journalWriterConfigurationRef }}
-{{ include "swh.storage.journalWriter" (list .Values $journalWriterConfigurationRef )}}
+{{ include "swh.storage.journalWriter" (dict "configurationRef" $journalWriterConfigurationRef
+                                             "Values" .Values)}}
 {{- end -}}
 {{- end -}}
 
@@ -206,12 +207,10 @@ objstorage:
 Generate the configuration for a storage journal broker
 */}}
 {{- define "swh.storage.journalWriter" -}}
-{{- $Values := index . 0 -}}
-{{- $journalWriterConfigurationRef := index . 1 -}}
-{{- $journalWriterConfiguration := get $Values $journalWriterConfigurationRef -}}
+{{- $journalWriterConfiguration := get .Values .configurationRef -}}
 {{- $brokersRef := get $journalWriterConfiguration "kafkaBrokersRef" -}}
-{{- $brokers := get $Values $brokersRef -}}
-{{- $clientId := required (print "clientId property is mandatory in " $journalWriterConfigurationRef " map") (get $journalWriterConfiguration "clientId") -}}
+{{- $brokers := get .Values $brokersRef -}}
+{{- $clientId := required (print "clientId property is mandatory in " .configurationRef " map") (get $journalWriterConfiguration "clientId") -}}
 journal_writer:
   cls: kafka
   brokers:
