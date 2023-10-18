@@ -79,7 +79,7 @@ swh-template-staging-cassandra-next-version:
       --values $(SWH_CHART)/values/default.yaml \
       --values $(SWH_CHART)/values/staging/default.yaml \
       --values $(SWH_CHART)/values/staging/swh-cassandra.yaml \
-      --values $(SWH_CHART)/values/staging/swh-cassandra-next-version.yaml \
+      --values $(SWH_CHART)/values/staging/overrides/swh-cassandra-next-version.yaml \
       -n swh --create-namespace --debug
 
 swh-template-production:
