@@ -57,6 +57,47 @@ swh-template:
       --values $(SWH_CHART)/values/minikube.yaml \
       -n swh --create-namespace --debug
 
+swh-template-staging:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/staging/default.yaml \
+      --values $(SWH_CHART)/values/staging/swh.yaml \
+      -n swh --create-namespace --debug
+
+swh-template-staging-cassandra:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/staging/default.yaml \
+      --values $(SWH_CHART)/values/staging/swh-cassandra.yaml \
+      -n swh --create-namespace --debug
+
+swh-template-staging-cassandra-next-version:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/staging/default.yaml \
+      --values $(SWH_CHART)/values/staging/swh-cassandra.yaml \
+      --values $(SWH_CHART)/values/staging/swh-cassandra-next-version.yaml \
+      -n swh --create-namespace --debug
+
+swh-template-production:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/production/default.yaml \
+      --values $(SWH_CHART)/values/production/swh.yaml \
+      -n swh --create-namespace --debug
+
+swh-template-production-cassandra:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/production/default.yaml \
+      --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
+      -n swh --create-namespace --debug
+
 cc-minikube:
 	helm --kube-context minikube upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
