@@ -13,7 +13,8 @@ data:
   config.yml.template: |
     {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.indexers.storageConfigurationRef
                                                  "Values" $.Values ) | nindent 4 }}
-    {{- include "swh.schedulerConfiguration" (list $.Values $.Values.indexers.schedulerConfigurationRef) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" $.Values.indexers.schedulerConfigurationRef
+                                                   "Values" $.Values) | nindent 4 }}
     indexer_storage:
       cls: remote
       url: http://{{ $.Values.indexers.indexer_storage.host }}:{{ $.Values.indexers.indexer_storage.port }}/

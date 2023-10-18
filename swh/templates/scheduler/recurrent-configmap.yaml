@@ -7,9 +7,10 @@ metadata:
   name: scheduler-schedule-recurrent-configuration-template
 data:
   config.yml.template: |
-{{ include "swh.schedulerConfiguration" (list $.Values $.Values.scheduler.schedulerConfigurationRef) | indent 4 }}
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.scheduler.schedulerConfigurationRef
+                                                   "Values" .Values) | nindent 4 }}
 
-{{ include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | indent 4 }}
+    {{- include "celery.configuration" (list $.Values $.Values.scheduler.celeryConfigurationRef) | nindent 4 }}
 
     scheduling_policy:
       {{- range $option, $value := $.Values.scheduler.recurrent.schedulerPolicies }}

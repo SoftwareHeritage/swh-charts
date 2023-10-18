@@ -15,7 +15,8 @@ data:
     {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.listers.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 
-    {{- include "swh.schedulerConfiguration" (list .Values .Values.listers.schedulerConfigurationRef) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.listers.schedulerConfigurationRef
+                                                   "Values" .Values) | nindent 4 }}
 
     {{- if .deployment_config.extraConfig -}}
       {{- range $option, $value := .deployment_config.extraConfig }}

@@ -12,7 +12,8 @@ data:
     {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.loader_metadata.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 
-    {{- include "swh.schedulerConfiguration" (list .Values .Values.loader_metadata.schedulerConfigurationRef) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.loader_metadata.schedulerConfigurationRef
+                                                   "Values" .Values) | nindent 4 }}
 
     journal:
       brokers: {{ toYaml .Values.loader_metadata.journalBrokers.hosts | nindent 8 }}

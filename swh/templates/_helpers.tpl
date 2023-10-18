@@ -68,17 +68,17 @@ Generate the configuration for a remote storage
 Create a global scheduler configuration based on scheduler section aggregation
 */}}
 {{- define "swh.schedulerConfiguration" -}}
-{{- $Values := index . 0 -}}
-{{- $schedulerConfigurationRef := index . 1 -}}
-{{- $schedulerConfiguration := get $Values $schedulerConfigurationRef -}}
-{{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.tpl:swh.schedulerConfiguration: key <" $schedulerConfigurationRef "> is mandatory in global dict $Values")}}{{- end -}}
+{{- $schedulerConfiguration := get .Values .configurationRef -}}
+{{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.tpl:swh.schedulerConfiguration: key <" .configurationRef "> is mandatory in global dict .Values")}}{{- end -}}
 {{- $schedulerType := get $schedulerConfiguration "cls" -}}
 {{- if eq $schedulerType "remote" -}}
-{{ include "swh.service.fromYaml" (dict "Values" $Values "configurationRef" $schedulerConfigurationRef "service" "scheduler") }}
+{{ include "swh.service.fromYaml" (dict "service" "scheduler"
+                                        "configurationRef" .configurationRef
+                                        "Values" .Values) }}
 {{- else if eq $schedulerType "postgresql" -}}
 {{ include "swh.postgresql" (dict "serviceType" "scheduler"
-                                  "Values" $Values
-                                  "configurationRef" $schedulerConfigurationRef ) }}
+                                  "Values" .Values
+                                  "configurationRef" .configurationRef ) }}
 {{- else -}}
 {{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
