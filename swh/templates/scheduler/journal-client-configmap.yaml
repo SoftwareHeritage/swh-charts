@@ -14,6 +14,7 @@ data:
     {{- include "celery.configuration" (dict "configurationRef" .Values.scheduler.celeryConfigurationRef
                                              "Values" .Values) | nindent 4 }}
 
-    {{- include "swh.journalClientConfiguration" (list .Values .Values.scheduler.journalClient.journalConfigurationRef) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" .Values.scheduler.journalClient.journalConfigurationRef
+                                                       "Values" .Values) | nindent 4 }}
 
 {{- end -}}
