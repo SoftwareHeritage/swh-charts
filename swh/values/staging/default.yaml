@@ -45,7 +45,7 @@ roStoragePipelineSteps:
 
 storage1StorageConfiguration:
   cls: remote
-  host: http://storage1.internal.staging.swh.network:5002
+  url: http://storage1.internal.staging.swh.network:5002
 
 remoteROStorageConfiguration:
   pipelineStepsRef: roStoragePipelineSteps

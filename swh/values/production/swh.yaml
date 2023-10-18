@@ -1,7 +1,6 @@
-
 saamStorageConfiguration:
   cls: remote
-  host: http://saam.internal.softwareheritage.org:5002
+  url: http://saam.internal.softwareheritage.org:5002
 
 remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps

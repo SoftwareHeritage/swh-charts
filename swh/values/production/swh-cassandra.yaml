@@ -42,14 +42,14 @@ cassandraStorageConfiguration:
 # TODO: Use a true read-only storage
 localRpcROStorageService:
   cls: remote
-  host: http://storage:5002
+  url: http://storage:5002
 
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
 remoteStorageConfiguration:
   cls: remote
-  host: http://storage:5002
+  url: http://storage:5002
 
 storage_replayer:
   enabled: true

@@ -6,7 +6,7 @@ remoteStorageConfiguration:
 
 localRpcRWStorageConfiguration:
   cls: remote
-  host: http://storage:5002
+  url: http://storage:5002
 
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps

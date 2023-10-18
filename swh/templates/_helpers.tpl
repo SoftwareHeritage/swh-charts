@@ -64,7 +64,7 @@ Generate the configuration for a remote storage
 {{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
 {{- $storageConfiguration := get .Values .configurationRef -}}
 {{- if $inPipeline -}}- {{ end }}cls: remote
-{{ $indent }}url: {{ get $storageConfiguration "host" }}
+{{ $indent }}url: {{ get $storageConfiguration "url" }}
 {{- end -}}
 
 {{/*

@@ -1,5 +1,3 @@
-
-
 remoteStorageConfiguration:
   cls: remote
   url: http://storage1.internal.staging.swh.network:5002
