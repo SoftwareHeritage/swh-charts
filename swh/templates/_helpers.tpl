@@ -24,7 +24,9 @@ storage:
 {{ toYaml $pipelineSteps | indent 2 }}
 {{ end -}}
 {{- if eq $storageType "remote" -}}
-{{ include "swh.storage.remote" (list .Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{ include "swh.storage.remote" (dict "configurationRef" $storageServiceConfigurationRef
+                                      "pipelineStepsRef" $pipelineStepsRef
+                                      "Values" .Values) | indent $indent }}
 {{- else if eq $storageType "cassandra" -}}
 {{ include "swh.storage.cassandra" (dict "configurationRef" $storageServiceConfigurationRef
                                          "pipelineStepsRef" $pipelineStepsRef
@@ -58,11 +60,9 @@ storage:
 Generate the configuration for a remote storage
 */}}
 {{- define "swh.storage.remote" -}}
-{{- $Values := index . 0 -}}
-{{- $storageConfigurationRef := index . 1 -}}
-{{- $inPipeline := index . 2 -}}
+{{- $inPipeline := .pipelineStepsRef -}}
 {{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
-{{- $storageConfiguration := get $Values $storageConfigurationRef -}}
+{{- $storageConfiguration := get .Values .configurationRef -}}
 {{- if $inPipeline -}}- {{ end }}cls: remote
 {{ $indent }}url: {{ get $storageConfiguration "host" }}
 {{- end -}}
