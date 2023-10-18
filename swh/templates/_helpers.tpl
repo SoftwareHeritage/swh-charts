@@ -26,7 +26,9 @@ storage:
 {{- if eq $storageType "remote" -}}
 {{ include "swh.storage.remote" (list .Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else if eq $storageType "cassandra" -}}
-{{ include "swh.storage.cassandra" (list .Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{ include "swh.storage.cassandra" (dict "configurationRef" $storageServiceConfigurationRef
+                                         "pipelineStepsRef" $pipelineStepsRef
+                                         "Values" .Values) | indent $indent }}
 {{- else if eq $storageType "postgresql" -}}
 {{ include "swh.postgresql" (dict "serviceType" "storage"
                                   "Values" .Values
@@ -171,14 +173,12 @@ deposit:
 Generate the configuration for a cassandra storage
 */}}
 {{- define "swh.storage.cassandra" -}}
-{{- $Values := index . 0 -}}
-{{- $storageConfigurationRef := index . 1 -}}
-{{- $inPipeline := index . 2 -}}
-{{- $storageConfiguration := get $Values $storageConfigurationRef -}}
+{{- $inPipeline := .pipelineStepsRef -}}
+{{- $storageConfiguration := get .Values .configurationRef -}}
 {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
-{{- $cassandraSeeds := get $Values $cassandraSeedsRef -}}
+{{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
 {{- $authProvider := get  $storageConfiguration "authProvider" -}}
-{{- $keyspace := required (print "The keyspace property is mandatory in " $storageConfigurationRef)
+{{- $keyspace := required (print "The keyspace property is mandatory in " .configurationRef)
                     (get $storageConfiguration "keyspace") -}}
 {{- $indentationCount := ternary 0 2 (empty $inPipeline) -}}
 {{- $indent := indent $indentationCount "" -}}
