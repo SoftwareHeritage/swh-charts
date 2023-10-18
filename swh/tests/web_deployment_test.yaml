@@ -17,6 +17,8 @@ tests:
       web.requestedMemory: memory
       web.requestedCpu: cpu
       web.storageConfigurationRef: defaultStorageConfigurationRef
+      web.hosts:
+        - webapp.localdomain
     asserts:
       - hasDocuments:
           count: 1
@@ -74,6 +76,8 @@ tests:
       web.gunicorn.workers: 102
       web.gunicorn.timeout: 103
       web.storageConfigurationRef: defaultStorageConfigurationRef
+      web.hosts:
+        - webapp.localdomain
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "THREADS")].value
@@ -98,6 +102,8 @@ tests:
       statsdExternalHost: my-statsd-host
       statsdPort: 9999
       web.storageConfigurationRef: defaultStorageConfigurationRef
+      web.hosts:
+        - webapp.localdomain
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "STATSD_HOST")].value
@@ -118,6 +124,8 @@ tests:
       web.enabled: true
       web.sentry.enabled: true
       web.storageConfigurationRef: defaultStorageConfigurationRef
+      web.hosts:
+        - webapp.localdomain
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
@@ -147,6 +155,8 @@ tests:
       swh_web_image: image
       swh_web_image_version: version
       web.storageConfigurationRef: defaultStorageConfigurationRef
+      web.hosts:
+        - webapp.localdomain
     asserts:
       - equal:
           path: spec.template.spec.containers[?(@.name == "web")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value

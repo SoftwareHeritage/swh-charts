@@ -1,17 +1,19 @@
+# -*- yaml -*-
+
 {{/*
 Create a Kind Ingress for service .serviceType
 */}}
 {{- define "swh.ingress" -}}
 {{- $serviceType := .serviceType }}
 {{- $configuration := .configuration }}
-{{- $defaultWhitelistSourceRangeRef := $configuration.ingress.whitelistSourceRangeRef -}}
+{{- $hosts := $configuration.hosts }}
+{{- $defaultWhitelistSourceRangeRef := $configuration.ingress.whitelistSourceRangeRef | default "inexistant" -}}
 {{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
 {{- range $endpoint_definition, $endpoint_config := $configuration.ingress.endpoints -}}
 {{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
 {{- $authenticated := get $endpoint_config "authentication" -}}
-{{- $host := $configuration.ingress.host | default $configuration.host -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -41,6 +43,7 @@ spec:
   ingressClassName: {{ $configuration.ingress.className }}
   {{- end }}
   rules:
+  {{- range $host := $hosts }}
   - host: {{ $host }}
     http:
       paths:
@@ -54,10 +57,13 @@ spec:
             port:
               number: {{ $port }}
       {{ end }}
-  {{- if and $configuration.ingress.tlsEnabled $host $configuration.ingress.secretName }}
+  {{- end }}
+  {{- if and $configuration.ingress.tlsEnabled $configuration.ingress.secretName }}
   tls:
   - hosts:
+    {{- range $host := $hosts }}
     - {{ $host }}
+    {{- end }}
     secretName: {{ $configuration.ingress.secretName }}
   {{- end }}
 {{ end }}

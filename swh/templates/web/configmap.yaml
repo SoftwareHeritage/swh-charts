@@ -1,4 +1,6 @@
 {{- if .Values.web.enabled -}}
+{{- $hosts := .Values.web.hosts }}
+{{- $allowed_instance := first $hosts }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -7,6 +9,11 @@ metadata:
   name: web-configuration-template
 data:
   config.yml.template: |
+    instance_name: {{ $allowed_instance }}
+    allowed_hosts:
+      {{- range $host := $hosts }}
+      - {{ $host }}
+      {{- end }}
     {{- include "swh.service.fromYaml" (dict "service" "storage"
                                              "configurationRef" .Values.web.storageConfigurationRef
                                              "Values" .Values) | nindent 4 }}

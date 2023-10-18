@@ -9,8 +9,8 @@ vault:
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
-  ingress:
-    host: vault-rpc-ingress-next-version
+  hosts:
+    - vault-rpc-ingress-next-version
 
 loaders:
   terminationGracePeriodSeconds: 60
@@ -223,8 +223,8 @@ storage:
     minReplicaCount: 1
     maxReplicaCount: 2
     cpuPercentageUsage: 150
-  ingress:
-    host: storage-cassandra-next-version.internal.staging.swh.network
+  hosts:
+    - storage-cassandra-next-version.internal.staging.swh.network
 
 postgresqlWebConfiguration:
   host: db1.internal.staging.swh.network
@@ -242,16 +242,13 @@ web:
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
-  host: webapp-cassandra-next-version.internal.staging.swh.network
-  extraConfig:
-    instance_name: webapp-cassandra-next-version.internal.staging.swh.network
-    allowed_hosts:
+  hosts:
     - webapp-cassandra-next-version.internal.staging.swh.network
 
 graphql:
   replicas: 1
-  ingress:
-    host: webapp-cassandra-next-version.internal.staging.swh.network
+  hosts:
+    - webapp-cassandra-next-version.internal.staging.swh.network
 
 podPriority:
   # This test environment should not impact the real staging environment

@@ -13,7 +13,7 @@ stagingNetworkRanges:
   - 10.43.0.0/16
   # "static" staging network range
   - 192.168.130.0/24
-  # "static" admin network range
+  # "static" admin network range (for monitoring purpose)
   - 192.168.50.0/24
 
 noopObjectStorage:
@@ -225,8 +225,8 @@ externalServices:
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
-  ingress:
-    host: vault-rpc-ingress
+  hosts:
+    - vault-rpc-ingress
 
 memcached:
   enabled: true

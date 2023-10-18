@@ -7,8 +7,10 @@ tests:
     set:
       web.enabled: true
       namespace: mynamespace
-      web.ingressClassName: myingressClass
-      web.host: myhost
+      web.ingress.enabled: true
+      web.ingress.className: myingressClass
+      web.hosts:
+        - myhost
     asserts:
         - containsDocument:
             kind: Ingress

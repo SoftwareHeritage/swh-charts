@@ -17,13 +17,15 @@ myCeleryConfiguration:
   user: fakeuser
   pass: fakepass
 
+vaultConfiguration:
+  cls: remote
+  url: http://vault.test.org:5005
+
 cookers:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
   celeryConfigurationRef: myCeleryConfiguration
-  vault:
-    host: vault.test.org
-    port: 5005
+  vaultConfigurationRef: vaultConfiguration
   deployments:
     testsimple:
       queues:

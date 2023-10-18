@@ -492,9 +492,10 @@ storage:
   objstorageClass: remote
   objstorageConfig:
     url: http://storage1.internal.staging.swh.network:5003/
+  hosts:
+    - storage-cassandra.internal.staging.swh.network
   ingress:
     enabled: true
-    host: storage-cassandra.internal.staging.swh.network
     whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
@@ -523,7 +524,8 @@ web:
     minReplicaCount: 2
     maxReplicaCount: 3
     cpuPercentageUsage: 50
-  host: webapp-cassandra.internal.staging.swh.network
+  hosts:
+    - webapp-cassandra.internal.staging.swh.network
   ingress:
     enabled: true
     secretName: swh-web-crt
@@ -564,9 +566,6 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   extraConfig:
-    instance_name: webapp-cassandra.internal.staging.swh.network
-    allowed_hosts:
-    - webapp-cassandra.internal.staging.swh.network
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritageStaging
@@ -607,9 +606,10 @@ graphql:
     threads: 4
     workers: 2
     timeout: 3600
+  hosts:
+    - webapp-cassandra.internal.staging.swh.network
   ingress:
     enabled: true
-    host: webapp-cassandra.internal.staging.swh.network
     whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:

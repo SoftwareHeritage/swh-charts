@@ -66,9 +66,10 @@ graphql:
   storageConfigurationRef: remoteROStorageConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   introspection: yes
+  hosts:
+    - graphql.internal.softwareheritage.org
   ingress:
     enabled: true
-    host: graphql.internal.softwareheritage.org
     whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
@@ -546,9 +547,10 @@ scheduler:
       threads: 4
       workers: 8
       timeout: 3600
+    hosts:
+      - scheduler.internal.softwareheritage.org
     ingress:
       enabled: true
-      host: scheduler.internal.softwareheritage.org
       # TODO: Improve the authorization internal cluster ip range.
       # Current internal range retrieved out of the `kubectl cluster-info dump`
       # Default allowed ip ranges that can be extended per ingress definitions paths
@@ -614,9 +616,10 @@ indexerStorage:
   requestedMemory: 512Mi
   indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
   journalWriterConfigurationRef: journalWriterConfiguration
+  hosts:
+    - saam.internal.softwareheritage.org
   ingress:
     enabled: true
-    host: saam.internal.softwareheritage.org
   gunicorn:
     threads: 2
     workers: 4
@@ -639,10 +642,9 @@ search:
     minReplicaCount: 2
     maxReplicaCount: 4
     cpuPercentageUsage: 75
+  hosts:
+    - search.internal.softwareheritage.org
   ingress:
     enabled: true
     # Optional: the ingress classname to use
     # className: nginx
-    # mandatory if ingress is enabled
-    # the hostname on which the storage must be reachable
-    host: search.internal.softwareheritage.org

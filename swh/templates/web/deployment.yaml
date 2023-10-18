@@ -127,7 +127,7 @@ spec:
               port: webapp
               httpHeaders:
                 - name: Host
-                  value: {{ .Values.web.host }}
+                  value: {{ first .Values.web.hosts }}
             initialDelaySeconds: 5
             failureThreshold: 30
             periodSeconds: 10
@@ -138,7 +138,7 @@ spec:
               port: webapp
               httpHeaders:
                 - name: Host
-                  value: {{ .Values.web.host }}
+                  value: {{ first .Values.web.hosts }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30

@@ -257,7 +257,8 @@ web:
     minReplicaCount: 2
     maxReplicaCount: 4
     cpuPercentageUsage: 50
-  host: webapp-cassandra.internal.softwareheritage.org
+  hosts:
+    - webapp-cassandra.internal.softwareheritage.org
   ingress:
     enabled: true
     secretName: swh-web-crt
@@ -289,9 +290,6 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   extraConfig:
-    instance_name: webapp-cassandra.internal.softwareheritage.org
-    allowed_hosts:
-    - webapp-cassandra.internal.softwareheritage.org
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritage
@@ -325,9 +323,10 @@ graphql:
   storageConfigurationRef: localRpcROStorageConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   introspection: yes
+  hosts:
+    - webapp-cassandra.internal.softwareheritage.org
   ingress:
     enabled: true
-    host: webapp-cassandra.internal.softwareheritage.org
     whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:

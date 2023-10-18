@@ -8,22 +8,25 @@ tests:
     asserts:
       - hasDocuments:
           count: 0
-  - it: Storage ingress default values
+  - it: Storage basic ingress
     set:
       storage.enabled: true
       storage.ingress.enabled: true
-      storage.ingress.host: mystorage.localdomain
+      storage.hosts:
+        - storage.localdomain
+      storage.ingress.endpoints:
+        default:
+          paths:
+            - path: /
     asserts:
       - containsDocument:
           kind: Ingress
           apiVersion: networking.k8s.io/v1
           namespace: swh
-          name: storage-ingress
-      - isNull:
-          path: spec.ingressClassName
+          name: storage-ingress-default
       - equal:
           path: spec.rules[0].host
-          value: mystorage.localdomain
+          value: storage.localdomain
   - it: Storage ingress specific values
     set:
       storage.enabled: true
