@@ -9,7 +9,8 @@ metadata:
   name: storage-replayer-configuration-{{ $deployment }}-template
 data:
   config.yml.template: |
-{{ include "swh.storageConfiguration" (list $.Values . $.Values.storage_replayer.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.storage_replayer.storageConfigurationRef
+                                                 "Values" $.Values) | nindent 4 }}
 
     journal_client:
       cls: kafka

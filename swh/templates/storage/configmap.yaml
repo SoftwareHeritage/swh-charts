@@ -7,7 +7,8 @@ metadata:
   name: storage-configuration-template
 data:
   config.yml.template: |
-{{ include "swh.storageConfiguration" (list $.Values . $.Values.storage.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storage.storageConfigurationRef
+                                                "Values" .Values ) | nindent 4 }}
       objstorage:
         cls: {{ .Values.storage.objstorageClass }}
       {{- if eq .Values.storage.objstorageClass "filtered" }}

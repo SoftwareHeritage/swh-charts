@@ -12,16 +12,17 @@ data:
   config.yml.template: |
     extraction_dir: "/tmp/swh.checker.deposit/"
 
-{{ include "swh.storageConfiguration" (list $.Values . $.Values.checker_deposit.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.checker_deposit.storageConfigurationRef
+                                                 "Values" $.Values) | nindent 4 }}
 
-{{ include "celery.configuration" (list $.Values $.Values.checker_deposit.celeryConfigurationRef) | indent 4 }}
+    {{- include "celery.configuration" (list $.Values $.Values.checker_deposit.celeryConfigurationRef) | nindent 4 }}
       task_acks_late: true
       task_modules:
       - swh.deposit.loader.tasks
       task_queues:
       - swh.deposit.loader.tasks.ChecksDepositTsk
 
-{{ include "deposit.configuration" (list .Values .Values.checker_deposit.depositConfigurationRef) | indent 4 }}
+    {{- include "deposit.configuration" (list .Values .Values.checker_deposit.depositConfigurationRef) | nindent 4 }}
   init-container-entrypoint.sh: |
     #!/bin/bash
 

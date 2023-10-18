@@ -9,7 +9,8 @@ data:
   # TODO: rename to not have a dot in the name to allow testing
   config.yml: |
     {{- if .Values.graphql.storageConfigurationRef }}
-{{ include "swh.storageConfiguration" (list .Values . .Values.graphql.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.graphql.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
     {{- end -}}
     {{- if .Values.graphql.searchConfigurationRef }}
     {{ include "swh.service.fromYaml" (dict "service" "search"

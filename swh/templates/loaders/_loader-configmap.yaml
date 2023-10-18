@@ -11,7 +11,8 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-{{ include "swh.storageConfiguration" (list .Values . .Values.loaders.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.loaders.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
 
     {{- if .deployment_config.extraConfig -}}
       {{- range $option, $value := .deployment_config.extraConfig }}
@@ -19,7 +20,7 @@ data:
       {{- end }}
     {{- end }}
 
-{{ include "celery.configuration" (list .Values .Values.loaders.celeryConfigurationRef) | indent 4 }}
+    {{- include "celery.configuration" (list .Values .Values.loaders.celeryConfigurationRef) | nindent 4 }}
       task_acks_late: {{ get .deployment_config "ackLate" | default false }}
       task_queues:
     {{- range $queue := get .deployment_config "queues" }}

@@ -12,9 +12,10 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-{{ include "swh.storageConfiguration" (list .Values . .Values.listers.storageConfigurationRef) | indent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.listers.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
 
-{{ include "swh.schedulerConfiguration" (list .Values .Values.listers.schedulerConfigurationRef) | indent 4 }}
+    {{- include "swh.schedulerConfiguration" (list .Values .Values.listers.schedulerConfigurationRef) | nindent 4 }}
 
     {{- if .deployment_config.extraConfig -}}
       {{- range $option, $value := .deployment_config.extraConfig }}
@@ -22,7 +23,7 @@ data:
       {{- end }}
     {{- end }}
 
-{{ include "celery.configuration" (list .Values .Values.listers.celeryConfigurationRef) | indent 4 }}
+    {{- include "celery.configuration" (list .Values .Values.listers.celeryConfigurationRef) | nindent 4 }}
       task_acks_late: true
       task_queues:
     {{- range $queue := get .deployment_config "queues" }}

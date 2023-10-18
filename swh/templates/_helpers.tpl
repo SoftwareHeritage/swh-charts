@@ -1,25 +1,22 @@
+# -*- yaml -*-
+
 {{/*
 Create a global storage configuration based on configuration section aggregation
 */}}
-{{/* TODO: migrate to dict parameter */}}
 {{- define "swh.storageConfiguration" -}}
-{{- $Values := index . 0 -}}
-{{/* TODO: Remove $top */}}
-{{- $top := index . 1 -}}
-{{- $storageConfigurationRef := index . 2 -}}
-{{- $storageConfiguration := get $Values $storageConfigurationRef -}}
-{{- if not $storageConfiguration -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" $storageConfigurationRef "> storage configuration" )}}{{- end -}}
+{{- $storageConfiguration := get .Values .configurationRef -}}
+{{- if not $storageConfiguration -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration" )}}{{- end -}}
 {{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
 {{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}
-{{- if not $storageServiceConfigurationRef -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " $storageConfigurationRef)}}{{- end -}}
-{{- $storageServiceConfiguration := get $Values $storageServiceConfigurationRef -}}
+{{- if not $storageServiceConfigurationRef -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef)}}{{- end -}}
+{{- $storageServiceConfiguration := get .Values $storageServiceConfigurationRef -}}
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
 {{- $objectStorageConfigurationRef :=  get $storageConfiguration "objectStorageConfigurationRef" -}}
 {{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
 {{- $indent := 2 -}}
 storage:
 {{ if $pipelineStepsRef -}}
-{{- $pipelineSteps := get $Values $pipelineStepsRef -}}
+{{- $pipelineSteps := get .Values $pipelineStepsRef -}}
 {{- if not $pipelineSteps -}}
   {{ fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) }}
 {{- end }}  cls: pipeline
@@ -27,12 +24,12 @@ storage:
 {{ toYaml $pipelineSteps | indent 2 }}
 {{ end -}}
 {{- if eq $storageType "remote" -}}
-{{ include "swh.storage.remote" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{ include "swh.storage.remote" (list .Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else if eq $storageType "cassandra" -}}
-{{ include "swh.storage.cassandra" (list $Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
+{{ include "swh.storage.cassandra" (list .Values $storageServiceConfigurationRef $pipelineStepsRef) | indent $indent }}
 {{- else if eq $storageType "postgresql" -}}
 {{ include "swh.postgresql" (dict "serviceType" "storage"
-                                  "Values" $Values
+                                  "Values" .Values
                                   "configurationRef" $storageServiceConfigurationRef
                                   "configurationInPipeline" $pipelineStepsRef) | indent $indent }}
 {{- else -}}
@@ -41,7 +38,7 @@ storage:
 {{/* TODO: specific_options */}}
 {{- if $objectStorageConfigurationRef -}}
 {{- $objectStorageIndent := ternary $indent (int (add $indent 2)) (empty $pipelineStepsRef) -}}
-{{- $objectStorageConfiguration := get $Values $objectStorageConfigurationRef -}}
+{{- $objectStorageConfiguration := get .Values $objectStorageConfigurationRef -}}
 {{- $objectStorageType := get $objectStorageConfiguration "cls" -}}
 {{- if eq $objectStorageType "noop" }}
 {{ include "swh.objstorage.noop" . | indent $objectStorageIndent }}
@@ -50,7 +47,7 @@ storage:
 {{- end -}}
 {{- end -}}
 {{- if $journalWriterConfigurationRef }}
-{{ include "swh.storage.journalWriter" (list $Values $journalWriterConfigurationRef )}}
+{{ include "swh.storage.journalWriter" (list .Values $journalWriterConfigurationRef )}}
 {{- end -}}
 {{- end -}}
 
