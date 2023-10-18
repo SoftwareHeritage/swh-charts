@@ -5,6 +5,7 @@ remoteVaultConfiguration:
   url: http://vault-rpc-ingress-next-version
 
 vault:
+  replicas: 1
   ingress:
     host: vault-rpc-ingress-next-version
 
