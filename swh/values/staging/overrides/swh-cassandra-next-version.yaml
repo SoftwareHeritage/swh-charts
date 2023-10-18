@@ -6,6 +6,9 @@ remoteVaultConfiguration:
 
 vault:
   replicas: 1
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 1
   ingress:
     host: vault-rpc-ingress-next-version
 
