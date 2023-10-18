@@ -23,7 +23,8 @@ data:
       task_queues:
       - swh.deposit.loader.tasks.ChecksDepositTsk
 
-    {{- include "deposit.configuration" (list .Values .Values.checker_deposit.depositConfigurationRef) | nindent 4 }}
+    {{- include "deposit.configuration" (dict "configurationRef" .Values.checker_deposit.depositConfigurationRef
+                                              "Values" .Values) | nindent 4 }}
   init-container-entrypoint.sh: |
     #!/bin/bash
 

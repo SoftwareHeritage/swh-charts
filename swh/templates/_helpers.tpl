@@ -106,9 +106,7 @@ celery:
 Generate the deposit configuration for checkers & loaders.
 */}}
 {{- define "deposit.configuration" -}}
-{{- $Values := index . 0 -}}
-{{- $depositConfigurationRefKey := index . 1 -}}
-{{- $depositConfiguration := get $Values $depositConfigurationRefKey -}}
+{{- $depositConfiguration := get .Values .configurationRef -}}
 {{- $host := required (print "_helpers.tpl:deposit.configuration: The <host> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "host") -}}
 {{- $user := required (print "_helpers.tpl:deposit.configuration: The <user> property is mandatory in " $depositConfiguration)
