@@ -247,3 +247,28 @@ graphql:
   replicas: 1
   ingress:
     host: webapp-cassandra-next-version.internal.staging.swh.network
+
+podPriority:
+  # This test environment should not impact the real staging environment
+  # so we need to use lower priorities than the 'normal' versions
+  priorities:
+    storages:
+      value: -100000
+    frontend-rpc:
+      value: -10100
+    frontend-rpc-workload:
+      value: -10200
+    high-workload:
+      value: -10300
+    local-workload:
+      value: -10400
+    normal-workload:
+      value: -10500
+    tools:
+      value: -10600
+    low-workload:
+      value: -10700
+    background-storage:
+      value: -10800
+    background-workload:
+      value: -10900
