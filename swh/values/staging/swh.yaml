@@ -684,6 +684,7 @@ web:
     instance_name: webapp-postgresql.internal.staging.swh.network
     allowed_hosts:
     - webapp-postgresql.internal.staging.swh.network
+    - webapp.staging.swh.network
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritageStaging
