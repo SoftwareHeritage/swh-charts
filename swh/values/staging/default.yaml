@@ -215,6 +215,17 @@ webThrottling:
         default: 120/h
         POST: 10/h
 
+externalServices:
+  enabled: true
+  services:
+    vault:
+      internalName: vault-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+
+vault:
+  ingress:
+    host: vault-rpc-ingress
+
 memcached:
   enabled: true
 
