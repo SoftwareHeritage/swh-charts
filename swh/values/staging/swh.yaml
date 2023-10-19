@@ -304,6 +304,7 @@ graphql:
     whitelistSourceRangeRef: stagingNetworkRanges
     extraAnnotations:
       nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
     endpoints:
       default:
         paths:
