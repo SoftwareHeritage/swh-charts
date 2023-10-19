@@ -685,8 +685,8 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   hosts:
-    - webapp-postgresql.internal.staging.swh.network
     - webapp.staging.swh.network
+    - webapp-postgresql.internal.staging.swh.network
   extraConfig:
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
