@@ -297,6 +297,7 @@ graphql:
     workers: 2
     timeout: 3600
   hosts:
+    - webapp.staging.swh.network
     - graphql.internal.staging.swh.network
   ingress:
     enabled: true
@@ -304,7 +305,7 @@ graphql:
     endpoints:
       default:
         paths:
-          - path: /
+          - path: /graphql/
         extraWhitelistSourceRange:
           # vpn network
           - 192.168.101.0/24
