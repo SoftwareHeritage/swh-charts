@@ -301,7 +301,6 @@ graphql:
     - graphql.internal.staging.swh.network
   ingress:
     enabled: true
-    whitelistSourceRangeRef: stagingNetworkRanges
     extraAnnotations:
       nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -309,9 +308,6 @@ graphql:
       default:
         paths:
           - path: /graphql/
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
   logLevel: DEBUG
   auth:
     enabled: true
@@ -654,16 +650,12 @@ web:
       # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#server-side-https-enforcement-through-redirect
       nginx.ingress.kubernetes.io/ssl-redirect: "false"
     tlsEnabled: true
-    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
           - path: /
           - path: /static
             port: 80
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
       authenticated:
         paths:
           - path: /api/1/provenance/
@@ -671,9 +663,6 @@ web:
           - path: /api/1/content/[^/]+/symbol/
         # auth-file with authentication
         authentication: swh-cassandra/web-auth-secrets
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
   refreshSavecodenowStatus:
     enabled: true
   syncMailmaps:
