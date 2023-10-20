@@ -675,6 +675,7 @@ web:
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
+  depositConfigurationRef: depositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   hosts:

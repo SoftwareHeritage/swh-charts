@@ -33,6 +33,10 @@ data:
     counters_backend: swh-counters
     {{- include "swh.service.fromYaml" (dict "service" "counters" "configurationRef" .Values.web.countersConfigurationRef "Values" .Values) | nindent 4 }}
     {{- end -}}
+    {{- if .Values.web.depositConfigurationRef }}
+    {{- include "deposit.configuration.api.private" (dict "configurationRef" .Values.web.depositConfigurationRef
+                                                          "Values" .Values) | nindent 4 }}
+    {{- end -}}
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: ${DJANGO_SECRET_KEY}
