@@ -632,7 +632,7 @@ vault:
   enabled: true
   priorityClassName: frontend-rpc
   sentry:
-    enabled: false
+    enabled: true
     secretKeyRef: common-secrets
     secretKeyName: sentry-dsn
   logLevel: INFO
