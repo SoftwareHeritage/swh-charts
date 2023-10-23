@@ -49,12 +49,10 @@ cassandraStorageConfiguration:
 
 azureCacheConfiguration:
   cls: azure
-  account_name: swhvaultstoragestaging
-  api_secret_key: ${API_SECRET_KEY}
-  container_name: contents-uncompressed
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   compression: none
   secrets:
-    API_SECRET_KEY:
+    ACCOUNT_KEY:
       secretKeyRef: swh-vault-azure-secret
       secretKeyName: azure-swh-vault-key
 
