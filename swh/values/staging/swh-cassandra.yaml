@@ -51,7 +51,8 @@ azureCacheConfiguration:
   cls: azure
   account_name: swhvaultstoragestaging
   api_secret_key: ${API_SECRET_KEY}
-  container_name: contents
+  container_name: contents-uncompressed
+  compression: none
   secrets:
     API_SECRET_KEY:
       secretKeyRef: swh-vault-azure-secret
