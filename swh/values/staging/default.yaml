@@ -101,7 +101,7 @@ remoteVaultConfiguration:
 
 remoteIndexerStorageConfiguration:
     cls: remote
-    url: http://storage1.internal.staging.swh.network:5007/
+    url: http://indexer-storage-rpc-ingress
 
 remoteCountersConfiguration:
     cls: remote
@@ -222,6 +222,9 @@ externalServices:
   services:
     vault:
       internalName: vault-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    indexer-storage:
+      internalName: indexer-storage-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:

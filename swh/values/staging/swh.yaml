@@ -601,7 +601,7 @@ scheduler:
       limitedCpu: 20m
 
 indexerStorage:
-  enabled: false
+  enabled: true
   checkDbVersion: true
   autoScaling:
     minReplicaCount: 2
@@ -612,7 +612,7 @@ indexerStorage:
   indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
   journalWriterConfigurationRef: journalWriterConfiguration
   hosts:
-    - indexer-storage.internal.staging.swh.network
+    - indexer-storage-rpc-ingress
   ingress:
     enabled: true
   gunicorn:
