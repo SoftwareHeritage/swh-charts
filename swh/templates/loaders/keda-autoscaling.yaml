@@ -1,5 +1,6 @@
 {{ if .Values.loaders.enabled -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ if get $deployment_config "autoScaling" }}
 {{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
@@ -42,6 +43,7 @@ spec:
       queueName: {{ $queue }}
       vhostName: /                   # Vhost to use for the connection
     {{- end }}
+{{- end -}}
 {{ end }}
 {{ end }}
 {{- end -}}

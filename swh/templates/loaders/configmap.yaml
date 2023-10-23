@@ -1,5 +1,7 @@
 {{ if .Values.loaders.enabled -}}
 {{ range $loader_type, $deployment_config := .Values.loaders.deployments }}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ include "swh.loader.configmap" (dict "loader_type" $loader_type "deployment_config" $deployment_config "Values" $.Values) }}
-{{ end }}
+{{- end -}}
+{{ end -}}
 {{- end -}}
