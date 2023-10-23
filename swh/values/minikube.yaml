@@ -22,6 +22,10 @@ fakeRemoteCountersConfiguration:
   cls: remote
   url: http://fake-counters.i.s.s.n:5011
 
+fakeRemoteIndexerStorageConfiguration:
+  cls: remote
+  url: http://storage1.i.s.s.n:7005
+
 fakePostgresqlStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
@@ -430,11 +434,9 @@ indexers:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  indexerStorageConfigurationRef: fakeRemoteIndexerStorageConfiguration
   sentry:
     enabled: false
-  indexer_storage:
-    host: storage1.i.s.s.n
-    port: 7005
   objstorage:
     host: storage1.i.s.s.n
     port: 3005

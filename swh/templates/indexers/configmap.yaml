@@ -15,9 +15,9 @@ data:
                                                  "Values" $.Values ) | nindent 4 }}
     {{- include "swh.schedulerConfiguration" (dict "configurationRef" $.Values.indexers.schedulerConfigurationRef
                                                    "Values" $.Values) | nindent 4 }}
-    indexer_storage:
-      cls: remote
-      url: http://{{ $.Values.indexers.indexer_storage.host }}:{{ $.Values.indexers.indexer_storage.port }}/
+    {{- include "swh.service.fromYaml" (dict "service" "indexer_storage"
+                                             "configurationRef" $.Values.indexers.indexerStorageConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
     objstorage:
       cls: remote
       url: http://{{ $.Values.indexers.objstorage.host }}:{{ $.Values.indexers.objstorage.port }}/

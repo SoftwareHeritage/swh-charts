@@ -13,15 +13,17 @@ schedulerConfiguration:
   host: scheduler.test.org
   port: 8005
 
+indexerStorageConfiguration:
+  cls: remote
+  url: http://indexer-test.org:7005
+
 indexers:
   enabled: true
   sentry:
     enabled: false
   storageConfigurationRef: storageConfiguration
   schedulerConfigurationRef: schedulerConfiguration
-  indexer_storage:
-    host: indexer.test.org
-    port: 7005
+  indexerStorageConfigurationRef: indexerStorageConfiguration
   objstorage:
     host: objstorage.test.org
     port: 3005
