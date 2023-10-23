@@ -210,7 +210,10 @@ checker_deposit:
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   autoScaling:
-    maxReplicaCount: 2
+    queueThreshold: 1
+    stopWhenNoActivity: false
+    minReplicaCount: 1
+    maxReplicaCount: 1
   requestedMemory: 100Mi
   requestedCpu: 100m
   limitedMemory: 1024Mi
