@@ -631,10 +631,6 @@ graphql:
 vault:
   enabled: true
   priorityClassName: frontend-rpc
-  sentry:
-    enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: sentry-dsn
   logLevel: INFO
   schedulerConfigurationRef: remoteSchedulerConfiguration
   vaultConfigurationRef: postgresqlVaultConfiguration
