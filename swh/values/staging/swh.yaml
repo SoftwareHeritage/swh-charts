@@ -2,6 +2,10 @@ remoteStorageConfiguration:
   cls: remote
   url: http://storage1.internal.staging.swh.network:5002
 
+remoteObjstorageConfiguration:
+  cls: remote
+  url: http://storage1.internal.staging.swh.network:5003/
+
 postgresqlStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
@@ -224,9 +228,7 @@ indexers:
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  objstorage:
-    host: storage1.internal.staging.swh.network
-    port: 5003
+  objstorageConfigurationRef: remoteObjstorageConfiguration
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:

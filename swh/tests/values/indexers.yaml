@@ -17,6 +17,10 @@ indexerStorageConfiguration:
   cls: remote
   url: http://indexer-test.org:7005
 
+objstorageConfiguration:
+  cls: remote
+  url: http://objstorage.test.org:3005
+
 indexers:
   enabled: true
   sentry:
@@ -24,9 +28,7 @@ indexers:
   storageConfigurationRef: storageConfiguration
   schedulerConfigurationRef: schedulerConfiguration
   indexerStorageConfigurationRef: indexerStorageConfiguration
-  objstorage:
-    host: objstorage.test.org
-    port: 3005
+  objstorageConfigurationRef: objstorageConfiguration
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
