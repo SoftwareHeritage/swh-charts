@@ -632,7 +632,7 @@ indexerStorage:
     workers: 4
 
 search:
-  enabled: false
+  enabled: true
   priorityClassName: frontend-rpc
   logLevel: INFO
   elasticsearchConfigurationRef: elasticsearchConfiguration
@@ -650,11 +650,23 @@ search:
     maxReplicaCount: 4
     cpuPercentageUsage: 75
   hosts:
-    - search.internal.staging.swh.network
+    - search-rpc-ingress
   ingress:
     enabled: true
     # Optional: the ingress classname to use
     # className: nginx
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+    # Default allowed ip ranges that can be extended per ingress definitions paths
+    whitelistSourceRangeRef: clusterNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
 
 web:
   enabled: true

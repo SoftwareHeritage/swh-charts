@@ -93,7 +93,7 @@ djangoWebConfiguration:
 
 remoteSearchConfiguration:
   cls: remote
-  url: http://search0.internal.staging.swh.network:5010
+  url: http://search-rpc-ingress
 
 remoteVaultConfiguration:
   cls: remote
@@ -225,6 +225,9 @@ externalServices:
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     indexer-storage:
       internalName: indexer-storage-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    search:
+      internalName: search-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
