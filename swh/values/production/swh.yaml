@@ -17,7 +17,6 @@ remoteROStorageConfiguration:
 azureCacheConfiguration:
   cls: azure
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
-  container_name: contents-uncompressed
   api_secret_key: ${API_SECRET_KEY}
   container_name: contents-uncompressed
   secrets:
