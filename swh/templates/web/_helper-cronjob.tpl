@@ -65,7 +65,7 @@ spec:
               - name: configuration-template
                 mountPath: /etc/swh/configuration-template
           containers:
-            - name: sync-mailmaps
+            - name: {{ $.serviceType }}
               resources:
                 requests:
                   memory: {{ .requestedMemory | default "512Mi" }}
@@ -83,10 +83,9 @@ spec:
               command:
               - /opt/swh/entrypoint.sh
               args:
-              # - shell
-              # - sleep
-              # - infinity
-              - refresh
+              {{- range $cmd := $.command }}
+              - {{ $cmd }}
+              {{- end }}
               env:
                 - name: STATSD_HOST
                   value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -96,6 +95,10 @@ spec:
                   value: /etc/swh/config.yml
                 - name: LOG_LEVEL
                   value: {{ $log_level | default "INFO" }}
+                {{- if hasKey $.configuration "configurationRef" -}}
+                {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
+                {{ end }}
               {{- if $.Values.web.sentry.enabled }}
                 - name: SWH_SENTRY_ENVIRONMENT
                   value: {{ $.Values.sentry.environment }}

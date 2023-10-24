@@ -1,6 +1,24 @@
 # -*- yaml -*-
 
 {{/*
+Create a connstring out of a configuration reference.
+*/}}
+{{- define "swh.connstring" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{- $host := required (print "_helpers.tpl:swh.connstring: The <host> property is mandatory in " .configurationRef)
+                    (get $configuration "host") -}}
+{{- $port := required (print "_helpers.tpl:swh.connstring: The <port> property is mandatory in " .configurationRef)
+                    (get $configuration "port") -}}
+{{- $user := required (print "_helpers.tpl:swh.connstring: The <user> property is mandatory in " .configurationRef)
+                    (get $configuration "user") -}}
+{{- $password := required (print "_helpers.tpl:swh.connstring: The <pass> property is mandatory in " .configurationRef)
+                    (get $configuration "pass") -}}
+{{- $db := required (print "_helpers.tpl:swh.connstring: The <db> property is mandatory in " .configurationRef)
+                    (get $configuration "db") -}}
+host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+{{- end -}}
+
+{{/*
 Create a global storage configuration based on configuration section aggregation
 */}}
 {{- define "swh.storageConfiguration" -}}
@@ -128,25 +146,16 @@ deposit:
    * pipeline.
    */}}
 {{- define "swh.postgresql" -}}
-{{- $configuration := get .Values .configurationRef -}}
 {{- $configurationInPipeline := .configurationInPipeline | default false -}}
-{{- $host := required (print "_helpers.tpl:swh.postgresql: The <host> property is mandatory in " .configurationRef)
-                    (get $configuration "host") -}}
-{{- $port := required (print "_helpers.tpl:swh.postgresql: The <port> property is mandatory in " .configurationRef)
-                    (get $configuration "port") -}}
-{{- $user := required (print "_helpers.tpl:swh.postgresql: The <user> property is mandatory in " .configurationRef)
-                    (get $configuration "user") -}}
-{{- $password := required (print "_helpers.tpl:swh.postgresql: The <pass> property is mandatory in " .configurationRef)
-                    (get $configuration "pass") -}}
-{{- $db := required (print "_helpers.tpl:swh.postgresql: The <db> property is mandatory in " .configurationRef)
-                    (get $configuration "db") -}}
 {{- if $configurationInPipeline -}}
 - cls: postgresql
-  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+  db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
+                                        "Values" .Values) }}
 {{- else -}}
 {{ .serviceType }}:
   cls: postgresql
-  db: host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
+  db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
+                                        "Values" .Values) }}
 {{- end }}
 {{- end -}}
 

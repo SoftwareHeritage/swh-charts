@@ -42,6 +42,17 @@ fakePostgresqlStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
 
+fakeSyncmailmapsConfiguration:
+  host: db1.i.s.s.n
+  port: 5432
+  db: swh
+  user: swhmailmap
+  pass: ${POSTGRESQL_MAILMAP_PASSWORD}
+  secrets:
+    POSTGRESQL_MAILMAP_PASSWORD:
+      secretKeyRef: swhmailmap-postgresql-secret
+      secretKeyName: postgres-swhmailmap-password
+
 fakePostgresqlIndexerStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
@@ -240,7 +251,8 @@ web:
     cron: "* 5 * * *"
   syncMailmaps:
     enabled: false
-    cron: "* 30 * * *"
+    cron: "30 * * * *"
+    configurationRef: fakeSyncmailmapsConfiguration
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets

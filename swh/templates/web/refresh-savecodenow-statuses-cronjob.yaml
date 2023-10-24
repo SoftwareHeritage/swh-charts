@@ -1,5 +1,6 @@
 {{ if and .Values.web.enabled .Values.web.refreshSavecodenowStatus.enabled -}}
 {{- include "swh.web.cronjob" (dict "Values"        .Values
                                     "serviceType"   "refresh-savecodenow-statuses"
-                                    "configuration" .Values.web.refreshSavecodenowStatus) -}}
+                                    "configuration" .Values.web.refreshSavecodenowStatus
+                                    "command"       (list "refresh")) -}}
 {{- end -}}

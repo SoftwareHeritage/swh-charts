@@ -18,6 +18,18 @@ postgresqlStorageConfiguration:
       secretKeyRef: swh-postgresql-common-secret
       secretKeyName: postgres-swh-password
 
+postgresqlSyncmailmapsConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh
+  user: swhmailmap
+  pass: ${POSTGRESQL_MAILMAP_PASSWORD}
+  secrets:
+    POSTGRESQL_MAILMAP_PASSWORD:
+      secretKeyRef: swh-postgresql-syncmailmap-secret
+      secretKeyName: postgres-syncmailmap-password
+
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
@@ -670,6 +682,7 @@ web:
     enabled: true
   syncMailmaps:
     enabled: true
+    configurationRef: postgresqlSyncmailmapsConfiguration
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration

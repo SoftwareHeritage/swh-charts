@@ -1,5 +1,8 @@
 {{ if and .Values.web.enabled .Values.web.syncMailmaps.enabled -}}
+{{- $dbconn_string := include "swh.connstring" (dict "configurationRef" .Values.web.syncMailmaps.configurationRef
+                                                     "Values" .Values) }}
 {{- include "swh.web.cronjob" (dict "Values"        .Values
                                     "serviceType"   "sync-mailmaps"
-                                    "configuration" .Values.web.syncMailmaps) -}}
+                                    "configuration" .Values.web.syncMailmaps
+                                    "command"       (list "sync-mailmaps" $dbconn_string)) -}}
 {{- end -}}
