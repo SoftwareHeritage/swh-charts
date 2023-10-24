@@ -18,15 +18,9 @@ loaders:
     # Force the deployment of one pod of each type to at least
     # ensure they start (not enough but it's a first step)
     add-forge-now:
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 1
-        stopWhenNoActivity: false
+      enabled: false
     add-forge-now-slow:
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 1
-        stopWhenNoActivity: false
+      enabled: false
     archive:
       autoScaling:
         queueThreshold: 1
