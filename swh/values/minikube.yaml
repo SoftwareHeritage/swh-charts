@@ -103,7 +103,7 @@ fakePostgresqlVaultConfiguration:
 
 fakeRemoteStorageConfiguration:
   cls: remote
-  host: http://fake-storage.i.s.s.n:8002
+  url: http://fake-storage.i.s.s.n:8002
 
 roStoragePipelineSteps:
   - cls: retry
@@ -196,7 +196,7 @@ web:
   enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  storageConfigurationRef: fakeRemoteStorageConfiguration
   searchConfigurationRef: fakeRemoteSearchConfiguration
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakeRemoteVaultConfiguration
@@ -463,9 +463,7 @@ indexers:
 graphql:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  searchConfiguration:
-    host: search0.i.s.s.n
-    port: 5010
+  searchConfigurationRef: fakeRemoteSearchConfiguration
   debug: no
   introspection: no
   replicas: 1
