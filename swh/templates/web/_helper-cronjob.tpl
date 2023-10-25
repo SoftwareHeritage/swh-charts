@@ -11,7 +11,6 @@ kind: CronJob
 metadata:
   name: {{ $.serviceType }}-cronjob
 spec:
-  # By default, hourly at minute 15
   schedule: {{ .cron | quote}}
   jobTemplate:
     spec:

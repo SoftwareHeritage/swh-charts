@@ -662,8 +662,8 @@ web:
     priorityClassName: frontend-rpc-workload
     logLevel: INFO
     # concurrencyPolicy: Forbid
-    # At every minute
-    cron: "* * * * *"
+    # Every 2 minute
+    cron: "*/2 * * * *"
   syncMailmaps:
     enabled: false
     priorityClassName: frontend-rpc-workload
