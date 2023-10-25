@@ -31,12 +31,7 @@ spec:
               - /bin/bash
               args:
               - -c
-              - eval "cp /etc/swh/config/pg_service.conf /etc/swh/.pg_service.conf; echo "\"$(</etc/swh/config/pgpass)\"" > /etc/swh/.pgpass; chmod 400 /etc/swh/.pgpass"
-              env:
-              {{- if hasKey $.configuration "configurationRef" -}}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
-              {{ end }}
+              - eval "cp /etc/swh/config/pg_service.conf /etc/swh/.pg_service.conf"
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
@@ -132,8 +127,9 @@ spec:
               {{- if $.pgService }}
                 - name: PGSERVICEFILE
                   value: /etc/swh/.pg_service.conf
-                - name: PGPASSFILE
-                  value: /etc/swh/.pgpass
+                {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
+
               {{ end }}
               imagePullPolicy: IfNotPresent
               volumeMounts:
@@ -155,8 +151,6 @@ spec:
               items:
               - key: "pg-service-conf"
                 path: "pg_service.conf"
-              - key: "pgpass-template"
-                path: "pgpass"
           {{ end }}
           restartPolicy: OnFailure
 

@@ -24,9 +24,9 @@ postgresqlSyncmailmapsConfiguration:
   port: '5432'
   db: swh
   user: swhmailmap
-  pass: ${POSTGRESQL_MAILMAP_PASSWORD}
+  pass: ${PGPASSWORD}
   secrets:
-    POSTGRESQL_MAILMAP_PASSWORD:
+    PGPASSWORD:
       secretKeyRef: swh-postgresql-syncmailmap-secret
       secretKeyName: postgres-syncmailmap-password
 

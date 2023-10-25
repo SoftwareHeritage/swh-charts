@@ -10,8 +10,4 @@ data:
     {{- include "swh.web.pgService" (dict "serviceType" "syncmailmaps"
                                           "configurationRef" .Values.web.syncMailmaps.configurationRef
                                           "Values" .Values) | nindent 4 }}
-  pgpass-template: |
-    {{- include "swh.web.pgpass" (dict "configurationRef" .Values.web.syncMailmaps.configurationRef
-                                       "Values" .Values) | nindent 4}}
-
 {{- end -}}
