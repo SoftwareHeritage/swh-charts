@@ -4,9 +4,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace }}
-  name: indexer-storage
+  name: indexer-storage-rpc
   labels:
-    app: indexer-storage
+    app: indexer-storage-rpc
 spec:
   revisionHistoryLimit: 2
   {{ if .Values.indexerStorage.replicas -}}
@@ -14,7 +14,7 @@ spec:
   {{ end -}}
   selector:
     matchLabels:
-      app: indexer-storage
+      app: indexer-storage-rpc
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,7 +22,7 @@ spec:
   template:
     metadata:
       labels:
-        app: indexer-storage
+        app: indexer-storage-rpc
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/indexer-storage/configmap.yaml") . | sha256sum }}
         checksum/config-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
@@ -58,7 +58,7 @@ spec:
                                                              "module" "indexer-storage") | nindent 8 }}
         {{- end }}
       containers:
-        - name: indexer-storage
+        - name: indexer-storage-rpc
           resources:
             requests:
               memory: {{ .Values.indexerStorage.requestedMemory | default "512Mi" }}
