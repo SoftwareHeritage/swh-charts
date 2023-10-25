@@ -43,3 +43,41 @@ deposit:
   private_api_user: {{ $user }}
   private_api_password: {{ $pass }}
 {{- end -}}
+
+{{/*
+Generate the ~/.pg_service.conf
+*/}}
+{{- define "swh.web.pgService" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{- $host := required (print "web._helpers.tpl:swh.web.pgService: The <host> property is mandatory in " .configurationRef)
+                    (get $configuration "host") -}}
+{{- $port := required (print "web._helpers.tpl:swh.web.pgService: The <port> property is mandatory in " .configurationRef)
+                    (get $configuration "port") -}}
+{{- $user := required (print "web._helpers.tpl:swh.web.pgService: The <user> property is mandatory in " .configurationRef)
+                    (get $configuration "user") -}}
+{{- $db := required (print "web._helpers.tpl:swh.web.pgService: The <db> property is mandatory in " .configurationRef)
+                    (get $configuration "db") -}}
+[{{ .serviceType }}]
+dbname={{ $db }}
+host={{ $host }}
+port={{ $port }}
+user={{ $user }}
+{{ end }}
+
+{{/*
+Generate the ~/.pgpass
+*/}}
+{{- define "swh.web.pgpass" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{- $host := required (print "web._helpers.tpl:swh.web.pgpass: The <host> property is mandatory in " .configurationRef)
+                    (get $configuration "host") -}}
+{{- $port := required (print "web._helpers.tpl:swh.web.pgpass: The <port> property is mandatory in " .configurationRef)
+                    (get $configuration "port") -}}
+{{- $db := required (print "web._helpers.tpl:swh.web.pgpass: The <db> property is mandatory in " .configurationRef)
+                    (get $configuration "db") -}}
+{{- $user := required (print "web._helpers.tpl:swh.web.pgpass: The <user> property is mandatory in " .configurationRef)
+                    (get $configuration "user") -}}
+{{- $password := required (print "web._helpers.tpl:swh.web.pgpass: The <pass> property is mandatory in " .configurationRef)
+                    (get $configuration "pass") -}}
+{{ $host }}:{{ $port }}:{{ $db }}:{{ $user }}:{{ $password }}
+{{ end }}

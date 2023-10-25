@@ -23,7 +23,27 @@ spec:
           priorityClassName: {{ $.Values.namespace }}-{{ .priorityClassName }}
           {{ end }}
           initContainers:
-            - name: prepare-configuration
+            {{- if $.pgService }}
+            - name: prepare-pgservice-configuration
+              image: debian:bullseye
+              imagePullPolicy: IfNotPresent
+              command:
+              - /bin/bash
+              args:
+              - -c
+              - eval "cp /etc/swh/config/pg_service.conf /etc/swh/.pg_service.conf; echo "\"$(</etc/swh/config/pgpass)\"" > /etc/swh/.pgpass; chmod 400 /etc/swh/.pgpass"
+              env:
+              {{- if hasKey $.configuration "configurationRef" -}}
+                {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
+              {{ end }}
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+              - name: pgservice-configuration-template
+                mountPath: /etc/swh/config
+            {{ end }}
+            - name: prepare-web-configuration
               image: debian:bullseye
               imagePullPolicy: IfNotPresent
               command:
@@ -58,10 +78,16 @@ spec:
                       # if the setting doesn't exist, sentry pushes will be disabled
                       optional: true
                 {{ end }}
+                {{- if $.pgService }}
+                - name: PGSERVICEFILE
+                  value: /etc/swh/.pg_service.conf
+                - name: PGPASSFILE
+                  value: /etc/swh/.pgpass
+                {{ end }}
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
-              - name: configuration-template
+              - name: web-configuration-template
                 mountPath: /etc/swh/configuration-template
           containers:
             - name: {{ $.serviceType }}
@@ -94,10 +120,6 @@ spec:
                   value: /etc/swh/config.yml
                 - name: LOG_LEVEL
                   value: {{ $log_level | default "INFO" }}
-                {{- if hasKey $.configuration "configurationRef" -}}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
-                {{ end }}
               {{- if $.Values.web.sentry.enabled }}
                 - name: SWH_SENTRY_ENVIRONMENT
                   value: {{ $.Values.sentry.environment }}
@@ -120,12 +142,22 @@ spec:
           volumes:
           - name: configuration
             emptyDir: {}
-          - name: configuration-template
+          - name: web-configuration-template
             configMap:
               name: web-configuration-template
               items:
               - key: "config.yml.template"
                 path: "config.yml.template"
+          {{- if $.pgService }}
+          - name: pgservice-configuration-template
+            configMap:
+              name: pgservice-configuration-template
+              items:
+              - key: "pg-service-conf"
+                path: "pg_service.conf"
+              - key: "pgpass-template"
+                path: "pgpass"
+          {{ end }}
           restartPolicy: OnFailure
 
 {{ end }}

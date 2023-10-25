@@ -1,0 +1,17 @@
+{{- if and .Values.web.enabled .Values.web.syncMailmaps.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: pgservice-configuration-template
+data:
+  pg-service-conf: |
+    {{- include "swh.web.pgService" (dict "serviceType" "syncmailmaps"
+                                          "configurationRef" .Values.web.syncMailmaps.configurationRef
+                                          "Values" .Values) | nindent 4 }}
+  pgpass-template: |
+    {{- include "swh.web.pgpass" (dict "configurationRef" .Values.web.syncMailmaps.configurationRef
+                                       "Values" .Values) | nindent 4}}
+
+{{- end -}}
