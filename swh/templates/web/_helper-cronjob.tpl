@@ -78,12 +78,6 @@ spec:
                       # if the setting doesn't exist, sentry pushes will be disabled
                       optional: true
                 {{ end }}
-                {{- if $.pgService }}
-                - name: PGSERVICEFILE
-                  value: /etc/swh/.pg_service.conf
-                - name: PGPASSFILE
-                  value: /etc/swh/.pgpass
-                {{ end }}
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
@@ -135,6 +129,12 @@ spec:
                 - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
                   value: "true"
               {{- end }}
+              {{- if $.pgService }}
+                - name: PGSERVICEFILE
+                  value: /etc/swh/.pg_service.conf
+                - name: PGPASSFILE
+                  value: /etc/swh/.pgpass
+              {{ end }}
               imagePullPolicy: IfNotPresent
               volumeMounts:
               - name: configuration
