@@ -94,7 +94,7 @@ data:
     TEMP_FILE=/tmp/db-version.txt
 
     # checking the database status
-    swh db --config-file=/tmp/config.yml version indexer-storage | tee "${TEMP_FILE}"
+    swh db --config-file=$SWH_CONFIG_FILENAME version indexer-storage | tee "${TEMP_FILE}"
 
     CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
     DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
