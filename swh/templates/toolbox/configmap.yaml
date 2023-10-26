@@ -17,15 +17,15 @@ data:
                                       "Values" $.Values) | nindent 4 }}
     {{- if ( eq "scheduler" $service_type ) }}
       {{- include "celery.configuration" (dict "configurationRef" $deployment_config.celeryConfigurationRef
-                                              "Values" $.Values) | nindent 4 }}
+                                               "Values" $.Values) | nindent 4 }}
     {{ end }}
     {{- if ( eq "scrubber" $service_type ) }}
       {{- include "swh.postgresql" (dict "configurationRef" $deployment_config.storageConfigurationRef
-                                        "serviceType" "storage"
-                                        "Values" $.Values) | nindent 4 }}
+                                         "serviceType" "storage"
+                                         "Values" $.Values) | nindent 4 }}
       {{- include "swh.journalClientConfiguration" (dict "configurationRef" $deployment_config.journalClientConfigurationRef
-                                        "overrides" (dict "group_id" "changeme")
-                                        "Values" $.Values) | nindent 4 }}
+                                                         "overrides" (dict "group_id" "changeme")
+                                                         "Values" $.Values) | nindent 4 }}
     {{ end }}
 {{ end }}
 {{- end -}}
