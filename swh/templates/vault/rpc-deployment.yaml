@@ -70,7 +70,7 @@ spec:
           image: {{ .Values.swh_vault_image }}:{{ .Values.swh_vault_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5005
+            - containerPort: {{ .Values.vault.port }}
               name: rpc
           readinessProbe:
             httpGet:

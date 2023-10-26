@@ -68,7 +68,7 @@ spec:
           image: {{ .Values.swh_scheduler_image }}:{{ .Values.swh_scheduler_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5008
+            - containerPort: {{ .Values.scheduler.port }}
               name: rpc
           readinessProbe:
             httpGet:

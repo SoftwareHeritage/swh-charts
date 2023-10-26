@@ -74,7 +74,7 @@ spec:
           image: {{ .Values.swh_storage_image }}:{{ .Values.swh_storage_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5002
+            - containerPort: {{ .Values.storage.port }}
               name: rpc
           readinessProbe:
             httpGet:

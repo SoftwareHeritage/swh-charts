@@ -878,6 +878,7 @@ vault:
 
 scheduler:
   enabled: false
+  port: 5008
   priorityClassName: frontend-rpc-workload
   sentry:
     enabled: false

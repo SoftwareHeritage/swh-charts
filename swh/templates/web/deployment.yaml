@@ -119,7 +119,7 @@ spec:
           image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5004
+            - containerPort: {{ .Values.web.port }}
               name: webapp
           readinessProbe:
             httpGet:

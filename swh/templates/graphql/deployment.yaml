@@ -46,7 +46,7 @@ spec:
             {{- end }}
           {{ end }}
           ports:
-            - containerPort: 5013
+            - containerPort: {{ .Values.graphql.port }}
               name: rpc
           startupProbe:
             httpGet:

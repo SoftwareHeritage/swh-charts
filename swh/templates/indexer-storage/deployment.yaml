@@ -75,7 +75,7 @@ spec:
           image: {{ .Values.swh_indexer_storage_image }}:{{ .Values.swh_indexer_storage_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: 5007
+            - containerPort: {{ .Values.indexerStorage.port }}
               name: rpc
           readinessProbe:
             httpGet:
