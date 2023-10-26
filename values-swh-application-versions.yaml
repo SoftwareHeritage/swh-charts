@@ -31,7 +31,7 @@ swh_scheduler_image_version: '20231006.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
 swh_scrubber_image_version: '20231026.1'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
-swh_search_image_version: '20231013.1'
+swh_search_image_version: '20231026.1'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
 swh_storage_image_version: '20230928.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
