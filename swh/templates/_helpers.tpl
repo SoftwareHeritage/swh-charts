@@ -337,7 +337,7 @@ Generate the configuration for a remote service
 {{/*
 Generate the configuration for a journal_writer configuration entry
 */}}
-{{- define "swh.journal.writer.configuration" -}}
+{{- define "swh.journal.configuration" -}}
 {{- $configuration := deepCopy (get .Values .configurationRef) -}}
 {{- $kafkaBrokers := get .Values (get $configuration "brokersConfigurationRef") -}}
 {{- $_ := unset $configuration "brokersConfigurationRef" -}}

@@ -203,6 +203,15 @@ search:
             operator: In
             values:
             - "true"
+  journalClients:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/journal_client
+            operator: In
+            values:
+            - "true"
 
 statsd_exporter:
   enabled: true

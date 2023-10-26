@@ -1,0 +1,22 @@
+{{/*
+Generate the configuration map for search journal client
+*/}}
+{{ define "swh.journal.client.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: search-journal-client-{{ .journal_client_type }}-configuration-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.service.fromYaml" (dict "service" "search"
+                                             "configurationRef" .configuration.searchConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage"
+                                             "configurationRef" .configuration.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.journal.configuration" (dict "serviceType" "journal"
+                                                  "configurationRef" .configurationRef
+                                                  "Values" .Values) | nindent 4 }}
+{{ end }}

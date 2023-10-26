@@ -1,0 +1,11 @@
+{{- if and .Values.search.enabled .Values.search.journalClients.enabled -}}
+{{- range $journal_client_type, $journal_client_config := .Values.search.journalClients.deployments -}}
+{{- if or (not (hasKey $journal_client_config "enabled"))
+          (get $journal_client_config "enabled") -}}
+{{ include "swh.journal.client.configmap" (dict "journal_client_type" $journal_client_type
+                                                "configuration"       $.Values.search.journalClients
+                                                "configurationRef"    $journal_client_config.journalConfigurationRef
+                                                "Values"              $.Values) }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
