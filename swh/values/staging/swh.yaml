@@ -52,10 +52,10 @@ postgresqlScrubberConfiguration:
   host: db1.internal.staging.swh.network
   port: '5432'
   user: swh-scrubber
-  pass: ${POSTGRESQL_PASSWORD}
+  pass: ${SCRUBBER_POSTGRESQL_PASSWORD}
   db: swh-scrubber
   secrets:
-    POSTGRESQL_PASSWORD:
+    SCRUBBER_POSTGRESQL_PASSWORD:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
@@ -513,6 +513,8 @@ toolbox:
       storageConfigurationRef: postgresqlStorageConfiguration
     scrubber:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
+      journalClientConfigurationRef: journalClientConfiguration
+      storageConfigurationRef: postgresqlStorageConfiguration
     vault:
       vaultConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:

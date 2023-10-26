@@ -114,3 +114,31 @@ data:
       echo "code and DB versions are different. Blocking the deployment"
       exit 1
     fi
+
+  check-scrubber-db-version.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+
+    # checking the database status
+    swh db --config-file=${SWH_CONFIG_FILENAME} version ${MODULE} | tee "${TEMP_FILE}"
+
+    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
+    DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
+
+    if [ -e "${CODE_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ -e "${DB_VERSION}" ]; then
+      echo "Unable to find the code version"
+      exit 1
+    fi
+
+    if [ "$DB_VERSION" -ne "$CODE_VERSION" ]; then
+      echo "code and DB versions are different. Blocking the deployment"
+      exit 1
+    fi

@@ -1,0 +1,27 @@
+{{ define "swh.scrubber.journalChecker.configmap" }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.scrubber.sentry.enabled -}}
+{{- $storageConfigurationRef := (get .deployment_config "storageConfigurationRef") | default (get .Values.scrubber "storageConfigurationRef") -}}
+{{- $journalClientConfigurationRef := .Values.scrubber.journalChecker.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef " .journalClientConfigurationRef " not found in scrubber.journalChecker configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $groupId := print (get $journalClientConfiguration "group_id") "-scrubber-" .client_name -}}
+{{- $journalClientOverrides := deepCopy (get $journalClientConfiguration "journalClientOverrides" | default (dict)) -}}
+{{- $_ := set $journalClientOverrides "group_id" $groupId -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: scrubber-journalchecker-{{ .client_name }}-template
+data:
+  config.yml.template: |
+    {{- include "swh.postgresql" (dict "serviceType" "scrubber"
+                                      "Values" .Values
+                                      "configurationRef" .Values.scrubber.scrubberDatabaseConfigurationRef ) | nindent 4 }}
+
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
+                                      "Values" .Values) | nindent 4 }}
+
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
+                                      "overrides" $journalClientOverrides
+                                      "Values" .Values) | nindent 4 }}
+{{ end }}

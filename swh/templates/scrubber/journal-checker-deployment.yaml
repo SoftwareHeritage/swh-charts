@@ -1,0 +1,132 @@
+{{ if and .Values.scrubber.enabled .Values.scrubber.journalChecker.enabled -}}
+{{- range $deployment, $deployment_config := .Values.scrubber.journalChecker.deployments -}}
+{{- $configurationChecksum := include "swh.scrubber.journalChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scrubber-journalchecker-{{ $deployment }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: scrubber-journalchecker-{{ $deployment }}
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ $deployment_config.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: scrubber-journalchecker-{{ $deployment }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: scrubber-journalchecker-{{ $deployment }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if $.Values.scrubber.affinity }}
+      affinity:
+        {{ toYaml $.Values.scrubber.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.scrubber.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.scrubber.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          env:
+{{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $.Values.scrubber.scrubberDatabaseConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $.Values.scrubber.storageConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $.Values.scrubber.journalChecker.journalClientConfigurationRef) | indent 10 }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+        # TODO: Add the "datastore" registration
+        # A workaround is needed as the registration is not idempotent
+        # and can be launched each time a journal client is launched
+        {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                                "imagePrefixName" "swh_scrubber_image"
+                                                                "module" "scrubber") | nindent 8 }}
+      containers:
+      - name: journal-checker
+        resources:
+          requests:
+            memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+            cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          {{- if or ( get $deployment_config "limitedCpu" ) ( get $deployment_config "limitedMemory" ) }}
+          limits:
+            {{- if ( get $deployment_config "limitedMemory" ) }}
+            memory: {{ get $deployment_config "limitedMemory" }}
+            {{- end }}
+            {{- if ( get $deployment_config "limitedCpu" ) }}
+            cpu: {{ get $deployment_config "limitedCpu" }}
+            {{- end }}
+          {{ end }}
+        image: {{ $.Values.swh_scrubber_image }}:{{ $.Values.swh_scrubber_image_version }}
+        imagePullPolicy: IfNotPresent
+        command:
+          - /opt/swh/entrypoint.sh
+        args:
+          - swh
+          - scrubber
+          - check
+          - journal
+          - {{ $deployment_config.configName }}
+        env:
+        - name: STATSD_HOST
+          value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+        - name: STATSD_PORT
+          value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: MAX_TASKS_PER_CHILD
+          value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
+        - name: LOGLEVEL
+          value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
+        - name: SWH_CONFIG_FILENAME
+          value: /etc/swh/config.yml
+        {{- if and $.Values.sentry.enabled $.Values.scrubber.sentry.enabled }}
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ $.Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: swh.deposit
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: scrubber-sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: false
+        {{ end }}
+        volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: scrubber-journalchecker-{{ $deployment }}-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: database-utils
+        configMap:
+          name: database-utils
+          defaultMode: 0555
+
+{{ end }}
+{{ end }}

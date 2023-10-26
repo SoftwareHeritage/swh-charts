@@ -182,6 +182,18 @@ sentry:
 #       secretKeyRef: swh-postgresql-vault-secret
 #       secretKeyName: postgres-swh-vault-password
 
+# scrubberPostgresqlDatabaseConfiguration
+#   cls: postgresql
+#   host: mydatabase-server
+#   port: '5432'
+#   db: scrubber
+#   user: scrubber
+#   pass: ${POSTGRESQL_PASSWORD}
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-postgresql-common-secret
+#       secretKeyName: postgres-scrubber-password
+
 # remoteSchedulerConfiguration:
 #   cls: remote
 #   url: http://scheduler.internal.staging.swh.network
@@ -1030,6 +1042,47 @@ search:
       default:
         paths:
           - path: /
+
+scrubber:
+  enabled: false
+  # priorityClassName: background-workload
+  scrubberDatabaseConfigurationRef: scrubberDatabaseConfiguration
+  storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
+  sentry:
+    enabled: false
+    # Mandatory if enabled
+    # secretKeyRef: swh-scrubber-sentry-secret
+    # secretKeyName: sentry-dsn
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: "swh/rpc"
+  #           operator: In
+  #           values:
+  #           - "true"
+  journalChecker:
+    enabled: false
+    journalClientConfigurationRef: journalClientConfiguration
+    deployments:
+      # can be split per object type for more control
+      # The journal client group id will be suffixed with this name
+      directory:
+        enabled: false
+        # The configName must be used to register the config with
+        # the swh scrubber init
+        # configName: mydb-directory
+        # logLevel: INFO
+        # Supported object: snapshot, revision, release, directory
+        # object: directory
+        # batchSize: 1000
+        # replicas: 1
+        # requestedCpu: 500m
+        # requestedMemory: 512Mi
+        # limitedCpu:
+        # limitedMemory:
+  # TODO: storageScrubber
 
 podPriority:
   enabled: false
