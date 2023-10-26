@@ -140,7 +140,7 @@ kafkaBrokers:
   - fakeBroker2
 
 journalClientConfiguration:
-  kafkaBrokersRef: kafkaBrokers
+  brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
   prefix: swh.toto
   prefix: swh.toto

@@ -217,7 +217,7 @@ Generate the configuration for a storage journal broker
 */}}
 {{- define "swh.storage.journalWriter" -}}
 {{- $journalWriterConfiguration := get .Values .configurationRef -}}
-{{- $brokersRef := get $journalWriterConfiguration "kafkaBrokersRef" -}}
+{{- $brokersRef := get $journalWriterConfiguration "brokersConfigurationRef" -}}
 {{- $brokers := get .Values $brokersRef -}}
 {{- $clientId := required (print "clientId property is mandatory in " .configurationRef " map") (get $journalWriterConfiguration "clientId") -}}
 journal_writer:
@@ -309,16 +309,16 @@ Generate the configuration for a journal configuration key
 */}}
 {{- define "swh.journalClientConfiguration" -}}
 {{- $journalConfiguration := get .Values .configurationRef -}}
-{{- $brokersRef := required (print "kafkaBrokersRef is mandatory in" $journalConfiguration " map" ) (get $journalConfiguration "kafkaBrokersRef") -}}
+{{- $brokersRef := required (print "brokersConfigurationRef is mandatory in" $journalConfiguration " map" ) (get $journalConfiguration "brokersConfigurationRef") -}}
 {{- $brokers := required (print $brokersRef " is mandatory is mandatory in the global values " .Values " map") (get .Values $brokersRef) -}}
 {{- $configuration := deepCopy $journalConfiguration -}}
 {{- if .overrides -}}
   {{- $configuration := merge $configuration .overrides -}}
 {{- end -}}
 {{- $_ := unset $configuration "secrets" -}}
-{{- $_ := unset $configuration "kafkaBrokersRef" -}}
+{{- $_ := unset $configuration "brokersConfigurationRef" -}}
 {{- $_ := required (print "group_id property is mandatory in " .configurationRef " map") $configuration.group_id -}}
-journal:
+{{ .serviceType | default "journal" }}:
   brokers:
 {{ toYaml $brokers | indent 4 }}
 {{ toYaml $configuration | indent 2 }}

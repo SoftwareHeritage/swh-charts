@@ -45,7 +45,7 @@ elasticsearchConfiguration:
       write_alias: origin-write
 
 journalClientConfiguration:
-  kafkaBrokersRef: kafkaBrokers
+  brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
 
 storagePipelineSteps:

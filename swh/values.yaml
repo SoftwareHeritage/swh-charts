@@ -13,7 +13,7 @@ sentry:
 
 # Typical storage's journal writer configuration
 # journalWriterConfiguration:
-#   kafkaBrokersRef: kafkaBrokers
+#   brokersConfigurationRef: kafkaBrokers
 #   prefix: swh.journal.objects
 #   clientId: swh.storage.journal_writer.storage
 #   anonymize: true
@@ -21,7 +21,7 @@ sentry:
 #     message.max.bytes: 1000000000
 
 # journalClientConfiguration:
-#   kafkaBrokersRef: kafkaBrokers
+#   brokersConfigurationRef: kafkaBrokers
 #   group_id: swh.scheduler.journal_client
 
 # postgresqlStorageConfiguration:
