@@ -669,6 +669,16 @@ search:
       default:
         paths:
           - path: /
+  journalClients:
+    enabled: true
+    priorityClassName: normal-workload
+    searchConfigurationRef: remoteSearchConfiguration
+    storageConfigurationRef: remoteStorageConfiguration
+    deployments:
+      objects:
+        journalConfigurationRef: journalObjectConfiguration
+      indexed:
+        journalConfigurationRef: journalIndexedConfiguration
 
 web:
   enabled: true

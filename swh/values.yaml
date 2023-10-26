@@ -1055,7 +1055,7 @@ search:
     #     journalConfigurationRef: journalIndexedConfiguration
 
 # journalObjectConfiguration:
-#   kafkaBrokersRef: kafkaBrokers
+#   brokersConfigurationRef: kafkaBrokers
 #   group_id: swh.search.journal_client-v0.11
 #   prefix: swh.journal.objects
 #   object_types:
@@ -1063,7 +1063,7 @@ search:
 #   - origin_visit_status
 
 # journalIndexedConfiguration:
-#   kafkaBrokersRef: kafkaBrokers
+#   brokersConfigurationRef: kafkaBrokers
 #   group_id: swh.search.journal_client.indexed-v0.11
 #   prefix: swh.journal.indexed
 #   object_types:
