@@ -311,11 +311,18 @@ Generate the configuration for a journal configuration key
 {{- $journalConfiguration := get .Values .configurationRef -}}
 {{- $brokersRef := required (print "kafkaBrokersRef is mandatory in" $journalConfiguration " map" ) (get $journalConfiguration "kafkaBrokersRef") -}}
 {{- $brokers := required (print $brokersRef " is mandatory is mandatory in the global values " .Values " map") (get .Values $brokersRef) -}}
-{{- $groupId := required (print "groupId property is mandatory in " .configurationRef " map") (get $journalConfiguration "groupId") -}}
+{{- $configuration := deepCopy $journalConfiguration -}}
+{{- if .overrides -}}
+  {{- $configuration := merge $configuration .overrides -}}
+{{- end -}}
+{{- $_ := unset $configuration "secrets" -}}
+{{- $_ := unset $configuration "kafkaBrokersRef" -}}
+{{- $_ := required (print "group_id property is mandatory in " .configurationRef " map") $configuration.group_id -}}
 journal:
+  cls: kafka
   brokers:
-{{ toYaml $brokers | indent 2 }}
-  group_id: {{ $groupId }}
+{{ toYaml $brokers | indent 4 }}
+{{ toYaml $configuration | indent 2 }}
 {{- end -}}
 
 {{/*

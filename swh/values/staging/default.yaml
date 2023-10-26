@@ -172,7 +172,7 @@ elasticsearchConfiguration:
 
 journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
-  groupId: swh.scheduler.journal_client
+  group_id: swh.scheduler.journal_client
 
 depositConfiguration:
   host: deposit-rp.internal.staging.swh.network

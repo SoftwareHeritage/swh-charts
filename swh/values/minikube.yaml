@@ -141,7 +141,7 @@ kafkaBrokers:
 
 journalClientConfiguration:
   kafkaBrokersRef: kafkaBrokers
-  groupId: swh.scheduler.journal_client
+  group_id: swh.scheduler.journal_client
 
 fakeDepositConfiguration:
   host: deposit.i.i.s.n
