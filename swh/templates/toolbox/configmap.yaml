@@ -2,8 +2,10 @@
 {{- $namespace := .Values.namespace -}}
 {{- range $service_type, $deployment_config := .Values.toolbox.configs -}}
 {{- $prefix_service_type_name := eq $service_type "indexer-storage" | ternary "indexerStorage" $service_type -}}
+{{- $prefix_service_type_name := eq $service_type "scrubber-journal" | ternary "scrubber" $prefix_service_type_name -}}
 {{- $serviceConfigurationRef := print $prefix_service_type_name "ConfigurationRef" -}}
 {{- $service_type_name := eq $service_type "indexer-storage" | ternary "indexer_storage" $service_type -}}
+{{- $service_type_name := eq $service_type "scrubber-journal" | ternary "scrubber" $service_type_name -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -17,15 +19,12 @@ data:
                                       "Values" $.Values) | nindent 4 }}
     {{- if ( eq "scheduler" $service_type ) }}
       {{- include "celery.configuration" (dict "configurationRef" $deployment_config.celeryConfigurationRef
-                                               "Values" $.Values) | nindent 4 }}
+                                              "Values" $.Values) | nindent 4 }}
     {{ end }}
-    {{- if ( eq "scrubber" $service_type ) }}
-      {{- include "swh.postgresql" (dict "configurationRef" $deployment_config.storageConfigurationRef
-                                         "serviceType" "storage"
-                                         "Values" $.Values) | nindent 4 }}
+    {{- if ( eq "scrubber-journal" $service_type ) }}
       {{- include "swh.journalClientConfiguration" (dict "configurationRef" $deployment_config.journalClientConfigurationRef
-                                                         "overrides" (dict "group_id" "changeme")
-                                                         "Values" $.Values) | nindent 4 }}
+                                        "overrides" (dict "group_id" "changeme")
+                                        "Values" $.Values) | nindent 4 }}
     {{ end }}
 {{ end }}
 {{- end -}}

@@ -520,10 +520,9 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     storage:
       storageConfigurationRef: postgresqlStorageConfiguration
-    scrubber:
+    scrubber-journal:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: journalClientConfiguration
-      storageConfigurationRef: postgresqlStorageConfiguration
     vault:
       vaultConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:

@@ -799,8 +799,9 @@ toolbox:
   #     celeryConfigurationRef: producerCeleryConfiguration
   #   storage:
   #     storageConfigurationRef: postgresqlStorageConfiguration
-  #   scrubber:
+  #   scrubber-journal:
   #     scrubberConfigurationRef: postgresScrubberConfiguration
+  #     journalClientConfigurationRef: journalClientConfiguration
   #   vault:
   #     vaultConfigurationRef: postgresqlVaultConfiguration
 
@@ -1095,8 +1096,8 @@ scrubber:
     deployments:
       # can be split per object type for more control
       # The journal client group id will be suffixed with this name
-      directory:
-        enabled: false
+      # directory:
+        # enabled: false
         # The configName must be used to register the config with
         # the swh scrubber init
         # configName: mydb-directory

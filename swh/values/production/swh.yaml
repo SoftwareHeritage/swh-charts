@@ -600,10 +600,9 @@ toolbox:
     scheduler:
       schedulerConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
-    scrubber:
+    scrubber-journal:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: journalClientConfiguration
-      storageConfigurationRef: postgresqlStorageConfiguration
     indexer-storage:
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
 
