@@ -309,15 +309,14 @@ Generate the configuration for a journal configuration key
 */}}
 {{- define "swh.journalClientConfiguration" -}}
 {{- $journalConfiguration := get .Values .configurationRef -}}
-{{- $brokersRef := required (print "brokersConfigurationRef is mandatory in" $journalConfiguration " map" ) (get $journalConfiguration "brokersConfigurationRef") -}}
-{{- $brokers := required (print $brokersRef " is mandatory is mandatory in the global values " .Values " map") (get .Values $brokersRef) -}}
-{{- $configuration := deepCopy $journalConfiguration -}}
-{{- if .overrides -}}
-  {{- $configuration := merge $configuration .overrides -}}
-{{- end -}}
+{{- $brokersRef := required (print "brokersConfigurationRef is mandatory in <" $journalConfiguration "> map" ) (get $journalConfiguration "brokersConfigurationRef") -}}
+{{- $brokers := required (print "<" $brokersRef "> is mandatory is mandatory in the global values <" .Values "> map") (get .Values $brokersRef) -}}
+{{- $configuration := deepCopy $journalConfiguration }}
+{{- $overrides := .overrides | default dict }}
+{{- $configuration := mustMergeOverwrite $configuration $overrides -}}
 {{- $_ := unset $configuration "secrets" -}}
 {{- $_ := unset $configuration "brokersConfigurationRef" -}}
-{{- $_ := required (print "group_id property is mandatory in " .configurationRef " map") $configuration.group_id -}}
+{{- $_ := required (print "group_id property is mandatory in <" .configurationRef "> map") (get $configuration "group_id") -}}
 {{ .serviceType | default "journal" }}:
   brokers:
 {{ toYaml $brokers | indent 4 }}

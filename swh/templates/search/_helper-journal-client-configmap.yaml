@@ -16,7 +16,8 @@ data:
     {{- include "swh.service.fromYaml" (dict "service" "storage"
                                              "configurationRef" .configuration.storageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-    {{- include "swh.journal.configuration" (dict "serviceType" "journal"
-                                                  "configurationRef" .configurationRef
-                                                  "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" .configuration.journalConfigurationRef
+                                                       "overrides" .journal_client_config
+                                                       "Values" .Values) | nindent 4 }}
+
 {{ end }}

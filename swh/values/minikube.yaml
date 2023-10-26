@@ -143,6 +143,18 @@ journalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
   prefix: swh.toto
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-minikube
+  sasl.password: ${BROKER_USER_PASSWORD}
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: broker-secrets # Any secret can do the job
+      secretKeyName: password
+
+searchJournalClientConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh.search.journal_client
   prefix: swh.toto
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
@@ -699,6 +711,26 @@ search:
     # mandatory if ingress is enabled
     # the hostname on which the storage must be reachable
     whitelistSourceRangeRef: internalNetworkRanges
+  journalClients:
+    enabled: false
+    priorityClassName: normal-workload
+    searchConfigurationRef: fakeRemoteSearchConfiguration
+    storageConfigurationRef: fakeRemoteStorageConfiguration
+    journalConfigurationRef: searchJournalClientConfiguration
+    deployments:
+      objects:
+        group_id: swh.search.journal_client-v0.11
+        prefix: swh.journal.objects
+        object_types:
+        - origin
+        - origin_visit_status
+
+      indexed:
+        group_id: swh.search.journal_client.indexed-v0.11
+        prefix: swh.journal.indexed
+        object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
 
 scrubber:
   enabled: false
