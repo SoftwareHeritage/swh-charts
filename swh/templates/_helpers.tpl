@@ -319,7 +319,6 @@ Generate the configuration for a journal configuration key
 {{- $_ := unset $configuration "kafkaBrokersRef" -}}
 {{- $_ := required (print "group_id property is mandatory in " .configurationRef " map") $configuration.group_id -}}
 journal:
-  cls: kafka
   brokers:
 {{ toYaml $brokers | indent 4 }}
 {{ toYaml $configuration | indent 2 }}
