@@ -69,6 +69,11 @@ listers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
+    aur:
+      queues:
+        - swh.lister.aur.tasks.AurListerTask
+      autoScaling:
+        maxReplicaCount: 1
     bioconductor:
       queues:
         - swh.lister.bioconductor.tasks.BioconductorListerTask
