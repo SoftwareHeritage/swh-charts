@@ -1,11 +1,3 @@
-remoteStorageConfiguration:
-  cls: remote
-  url: http://storage1.internal.staging.swh.network:5002
-
-remoteObjstorageConfiguration:
-  cls: remote
-  url: http://storage1.internal.staging.swh.network:5003/
-
 searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client

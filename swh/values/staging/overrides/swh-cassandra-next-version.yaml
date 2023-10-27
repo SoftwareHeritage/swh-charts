@@ -239,6 +239,9 @@ web:
   hosts:
     - webapp-cassandra-next-version.internal.staging.swh.network
 
+deposit:
+  enabled: false
+
 graphql:
   replicas: 1
   hosts:

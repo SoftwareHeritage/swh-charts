@@ -781,3 +781,44 @@ scrubber:
         object: snapshot
         requestedCpu: 650m
         requestedMemory: 500Mi
+
+deposit:
+  enabled: true
+  logLevel: INFO
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  migrationsEnabled: false
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 3
+    cpuPercentageUsage: 100
+  ingress:
+    enabled: true
+    secretName: swh-deposit-crt
+    extraAnnotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      # The default behavior is true (when tls is enabled). We don't want that behavior
+      # since the rp is in charge of this
+      # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#server-side-https-enforcement-through-redirect
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    tlsEnabled: true
+    endpoints:
+      default:
+        paths:
+          - path: /
+  databaseConfigurationRef: postgresqlDepositConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
+  storageMetadataConfigurationRef: remoteStorageMetadataConfiguration
+  djangoConfigurationRef: djangoDepositConfiguration
+  blobstorageConfigurationRef: azureDepositConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
+  hosts:
+    - deposit.staging.swh.network
+  extraConfig:
+    max_upload_size: 209715200
+    extraction_dir: "/tmp/swh-deposit/archive/"
+    cache_uri: memcached:11211
+

@@ -180,6 +180,21 @@ web:
             values:
             - "true"
 
+deposit:
+  migrations:
+    enabled: true
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/deposit
+            operator: In
+            values:
+            - "true"
+
 indexerStorage:
   sentry:
     enabled: true

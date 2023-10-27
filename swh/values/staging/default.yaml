@@ -7,6 +7,10 @@ clusterNetworkRanges:
   - 10.42.0.0/16
   - 10.43.0.0/16
 
+keycloakConfiguration:
+  server_url: https://auth.softwareheritage.org/auth/
+  realm_name: SoftwareHeritageStaging
+
 stagingNetworkRanges:
   # staging ip
   - 10.42.0.0/16
@@ -85,11 +89,28 @@ postgresqlWebConfiguration:
       secretKeyRef: swh-postgresql-web-secrets
       secretKeyName: postgres-swh-web-password
 
+postgresqlDepositConfiguration:
+  host: db1.internal.staging.swh.network
+  port: 5432
+  db: swh-deposit
+  user: swh-deposit
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-deposit-secrets
+      secretKeyName: postgres-swh-deposit-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
       secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key
+
+djangoDepositConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-deposit-django-secret
+      secretKeyName: deposit-django-secret-key
 
 remoteSearchConfiguration:
   cls: remote
@@ -110,6 +131,26 @@ remoteCountersConfiguration:
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler.internal.staging.swh.network
+
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage1.internal.staging.swh.network:5002
+
+remoteStorageMetadataConfiguration:
+  cls: remote
+  url: http://storage1.internal.staging.swh.network:5002
+
+remoteObjstorageConfiguration:
+  cls: remote
+  url: http://storage1.internal.staging.swh.network:5003/
+
+azureDepositConfiguration:
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: deposit-contents
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-deposit-azure-secret
+      secretKeyName: azure-swh-deposit-key
 
 producerCeleryConfiguration:
   host: scheduler0.internal.staging.swh.network
@@ -240,6 +281,9 @@ externalServices:
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     search:
       internalName: search-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    deposit:
+      internalName: deposit-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
