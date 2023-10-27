@@ -1,0 +1,5 @@
+{{ if .Values.deposit.enabled -}}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "deposit"
+                                "configuration" .Values.deposit) -}}
+{{- end -}}

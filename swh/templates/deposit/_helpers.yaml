@@ -1,0 +1,17 @@
+{{/*
+Generate the private api deposit configuration for the webapp (yaml is different than
+the checkers & loaders's equivalent).
+*/}}
+{{- define "deposit.configuration.api.private" -}}
+{{- $depositConfiguration := get .Values .configurationRef -}}
+{{- $host := required (print "_helpers.tpl:deposit.configuration.api.private: The <host> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "host") -}}
+{{- $user := required (print "_helpers.tpl:deposit.configuration.api.private: The <user> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "user") -}}
+{{- $pass := required (print "_helpers.tpl:deposit.configuration.api.private: The <pass> property is mandatory in " $depositConfiguration)
+                    (get $depositConfiguration "pass") -}}
+deposit:
+  private_api_url: https://{{ $host }}/1/private/
+  private_api_user: {{ $user }}
+  private_api_password: {{ $pass }}
+{{- end -}}

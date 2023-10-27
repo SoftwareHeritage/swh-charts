@@ -1,0 +1,66 @@
+{{- if .Values.deposit.enabled -}}
+{{- $hosts := .Values.deposit.hosts }}
+{{- $allowed_instance := first $hosts }}
+{{- $configuration := get .Values .Values.deposit.blobstorageConfigurationRef -}}
+{{- $connection_string := required (print "The <connection_string> property is mandatory in " .Values.deposit.blobstorageConfigurationRef)
+                    (get $configuration "connection_string") -}}
+{{- $container_name := required (print "The <container_name> property is mandatory in " .Values.deposit.blobstorageConfigurationRef)
+                    (get $configuration "container_name") -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: deposit-configuration-template
+data:
+  config.yml.template: |
+    instance_name: {{ $allowed_instance }}
+    allowed_hosts:
+      {{- range $host := $hosts }}
+      - {{ $host }}
+      {{- end }}
+    swh_authority_url: {{ $allowed_instance }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage"
+                                             "configurationRef" .Values.deposit.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage_metadata"
+                                             "configurationRef" .Values.deposit.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "scheduler"
+                                             "configurationRef" .Values.deposit.schedulerConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+
+    {{- if .Values.deposit.keycloakConfigurationRef }}
+    authentication_provider: keycloak
+    {{- include "swh.service.fromYaml" (dict "service" "keycloak"
+                                             "configurationRef" .Values.deposit.keycloakConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{ end }}
+    private:
+      secret_key: ${DJANGO_SECRET_KEY}
+      db:
+        {{- include "django.postgresql" (dict "configurationRef" .Values.deposit.databaseConfigurationRef
+                                              "Values" .Values) | nindent 8 -}}
+    {{- if .Values.deposit.extraConfig -}}
+    {{ toYaml .Values.deposit.extraConfig | nindent 4 }}
+    {{- end }}
+
+  deposit_settings.yaml.template: |
+    BACKEND: "storages.backends.azure_storage.AzureStorage"
+    OPTIONS:
+      azure_container: "{{ $container_name | quote }}"
+      connection_string: "{{ $connection_string | quote }}"
+
+  deposit_settings.py: |
+    from swh.deposit.settings.production import *  # noqa
+
+    from pathlib import Path
+    from yaml import safe_load
+    backend = safe_load(Path('/etc/swh/deposit_settings.yaml').read_bytes())
+
+    STORAGES = {
+      "staticfiles": backend,
+      "default": backend,
+    }
+
+{{- end -}}

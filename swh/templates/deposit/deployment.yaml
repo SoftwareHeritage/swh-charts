@@ -1,0 +1,218 @@
+{{ if .Values.deposit.enabled -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: deposit
+  labels:
+    app: deposit
+spec:
+  revisionHistoryLimit: 2
+  {{ if .Values.deposit.replicas -}}
+  replicas: {{ .Values.deposit.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: deposit
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: deposit
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/deposit/configmap.yaml") . | sha256sum }}
+    spec:
+      {{- if .Values.deposit.affinity }}
+      affinity:
+        {{- toYaml .Values.deposit.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.deposit.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.deposit.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-settings-with-secret
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - eval echo "\"$(</etc/swh/configuration-template/deposit_settings.yaml.template)\"" > /etc/swh/deposit_settings.yaml
+          env:
+            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.deposit.blobstorageConfigurationRef
+                                                        "Values" .Values) | nindent 12 }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+            - name: configuration-template
+              mountPath: /etc/swh/configuration-template
+        - name: prepare-settings
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - cp /etc/swh/configuration-template/deposit_settings.py /etc/swh/deposit_settings.py
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+            - name: configuration-template
+              mountPath: /etc/swh/configuration-template
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          env:
+            {{- if .Values.deposit.databaseConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.deposit.databaseConfigurationRef) | nindent 12 -}}
+            {{ end }}
+            {{- if .Values.deposit.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.deposit.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
+            {{- if .Values.deposit.sentry.enabled }}
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deposit.sentry.secretKeyRef }}
+                  key: {{ .Values.deposit.sentry.secretKeyName }}
+                  optional: false
+            {{ end }}
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+            - name: configuration-template
+              mountPath: /etc/swh/configuration-template
+        {{- if .Values.deposit.migrationsEnabled }}
+        - name: do-migration
+          image: {{ .Values.swh_deposit_image }}:{{ .Values.swh_deposit_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+          command:
+            - django-admin
+          args:
+            - migrate
+            - --settings=swh.deposit.settings.production
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+        {{ end }}
+      containers:
+        - name: deposit
+          resources:
+            requests:
+              memory: {{ .Values.deposit.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.deposit.requestedCpu | default "500m" }}
+          {{- if or .Values.deposit.limitedMemory .Values.deposit.limitedCpu }}
+            limits:
+            {{- if .Values.deposit.limitedMemory }}
+              memory: {{ .Values.deposit.limitedMemory }}
+            {{- end }}
+            {{- if .Values.deposit.limitedCpu }}
+              cpu: {{ .Values.deposit.limitedCpu }}
+            {{- end }}
+          {{ end }}
+          image: {{ .Values.swh_deposit_image }}:{{ .Values.swh_deposit_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.deposit.port }}
+              name: deposit-app
+          readinessProbe:
+            httpGet:
+              path: /
+              port: deposit-app
+              httpHeaders:
+                - name: Host
+                  value: {{ first .Values.deposit.hosts }}
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+            timeoutSeconds: 30
+          livenessProbe:
+            httpGet:
+              path: /
+              port: deposit-app
+              httpHeaders:
+                - name: Host
+                  value: {{ first .Values.deposit.hosts }}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 30
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - /opt/swh/entrypoint.sh
+          env:
+            {{ if .Values.deposit.gunicorn -}}
+            - name: THREADS
+              value: {{ .Values.deposit.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ .Values.deposit.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ .Values.deposit.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ .Values.deposit.logLevel | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+            - name: DJANGO_SETTINGS_MODULE
+              value: deposit_settings
+            - name: PYTHONPATH
+              value: /etc/swh
+            {{- if .Values.deposit.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.deposit
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deposit.sentry.secretKeyRef }}
+                  key: {{ .Values.deposit.sentry.secretKeyName }}
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+            {{- end }}
+            {{- if .Values.deposit.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" .Values
+                                                        "configurationRef" .Values.deposit.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+            readOnly: true
+          - name: localstorage
+            mountPath: /tmp
+      volumes:
+      - name: localstorage
+        emptyDir: {}
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+         name: deposit-configuration-template
+         items:
+         - key: "deposit_settings.yaml.template"
+           path: "deposit_settings.yaml.template"
+         - key: "deposit_settings.py"
+           path: "deposit_settings.py"
+         - key: "config.yml.template"
+           path: "config.yml.template"
+{{ end }}

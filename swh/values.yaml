@@ -88,6 +88,12 @@ sentry:
 #       secretKeyRef: common-secrets
 #       secretKeyName: webapp-django-secret-key
 
+# djangoDepositConfiguration:
+#   secrets:
+#     DJANGO_SECRET_KEY:
+#       secretKeyRef: common-secrets
+#       secretKeyName: deposit-django-secret-key
+
 # azureCacheConfiguration:
 #   cls: azure
 #   connection_string: "DefaultEndpointsProtocol=https;AccountName=account-name;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
@@ -97,6 +103,14 @@ sentry:
 #     API_SECRET_KEY:
 #       secretKeyRef: swh-vault-azure-secret
 #       secretKeyName: azure-swh-vault-key
+
+# azureDepositConfiguration:
+#   connection_string:"DefaultEndpointsProtocol=https;AccountName=account-name;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+#   container_name: container-name
+#   secrets:
+#     ACCOUNT_KEY:
+#       secretKeyRef: swh-deposit-azure-secret
+#       secretKeyName: azure-swh-deposit-key
 
 # Example of a storage pipeline configuration
 # Adapt according your platform capabilities
@@ -169,6 +183,17 @@ sentry:
 #     POSTGRESQL_PASSWORD:
 #       secretKeyRef: swh-postgresql-web-secret
 #       secretKeyName: postgres-swh-web-password
+
+# postgresqlDepositConfiguration:
+#   host: db.internal.softwareheritage.org
+#   port: 5432
+#   db: swh-deposit
+#   user: swh-deposit
+#   pass: ${POSTGRESQL_PASSWORD}
+#   secrets:
+#     POSTGRESQL_PASSWORD:
+#       secretKeyRef: swh-postgresql-deposit-secret
+#       secretKeyName: postgres-swh-deposit-password
 
 # postgresqlSchedulerConfiguration:
 #   cls: postgresql
@@ -274,6 +299,10 @@ sentry:
 #   # optional values with their default value
 #   prefix: swh.journal.objects
 #   anonymize: true
+
+# keycloakConfiguration:
+#   server_url: https://my.keycloak.instance/auth/
+#   realm_name: myrealm
 
 giveConfiguration:
   public: ${GIVE_PUBLIC_KEY}
@@ -744,9 +773,6 @@ web:
   # giveConfigurationRef: giveConfiguration
   # throttlingConfigurationRef: throttlingConfiguration
   # extraConfig:
-  #   instance_name: archive.swh.org
-  #   allowed_hosts:
-  #   - archive.swh.org
   #   debug: false
   #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json
   #   es_workers_index_url: http://elastichost.swh.org:9200/swh_workers-*
@@ -1155,6 +1181,59 @@ scrubber:
         # requestedMemory: 512Mi
         # limitedCpu:
         # limitedMemory:
+
+deposit:
+  enabled: false
+  port: 5006
+  migrationsEnabled: false
+  priorityClassName: frontend-rpc
+  # debug: false
+  logLevel: INFO
+  requestedCpu: 50m
+  requestedMemory: 100Mi
+  # replicas: 1
+  # autoScaling:
+  #   minReplicaCount: 2
+  #   maxReplicaCount: 10
+  #   cpuPercentageUsage: 50
+  # gunicorn:
+  #   threads: 5
+  #   workers: 2
+  #   timeout: 60
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: deposit-sentry-dsn
+  # hosts:
+  # - deposit.staging.swh.network
+  ingress:
+    enabled: false
+  #   extraAnnotations:
+  #     cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+  #     kubernetes.io/ingress.class: nginx
+  #     kubernetes.io/tls-acme: "true"
+  #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  #   tlsEnabled: true
+  #   whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
+  # schedulerConfigurationRef: schedulerConfiguration
+  # storageConfigurationRef: globalROStorageConfiguration
+  # storageMetadataConfigurationRef: remoteStorageMetadataConfiguration
+  # djangoConfigurationRef: djangoDepositConfiguration
+  # databaseConfigurationRef: postgresqlDepositConfiguration
+  # keycloakConfigurationRef: keycloakConfiguration
+  # blobstorageConfigurationRef: azureDepositConfiguration
+  # extraConfig:
+  #   max_upload_size: 209715200
+  #   extraction_dir: "/tmp/swh-deposit/archive/"
+  #   authentication_provider: keycloak
+  #   cache_uri: 127.0.0.1:11211
 
 podPriority:
   enabled: false

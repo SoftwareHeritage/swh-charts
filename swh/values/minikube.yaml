@@ -30,6 +30,22 @@ fakeRemoteObjstorageConfiguration:
   cls: remote
   url: http://storage1.i.s.s.n:3005
 
+fakeRemoteStorageMetadataConfiguration:
+  cls: remote
+  url: http://storage1.i.s.s.n:2005
+
+fakeRemoteStorageConfiguration:
+  cls: remote
+  url: http://storage1.i.s.s.n:2005
+
+fakeRemoteSchedulerConfiguration:
+  cls: remote
+  url: http://scheduler.i.s.s.n
+
+fakeKeycloakConfiguration:
+  server_url: https://auth.s.o/auth/
+  realm_name: SwhMinikube
+
 fakePostgresqlStorageConfiguration:
   cls: postgresql
   host: db1.i.s.s.n
@@ -41,6 +57,17 @@ fakePostgresqlStorageConfiguration:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
+
+fakePostgresqlDepositConfiguration:
+  host: db1.i.s.s.n
+  port: 5432
+  db: swh-deposit
+  user: swh-deposit
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-deposit-secret
+      secretKeyName: postgres-swh-deposit-password
 
 fakeSyncmailmapsConfiguration:
   host: db1.i.s.s.n
@@ -112,10 +139,6 @@ fakePostgresqlVaultConfiguration:
       secretKeyRef: swh-postgresql-vault-secret
       secretKeyName: postgres-swh-vault-password
 
-fakeRemoteStorageConfiguration:
-  cls: remote
-  url: http://fake-storage.i.s.s.n:8002
-
 roStoragePipelineSteps:
   - cls: retry
 
@@ -128,6 +151,12 @@ djangoWebConfiguration:
     DJANGO_SECRET_KEY:
       secretKeyRef: webapp-django-secrets
       secretKeyName: webapp-django-secret-key
+
+djangoDepositConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: deposit-django-secrets
+      secretKeyName: deposit-django-secret-key
 
 fakeRemoteStorageConfigurationRef:
   storageConfigurationRef: fakeRemoteStorageConfiguration
@@ -230,6 +259,7 @@ web:
   requestedMemory: 50Mi
   requestedCpu: 50m
   storageConfigurationRef: fakeRemoteStorageConfiguration
+
   searchConfigurationRef: fakeRemoteSearchConfiguration
   schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
   vaultConfigurationRef: fakeRemoteVaultConfiguration
@@ -311,6 +341,55 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
+
+fakeAzureDepositConfiguration:
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: "deposit-contents"
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-deposit-azure-secret
+      secretKeyName: azure-swh-deposit-key
+
+deposit:
+  enabled: false
+  requestedMemory: 50Mi
+  requestedCpu: 50m
+  migrationsEnabled: false
+  storageConfigurationRef: fakeRemoteStorageConfiguration
+  storageMetadataConfigurationRef: fakeRemoteStorageMetadataConfiguration
+  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  databaseConfigurationRef: fakePostgresqlDepositConfiguration
+  djangoConfigurationRef: djangoDepositConfiguration
+  keycloakConfigurationRef: fakeKeycloakConfiguration
+  blobstorageConfigurationRef: fakeAzureDepositConfiguration
+  hosts:
+    - localhost
+  ingress:
+    enabled: true
+    tlsEnabled: true
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+    whitelistSourceRangeRef: internalNetworkRanges
+    endpoints:
+      default:
+        paths:
+          - path: /
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 2
+    cpuPercentageUsage: 50
+  sentry:
+    enabled: false
+    secretKeyRef: sentry-secrets
+    secretKeyName: deposit-sentry-dsn
+  extraConfig:
+    max_upload_size: 209715200
+    extraction_dir: "/tmp/swh-deposit/archive/"
+    cache_uri: memcached:11211
 
 toolbox:
   enabled: true
