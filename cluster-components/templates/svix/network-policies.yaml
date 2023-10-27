@@ -37,7 +37,11 @@ metadata:
 spec:
   podSelector:
     matchLabels:
+{{- if .Values.svix.redis.enabled }}
       app: svix-redis
+{{- else }}
+      app: redis-svix
+{{- end }}
   ingress:
     - from:
         - podSelector:
@@ -46,6 +50,8 @@ spec:
       ports:
         - protocol: TCP
           port: 6379
+{{- end }}
+{{ if .Values.svix.postgres.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

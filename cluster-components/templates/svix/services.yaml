@@ -1,4 +1,4 @@
-{{ if .Values.svix.enabled -}}
+{{ if .Values.svix.postgres.enabled -}}
 {{- with .Values.svix }}
 ---
 apiVersion: v1
@@ -14,6 +14,10 @@ spec:
     - port: 5432
       targetPort: 5432
       name: postgres
+{{- end }}
+{{- end }}
+{{ if .Values.svix.redis.enabled -}}
+{{- with .Values.svix }}
 ---
 apiVersion: v1
 kind: Service
@@ -28,6 +32,10 @@ spec:
     - port: 6379
       targetPort: 6379
       name: redis
+{{- end }}
+{{- end }}
+{{ if .Values.svix.enabled -}}
+{{- with .Values.svix }}
 ---
 apiVersion: v1
 kind: Service

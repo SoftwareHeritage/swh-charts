@@ -22,10 +22,12 @@ svix:
   requestedCpu: 100m
   namespace: svix-server
   postgres:
+    enabled: true
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
   redis:
+    enabled: true
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false

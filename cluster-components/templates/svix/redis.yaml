@@ -1,4 +1,4 @@
-{{ if .Values.svix.enabled -}}
+{{ if .Values.svix.redis.enabled -}}
 {{ with .Values.svix -}}
 ---
 apiVersion: apps/v1
