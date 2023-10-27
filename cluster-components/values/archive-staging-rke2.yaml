@@ -4,3 +4,23 @@ alertmanager:
 
 podPriority:
   enabled: true
+
+svix:
+  enabled: true
+  ingress:
+    host: svix.internal.staging.swh.network
+    createTLS: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    whitelistSourceRange:
+      # webapp.internal.staging.swh.network
+      - 192.168.130.30
+      # db1.internal.staging.swh.network (really needed ?)
+      - 192.168.130.11
+      # admin ip
+      - 192.168.50.0/24
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  namespace: svix-server
