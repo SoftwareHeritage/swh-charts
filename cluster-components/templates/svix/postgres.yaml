@@ -1,4 +1,4 @@
-{{ if .Values.svix.postgres.enabled -}}
+{{ if and .Values.svix.enabled .Values.svix.postgres.enabled -}}
 {{ with .Values.svix -}}
 ---
 apiVersion: apps/v1
