@@ -1,5 +1,7 @@
 {{ if .Values.svix.enabled -}}
 {{ with .Values.svix -}}
+{{ $redisDsn := .redisDsn | default "redis" -}}
+{{ $postgresDsn := .postgresDsn | default "postgres" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,8 +74,8 @@ spec:
             - name: WAIT_FOR
               value: "true"  # We want to wait for the default services
             - name: SVIX_REDIS_DSN
-              value: "redis://redis:6379"
+              value: "redis://{{ $redisDsn }}:6379"
             - name: SVIX_DB_DSN
-              value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@postgres"
+              value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@{{ $postgresDsn }}"
 {{- end }}
 {{- end }}
