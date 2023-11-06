@@ -164,6 +164,8 @@ vault:
             - "true"
 
 web:
+  requestedCpu: 50m
+  requestedMemory: 300Mi
   migrations:
     enabled: true
   sentry:

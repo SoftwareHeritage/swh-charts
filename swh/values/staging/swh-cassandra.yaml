@@ -235,8 +235,10 @@ loaders:
         queueThreshold: 1
         minReplicaCount: 2
         maxReplicaCount: 2
-      requestedMemory: 1024Mi
-      requestedCpu: 100m
+      # low profile as there is no autoscaling
+      # and they are doing nothing most of the time
+      requestedMemory: 200Mi
+      requestedCpu: 50m
     maven:
       image: swh_loader_package_image
       queues:
@@ -268,7 +270,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       requestedMemory: 1024Mi
-      requestedCpu: 1000m
+      requestedCpu: 1300m
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -318,7 +320,7 @@ loader_metadata:
   autoScaling:
     maxReplicaCount: 1
   requestedMemory: 200Mi
-  requestedCpu: 500m
+  requestedCpu: 10m
 
 storage_replayer:
   enabled: true
@@ -524,10 +526,8 @@ storage:
 web:
   enabled: true
   logLevel: INFO
-  requestedCpu: 500m
-  requestedMemory: 500Mi
   autoScaling:
-    minReplicaCount: 2
+    minReplicaCount: 1
     maxReplicaCount: 3
     cpuPercentageUsage: 50
   hosts:

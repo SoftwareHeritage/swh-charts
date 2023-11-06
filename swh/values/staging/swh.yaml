@@ -301,6 +301,8 @@ indexers:
       consumerGroup: swh.indexer.journal_client.origin_intrinsic_metadata
       prefix: swh.journal.objects
       batch_size: 200
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
@@ -371,7 +373,7 @@ storage_replayer:
       objects:
         - content
       privileged: true
-      requestedCpu: 50m
+      requestedCpu: 10m
       requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
@@ -393,8 +395,8 @@ storage_replayer:
       #requestedCpu: 400m
       # equestedMemory: 200Mi
       #Follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     metadata:
@@ -403,8 +405,8 @@ storage_replayer:
         - metadata_fetcher
       privileged: true
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 30m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     raw-extrinsic-metadata:
@@ -416,8 +418,8 @@ storage_replayer:
       #requestedCpu: 400m
       #requestedMemory: 200Mi
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 20m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin:
@@ -429,8 +431,8 @@ storage_replayer:
       #requestedCpu: 400m
       #requestedMemory: 200Mi
       #Follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
@@ -442,8 +444,8 @@ storage_replayer:
       #requestedCpu: 400m
       #requestedMemory: 400Mi
       #Follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit-status:
@@ -455,8 +457,8 @@ storage_replayer:
       #requestedCpu: 500m
       #requestedMemory: 300Mi
       #Follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     release:
@@ -468,8 +470,8 @@ storage_replayer:
       #requestedCpu: 600m
       # requestedMemory: 300Mi
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     revision:
@@ -481,8 +483,8 @@ storage_replayer:
       #requestedCpu: 750m
       #requestedMemory: 750Mi
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
@@ -494,8 +496,8 @@ storage_replayer:
       #requestedCpu: 300m
       #requestedMemory: 400Mi
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     snapshot:
@@ -507,8 +509,8 @@ storage_replayer:
       #requestedCpu: 400m
       #requestedMemory: 250Mi
       # follow up consumption
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 10m
+      requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
 
@@ -566,7 +568,7 @@ scheduler:
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
-    requestedMemory: 1024Mi
+    requestedMemory: 700Mi
     requestedCpu: 50m
   updateMetrics:
     enabled: true
@@ -617,8 +619,8 @@ indexerStorage:
     minReplicaCount: 2
     maxReplicaCount: 4
     cpuPercentageUsage: 90
-  requestedCpu: 500m
-  requestedMemory: 512Mi
+  requestedCpu: 10m
+  requestedMemory: 200Mi
   indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
   journalWriterConfigurationRef: journalWriterConfiguration
   hosts:
@@ -653,8 +655,8 @@ search:
     timeout: 3600
   # RPC services may have different profiles than the rest so they need their specific
   # setup
-  requestedMemory: 512Mi
-  requestedCpu: 500m
+  requestedCpu: 100m
+  requestedMemory: 300Mi
   autoScaling:
     minReplicaCount: 2
     maxReplicaCount: 4
@@ -685,12 +687,16 @@ search:
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
+        requestedCpu: 10m
+        requestedMemory: 50Mi
         group_id: swh.search.journal_client-v0.11
         prefix: swh.journal.objects
         object_types:
         - origin
         - origin_visit_status
       indexed:
+        requestedCpu: 10m
+        requestedMemory: 50Mi
         group_id: swh.search.journal_client.indexed-v0.11
         prefix: swh.journal.indexed
         object_types:
@@ -700,8 +706,6 @@ search:
 web:
   enabled: true
   logLevel: INFO
-  requestedCpu: 500m
-  requestedMemory: 500Mi
   autoScaling:
     minReplicaCount: 2
     maxReplicaCount: 3

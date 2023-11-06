@@ -234,8 +234,14 @@ vault:
   hosts:
     - vault-rpc-ingress
 
+toolbox:
+  requestedMemory: 10Mi
+  requestedCpu: 10m
+
 memcached:
   enabled: true
+  requestedCpu: 10m
+  requestedMemory: 256Mi
 
 podPriority:
   enabled: true
