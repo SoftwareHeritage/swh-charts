@@ -78,9 +78,9 @@ sentry:
 
 # azureCacheConfiguration:
 #   cls: azure
-#   account_name: vaultstorageaccount
+#   connection_string: "DefaultEndpointsProtocol=https;AccountName=account-name;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
 #   container_name: contents
-#   api_secret_key: ${API_SECRET_KEY}
+#   compression: none
 #   secrets:
 #     API_SECRET_KEY:
 #       secretKeyRef: swh-vault-azure-secret
