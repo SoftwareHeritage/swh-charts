@@ -1,7 +1,7 @@
 software_stories_image: container-registry.softwareheritage.org/swh/infra/swh-apps/software_stories
 software_stories_image_version: '20230912.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
-swh_deposit_checkers_image_version: '20231107.1'
+swh_deposit_checkers_image_version: '20231107.2'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20231106.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
