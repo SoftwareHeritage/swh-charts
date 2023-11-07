@@ -23,7 +23,6 @@ data:
     {{ end }}
     {{- if ( eq "scrubber-journal" $service_type ) }}
       {{- include "swh.journalClientConfiguration" (dict "configurationRef" $deployment_config.journalClientConfigurationRef
-                                        "overrides" (dict "group_id" "changeme")
                                         "Values" $.Values) | nindent 4 }}
     {{ end }}
 {{ end }}

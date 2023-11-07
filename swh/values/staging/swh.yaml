@@ -63,6 +63,25 @@ postgresqlScrubberConfiguration:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
+internalSecuredKafkaBrokers:
+  - journal1.internal.staging.swh.network:9094
+  - journal2.internal.staging.swh.network:9094
+
+scrubberJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-stg-journalchecker
+  on_eof: restart
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-archive-stg
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -524,7 +543,7 @@ toolbox:
       storageConfigurationRef: postgresqlStorageConfiguration
     scrubber-journal:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
-      journalClientConfigurationRef: journalClientConfiguration
+      journalClientConfigurationRef: scrubberJournalClientConfiguration
     vault:
       vaultConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
@@ -781,3 +800,44 @@ web:
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}
+
+scrubber:
+  enabled: true
+  scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
+  priorityClassName: background-workload
+  journalChecker:
+    enabled: true
+    journalClientConfigurationRef: scrubberJournalClientConfiguration
+    deployments:
+      directory:
+        configName: journal-checker-directory
+        journalClientOverrides:
+          batch_size: 100
+        object: directory
+        replicas: 1
+        requestedMemory: 200Mi
+        requestedCpu: 200m
+      release:
+        configName: journal-checker-release
+        journalClientOverrides:
+          batch_size: 200
+          privileged: true
+        object: release
+        replicas: 1
+        requestedMemory: 200Mi
+        requestedCpu: 500m
+      revision:
+        configName: journal-checker-revision
+        journalClientOverrides:
+          privileged: true
+        object: revision
+        replicas: 1
+        requestedMemory: 250Mi
+        requestedCpu: 600m
+      snapshot:
+        configName: journal-checker-snapshot
+        object: snapshot
+        replicas: 1
+        requestedCpu: 1
+        requestedMemory: 250Mi
