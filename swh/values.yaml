@@ -1052,6 +1052,15 @@ search:
     # deployments:
     #   objects:
     #     journalConfigurationRef: journalObjectConfiguration
+    #     # requestedCpu: 100m
+    #     # requestedMemory: 500Mi
+    #     # journalClientOverrides:
+    #     # # Declare specific journal client overrides for this consummer
+    #         # group_id: my-search-group-id
+    #         # prefix: swh.journal.objects
+    #         # object_types:
+    #         #   - object1
+    #         #   - object2
     #   indexed:
     #     journalConfigurationRef: journalIndexedConfiguration
 

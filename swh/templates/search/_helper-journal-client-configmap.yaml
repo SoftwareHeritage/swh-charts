@@ -2,6 +2,7 @@
 Generate the configuration map for search journal client
 */}}
 {{ define "swh.journal.client.configmap" }}
+{{ $journalClientOverrides := get .journal_client_config "journalClientOverrides" | default dict }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -17,7 +18,7 @@ data:
                                              "configurationRef" .configuration.storageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" .configuration.journalConfigurationRef
-                                                       "overrides" .journal_client_config
+                                                       "overrides" $journalClientOverrides
                                                        "Values" .Values) | nindent 4 }}
 
 {{ end }}

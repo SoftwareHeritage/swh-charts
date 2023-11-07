@@ -689,19 +689,21 @@ search:
       objects:
         requestedCpu: 10m
         requestedMemory: 50Mi
-        group_id: swh.search.journal_client-v0.11
-        prefix: swh.journal.objects
-        object_types:
-        - origin
-        - origin_visit_status
+        journalClientOverrides:
+          group_id: swh.search.journal_client-v0.11
+          prefix: swh.journal.objects
+          object_types:
+          - origin
+          - origin_visit_status
       indexed:
         requestedCpu: 10m
         requestedMemory: 50Mi
-        group_id: swh.search.journal_client.indexed-v0.11
-        prefix: swh.journal.indexed
-        object_types:
-        - origin_intrinsic_metadata
-        - origin_extrinsic_metadata
+        journalClientOverrides:
+          group_id: swh.search.journal_client.indexed-v0.11
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
 
 web:
   enabled: true

@@ -4,7 +4,7 @@
 {{- $configurationChecksum := include "swh.journal.client.configmap"
   (dict "journal_client_type" $journal_client_type
         "configuration" $.Values.search.journalClients
-        "configurationRef" $journal_client_config.journalConfigurationRef
+        "journal_client_config" $journal_client_config
         "Values" $.Values) -}}
 
 {{- $log_level := $journal_client_config.logLevel | default "INFO" -}}
