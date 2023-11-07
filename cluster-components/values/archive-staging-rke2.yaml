@@ -25,3 +25,9 @@ svix:
   namespace: svix-server
   redisDsn: redis-svix.svix-server
   postgresDsn: db1.internal.staging.swh.network
+
+alerting:
+  enabled: true
+  cassandra:
+    environment: staging
+    period: 5m

@@ -1,2 +1,8 @@
 podPriority:
   enabled: true
+
+alerting:
+  enabled: true
+  cassandra:
+    environment: production
+    period: 5m
