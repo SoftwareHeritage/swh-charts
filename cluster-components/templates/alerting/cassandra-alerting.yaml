@@ -17,7 +17,16 @@ spec:
         description: "The {{"{{"}} $labels.instance {{"}}"}} node is unreachable for more than 5 minutes. This node seems down."
         summary: "The {{"{{"}} $labels.service {{"}}"}} is degraded. Please check the {{"{{"}} $labels.instance {{"}}"}} status."
       expr: up{service="cassandra-servers-svc"} == 0
-      for: {{ .period }}
+      for: {{ .period.down }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
+    - alert: Cassandra_Table_Unrepaired_In_{{ .environment | title }}
+      annotations:
+        description: "The unrepaired bytes of table {{"{{"}} $labels.table {{"}}"}} is more than {{ div .unrepairedSize 1073741824 }} Gb."
+        summary: "Please trigger a repair on the table {{"{{"}} $labels.table {{"}}"}} in keyspace {{"{{"}} $labels.keyspace {{"}}"}}."
+      expr: sum by (keyspace, table) (cassandra_table_bytesunrepaired{table!="",job="cassandra-servers-svc"}) > {{ .unrepairedSize }}
+      for: {{ .period.unrepaired }}
       labels:
         severity: critical
         namespace: cattle-monitoring-system

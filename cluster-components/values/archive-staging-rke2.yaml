@@ -30,4 +30,7 @@ alerting:
   enabled: true
   cassandra:
     environment: staging
-    period: 5m
+    period:
+      down: 15m
+      unrepaired: 5m
+    unrepairedSize: 214748364800
