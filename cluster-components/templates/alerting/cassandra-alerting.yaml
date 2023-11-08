@@ -6,13 +6,13 @@ kind: PrometheusRule
 metadata:
   labels:
     app: cassandra
-  name: critical-cassandra-service.rules
+  name: cassandra-service.rules
   namespace: cattle-monitoring-system
 spec:
   groups:
-  - name: critical-cassandra-service.rules
+  - name: cassandra-service.rules
     rules:
-    - alert: Cassandra_Service_Degraded_In_{{ .environment | title }}
+    - alert: Cassandra_Degraded_Service_In_{{ .environment | title }}
       annotations:
         description: "The {{"{{"}} $labels.instance {{"}}"}} node is unreachable for more than {{ trimSuffix "m" .period.down }} minutes. This node seems down."
         summary: "The {{"{{"}} $labels.service {{"}}"}} is degraded. Please check the {{"{{"}} $labels.instance {{"}}"}} status."
@@ -21,7 +21,7 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
-    - alert: Cassandra_Table_Unrepaired_In_{{ .environment | title }}
+    - alert: Cassandra_Unrepaired_Table_In_{{ .environment | title }}
       annotations:
         description: "The unrepaired bytes of table {{"{{"}} $labels.table {{"}}"}} is more than {{ div .unrepairedSize 1073741824 }} Gb."
         summary: "Please trigger a repair on the table {{"{{"}} $labels.table {{"}}"}} in keyspace {{"{{"}} $labels.keyspace {{"}}"}}."
