@@ -27,6 +27,12 @@ kafkaBrokers:
   - kafka3.internal.softwareheritage.org
   - kafka4.internal.softwareheritage.org
 
+internalSecuredKafkaBrokers:
+  - kafka1.internal.softwareheritage.org:9094
+  - kafka2.internal.softwareheritage.org:9094
+  - kafka3.internal.softwareheritage.org:9094
+  - kafka4.internal.softwareheritage.org:9094
+
 elasticsearchInstances:
   - host: search-esnode4.internal.softwareheritage.org
     port: 9200

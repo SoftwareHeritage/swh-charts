@@ -60,6 +60,21 @@ postgresqlScrubberConfiguration:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
+scrubberJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-prod-journalchecker
+  on_eof: restart
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-archive-prod
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 graphql:
   enabled: true
   replicas: 2
@@ -602,7 +617,7 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber-journal:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
-      journalClientConfigurationRef: journalClientConfiguration
+      journalClientConfigurationRef: internalSecuredKafkaBrokers
     indexer-storage:
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
 
@@ -649,3 +664,44 @@ search:
     enabled: true
     # Optional: the ingress classname to use
     # className: nginx
+
+scrubber:
+  enabled: true
+  scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
+  priorityClassName: background-workload
+  journalChecker:
+    enabled: true
+    journalClientConfigurationRef: scrubberJournalClientConfiguration
+    deployments:
+      directory:
+        configName: journal-checker-directory
+        journalClientOverrides:
+          batch_size: 100
+        object: directory
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 200Mi
+      release:
+        configName: journal-checker-release
+        journalClientOverrides:
+          batch_size: 200
+          privileged: true
+        object: release
+        replicas: 1
+        requestedCpu: 1
+        requestedMemory: 200Mi
+      revision:
+        configName: journal-checker-revision
+        journalClientOverrides:
+          privileged: true
+        object: revision
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 250Mi
+      snapshot:
+        configName: journal-checker-snapshot
+        object: snapshot
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 250Mi
