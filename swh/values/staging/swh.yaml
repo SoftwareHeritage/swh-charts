@@ -728,7 +728,7 @@ web:
   autoScaling:
     minReplicaCount: 2
     maxReplicaCount: 3
-    cpuPercentageUsage: 50
+    cpuPercentageUsage: 100
   ingress:
     enabled: true
     secretName: swh-web-crt
