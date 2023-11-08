@@ -14,7 +14,7 @@ spec:
     rules:
     - alert: Cassandra_Service_Degraded_In_{{ .environment | title }}
       annotations:
-        description: "The {{"{{"}} $labels.instance {{"}}"}} node is unreachable for more than 5 minutes. This node seems down."
+        description: "The {{"{{"}} $labels.instance {{"}}"}} node is unreachable for more than {{ trimSuffix "m" .period.down }} minutes. This node seems down."
         summary: "The {{"{{"}} $labels.service {{"}}"}} is degraded. Please check the {{"{{"}} $labels.instance {{"}}"}} status."
       expr: up{service="cassandra-servers-svc"} == 0
       for: {{ .period.down }}
