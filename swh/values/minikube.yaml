@@ -313,21 +313,23 @@ web:
       token: ${GIVE_PRIVATE_TOKEN}
 
 toolbox:
-  enabled: false
+  enabled: true
   configs:
     storage:
-      storageConfigurationRef: fakePostgresqlStorageConfiguration
+      storageDbConfigurationRef: fakePostgresqlStorageConfiguration
     scheduler:
-      schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
+      schedulerDbConfigurationRef: fakePostgresqlSchedulerConfiguration
       celeryConfigurationRef: fakeCeleryConfiguration
-    scrubber:
-      scrubberConfigurationRef: scrubberDatabaseConfiguration
-      journalClientConfigurationRef: journalClientConfiguration
+    scrubber-journal:
+      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
+      journalClientConfigurationRef: scrubberJournalClientConfiguration
+    scrubber-storage:
+      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
       storageConfigurationRef: fakePostgresqlStorageConfiguration
     vault:
-      vaultConfigurationRef: fakePostgresqlVaultConfiguration
+      vaultDbConfigurationRef: fakePostgresqlVaultConfiguration
     indexer-storage:
-      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      indexerDbConfigurationRef: fakePostgresqlIndexerStorageConfiguration
 
 fakeCeleryConfiguration:
   host: fake-scheduler.i.s.s.n

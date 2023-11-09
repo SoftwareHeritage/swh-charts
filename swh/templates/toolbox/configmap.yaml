@@ -1,11 +1,6 @@
 {{ if .Values.toolbox.enabled -}}
 {{- $namespace := .Values.namespace -}}
 {{- range $service_type, $deployment_config := .Values.toolbox.configs -}}
-{{- $prefix_service_type_name := eq $service_type "indexer-storage" | ternary "indexerStorage" $service_type -}}
-{{- $prefix_service_type_name := eq $service_type "scrubber-journal" | ternary "scrubber" $prefix_service_type_name -}}
-{{- $serviceConfigurationRef := print $prefix_service_type_name "ConfigurationRef" -}}
-{{- $service_type_name := eq $service_type "indexer-storage" | ternary "indexer_storage" $service_type -}}
-{{- $service_type_name := eq $service_type "scrubber-journal" | ternary "scrubber" $service_type_name -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -14,16 +9,44 @@ metadata:
   namespace: {{ $namespace }}
 data:
   config.yml.template: |
-    {{ include "swh.postgresql" (dict "serviceType" $service_type_name
-                                      "configurationRef" (get $deployment_config $serviceConfigurationRef)
-                                      "Values" $.Values) | nindent 4 }}
-    {{- if ( eq "scheduler" $service_type ) }}
-      {{- include "celery.configuration" (dict "configurationRef" $deployment_config.celeryConfigurationRef
-                                              "Values" $.Values) | nindent 4 }}
-    {{ end }}
-    {{- if ( eq "scrubber-journal" $service_type ) }}
-      {{- include "swh.journalClientConfiguration" (dict "configurationRef" $deployment_config.journalClientConfigurationRef
-                                        "Values" $.Values) | nindent 4 }}
-    {{ end }}
+{{- if hasKey $deployment_config "storageDbConfigurationRef" }}
+  {{- include "swh.postgresql" (dict "serviceType" "storage"
+                            "configurationRef" (get $deployment_config "storageDbConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
 {{ end }}
-{{- end -}}
+{{- if hasKey $deployment_config "storageConfigurationRef" }}
+  {{- include "swh.storageConfiguration" (dict "serviceType" "storage"
+                            "configurationRef" (get $deployment_config "storageConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "schedulerDbConfigurationRef" }}
+  {{- include "swh.postgresql" (dict "serviceType" "scheduler"
+                            "configurationRef" (get $deployment_config "schedulerDbConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "celeryConfigurationRef" }}
+  {{- include "celery.configuration" (dict "configurationRef" (get $deployment_config "celeryConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "scrubberDbConfigurationRef" }}
+  {{- include "swh.postgresql" (dict "serviceType" "scrubber"
+                            "configurationRef" (get $deployment_config "scrubberDbConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "vaultDbConfigurationRef" }}
+  {{- include "swh.postgresql" (dict "serviceType" "vault"
+                            "configurationRef" (get $deployment_config "vaultDbConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "indexerDbConfigurationRef" }}
+  {{- include "swh.postgresql" (dict "serviceType" "indexer_storage"
+                            "configurationRef" (get $deployment_config "indexerDbConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{- if hasKey $deployment_config "journalClientConfigurationRef" }}
+  {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal"
+                            "configurationRef" (get $deployment_config "journalClientConfigurationRef")
+                            "Values" $.Values) | nindent 4 -}}
+{{ end }}
+{{ end }}
+{{ end }}

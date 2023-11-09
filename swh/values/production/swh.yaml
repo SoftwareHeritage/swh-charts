@@ -611,15 +611,15 @@ toolbox:
   enabled: true
   configs:
     storage:
-      storageConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlStorageConfiguration
     scheduler:
-      schedulerConfigurationRef: postgresqlSchedulerConfiguration
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber-journal:
-      scrubberConfigurationRef: postgresqlScrubberConfiguration
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
     indexer-storage:
-      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 indexerStorage:
   enabled: false

@@ -795,15 +795,15 @@ toolbox:
   # requestedCpu: 250m
   # configs:
   #   scheduler:
-  #     schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  #     schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
   #     celeryConfigurationRef: producerCeleryConfiguration
   #   storage:
-  #     storageConfigurationRef: postgresqlStorageConfiguration
+  #     storageDbConfigurationRef: postgresqlStorageConfiguration
   #   scrubber-journal:
-  #     scrubberConfigurationRef: postgresScrubberConfiguration
+  #     scrubberDbConfigurationRef: postgresScrubberConfiguration
   #     journalClientConfigurationRef: journalClientConfiguration
   #   vault:
-  #     vaultConfigurationRef: postgresqlVaultConfiguration
+  #     vaulDbtConfigurationRef: postgresqlVaultConfiguration
 
 externalServices:
   enabled: false

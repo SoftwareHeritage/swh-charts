@@ -542,17 +542,17 @@ toolbox:
   enabled: true
   configs:
     scheduler:
-      schedulerConfigurationRef: postgresqlSchedulerConfiguration
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
     storage:
-      storageConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlStorageConfiguration
     scrubber-journal:
-      scrubberConfigurationRef: postgresqlScrubberConfiguration
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
     vault:
-      vaultConfigurationRef: postgresqlVaultConfiguration
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
-      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 scheduler:
   enabled: true
