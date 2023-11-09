@@ -50,8 +50,7 @@ storage:
                                          "pipelineStepsRef" $pipelineStepsRef
                                          "Values" .Values) | indent $indent }}
 {{- else if eq $storageType "postgresql" -}}
-{{ include "swh.postgresql" (dict "serviceType" "storage"
-                                  "Values" .Values
+{{ include "swh.postgresql" (dict "Values" .Values
                                   "configurationRef" $storageServiceConfigurationRef
                                   "configurationInPipeline" $pipelineStepsRef) | indent $indent }}
 {{- else -}}
@@ -152,7 +151,9 @@ deposit:
   db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
                                         "Values" .Values) }}
 {{- else -}}
+{{ if .serviceType -}}
 {{ .serviceType }}:
+{{- end }}
   cls: postgresql
   db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
                                         "Values" .Values) }}
@@ -290,7 +291,7 @@ journal_writer:
 
 {{/* Generate the check migration container configuration if needed */}}
 {{- define "swh.checkDatabaseVersionContainer" -}}
-- name: check-migration
+- name: {{ .containerName | default "check-migration" }}
   image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   command:
   - /entrypoints/check-{{ .module }}-db-version.sh

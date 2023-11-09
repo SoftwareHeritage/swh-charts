@@ -63,7 +63,9 @@ data:
 
     # extracting the postgresql configuration from a full configuration
     # possibly with a pipeline
-    python /entrypoints/extract-storage-postgresql-config-py
+    set +e
+    python /entrypoints/extract-storage-postgresql-config-py || exit 0
+    set -e
 
     # checking the database status
     swh db --config-file=/tmp/config.yml version "${MODULE}" | tee "${TEMP_FILE}"

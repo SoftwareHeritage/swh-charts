@@ -36,6 +36,18 @@ sentry:
 #       secretKeyRef: swh-postgresql-common-secret
 #       secretKeyName: postgres-swh-password
 
+# postgresqlROStorageConfiguration:
+#   cls: postgresql
+#   host: mydatabasese.server
+#   port: '5432'
+#   user: guest
+#   pass: ${POSTGRESQL_GUEST_PASSWORD}
+#   db: swh
+#   secrets:
+#     POSTGRESQL_GUEST_PASSWORD:
+#       secretKeyRef: swh-postgresql-common-secret
+#       secretKeyName: postgres-guest-password
+
 # List of cassandra nodes
 # when cassandra is used a backend
 # cassandraSeeds:
@@ -1084,7 +1096,6 @@ scrubber:
   enabled: false
   # priorityClassName: background-workload
   scrubberDatabaseConfigurationRef: scrubberDatabaseConfiguration
-  storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   sentry:
     enabled: false
     # Mandatory if enabled
@@ -1099,6 +1110,31 @@ scrubber:
   #           operator: In
   #           values:
   #           - "true"
+  storageChecker:
+    enabled: false
+    # # default configuration of the storage
+    # # it must have a direct access to the database (class postgresql or cassandra)
+    # # It can be overriden by instance
+    # storageConfigurationRef: postgresqlROStorageConfiguration
+    # deployments:
+    #   object:
+    #     enabled: false
+    #     configName: mydb-directory
+    #     # logLevel: INFO
+    #     # override of the storage configuration
+    #     # storageConfigurationRef: otherPostgresqlROStorageConfiguration
+    #     # the kind of object to check
+    #     # must be one of the following:
+    #     #   - directory
+    #     #   - release
+    #     #   - revision
+    #     #   - snapshot
+    #     object: directory
+    #     # replicas: 1
+    #     # requestedCpu: 500m
+    #     # requestedMemory: 512Mi
+    #     # limitedCpu:
+    #     # limitedMemory:
   journalChecker:
     enabled: false
     journalClientConfigurationRef: journalClientConfiguration
@@ -1119,7 +1155,6 @@ scrubber:
         # requestedMemory: 512Mi
         # limitedCpu:
         # limitedMemory:
-  # TODO: storageScrubber
 
 podPriority:
   enabled: false

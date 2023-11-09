@@ -1,21 +1,22 @@
-{{ if and .Values.scrubber.enabled .Values.scrubber.journalChecker.enabled -}}
-{{- range $deployment, $deployment_config := .Values.scrubber.journalChecker.deployments -}}
+{{ if and .Values.scrubber.enabled .Values.scrubber.storageChecker.enabled -}}
+{{- range $deployment, $deployment_config := .Values.scrubber.storageChecker.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
-{{- $configurationChecksum := include "swh.scrubber.journalChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+{{- $configurationChecksum := include "swh.scrubber.storageChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+{{- $storageConfigurationRef := (get $deployment_config "storageConfigurationRef") | default (get $.Values.scrubber.storageChecker "storageConfigurationRef") -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scrubber-journalchecker-{{ $deployment }}
+  name: scrubber-storagechecker-{{ $deployment }}
   namespace: {{ $.Values.namespace }}
   labels:
-    app: scrubber-journalchecker-{{ $deployment }}
+    app: scrubber-storagechecker-{{ $deployment }}
 spec:
   revisionHistoryLimit: 2
   replicas: {{ $deployment_config.replicas | default 1 }}
   selector:
     matchLabels:
-      app: scrubber-journalchecker-{{ $deployment }}
+      app: scrubber-storagechecker-{{ $deployment }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -23,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        app: scrubber-journalchecker-{{ $deployment }}
+        app: scrubber-storagechecker-{{ $deployment }}
       annotations:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
@@ -42,8 +43,8 @@ spec:
           env:
 {{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $.Values.scrubber.scrubberDatabaseConfigurationRef) | indent 10 }}
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.scrubber.journalChecker.journalClientConfigurationRef) | indent 10 }}
+{{ include "swh.storage.secretsEnvironment" (dict "Values" $.Values
+                                           "configurationRef" $storageConfigurationRef) | indent 10 }}
           command:
           - /bin/bash
           args:
@@ -55,13 +56,18 @@ spec:
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
         # TODO: Add the "datastore" registration
-        # A workaround is needed as the registration is not idempotent
-        # and can be launched each time a journal client is launched
+        #       A workaround is needed as the registration is not idempotent
+        #       and can't be launched each time a scrubber is launched
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                                "containerName" "check-scrubber-migration"
                                                                 "imagePrefixName" "swh_scrubber_image"
                                                                 "module" "scrubber") | nindent 8 }}
+        {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                                "containerName" "check-storage-migration"
+                                                                "imagePrefixName" "swh_scrubber_image"
+                                                                "module" "storage") | nindent 8 }}
       containers:
-      - name: journal-checker
+      - name: strorage-checker
         resources:
           requests:
             memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
@@ -83,7 +89,7 @@ spec:
           - swh
           - scrubber
           - check
-          - journal
+          - storage
           - {{ $deployment_config.configName }}
         env:
         - name: STATSD_HOST
@@ -117,7 +123,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: scrubber-journalchecker-{{ $deployment }}-template
+          name: scrubber-storagechecker-{{ $deployment }}-template
           defaultMode: 0777
           items:
           - key: "config.yml.template"
