@@ -15,6 +15,3 @@ blackboxExporter:
 
 podPriority:
   enabled: true
-
-alerting:
-  enabled: false

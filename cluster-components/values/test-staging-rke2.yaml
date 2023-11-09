@@ -32,5 +32,3 @@ svix:
     requestedCpu: 100m
     persistentVolume: false
 
-alerting:
-  enabled: false
