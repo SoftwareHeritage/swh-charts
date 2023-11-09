@@ -617,7 +617,7 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber-journal:
       scrubberConfigurationRef: postgresqlScrubberConfiguration
-      journalClientConfigurationRef: internalSecuredKafkaBrokers
+      journalClientConfigurationRef: scrubberJournalClientConfiguration
     indexer-storage:
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
 
