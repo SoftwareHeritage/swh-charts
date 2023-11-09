@@ -1,5 +1,6 @@
 {{ if and .Values.scrubber.enabled .Values.scrubber.journalChecker.enabled -}}
 {{- range $deployment, $deployment_config := .Values.scrubber.journalChecker.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $configurationChecksum := include "swh.scrubber.journalChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 ---
 apiVersion: apps/v1
@@ -127,6 +128,6 @@ spec:
         configMap:
           name: database-utils
           defaultMode: 0555
-
+{{ end }}
 {{ end }}
 {{ end }}
