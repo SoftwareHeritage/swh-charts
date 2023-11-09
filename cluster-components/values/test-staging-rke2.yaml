@@ -31,3 +31,6 @@ svix:
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
+
+alerting:
+  enabled: false
