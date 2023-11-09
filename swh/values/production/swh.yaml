@@ -675,6 +675,9 @@ scrubber:
     journalClientConfigurationRef: scrubberJournalClientConfiguration
     deployments:
       directory:
+        # Disabled until a fix or workaroud for swh/devel/swh-scrubber#4698
+        # is available
+        enabled: false
         configName: journal-checker-directory
         journalClientOverrides:
           batch_size: 100
