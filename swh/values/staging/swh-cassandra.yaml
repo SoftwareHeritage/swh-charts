@@ -83,6 +83,12 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 1024Mi
       requestedCpu: 200m
+    arch:
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.arch.tasks.LoadArch
+      autoScaling:
+        maxReplicaCount: 1
     aur:
       image: swh_loader_package_image
       queues:
