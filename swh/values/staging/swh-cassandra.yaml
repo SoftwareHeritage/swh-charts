@@ -84,6 +84,7 @@ loaders:
       requestedMemory: 1024Mi
       requestedCpu: 200m
     arch:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.arch.tasks.LoadArch
