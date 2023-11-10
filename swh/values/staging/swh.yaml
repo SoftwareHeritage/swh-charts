@@ -90,6 +90,11 @@ listers:
   deployments:
     aur:
       queues:
+        - swh.lister.arch.tasks.ArchListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    aur:
+      queues:
         - swh.lister.aur.tasks.AurListerTask
       autoScaling:
         maxReplicaCount: 1
