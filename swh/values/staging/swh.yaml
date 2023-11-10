@@ -88,7 +88,7 @@ listers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
-    aur:
+    arch:
       queues:
         - swh.lister.arch.tasks.ArchListerTask
       autoScaling:
