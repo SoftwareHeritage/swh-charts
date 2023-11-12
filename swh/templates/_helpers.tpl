@@ -191,6 +191,7 @@ Generate the configuration for a cassandra storage
 {{- $authProvider := get  $storageConfiguration "authProvider" -}}
 {{- $keyspace := required (print "The keyspace property is mandatory in " .configurationRef)
                     (get $storageConfiguration "keyspace") -}}
+{{- $specificOptions := get $storageConfiguration "specificOptions" -}}
 {{- $indentationCount := ternary 0 2 (empty $inPipeline) -}}
 {{- $indent := indent $indentationCount "" -}}
 {{- $nextLevelIndentCount := (int (add $indentationCount 2)) -}}
@@ -202,7 +203,9 @@ Generate the configuration for a cassandra storage
 {{ if $authProvider }}{{ $indent }}auth_provider:
 {{ toYaml $authProvider | indent $nextLevelIndentCount }}
 {{ end -}}
+{{- if $specificOptions -}}
 {{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
+{{- end -}}
 {{- end -}}
 
 {{/*
