@@ -268,3 +268,9 @@ podPriority:
       value: -10800
     background-workload:
       value: -10900
+
+scrubber:
+  enabled: false
+
+toolbox:
+  enabled: false

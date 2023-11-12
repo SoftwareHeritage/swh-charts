@@ -68,18 +68,6 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-postgresqlScrubberConfiguration:
-  cls: postgresql
-  host: db1.internal.staging.swh.network
-  port: '5432'
-  user: swh-scrubber
-  pass: ${SCRUBBER_POSTGRESQL_PASSWORD}
-  db: swh-scrubber
-  secrets:
-    SCRUBBER_POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scrubber-postgresql-common-secret
-      secretKeyName: postgres-swh-scrubber-password
-
 internalSecuredKafkaBrokers:
   - journal1.internal.staging.swh.network:9094
   - journal2.internal.staging.swh.network:9094
