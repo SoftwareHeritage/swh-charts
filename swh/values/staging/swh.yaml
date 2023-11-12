@@ -22,6 +22,18 @@ postgresqlStorageConfiguration:
       secretKeyRef: swh-postgresql-common-secret
       secretKeyName: postgres-swh-password
 
+postgresqlROStorageConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  db: swh
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-guest-password
+
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
@@ -38,6 +50,11 @@ directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
   objectStorageConfigurationRef: noopObjectStorage
+
+## Direct postgresql connection without any filter or objstorage
+scrubberROStorageConfiguration:
+  storageConfigurationRef: postgresqlROStorageConfiguration
+
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
@@ -549,6 +566,9 @@ toolbox:
     scrubber-journal:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
+    scrubber-storage:
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
@@ -809,8 +829,51 @@ web:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
   priorityClassName: background-workload
+  storageChecker:
+    enabled: true
+    storageConfigurationRef: scrubberROStorageConfiguration
+    deployments:
+      directory-references:
+        configName: storage-references-directory
+        object: directory
+        replicas: 1
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      directory-hashes:
+        configName: storage-hashes-directory
+        object: directory
+        replicas: 1
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      release-references:
+        configName: storage-references-release
+        object: release
+        replicas: 1
+      release-hashes:
+        configName: storage-hashes-release
+        object: release
+        replicas: 1
+      revision-references:
+        configName: storage-references-revision
+        replicas: 1
+        object: revision
+      revision-hashes:
+        configName: storage-hashes-revision
+        replicas: 1
+        object: revision
+      snapshot-references:
+        configName: storage-references-snapshot
+        replicas: 1
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
+      snapshot-hashes:
+        configName: storage-hashes-snapshot
+        replicas: 1
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
   journalChecker:
     enabled: true
     journalClientConfigurationRef: scrubberJournalClientConfiguration

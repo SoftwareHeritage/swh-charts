@@ -22,7 +22,7 @@ data:
 
 {{ define "swh.scrubber.storageChecker.configmap" }}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.scrubber.sentry.enabled -}}
-{{- $storageConfigurationRef := (get .deployment_config "storageConfigurationRef") | default (get .Values.scrubber "storageConfigurationRef") -}}
+{{- $storageConfigurationRef := (get .deployment_config "storageConfigurationRef") | default (get .Values.scrubber.storageChecker "storageConfigurationRef") -}}
 ---
 apiVersion: v1
 kind: ConfigMap
