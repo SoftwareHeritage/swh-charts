@@ -839,6 +839,8 @@ scrubber:
         object: release
         replicas: 1
       release-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-hashes-release
         object: release
         replicas: 1
