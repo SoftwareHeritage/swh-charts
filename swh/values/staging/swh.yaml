@@ -791,6 +791,9 @@ web:
     history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
     add_forge_now:
       email_address: add-forge-now@webapp.staging.swh.network
+      gitlab_pipeline:
+        token: ${GITLAB_TOKEN}
+        trigger_url: "https://gitlab.softwareheritage.org/api/v4/projects/474/trigger/pipeline"
     swh_extra_django_apps:
     - swh.web.add_forge_now
     - swh.web.archive_coverage
