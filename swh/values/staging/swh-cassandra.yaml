@@ -746,10 +746,14 @@ scrubber:
         requestedCpu: 400m
         requestedMemory: 200Mi
       release-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-references-release
         object: release
         replicas: 1
       release-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-hashes-release
         object: release
         replicas: 1
@@ -770,6 +774,8 @@ scrubber:
         requestedCpu: 650m
         requestedMemory: 500Mi
       snapshot-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-hashes-snapshot
         replicas: 1
         object: snapshot
