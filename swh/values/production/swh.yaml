@@ -787,6 +787,7 @@ scrubber:
         requestedCpu: 150m
         requestedMemory: 128Mi
       secondary-directory-references:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-directory
         object: directory
@@ -794,6 +795,7 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       secondary-directory-hashes:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-directory
         object: directory
@@ -801,26 +803,31 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       secondary-release-references:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-release
         object: release
         replicas: 2
       secondary-release-hashes:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-release
         object: release
         replicas: 2
       secondary-revision-references:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-revision
         replicas: 2
         object: revision
       secondary-revision-hashes:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-revision
         replicas: 2
         object: revision
       secondary-snapshot-references:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-snapshot
         replicas: 2
@@ -828,6 +835,7 @@ scrubber:
         requestedCpu: 150m
         requestedMemory: 128Mi
       secondary-snapshot-hashes:
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-snapshot
         replicas: 2
