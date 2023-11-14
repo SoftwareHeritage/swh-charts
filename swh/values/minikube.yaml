@@ -392,19 +392,19 @@ deposit:
     cache_uri: memcached:11211
 
 toolbox:
-  enabled: true
+  enabled: false
   configs:
     storage:
       storageDbConfigurationRef: fakePostgresqlStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: fakePostgresqlSchedulerConfiguration
       celeryConfigurationRef: fakeCeleryConfiguration
-    scrubber-journal:
-      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
-      journalClientConfigurationRef: scrubberJournalClientConfiguration
-    scrubber-storage:
-      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
-      storageConfigurationRef: fakePostgresqlStorageConfiguration
+#    scrubber-journal:
+#      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
+#      journalClientConfigurationRef: scrubberJournalClientConfiguration
+#    scrubber-storage:
+#      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
+#      storageConfigurationRef: fakePostgresqlStorageConfiguration
     vault:
       vaultDbConfigurationRef: fakePostgresqlVaultConfiguration
     indexer-storage:
