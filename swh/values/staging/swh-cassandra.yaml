@@ -810,6 +810,11 @@ deposit:
           - path: /
           - path: /static
             port: 80
+      authenticated:
+        paths:
+          - path: /1/private/
+        # auth-file with authentication
+        authentication: swh-cassandra/deposit-auth-secrets
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration

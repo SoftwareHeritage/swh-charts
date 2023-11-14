@@ -380,6 +380,11 @@ deposit:
           - path: /
           - path: /static
             port: 80
+      authenticated:
+        paths:
+          - path: /1/private/
+        # auth-file with authentication
+        authentication: swh/deposit-auth-secrets
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 2
