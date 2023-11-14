@@ -16,5 +16,6 @@ spec:
     matchLabels:
       app: memcached
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Values.namespace }}
 {{- end -}}

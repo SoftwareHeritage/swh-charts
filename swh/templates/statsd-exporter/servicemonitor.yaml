@@ -14,5 +14,6 @@ spec:
     matchLabels:
       app: prometheus-statsd-exporter
   namespaceSelector:
-    any: true
+    matchNames:
+      - {{ .Values.namespace }}
 {{- end -}}
