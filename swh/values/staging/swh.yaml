@@ -846,6 +846,8 @@ scrubber:
         replicas: 1
         object: revision
       revision-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-hashes-revision
         replicas: 1
         object: revision
