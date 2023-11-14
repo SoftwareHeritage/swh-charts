@@ -378,6 +378,8 @@ deposit:
       default:
         paths:
           - path: /
+          - path: /static
+            port: 80
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 2

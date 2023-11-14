@@ -93,6 +93,17 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
+        - name: prepare-static-folder
+          image: {{ .Values.swh_deposit_image }}:{{ .Values.swh_deposit_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - cp -r $PWD/.local/lib/python3.10/site-packages/swh/deposit/static/ /usr/share/swh/deposit/static/
+          volumeMounts:
+          - name: static
+            mountPath: /usr/share/swh/deposit/static
         {{- if .Values.deposit.migrationsEnabled }}
         - name: do-migration
           image: {{ .Values.swh_deposit_image }}:{{ .Values.swh_deposit_image_version }}
@@ -200,7 +211,35 @@ spec:
             readOnly: true
           - name: localstorage
             mountPath: /tmp
+        - name: nginx
+          resources:
+            requests:
+              memory: {{ .Values.deposit.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.deposit.requestedCpu | default "500m" }}
+          image: nginx:bullseye
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: webstatic
+          readinessProbe:
+            httpGet:
+              path: static/robots.txt
+              port: webstatic
+            initialDelaySeconds: 5
+            failureThreshold: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: static/robots.txt
+              port: webstatic
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          volumeMounts:
+            - name: static
+              mountPath: /usr/share/nginx/html
       volumes:
+      - name: static
+        emptyDir: {}
       - name: localstorage
         emptyDir: {}
       - name: configuration

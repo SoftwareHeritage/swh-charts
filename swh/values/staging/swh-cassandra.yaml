@@ -808,6 +808,8 @@ deposit:
       default:
         paths:
           - path: /
+          - path: /static
+            port: 80
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
