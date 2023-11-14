@@ -12,11 +12,11 @@ metadata:
   name: {{ $.serviceType }}-cronjob
 spec:
   schedule: {{ .cron | quote}}
+  {{- if .concurrencyPolicy }}
+  concurrencyPolicy: {{ .concurrencyPolicy }}
+  {{- end }}
   jobTemplate:
     spec:
-      {{- if .concurrencyPolicy }}
-      concurrencyPolicy: {{ .concurrencyPolicy }}
-      {{- end }}
       template:
         spec:
           {{- if and $.Values.podPriority.enabled .priorityClassName }}

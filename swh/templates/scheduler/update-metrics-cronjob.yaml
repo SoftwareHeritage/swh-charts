@@ -7,11 +7,11 @@ metadata:
 spec:
   # By default, every 4h at midnight
   schedule: {{ .Values.scheduler.updateMetrics.cron | default "0 */4 * * *" | quote}}
+  {{- if .Values.scheduler.updateMetrics.concurrencyPolicy }}
+  concurrencyPolicy: {{ .Values.scheduler.updateMetrics.concurrencyPolicy }}
+  {{- end }}
   jobTemplate:
     spec:
-      {{- if .Values.scheduler.updateMetrics.concurrencyPolicy }}
-      concurrencyPolicy: {{ .Values.scheduler.updateMetrics.concurrencyPolicy }}
-      {{- end }}
       template:
         spec:
           {{- if and $.Values.podPriority.enabled $.Values.scheduler.priorityClassName }}
