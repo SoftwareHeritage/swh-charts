@@ -596,6 +596,7 @@ scheduler:
     requestedCpu: 50m
   updateMetrics:
     enabled: true
+    concurrencyPolicy: Forbid
     cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
   journalClient:
     enabled: true
