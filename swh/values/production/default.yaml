@@ -134,6 +134,18 @@ postgresqlIndexerStorageConfiguration:
       secretKeyRef: swh-indexer-storage-postgresql-secret
       secretKeyName: postgres-swh-indexer-password
 
+postgresqlScrubberConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  port: '5432'
+  user: swh-scrubber
+  pass: ${SCRUBBER_POSTGRESQL_PASSWORD}
+  db: swh-scrubber
+  secrets:
+    SCRUBBER_POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scrubber-postgresql-common-secret
+      secretKeyName: postgres-swh-scrubber-password
+
 internalNetworkRanges:
   - 127.0.0.0/8
   # rocq production range ip

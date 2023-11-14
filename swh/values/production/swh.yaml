@@ -48,18 +48,6 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-postgresqlScrubberConfiguration:
-  cls: postgresql
-  host: db.internal.softwareheritage.org
-  port: '5432'
-  user: swh-scrubber
-  pass: ${SCRUBBER_POSTGRESQL_PASSWORD}
-  db: swh-scrubber
-  secrets:
-    SCRUBBER_POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scrubber-postgresql-common-secret
-      secretKeyName: postgres-swh-scrubber-password
-
 scrubberJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -74,6 +62,38 @@ scrubberJournalClientConfiguration:
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
+
+primaryPostgresqlROStorageConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  port: '5432'
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-guest-password
+
+secondaryPostgresqlROStorageConfiguration:
+  cls: postgresql
+  host: massmoca.internal.softwareheritage.org
+  port: '5432'
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-guest-password
+
+## Direct postgresql connection without any filter or objstorage
+scrubberROStoragePrimaryConfiguration:
+  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
+
+## Direct postgresql connection without any filter or objstorage
+scrubberROStorageSecondaryConfiguration:
+  storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
 
 graphql:
   enabled: true
@@ -619,6 +639,12 @@ toolbox:
     scrubber-journal:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
+    scrubber-storage-primary:
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+    scrubber-storage-secondary:
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageSecondaryConfiguration
     indexer-storage:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
@@ -709,3 +735,102 @@ scrubber:
         replicas: 2
         requestedCpu: 1
         requestedMemory: 250Mi
+  storageChecker:
+    enabled: true
+    deployments:
+      primary-directory-references:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-references-directory
+        object: directory
+        replicas: 2
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      primary-directory-hashes:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-hashes-directory
+        object: directory
+        replicas: 2
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      primary-release-references:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-references-release
+        object: release
+        replicas: 2
+      primary-release-hashes:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-hashes-release
+        object: release
+        replicas: 2
+      primary-revision-references:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-references-revision
+        replicas: 2
+        object: revision
+      primary-revision-hashes:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-hashes-revision
+        replicas: 2
+        object: revision
+      primary-snapshot-references:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-references-snapshot
+        replicas: 2
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
+      primary-snapshot-hashes:
+        storageConfigurationRef: scrubberROStoragePrimaryConfiguration
+        configName: storage-primary-hashes-snapshot
+        replicas: 2
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
+      secondary-directory-references:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-references-directory
+        object: directory
+        replicas: 2
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      secondary-directory-hashes:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-hashes-directory
+        object: directory
+        replicas: 2
+        requestedCpu: 100m
+        requestedMemory: 100Mi
+      secondary-release-references:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-references-release
+        object: release
+        replicas: 2
+      secondary-release-hashes:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-hashes-release
+        object: release
+        replicas: 2
+      secondary-revision-references:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-references-revision
+        replicas: 2
+        object: revision
+      secondary-revision-hashes:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-hashes-revision
+        replicas: 2
+        object: revision
+      secondary-snapshot-references:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-references-snapshot
+        replicas: 2
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
+      secondary-snapshot-hashes:
+        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
+        configName: storage-secondary-hashes-snapshot
+        replicas: 2
+        object: snapshot
+        requestedCpu: 150m
+        requestedMemory: 128Mi
