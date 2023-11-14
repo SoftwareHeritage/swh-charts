@@ -29,6 +29,21 @@ cassandraStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-rw-password
 
+cassandraROStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-ro
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-ro-password
+
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objectStorageConfigurationRef: noopObjectStorage
@@ -37,6 +52,9 @@ cassandraStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   # TODO: add journal_writer
   # TODO: add objstorage configuration
+
+scrubberROStorageConfiguration:
+  storageConfigurationRef: cassandraROStorage
 
 # (Not so) readonly (namespace local) storage
 # TODO: Use a true read-only storage
@@ -346,3 +364,61 @@ graphql:
     client: swh-web
     cacheUrl: memcached://memcached:11211
   maxRawContentSize: 10000
+
+toolbox:
+  enabled: true
+  configs:
+    scrubber-storage:
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageConfiguration
+
+scrubber:
+  enabled: true
+  scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
+  priorityClassName: background-workload
+  storageChecker:
+    enabled: true
+    storageConfigurationRef: scrubberROStorageConfiguration
+    deployments:
+      directory-references:
+        configName: storage-cassandra-references-directory
+        object: directory
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+      directory-hashes:
+        configName: storage-cassandra-hashes-directory
+        object: directory
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+      release-references:
+        configName: storage-cassandra-references-release
+        object: release
+        replicas: 4
+      release-hashes:
+        configName: storage-cassandra-hashes-release
+        object: release
+        replicas: 4
+      revision-references:
+        configName: storage-cassandra-references-revision
+        object: revision
+        requestedCpu: 500m
+        requestedMemory: 200Mi
+      revision-hashes:
+        configName: storage-cassandra-hashes-revision
+        object: revision
+        requestedCpu: 500m
+        requestedMemory: 200Mi
+      snapshot-references:
+        configName: storage-cassandra-references-snapshot
+        replicas: 4
+        object: snapshot
+        requestedCpu: 650m
+        requestedMemory: 500Mi
+      snapshot-hashes:
+        configName: storage-cassandra-hashes-snapshot
+        replicas: 4
+        object: snapshot
+        requestedCpu: 650m
+        requestedMemory: 500Mi
