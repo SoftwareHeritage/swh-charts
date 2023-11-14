@@ -310,4 +310,4 @@ addForgeNowConfiguration:
   secrets:
     GITLAB_AFN_TOKEN:
       secretKeyRef: common-secrets
-      secretKeyName: gitlab_token
+      secretKeyName: gitlab_afn_token

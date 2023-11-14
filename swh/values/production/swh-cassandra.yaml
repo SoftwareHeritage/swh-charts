@@ -330,8 +330,6 @@ web:
       - swh.web.save_code_now
       - swh.web.save_origin_webhooks
       - swh.web.vault
-#    add_forge_now:
-#      email_address: add-forge-now@archive.softwareheritage.org
     give:
       public_key: ${GIVE_PUBLIC_KEY}
       token: ${GIVE_PRIVATE_TOKEN}

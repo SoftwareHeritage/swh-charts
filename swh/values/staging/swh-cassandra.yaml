@@ -604,8 +604,6 @@ web:
       metadata_backend: swh-search
     content_display_max_size: 5242880
     history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
-#    add_forge_now:
-#      email_address: add-forge-now@webapp.staging.swh.network
     swh_extra_django_apps:
     - swh.web.add_forge_now
     - swh.web.archive_coverage
