@@ -582,6 +582,7 @@ scheduler:
             - 192.168.101.0/24
   updateMetrics:
     enabled: true
+    concurrencyPolicy: Forbid
     # At minute 27 past every 4th hour from 3 through 23
     cron: "27 3-23/4 * * *"
   journalClient:

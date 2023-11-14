@@ -761,8 +761,10 @@ web:
         authentication: swh-cassandra/web-auth-secrets
   refreshSavecodenowStatus:
     enabled: true
+    concurrencyPolicy: Forbid
   syncMailmaps:
     enabled: true
+    concurrencyPolicy: Forbid
     configurationRef: postgresqlSyncmailmapsConfiguration
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
