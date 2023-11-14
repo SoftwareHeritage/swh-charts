@@ -37,6 +37,9 @@ data:
     {{- include "deposit.configuration.api.private" (dict "configurationRef" .Values.web.depositConfigurationRef
                                                           "Values" .Values) | nindent 4 }}
     {{- end -}}
+    {{- if .Values.web.addForgeNowConfigurationRef }}
+      {{- include "addforgenow.configuration" (dict "configurationRef" .Values.web.addForgeNowConfigurationRef "Values" .Values) | nindent 4 }}
+    {{- end -}}
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: ${DJANGO_SECRET_KEY}

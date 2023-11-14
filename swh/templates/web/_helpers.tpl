@@ -44,6 +44,13 @@ deposit:
   private_api_password: {{ $pass }}
 {{- end -}}
 
+{{- define "addforgenow.configuration" -}}
+{{- $addforgenowConfiguration := deepCopy (get .Values .configurationRef) -}}
+{{- $_ := unset $addforgenowConfiguration "secrets" -}}
+add_forge_now:
+{{ toYaml $addforgenowConfiguration | indent 2 -}}
+{{- end -}}
+
 {{/*
 Generate the ~/.pg_service.conf
 */}}

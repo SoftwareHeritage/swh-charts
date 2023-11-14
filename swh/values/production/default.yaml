@@ -199,3 +199,6 @@ journalWriteConfiguration:
   client_id: swh.idx_storage.journal_writer.saam
   producer_config:
     message.max.bytes: 1000000000
+
+addForgeNowConfiguration:
+  email_address: add-forge-now@archive.softwareheritage.org
