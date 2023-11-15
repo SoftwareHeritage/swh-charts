@@ -842,6 +842,8 @@ scrubber:
         object: release
         replicas: 1
       revision-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-references-revision
         replicas: 1
         object: revision
