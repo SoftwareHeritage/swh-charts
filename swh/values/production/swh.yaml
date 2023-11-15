@@ -753,11 +753,15 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       primary-release-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-references-release
         object: release
         replicas: 2
       primary-release-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-hashes-release
         object: release
