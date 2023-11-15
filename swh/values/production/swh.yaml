@@ -75,6 +75,18 @@ primaryPostgresqlROStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
+secondaryPostgresqlRWStorageConfiguration:
+  cls: postgresql
+  host: massmoca.internal.softwareheritage.org
+  port: '5432'
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
+
 secondaryPostgresqlROStorageConfiguration:
   cls: postgresql
   host: massmoca.internal.softwareheritage.org
@@ -633,6 +645,8 @@ toolbox:
   configs:
     storage:
       storageDbConfigurationRef: postgresqlStorageConfiguration
+    storage-secondary:
+      storageDbConfigurationRef: secondaryPostgresqlRWStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
