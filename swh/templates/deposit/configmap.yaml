@@ -59,7 +59,7 @@ data:
     backend = safe_load(Path('/etc/swh/deposit_settings.yaml').read_bytes())
 
     STORAGES = {
-      "staticfiles": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+      "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
       "default": backend,
     }
 
