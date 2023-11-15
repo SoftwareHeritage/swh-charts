@@ -1,6 +1,7 @@
 {{ if .Values.storage_replayer.enabled -}}
 {{- $error_reporter := .Values.storage_replayer.error_reporter }}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -38,5 +39,6 @@ data:
         {{ $option }}: {{ $value }}
       {{- end }}
     {{- end }}
+{{ end }}
 {{ end }}
 {{- end -}}

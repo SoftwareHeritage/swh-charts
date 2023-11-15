@@ -2,6 +2,7 @@
 {{- $secretName := .Values.storage_replayer.journalBrokers.secretName -}}
 {{- if $secretName }}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ if get $deployment_config "autoScaling" }}
 {{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
 ---
@@ -25,6 +26,7 @@ spec:
       offsetResetPolicy: earliest
     authenticationRef:
       name: keda-storage-replayer-trigger-authentication
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}
