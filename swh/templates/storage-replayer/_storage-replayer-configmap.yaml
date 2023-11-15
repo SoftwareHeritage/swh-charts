@@ -1,0 +1,40 @@
+{{ define "swh.storage_replayer.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: storage-replayer-configuration-{{ .deployment }}-template
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storage_replayer.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
+
+    journal_client:
+      cls: kafka
+      brokers:
+      {{- range $broker := .Values.storage_replayer.journalBrokers.hosts }}
+        - {{ $broker }}
+      {{- end }}
+      sasl.username: {{ .Values.storage_replayer.journalBrokers.user }}
+      sasl.password: ${BROKER_USER_PASSWORD}
+      security.protocol: sasl_ssl
+      sasl.mechanism: SCRAM-SHA-512
+      # The prefix must match the username
+      group_id: {{ .Values.storage_replayer.journalBrokers.user }}-{{ required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName }}-replayer-{{ .deployment }}
+      batch_size: {{ get .deployment_config "batchSize" | default "200" }}
+      message.max.bytes: {{ .Values.storage_replayer.maxMessagesBytes }}
+      privileged: {{ get .deployment_config "privileged" | default "false" }}
+      object_types:
+      {{- range $object := get .deployment_config "objects" }}
+        - {{ $object }}
+      {{- end }}
+    {{- if .Values.storage_replayer.error_reporter }}
+    replayer:
+      error_reporter:
+      {{- range $option, $value := .Values.storage_replayer.error_reporter }}
+        {{ $option }}: {{ $value }}
+      {{- end }}
+    {{- end }}
+
+{{ end }}
