@@ -824,6 +824,7 @@ deposit:
   keycloakConfigurationRef: keycloakConfiguration
   hosts:
     - deposit.staging.swh.network
+    - deposit-dynamic.internal.staging.swh.network
   extraConfig:
     max_upload_size: 209715200
     extraction_dir: "/tmp/swh-deposit/archive/"
