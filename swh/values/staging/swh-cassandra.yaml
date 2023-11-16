@@ -768,6 +768,8 @@ scrubber:
         requestedCpu: 500m
         requestedMemory: 200Mi
       snapshot-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-references-snapshot
         replicas: 1
         object: snapshot
