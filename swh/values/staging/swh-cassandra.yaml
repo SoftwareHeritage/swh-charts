@@ -227,7 +227,7 @@ loaders:
         maxReplicaCount: 1
       extraConfig:
         deposit:
-          url: "https://deposit-rp.internal.staging.swh.network/1/private"
+          url: "http://deposit-rpc-ingress/1/private"
           auth:
             username: "${DEPOSIT_USERNAME}"
             password: "${DEPOSIT_PASSWORD}"

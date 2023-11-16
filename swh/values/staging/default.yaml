@@ -228,7 +228,7 @@ journalClientConfiguration:
   group_id: swh.scheduler.journal_client
 
 depositConfiguration:
-  host: deposit-rp.internal.staging.swh.network
+  host: deposit-rpc-ingress
   user: ${DEPOSIT_USERNAME}
   pass: ${DEPOSIT_PASSWORD}
   secrets:
