@@ -825,6 +825,7 @@ deposit:
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
   hosts:
+    - deposit-rpc-ingress
     - deposit.staging.swh.network
     - deposit-dynamic.internal.staging.swh.network
   extraConfig:
