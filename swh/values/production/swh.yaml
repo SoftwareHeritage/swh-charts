@@ -805,11 +805,15 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       secondary-release-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-release
         object: release
         replicas: 2
       secondary-release-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-release
         object: release
