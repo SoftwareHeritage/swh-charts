@@ -2,10 +2,8 @@
 {{- $hosts := .Values.deposit.hosts }}
 {{- $allowed_instance := first $hosts }}
 {{- $configuration := get .Values .Values.deposit.blobstorageConfigurationRef -}}
-{{- $connection_string := required (print "The <connection_string> property is mandatory in " .Values.deposit.blobstorageConfigurationRef)
-                    (get $configuration "connection_string") -}}
-{{- $container_name := required (print "The <container_name> property is mandatory in " .Values.deposit.blobstorageConfigurationRef)
-                    (get $configuration "container_name") -}}
+{{- $connection_string := get $configuration "connection_string" | default "" -}}
+{{- $container_name := get $configuration "container_name" | default "" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -44,23 +42,9 @@ data:
     {{- if .Values.deposit.extraConfig -}}
     {{ toYaml .Values.deposit.extraConfig | nindent 4 }}
     {{- end }}
-
-  deposit_settings.yaml.template: |
-    BACKEND: "storages.backends.azure_storage.AzureStorage"
-    OPTIONS:
+    {{- if and $container_name $connection_string }}
+    azure:
       azure_container: "{{ $container_name | quote }}"
       connection_string: "{{ $connection_string | quote }}"
-
-  deposit_settings.py: |
-    from swh.deposit.settings.production import *  # noqa
-
-    from pathlib import Path
-    from yaml import safe_load
-    backend = safe_load(Path('/etc/swh/deposit_settings.yaml').read_bytes())
-
-    STORAGES = {
-      "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
-      "default": backend,
-    }
-
+    {{ end }}
 {{- end -}}

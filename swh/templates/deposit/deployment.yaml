@@ -34,35 +34,6 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.deposit.priorityClassName }}
       {{ end }}
       initContainers:
-        - name: prepare-settings-with-secret
-          image: debian:bullseye
-          imagePullPolicy: IfNotPresent
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - eval echo "\"$(</etc/swh/configuration-template/deposit_settings.yaml.template)\"" > /etc/swh/deposit_settings.yaml
-          env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.deposit.blobstorageConfigurationRef
-                                                        "Values" .Values) | nindent 12 }}
-          volumeMounts:
-            - name: configuration
-              mountPath: /etc/swh
-            - name: configuration-template
-              mountPath: /etc/swh/configuration-template
-        - name: prepare-settings
-          image: debian:bullseye
-          imagePullPolicy: IfNotPresent
-          command:
-            - /bin/bash
-          args:
-            - -c
-            - cp /etc/swh/configuration-template/deposit_settings.py /etc/swh/deposit_settings.py
-          volumeMounts:
-            - name: configuration
-              mountPath: /etc/swh
-            - name: configuration-template
-              mountPath: /etc/swh/configuration-template
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
@@ -79,6 +50,10 @@ spec:
             {{- if .Values.deposit.djangoConfigurationRef }}
             {{- include "swh.secrets.environment" (dict "Values" .Values
                                                         "configurationRef" .Values.deposit.djangoConfigurationRef) | nindent 12 }}
+            {{ end }}
+            {{- if .Values.deposit.blobstorageConfigurationRef }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.deposit.blobstorageConfigurationRef
+                                                        "Values" .Values) | nindent 12 }}
             {{ end }}
             {{- if .Values.deposit.sentry.enabled }}
             - name: SWH_SENTRY_DSN
@@ -183,8 +158,6 @@ spec:
               value: {{ .Values.deposit.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
-            - name: DJANGO_SETTINGS_MODULE
-              value: deposit_settings
             - name: PYTHONPATH
               value: /etc/swh
             {{- if .Values.deposit.sentry.enabled }}
