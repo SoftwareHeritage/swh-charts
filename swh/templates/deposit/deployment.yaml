@@ -221,10 +221,6 @@ spec:
         configMap:
          name: deposit-configuration-template
          items:
-         - key: "deposit_settings.yaml.template"
-           path: "deposit_settings.yaml.template"
-         - key: "deposit_settings.py"
-           path: "deposit_settings.py"
          - key: "config.yml.template"
            path: "config.yml.template"
 {{ end }}
