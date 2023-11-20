@@ -44,7 +44,7 @@ data:
     {{- end }}
     {{- if and $container_name $connection_string }}
     azure:
-      container_name: "{{ $container_name | quote }}"
+      azure_container: "{{ $container_name | quote }}"
       connection_string: "{{ $connection_string | quote }}"
     {{ end }}
 {{- end -}}
