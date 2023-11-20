@@ -421,6 +421,8 @@ scrubber:
         requestedCpu: 650m
         requestedMemory: 500Mi
       snapshot-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-hashes-snapshot
         replicas: 4
         object: snapshot

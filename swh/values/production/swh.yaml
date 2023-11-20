@@ -798,8 +798,6 @@ scrubber:
         requestedCpu: 150m
         requestedMemory: 128Mi
       primary-snapshot-hashes:
-        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
-        enabled: false
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-hashes-snapshot
         replicas: 2
