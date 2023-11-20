@@ -854,12 +854,16 @@ scrubber:
         replicas: 1
         object: revision
       snapshot-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-references-snapshot
         replicas: 1
         object: snapshot
         requestedCpu: 150m
         requestedMemory: 128Mi
       snapshot-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-hashes-snapshot
         replicas: 1
         object: snapshot
