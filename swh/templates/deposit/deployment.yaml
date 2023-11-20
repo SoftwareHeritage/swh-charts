@@ -158,8 +158,6 @@ spec:
               value: {{ .Values.deposit.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
-            - name: PYTHONPATH
-              value: /etc/swh
             {{- if .Values.deposit.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
