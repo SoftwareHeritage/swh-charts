@@ -748,13 +748,12 @@ web:
     maxReplicaCount: 3
     cpuPercentageUsage: 100
   hosts:
-    - webapp.staging.swh.network
     - webapp-postgresql.internal.staging.swh.network
   refreshSavecodenowStatus:
-    enabled: true
+    enabled: false
     concurrencyPolicy: Forbid
   syncMailmaps:
-    enabled: true
+    enabled: false
     concurrencyPolicy: Forbid
     configurationRef: postgresqlSyncmailmapsConfiguration
   ingress:
@@ -764,10 +763,7 @@ web:
       cert-manager.io/cluster-issuer: letsencrypt-production-gandi
       kubernetes.io/ingress.class: nginx
       kubernetes.io/tls-acme: "true"
-      # The default behavior is true (when tls is enabled). We don't want that behavior
-      # since the rp is in charge of this
-      # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#server-side-https-enforcement-through-redirect
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
     tlsEnabled: true
     endpoints:
       default:

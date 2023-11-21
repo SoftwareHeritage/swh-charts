@@ -548,12 +548,13 @@ web:
     maxReplicaCount: 3
     cpuPercentageUsage: 50
   hosts:
+    - webapp.staging.swh.network
     - webapp-cassandra.internal.staging.swh.network
   refreshSavecodenowStatus:
-    enabled: false
+    enabled: true
     concurrencyPolicy: Forbid
   syncMailmaps:
-    enabled: false
+    enabled: true
     concurrencyPolicy: Forbid
     configurationRef: postgresqlSyncmailmapsConfiguration
   ingress:
