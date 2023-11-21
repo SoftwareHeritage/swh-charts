@@ -55,6 +55,14 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  producerConfig:
+    message.max.bytes: 1000000000
+  prefix: swh.journal.objects
+  clientId: swh.storage.journal_writer.storage1
+  anonymize: true
+
 postgresqlSchedulerConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
@@ -85,6 +93,15 @@ scrubberJournalClientConfiguration:
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
+
+rwStoragePipelineSteps:
+  - cls: record_references
+
+readWriteStorageConfiguration:
+  pipelineStepsRef: rwStoragePipelineSteps
+  storageConfigurationRef: postgresqlStorageConfiguration
+  objstorageConfigurationRef: remoteObjstorageConfiguration
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
 
 listers:
   enabled: true
@@ -910,3 +927,25 @@ scrubber:
         replicas: 1
         requestedCpu: 1
         requestedMemory: 250Mi
+
+storage:
+  enabled: true
+  autoScaling:
+    minReplicaCount: 2
+    maxReplicaCount: 10
+    cpuPercentageUsage: 150
+  requestedCpu: 500m
+  requestedMemory: 1500Mi
+  storageConfigurationRef: readWriteStorageConfiguration
+  hosts:
+    - storage-postgresql-rpc-ingress
+    - storage-postgresql.internal.staging.swh.network
+  ingress:
+    enabled: true
+    endpoints:
+      default:
+        paths:
+          - path: /
+  gunicorn:
+    threads: 4
+    workers: 8

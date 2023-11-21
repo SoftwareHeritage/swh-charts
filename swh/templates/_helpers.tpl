@@ -270,7 +270,8 @@ journal_writer:
                                              "Values" .Values) }}
   {{- $keysToCheckForSecrets := keys $configuration | sortAlpha -}}
   {{- range $keyToCheckForSecrets := $keysToCheckForSecrets }}
-    {{- if hasSuffix "Ref" $keyToCheckForSecrets -}}
+    {{- if and (hasSuffix "Ref" $keyToCheckForSecrets)
+               (not (eq "pipelineStepsRef" $keyToCheckForSecrets)) -}}
     {{ include "swh.secrets.environment"
       (dict "configurationRef" (get $configuration $keyToCheckForSecrets)
             "Values" $.Values) }}

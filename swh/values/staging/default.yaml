@@ -277,6 +277,9 @@ externalServices:
     deposit:
       internalName: deposit-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-postgresql:
+      internalName: storage-postgresql-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:
