@@ -41,7 +41,7 @@ postgresqlSyncmailmapsConfiguration:
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
-  objectStorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjectStorage
 
 ## Direct postgresql connection without any filter or objstorage
 scrubberROStorageConfiguration:

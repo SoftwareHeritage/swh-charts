@@ -55,12 +55,12 @@ cassandraROStorage:
 
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
-  objectStorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjectStorage
 
 cassandraStorageConfiguration:
   storageConfigurationRef: cassandraStorage
-  # TODO: add journal_writer
-  # TODO: add objstorage configuration
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  objstorageConfigurationRef: remoteObjstorageConfiguration
 
 scrubberROStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
@@ -524,11 +524,6 @@ storage:
   requestedCpu: 500m
   requestedMemory: 1500Mi
   storageConfigurationRef: cassandraStorageConfiguration
-  journalWriterConfigurationRef: storageJournalWriterConfiguration
-  # TODO: migrate this to a proper template
-  objstorageClass: remote
-  objstorageConfig:
-    url: http://storage1.internal.staging.swh.network:5003/
   hosts:
     - storage-cassandra.internal.staging.swh.network
   ingress:
@@ -663,7 +658,6 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-
   # replicas: 2
   gunicorn:
     threads: 5

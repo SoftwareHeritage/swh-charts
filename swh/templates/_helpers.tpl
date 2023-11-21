@@ -29,7 +29,7 @@ Create a global storage configuration based on configuration section aggregation
 {{- if not $storageServiceConfigurationRef -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef)}}{{- end -}}
 {{- $storageServiceConfiguration := get .Values $storageServiceConfigurationRef -}}
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
-{{- $objectStorageConfigurationRef :=  get $storageConfiguration "objectStorageConfigurationRef" -}}
+{{- $objstorageConfigurationRef :=  get $storageConfiguration "objstorageConfigurationRef" -}}
 {{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
 {{- $indent := 2 -}}
 storage:
@@ -57,19 +57,17 @@ storage:
 {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
 {{/* TODO: specific_options */}}
-{{- if $objectStorageConfigurationRef -}}
-{{- $objectStorageIndent := ternary $indent (int (add $indent 2)) (empty $pipelineStepsRef) -}}
-{{- $objectStorageConfiguration := get .Values $objectStorageConfigurationRef -}}
-{{- $objectStorageType := get $objectStorageConfiguration "cls" -}}
-{{- if eq $objectStorageType "noop" }}
-{{ include "swh.objstorage.noop" . | indent $objectStorageIndent }}
-{{- else -}}
-{{- fail (print "_helpers.tpl: swh.storageConfiguration: Object Storage <" $objectStorageType "> not implemented") -}}
-{{- end -}}
+{{- $extraIndent := ternary $indent (int (add $indent 2)) (empty $pipelineStepsRef) -}}
+{{- if $objstorageConfigurationRef -}}
+{{- $objstorageConfiguration := get .Values $objstorageConfigurationRef -}}
+{{- $objectStorageType := get $objstorageConfiguration "cls" -}}
+  {{- include "swh.objstorageConfiguration" (dict "configurationRef" $objstorageConfigurationRef
+                                                  "Values" .Values) | nindent $extraIndent }}
 {{- end -}}
 {{- if $journalWriterConfigurationRef }}
-{{ include "swh.storage.journalWriter" (dict "configurationRef" $journalWriterConfigurationRef
-                                             "Values" .Values)}}
+  {{ include "swh.storage.journalWriter" (dict "service_type" "journal_writer"
+                                               "configurationRef" $journalWriterConfigurationRef
+                                               "Values" .Values) | nindent $extraIndent }}
 {{- end -}}
 {{- end -}}
 
@@ -206,14 +204,6 @@ Generate the configuration for a cassandra storage
 {{- if $specificOptions -}}
 {{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
 {{- end -}}
-{{- end -}}
-
-{{/*
-Generate the configuration for a null object storage
-*/}}
-{{- define "swh.objstorage.noop" -}}
-objstorage:
-  cls: noop
 {{- end -}}
 
 {{/*

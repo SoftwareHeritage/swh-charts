@@ -1,0 +1,17 @@
+{{/*
+   * Create an objstorage configuration based on configuration section aggregation
+   */}}
+{{- define "swh.objstorageConfiguration" -}}
+{{- $configuration := get .Values .configurationRef -}}
+{{- if not $configuration -}}
+  {{ fail (print "_helper_config.yaml: swh.objstorageConfiguration: Undeclared <" .configurationRef "> storage configuration" ) }}
+{{- end -}}
+{{/* if no extra configurationRef is present in the configuration, the configuration
+   * is simple enough, so we can apply it directly.
+   * Otherwise, we may have some extra secrets and as a result an extra indirection to follow
+   */}}
+{{- $configurationRef := get $configuration "configurationRef" | default .configurationRef -}}
+{{- include "swh.service.fromYaml" (dict "service" "objstorage"
+                                         "configurationRef" $configurationRef
+                                         "Values" .Values) }}
+{{- end -}}

@@ -8,20 +8,5 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storage.storageConfigurationRef
-                                                "Values" .Values ) | nindent 4 }}
-      objstorage:
-        cls: {{ .Values.storage.objstorageClass }}
-      {{- if eq .Values.storage.objstorageClass "filtered" }}
-        {{- toYaml .Values.storage.objstorageConfig | nindent 8 }}
-      {{- else if eq .Values.storage.objstorageClass "multiplexer" }}
-        objstorages:
-        {{ .Values.storage.objstorageConfig }}
-      {{- else }}
-        {{ toYaml .Values.storage.objstorageConfig }}
-      {{- end -}}
-      {{- if .Values.storage.journalWriterConfigurationRef }}
-      {{- include "swh.storage.journalWriter" (dict "service_type" "journal_writer"
-                                                    "configurationRef" .Values.storage.journalWriterConfigurationRef
-                                                    "Values" .Values ) | nindent 6 }}
-      {{- end }}
+                                                 "Values" .Values ) | nindent 4 }}
 {{- end -}}

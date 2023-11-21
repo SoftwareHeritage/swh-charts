@@ -140,7 +140,7 @@ sentry:
 # a complete storage configuration
 # Only storageConfigurationRef is mandatory if a remote
 # storage is used.
-# objectStorageConfigurationRef is mandatory for all other
+# objstorageConfigurationRef is mandatory for all other
 # storage types
 #
 # defaultStorageClientConfiguration:
@@ -152,7 +152,7 @@ sentry:
 #   # storageConfigurationRef: postgresqlStorageConfiguration
 
 #   # journalWriterConfigurationRef: journalWriterConfiguration
-#   # objectStorageConfigurationRef: noopObjectStorage
+#   # objstorageConfigurationRef: noopObjectStorage
 
 # defaultStorageConfiguration:
 #   storageConfigurationRef: postgresqlStorageConfiguration
