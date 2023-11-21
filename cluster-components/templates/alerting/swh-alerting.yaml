@@ -1,0 +1,41 @@
+{{ if .Values.alerting.enabled -}}
+{{ with .Values.alerting -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: swh.{{ .environment }}.rules
+  namespace: cattle-monitoring-system
+spec:
+  groups:
+  - name: swh.rules
+    rules:
+    - alert: Cassandra_Degraded_Service_In_{{ .environment | title }}
+      annotations:
+        description: "The {{"{{"}} $labels.instance {{"}}"}} node is unreachable for more than {{ trimSuffix "m" .period.fifteen }} minutes. This node seems down."
+        summary: "The {{"{{"}} $labels.service {{"}}"}} is degraded. Please check the {{"{{"}} $labels.instance {{"}}"}} status."
+      expr: up{service="cassandra-servers-svc"} == 0
+      for: {{ .period.fifteen }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
+    - alert: Cassandra_Unrepaired_Table_In_{{ .environment | title }}
+      annotations:
+        description: "The unrepaired bytes of table {{"{{"}} $labels.table {{"}}"}} is more than {{ div .cassandra.unrepairedSize 1073741824 }} Gb."
+        summary: "Please trigger a repair on the table {{"{{"}} $labels.table {{"}}"}} in keyspace {{"{{"}} $labels.keyspace {{"}}"}}."
+      expr: sum by (keyspace, table) (cassandra_table_bytesunrepaired{table!="",job="cassandra-servers-svc"}) > {{ .cassandra.unrepairedSize }}
+      for: {{ .period.five }}
+      labels:
+        severity: critical
+        namespace: cattle-monitoring-system
+    - alert: Cronjob_Is_Suspended_In_{{ .environment | title }}
+      annotations:
+        description: "The cronjob {{"{{"}} $labels.cronjob {{"}}"}} node is suspended for more than {{ trimSuffix "m" .period.five }} minutes."
+        summary: "Please check {{"{{"}} $labels.cronjob {{"}}"}} status on cluster {{"{{"}} $labels.cluster_name {{"}}"}}."
+      expr: kube_cronjob_spec_suspend > 0
+      for: {{ .period.five }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
+{{- end }}
+{{- end }}

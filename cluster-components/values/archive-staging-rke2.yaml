@@ -28,9 +28,4 @@ svix:
 
 alerting:
   enabled: true
-  cassandra:
-    environment: staging
-    period:
-      down: 15m
-      unrepaired: 5m
-    unrepairedSize: 214748364800
+  environment: staging

@@ -112,3 +112,8 @@ svix:
 
 alerting:
   enabled: false
+  period:
+    five: 5m
+    fifteen: 15m
+  cassandra:
+    unrepairedSize: 214748364800

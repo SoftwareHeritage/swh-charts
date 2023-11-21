@@ -3,9 +3,4 @@ podPriority:
 
 alerting:
   enabled: true
-  cassandra:
-    environment: production
-    period:
-      down: 15m
-      unrepaired: 5m
-    unrepairedSize: 214748364800
+  environment: production
