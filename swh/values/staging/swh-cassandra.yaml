@@ -509,6 +509,12 @@ storage_replayer:
       autoScaling:
         maxReplicaCount: 5
 
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  clientId: swh.storage-cassandra.journal_writer.storage
+  producerConfig:
+    message.max.bytes: 1000000000
+
 storage:
   enabled: true
   autoScaling:
@@ -517,9 +523,8 @@ storage:
     cpuPercentageUsage: 150
   requestedCpu: 500m
   requestedMemory: 1500Mi
-
   storageConfigurationRef: cassandraStorageConfiguration
-
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
   # TODO: migrate this to a proper template
   objstorageClass: remote
   objstorageConfig:
@@ -539,13 +544,6 @@ storage:
   gunicorn:
     threads: 4
     workers: 8
-  journalWriter:
-   brokers:
-     - journal1.internal.staging.swh.network
-     - journal2.internal.staging.swh.network
-   clientId: swh.storage-cassandra.journal_writer.storage
-   producerConfig: |-
-     message.max.bytes: 1000000000
 
 web:
   enabled: true

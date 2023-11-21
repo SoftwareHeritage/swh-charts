@@ -47,6 +47,13 @@ directPostgresqlReplayerStorageConfiguration:
 scrubberROStorageConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
 
+indexerJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  cls: kafka
+  prefix: swh.journal.indexed
+  client_id: swh.idx_storage.journal_writer.storage1
+  producer_config:
+    message.max.bytes: 1000000000
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
@@ -645,7 +652,7 @@ indexerStorage:
   requestedCpu: 10m
   requestedMemory: 200Mi
   indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
-  journalWriterConfigurationRef: journalWriterConfiguration
+  journalWriterConfigurationRef: indexerJournalWriterConfiguration
   hosts:
     - indexer-storage-rpc-ingress
   ingress:

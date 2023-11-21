@@ -19,18 +19,9 @@ data:
       {{- else }}
         {{ toYaml .Values.storage.objstorageConfig }}
       {{- end -}}
-      {{- if .Values.storage.journalWriter }}
-        {{- with .Values.storage.journalWriter }}
-      journal_writer:
-        cls: kafka
-        brokers:
-          {{- range $broker := .brokers }}
-          - {{ $broker }}
-          {{- end}}
-        prefix: {{ .prefix | default "swh.journal.objects" }}
-        client_id: {{ .clientId }}
-        anonymize: {{ .anonymize | default true }}
-        producer_config: {{ .producerConfig | nindent 10 }}
-        {{- end }}
+      {{- if .Values.storage.journalWriterConfigurationRef }}
+      {{- include "swh.storage.journalWriter" (dict "service_type" "journal_writer"
+                                                    "configurationRef" .Values.storage.journalWriterConfigurationRef
+                                                    "Values" .Values ) | nindent 6 }}
       {{- end }}
 {{- end -}}

@@ -239,14 +239,6 @@ depositConfiguration:
       secretKeyRef: deposit-secrets
       secretKeyName: password
 
-journalWriterConfiguration:
-  brokersConfigurationRef: kafkaBrokers
-  cls: kafka
-  prefix: swh.journal.indexed
-  client_id: swh.idx_storage.journal_writer.storage1
-  producer_config:
-    message.max.bytes: 1000000000
-
 webThrottling:
   internalExemptedNetworkRangesRef: stagingNetworkRanges
   cache_uri: memcached:11211

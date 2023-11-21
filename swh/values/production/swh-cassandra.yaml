@@ -242,9 +242,7 @@ storage:
   replicas: 2
   requestedCpu: 500m
   requestedMemory: 500Mi
-
   storageConfigurationRef: cassandraStorageConfiguration
-
   # TODO: move this to a proper objstorage template
   objstorageClass: multiplexer
   objstorageConfig: ${OBJSTORAGECONFIG}

@@ -723,7 +723,7 @@ vault:
         extraWhitelistSourceRange:
           - 192.168.101.0/24
 
-journalWriterConfiguration:
+indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   cls: kafka
   anonymize: true
@@ -742,7 +742,7 @@ indexerStorage:
   requestedCpu: 500m
   requestedMemory: 512Mi
   indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
-  journalWriterConfigurationRef: journalWriterConfiguration
+  journalWriterConfigurationRef: indexerJournalWriterConfiguration
   hosts:
     - indexer-storage.i.s.s.n
   ingress:

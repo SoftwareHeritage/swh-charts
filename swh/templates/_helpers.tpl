@@ -229,7 +229,7 @@ journal_writer:
   brokers:
 {{ toYaml $brokers | indent 2 }}
   prefix: {{ get $journalWriterConfiguration "prefix" | default "swh.journal.objects" }}
-  client_id: {{ get $journalWriterConfiguration "clientId" }}
+  client_id: {{ $clientId }}
   anonymize: {{ get $journalWriterConfiguration "anonymize" | default true }}
 {{- $producerConfig := get $journalWriterConfiguration "producerConfig" -}}
 {{- if $producerConfig }}
