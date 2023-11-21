@@ -26,18 +26,6 @@ postgresqlROStorageConfiguration:
       secretKeyRef: swh-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
-postgresqlSyncmailmapsConfiguration:
-  cls: postgresql
-  host: db1.internal.staging.swh.network
-  port: '5432'
-  db: swh
-  user: swhmailmap
-  pass: ${PGPASSWORD}
-  secrets:
-    PGPASSWORD:
-      secretKeyRef: swh-postgresql-syncmailmap-secret
-      secretKeyName: postgres-syncmailmap-password
-
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: postgresqlStorageConfiguration
@@ -759,6 +747,16 @@ web:
     minReplicaCount: 2
     maxReplicaCount: 3
     cpuPercentageUsage: 100
+  hosts:
+    - webapp.staging.swh.network
+    - webapp-postgresql.internal.staging.swh.network
+  refreshSavecodenowStatus:
+    enabled: true
+    concurrencyPolicy: Forbid
+  syncMailmaps:
+    enabled: true
+    concurrencyPolicy: Forbid
+    configurationRef: postgresqlSyncmailmapsConfiguration
   ingress:
     enabled: true
     secretName: swh-web-crt
@@ -784,13 +782,6 @@ web:
           - path: /api/1/content/[^/]+/symbol/
         # auth-file with authentication
         authentication: swh-cassandra/web-auth-secrets
-  refreshSavecodenowStatus:
-    enabled: true
-    concurrencyPolicy: Forbid
-  syncMailmaps:
-    enabled: true
-    concurrencyPolicy: Forbid
-    configurationRef: postgresqlSyncmailmapsConfiguration
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -803,9 +794,6 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
-  hosts:
-    - webapp.staging.swh.network
-    - webapp-postgresql.internal.staging.swh.network
   extraConfig:
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/

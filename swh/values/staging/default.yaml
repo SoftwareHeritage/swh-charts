@@ -100,6 +100,18 @@ postgresqlDepositConfiguration:
       secretKeyRef: swh-postgresql-deposit-secrets
       secretKeyName: postgres-swh-deposit-password
 
+postgresqlSyncmailmapsConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh
+  user: swhmailmap
+  pass: ${PGPASSWORD}
+  secrets:
+    PGPASSWORD:
+      secretKeyRef: swh-postgresql-syncmailmap-secret
+      secretKeyName: postgres-syncmailmap-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:

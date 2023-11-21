@@ -549,6 +549,13 @@ web:
     cpuPercentageUsage: 50
   hosts:
     - webapp-cassandra.internal.staging.swh.network
+  refreshSavecodenowStatus:
+    enabled: false
+    concurrencyPolicy: Forbid
+  syncMailmaps:
+    enabled: false
+    concurrencyPolicy: Forbid
+    configurationRef: postgresqlSyncmailmapsConfiguration
   ingress:
     enabled: true
     secretName: swh-web-crt
@@ -558,16 +565,12 @@ web:
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     tlsEnabled: true
-    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
           - path: /
           - path: /static
             port: 80
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
       authenticated:
         paths:
           - path: /api/1/provenance/
@@ -575,9 +578,6 @@ web:
           - path: /api/1/content/[^/]+/symbol/
         # auth-file with authentication
         authentication: swh-cassandra/web-auth-secrets
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -586,6 +586,7 @@ web:
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration
   djangoConfigurationRef: djangoWebConfiguration
+  depositConfigurationRef: depositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
