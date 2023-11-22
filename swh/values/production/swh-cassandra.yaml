@@ -77,68 +77,68 @@ pipelineAzureROObjstorageConfiguration:
       cls: azure-prefixed
       accounts:
         '0':
-          account_name: ${0_ACCOUNT_NAME}
-          api_secret_key: ${0_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_0}
+          api_secret_key: ${API_SECRET_KEY_0}
           container_name: contents
         '1':
-          account_name: ${1_ACCOUNT_NAME}
-          api_secret_key: ${1_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_1}
+          api_secret_key: ${API_SECRET_KEY_1}
           container_name: contents
         '2':
-          account_name: ${2_ACCOUNT_NAME}
-          api_secret_key: ${2_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_2}
+          api_secret_key: ${API_SECRET_KEY_2}
           container_name: contents
         '3':
-          account_name: ${3_ACCOUNT_NAME}
-          api_secret_key: ${3_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_3}
+          api_secret_key: ${API_SECRET_KEY_3}
           container_name: contents
         '4':
-          account_name: ${4_ACCOUNT_NAME}
-          api_secret_key: ${4_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_4}
+          api_secret_key: ${API_SECRET_KEY_4}
           container_name: contents
         '5':
-          account_name: ${5_ACCOUNT_NAME}
-          api_secret_key: ${5_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_5}
+          api_secret_key: ${API_SECRET_KEY_5}
           container_name: contents
         '6':
-          account_name: ${6_ACCOUNT_NAME}
-          api_secret_key: ${6_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_6}
+          api_secret_key: ${API_SECRET_KEY_6}
           container_name: contents
         '7':
-          account_name: ${7_ACCOUNT_NAME}
-          api_secret_key: ${7_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_7}
+          api_secret_key: ${API_SECRET_KEY_7}
           container_name: contents
         '8':
-          account_name: ${8_ACCOUNT_NAME}
-          api_secret_key: ${8_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_8}
+          api_secret_key: ${API_SECRET_KEY_8}
           container_name: contents
         '9':
-          account_name: ${9_ACCOUNT_NAME}
-          api_secret_key: ${9_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_9}
+          api_secret_key: ${API_SECRET_KEY_9}
           container_name: contents
         a:
-          account_name: ${10_ACCOUNT_NAME}
-          api_secret_key: ${10_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_10}
+          api_secret_key: ${API_SECRET_KEY_10}
           container_name: contents
         b:
-          account_name: ${11_ACCOUNT_NAME}
-          api_secret_key: ${11_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_11}
+          api_secret_key: ${API_SECRET_KEY_11}
           container_name: contents
         c:
-          account_name: ${12_ACCOUNT_NAME}
-          api_secret_key: ${12_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_12}
+          api_secret_key: ${API_SECRET_KEY_12}
           container_name: contents
         d:
-          account_name: ${13_ACCOUNT_NAME}
-          api_secret_key: ${13_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_13}
+          api_secret_key: ${API_SECRET_KEY_13}
           container_name: contents
         e:
-          account_name: ${14_ACCOUNT_NAME}
-          api_secret_key: ${14_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_14}
+          api_secret_key: ${API_SECRET_KEY_14}
           container_name: contents
         f:
-          account_name: ${15_ACCOUNT_NAME}
-          api_secret_key: ${15_API_SECRET_KEY}
+          account_name: ${ACCOUNT_NAME_15}
+          api_secret_key: ${API_SECRET_KEY_15}
           container_name: contents
     filters_conf:
     - type: readonly
@@ -152,100 +152,100 @@ pipelineAzureROObjstorageConfiguration:
 roObjstorageConfiguration:
   configurationRef: pipelineAzureROObjstorageConfiguration
   secrets:
-    0_ACCOUNT_NAME:
+    ACCOUNT_NAME_0:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 0_account_name
-    0_API_SECRET_KEY:
+    API_SECRET_KEY_0:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 0_api_secret_key
-    1_ACCOUNT_NAME:
+    ACCOUNT_NAME_1:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 1_account_name
-    1_API_SECRET_KEY:
+    API_SECRET_KEY_1:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 1_api_secret_key
-    2_ACCOUNT_NAME:
+    ACCOUNT_NAME_2:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 2_account_name
-    2_API_SECRET_KEY:
+    API_SECRET_KEY_2:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 2_api_secret_key
-    3_ACCOUNT_NAME:
+    ACCOUNT_NAME_3:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 3_account_name
-    3_API_SECRET_KEY:
+    API_SECRET_KEY_3:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 3_api_secret_key
-    4_ACCOUNT_NAME:
+    ACCOUNT_NAME_4:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 4_account_name
-    4_API_SECRET_KEY:
+    API_SECRET_KEY_4:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 4_api_secret_key
-    5_ACCOUNT_NAME:
+    ACCOUNT_NAME_5:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 5_account_name
-    5_API_SECRET_KEY:
+    API_SECRET_KEY_5:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 5_api_secret_key
-    6_ACCOUNT_NAME:
+    ACCOUNT_NAME_6:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 6_account_name
-    6_API_SECRET_KEY:
+    API_SECRET_KEY_6:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 6_api_secret_key
-    7_ACCOUNT_NAME:
+    ACCOUNT_NAME_7:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 7_account_name
-    7_API_SECRET_KEY:
+    API_SECRET_KEY_7:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 7_api_secret_key
-    8_ACCOUNT_NAME:
+    ACCOUNT_NAME_8:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 8_account_name
-    8_API_SECRET_KEY:
+    API_SECRET_KEY_8:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 8_api_secret_key
-    9_ACCOUNT_NAME:
+    ACCOUNT_NAME_9:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 9_account_name
-    9_API_SECRET_KEY:
+    API_SECRET_KEY_9:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 9_api_secret_key
-    10_ACCOUNT_NAME:
+    ACCOUNT_NAME_10:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 10_account_name
-    10_API_SECRET_KEY:
+    API_SECRET_KEY_10:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 10_api_secret_key
-    11_ACCOUNT_NAME:
+    ACCOUNT_NAME_11:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 11_account_name
-    11_API_SECRET_KEY:
+    API_SECRET_KEY_11:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 11_api_secret_key
-    12_ACCOUNT_NAME:
+    ACCOUNT_NAME_12:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 12_account_name
-    12_API_SECRET_KEY:
+    API_SECRET_KEY_12:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 12_api_secret_key
-    13_ACCOUNT_NAME:
+    ACCOUNT_NAME_13:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 13_account_name
-    13_API_SECRET_KEY:
+    API_SECRET_KEY_13:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 13_api_secret_key
-    14_ACCOUNT_NAME:
+    ACCOUNT_NAME_14:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 14_account_name
-    14_API_SECRET_KEY:
+    API_SECRET_KEY_14:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 14_api_secret_key
-    15_ACCOUNT_NAME:
+    ACCOUNT_NAME_15:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 15_account_name
-    15_API_SECRET_KEY:
+    API_SECRET_KEY_15:
       secretKeyRef: swh-cassandra-objstorage-config
       secretKeyName: 15_api_secret_key
 
