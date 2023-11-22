@@ -268,7 +268,7 @@ journal_writer:
   {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment.inline: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
   {{ include "swh.secrets.environment" (dict "configurationRef" .configurationRef
                                              "Values" .Values) }}
-  {{- $keysToCheckForSecrets := keys $configuration -}}
+  {{- $keysToCheckForSecrets := keys $configuration | sortAlpha -}}
   {{- range $keyToCheckForSecrets := $keysToCheckForSecrets }}
     {{- if hasSuffix "Ref" $keyToCheckForSecrets -}}
     {{ include "swh.secrets.environment"
