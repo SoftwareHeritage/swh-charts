@@ -258,6 +258,26 @@ journal_writer:
   {{- end -}}
 {{- end -}}
 
+{{/* Generate the secret environment yaml config from the "configurationRef" provided.
+   * This will inspect the reference provided for "secrets" key (as the function
+   * "swh.secrets.environment" does). But this will also inspect the keys of that
+   * configuration (the ones ending with "Ref") for "secrets" keys. If found, they will
+   * also get inlined.
+   */}}
+{{- define "swh.secrets.environment.inline" -}}
+  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment.inline: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
+  {{ include "swh.secrets.environment" (dict "configurationRef" .configurationRef
+                                             "Values" .Values) }}
+  {{- $keysToCheckForSecrets := keys $configuration -}}
+  {{- range $keyToCheckForSecrets := $keysToCheckForSecrets }}
+    {{- if hasSuffix "Ref" $keyToCheckForSecrets -}}
+    {{ include "swh.secrets.environment"
+      (dict "configurationRef" (get $configuration $keyToCheckForSecrets)
+            "Values" $.Values) }}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
 {{/* Generate the secret environment yaml config if present in the config dict */}}
 {{- define "swh.secrets.environment" -}}
   {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}

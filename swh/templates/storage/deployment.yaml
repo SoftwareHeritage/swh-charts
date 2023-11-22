@@ -45,12 +45,8 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
-            {{ include "swh.storage.secretsEnvironment" (dict "configurationRef" $.Values.storage.storageConfigurationRef
+            {{ include "swh.secrets.environment.inline" (dict "configurationRef" $.Values.storage.storageConfigurationRef
                                                               "Values" $.Values) | nindent 10 }}
-            {{- if $.Values.storage.objstorageConfigurationRef }}
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.storage.objstorageConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
-            {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
