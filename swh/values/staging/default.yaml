@@ -159,6 +159,8 @@ remoteObjstorageConfiguration:
 azureDepositConfiguration:
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   container_name: deposit-contents
+  content_type: application/octet-stream
+  content_encoding: ""
   secrets:
     ACCOUNT_KEY:
       secretKeyRef: swh-deposit-azure-secret

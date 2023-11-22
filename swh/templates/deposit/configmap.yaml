@@ -4,6 +4,8 @@
 {{- $configuration := get .Values .Values.deposit.blobstorageConfigurationRef -}}
 {{- $connection_string := get $configuration "connection_string" | default "" -}}
 {{- $container_name := get $configuration "container_name" | default "" -}}
+{{- $content_type := get $configuration "content_type" | default "" -}}
+{{- $content_encoding := get $configuration "content_encoding" | default "" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -46,5 +48,7 @@ data:
     azure:
       container_name: "{{ $container_name | quote }}"
       connection_string: "{{ $connection_string | quote }}"
+      content_type: {{ $content_type | quote }}
+      content_encoding: {{ $content_encoding | quote }}
     {{ end }}
 {{- end -}}
