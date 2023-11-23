@@ -48,7 +48,7 @@ data:
     azure:
       container_name: "{{ $container_name | quote }}"
       connection_string: "{{ $connection_string | quote }}"
-      content_type: {{ $content_type | quote }}
-      content_encoding: {{ $content_encoding | quote }}
+      content_type: "{{ $content_type | quote }}"
+      content_encoding: "{{ $content_encoding | quote }}"
     {{ end }}
 {{- end -}}
