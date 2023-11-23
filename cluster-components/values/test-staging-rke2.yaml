@@ -12,6 +12,9 @@ svix:
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     whitelistSourceRange:
+      # cluster internal range ip
+      - 10.42.0.0/16
+      - 10.43.0.0/16
       # staging ip
       - 192.168.130.0/24
       # admin ip
