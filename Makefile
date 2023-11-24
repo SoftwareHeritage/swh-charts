@@ -26,17 +26,19 @@ ss-test-with-snapshot:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
 	  $(IMAGE) $(ACTIVATE_SNAPSHOT) software-stories
 
-
 swh-helm-diff:
 	./swh/helm-diff.sh
 
-cc-helm-diff:
+ccf-helm-diff:
 	./helm-diff.sh cluster-configuration
+
+cc-helm-diff:
+	./helm-diff.sh cluster-components
 
 ss-helm-diff:
 	./helm-diff.sh software-stories
 
-helm-diff: swh-helm-diff cc-helm-diff ss-helm-diff
+helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube:
 	kubectl --context minikube create namespace swh ; \
@@ -112,6 +114,30 @@ cc-template:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
       -n default --create-namespace --debug
+
+cc-template-test:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/test-staging-rke2.yaml \
+      --debug
+
+cc-template-staging:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/archive-staging-rke2.yaml \
+      --debug
+
+cc-template-production:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/archive-production-rke2.yaml \
+      --debug
+
+cc-template-admin:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/admin-rke2.yaml \
+      --debug
 
 ss-minikube:
 	helm --kube-context minikube upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
