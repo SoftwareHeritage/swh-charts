@@ -19,6 +19,10 @@ spec:
     spec:
       template:
         spec:
+          {{- if $.Values.web.affinity }}
+          affinity:
+            {{- toYaml $.Values.web.affinity | nindent 12 }}
+          {{- end }}
           {{- if and $.Values.podPriority.enabled .priorityClassName }}
           priorityClassName: {{ $.Values.namespace }}-{{ .priorityClassName }}
           {{ end }}
