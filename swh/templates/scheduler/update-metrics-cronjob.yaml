@@ -14,6 +14,10 @@ spec:
     spec:
       template:
         spec:
+          {{- if .Values.scheduler.affinity }}
+          affinity:
+            {{- toYaml .Values.scheduler.affinity | nindent 12 }}
+          {{- end }}
           {{- if and $.Values.podPriority.enabled $.Values.scheduler.priorityClassName }}
           priorityClassName: {{ $.Values.namespace }}-{{ $.Values.scheduler.priorityClassName }}
           {{ end }}
