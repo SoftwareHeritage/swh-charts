@@ -1,5 +1,3 @@
-# -*- yaml -*-
-
 {{/*
 Create a Kind CronJob for service .serviceType
 */}}

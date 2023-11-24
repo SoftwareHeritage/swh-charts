@@ -1,5 +1,3 @@
-# -*- yaml -*-
-
 {{/*
 Generate the configuration for the webapp throttling configuration
 */}}
