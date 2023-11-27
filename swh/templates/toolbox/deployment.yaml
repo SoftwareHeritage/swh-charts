@@ -27,6 +27,10 @@ spec:
         checksum/config: {{ $configChecksum | sha256sum }}
         checksum/configScript: {{ $configScriptUtilsChecksum | sha256sum }}
     spec:
+      {{- if .Values.toolbox.affinity }}
+      affinity:
+        {{- toYaml .Values.toolbox.affinity | nindent 8 }}
+      {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.toolbox.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.toolbox.priorityClassName }}
       {{ end }}

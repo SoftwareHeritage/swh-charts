@@ -252,5 +252,15 @@ scrubber:
             values:
             - "true"
 
+toolbox:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/toolbox"
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true
