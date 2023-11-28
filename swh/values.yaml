@@ -609,21 +609,6 @@ storage:
   # When true, check db & code versions and do not start if they diverge
   checkDbVersion: false
 
-  objstorage:
-    cls: noop
-  ##  if objstorage configuration doesn't contains passwords or sensitive data
-  # objstorageClass: filtered
-  # objstorageConfig:
-  #   storage_conf:
-  #     cls: remote
-  #     url: http://storage1.internal.staging.swh.network:5003/
-  #   filters_conf:
-  #   - type: readonly
-  ## if objstorage configuration contains passwords or sensitive data
-  ## /!\ the configmap indentation (10) had to be defined in the secret
-  # objstorageClass: multiplexer
-  # objstorageConfig: ${OBJSTORAGECONFIG}
-
   # Deploy an ingress to access the storage
   ingress:
     enabled: false
@@ -637,22 +622,6 @@ storage:
       default:
         paths:
           - path: /
-
-  ## if journal access is required
-  ## mandatory values
-  #journalWriter:
-  #  brokers:
-  #    - kafka1
-  #    - kafka2
-  #    - kafka3
-  #  clientId: swh.storage.journal_writer.storage1
-  #  producerConfig: |-
-  #    message.max.bytes: 1000000000
-  #    item2: value2
-  #    item3: value3
-  ## optional values with their default value
-  #  prefix: swh.journal.objects
-  #  anonymize: true
 
 # internalNetworkRanges:
 #   - xxx.xxx.xxx.xxx/24
