@@ -263,5 +263,18 @@ toolbox:
             values:
             - "true"
 
+objstorage:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/objstorage
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true

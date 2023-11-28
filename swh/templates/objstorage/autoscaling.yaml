@@ -1,0 +1,10 @@
+{{ if .Values.objstorage.enabled -}}
+{{ range $objstorage_type, $deployment_config := .Values.objstorage.deployments }}
+{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
+           (hasKey $deployment_config "autoScale") -}}
+{{- include "swh.autoscale" (dict "serviceType"   ( print "objstorage-" $objstorage_type )
+                                  "configuration" $deployment_config
+                                  "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

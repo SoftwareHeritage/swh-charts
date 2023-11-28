@@ -42,7 +42,7 @@ helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube:
 	kubectl --context minikube create namespace swh ; \
-	kubectl --context minikube --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml' ; \
+	kubectl --context minikube --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	helm --kube-context minikube upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \

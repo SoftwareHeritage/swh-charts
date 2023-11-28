@@ -1,0 +1,15 @@
+{{/*
+   * Create an objstorage configmap for service .serviceType
+   */}}
+{{ define "swh.objstorage.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.objstorageConfiguration" (dict "configurationRef" .configuration.objstorageConfigurationRef
+                                                    "Values" .Values) | nindent 4 }}
+{{- end -}}

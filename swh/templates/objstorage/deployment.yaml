@@ -1,0 +1,150 @@
+{{ if .Values.objstorage.enabled -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{ range $objstorage_type, $objstorage_config := .Values.objstorage.deployments }}
+{{- if or (not (hasKey $objstorage_config "enabled")) (get $objstorage_config "enabled") -}}
+{{- $serviceType := ( print "objstorage-" $objstorage_type ) -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $objstorage_config.replicas -}}
+  replicas: {{ $objstorage_config.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+      annotations:
+        checksum/config: {{ include "swh.objstorage.configmap" (dict "serviceType" $serviceType
+                                                                     "configuration" $objstorage_config
+                                                                     "Values" $.Values) | sha256sum }}
+        checksum/config-utils: {{ $configUtilsChecksum }}
+    spec:
+      {{- if $.Values.objstorage.affinity }}
+      affinity:
+        {{- toYaml $.Values.objstorage.affinity | nindent 8 }}
+      {{- end }}
+
+      {{- if and $.Values.podPriority.enabled $.Values.objstorage.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.objstorage.priorityClassName }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env:
+            {{ include "swh.secrets.environment.inline" (dict "configurationRef" $objstorage_config.objstorageConfigurationRef
+                                                              "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        - name: {{ $serviceType }}
+          resources:
+            requests:
+              memory: {{ $objstorage_config.requestedMemory | default "512Mi" }}
+              cpu: {{ $objstorage_config.requestedCpu | default "500m" }}
+            {{- if or $objstorage_config.limitedMemory $objstorage_config.limitedCpu }}
+            limits:
+              {{- if $objstorage_config.limitedMemory }}
+              memory: {{ $objstorage_config.limitedMemory }}
+              {{- end }}
+              {{- if $objstorage_config.limitedCpu }}
+              cpu: {{ $objstorage_config.limitedCpu }}
+              {{- end }}
+            {{- end }}
+          image: {{ $.Values.swh_objstorage_image }}:{{ $.Values.swh_objstorage_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $objstorage_config.port | default $.Values.objstorage.port }}
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            {{ if $objstorage_config.gunicorn -}}
+            - name: THREADS
+              value: {{ $objstorage_config.gunicorn.threads | default 5 | quote }}
+            - name: WORKERS
+              value: {{ $objstorage_config.gunicorn.workers | default 2 | quote }}
+            - name: TIMEOUT
+              value: {{ $objstorage_config.gunicorn.timeout | default 60 | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: LOG_LEVEL
+              value: {{ $objstorage_config.logLevel | default $.Values.objstorage.logLevel | default "INFO" | quote }}
+          {{- if $.Values.objstorage.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.objstorage
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.objstorage.sentry.secretKeyRef }}
+                  key: {{ $.Values.objstorage.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          {{- range $volume_name, $volume_config := $objstorage_config.volumes }}
+          - name: {{ $volume_name }}
+            mountPath: {{ $volume_config.mountPath }}
+            readOnly: {{ $volume_config.readOnly | default "false" }}
+          {{ end }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      {{ range $volume_name, $volume_config := $objstorage_config.volumes }}
+      - name: {{ $volume_name }}
+        {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
+      {{ end }}
+{{ end }}
+{{ end -}}
+{{- end -}}

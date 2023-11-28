@@ -135,6 +135,27 @@ sentry:
 # noopObjectStorage:
 #   cls: noop
 
+# readWriteObjstorageConfiguration:
+#   cls: pathslicing
+#   root: "/srv/softwareheritage/objects"
+#   slicing: 0:1/1:5
+#   client_max_size: 1073741824
+
+# readOnlyObjstorageConfiguration:
+#   cls: multiplexer
+#   objstorages:
+#     storage_conf:
+#       cls: remote
+#       url: http://storage1.i.s.o:5003/
+#     filters_conf:
+#     - type: readonly
+#   - cls: filtered
+#     storage_conf:
+#       cls: remote
+#       url: http://storage2.i.s.o:5003/
+#     filters_conf:
+#     - type: readonly
+
 # Typical storage configuration
 # Use references to other entries to assemble
 # a complete storage configuration
@@ -1209,6 +1230,79 @@ deposit:
   #   extraction_dir: "/tmp/swh-deposit/archive/"
   #   authentication_provider: keycloak
   #   cache_uri: 127.0.0.1:11211
+
+objstorage:
+  enabled: false
+  port: 5003
+  priorityClassName: frontend-rpc
+  logLevel: INFO
+#  affinity:
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: "swh/objstorage"
+#            operator: In
+#            values:
+#            - "true"
+  sentry:
+    enabled: false
+    # name of the secret containing the $secretKeyName value
+    # it defines the sentry token, host and projet to access
+    # like https://token@sentry.host/id
+    secretKeyRef: common-secrets
+    secretKeyName: objstorage-sentry-dsn
+
+  deployments:
+    # Each key will be an objstorage instance to be deployed
+    # The mandatory objstorageConfigurationRef key should target a dict
+    # with the specific objstorage configuration
+    # read-write:
+    #   enabled: false
+    #   # # Log level can be overridden per instance
+    #   # logLevel: WARN
+    #   # # rpc port can be changed per deployment
+    #   # port: 5003
+    #   # requestedCpu: 50m
+    #   # requestedMemory: 100Mi
+    #   # gunicorn:
+    #   #   threads: 5
+    #   #   workers: 2
+    #   #   timeout: 60
+    #   # autoScaling:
+    #   #   minReplicaCount: 2
+    #   #   maxReplicaCount: 10
+    #   #   cpuPercentageUsage: 100
+    #   # mandatory objstorage configuration reference
+    #   # check readWriteStorageConfiguration example to configure your storage
+    #   objstorageConfigurationRef: readWriteObjstorageConfiguration
+    #   # A list of extra volumes to mount within the pod container.
+    #   # For example for the case of a pathslicing objstorage (that needs access to a
+    #   # Directory folder on the machine node hosting the pod container)
+    #   volumes:
+    #     some-volume:
+    #       mountPath: /path/to/mount
+    #       volumeDefinition:
+    #         hostPath:  # kind (supported by kubernetes)
+    #           path: /path/to/mount
+    #           type: Directory
+    #   # hosts:
+    #   # - myobjstorage.local
+    #   # Deploy an ingress to access the objstorage
+    #   ingress:
+    #     enabled: false
+    #     # mandatory if ingress is enabled
+    #     # the hostname on which the objstorage must be reachable
+    #     # Optional: the ingress classname to use
+    #     # className: nginx
+    #     endpoints:
+    #       default:
+    #         paths:
+    #           - path: /
+
+    # read-only:
+    #   enabled: false
+    #   objstorageConfigurationRef: readOnlyObjstorageConfiguration
 
 podPriority:
   enabled: false

@@ -1,0 +1,12 @@
+{{ if .Values.objstorage.enabled -}}
+{{ range $objstorage_type, $deployment_config := .Values.objstorage.deployments }}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if not (hasKey $deployment_config "port") }}
+{{- $deployment_config := set $deployment_config "port" $.Values.objstorage.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "objstorage-" $objstorage_type )
+                                "configuration" $deployment_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}
