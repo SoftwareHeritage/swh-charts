@@ -528,6 +528,9 @@ storage:
     - storage-cassandra.internal.staging.swh.network
   ingress:
     enabled: true
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 4G
+      nginx.ingress.kubernetes.io/proxy-buffering: "on"
     whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
