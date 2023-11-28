@@ -25,7 +25,8 @@ spec:
         app: storage
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/storage/configmap.yaml") . | sha256sum }}
-        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
+        checksum/database-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
+        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum }}
     spec:
       {{- if .Values.storage.affinity }}
       affinity:
@@ -40,10 +41,7 @@ spec:
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
           command:
-          - /bin/bash
-          args:
-          - -c
-          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          - /entrypoints/prepare-configuration.sh
           env:
             {{ include "swh.secrets.environment.inline" (dict "configurationRef" $.Values.storage.storageConfigurationRef
                                                               "Values" $.Values) | nindent 10 }}
@@ -52,6 +50,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
         {{ include "swh.storage.cassandra.initKeyspaceContainer" (dict "Values" $.Values
                                                                        "configurationRef" $.Values.storage.storageConfigurationRef
                                                                        "imagePrefixName" "swh_storage_image") | nindent 8 }}
@@ -135,5 +136,9 @@ spec:
       - name: database-utils
         configMap:
           name: database-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
           defaultMode: 0555
 {{- end -}}
