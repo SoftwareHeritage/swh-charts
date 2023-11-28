@@ -253,6 +253,7 @@ scrubber:
             - "true"
 
 toolbox:
+  affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
