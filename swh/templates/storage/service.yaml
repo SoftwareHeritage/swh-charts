@@ -1,5 +1,12 @@
 {{ if .Values.storage.enabled -}}
-{{- include "swh.service" (dict "Values"        .Values
-                                "serviceType"   "storage"
-                                "configuration" .Values.storage) -}}
+{{ range $storage_type, $deployment_config := .Values.storage.deployments }}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if not (hasKey $deployment_config "port") }}
+{{- $deployment_config := set $deployment_config "port" $.Values.storage.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "storage-" $storage_type )
+                                "configuration" $deployment_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
 {{- end -}}

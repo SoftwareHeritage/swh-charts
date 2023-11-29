@@ -213,12 +213,14 @@ storage_replayer:
         # stopWhenNoActivity: false
 
 storage:
-  autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 2
-    cpuPercentageUsage: 150
-  hosts:
-    - storage-cassandra-next-version.internal.staging.swh.network
+  deployments:
+    cassandra:
+      autoScaling:
+        minReplicaCount: 1
+        maxReplicaCount: 2
+        cpuPercentageUsage: 150
+      hosts:
+        - storage-cassandra-next-version.internal.staging.swh.network
 
 postgresqlWebConfiguration:
   host: db1.internal.staging.swh.network

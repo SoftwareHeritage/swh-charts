@@ -208,7 +208,9 @@ fakeDepositConfiguration:
 
 storage:
   enabled: false
-  storageConfigurationRef: fakePostgresqlStorageConfigurationRef
+  deploments:
+    fake:
+      storageConfigurationRef: fakePostgresqlStorageConfigurationRef
 
 storage_replayer:
   enabled: false

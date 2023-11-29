@@ -914,25 +914,28 @@ scrubber:
 
 storage:
   enabled: true
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 10
-    cpuPercentageUsage: 150
-  requestedCpu: 500m
-  requestedMemory: 1500Mi
-  storageConfigurationRef: readWriteStorageConfiguration
-  hosts:
-    - storage-postgresql-rpc-ingress
-    - storage-postgresql.internal.staging.swh.network
-  ingress:
-    enabled: true
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 4G
-      nginx.ingress.kubernetes.io/proxy-buffering: "on"
-    endpoints:
-      default:
-        paths:
-          - path: /
-  gunicorn:
-    threads: 4
-    workers: 8
+  deployments:
+    postgresql:
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        cpuPercentageUsage: 150
+      requestedCpu: 500m
+      requestedMemory: 1500Mi
+      storageConfigurationRef: readWriteStorageConfiguration
+      hosts:
+        - storage-postgresql-rpc-ingress
+        - storage-postgresql.internal.staging.swh.network
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        endpoints:
+          default:
+            paths:
+              - path: /
+      gunicorn:
+        threads: 4
+        workers: 8
+

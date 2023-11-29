@@ -1,5 +1,11 @@
-{{ if and .Values.storage.enabled .Values.storage.ingress .Values.storage.ingress.enabled -}}
-{{- include "swh.ingress" (dict "Values"        .Values
-                                "serviceType"   "storage"
-                                "configuration" .Values.storage) -}}
-{{ end }}
+{{ if .Values.storage.enabled -}}
+{{ range $storage_type, $deployment_config := .Values.storage.deployments }}
+{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
+           (and (hasKey $deployment_config "ingress") $deployment_config.ingress.enabled) -}}
+{{- include "swh.ingress" (dict "serviceType"   ( print "storage-" $storage_type )
+                                "configuration" $deployment_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}
+

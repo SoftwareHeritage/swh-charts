@@ -2,11 +2,11 @@ namespace: swh-cassandra
 
 remoteStorageConfiguration:
   cls: remote
-  url: http://storage:5002
+  url: http://storage-cassandra:5002
 
 localRpcRWStorageConfiguration:
   cls: remote
-  url: http://storage:5002
+  url: http://storage-cassandra:5002
 
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
@@ -517,31 +517,33 @@ storageJournalWriterConfiguration:
 
 storage:
   enabled: true
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 10
-    cpuPercentageUsage: 150
-  requestedCpu: 500m
-  requestedMemory: 1500Mi
-  storageConfigurationRef: cassandraStorageConfiguration
-  hosts:
-    - storage-cassandra.internal.staging.swh.network
-  ingress:
-    enabled: true
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-body-size: 4G
-      nginx.ingress.kubernetes.io/proxy-buffering: "on"
-    whitelistSourceRangeRef: stagingNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
-  gunicorn:
-    threads: 4
-    workers: 8
+  deployments:
+    cassandra:
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        cpuPercentageUsage: 150
+      requestedCpu: 500m
+      requestedMemory: 1500Mi
+      storageConfigurationRef: cassandraStorageConfiguration
+      hosts:
+        - storage-cassandra.internal.staging.swh.network
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+      gunicorn:
+        threads: 4
+        workers: 8
 
 web:
   enabled: true

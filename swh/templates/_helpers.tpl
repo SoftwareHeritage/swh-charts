@@ -22,7 +22,7 @@ host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ 
 Create a global storage configuration based on configuration section aggregation
 */}}
 {{- define "swh.storageConfiguration" -}}
-{{- $storageConfiguration := get .Values .configurationRef -}}
+{{- $storageConfiguration := get .Values .configurationRef  -}}
 {{- if not $storageConfiguration -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration" )}}{{- end -}}
 {{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
 {{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}

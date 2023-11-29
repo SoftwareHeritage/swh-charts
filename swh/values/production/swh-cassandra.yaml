@@ -60,14 +60,14 @@ scrubberROStorageConfiguration:
 # TODO: Use a true read-only storage
 localRpcROStorageService:
   cls: remote
-  url: http://storage:5002
+  url: http://storage-cassandra:5002
 
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
 remoteStorageConfiguration:
   cls: remote
-  url: http://storage:5002
+  url: http://storage-cassandra:5002
 
 pipelineAzureROObjstorageConfiguration:
   cls: multiplexer
@@ -419,10 +419,12 @@ storage_replayer:
 
 storage:
   enabled: true
-  replicas: 2
-  requestedCpu: 500m
-  requestedMemory: 500Mi
-  storageConfigurationRef: cassandraStorageConfiguration
+  deployments:
+    cassandra:
+      replicas: 2
+      requestedCpu: 500m
+      requestedMemory: 500Mi
+      storageConfigurationRef: cassandraStorageConfiguration
 
 postgresqlWebConfiguration:
   host: db.internal.softwareheritage.org

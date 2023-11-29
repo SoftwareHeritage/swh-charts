@@ -1,12 +1,9 @@
 {{ if .Values.storage.enabled -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: {{ .Values.namespace }}
-  name: storage-configuration-template
-data:
-  config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storage.storageConfigurationRef
-                                                 "Values" .Values ) | nindent 4 }}
+{{ range $storage_type, $deployment_config := .Values.storage.deployments }}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{ include "swh.storage.configmap" (dict "serviceType" (print "storage-" $storage_type)
+                                         "configuration" $deployment_config
+                                         "Values" $.Values) }}
+{{- end -}}
+{{ end -}}
 {{- end -}}
