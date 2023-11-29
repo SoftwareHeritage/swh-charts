@@ -606,6 +606,9 @@ scheduler:
         default:
           paths:
             - path: /
+          extraWhitelistSourceRange:
+          # staging-runner0 add-forge-now
+            - 192.168.130.221
         read-only:
           paths:
             - path: /scheduler_metrics/get

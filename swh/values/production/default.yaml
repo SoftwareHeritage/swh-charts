@@ -155,8 +155,6 @@ internalNetworkRanges:
   # Cluster internal ip
   - 10.42.0.0/16
   - 10.43.0.0/16
-  # staging-runner0
-  - 192.168.130.221
 
 externalAuthorizedNetworkRanges:
   - 128.93.166.14
