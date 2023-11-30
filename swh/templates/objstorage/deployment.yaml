@@ -55,6 +55,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
       containers:
         - name: {{ $serviceType }}
           resources:
@@ -141,6 +144,10 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
       {{ range $volume_name, $volume_config := $objstorage_config.volumes }}
       - name: {{ $volume_name }}
         {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
