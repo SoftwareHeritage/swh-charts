@@ -723,7 +723,7 @@ search:
     enabled: true
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
-    storageConfigurationRef: remoteStorageConfiguration
+    storageConfigurationRef: remoteReadOnlyStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
@@ -786,7 +786,7 @@ web:
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteReadOnlyStorageConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   countersConfigurationRef: remoteCountersConfiguration

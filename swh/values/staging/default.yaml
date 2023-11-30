@@ -55,20 +55,23 @@ storagePipelineStepsWithRecordReferences:
 roStoragePipelineSteps:
   - cls: retry
 
-storage1StorageConfiguration:
+remoteReadWriteStorageConfiguration:
   cls: remote
-  url: http://storage1.internal.staging.swh.network:5002
+  url: http://storage-read-write-rpc-ingress
+
+remoteReadOnlyStorageConfiguration:
+  cls: remote
+  url: http://storage-read-only-rpc-ingress
 
 remoteROStorageConfiguration:
   pipelineStepsRef: roStoragePipelineSteps
-  # TODO: use a real read-only storage configuration
-  storageConfigurationRef: storage1StorageConfiguration
+  storageConfigurationRef: remoteReadOnlyStorageConfiguration
 
 remoteROObjstorageConfiguration:
   cls: filtered
   storage_conf:
     cls: remote
-    url: http://storage1.internal.staging.swh.network:5003
+    url: http://storage-read-only-rpc-ingress
   filters_conf:
     - type: readonly
 
@@ -149,14 +152,6 @@ remoteCountersConfiguration:
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler.internal.staging.swh.network
-
-remoteStorageConfiguration:
-  cls: remote
-  url: http://storage1.internal.staging.swh.network:5002
-
-remoteStorageMetadataConfiguration:
-  cls: remote
-  url: http://storage1.internal.staging.swh.network:5002
 
 remoteObjstorageConfiguration:
   cls: remote
