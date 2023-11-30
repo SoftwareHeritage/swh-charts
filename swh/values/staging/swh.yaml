@@ -91,6 +91,11 @@ readWriteStorageConfiguration:
   objstorageConfigurationRef: remoteObjstorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
 
+readOnlyStorageConfiguration:
+  pipelineStepsRef: roStoragePipelineSteps
+  storageConfigurationRef: postgresqlROStorageConfiguration
+  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
+
 listers:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
@@ -915,7 +920,7 @@ scrubber:
 storage:
   enabled: true
   deployments:
-    postgresql:
+    postgresql-read-write:
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 10
@@ -924,10 +929,10 @@ storage:
       requestedMemory: 1500Mi
       storageConfigurationRef: readWriteStorageConfiguration
       hosts:
-        - storage-postgresql-rpc-ingress
-        - storage-postgresql.internal.staging.swh.network
+        - storage-postgresql-read-write-rpc-ingress
       ingress:
         enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -935,6 +940,32 @@ storage:
           default:
             paths:
               - path: /
+      gunicorn:
+        threads: 4
+        workers: 8
+    postgresql-read-only:
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        cpuPercentageUsage: 150
+      requestedCpu: 500m
+      requestedMemory: 1500Mi
+      storageConfigurationRef: readOnlyStorageConfiguration
+      hosts:
+        - storage-postgresql-read-only-rpc-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
       gunicorn:
         threads: 4
         workers: 8

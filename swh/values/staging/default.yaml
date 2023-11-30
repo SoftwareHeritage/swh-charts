@@ -162,6 +162,14 @@ remoteObjstorageConfiguration:
   cls: remote
   url: http://storage1.internal.staging.swh.network:5003/
 
+remoteReadWriteObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-read-write-rpc-ingress
+
+remoteReadOnlyObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-read-only-rpc-ingress
+
 azureDepositConfiguration:
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   container_name: deposit-contents
@@ -297,8 +305,11 @@ externalServices:
     deposit:
       internalName: deposit-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    storage-postgresql:
-      internalName: storage-postgresql-rpc-ingress
+    storage-postgresql-read-write:
+      internalName: storage-postgresql-read-write-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-postgresql-read-only:
+      internalName: storage-postgresql-read-only-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-read-write:
       internalName: objstorage-read-write-rpc-ingress
