@@ -23,6 +23,12 @@ stagingNetworkRanges:
 noopObjectStorage:
   cls: noop
 
+readWriteObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/softwareheritage/objects"
+  slicing: 0:1/1:5
+  client_max_size: 1073741824
+
 storagePipelineSteps:
   - &bufferStorage
     cls: buffer
@@ -294,6 +300,12 @@ externalServices:
     storage-postgresql:
       internalName: storage-postgresql-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-read-write:
+      internalName: objstorage-read-write-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-read-only:
+      internalName: objstorage-read-only-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:
@@ -320,3 +332,18 @@ addForgeNowConfiguration:
     GITLAB_AFN_TOKEN:
       secretKeyRef: common-secrets
       secretKeyName: gitlab_afn_token
+
+objstorage:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/objstorage
+            operator: In
+            values:
+            - "true"
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - "storage1"

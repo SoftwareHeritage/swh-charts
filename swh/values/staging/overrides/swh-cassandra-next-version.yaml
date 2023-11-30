@@ -303,3 +303,6 @@ scrubber:
 
 toolbox:
   enabled: false
+
+objstorage:
+  enabled: false
