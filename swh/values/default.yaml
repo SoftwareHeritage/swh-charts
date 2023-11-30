@@ -276,5 +276,18 @@ objstorage:
             values:
             - "true"
 
+webhooks:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/webhooks
+            operator: In
+            values:
+            - "true"
+
 statsd_exporter:
   enabled: true

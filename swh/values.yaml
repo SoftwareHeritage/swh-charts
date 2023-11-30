@@ -1353,3 +1353,30 @@ podPriority:
       range: -10000--11000
       value: -10500
       description: Background workload (replayers cassandra & postgres, ...)
+
+webhooks:
+  enabled: false
+  sentry:
+    enabled: false
+  #affinity:
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: swh/webhooks
+  #          operator: In
+  #          values:
+  #          - "true"
+  #svixConfigurationRef: svixConfiguration
+  #journalClientConfigurationRef: journalClientConfiguration
+  #priorityClassName: frontend-rpc-workload
+  #deployments:
+  #  origin-visit-status:
+  #    replicas: 1
+  #    requestedCpu: 100m
+  #    requestedMemory: 100Mi
+  #    journalClientOverrides:
+  #      group_id: my-webhook-group-id
+  #      auto_offset_reset: latest
+  #      object_types:
+  #        - origin_visit_status

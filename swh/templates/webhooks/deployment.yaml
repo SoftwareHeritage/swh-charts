@@ -1,0 +1,115 @@
+{{ if .Values.webhooks.enabled -}}
+{{- range $deployment, $deployment_config := .Values.webhooks.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- $configurationChecksum := include "swh.webhooks.configmap" (dict "deployment" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhooks-{{ $deployment }}
+  namespace: {{ $.Values.namespace }}
+  labels:
+    app: webhooks-{{ $deployment }}
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ $deployment_config.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: webhooks-{{ $deployment }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: webhooks-{{ $deployment }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if $.Values.webhooks.affinity }}
+      affinity:
+        {{ toYaml $.Values.webhooks.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.webhooks.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.webhooks.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          env:
+{{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $.Values.webhooks.svixConfigurationRef) | indent 10 }}
+{{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $.Values.webhooks.journalClientConfigurationRef) | indent 10 }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+      - name: webhooks
+        resources:
+          requests:
+            memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
+            cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
+          {{- if or ( get $deployment_config "limitedCpu" ) ( get $deployment_config "limitedMemory" ) }}
+          limits:
+            {{- if ( get $deployment_config "limitedMemory" ) }}
+            memory: {{ get $deployment_config "limitedMemory" }}
+            {{- end }}
+            {{- if ( get $deployment_config "limitedCpu" ) }}
+            cpu: {{ get $deployment_config "limitedCpu" }}
+            {{- end }}
+          {{ end }}
+        image: {{ $.Values.swh_webhooks_image }}:{{ $.Values.swh_webhooks_image_version }}
+        imagePullPolicy: IfNotPresent
+        command:
+          - /opt/swh/entrypoint.sh
+        env:
+        - name: STATSD_HOST
+          value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+        - name: STATSD_PORT
+          value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: MAX_TASKS_PER_CHILD
+          value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
+        - name: LOGLEVEL
+          value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
+        - name: SWH_CONFIG_FILENAME
+          value: /etc/swh/config.yml
+        {{- if and $.Values.sentry.enabled $.Values.webhooks.sentry.enabled }}
+        - name: SWH_SENTRY_ENVIRONMENT
+          value: {{ $.Values.sentry.environment }}
+        - name: SWH_MAIN_PACKAGE
+          value: swh.webhooks
+        - name: SWH_SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: common-secrets
+              key: webhooks-sentry-dsn
+              # 'name' secret must exist & include key "host"
+              optional: false
+        {{ end }}
+        volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: webhooks-{{ $deployment }}-template
+          defaultMode: 0777
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+{{ end }}
+{{ end }}
+{{ end }}

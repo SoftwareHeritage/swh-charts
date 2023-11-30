@@ -1,0 +1,20 @@
+{{ define "swh.webhooks.configmap" }}
+{{- $webhooksConfigurationRef := .Values.webhooks.svixConfigurationRef -}}
+{{- $journalClientConfigurationRef := .Values.webhooks.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef " .journalClientConfigurationRef " not found in webhooks configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: webhooks-{{ .deployment }}-template
+data:
+  config.yml.template: |
+  {{- include "swh.service.fromYaml" (dict "service" "webhooks"
+                            "configurationRef" $.Values.webhooks.svixConfigurationRef
+                            "Values" $.Values) | nindent 4 }}
+  {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
+                            "overrides" $journalClientOverrides
+                            "Values" .Values) | nindent 4 }}
+{{ end }}

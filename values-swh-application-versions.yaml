@@ -48,3 +48,5 @@ swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vaul
 swh_vault_image_version: '20231127.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
 swh_web_image_version: '20231127.1'
+swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
+swh_webhooks_image_version: '20231129.1'

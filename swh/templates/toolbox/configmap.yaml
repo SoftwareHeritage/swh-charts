@@ -47,5 +47,10 @@ data:
                             "configurationRef" (get $deployment_config "journalClientConfigurationRef")
                             "Values" $.Values) | nindent 4 -}}
 {{ end }}
+{{- if hasKey $deployment_config "webhooksConfigurationRef" }}
+  {{- include "swh.service.fromYaml" (dict "service" "webhooks"
+                            "configurationRef" $.Values.toolbox.configs.webhooks.webhooksConfigurationRef
+                            "Values" $.Values) | nindent 4 }}
+{{ end }}
 {{ end }}
 {{ end }}

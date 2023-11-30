@@ -1,0 +1,7 @@
+{{ if .Values.webhooks.enabled -}}
+{{- range $deployment, $deployment_config := .Values.webhooks.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{ include "swh.webhooks.configmap" (dict "deployment" $deployment "deployment_config" $deployment_config "Values" $.Values) }}
+{{- end -}}
+{{ end -}}
+{{- end -}}
