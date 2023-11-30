@@ -77,5 +77,11 @@ spec:
               value: "redis://{{ $redisDsn }}:6379"
             - name: SVIX_DB_DSN
               value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@{{ $postgresDsn }}"
+            {{- if .Values.svix.tls_disable }}
+            - name: SVIX_DANGEROUS_DISABLE_TLS_VERIFICATION
+              value: "true"
+            {{- end }}
+            - name: SVIX_WHITELIST_SUBNETS
+              value: "[10.42.0.0/16,10.43.0.0/16]"
 {{- end }}
 {{- end }}
