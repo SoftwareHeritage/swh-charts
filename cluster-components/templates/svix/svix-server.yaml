@@ -83,7 +83,7 @@ spec:
             {{- end }}
             {{- if .whitelistSubnets }}
             - name: SVIX_WHITELIST_SUBNETS
-              value: {{ .whitelistSubnets }}
+              value: {{ .whitelistSubnets | quote }}
             {{- end }}
 {{- end }}
 {{- end }}
