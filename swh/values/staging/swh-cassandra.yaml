@@ -940,6 +940,6 @@ webhooks:
       requestedMemory: 100Mi
       journalClientOverrides:
         auto_offset_reset: latest
-        group_id: swh-archive-stg-test-webhooks
+        group_id: swh-archive-stg-webhooks
         object_types:
           - origin_visit_status
