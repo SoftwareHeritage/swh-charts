@@ -306,3 +306,6 @@ toolbox:
 
 objstorage:
   enabled: false
+
+webhooks:
+  enabled: false

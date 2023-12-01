@@ -927,3 +927,19 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+
+webhooks:
+  enabled: true
+  svixConfigurationRef: svixConfiguration
+  journalClientConfigurationRef: journalClientConfiguration
+  priorityClassName: frontend-rpc-workload
+  deployments:
+    origin-visit-status:
+      replicas: 1
+      requestedCpu: 100m
+      requestedMemory: 100Mi
+      journalClientOverrides:
+        auto_offset_reset: latest
+        group_id: swh-archive-stg-test-webhooks
+        object_types:
+          - origin_visit_status
