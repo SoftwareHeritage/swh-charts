@@ -699,6 +699,8 @@ web:
   logLevel: INFO
   requestedCpu: 50m
   requestedMemory: 100Mi
+  # nginxRequestedCpu: 10m
+  # nginxRequestedMemory: 50m
   # replicas: 1
   # autoScaling:
   #   minReplicaCount: 2

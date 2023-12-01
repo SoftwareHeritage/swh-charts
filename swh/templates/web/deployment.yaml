@@ -199,8 +199,8 @@ spec:
         - name: nginx
           resources:
             requests:
-              memory: {{ .Values.web.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.web.requestedCpu | default "500m" }}
+              memory: {{ .Values.web.nginxRequestedMemory | default "50Mi" }}
+              cpu: {{ .Values.web.nginxRequestedCpu | default "10m" }}
           image: nginx:bullseye
           imagePullPolicy: IfNotPresent
           ports:

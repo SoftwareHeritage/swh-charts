@@ -202,3 +202,8 @@ journalWriteConfiguration:
 
 addForgeNowConfiguration:
   email_address: add-forge-now@archive.softwareheritage.org
+
+web:
+  # Due to the number of cpus on the production nodes
+  # nginx starts a lot of workers by default which consumes more memory than the default
+  nginxRequestedMemory: 90Mi
