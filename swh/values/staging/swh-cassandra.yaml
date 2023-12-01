@@ -722,6 +722,8 @@ toolbox:
     scrubber-storage:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
 
 scrubber:
   enabled: true

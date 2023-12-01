@@ -347,3 +347,12 @@ objstorage:
             operator: In
             values:
             - "storage1"
+
+svixConfiguration:
+  svix:
+    server_url: https://svix.internal.staging.swh.network
+    auth_token: ${SVIX_AUTH_TOKEN}
+  secrets:
+    SVIX_AUTH_TOKEN:
+      secretKeyRef: svix-secrets
+      secretKeyName: svix-token
