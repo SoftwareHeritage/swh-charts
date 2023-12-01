@@ -596,10 +596,12 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
+  webhooksConfigurationRef: webhooksConfiguration
   extraConfig:
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
       realm_name: SoftwareHeritageStaging
+    save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
     search_config:
       metadata_backend: swh-search
     content_display_max_size: 5242880

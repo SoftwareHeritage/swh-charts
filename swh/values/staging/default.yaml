@@ -356,3 +356,9 @@ svixConfiguration:
     SVIX_AUTH_TOKEN:
       secretKeyRef: common-secrets
       secretKeyName: svix-token
+
+webhooksConfiguration:
+  secrets:
+    WEBHOOKS_SECRET:
+      secretKeyRef: common-secrets
+      secretKeyName: svix-token

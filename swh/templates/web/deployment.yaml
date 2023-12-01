@@ -63,6 +63,10 @@ spec:
             {{- include "swh.secrets.environment" (dict "Values" $.Values
                                                         "configurationRef" .Values.web.addForgeNowConfigurationRef) | nindent 12 }}
             {{- end -}}
+            {{- if .Values.web.webhooksConfigurationRef -}}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" .Values.web.webhooksConfigurationRef) | nindent 12 }}
+            {{- end -}}
             {{- if .Values.web.sentry.enabled }}
             - name: SWH_SENTRY_DSN
               valueFrom:
