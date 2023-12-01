@@ -548,10 +548,14 @@ storage:
 web:
   enabled: true
   logLevel: INFO
+  # Usual consumption with visits webhook is 200m cpu (/2 replicas)
+  # Scale up if a real burst happen (>1 cpu per pod)
+  requestedCpu: 100m
+  requestedMemory: 300Mi
   autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 3
-    cpuPercentageUsage: 50
+    minReplicaCount: 2
+    maxReplicaCount: 4 # 4 to test the autoscaling in extreme scenarios
+    cpuPercentageUsage: 1000
   hosts:
     - webapp.staging.swh.network
     - webapp-cassandra.internal.staging.swh.network

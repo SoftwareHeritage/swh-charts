@@ -743,10 +743,10 @@ search:
 web:
   enabled: true
   logLevel: INFO
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 3
-    cpuPercentageUsage: 100
+  # small footprint because this webapp is almost not used, only for tests
+  replicas: 1
+  requestedCpu: 50m
+  requestedMemory: 250Mi
   hosts:
     - webapp-postgresql.internal.staging.swh.network
   refreshSavecodenowStatus:
