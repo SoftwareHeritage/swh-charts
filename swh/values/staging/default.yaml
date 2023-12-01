@@ -361,4 +361,4 @@ webhooksConfiguration:
   secrets:
     WEBHOOKS_SECRET:
       secretKeyRef: common-secrets
-      secretKeyName: svix-token
+      secretKeyName: webhooks-secret
