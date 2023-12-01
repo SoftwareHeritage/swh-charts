@@ -354,5 +354,5 @@ svixConfiguration:
     auth_token: ${SVIX_AUTH_TOKEN}
   secrets:
     SVIX_AUTH_TOKEN:
-      secretKeyRef: svix-secrets
+      secretKeyRef: common-secrets
       secretKeyName: svix-token
