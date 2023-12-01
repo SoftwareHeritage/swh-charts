@@ -555,9 +555,6 @@ web:
   hosts:
     - webapp.staging.swh.network
     - webapp-cassandra.internal.staging.swh.network
-  refreshSavecodenowStatus:
-    enabled: true
-    concurrencyPolicy: Forbid
   syncMailmaps:
     enabled: true
     concurrencyPolicy: Forbid
