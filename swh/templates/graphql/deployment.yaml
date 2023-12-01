@@ -25,6 +25,10 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ include (print $.Template.BasePath "/graphql/configmap.yaml") . | sha256sum }}
     spec:
+      {{- if $.Values.graphql.affinity }}
+      affinity:
+        {{- toYaml $.Values.graphql.affinity | nindent 8 }}
+      {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.graphql.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.graphql.priorityClassName }}
       {{ end }}
