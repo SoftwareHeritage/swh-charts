@@ -228,8 +228,8 @@ search:
             values:
             - "true"
   journalClients:
-    nodeAffinity:
-      affinity:
+    affinity:
+      nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
