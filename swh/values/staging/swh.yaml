@@ -2,7 +2,7 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-postgresqlStorageConfiguration:
+postgresqlRWStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
@@ -28,7 +28,7 @@ postgresqlROStorageConfiguration:
 
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
-  storageConfigurationRef: postgresqlStorageConfiguration
+  storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjectStorage
 
 ## Direct postgresql connection without any filter or objstorage
@@ -87,7 +87,7 @@ rwStoragePipelineSteps:
 
 readWriteStorageConfiguration:
   pipelineStepsRef: rwStoragePipelineSteps
-  storageConfigurationRef: postgresqlStorageConfiguration
+  storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
 
@@ -559,7 +559,7 @@ toolbox:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
     storage:
-      storageDbConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlRWStorageConfiguration
     scrubber-journal:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
