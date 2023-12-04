@@ -5,7 +5,7 @@ swh_counters_image_version: '20231205.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
 swh_deposit_checkers_image_version: '20231204.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
-swh_deposit_image_version: '20231204.1'
+swh_deposit_image_version: '20231204.2'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20231204.2'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
@@ -13,7 +13,7 @@ swh_indexer_image_version: '20231204.1'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
 swh_indexer_storage_image_version: '20231204.1'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
-swh_lister_image_version: '20231204.1'
+swh_lister_image_version: '20231204.2'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
 swh_loader_bzr_image_version: '20231204.2'
 swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_cvs
@@ -25,7 +25,7 @@ swh_loader_mercurial_image_version: '20231204.1'
 swh_loader_metadata_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_metadata
 swh_loader_metadata_image_version: '20231204.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
-swh_loader_package_image_version: '20231204.1'
+swh_loader_package_image_version: '20231204.2'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
 swh_loader_savecodenow_image_version: '20231204.1'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
