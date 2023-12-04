@@ -229,13 +229,14 @@ search:
             - "true"
   journalClients:
     nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: swh/journal_client
-            operator: In
-            values:
-            - "true"
+      affinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: swh/journal_client
+              operator: In
+              values:
+              - "true"
 
 scrubber:
   sentry:
