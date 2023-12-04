@@ -9,9 +9,9 @@ swh_deposit_image_version: '20231204.2'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20231204.2'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
-swh_indexer_image_version: '20231204.1'
+swh_indexer_image_version: '20231204.2'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
-swh_indexer_storage_image_version: '20231204.1'
+swh_indexer_storage_image_version: '20231204.2'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
 swh_lister_image_version: '20231204.2'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
@@ -37,7 +37,7 @@ swh_scheduler_image_version: '20231204.2'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
 swh_scrubber_image_version: '20231204.1'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
-swh_search_image_version: '20231204.1'
+swh_search_image_version: '20231204.2'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
 swh_storage_image_version: '20231204.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
