@@ -57,11 +57,11 @@ roStoragePipelineSteps:
 
 remoteReadWriteStorageConfiguration:
   cls: remote
-  url: http://storage-read-write-rpc-ingress
+  url: http://storage-postgresql-read-write-rpc-ingress
 
 remoteReadOnlyStorageConfiguration:
   cls: remote
-  url: http://storage-read-only-rpc-ingress
+  url: http://storage-postgresql-read-only-rpc-ingress
 
 remoteROStorageConfiguration:
   pipelineStepsRef: roStoragePipelineSteps
@@ -71,7 +71,7 @@ remoteROObjstorageConfiguration:
   cls: filtered
   storage_conf:
     cls: remote
-    url: http://storage-read-only-rpc-ingress
+    url: http://objstorage-read-only-rpc-ingress
   filters_conf:
     - type: readonly
 
