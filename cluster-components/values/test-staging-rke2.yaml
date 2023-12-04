@@ -11,6 +11,12 @@ svix:
       cert-manager.io/cluster-issuer: letsencrypt-production-gandi
       kubernetes.io/tls-acme: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/server-snippet: |
+        location /save/origin/visit/webhook {
+          allow 10.42.0.0/16;
+          allow 10.43.0.0/16;
+          deny all;
+        }
     whitelistSourceRange:
       # cluster internal range ip
       - 10.42.0.0/16
