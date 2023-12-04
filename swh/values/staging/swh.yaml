@@ -287,7 +287,7 @@ indexers:
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  objstorageConfigurationRef: remoteObjstorageConfiguration
+  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:

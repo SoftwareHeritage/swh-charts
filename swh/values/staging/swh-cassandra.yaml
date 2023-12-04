@@ -60,7 +60,7 @@ cassandraReplayerStorageConfiguration:
 cassandraStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   journalWriterConfigurationRef: storageJournalWriterConfiguration
-  objstorageConfigurationRef: remoteObjstorageConfiguration
+  objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
 
 scrubberROStorageConfiguration:
   storageConfigurationRef: cassandraROStorage

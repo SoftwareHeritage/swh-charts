@@ -153,10 +153,6 @@ remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler.internal.staging.swh.network
 
-remoteObjstorageConfiguration:
-  cls: remote
-  url: http://storage1.internal.staging.swh.network:5003/
-
 remoteReadWriteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-read-write-rpc-ingress
