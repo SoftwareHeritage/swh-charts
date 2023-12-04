@@ -827,7 +827,7 @@ deposit:
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: remoteReadWriteStorageConfiguration
+  storageMetadataConfigurationRef: remoteStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
