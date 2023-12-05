@@ -246,6 +246,22 @@ journalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
 
+journalClientCountersConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh.counters.journal_client
+  prefix: swh.journal.objects
+  object_types:
+  - content
+  - directory
+  - origin
+  - origin_visit
+  - origin_visit_status
+  - release
+  - revision
+  - skipped_content
+  - snapshot
+  message.max.bytes: 524288000
+
 depositConfiguration:
   host: deposit-dynamic.internal.staging.swh.network
   user: ${DEPOSIT_USERNAME}

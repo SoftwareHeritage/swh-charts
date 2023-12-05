@@ -944,3 +944,10 @@ webhooks:
         group_id: swh-archive-stg-webhooks
         object_types:
           - origin_visit_status
+
+counters:
+  enabled: true
+  journalClient:
+    enabled: true
+    countersConfigurationRef: remoteCountersConfiguration
+    journalConfigurationRef: journalClientCountersConfiguration

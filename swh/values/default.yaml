@@ -290,3 +290,25 @@ webhooks:
 
 statsd_exporter:
   enabled: true
+
+counters:
+  rpc:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: swh/rpc
+              operator: In
+              values:
+              - "true"
+  journalClient:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: swh/journal_client
+              operator: In
+              values:
+              - "true"
