@@ -928,3 +928,55 @@ objstorage:
           default:
             paths:
               - path: /
+
+fakeHistoryConfiguration:
+  cls: prometheus
+  prometheus_host: thanos.i.a.s.n
+  prometheus_port: 19191
+  live_data_start: 0
+  cache_base_directory: "/srv/softwareheritage/counters"
+  interval: 12h
+  labels:
+    environment: staging
+
+fakeLocalRedis:
+  cls: redis
+  host: localhost:6379
+
+counters:
+  enabled: false
+  rpc:
+    enabled: false
+    countersConfigurationRef: fakeLocalRedis
+    historyConfigurationRef: fakeHistoryConfiguration
+    requestedMemory: 20Mi
+    limitedMemory: 40Mi
+    requestedCpu: 10m
+    limitedCpu: 20m
+    replicas: 1
+    gunicorn:
+      threads: 1
+      workers: 1
+      timeout: 10
+    # autoScaling:
+    #   minReplicaCount: 4
+    #   maxReplicaCount: 20
+    #   cpuPercentageUsage: 150
+    hosts:
+      - mycounters.minikube.domain
+    ingress:
+      enabled: false
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRangeRef: internalNetworkRanges
+      endpoints:
+        default:
+          paths:
+            - /
+  journalClient:
+    enabled: false
+    countersConfigurationRef: fakeRemoteCountersConfiguration
+    journalConfigurationRef: journalClientConfiguration
+    requestedMemory: 15Mi
+    limitedMemory: 30Mi
+    requestedCpu: 50m
+    limitedCpu: 100m

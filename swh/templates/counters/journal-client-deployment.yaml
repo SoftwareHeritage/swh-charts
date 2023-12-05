@@ -1,0 +1,119 @@
+{{ if and .Values.counters.enabled .Values.counters.journalClient.enabled -}}
+{{- $configurationChecksum := include (print .Template.BasePath "/counters/journal-client-configmap.yaml") . -}}
+{{- $log_level := .Values.counters.journalClient.logLevel }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: counters-journal-client
+  labels:
+    app: counters-journal-client
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: counters-journal-client
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: counters-journal-client
+      annotations:
+        checksum/config: {{ $configurationChecksum | sha256sum }}
+    spec:
+      {{- if .Values.counters.journalClient.affinity }}
+      affinity:
+        {{- toYaml .Values.counters.journalClient.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.counters.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.counters.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      containers:
+        - name: counters-journal-client
+          resources:
+            requests:
+              memory: {{ .Values.counters.journalClient.requestedMemory | default "512Mi" }}
+              cpu: {{ .Values.counters.journalClient.requestedCpu | default "500m" }}
+          {{- if or .Values.counters.journalClient.limitedMemory .Values.counters.journalClient.limitedCpu }}
+            limits:
+            {{- if .Values.counters.journalClient.limitedMemory }}
+              memory: {{ .Values.counters.journalClient.limitedMemory }}
+            {{- end }}
+            {{- if .Values.counters.journalClient.limitedCpu }}
+              cpu: {{ .Values.counters.journalClient.limitedCpu }}
+            {{- end }}
+          {{ end }}
+          image: {{ .Values.swh_counters_image }}:{{ .Values.swh_counters_image_version }}
+          command:
+          - /opt/swh/entrypoint.sh
+          args:
+          # - shell
+          # - sleep
+          # - infinity
+          - swh
+          - --log-level
+          - {{ $log_level | default "INFO" }}
+          - counters
+          - --config-file
+          - /etc/swh/config.yml
+          - journal-client
+          env:
+            - name: STATSD_HOST
+              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+            - name: LOG_LEVEL
+              value: {{ $log_level | default "INFO" }}
+          {{- if .Values.counters.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ .Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.counters
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.counters.sentry.secretKeyRef }}
+                  key: {{ .Values.counters.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: counters-journal-client-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+{{- end -}}

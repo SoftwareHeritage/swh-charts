@@ -1,0 +1,5 @@
+{{- if and .Values.counters.enabled .Values.counters.rpc.enabled .Values.counters.rpc.ingress.enabled -}}
+{{- include "swh.ingress" (dict "Values"        .Values
+                                "serviceType"   "counters-rpc"
+                                "configuration" .Values.counters.rpc) -}}
+{{ end }}

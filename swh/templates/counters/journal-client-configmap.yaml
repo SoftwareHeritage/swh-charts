@@ -1,0 +1,21 @@
+{{ if and .Values.counters.enabled .Values.counters.journalClient.enabled -}}
+{{- with .Values.counters.journalClient }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: counters-journal-client-configuration-template
+  namespace: {{ $.Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.service.fromYaml"
+      (dict "service" "counters"
+            "configurationRef" .countersConfigurationRef
+            "Values" $.Values) | nindent 4 }}
+
+    {{- include "swh.journalClientConfiguration"
+      (dict "configurationRef" .journalConfigurationRef
+            "Values" $.Values) | nindent 4 }}
+
+{{- end -}}
+{{- end -}}
