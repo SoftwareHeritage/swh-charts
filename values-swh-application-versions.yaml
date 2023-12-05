@@ -35,7 +35,7 @@ swh_objstorage_image_version: '20231204.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
 swh_scheduler_image_version: '20231204.2'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
-swh_scrubber_image_version: '20231205.2'
+swh_scrubber_image_version: '20231205.3'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
 swh_search_image_version: '20231205.1'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
@@ -43,7 +43,7 @@ swh_storage_image_version: '20231204.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20231204.1'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20231205.4'
+swh_toolbox_image_version: '20231205.5'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
 swh_vault_cookers_image_version: '20231205.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
