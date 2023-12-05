@@ -29,7 +29,7 @@ swh_loader_package_image_version: '20231204.2'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
 swh_loader_savecodenow_image_version: '20231205.5'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
-swh_loader_svn_image_version: '20231205.1'
+swh_loader_svn_image_version: '20231205.2'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
 swh_objstorage_image_version: '20231204.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
