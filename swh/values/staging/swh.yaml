@@ -943,6 +943,12 @@ storage:
       gunicorn:
         threads: 4
         workers: 8
+      cronjobs:
+        create-object-reference-partitions:
+          enabled: true
+          logLevel: INFO
+          cron: 5 0 1 * *
+
     postgresql-read-only:
       autoScaling:
         minReplicaCount: 2
