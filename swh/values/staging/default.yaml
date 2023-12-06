@@ -354,7 +354,7 @@ svixConfiguration:
   svix:
     server_url: https://svix.internal.staging.swh.network
     auth_token: ${SVIX_AUTH_TOKEN}
-    event_retention_period: 7
+  event_retention_period: 7
   secrets:
     SVIX_AUTH_TOKEN:
       secretKeyRef: common-secrets
