@@ -208,9 +208,14 @@ fakeDepositConfiguration:
 
 storage:
   enabled: false
-  deploments:
-    fake:
+  deployments:
+    foobar:
       storageConfigurationRef: fakePostgresqlStorageConfigurationRef
+      cronjobs:
+        foobar-action:
+          enabled: true
+          logLevel: INFO
+          cron: "0 0 1 * *"
 
 storage_replayer:
   enabled: false

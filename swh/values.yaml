@@ -647,6 +647,11 @@ storage:
     #       default:
     #         paths:
     #           - path: /
+    #   cronjobs:
+    #     create-object-reference-partitions:
+    #       enabled: true
+    #       logLevel: INFO
+    #       cron: 5 0 1 * *
 
 # internalNetworkRanges:
 #   - xxx.xxx.xxx.xxx/24

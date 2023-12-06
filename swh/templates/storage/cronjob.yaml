@@ -1,0 +1,120 @@
+{{ if .Values.storage.enabled -}}
+{{ range $storage_type, $storage_config := .Values.storage.deployments }}
+{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
+{{ range $cron_job, $cron_config := $storage_config.cronjobs | default list }}
+{{- if or (not (hasKey $cron_config "enabled")) (get $cron_config "enabled") -}}
+{{- $log_level := $cron_config.logLevel | default "INFO" -}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: storage-{{ $storage_type }}-{{ $cron_job }}
+spec:
+  # By default, at 00:05 each first day of the month
+  schedule: {{ $cron_config.cron | default "5 0 1 * *" | quote}}
+  {{- if $cron_config.concurrencyPolicy }}
+  concurrencyPolicy: {{ $cron_config.concurrencyPolicy }}
+  {{- end }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          {{- if $storage_config.affinity }}
+          affinity:
+            {{- toYaml $storage_config.affinity | nindent 12 }}
+          {{- end }}
+          {{- if and $.Values.podPriority.enabled $storage_config.priorityClassName }}
+          priorityClassName: {{ $.Values.namespace }}-{{ $storage_config.priorityClassName }}
+          {{ end }}
+          initContainers:
+            - name: prepare-configuration
+              image: debian:bullseye
+              imagePullPolicy: IfNotPresent
+              command:
+                - /entrypoints/prepare-configuration.sh
+              env:
+                {{ include "swh.secrets.environment.inline" (dict "configurationRef" $storage_config.storageConfigurationRef
+                                                                  "Values" $.Values) | nindent 14 }}
+
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+              - name: configuration-template
+                mountPath: /etc/swh/configuration-template
+              - name: config-utils
+                mountPath: /entrypoints
+                readOnly: true
+          containers:
+            - name: storage-{{ $storage_type }}-{{ $cron_job }}
+              resources:
+                requests:
+                  memory: {{ $cron_config.requestedMemory | default "512Mi" }}
+                  cpu: {{ $cron_config.requestedCpu | default "500m" }}
+                {{- if or $cron_config.limitedMemory $cron_config.limitedCpu }}
+                limits:
+                {{- if $cron_config.limitedMemory }}
+                  memory: {{ $cron_config.limitedMemory }}
+                {{- end }}
+                {{- if $cron_config.limitedCpu }}
+                  cpu: {{ $cron_config.limitedCpu }}
+                {{- end }}
+                {{ end }}
+              image: {{ $.Values.swh_storage_image }}:{{ $.Values.swh_storage_image_version }}
+              command:
+              - /opt/swh/entrypoint.sh
+              args:
+              - swh
+              - --log-level
+              - {{ $log_level }}
+              - storage
+              - {{ $cron_job }}
+              - "$(date +%Y-%m-%d)"
+              - "$(date -d '+1 month' +%Y-%m-%d)"
+              env:
+                - name: STATSD_HOST
+                  value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+                - name: STATSD_PORT
+                  value: {{ $.Values.statsdPort | default "9125" | quote }}
+                - name: SWH_CONFIG_FILENAME
+                  value: /etc/swh/config.yml
+                - name: LOG_LEVEL
+                  value: {{ $log_level | default "INFO" }}
+              {{- if $.Values.storage.sentry.enabled }}
+                - name: SWH_SENTRY_ENVIRONMENT
+                  value: {{ $.Values.sentry.environment }}
+                - name: SWH_MAIN_PACKAGE
+                  value: swh.storage
+                - name: SWH_SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Values.storage.sentry.secretKeyRef }}
+                      key: {{ $.Values.storage.sentry.secretKeyName }}
+                      # if the setting doesn't exist, sentry issue pushes will be disabled
+                      optional: false
+                - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+                  value: "true"
+              {{- end }}
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+          volumes:
+          - name: configuration
+            emptyDir: {}
+          - name: configuration-template
+            configMap:
+              name: storage-{{ $storage_type }}-configuration-template
+              items:
+              - key: "config.yml.template"
+                path: "config.yml.template"
+          - name: config-utils
+            configMap:
+              name: config-utils
+              defaultMode: 0555
+          restartPolicy: OnFailure
+
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
