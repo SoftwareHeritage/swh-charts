@@ -8,7 +8,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: storage-{{ $storage_type }}-{{ $cron_job }}
+  name: {{ $cron_job }}-cronjob
 spec:
   # By default, at 00:05 each first day of the month
   schedule: {{ $cron_config.cron | default "5 0 1 * *" | quote}}
