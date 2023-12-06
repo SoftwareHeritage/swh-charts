@@ -20,7 +20,7 @@ ingressNginx:
   requestedCpu: 50m
   requestedMemory: 200Mi
   config:
-    worker-processes: 2
+    worker-processes: 5
     # Make NGINX forwards the X-Forwarded-* headers
     use-forwarded-headers: true
   replicaCount: 2
