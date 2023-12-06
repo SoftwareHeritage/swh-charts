@@ -948,6 +948,7 @@ storage:
           enabled: true
           logLevel: INFO
           cron: 5 0 1 * *
+          concurrencyPolicy: Forbid
 
     postgresql-read-only:
       autoScaling:
