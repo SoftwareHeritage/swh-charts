@@ -45,7 +45,7 @@ spec:
                 mountPath: /entrypoints
                 readOnly: true
           containers:
-            - name: storage-{{ $storage_type }}-{{ $cron_job }}
+            - name: {{ $cron_job }}
               resources:
                 requests:
                   memory: {{ $cron_config.requestedMemory | default "512Mi" }}
