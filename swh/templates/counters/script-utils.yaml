@@ -11,7 +11,7 @@ data:
   refresh-counters-cache.sh: |
     #!/bin/bash
 
-    set -e
+    set -ex
 
     cache_file=$1
     static_file=$2
@@ -38,15 +38,15 @@ data:
   fetch-static-history.sh: |
     #!/bin/bash
 
-    set -e
+    set -ex
 
-    DEST_DIR=/srv/softwareheritage/counters
-    DEST_PATH="${DEST_DIR}/static_history.json"
+    apt update
+    apt install -y curl
 
-    [ ! -d $DEST_DIR ] && mkdir -p $DEST_DIR
+    static_history_path=$1
 
-    url="https://gitlab.softwareheritage.org/swh/infra/puppet/puppet-swh-site/-/raw/production/site-modules/profile/files/swh/deploy/counters/static_history/static_history.json?ref_type=heads&inline=false"
+    url="https://gitlab.softwareheritage.org/swh/devel/swh-counters/-/snippets/1617/raw/main/snippetfile1.txt?inline=false"
 
-    [ ! -f $DEST_PATH ] && curl -s $url > $DEST_PATH
+    curl -s $url > $static_history_path
 
 {{- end -}}

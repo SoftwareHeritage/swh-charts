@@ -1,4 +1,6 @@
 {{ if and .Values.counters.enabled .Values.counters.rpc.enabled -}}
+{{- $configmapChecksum := include (print $.Template.BasePath "/counters/rpc-configmap.yaml") . | sha256sum }}
+{{- $scriptUtilsChecksum := include (print $.Template.BasePath "/counters/script-utils.yaml") . | sha256sum }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +26,8 @@ spec:
       labels:
         app: counters-rpc
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/counters/rpc-configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ $configmapChecksum }}
+        checksum/script-utils: {{ $scriptUtilsChecksum }}
     spec:
       {{- if .Values.counters.rpc.affinity }}
       affinity:
@@ -50,6 +53,21 @@ spec:
           env:
             {{ include "swh.secrets.environment" (dict "configurationRef" .Values.counters.rpc.countersConfigurationRef
                                                        "Values" .Values) | nindent 10 }}
+        {{- if .Values.counters.rpc.fetchStaticHistory }}
+        - name: fetch-static-history
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/fetch-static-history.sh
+          args:
+          - {{ .Values.counters.rpc.cacheBaseDirectory }}/static_history.json
+          volumeMounts:
+          - name: script-utils
+            mountPath: /entrypoints
+            readOnly: true
+          - name: staticdata
+            mountPath: {{ .Values.counters.rpc.cacheBaseDirectory }}
+        {{- end }}
       containers:
         - name: counters-rpc
           resources:
@@ -121,8 +139,12 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: staticdata
+            mountPath: {{ .Values.counters.rpc.cacheBaseDirectory }}
       volumes:
       - name: configuration
+        emptyDir: {}
+      - name: staticdata
         emptyDir: {}
       - name: configuration-template
         configMap:
@@ -134,4 +156,13 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
+      {{- if .Values.counters.rpc.fetchStaticHistory }}
+      - name: script-utils
+        configMap:
+          name: script-utils
+          defaultMode: 0555
+          items:
+          - key: "fetch-static-history.sh"
+            path: "fetch-static-history.sh"
+      {{- end }}
 {{- end -}}

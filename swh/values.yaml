@@ -334,7 +334,6 @@ sentry:
 #   prometheus_host: thanos.i.a.s.n
 #   prometheus_port: 19191
 #   live_data_start: 1609462861
-#   cache_base_directory: "/srv/softwareheritage/counters"
 #   interval: 12h
 #   labels:
 #     environment: staging
@@ -1416,6 +1415,8 @@ counters:
     countersConfigurationRef: remoteCountersConfiguration
   rpc:
     enabled: false
+    fetchStaticHistory: false
+    cacheBaseDirectory: /srv/softwareheritage/counters
     port: 5008
     priorityClassName: frontend-rpc
     logLevel: INFO

@@ -85,6 +85,7 @@ spec:
           - name: script-utils
             configMap:
               name: script-utils
+              defaultMode: 0555
               items:
               - key: "refresh-counters-cache.sh"
                 path: "refresh-counters-cache.sh"

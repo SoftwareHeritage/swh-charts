@@ -17,6 +17,7 @@ data:
       (dict "service" "history"
             "configurationRef" .historyConfigurationRef
             "Values" $.Values) | nindent 4 }}
+      cache_base_directory: {{ .cacheBaseDirectory }}
 
 {{- end -}}
 {{- end -}}
