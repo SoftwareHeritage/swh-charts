@@ -951,9 +951,51 @@ webhooks:
         object_types:
           - origin_visit_status
 
+stagingRedis:
+  cls: redis
+  host: counters0.internal.staging.swh.network:6379
+
+historyConfiguration:
+  cls: prometheus
+  prometheus_host: thanos.internal.admin.swh.network
+  prometheus_port: 19191
+  live_data_start: 0
+  interval: 12h
+  labels:
+    environment: staging
+
 counters:
   enabled: true
   journalClient:
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
+  refreshCountersCache:
+    enabled: true
+    cron: "0 */1 * * *"
+    concurrencyPolicy: Forbid
+    countersConfigurationRef: remoteCountersConfiguration
+  rpc:
+    enabled: true
+    fetchStaticHistory: false
+    cacheBaseDirectory: /srv/softwareheritage/counters
+    countersConfigurationRef: stagingRedis
+    historyConfigurationRef: historyConfiguration
+    gunicorn:
+      threads: 1
+      workers: 1
+      timeout: 10
+    autoScaling:
+      minReplicaCount: 2
+      maxReplicaCount: 4
+      cpuPercentageUsage: 100
+    hosts:
+      - counters-rpc-ingress
+    ingress:
+      enabled: true
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRangeRef: internalNetworkRanges
+      endpoints:
+        default:
+          paths:
+            - path: /

@@ -1417,7 +1417,6 @@ counters:
     enabled: false
     fetchStaticHistory: false
     cacheBaseDirectory: /srv/softwareheritage/counters
-    port: 5008
     priorityClassName: frontend-rpc
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance

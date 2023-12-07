@@ -977,7 +977,7 @@ counters:
       endpoints:
         default:
           paths:
-            - /
+            - path: /
   journalClient:
     enabled: false
     countersConfigurationRef: fakeRemoteCountersConfiguration

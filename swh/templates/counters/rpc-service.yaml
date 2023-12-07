@@ -1,5 +1,9 @@
 {{ if and .Values.counters.enabled .Values.counters.rpc.enabled -}}
+{{- $rpc_config := .Values.counters.rpc }}
+{{- if not (hasKey $rpc_config "port") }}
+{{- $rpc_config := set .Values.counters.rpc "port" .Values.counters.port -}}
+{{- end -}}
 {{- include "swh.service" (dict "Values"        .Values
                                 "serviceType"   "counters-rpc"
-                                "configuration" .Values.counters.rpc) -}}
+                                "configuration" $rpc_config) -}}
 {{ end }}
