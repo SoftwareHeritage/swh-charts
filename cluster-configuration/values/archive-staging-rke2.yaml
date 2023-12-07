@@ -13,6 +13,7 @@ ingressNginx:
   applicationNameOverride: archive-staging-rke2-ingress-nginx
   defaultClass: true
   watchIngressWithoutClass: true
+  allowSnippetAnnotations: true
   annotations:
     # To be able to share the same ip for several services
     # https://metallb.org/usage/#ip-address-sharing
