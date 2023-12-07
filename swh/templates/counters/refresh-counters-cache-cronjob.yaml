@@ -1,0 +1,94 @@
+{{ if and .Values.counters.enabled .Values.counters.refreshCountersCache.enabled -}}
+{{- with .Values.counters.refreshCountersCache -}}
+{{- $log_level := .logLevel | default "INFO" -}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: counters-refresh-counters-cache-cronjob
+spec:
+  # By default, every 4h
+  schedule: {{ .cron | default "0 */4 * * *" | quote}}
+  {{- if .concurrencyPolicy }}
+  concurrencyPolicy: {{ .concurrencyPolicy }}
+  {{- end }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          {{- if $.Values.counters.affinity }}
+          affinity:
+            {{- toYaml $.Values.counters.affinity | nindent 12 }}
+          {{- end }}
+          {{- if and $.Values.podPriority.enabled $.Values.counters.priorityClassName }}
+          priorityClassName: {{ $.Values.namespace }}-{{ $.Values.counters.priorityClassName }}
+          {{ end }}
+          containers:
+            - name: counters-refresh-counters-cache
+              resources:
+                requests:
+                  memory: {{ .requestedMemory | default "512Mi" }}
+                  cpu: {{ .requestedCpu | default "500m" }}
+                {{- if or .limitedMemory .limitedCpu }}
+                limits:
+                {{- if .limitedMemory }}
+                  memory: {{ .limitedMemory }}
+                {{- end }}
+                {{- if .limitedCpu }}
+                  cpu: {{ .limitedCpu }}
+                {{- end }}
+                {{ end }}
+              image: {{ $.Values.swh_counters_image }}:{{ $.Values.swh_counters_image_version }}
+              command:
+              - /cron/bin/refresh-counters-cache.sh
+              args:
+              - history.json
+              - static_history.json
+              env:
+                - name: STATSD_HOST
+                  value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+                - name: STATSD_PORT
+                  value: {{ $.Values.statsdPort | default "9125" | quote }}
+                - name: SWH_CONFIG_FILENAME
+                  value: /etc/swh/config.yml
+                - name: LOG_LEVEL
+                  value: {{ $log_level }}
+              {{- if $.Values.counters.sentry.enabled }}
+                - name: SWH_SENTRY_ENVIRONMENT
+                  value: {{ $.Values.sentry.environment }}
+                - name: SWH_MAIN_PACKAGE
+                  value: swh.counters
+                - name: SWH_SENTRY_DSN
+                  valueFrom:
+                    secretKeyRef:
+                      name: {{ $.Values.counters.sentry.secretKeyRef }}
+                      key: {{ $.Values.counters.sentry.secretKeyName }}
+                      # if the setting doesn't exist, sentry issue pushes will be disabled
+                      optional: false
+                - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+                  value: "true"
+              {{- end }}
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: configuration
+                mountPath: /etc/swh
+              - name: script-utils
+                mountPath: /cron/bin/
+          volumes:
+          - name: configuration
+            emptyDir: {}
+          - name: configuration-template
+            configMap:
+              name: counters-refresh-counters-cache-configuration-template
+              items:
+              - key: "config.yml.template"
+                path: "config.yml.template"
+          - name: script-utils
+            configMap:
+              name: script-utils
+              items:
+              - key: "refresh-counters-cache.sh"
+                path: "refresh-counters-cache.sh"
+          restartPolicy: OnFailure
+
+{{- end -}}
+{{- end -}}

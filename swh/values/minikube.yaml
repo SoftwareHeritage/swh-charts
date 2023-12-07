@@ -945,6 +945,11 @@ fakeLocalRedis:
 
 counters:
   enabled: false
+  refreshCountersCache:
+    enabled: false
+    cron: "0 */1 * * *"
+    concurrencyPolicy: Forbid
+    countersConfigurationRef: fakeRemoteCountersConfiguration
   rpc:
     enabled: false
     countersConfigurationRef: fakeLocalRedis

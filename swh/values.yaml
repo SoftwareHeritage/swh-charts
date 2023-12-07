@@ -1395,6 +1395,11 @@ counters:
     enabled: false
     secretKeyRef: common-secrets
     secretKeyName: counters-sentry-dsn
+  refreshCountersCache:
+    enabled: false
+    cron: "0 */4 * * *"
+    concurrencyPolicy: Forbid
+    countersConfigurationRef: remoteCountersConfiguration
   rpc:
     enabled: false
     port: 5008

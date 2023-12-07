@@ -48,8 +48,8 @@ spec:
             mountPath: /entrypoints
             readOnly: true
           env:
-{{ include "swh.secrets.environment" (dict "Values" .Values
-                                           "configurationRef" .Values.counters.rpc.countersConfigurationRef) | indent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.counters.rpc.countersConfigurationRef
+                                                       "Values" .Values) | nindent 10 }}
       containers:
         - name: counters-rpc
           resources:
