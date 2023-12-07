@@ -22,6 +22,9 @@ spec:
         controller:
           replicaCount: {{ .Values.ingressNginx.replicaCount | default 1}}
           watchIngressWithoutClass: {{ .Values.ingressNginx.watchIngressWithoutClass | default "false" }}
+          {{- if .Values.ingressNginx.allowSnippetAnnotations }}
+          allowSnippetAnnotations: {{ .Values.ingressNginx.allowSnippetAnnotations }}
+          {{- end }}
           service:
             externalTrafficPolicy: Local
             {{- if .Values.ingressNginx.loadBalancerIP }}
