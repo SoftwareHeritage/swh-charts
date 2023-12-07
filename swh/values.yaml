@@ -325,6 +325,20 @@ sentry:
 #   server_url: https://my.keycloak.instance/auth/
 #   realm_name: myrealm
 
+# countersConfiguration:
+#   cls: redis
+#   host: localhost:6379
+
+# historyCountersConfiguration:
+#   cls: prometheus
+#   prometheus_host: thanos.i.a.s.n
+#   prometheus_port: 19191
+#   live_data_start: 1609462861
+#   cache_base_directory: "/srv/softwareheritage/counters"
+#   interval: 12h
+#   labels:
+#     environment: staging
+
 giveConfiguration:
   public: ${GIVE_PUBLIC_KEY}
   token: ${GIVE_PRIVATE_TOKEN}
@@ -1406,7 +1420,8 @@ counters:
     priorityClassName: frontend-rpc
     logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
-    # schedulerConfigurationRef: postgresqlSchedulerConfiguration
+    # countersConfigurationRef: countersConfiguration
+    # historyConfigurationRef: historyCountersConfiguration
     # replicas: 2
     # gunicorn:
     #   threads: 5
@@ -1450,4 +1465,5 @@ counters:
       #       - yyy.yyy.yyy.yyy/24
   journalClient:
     enabled: false
-    # journalConfigurationRef: journalClientConfiguration
+    # countersConfigurationRef: remoteCountersConfiguration
+    # journalConfigurationRef: journalClientCountersConfiguration
