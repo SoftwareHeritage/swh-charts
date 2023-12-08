@@ -585,6 +585,12 @@ web:
           - path: /api/1/content/[^/]+/symbol/
         # auth-file with authentication
         authentication: swh-cassandra/web-auth-secrets
+      webhooks:
+        paths:
+          - path: /save/origin/visit/webhook
+        extraWhitelistSourceRange:
+          - 10.42.0.0/16
+          - 10.43.0.0/16
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
