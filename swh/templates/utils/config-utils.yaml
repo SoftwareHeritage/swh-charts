@@ -13,9 +13,6 @@ data:
     TEMPLATE=/etc/swh/configuration-template/config.yml.template
     TARGET=/etc/swh/config.yml
 
-    apt update
-    apt install gettext-base
-
     echo "Following variables will be replaced:"
     envsubst -v "$(<$TEMPLATE)"
 
