@@ -38,7 +38,7 @@ spec:
       {{ end }}
       initContainers:
         - name: prepare-configuration
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
@@ -55,7 +55,7 @@ spec:
                                                        "Values" .Values) | nindent 10 }}
         {{- if .Values.counters.rpc.fetchStaticHistory }}
         - name: fetch-static-history
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/fetch-static-history.sh

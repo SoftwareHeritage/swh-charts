@@ -40,9 +40,6 @@ data:
 
     set -ex
 
-    apt update
-    apt install -y curl
-
     static_history_path=$1
 
     url="https://gitlab.softwareheritage.org/swh/devel/swh-counters/-/snippets/1617/raw/main/snippetfile1.txt?inline=false"
