@@ -35,7 +35,7 @@ spec:
             requests:
               memory: {{ .requestedMemory | default "512Mi" }}
               cpu: {{ .requestedCpu | default "500m" }}
-          image: svix/svix-server:latest
+          image: svix/svix-server:{{ .version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8071

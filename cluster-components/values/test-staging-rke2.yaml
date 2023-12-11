@@ -4,6 +4,7 @@ alertmanager:
 
 svix:
   enabled: true
+  version: v1.14
   ingress:
     host: svix-test.internal.staging.swh.network
     createTLS: true
