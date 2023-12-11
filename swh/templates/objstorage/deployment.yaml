@@ -43,7 +43,7 @@ spec:
       {{- end }}
       initContainers:
         - name: prepare-configuration
-          image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
