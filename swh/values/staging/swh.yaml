@@ -787,8 +787,8 @@ web:
         paths:
           - path: /save/origin/visit/webhook
         extraWhitelistSourceRange:
-          - 10.42.0.0/16
-          - 10.43.0.0/16
+          - 192.168.130.1
+          - 192.168.130.2
   databaseConfigurationRef: postgresqlWebConfiguration
   searchConfigurationRef: remoteSearchConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
