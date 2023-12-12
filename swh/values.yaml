@@ -1413,6 +1413,9 @@ counters:
     cron: "0 */4 * * *"
     concurrencyPolicy: Forbid
     countersConfigurationRef: remoteCountersConfiguration
+    historyFiles:
+      - history.json
+      - static_history.json
   rpc:
     enabled: false
     fetchStaticHistory: false

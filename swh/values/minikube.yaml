@@ -949,6 +949,8 @@ counters:
     cron: "0 */1 * * *"
     concurrencyPolicy: Forbid
     countersConfigurationRef: fakeRemoteCountersConfiguration
+    historyFiles:
+      - history.json
   rpc:
     enabled: false
     fetchStaticHistory: true

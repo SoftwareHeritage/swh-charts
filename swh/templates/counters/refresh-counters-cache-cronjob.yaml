@@ -41,8 +41,9 @@ spec:
               command:
               - /cron/bin/refresh-counters-cache.sh
               args:
-              - history.json
-              - static_history.json
+              {{- range $file := $.Values.counters.refreshCountersCache.historyFiles }}
+              - {{ $file }}
+              {{- end }}
               env:
                 - name: STATSD_HOST
                   value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
