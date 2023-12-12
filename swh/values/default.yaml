@@ -292,6 +292,15 @@ statsd_exporter:
   enabled: true
 
 counters:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/counters
+            operator: In
+            values:
+            - "true"
   rpc:
     affinity:
       nodeAffinity:
