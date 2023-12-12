@@ -951,6 +951,7 @@ counters:
     countersConfigurationRef: fakeRemoteCountersConfiguration
     historyFiles:
       - history.json
+      - '""'
   rpc:
     enabled: false
     fetchStaticHistory: true

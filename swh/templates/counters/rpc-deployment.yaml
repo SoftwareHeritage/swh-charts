@@ -70,6 +70,17 @@ spec:
         {{- end }}
       containers:
         - name: counters-rpc
+          # Workaround until we have a way to define distributed volumes
+          # This initializes the history cache file
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /entrypoints/refresh-counters-cache.sh
+                  {{- range $historyFile := $.Values.counters.refreshCountersCache.historyFiles }}
+                  - {{ $historyFile }}
+                  {{- end }}
+                  - localhost:{{ .Values.counters.port }}
           resources:
             requests:
               memory: {{ .Values.counters.rpc.requestedMemory | default "512Mi" }}
@@ -141,6 +152,9 @@ spec:
             mountPath: /etc/swh
           - name: staticdata
             mountPath: {{ .Values.counters.rpc.cacheBaseDirectory }}
+          - name: script-utils
+            mountPath: /entrypoints
+            readOnly: true
       volumes:
       - name: configuration
         emptyDir: {}
@@ -156,7 +170,6 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{- if .Values.counters.rpc.fetchStaticHistory }}
       - name: script-utils
         configMap:
           name: script-utils
@@ -164,5 +177,6 @@ spec:
           items:
           - key: "fetch-static-history.sh"
             path: "fetch-static-history.sh"
-      {{- end }}
+          - key: "refresh-counters-cache.sh"
+            path: "refresh-counters-cache.sh"
 {{- end -}}
