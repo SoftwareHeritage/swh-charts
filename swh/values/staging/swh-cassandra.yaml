@@ -971,10 +971,7 @@ counters:
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
-    enabled: true
-    cron: "0 */1 * * *"
-    concurrencyPolicy: Forbid
-    countersConfigurationRef: remoteCountersConfiguration
+    enabled: false
   rpc:
     enabled: true
     fetchStaticHistory: false
