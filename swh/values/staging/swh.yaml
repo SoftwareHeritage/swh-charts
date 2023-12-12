@@ -808,7 +808,7 @@ web:
     search_config:
       metadata_backend: swh-search
     content_display_max_size: 5242880
-    history_counters_url: http://counters0.internal.staging.swh.network:5011/counters_history/history.json
+    history_counters_url: http://counters-rpc-ingress/counters_history/history.json
     swh_extra_django_apps:
     - swh.web.add_forge_now
     - swh.web.archive_coverage
