@@ -147,7 +147,7 @@ remoteIndexerStorageConfiguration:
 
 remoteCountersConfiguration:
     cls: remote
-    url: http://counters0.internal.staging.swh.network:5011/
+    url: http://counters0.internal.staging.swh.network:5011
 
 remoteSchedulerConfiguration:
   cls: remote
