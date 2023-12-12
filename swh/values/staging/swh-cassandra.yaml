@@ -988,10 +988,11 @@ counters:
       threads: 1
       workers: 1
       timeout: 10
-    autoScaling:
-      minReplicaCount: 2
-      maxReplicaCount: 4
-      cpuPercentageUsage: 100
+    replicas: 1
+    # autoScaling:
+    #   minReplicaCount: 2
+    #   maxReplicaCount: 4
+    #   cpuPercentageUsage: 100
     hosts:
       - counters-rpc-ingress
     ingress:
