@@ -8,6 +8,15 @@ podPriority:
 svix:
   enabled: true
   version: v1.15
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: svix-server
+            operator: In
+            values:
+            - "true"
   ingress:
     host: svix.internal.staging.swh.network
     createTLS: true

@@ -153,3 +153,13 @@ ss-template:
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/minikube.yaml \
       -n software-stories --create-namespace --debug
+
+ss-template-staging:
+	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SS_CHART)/values.yaml \
+      --values $(SS_CHART)/values/staging.yaml
+
+ss-template-production:
+	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SS_CHART)/values.yaml \
+      --values $(SS_CHART)/values/production.yaml

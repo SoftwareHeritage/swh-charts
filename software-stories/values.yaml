@@ -13,3 +13,13 @@ podPriority:
       range: 23000-24000
       value: 24500
       description: Frontend services (software-stories, ...)
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: software-stories
+          operator: In
+          values:
+          - "true"
