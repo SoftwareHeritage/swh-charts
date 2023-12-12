@@ -959,7 +959,7 @@ historyConfiguration:
   cls: prometheus
   prometheus_host: thanos.internal.admin.swh.network
   prometheus_port: 19191
-  live_data_start: 0
+  live_data_start: 1609462861
   interval: 12h
   labels:
     environment: staging
