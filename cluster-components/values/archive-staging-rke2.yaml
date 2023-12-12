@@ -7,8 +7,7 @@ podPriority:
 
 svix:
   enabled: true
-  #version: v1.13
-  version: latest
+  version: v1.14
   ingress:
     host: svix.internal.staging.swh.network
     createTLS: true
