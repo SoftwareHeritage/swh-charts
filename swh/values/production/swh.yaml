@@ -936,7 +936,7 @@ storage:
         - storage-azure-read-only-rpc-ingress
       ingress:
         enabled: true
-        whitelistSourceRangeRef: stagingNetworkRanges
+        whitelistSourceRangeRef: internalNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -944,9 +944,6 @@ storage:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
       gunicorn:
         threads: 4
         workers: 8
