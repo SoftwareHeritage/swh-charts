@@ -14,7 +14,9 @@ data:
                                        "configurationRef" .configuration.indexerStorageConfigurationRef
                                        "Values" .Values) | nindent 4 -}}
 
+    {{- if .configuration.journalWriterConfigurationRef }}
     {{- include "swh.journal.configuration" (dict "serviceType" "journal_writer"
                                                   "configurationRef" .configuration.journalWriterConfigurationRef
                                                   "Values" .Values) | nindent 4 -}}
+    {{ end }}
 {{- end -}}

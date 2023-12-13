@@ -2,6 +2,11 @@ environment: production
 sentry:
   environment: production
 
+clusterNetworkRanges:
+  # cluster internal range ip
+  - 10.42.0.0/16
+  - 10.43.0.0/16
+
 internalNetworkRanges:
   - 127.0.0.0/8
   # rocq production range ip
@@ -386,4 +391,7 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-azure-read-only:
       internalName: storage-azure-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    indexer-storage-read-only:
+      internalName: indexer-storage-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

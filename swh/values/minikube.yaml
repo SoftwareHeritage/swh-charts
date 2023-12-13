@@ -753,12 +753,31 @@ indexerStorage:
       indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
       hosts:
-        - indexer-storage.i.s.s.n
+        - indexer-storage-read-write.i.s.s.n
       ingress:
         enabled: true
+        endpoints:
+          default:
+            paths:
+              - path: /
       gunicorn:
-        threads: 2
-        workers: 4
+        threads: 1
+        workers: 2
+    read-only:
+      checkDbVersion: false
+      replicas: 1
+      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      hosts:
+        - indexer-storage-read-only.i.s.s.n
+      ingress:
+        enabled: true
+        endpoints:
+          default:
+            paths:
+              - path: /
+      gunicorn:
+        threads: 1
+        workers: 2
 
 defaultElasticsearchHosts:
   - host: search-esnode0.i.s.s.n

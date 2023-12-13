@@ -33,6 +33,18 @@ postgresqlROStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
+postgresqlReadOnlyIndexerStorageConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  db: softwareheritage-indexer
+  port: 5432
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-indexer-storage-postgresql-secret
+      secretKeyName: postgres-guest-password
+
 readOnlyStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
   storageConfigurationRef: postgresqlROStorageConfiguration
@@ -690,9 +702,10 @@ toolbox:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 indexerStorage:
-  enabled: false
+  enabled: true
+  logLevel: INFO
   deployments:
-    read-write:
+    read-only:
       checkDbVersion: true
       autoScaling:
         minReplicaCount: 2
@@ -700,12 +713,23 @@ indexerStorage:
         cpuPercentageUsage: 90
       requestedCpu: 500m
       requestedMemory: 512Mi
-      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
-      journalWriterConfigurationRef: journalWriterConfiguration
+      indexerStorageConfigurationRef: postgresqlReadOnlyIndexerStorageConfiguration
       hosts:
-        - saam.internal.softwareheritage.org
+        - indexer-storage-read-only-rpc-ingress
       ingress:
         enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        # Default allowed ip ranges that can be extended per ingress definitions paths
+        whitelistSourceRangeRef: clusterNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /
       gunicorn:
         threads: 2
         workers: 4
