@@ -933,7 +933,7 @@ storage:
       requestedMemory: 1500Mi
       storageConfigurationRef: readOnlyStorageConfiguration
       hosts:
-        - storage-postgresql-read-only-rpc-ingress
+        - storage-azure-read-only-rpc-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
