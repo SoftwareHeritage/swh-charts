@@ -384,3 +384,6 @@ externalServices:
     search:
       internalName: search-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-azure-read-only:
+      internalName: storage-azure-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

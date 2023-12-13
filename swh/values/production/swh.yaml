@@ -12,7 +12,7 @@ remoteSaamStorageConfiguration:
 
 remoteStorageConfiguration:
   cls: remote
-  url: http://storage-rpc-ingress
+  url: http://storage-azure-read-only-rpc-ingress
 
 readOnlyStoragePipelineSteps:
   - cls: retry
