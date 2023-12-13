@@ -45,13 +45,10 @@ spec:
       {{- end }}
       initContainers:
         - name: prepare-configuration
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
-          - /bin/bash
-          args:
-          - -c
-          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          - /entrypoints/prepare-configuration.sh
           env:
             {{ include "swh.secrets.environment" (dict "configurationRef" $storage_config.indexerStorageConfigurationRef
                                                        "Values" $.Values) | nindent 10 }}
@@ -60,6 +57,9 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
         {{- if $storage_config.checkDbVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_indexer_storage_image"
@@ -149,6 +149,10 @@ spec:
       - name: database-utils
         configMap:
           name: database-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
           defaultMode: 0555
 {{ end }}
 {{ end -}}
