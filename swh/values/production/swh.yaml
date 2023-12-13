@@ -6,17 +6,20 @@ saamStorageConfiguration:
   cls: remote
   url: http://saam.internal.softwareheritage.org:5002
 
-remoteStorageConfiguration:
+remoteSaamStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: saamStorageConfiguration
+
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage-rpc-ingress
 
 readOnlyStoragePipelineSteps:
   - cls: retry
 
 remoteROStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
-  # TODO: use a true read-only storage
-  storageConfigurationRef: saamStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
 
 postgresqlROStorageConfiguration:
   cls: postgresql
@@ -326,7 +329,7 @@ checker_deposit:
 
 loaders:
   enabled: true
-  storageConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
   deployments:
@@ -581,7 +584,7 @@ loaders:
 
 loader_metadata:
   enabled: true
-  storageConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteSaamStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
@@ -745,8 +748,7 @@ search:
     enabled: true
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
-    # FIXME: To replace with a remote read-only storage configuration
-    storageConfigurationRef: saamStorageConfiguration
+    storageConfigurationRef: remoteStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
@@ -771,7 +773,7 @@ search:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteSaamStorageConfiguration
   priorityClassName: background-workload
   journalChecker:
     enabled: true
