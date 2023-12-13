@@ -338,6 +338,12 @@ postgresqlScrubberConfiguration:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key
+
 webThrottling:
   internalExemptedNetworkRangesRef: internalNetworkRanges
   externalExemptedNetworkRangesRef: externalAuthorizedNetworkRanges

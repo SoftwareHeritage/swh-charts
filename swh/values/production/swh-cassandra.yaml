@@ -257,12 +257,6 @@ postgresqlWebConfiguration:
       secretKeyRef: swh-postgresql-web-secrets
       secretKeyName: postgres-swh-web-password
 
-djangoWebConfiguration:
-  secrets:
-    DJANGO_SECRET_KEY:
-      secretKeyRef: swh-webapp-django-secret
-      secretKeyName: webapp-django-secret-key
-
 web:
   enabled: true
   logLevel: INFO
