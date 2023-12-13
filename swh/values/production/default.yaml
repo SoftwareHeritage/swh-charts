@@ -79,7 +79,7 @@ storagePipelineSteps:
 
 remoteSearchConfiguration:
   cls: remote
-  url: http://moma.internal.softwareheritage.org:5010
+  url: http://search-rpc-ingress
 
 remoteSchedulerConfiguration:
   cls: remote
@@ -197,3 +197,10 @@ web:
   # Due to the number of cpus on the production nodes
   # nginx starts a lot of workers by default which consumes more memory than the default
   nginxRequestedMemory: 90Mi
+
+externalServices:
+  enabled: true
+  services:
+    search:
+      internalName: search-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
