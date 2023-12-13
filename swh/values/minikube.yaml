@@ -139,11 +139,11 @@ fakePostgresqlVaultConfiguration:
       secretKeyRef: swh-postgresql-vault-secret
       secretKeyName: postgres-swh-vault-password
 
-roStoragePipelineSteps:
+readOnlyStoragePipelineSteps:
   - cls: retry
 
 remoteROStorageConfiguration:
-  pipelineStepsRef: roStoragePipelineSteps
+  pipelineStepsRef: readOnlyStoragePipelineSteps
   storageConfigurationRef: fakeRemoteStorageConfiguration
 
 djangoWebConfiguration:

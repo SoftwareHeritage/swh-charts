@@ -52,7 +52,7 @@ storagePipelineStepsWithRecordReferences:
   - cls: retry
   - cls: record_references
 
-roStoragePipelineSteps:
+readOnlyStoragePipelineSteps:
   - cls: retry
 
 remoteReadWriteStorageConfiguration:
@@ -64,7 +64,7 @@ remoteReadOnlyStorageConfiguration:
   url: http://storage-postgresql-read-only-rpc-ingress
 
 remoteROStorageConfiguration:
-  pipelineStepsRef: roStoragePipelineSteps
+  pipelineStepsRef: readOnlyStoragePipelineSteps
   storageConfigurationRef: remoteReadOnlyStorageConfiguration
 
 remoteROObjstorageConfiguration:

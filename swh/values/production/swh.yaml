@@ -10,13 +10,30 @@ remoteStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: saamStorageConfiguration
 
-roStoragePipelineSteps:
+readOnlyStoragePipelineSteps:
   - cls: retry
 
 remoteROStorageConfiguration:
-  pipelineStepsRef: roStoragePipelineSteps
+  pipelineStepsRef: readOnlyStoragePipelineSteps
   # TODO: use a true read-only storage
   storageConfigurationRef: saamStorageConfiguration
+
+postgresqlROStorageConfiguration:
+  cls: postgresql
+  host: db.internal.softwareheritage.org
+  port: '5432'
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-guest-password
+
+readOnlyStorageConfiguration:
+  pipelineStepsRef: readOnlyStoragePipelineSteps
+  storageConfigurationRef: postgresqlROStorageConfiguration
+  objstorageConfigurationRef: roObjstorageConfiguration
 
 azureCacheConfiguration:
   cls: azure
@@ -901,3 +918,33 @@ scrubber:
         object: snapshot
         requestedCpu: 150m
         requestedMemory: 128Mi
+
+storage:
+  enabled: true
+  deployments:
+    postgresql-azure-readonly:
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        cpuPercentageUsage: 150
+      requestedCpu: 500m
+      requestedMemory: 1500Mi
+      storageConfigurationRef: readOnlyStorageConfiguration
+      hosts:
+        - storage-postgresql-read-only-rpc-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+      gunicorn:
+        threads: 4
+        workers: 8
