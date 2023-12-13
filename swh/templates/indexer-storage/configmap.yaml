@@ -1,17 +1,10 @@
 {{ if .Values.indexerStorage.enabled -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: {{ .Values.namespace }}
-  name: indexer-storage-configuration-template
-data:
-  config.yml.template: |
-    {{- include "swh.postgresql" (dict "serviceType" "indexer_storage"
-                                       "configurationRef" .Values.indexerStorage.indexerStorageConfigurationRef
-                                       "Values" .Values) | nindent 4 -}}
-
-    {{- include "swh.journal.configuration" (dict "serviceType" "journal_writer"
-                                                  "configurationRef" .Values.indexerStorage.journalWriterConfigurationRef
-                                                  "Values" .Values) | nindent 4 -}}
+{{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
+{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
+{{ include "swh.indexer.storage.configmap" (dict "serviceType" ( print "indexer-storage-" $storage_type )
+                                                 "configuration" $storage_config
+                                                 "Values" $.Values) }}
 {{- end -}}
+{{ end -}}
+{{- end -}}
+

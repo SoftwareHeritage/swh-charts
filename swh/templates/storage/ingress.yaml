@@ -1,4 +1,4 @@
-{{ if .Values.storage.enabled -}}
+{{- if .Values.storage.enabled -}}
 {{ range $storage_type, $deployment_config := .Values.storage.deployments }}
 {{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
            (and (hasKey $deployment_config "ingress") $deployment_config.ingress.enabled) -}}

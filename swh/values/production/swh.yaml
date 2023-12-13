@@ -691,22 +691,24 @@ toolbox:
 
 indexerStorage:
   enabled: false
-  checkDbVersion: true
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 90
-  requestedCpu: 500m
-  requestedMemory: 512Mi
-  indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
-  journalWriterConfigurationRef: journalWriterConfiguration
-  hosts:
-    - saam.internal.softwareheritage.org
-  ingress:
-    enabled: true
-  gunicorn:
-    threads: 2
-    workers: 4
+  deployments:
+    read-write:
+      checkDbVersion: true
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        cpuPercentageUsage: 90
+      requestedCpu: 500m
+      requestedMemory: 512Mi
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+      journalWriterConfigurationRef: journalWriterConfiguration
+      hosts:
+        - saam.internal.softwareheritage.org
+      ingress:
+        enabled: true
+      gunicorn:
+        threads: 2
+        workers: 4
 
 search:
   enabled: true

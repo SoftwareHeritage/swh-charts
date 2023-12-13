@@ -741,22 +741,24 @@ indexerJournalWriterConfiguration:
 
 indexerStorage:
   enabled: false
-  checkDbVersion: false
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 2
-    cpuPercentageUsage: 90
-  requestedCpu: 500m
-  requestedMemory: 512Mi
-  indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
-  journalWriterConfigurationRef: indexerJournalWriterConfiguration
-  hosts:
-    - indexer-storage.i.s.s.n
-  ingress:
-    enabled: true
-  gunicorn:
-    threads: 2
-    workers: 4
+  deployments:
+    read-write:
+      checkDbVersion: false
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 2
+        cpuPercentageUsage: 90
+      requestedCpu: 500m
+      requestedMemory: 512Mi
+      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      journalWriterConfigurationRef: indexerJournalWriterConfiguration
+      hosts:
+        - indexer-storage.i.s.s.n
+      ingress:
+        enabled: true
+      gunicorn:
+        threads: 2
+        workers: 4
 
 defaultElasticsearchHosts:
   - host: search-esnode0.i.s.s.n

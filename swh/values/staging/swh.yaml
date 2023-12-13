@@ -654,34 +654,36 @@ scheduler:
 
 indexerStorage:
   enabled: true
-  checkDbVersion: true
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 90
-  requestedCpu: 10m
-  requestedMemory: 200Mi
-  indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
-  journalWriterConfigurationRef: indexerJournalWriterConfiguration
-  hosts:
-    - indexer-storage-rpc-ingress
-  ingress:
-    enabled: true
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: clusterNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-  gunicorn:
-    threads: 2
-    workers: 4
+  deployments:
+    rpc:
+      checkDbVersion: true
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        cpuPercentageUsage: 90
+      requestedCpu: 10m
+      requestedMemory: 200Mi
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+      journalWriterConfigurationRef: indexerJournalWriterConfiguration
+      hosts:
+        - indexer-storage-rpc-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        # Default allowed ip ranges that can be extended per ingress definitions paths
+        whitelistSourceRangeRef: clusterNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /
+      gunicorn:
+        threads: 2
+        workers: 4
 
 search:
   enabled: true

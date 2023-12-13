@@ -1,5 +1,12 @@
 {{ if .Values.indexerStorage.enabled -}}
-{{- include "swh.service" (dict "Values"        .Values
-                                "serviceType"   "indexer-storage-rpc"
-                                "configuration" .Values.indexerStorage) -}}
-{{ end }}
+{{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
+{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
+{{- if not (hasKey $storage_config "port") }}
+{{- $storage_config := set $storage_config "port" $.Values.indexerStorage.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "indexer-storage-" $storage_type )
+                                "configuration" $storage_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

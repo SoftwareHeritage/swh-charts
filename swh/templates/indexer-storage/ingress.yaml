@@ -1,5 +1,10 @@
-{{- if and .Values.indexerStorage.enabled .Values.indexerStorage.ingress.enabled }}
-{{- include "swh.ingress" (dict "Values"        .Values
-                                "serviceType"   "indexer-storage-rpc"
-                                "configuration" .Values.indexerStorage) -}}
-{{ end }}
+{{- if .Values.indexerStorage.enabled -}}
+{{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
+{{- if and (or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled"))
+           (and (hasKey $storage_config "ingress") $storage_config.ingress.enabled) -}}
+{{- include "swh.ingress" (dict "Values"        $.Values
+                                "serviceType"   ( print "indexer-storage-" $storage_type )
+                                "configuration" $storage_config) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

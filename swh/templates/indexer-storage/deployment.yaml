@@ -1,20 +1,28 @@
 {{ if .Values.indexerStorage.enabled -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum -}}
+{{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
+{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
+{{- $serviceType := ( print "indexer-storage-" $storage_type ) -}}
+{{- $configChecksum := include "swh.indexer.storage.configmap"
+  (dict "serviceType" $serviceType
+        "configuration" $storage_config
+        "Values" $.Values) | sha256sum -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ .Values.namespace }}
-  name: indexer-storage-rpc
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}
   labels:
-    app: indexer-storage-rpc
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if .Values.indexerStorage.replicas -}}
-  replicas: {{ .Values.indexerStorage.replicas }}
+  {{ if $storage_config.replicas -}}
+  replicas: {{ $storage_config.replicas }}
   {{ end -}}
   selector:
     matchLabels:
-      app: indexer-storage-rpc
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,18 +30,18 @@ spec:
   template:
     metadata:
       labels:
-        app: indexer-storage-rpc
+        app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/indexer-storage/configmap.yaml") . | sha256sum }}
-        checksum/config-utils: {{ include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum }}
+        checksum/config: {{ $configChecksum }}
+        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
     spec:
-      {{- if .Values.indexerStorage.affinity }}
+      {{- if $.Values.indexerStorage.affinity }}
       affinity:
-        {{- toYaml .Values.indexerStorage.affinity | nindent 8 }}
+        {{- toYaml $.Values.indexerStorage.affinity | nindent 8 }}
       {{- end }}
 
-      {{- if and .Values.podPriority.enabled .Values.indexerStorage.priorityClassName }}
-      priorityClassName: {{ .Values.namespace }}-{{ .Values.indexerStorage.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $.Values.indexerStorage.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.indexerStorage.priorityClassName }}
       {{- end }}
       initContainers:
         - name: prepare-configuration
@@ -45,37 +53,37 @@ spec:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.indexerStorage.indexerStorageConfigurationRef
-                                                       "Values" .Values) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $storage_config.indexerStorageConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{- if .Values.indexerStorage.checkDbVersion }}
-        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" .Values
+        {{- if $storage_config.checkDbVersion }}
+        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_indexer_storage_image"
                                                              "module" "indexer-storage") | nindent 8 }}
         {{- end }}
       containers:
-        - name: indexer-storage-rpc
+        - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ .Values.indexerStorage.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.indexerStorage.requestedCpu | default "500m" }}
-          {{- if or .Values.indexerStorage.limitedMemory .Values.indexerStorage.limitedCpu }}
+              memory: {{ $storage_config.requestedMemory | default "512Mi" }}
+              cpu: {{ $storage_config.requestedCpu | default "500m" }}
+          {{- if or $storage_config.limitedMemory $storage_config.limitedCpu }}
             limits:
-            {{- if .Values.indexerStorage.limitedMemory }}
-              memory: {{ .Values.indexerStorage.limitedMemory }}
+            {{- if $storage_config.limitedMemory }}
+              memory: {{ $storage_config.limitedMemory }}
             {{- end }}
-            {{- if .Values.indexerStorage.limitedCpu }}
-              cpu: {{ .Values.indexerStorage.limitedCpu }}
+            {{- if $storage_config.limitedCpu }}
+              cpu: {{ $storage_config.limitedCpu }}
             {{- end }}
         {{- end }}
-          image: {{ .Values.swh_indexer_storage_image }}:{{ .Values.swh_indexer_storage_image_version }}
+          image: {{ $.Values.swh_indexer_storage_image }}:{{ $.Values.swh_indexer_storage_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ .Values.indexerStorage.port }}
+            - containerPort: {{ $storage_config.port | default $.Values.indexerStorage.port }}
               name: rpc
           readinessProbe:
             httpGet:
@@ -96,30 +104,30 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if .Values.indexerStorage.gunicorn -}}
+            {{ if $storage_config.gunicorn -}}
             - name: THREADS
-              value: {{ .Values.indexerStorage.gunicorn.threads | default 5 | quote }}
+              value: {{ $storage_config.gunicorn.threads | default 5 | quote }}
             - name: WORKERS
-              value: {{ .Values.indexerStorage.gunicorn.workers | default 2 | quote }}
+              value: {{ $storage_config.gunicorn.workers | default 2 | quote }}
             - name: TIMEOUT
-              value: {{ .Values.indexerStorage.gunicorn.timeout | default 60 | quote }}
+              value: {{ $storage_config.gunicorn.timeout | default 60 | quote }}
             {{ end -}}
             - name: STATSD_HOST
-              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
-              value: {{ .Values.statsdPort | default "9125" | quote }}
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: LOG_LEVEL
-              value: {{ .Values.indexerStorage.logLevel | quote }}
-          {{- if .Values.indexerStorage.sentry.enabled }}
+              value: {{ $storage_config.logLevel | default $.Values.indexerStorage.logLevel | quote }}
+          {{- if $.Values.indexerStorage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
-              value: {{ .Values.sentry.environment }}
+              value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
               value: swh.indexer
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.indexerStorage.sentry.secretKeyRef }}
-                  key: {{ .Values.indexerStorage.sentry.secretKeyName }}
+                  name: {{ $.Values.indexerStorage.sentry.secretKeyRef }}
+                  key: {{ $.Values.indexerStorage.sentry.secretKeyName }}
                   # 'name' secret should exist & include key
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: true
@@ -134,7 +142,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: indexer-storage-configuration-template
+          name: {{ $serviceType }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
@@ -142,4 +150,6 @@ spec:
         configMap:
           name: database-utils
           defaultMode: 0555
+{{ end }}
+{{ end -}}
 {{- end -}}
