@@ -928,6 +928,8 @@ scrubber:
         replicas: 2
         object: revision
       secondary-revision-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-hashes-revision
         replicas: 2
