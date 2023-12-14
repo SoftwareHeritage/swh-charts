@@ -177,7 +177,6 @@ graphql:
   searchConfigurationRef: remoteSearchConfiguration
   introspection: yes
   hosts:
-    - webapp1.internal.softwareheritage.org
     - graphql.internal.softwareheritage.org
   ingress:
     enabled: true
@@ -186,7 +185,6 @@ graphql:
       default:
         paths:
           - path: /
-          - path: /graphql/
         extraWhitelistSourceRange:
           # vpn network
           - 192.168.101.0/24
