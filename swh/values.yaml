@@ -353,14 +353,12 @@ graphql:
   enabled: false
   port: 5013
   priorityClassName: frontend-rpc
+  # Those are globally defined but can be overwritten per instance
   logLevel: INFO
-  debug: no
-  introspection: yes
-  # requestedMemory: 150Mi
-  # requestedCpu: 50m
-  # maxQueryCost for anonymous users
   anonymousUserMaxQueryCost: 50
   authenticatedUserMaxQueryCost: 500
+  debug: no
+  introspection: yes
   sentry:
     enabled: false
     # name of the secret containing the $secretKeyName value
@@ -368,29 +366,40 @@ graphql:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: graphql-sentry-dsn
-#    # check defaultStorageConfiguration example to configure your storage
-#    storageConfigurationRef: defaultROStorageClientConfiguration
-#    searchConfigurationRef: searchConfiguration
-#    ingress:
-#      enabled: false
-#      host: my_host # Optional
-#      extraAnnotations:
-#        nginx.ingress.kubernetes.io/rewrite-target: /
-#      endpoints:
-#        default:
-#          paths:
-#            - path: /
-  auth:
-    enabled: false
-    # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
-    # server: https://auth.backend.url/
-    # optional, when not provided, graphql defaults to use "server" entry
-    # public_server: https://another.auth.backend.url/
-    #realm: MyAuthDomain
-    client: swh-web
-    # memory:// or memcached://memcached:port
-    cacheUrl: memory://
-  # maxRawContentSize: 10000
+  deployments:
+    instance-name:
+      enabled: false
+      # logLevel: INFO
+      # debug: no
+      # introspection: yes
+      # # requestedMemory: 150Mi
+      # # requestedCpu: 50m
+      # # maxQueryCost for anonymous users
+      # anonymousUserMaxQueryCost: 50
+      # authenticatedUserMaxQueryCost: 500
+      #  # check defaultStorageConfiguration example to configure your storage
+      #  storageConfigurationRef: defaultROStorageClientConfiguration
+      #  searchConfigurationRef: searchConfiguration
+      #  ingress:
+      #    enabled: false
+      #    host: my_host # Optional
+      #    extraAnnotations:
+      #      nginx.ingress.kubernetes.io/rewrite-target: /
+      #    endpoints:
+      #      default:
+      #        paths:
+      #          - path: /
+      # auth:
+      #   enabled: false
+      #   # More information in https://gitlab.softwareheritage.org/swh/devel/swh-auth/-/blob/master/README.rst
+      #   # server: https://auth.backend.url/
+      #   # optional, when not provided, graphql defaults to use "server" entry
+      #   # public_server: https://another.auth.backend.url/
+      #   # realm: MyAuthDomain
+      #   client: swh-web
+      #   # memory:// or memcached://memcached:port
+      #   cacheUrl: memory://
+      # maxRawContentSize: 10000
 
 # Allow to specify a specific configuration for pod's /tmp
 # directory. Mostly used to configure the loaders to work

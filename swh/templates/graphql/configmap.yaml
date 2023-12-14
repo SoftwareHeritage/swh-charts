@@ -1,44 +1,9 @@
 {{ if .Values.graphql.enabled -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: graphql
-  namespace: {{ .Values.namespace }}
-data:
-  # TODO: rename to not have a dot in the name to allow testing
-  config.yml: |
-    {{- if .Values.graphql.storageConfigurationRef }}
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.graphql.storageConfigurationRef
-                                                 "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.graphql.searchConfigurationRef }}
-    {{ include "swh.service.fromYaml" (dict "service" "search"
-                                            "configurationRef" .Values.graphql.searchConfigurationRef
-                                            "Values" .Values) | nindent 4 }}
-    {{- end }}
-
-    debug: {{ .Values.graphql.debug }}
-
-    introspection: {{ .Values.graphql.introspection }}
-    {{- if .Values.graphql.maxRawContentSize }}
-
-    max_raw_content_size: {{ .Values.graphql.maxRawContentSize }}
-    {{- end }}
-
-    max_query_cost:
-      anonymous: {{ .Values.graphql.anonymousUserMaxQueryCost}}
-      user: {{ .Values.graphql.authenticatedUserMaxQueryCost}}
-
-    {{ if .Values.graphql.auth.enabled -}}
-    auth:
-      server: {{ .Values.graphql.auth.server | default "" }}
-      {{ if .Values.graphql.auth.publicServer -}}
-      public_server: {{ .Values.graphql.auth.publicServer }}
-      {{ end -}}
-      realm: {{ .Values.graphql.auth.realm | default "" }}
-      client: {{ .Values.graphql.auth.client | default "swh-web" }}
-      cache:
-        url: {{ .Values.graphql.auth.cacheUrl | default "memory://" }}
-    {{- end }}
-{{ end }}
+{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
+{{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
+{{ include "swh.graphql.configmap" (dict "serviceType" (print "graphql-" $graphql_name)
+                                         "configuration" $graphql_config
+                                         "Values" $.Values) }}
+{{- end -}}
+{{ end -}}
+{{- end -}}

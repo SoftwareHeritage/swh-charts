@@ -633,37 +633,41 @@ web:
 
 graphql:
   enabled: true
-  logLevel: DEBUG
-  debug: yes
-  sentry:
-    enabled: true
-  storageConfigurationRef: localRpcROStorageConfiguration
-  searchConfigurationRef: remoteSearchConfiguration
-  replicas: 2
-  gunicorn:
-    threads: 4
-    workers: 2
-    timeout: 3600
-  hosts:
-    - webapp-cassandra.internal.staging.swh.network
-  ingress:
-    enabled: true
-    whitelistSourceRangeRef: stagingNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /graphql/
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
-  auth:
-    # temporary disable the authentication to avoid a redirect error from keycloak
-    enabled: false
-    server: https://auth.softwareheritage.org/auth/
-    realm: SoftwareHeritageStaging
-    client: swh-web
-    cacheUrl: memcached://memcached:11211
-  maxRawContentSize: 10000
+  deployments:
+    cassandra:
+      logLevel: DEBUG
+      debug: yes
+      sentry:
+        enabled: true
+      storageConfigurationRef: localRpcROStorageConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      replicas: 2
+      gunicorn:
+        threads: 4
+        workers: 2
+        timeout: 3600
+      hosts:
+        - webapp-cassandra.internal.staging.swh.network
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+        whitelistSourceRangeRef: stagingNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /graphql/
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+      auth:
+        # temporary disable the authentication to avoid a redirect error from keycloak
+        enabled: false
+        server: https://auth.softwareheritage.org/auth/
+        realm: SoftwareHeritageStaging
+        client: swh-web
+        cacheUrl: memcached://memcached:11211
+      maxRawContentSize: 10000
 
 vault:
   enabled: true

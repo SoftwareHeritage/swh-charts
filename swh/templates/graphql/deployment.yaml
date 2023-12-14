@@ -1,18 +1,26 @@
 {{ if .Values.graphql.enabled -}}
+{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
+{{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
+{{- $serviceType := ( print "graphql-" $graphql_name ) -}}
+{{- $configmapChecksum := include "swh.graphql.configmap"
+  (dict "serviceType" $graphql_name
+        "configuration" $graphql_config
+        "Values" $.Values) | sha256sum -}}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: graphql
-  namespace: {{ .Values.namespace }}
+  name: {{ $serviceType }}
+  namespace: {{ $.Values.namespace }}
   labels:
-    app: graphql
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .Values.graphql.replicas | default 1 }}
+  replicas: {{ $graphql_config.replicas | default 1 }}
   selector:
     matchLabels:
-      app: graphql
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -20,10 +28,10 @@ spec:
   template:
     metadata:
       labels:
-        app: graphql
+        app: {{ $serviceType }}
       annotations:
         # Force a rollout upgrade if the configuration changes
-        checksum/config: {{ include (print $.Template.BasePath "/graphql/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ $configmapChecksum }}
     spec:
       {{- if $.Values.graphql.affinity }}
       affinity:
@@ -33,24 +41,24 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.graphql.priorityClassName }}
       {{ end }}
       containers:
-        - name: graphql
-          image: {{ .Values.swh_graphql_image }}:{{ .Values.swh_graphql_image_version }}
+        - name: {{ $serviceType }}
+          image: {{ $.Values.swh_graphql_image }}:{{ $.Values.swh_graphql_image_version }}
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              memory: {{ .Values.graphql.requestedMemory | default "150Mi" }}
-              cpu: {{ .Values.graphql.requestedCpu | default "50m" }}
-          {{- if or .Values.graphql.limitedMemory .Values.graphql.limitedCpu }}
+              memory: {{ $graphql_config.requestedMemory | default "150Mi" }}
+              cpu: {{ $graphql_config.requestedCpu | default "50m" }}
+          {{- if or $graphql_config.limitedMemory $graphql_config.limitedCpu }}
             limits:
-            {{- if .Values.graphql.limitedMemory }}
-              memory: {{ .Values.graphql.limitedMemory }}
+            {{- if $graphql_config.limitedMemory }}
+              memory: {{ $graphql_config.limitedMemory }}
             {{- end }}
-            {{- if .Values.graphql.limitedCpu }}
-              cpu: {{ .Values.graphql.limitedCpu }}
+            {{- if $graphql_config.limitedCpu }}
+              cpu: {{ $graphql_config.limitedCpu }}
             {{- end }}
           {{ end }}
           ports:
-            - containerPort: {{ .Values.graphql.port }}
+            - containerPort: {{ $graphql_config.port }}
               name: rpc
           startupProbe:
             httpGet:
@@ -72,16 +80,16 @@ spec:
           - name: PORT
             value: "5013"
           - name: LOG_LEVEL
-            value: {{ .Values.graphql.logLevel | quote }}
-          {{ if .Values.graphql.gunicorn -}}
+            value: {{ $graphql_config.logLevel | default $.Values.graphql.logLevel | quote }}
+          {{ if $graphql_config.gunicorn -}}
           - name: THREADS
-            value: {{ .Values.graphql.gunicorn.threads | default 5 | quote }}
+            value: {{ $graphql_config.gunicorn.threads | default 5 | quote }}
           - name: WORKERS
-            value: {{ .Values.graphql.gunicorn.workers | default 2 | quote }}
+            value: {{ $graphql_config.gunicorn.workers | default 2 | quote }}
           - name: TIMEOUT
-            value: {{ .Values.graphql.gunicorn.timeout | default 60 | quote }}
+            value: {{ $graphql_config.gunicorn.timeout | default 60 | quote }}
           {{ end -}}
-          {{ if .Values.graphql.sentry.enabled -}}
+          {{ if $.Values.graphql.sentry.enabled -}}
           - name: SWH_SENTRY_ENVIRONMENT
             value: {{ $.Values.sentry.environment }}
           - name: SWH_MAIN_PACKAGE
@@ -101,9 +109,10 @@ spec:
               subPath: config.yml
               readOnly: true
       volumes:
-        - name: config
+        - name: graphql
           configMap:
-            name: graphql
+            name: {{ $serviceType }}-configuration-template
             defaultMode: 0444
-
 {{ end }}
+{{ end -}}
+{{- end -}}

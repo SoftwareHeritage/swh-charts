@@ -1,5 +1,12 @@
 {{ if .Values.graphql.enabled -}}
-{{- include "swh.service" (dict "Values"        .Values
-                                "serviceType"   "graphql"
-                                "configuration" .Values.graphql) -}}
+{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
+{{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
+{{- if not (hasKey $graphql_config "port") }}
+{{- $graphql_config := set $graphql_config "port" $.Values.graphql.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "graphql-" $graphql_name )
+                                "configuration" $graphql_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
 {{- end -}}

@@ -351,37 +351,40 @@ indexers:
 
 graphql:
   enabled: true
-  storageConfigurationRef: remoteROStorageConfiguration
-  searchConfigurationRef: remoteSearchConfiguration
-  debug: yes
-  introspection: yes
-  replicas: 1
-  gunicorn:
-    threads: 4
-    workers: 2
-    timeout: 3600
-  hosts:
-    - webapp.staging.swh.network
-    - graphql.internal.staging.swh.network
-  ingress:
-    enabled: true
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    endpoints:
-      default:
-        paths:
-          - path: /graphql/
-  logLevel: DEBUG
-  auth:
-    enabled: true
-    server: https://auth.softwareheritage.org/auth/
-    realm: SoftwareHeritageStaging
-    client: swh-web
-    cacheUrl: memcached://memcached:11211
-  maxRawContentSize: 10000
-  requestedCpu: 25m
-  requestedMemory: 150Mi
+  deployments:
+    postgresql:
+      debug: yes
+      logLevel: DEBUG
+      introspection: yes
+      storageConfigurationRef: remoteROStorageConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      replicas: 1
+      gunicorn:
+        threads: 4
+        workers: 2
+        timeout: 3600
+      hosts:
+        - webapp.staging.swh.network
+        - graphql.internal.staging.swh.network
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+          nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+          nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        endpoints:
+          default:
+            paths:
+              - path: /graphql/
+      auth:
+        enabled: true
+        server: https://auth.softwareheritage.org/auth/
+        realm: SoftwareHeritageStaging
+        client: swh-web
+        cacheUrl: memcached://memcached:11211
+      maxRawContentSize: 10000
+      requestedCpu: 25m
+      requestedMemory: 150Mi
 
 storage_replayer:
   enabled: true

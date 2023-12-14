@@ -328,33 +328,37 @@ web:
 
 graphql:
   enabled: true
-  replicas: 1
-  storageConfigurationRef: localRpcROStorageConfiguration
-  searchConfigurationRef: remoteSearchConfiguration
-  introspection: yes
-  hosts:
-    - webapp-cassandra.internal.softwareheritage.org
-  ingress:
-    enabled: true
-    whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
-        paths:
-          - path: /graphql/
-  gunicorn:
-    threads: 4
-    workers: 2
-    timeout: 3600
-  auth:
-    enabled: false
-    server: https://auth.softwareheritage.org/auth/
-    realm: SoftwareHeritage
-    client: swh-web
-    cacheUrl: memcached://memcached:11211
-  maxRawContentSize: 10000
+  deployments:
+    cassandra:
+      replicas: 1
+      storageConfigurationRef: localRpcROStorageConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      introspection: yes
+      hosts:
+        - webapp-cassandra.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+        endpoints:
+          default:
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+            paths:
+              - path: /graphql/
+      gunicorn:
+        threads: 4
+        workers: 2
+        timeout: 3600
+      auth:
+        enabled: false
+        server: https://auth.softwareheritage.org/auth/
+        realm: SoftwareHeritage
+        client: swh-web
+        cacheUrl: memcached://memcached:11211
+      maxRawContentSize: 10000
 
 toolbox:
   enabled: true

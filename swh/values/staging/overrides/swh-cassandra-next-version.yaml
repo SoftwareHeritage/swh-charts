@@ -269,9 +269,11 @@ deposit:
   enabled: false
 
 graphql:
-  replicas: 1
-  hosts:
-    - webapp-cassandra-next-version.internal.staging.swh.network
+  deployments:
+    cassandra:
+      replicas: 1
+      hosts:
+        - webapp-cassandra-next-version.internal.staging.swh.network
 
 podPriority:
   # This test environment should not impact the real staging environment

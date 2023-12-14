@@ -593,22 +593,24 @@ indexers:
 
 graphql:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  searchConfigurationRef: fakeRemoteSearchConfiguration
-  debug: no
-  introspection: no
-  replicas: 1
-  gunicorn:
-    threads: 1
-    workers: 2
-    timeout: 100
-  ingress:
-    enabled: false
-  auth:
-    enabled: false
-  maxRawContentSize: 10000
-  requestedMemory: 50Mi
-  requestedCpu: 50m
+  deployments:
+    fake:
+      storageConfigurationRef: fakeRemoteStorageConfigurationRef
+      searchConfigurationRef: fakeRemoteSearchConfiguration
+      debug: no
+      introspection: no
+      replicas: 1
+      gunicorn:
+        threads: 1
+        workers: 2
+        timeout: 100
+      ingress:
+        enabled: false
+      auth:
+        enabled: false
+      maxRawContentSize: 10000
+      requestedMemory: 50Mi
+      requestedCpu: 50m
 
 listers:
   enabled: false

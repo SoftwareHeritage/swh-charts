@@ -116,9 +116,6 @@ listers:
 graphql:
   sentry:
     enabled: true
-  ingress:
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

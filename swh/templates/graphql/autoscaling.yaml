@@ -1,0 +1,10 @@
+{{ if .Values.graphql.enabled -}}
+{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
+{{- if and (or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled"))
+           (hasKey $graphql_config "autoScaling") -}}
+{{- include "swh.autoscale" (dict "serviceType"   ( print "graphql-" $graphql_name )
+                                  "configuration" $graphql_config
+                                  "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

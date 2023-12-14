@@ -1,0 +1,48 @@
+{{/*
+   * Create a graphql configmap for service .serviceType
+   */}}
+{{ define "swh.graphql.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  # TODO: rename to not have a dot in the name to allow testing
+  config.yml: |
+    {{- if .configuration.storageConfigurationRef }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .configuration.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.searchConfigurationRef }}
+    {{ include "swh.service.fromYaml" (dict "service" "search"
+                                            "configurationRef" .configuration.searchConfigurationRef
+                                            "Values" .Values) | nindent 4 }}
+    {{- end }}
+
+    debug: {{ .configuration.debug | default $.Values.graphql.debug }}
+
+    introspection: {{ .configuration.introspection | default $.Values.graphql.introspection }}
+    {{- if .configuration.maxRawContentSize }}
+
+    max_raw_content_size: {{ .configuration.maxRawContentSize }}
+    {{- end }}
+
+    max_query_cost:
+      anonymous: {{ .configuration.anonymousUserMaxQueryCost | default $.Values.graphql.anonymousUserMaxQueryCost }}
+      user: {{ .configuration.authenticatedUserMaxQueryCost | default $.Values.graphql.authenticatedUserMaxQueryCost }}
+
+    {{ if .configuration.auth.enabled -}}
+    auth:
+      server: {{ .configuration.auth.server | default "" }}
+      {{ if .configuration.auth.publicServer -}}
+      public_server: {{ .configuration.auth.publicServer }}
+      {{ end -}}
+      realm: {{ .configuration.auth.realm | default "" }}
+      client: {{ .configuration.auth.client | default "swh-web" }}
+      cache:
+        url: {{ .configuration.auth.cacheUrl | default "memory://" }}
+    {{- end }}
+
+{{- end -}}
