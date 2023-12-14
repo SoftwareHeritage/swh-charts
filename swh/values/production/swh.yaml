@@ -89,7 +89,7 @@ postgresqlSyncmailmapsConfiguration:
       secretKeyName: postgres-syncmailmap-password
 
 postgresqlWebConfiguration:
-  host: db.internal.staging.swh.network
+  host: db.internal.softwareheritage.org
   port: 5432
   db: swh-web
   user: swh-web
