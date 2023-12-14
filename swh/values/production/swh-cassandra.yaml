@@ -299,6 +299,7 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
+  depositConfigurationRef: depositConfiguration
   extraConfig:
     keycloak:
       server_url: https://auth.softwareheritage.org/auth/
