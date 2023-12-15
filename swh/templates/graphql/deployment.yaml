@@ -109,7 +109,7 @@ spec:
               subPath: config.yml
               readOnly: true
       volumes:
-        - name: graphql
+        - name: config
           configMap:
             name: {{ $serviceType }}-configuration-template
             defaultMode: 0444
