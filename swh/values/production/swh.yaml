@@ -1050,10 +1050,11 @@ web:
     enabled: true
     concurrencyPolicy: Forbid
     configurationRef: postgresqlSyncmailmapsConfiguration
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 100
+  replicas: 2
+  # autoScaling:
+  #   minReplicaCount: 2
+  #   maxReplicaCount: 4
+  #   cpuPercentageUsage: 100
   hosts:
     - webapp1.internal.softwareheritage.org
     - archive.softwareheritage.org
