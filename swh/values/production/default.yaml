@@ -24,6 +24,10 @@ externalAuthorizedNetworkRanges:
   - 213.135.60.146
   - 37.187.96.121
 
+keycloakConfiguration:
+  server_url: https://auth.softwareheritage.org/auth/
+  realm_name: SoftwareHeritage
+
 memcached:
   enabled: true
 

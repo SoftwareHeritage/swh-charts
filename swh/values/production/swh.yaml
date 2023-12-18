@@ -70,6 +70,17 @@ readOnlyStorageConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageConfiguration
 
+postgresqlDepositConfiguration:
+  host: db.internal.staging.swh.network
+  port: 5432
+  db: softwareheritage-deposit
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-deposit-secrets
+      secretKeyName: postgres-swh-deposit-password
+
 azureCacheConfiguration:
   cls: azure
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
@@ -185,6 +196,22 @@ scrubberROStoragePrimaryConfiguration:
 ## Direct postgresql connection without any filter or objstorage
 scrubberROStorageSecondaryConfiguration:
   storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
+
+djangoDepositConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-deposit-django-secret
+      secretKeyName: deposit-django-secret-key
+
+azureDepositConfiguration:
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: deposit-tarballs
+  content_type: application/octet-stream
+  content_encoding: ""
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-deposit-azure-secret
+      secretKeyName: azure-swh-deposit-key
 
 graphql:
   enabled: true
@@ -1179,3 +1206,50 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+
+deposit:
+  enabled: true
+  logLevel: INFO
+  requestedCpu: 500m
+  requestedMemory: 500Mi
+  migrationsEnabled: false
+  replicas: 2
+  ingress:
+    enabled: true
+    secretName: swh-deposit-crt
+    extraAnnotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      # The default behavior is true (when tls is enabled). We don't want that behavior
+      # since the rp is in charge of this
+      # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#server-side-https-enforcement-through-redirect
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    tlsEnabled: true
+    endpoints:
+      default:
+        paths:
+          - path: /
+          - path: /static
+            port: 80
+      authenticated:
+        paths:
+          - path: /1/private/
+        # auth-file with authentication
+        authentication: swh/deposit-auth-secrets
+  databaseConfigurationRef: postgresqlDepositConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
+  storageMetadataConfigurationRef: remoteStorageConfiguration
+  djangoConfigurationRef: djangoDepositConfiguration
+  blobstorageConfigurationRef: azureDepositConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
+  hosts:
+    - deposit-rpc-ingress
+    - deposit.softwareheritage.org
+    - deposit-dynamic.internal.softwareheritage.org
+  extraConfig:
+    max_upload_size: 209715200
+    extraction_dir: "/tmp/swh-deposit/archive/"
+    cache_uri: memcached:11211
+
