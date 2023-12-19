@@ -549,86 +549,94 @@ storage:
 web:
   enabled: true
   logLevel: INFO
-  # Usual consumption with visits webhook is 200m cpu (/2 replicas)
-  # Scale up if a real burst happen (>1 cpu per pod)
-  requestedCpu: 100m
-  requestedMemory: 300Mi
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4 # 4 to test the autoscaling in extreme scenarios
-    cpuPercentageUsage: 1000
-  hosts:
-    - webapp.staging.swh.network
-    - webapp-cassandra.internal.staging.swh.network
-  syncMailmaps:
-    enabled: true
-    concurrencyPolicy: Forbid
-    configurationRef: postgresqlSyncmailmapsConfiguration
-  ingress:
-    enabled: true
-    secretName: swh-web-crt
-    extraAnnotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    tlsEnabled: true
-    endpoints:
-      default:
-        paths:
-          - path: /
-          - path: /static
-            port: 80
-      authenticated:
-        paths:
-          - path: /api/1/provenance/
-          - path: /api/1/entity/
-          - path: /api/1/content/[^/]+/symbol/
-        # auth-file with authentication
-        authentication: swh-cassandra/web-auth-secrets
-      webhooks:
-        paths:
-          - path: /save/origin/visit/webhook
-        extraWhitelistSourceRange:
-          - 192.168.130.1
-          - 192.168.130.2
-  databaseConfigurationRef: postgresqlWebConfiguration
-  searchConfigurationRef: remoteSearchConfiguration
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
-  vaultConfigurationRef: remoteVaultConfiguration
-  indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  countersConfigurationRef: remoteCountersConfiguration
-  djangoConfigurationRef: djangoWebConfiguration
-  depositConfigurationRef: depositConfiguration
-  giveConfigurationRef: giveConfiguration
-  throttlingConfigurationRef: webThrottling
-  addForgeNowConfigurationRef: addForgeNowConfiguration
-  webhooksConfigurationRef: webhooksConfiguration
-  keycloakConfigurationRef: keycloakConfiguration
-  extraConfig:
-    save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
-    search_config:
-      metadata_backend: swh-search
-    content_display_max_size: 5242880
-    history_counters_url: http://counters-rpc-ingress/counters_history/history.json
-    swh_extra_django_apps:
-    - swh.web.add_forge_now
-    - swh.web.archive_coverage
-    - swh.web.badges
-    - swh.web.banners
-    - swh.web.deposit
-    - swh.web.inbound_email
-    - swh.web.jslicenses
-    - swh.web.mailmap
-    - swh.web.metrics
-    - swh.web.save_code_now
-    - swh.web.save_origin_webhooks
-    - swh.web.vault
-    matomo: {}
-    give:
-      public_key: ${GIVE_PUBLIC_KEY}
-      token: ${GIVE_PRIVATE_TOKEN}
+  deployments:
+    cassandra:
+      # Usual consumption with visits webhook is 200m cpu (/2 replicas)
+      # Scale up if a real burst happen (>1 cpu per pod)
+      requestedCpu: 100m
+      requestedMemory: 300Mi
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 4 # 4 to test the autoscaling in extreme scenarios
+        cpuPercentageUsage: 1000
+      hosts:
+        - webapp.staging.swh.network
+        - webapp-cassandra.internal.staging.swh.network
+      syncMailmaps:
+        enabled: true
+        concurrencyPolicy: Forbid
+        configurationRef: postgresqlSyncmailmapsConfiguration
+        priorityClassName: frontend-rpc-workload
+        cron: "15 * * * *"
+      ingress:
+        enabled: true
+        secretName: swh-web-crt
+        extraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/ingress.class: nginx
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        tlsEnabled: true
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
+          authenticated:
+            paths:
+              - path: /api/1/provenance/
+              - path: /api/1/entity/
+              - path: /api/1/content/[^/]+/symbol/
+            # auth-file with authentication
+            authentication: swh-cassandra/web-auth-secrets
+          webhooks:
+            paths:
+              - path: /save/origin/visit/webhook
+            extraWhitelistSourceRange:
+              - 192.168.130.1
+              - 192.168.130.2
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      depositConfigurationRef: depositConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+
+      extraConfig:
+        keycloak:
+          server_url: https://auth.softwareheritage.org/auth/
+          realm_name: SoftwareHeritageStaging
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
+        search_config:
+          metadata_backend: swh-search
+        content_display_max_size: 5242880
+        history_counters_url: http://counters-rpc-ingress/counters_history/history.json
+        swh_extra_django_apps:
+        - swh.web.add_forge_now
+        - swh.web.archive_coverage
+        - swh.web.badges
+        - swh.web.banners
+        - swh.web.deposit
+        - swh.web.inbound_email
+        - swh.web.jslicenses
+        - swh.web.mailmap
+        - swh.web.metrics
+        - swh.web.save_code_now
+        - swh.web.save_origin_webhooks
+        - swh.web.vault
+        matomo: {}
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
 
 graphql:
   enabled: true

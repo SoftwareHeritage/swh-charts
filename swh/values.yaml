@@ -719,40 +719,12 @@ storage:
 web:
   enabled: false
   port: 5004
-  extraPorts:
-    webstatic: 80
+  logLevel: INFO
   migrations:
     enabled: false
   priorityClassName: frontend-rpc
-  # debug: false
-  logLevel: INFO
-  requestedCpu: 50m
-  requestedMemory: 100Mi
-  # nginxRequestedCpu: 10m
-  # nginxRequestedMemory: 50m
-  # replicas: 1
-  # autoScaling:
-  #   minReplicaCount: 2
-  #   maxReplicaCount: 10
-  #   cpuPercentageUsage: 50
-  refreshSavecodenowStatus:
-    enabled: false
-    priorityClassName: frontend-rpc-workload
-    logLevel: INFO
-    # concurrencyPolicy: Forbid
-    # Every 2 minute
-    cron: "*/2 * * * *"
-  syncMailmaps:
-    enabled: false
-    priorityClassName: frontend-rpc-workload
-    logLevel: INFO
-    # concurrencyPolicy: Forbid
-    # At minute 15 every hour
-    cron: "15 * * * *"
-#  gunicorn:
-#    threads: 5
-#    workers: 2
-#    timeout: 60
+  extraPorts:
+    webstatic: 80
   sentry:
     enabled: false
     # name of the secret containing the $secretKeyName value
@@ -760,75 +732,113 @@ web:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: web-sentry-dsn
-  # host: webapp
-  ingress:
-    enabled: false
-  #   extraAnnotations:
-  #     cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-  #     kubernetes.io/ingress.class: nginx
-  #     kubernetes.io/tls-acme: "true"
-  #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  #   tlsEnabled: true
-  #   whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-          - path: /static
-            port: 80
-  #     authenticated:
-  #       paths:
-  #         - path: /api/1/provenance/
-  #         - path: /api/1/entity/
-  #         - path: /api/1/content/[^/]+/symbol/
-  #       # auth-file with authentication
-  #       authentication: swh/ingress-auth
-  # searchConfigurationRef: searchConfiguration
-  # Configure the scheduler instance used for save code now requests
-  # schedulerConfigurationRef: schedulerConfiguration
-  # storageConfigurationRef: globalROStorageConfiguration
-  # vaultConfigurationRef: remoteVaultConfiguration
-  # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  # countersConfigurationRef: remoteCountersConfiguration
-  # djangoConfigurationRef: djangoWebConfiguration
-  # If not specified, this will use a sqlite db which is not performant enough for
-  # production use.
-  # databaseConfigurationRef: postgresqlWebConfiguration
-  # depositConfigurationRef: depositConfiguration
-  # giveConfigurationRef: giveConfiguration
-  # throttlingConfigurationRef: throttlingConfiguration
-  # keycloakConfigurationRef: keycloakConfiguration
-  # extraConfig:
-  #   debug: false
-  #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json
-  #   es_workers_index_url: http://elastichost.swh.org:9200/swh_workers-*
-  #   search_config:
-  #     # swh-indexer-storage or swh-search
-  #     metadata_backend: swh-indexer-storage
-  #   # max content size in bytes
-  #   content_display_max_size: 5242880
-  #   swh_extra_django_apps:
-  #     - swh.web.add_forge_now
-  #     - swh.web.archive_coverage
-  #     - swh.web.badges
-  #     - swh.web.banners
-  #     - swh.web.deposit
-  #     - swh.web.inbound_email
-  #     - swh.web.jslicenses
-  #     - swh.web.mailmap
-  #     - swh.web.metrics
-  #     - swh.web.save_code_now
-  #     - swh.web.save_origin_webhooks
-  #     - swh.web.vault
-  #   add_forge_now:
-  #     email_address: add-forge-now@archive.swh.org
-  #   deposit:
-  #     private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
-  #     private_api_user: "${DEPOSIT_USERNAME}"
-  #     private_api_password: "${DEPOSIT_PASSWORD}"
-  #   give:
-  #     public_key: ${GIVE_PUBLIC_KEY}
-  #     token: ${GIVE_PRIVATE_TOKEN}
+  deployments:
+    instance:
+      enabled: false
+      # can be overriden per instance
+      # port: 5004
+      # extraPorts:
+      #   webstatic: 80
+      # migrations:
+      #   enabled: truew
+      # logLevel: INFO
+      # # debug: false
+      # requestedCpu: 50m
+      # requestedMemory: 100Mi
+      # nginxRequestedCpu: 10m
+      # nginxRequestedMemory: 50m
+      # replicas: 1
+      # autoScaling:
+      #   minReplicaCount: 2
+      #   maxReplicaCount: 10
+      #   cpuPercentageUsage: 50
+      refreshSavecodenowStatus:
+        enabled: false
+        priorityClassName: frontend-rpc-workload
+        logLevel: INFO
+        # concurrencyPolicy: Forbid
+        # Every 2 minute
+        cron: "*/2 * * * *"
+      syncMailmaps:
+        enabled: false
+        priorityClassName: frontend-rpc-workload
+        logLevel: INFO
+        # concurrencyPolicy: Forbid
+        # At minute 15 every hour
+        cron: "15 * * * *"
+     # gunicorn:
+     #   threads: 5
+     #   workers: 2
+     #   timeout: 60
+      # host: webapp
+      ingress:
+        enabled: false
+        # extraAnnotations:
+        #   cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+        #   kubernetes.io/ingress.class: nginx
+        #   kubernetes.io/tls-acme: "true"
+        #   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        # tlsEnabled: true
+        # whitelistSourceRangeRef: internalNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
+          # authenticated:
+          #   paths:
+          #     - path: /api/1/provenance/
+          #     - path: /api/1/entity/
+          #     - path: /api/1/content/[^/]+/symbol/
+          #   # auth-file with authentication
+          #   authentication: swh/ingress-auth
+      # searchConfigurationRef: searchConfiguration
+      # # Configure the scheduler instance used for save code now requests
+      # schedulerConfigurationRef: schedulerConfiguration
+      # storageConfigurationRef: globalROStorageConfiguration
+      # vaultConfigurationRef: remoteVaultConfiguration
+      # indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      # countersConfigurationRef: remoteCountersConfiguration
+      # djangoConfigurationRef: djangoWebConfiguration
+      # # If not specified, this will use a sqlite db which is not performant enough for
+      # # production use.
+      # databaseConfigurationRef: postgresqlWebConfiguration
+      # depositConfigurationRef: depositConfiguration
+      # giveConfigurationRef: giveConfiguration
+      # throttlingConfigurationRef: throttlingConfiguration
+      # keycloakConfigurationRef: keycloakConfiguration
+      # extraConfig:
+      #   debug: false
+      #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json
+      #   es_workers_index_url: http://elastichost.swh.org:9200/swh_workers-*
+      #   search_config:
+      #     # swh-indexer-storage or swh-search
+      #     metadata_backend: swh-indexer-storage
+      #   # max content size in bytes
+      #   content_display_max_size: 5242880
+      #   swh_extra_django_apps:
+      #     - swh.web.add_forge_now
+      #     - swh.web.archive_coverage
+      #     - swh.web.badges
+      #     - swh.web.banners
+      #     - swh.web.deposit
+      #     - swh.web.inbound_email
+      #     - swh.web.jslicenses
+      #     - swh.web.mailmap
+      #     - swh.web.metrics
+      #     - swh.web.save_code_now
+      #     - swh.web.save_origin_webhooks
+      #     - swh.web.vault
+      #   add_forge_now:
+      #     email_address: add-forge-now@archive.swh.org
+      #   deposit:
+      #     private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
+      #     private_api_user: "${DEPOSIT_USERNAME}"
+      #     private_api_password: "${DEPOSIT_PASSWORD}"
+      #   give:
+      #     public_key: ${GIVE_PUBLIC_KEY}
+      #     token: ${GIVE_PRIVATE_TOKEN}
 
 statsd_exporter:
   enabled: false

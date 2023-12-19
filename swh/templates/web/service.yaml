@@ -1,5 +1,15 @@
 {{ if .Values.web.enabled -}}
-{{- include "swh.service" (dict "Values"        .Values
-                                "serviceType"   "web"
-                                "configuration" .Values.web) -}}
+{{ range $web_type, $web_config := .Values.web.deployments }}
+{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
+{{- if not (hasKey $web_config "port") }}
+{{- $web_config := set $web_config "port" $.Values.web.port -}}
+{{- end -}}
+{{- if not (hasKey $web_config "extraPorts") }}
+{{- $web_config := set $web_config "extraPorts" $.Values.web.extraPorts -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "web-" $web_type )
+                                "configuration" $web_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
 {{- end -}}

@@ -260,69 +260,74 @@ postgresqlWebConfiguration:
 web:
   enabled: true
   logLevel: INFO
-  requestedCpu: 500m
-  requestedMemory: 500Mi
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 50
-  hosts:
-    - webapp-cassandra.internal.softwareheritage.org
-  ingress:
-    enabled: true
-    secretName: swh-web-crt
-    extraAnnotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    tlsEnabled: true
-    whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-          - path: /static
-            port: 80
-        extraWhitelistSourceRange:
-          - 192.168.50.0/24 # for blackbox monitoring
-          - 192.168.101.0/24 # vpn network
+  deployments:
+    cassandra:
+      requestedCpu: 500m
+      requestedMemory: 500Mi
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        cpuPercentageUsage: 50
+      hosts:
+        - webapp-cassandra.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        secretName: swh-web-crt
+        extraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/ingress.class: nginx
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        tlsEnabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
+            extraWhitelistSourceRange:
+              - 192.168.50.0/24 # for blackbox monitoring
+              - 192.168.101.0/24 # vpn network
 
-  databaseConfigurationRef: postgresqlWebConfiguration
-  searchConfigurationRef: remoteSearchConfiguration
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
-  vaultConfigurationRef: remoteVaultConfiguration
-  indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  countersConfigurationRef: remoteCountersConfiguration
-  djangoConfigurationRef: djangoWebConfiguration
-  giveConfigurationRef: giveConfiguration
-  throttlingConfigurationRef: webThrottling
-  addForgeNowConfigurationRef: addForgeNowConfiguration
-  depositConfigurationRef: depositConfiguration
-  keycloakConfigurationRef: keycloakConfiguration
-  extraConfig:
-    search_config:
-      metadata_backend: swh-search
-    content_display_max_size: 5242880
-    history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
-    es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
-    swh_extra_django_apps:
-      - swh.web.add_forge_now
-      - swh.web.archive_coverage
-      - swh.web.badges
-      - swh.web.banners
-      - swh.web.deposit
-      - swh.web.inbound_email
-      - swh.web.jslicenses
-      - swh.web.mailmap
-      - swh.web.metrics
-      - swh.web.save_code_now
-      - swh.web.save_origin_webhooks
-      - swh.web.vault
-    give:
-      public_key: ${GIVE_PUBLIC_KEY}
-      token: ${GIVE_PRIVATE_TOKEN}
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      depositConfigurationRef: depositConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      extraConfig:
+        keycloak:
+          server_url: https://auth.softwareheritage.org/auth/
+          realm_name: SoftwareHeritage
+        search_config:
+          metadata_backend: swh-search
+        content_display_max_size: 5242880
+        history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
+        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+        swh_extra_django_apps:
+          - swh.web.add_forge_now
+          - swh.web.archive_coverage
+          - swh.web.badges
+          - swh.web.banners
+          - swh.web.deposit
+          - swh.web.inbound_email
+          - swh.web.jslicenses
+          - swh.web.mailmap
+          - swh.web.metrics
+          - swh.web.save_code_now
+          - swh.web.save_origin_webhooks
+          - swh.web.vault
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
 
 graphql:
   enabled: true

@@ -1,20 +1,25 @@
 {{ if .Values.web.enabled -}}
+{{ range $web_type, $web_config := .Values.web.deployments }}
+{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
+{{- $serviceType := ( print "web-" $web_type ) -}}
+{{- $do_migrations := or (and $web_config.migrations $web_config.migrations.enabled)
+                         (and $.Values.web.migrations $.Values.web.migrations.enabled) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ .Values.namespace }}
-  name: web
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}
   labels:
-    app: web
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if .Values.web.replicas -}}
-  replicas: {{ .Values.web.replicas }}
+  {{ if $web_config.replicas -}}
+  replicas: {{ $web_config.replicas }}
   {{ end -}}
   selector:
     matchLabels:
-      app: web
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,13 +27,15 @@ spec:
   template:
     metadata:
       labels:
-        app: web
+        app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/web/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include "swh.web.configmap" (dict "serviceType" $serviceType
+                                                              "configuration" $web_config
+                                                              "Values" $.Values) | sha256sum }}
     spec:
-      {{- if .Values.web.affinity }}
+      {{- if $.Values.web.affinity }}
       affinity:
-        {{- toYaml .Values.web.affinity | nindent 8 }}
+        {{- toYaml $.Values.web.affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.web.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.web.priorityClassName }}
@@ -43,36 +50,36 @@ spec:
             - -c
             - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
           env:
-            {{- if .Values.web.databaseConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" .Values
-                                                        "configurationRef" .Values.web.databaseConfigurationRef) | nindent 12 -}}
-            {{ end }}
-            {{- if .Values.web.djangoConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" .Values
-                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
-            {{ end }}
-            {{- if .Values.web.depositConfigurationRef -}}
+            {{- if $web_config.databaseConfigurationRef }}
             {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" .Values.web.depositConfigurationRef) | nindent 12 }}
+                                                        "configurationRef" $web_config.databaseConfigurationRef) | nindent 12 -}}
             {{ end }}
-            {{- if .Values.web.giveConfigurationRef -}}
+            {{- if $web_config.djangoConfigurationRef }}
             {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" .Values.web.giveConfigurationRef) | nindent 12 }}
+                                                        "configurationRef" $web_config.djangoConfigurationRef) | nindent 12 }}
             {{ end }}
-            {{- if .Values.web.addForgeNowConfigurationRef -}}
+            {{- if $web_config.depositConfigurationRef -}}
             {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" .Values.web.addForgeNowConfigurationRef) | nindent 12 }}
+                                                        "configurationRef" $web_config.depositConfigurationRef) | nindent 12 }}
+            {{ end }}
+            {{- if $web_config.giveConfigurationRef -}}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" $web_config.giveConfigurationRef) | nindent 12 }}
+            {{ end }}
+            {{- if $web_config.addForgeNowConfigurationRef -}}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" $web_config.addForgeNowConfigurationRef) | nindent 12 }}
             {{- end -}}
-            {{- if .Values.web.webhooksConfigurationRef -}}
+            {{- if $web_config.webhooksConfigurationRef -}}
             {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" .Values.web.webhooksConfigurationRef) | nindent 12 }}
+                                                        "configurationRef" $web_config.webhooksConfigurationRef) | nindent 12 }}
             {{- end -}}
-            {{- if .Values.web.sentry.enabled }}
+            {{- if $.Values.web.sentry.enabled }}
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.sentry.secretKeyRef }}
-                  key: {{ .Values.web.sentry.secretKeyName }}
+                  name: {{ $.Values.web.sentry.secretKeyRef }}
+                  key: {{ $.Values.web.sentry.secretKeyName }}
                   # 'name' secret should exist & include key
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: false
@@ -82,9 +89,9 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
-        {{- if .Values.web.migrations.enabled }}
+        {{- if $do_migrations }}
         - name: do-migration
-          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          image: {{ $.Values.swh_web_image }}:{{ $.Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           env:
             - name: SWH_CONFIG_FILENAME
@@ -99,7 +106,7 @@ spec:
               mountPath: /etc/swh
         {{ end }}
         - name: prepare-static
-          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          image: {{ $.Values.swh_web_image }}:{{ $.Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           command:
             - /bin/bash
@@ -110,24 +117,24 @@ spec:
           - name: static
             mountPath: /usr/share/swh/web/static
       containers:
-        - name: web
+        - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ .Values.web.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.web.requestedCpu | default "500m" }}
-          {{- if or .Values.web.limitedMemory .Values.web.limitedCpu }}
+              memory: {{ $web_config.requestedMemory | default "512Mi" }}
+              cpu: {{ $web_config.requestedCpu | default "500m" }}
+          {{- if or $web_config.limitedMemory $web_config.limitedCpu }}
             limits:
-            {{- if .Values.web.limitedMemory }}
-              memory: {{ .Values.web.limitedMemory }}
+            {{- if $web_config.limitedMemory }}
+              memory: {{ $web_config.limitedMemory }}
             {{- end }}
-            {{- if .Values.web.limitedCpu }}
-              cpu: {{ .Values.web.limitedCpu }}
+            {{- if $web_config.limitedCpu }}
+              cpu: {{ $web_config.limitedCpu }}
             {{- end }}
           {{ end }}
-          image: {{ .Values.swh_web_image }}:{{ .Values.swh_web_image_version }}
+          image: {{ $.Values.swh_web_image }}:{{ $.Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ .Values.web.port }}
+            - containerPort: {{ $web_config.port | default $.Values.web.port }}
               name: webapp
           readinessProbe:
             httpGet:
@@ -135,7 +142,7 @@ spec:
               port: webapp
               httpHeaders:
                 - name: Host
-                  value: {{ first .Values.web.hosts }}
+                  value: {{ first $web_config.hosts }}
             initialDelaySeconds: 5
             failureThreshold: 30
             periodSeconds: 10
@@ -146,7 +153,7 @@ spec:
               port: webapp
               httpHeaders:
                 - name: Host
-                  value: {{ first .Values.web.hosts }}
+                  value: {{ first $web_config.hosts }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30
@@ -156,41 +163,41 @@ spec:
             - -c
             - /opt/swh/entrypoint.sh
           env:
-            {{ if .Values.web.gunicorn -}}
+            {{ if $web_config.gunicorn -}}
             - name: THREADS
-              value: {{ .Values.web.gunicorn.threads | default 5 | quote }}
+              value: {{ $web_config.gunicorn.threads | default 5 | quote }}
             - name: WORKERS
-              value: {{ .Values.web.gunicorn.workers | default 2 | quote }}
+              value: {{ $web_config.gunicorn.workers | default 2 | quote }}
             - name: TIMEOUT
-              value: {{ .Values.web.gunicorn.timeout | default 60 | quote }}
+              value: {{ $web_config.gunicorn.timeout | default 60 | quote }}
             {{ end -}}
             - name: STATSD_HOST
-              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
-              value: {{ .Values.statsdPort | default "9125" | quote }}
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: LOG_LEVEL
-              value: {{ .Values.web.logLevel | quote }}
+              value: {{ $web_config.logLevel | default $.Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
-            {{- if .Values.web.sentry.enabled }}
+            {{- if $.Values.web.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
-              value: {{ .Values.sentry.environment }}
+              value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
               value: swh.web
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.web.sentry.secretKeyRef }}
-                  key: {{ .Values.web.sentry.secretKeyName }}
+                  name: {{ $.Values.web.sentry.secretKeyRef }}
+                  key: {{ $.Values.web.sentry.secretKeyName }}
                   # 'name' secret should exist & include key
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: true
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
               value: "true"
             {{- end }}
-            {{- if .Values.web.djangoConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" .Values
-                                                        "configurationRef" .Values.web.djangoConfigurationRef) | nindent 12 }}
+            {{- if $web_config.djangoConfigurationRef }}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" $web_config.djangoConfigurationRef) | nindent 12 }}
             {{ end }}
           volumeMounts:
           - name: configuration
@@ -199,8 +206,8 @@ spec:
         - name: nginx
           resources:
             requests:
-              memory: {{ .Values.web.nginxRequestedMemory | default "50Mi" }}
-              cpu: {{ .Values.web.nginxRequestedCpu | default "10m" }}
+              memory: {{ $web_config.nginxRequestedMemory | default "50Mi" }}
+              cpu: {{ $web_config.nginxRequestedCpu | default "10m" }}
           image: nginx:bullseye
           imagePullPolicy: IfNotPresent
           ports:
@@ -227,10 +234,13 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-         name: web-configuration-template
+         name: {{ $serviceType }}-configuration-template
          items:
          - key: "config.yml.template"
            path: "config.yml.template"
       - name: static
         emptyDir: {}
 {{ end }}
+{{ end -}}
+{{- end -}}
+

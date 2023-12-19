@@ -1,0 +1,88 @@
+{{/*
+   * Create a web configmap for service .serviceType
+   */}}
+{{ define "swh.web.configmap" }}
+{{- $hosts := .configuration.hosts }}
+{{- $allowed_instance := first $hosts }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    instance_name: {{ $allowed_instance }}
+    allowed_hosts:
+      {{- range $host := $hosts }}
+      - {{ $host }}
+      {{- end }}
+    {{- if and .Values.environment (eq .Values.environment "production") }}
+    production_server_names:
+      {{- range $host := $hosts }}
+      - {{ $host }}
+      {{- end }}
+    {{- end }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage"
+                                             "configurationRef" .configuration.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- if .configuration.searchConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "search"
+                                               "configurationRef" .configuration.searchConfigurationRef
+                                               "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.schedulerConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "scheduler"
+                                               "configurationRef" .configuration.schedulerConfigurationRef
+                                               "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.vaultConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "vault"
+                                               "configurationRef" .configuration.vaultConfigurationRef
+                                               "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.indexerStorageConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "indexer_storage"
+                                               "configurationRef" .configuration.indexerStorageConfigurationRef
+                                               "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.countersConfigurationRef }}
+    counters_backend: swh-counters
+    {{- include "swh.service.fromYaml" (dict "service" "counters"
+                                             "configurationRef" .configuration.countersConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.depositConfigurationRef }}
+    {{- include "deposit.configuration.api.private" (dict "configurationRef" .configuration.depositConfigurationRef
+                                                          "Values" .Values) | nindent 4 }}
+    {{- end -}}
+    {{- if .configuration.addForgeNowConfigurationRef }}
+      {{- include "addforgenow.configuration" (dict "configurationRef" .configuration.addForgeNowConfigurationRef
+                                                    "Values" .Values) | nindent 4 }}
+    {{- end -}}
+{{/* TODO: Manage the webapp logging */}}
+{{/* log_dir: */}}
+    secret_key: ${DJANGO_SECRET_KEY}
+    {{- if .configuration.databaseConfigurationRef }}
+    production_db:
+    {{- include "django.postgresql" (dict "configurationRef" .configuration.databaseConfigurationRef
+                                          "Values" .Values) | nindent 4 -}}
+    {{ end }}
+    {{- if $.Values.web.sentry.enabled }}
+    client_config:
+      sentry_dsn: ${SWH_SENTRY_DSN}
+    {{- end }}
+    {{- if .configuration.throttlingConfigurationRef -}}
+    {{- include "swh.web.throttling" (dict "configurationRef" .configuration.throttlingConfigurationRef
+                                           "Values" .Values) | nindent 4 -}}
+    {{- end }}
+    {{- if .Values.web.keycloakConfigurationRef }}
+    {{- include "swh.service.fromYaml" (dict "service" "keycloak"
+                                             "configurationRef" .Values.web.keycloakConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{ end }}
+    {{- if .configuration.extraConfig -}}
+    {{ toYaml .configuration.extraConfig | nindent 4 }}
+    {{- end }}
+
+{{- end -}}

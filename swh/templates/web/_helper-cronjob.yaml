@@ -1,6 +1,6 @@
 {{/*
-Create a Kind CronJob for service .serviceType
-*/}}
+   * Create a Kind CronJob for service .serviceType
+   */}}
 {{- define "swh.web.cronjob" -}}
 {{- with .configuration -}}
 {{- $log_level := .logLevel -}}
@@ -8,6 +8,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ $.serviceType }}-cronjob
+  namespace: {{ $.Values.namespace }}
 spec:
   schedule: {{ .cron | quote}}
   {{- if .concurrencyPolicy }}
@@ -49,21 +50,21 @@ spec:
               - -c
               - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
               env:
-                {{- if $.Values.web.databaseConfigurationRef }}
+                {{- if $.webConfiguration.databaseConfigurationRef }}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.Values.web.databaseConfigurationRef) | nindent 16 -}}
+                                                            "configurationRef" $.webConfiguration.databaseConfigurationRef) | nindent 16 -}}
                 {{ end }}
-                {{- if $.Values.web.djangoConfigurationRef }}
+                {{- if $.webConfiguration.djangoConfigurationRef }}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.Values.web.djangoConfigurationRef) | nindent 16 }}
+                                                            "configurationRef" $.webConfiguration.djangoConfigurationRef) | nindent 16 }}
                 {{ end }}
-                {{- if $.Values.web.depositConfigurationRef -}}
+                {{- if $.webConfiguration.depositConfigurationRef -}}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.Values.web.depositConfigurationRef) | nindent 16 }}
+                                                            "configurationRef" $.webConfiguration.depositConfigurationRef) | nindent 16 }}
                 {{ end }}
-                {{- if $.Values.web.giveConfigurationRef -}}
+                {{- if $.webConfiguration.giveConfigurationRef -}}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.Values.web.giveConfigurationRef) | nindent 16 }}
+                                                            "configurationRef" $.webConfiguration.giveConfigurationRef) | nindent 16 }}
                 {{ end }}
                 {{- if $.Values.web.sentry.enabled }}
                 - name: SWH_SENTRY_DSN
@@ -149,7 +150,7 @@ spec:
           {{- if $.pgService }}
           - name: pgservice-configuration-template
             configMap:
-              name: pgservice-configuration-template
+              name: pgservice-{{ $.webType }}-configuration-template
               items:
               - key: "pg-service-conf"
                 path: "pg_service.conf"

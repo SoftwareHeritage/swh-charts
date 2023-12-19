@@ -1,74 +1,9 @@
-{{- if .Values.web.enabled -}}
-{{- $hosts := .Values.web.hosts }}
-{{- $allowed_instance := first $hosts }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: {{ .Values.namespace }}
-  name: web-configuration-template
-data:
-  config.yml.template: |
-    instance_name: {{ $allowed_instance }}
-    allowed_hosts:
-      {{- range $host := $hosts }}
-      - {{ $host }}
-      {{- end }}
-    {{- if and .Values.environment (eq .Values.environment "production") }}
-    production_server_names:
-      {{- range $host := $hosts }}
-      - {{ $host }}
-      {{- end }}
-    {{- end }}
-    {{- include "swh.service.fromYaml" (dict "service" "storage"
-                                             "configurationRef" .Values.web.storageConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-    {{- if .Values.web.searchConfigurationRef }}
-      {{- include "swh.service.fromYaml" (dict "service" "search" "configurationRef" .Values.web.searchConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.schedulerConfigurationRef }}
-      {{- include "swh.service.fromYaml" (dict "service" "scheduler" "configurationRef" .Values.web.schedulerConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.vaultConfigurationRef }}
-      {{- include "swh.service.fromYaml" (dict "service" "vault" "configurationRef" .Values.web.vaultConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.indexerStorageConfigurationRef }}
-      {{- include "swh.service.fromYaml" (dict "service" "indexer_storage" "configurationRef" .Values.web.indexerStorageConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.countersConfigurationRef }}
-    counters_backend: swh-counters
-    {{- include "swh.service.fromYaml" (dict "service" "counters" "configurationRef" .Values.web.countersConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.depositConfigurationRef }}
-    {{- include "deposit.configuration.api.private" (dict "configurationRef" .Values.web.depositConfigurationRef
-                                                          "Values" .Values) | nindent 4 }}
-    {{- end -}}
-    {{- if .Values.web.addForgeNowConfigurationRef }}
-      {{- include "addforgenow.configuration" (dict "configurationRef" .Values.web.addForgeNowConfigurationRef "Values" .Values) | nindent 4 }}
-    {{- end -}}
-{{/* TODO: Manage the webapp logging */}}
-{{/* log_dir: */}}
-    secret_key: ${DJANGO_SECRET_KEY}
-    {{- if .Values.web.databaseConfigurationRef }}
-    production_db:
-    {{- include "django.postgresql" (dict "configurationRef" .Values.web.databaseConfigurationRef
-                                          "Values" .Values) | nindent 4 -}}
-    {{ end }}
-    {{- if .Values.web.sentry.enabled }}
-    client_config:
-      sentry_dsn: ${SWH_SENTRY_DSN}
-    {{- end }}
-    {{- if .Values.web.throttlingConfigurationRef -}}
-    {{- include "swh.web.throttling" (dict "configurationRef" .Values.web.throttlingConfigurationRef
-                                           "Values" .Values) | nindent 4 -}}
-    {{- end }}
-    {{- if .Values.web.keycloakConfigurationRef }}
-    {{- include "swh.service.fromYaml" (dict "service" "keycloak"
-                                             "configurationRef" .Values.web.keycloakConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-    {{ end }}
-    {{- if .Values.web.extraConfig -}}
-    {{ toYaml .Values.web.extraConfig | nindent 4 }}
-    {{- end }}
-
+{{ if .Values.web.enabled -}}
+{{ range $web_type, $web_config := .Values.web.deployments }}
+{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
+{{ include "swh.web.configmap" (dict "serviceType" (print "web-" $web_type)
+                                     "configuration" $web_config
+                                     "Values" $.Values) }}
+{{- end -}}
+{{ end -}}
 {{- end -}}

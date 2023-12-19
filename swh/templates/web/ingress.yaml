@@ -1,5 +1,10 @@
-{{ if and .Values.web.enabled .Values.web.ingress.enabled -}}
-{{- include "swh.ingress" (dict "Values"        .Values
-                                "serviceType"   "web"
-                                "configuration" .Values.web) -}}
-{{ end }}
+{{ if .Values.web.enabled -}}
+{{ range $web_type, $web_config := .Values.web.deployments }}
+{{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled"))
+           (and (hasKey $web_config "ingress") $web_config.ingress.enabled) -}}
+{{- include "swh.ingress" (dict "serviceType"   ( print "web-" $web_type )
+                                "configuration" $web_config
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

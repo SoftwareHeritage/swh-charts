@@ -263,89 +263,91 @@ webThrottling:
 
 web:
   enabled: false
-  requestedMemory: 50Mi
-  requestedCpu: 50m
-  storageConfigurationRef: fakeRemoteStorageConfiguration
-
-  searchConfigurationRef: fakeRemoteSearchConfiguration
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
-  vaultConfigurationRef: fakeRemoteVaultConfiguration
-  countersConfigurationRef: fakeRemoteCountersConfiguration
-  databaseConfigurationRef: fakePostgresqlWebConfiguration
-  djangoConfigurationRef: djangoWebConfiguration
-  depositConfigurationRef: fakeDepositConfiguration
-  giveConfigurationRef: giveConfiguration
-  throttlingConfigurationRef: webThrottling
-  keycloakConfigurationRef: fakeKeycloakConfiguration
-  hosts:
-    - webapp.internal.minikube
-  ingress:
-    enabled: true
-    tlsEnabled: true
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-          - path: /static
-            port: 80
-      authenticated:
-        paths:
-          - path: /api/1/provenance/
-          - path: /api/1/entity/
-          - path: /api/1/content/[^/]+/symbol/
-        # auth-file with authentication
-        authentication: basic-auth
-  autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 2
-    cpuPercentageUsage: 50
-  refreshSavecodenowStatus:
-    enabled: false
-    cron: "* 5 * * *"
-  syncMailmaps:
-    enabled: false
-    cron: "30 * * * *"
-    configurationRef: fakeSyncmailmapsConfiguration
-  sentry:
-    enabled: false
-    secretKeyRef: sentry-secrets
-    secretKeyName: web-sentry-dsn
-  extraConfig:
-    debug: false
-    search_config:
-      metadata_backend: swh-indexer-storage
-    content_display_max_size: 5242880
-    history_counters_url: http://counters0.i.s.s.n:5011/counters_history/history.json
-    add_forge_now:
-      email_address: add-forge-now@webapp.s.s.n
-    swh_extra_django_apps:
-    - swh.web.add_forge_now
-    - swh.web.archive_coverage
-    - swh.web.badges
-    - swh.web.banners
-    - swh.web.deposit
-    - swh.web.inbound_email
-    - swh.web.jslicenses
-    - swh.web.mailmap
-    - swh.web.metrics
-    - swh.web.save_code_now
-    - swh.web.save_origin_webhooks
-    - swh.web.vault
-    matomo: {}
-    deposit:
-      private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
-      private_api_user: "${DEPOSIT_USERNAME}"
-      private_api_password: "${DEPOSIT_PASSWORD}"
-    give:
-      public_key: ${GIVE_PUBLIC_KEY}
-      token: ${GIVE_PRIVATE_TOKEN}
+  deployments:
+    minikube:
+      enabled: true
+      hosts:
+        - webapp.internal.minikube
+      requestedMemory: 50Mi
+      requestedCpu: 50m
+      storageConfigurationRef: fakeRemoteStorageConfiguration
+      searchConfigurationRef: fakeRemoteSearchConfiguration
+      schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+      vaultConfigurationRef: fakeRemoteVaultConfiguration
+      countersConfigurationRef: fakeRemoteCountersConfiguration
+      databaseConfigurationRef: fakePostgresqlWebConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      depositConfigurationRef: fakeDepositConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      keycloakConfigurationRef: fakeKeycloakConfiguration
+      ingress:
+        enabled: true
+        tlsEnabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        whitelistSourceRangeRef: internalNetworkRanges
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
+          authenticated:
+            paths:
+              - path: /api/1/provenance/
+              - path: /api/1/entity/
+              - path: /api/1/content/[^/]+/symbol/
+            # auth-file with authentication
+            authentication: basic-auth
+      autoScaling:
+        minReplicaCount: 1
+        maxReplicaCount: 2
+        cpuPercentageUsage: 50
+      refreshSavecodenowStatus:
+        enabled: false
+        cron: "* 5 * * *"
+      syncMailmaps:
+        enabled: false
+        cron: "30 * * * *"
+        configurationRef: fakeSyncmailmapsConfiguration
+      sentry:
+        enabled: false
+        secretKeyRef: sentry-secrets
+        secretKeyName: web-sentry-dsn
+      extraConfig:
+        debug: false
+        search_config:
+          metadata_backend: swh-indexer-storage
+        content_display_max_size: 5242880
+        history_counters_url: http://counters0.i.s.s.n:5011/counters_history/history.json
+        add_forge_now:
+          email_address: add-forge-now@webapp.s.s.n
+        swh_extra_django_apps:
+        - swh.web.add_forge_now
+        - swh.web.archive_coverage
+        - swh.web.badges
+        - swh.web.banners
+        - swh.web.deposit
+        - swh.web.inbound_email
+        - swh.web.jslicenses
+        - swh.web.mailmap
+        - swh.web.metrics
+        - swh.web.save_code_now
+        - swh.web.save_origin_webhooks
+        - swh.web.vault
+        matomo: {}
+        deposit:
+          private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
+          private_api_user: "${DEPOSIT_USERNAME}"
+          private_api_password: "${DEPOSIT_PASSWORD}"
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
 
 fakeAzureDepositConfiguration:
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"

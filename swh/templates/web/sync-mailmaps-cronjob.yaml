@@ -1,7 +1,16 @@
-{{ if and .Values.web.enabled .Values.web.syncMailmaps.enabled -}}
-{{- include "swh.web.cronjob" (dict "Values"        .Values
-                                    "serviceType"   "sync-mailmaps"
-                                    "configuration" .Values.web.syncMailmaps
-                                    "pgService"     true
-                                    "command"       (list "sync-mailmaps" "service=syncmailmaps")) -}}
+{{ if .Values.web.enabled -}}
+{{ range $web_type, $web_config := .Values.web.deployments }}
+{{- if and (or (not (hasKey $web_config "enabled"))
+               (get $web_config "enabled"))
+           (hasKey $web_config "syncMailmaps")
+           $web_config.syncMailmaps.enabled -}}
+{{- include "swh.web.cronjob" (dict "Values"           $.Values
+                                    "serviceType"      (print "web-" $web_type "-sync-mailmaps")
+                                    "configuration"    $web_config.syncMailmaps
+                                    "webConfiguration" $web_config
+                                    "pgService"        true
+                                    "webType"          $web_type
+                                    "command"          (list "sync-mailmaps" "service=syncmailmaps")) -}}
+{{- end -}}
+{{ end -}}
 {{- end -}}
