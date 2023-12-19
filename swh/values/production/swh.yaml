@@ -96,7 +96,7 @@ postgresqlSyncmailmapsConfiguration:
   cls: postgresql
   host: db.internal.softwareheritage.org
   port: 5432
-  db: swh
+  db: softwareheritage
   user: swhmailmap
   pass: ${PGPASSWORD}
   secrets:
