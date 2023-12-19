@@ -797,13 +797,11 @@ web:
   # depositConfigurationRef: depositConfiguration
   # giveConfigurationRef: giveConfiguration
   # throttlingConfigurationRef: throttlingConfiguration
+  # keycloakConfigurationRef: keycloakConfiguration
   # extraConfig:
   #   debug: false
   #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json
   #   es_workers_index_url: http://elastichost.swh.org:9200/swh_workers-*
-  #   keycloak:
-  #     server_url: https://auth.swh.org/auth/
-  #     realm_name: SWHRealm
   #   search_config:
   #     # swh-indexer-storage or swh-search
   #     metadata_backend: swh-indexer-storage

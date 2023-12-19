@@ -276,6 +276,7 @@ web:
   depositConfigurationRef: fakeDepositConfiguration
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
+  keycloakConfigurationRef: fakeKeycloakConfiguration
   hosts:
     - webapp.internal.minikube
   ingress:
@@ -318,9 +319,6 @@ web:
     secretKeyName: web-sentry-dsn
   extraConfig:
     debug: false
-    keycloak:
-      server_url: https://auth.s.o/auth/
-      realm_name: SwhMinikube
     search_config:
       metadata_backend: swh-indexer-storage
     content_display_max_size: 5242880

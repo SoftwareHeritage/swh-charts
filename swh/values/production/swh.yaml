@@ -1143,10 +1143,8 @@ web:
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
   depositConfigurationRef: depositConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
   extraConfig:
-    keycloak:
-      server_url: https://auth.softwareheritage.org/auth/
-      realm_name: SoftwareHeritage
     search_config:
       metadata_backend: swh-search
     content_display_max_size: 5242880

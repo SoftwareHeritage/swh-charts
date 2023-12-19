@@ -806,10 +806,8 @@ web:
   giveConfigurationRef: giveConfiguration
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
   extraConfig:
-    keycloak:
-      server_url: https://auth.softwareheritage.org/auth/
-      realm_name: SoftwareHeritageStaging
     search_config:
       metadata_backend: swh-search
     content_display_max_size: 5242880

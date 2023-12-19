@@ -604,10 +604,8 @@ web:
   throttlingConfigurationRef: webThrottling
   addForgeNowConfigurationRef: addForgeNowConfiguration
   webhooksConfigurationRef: webhooksConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
   extraConfig:
-    keycloak:
-      server_url: https://auth.softwareheritage.org/auth/
-      realm_name: SoftwareHeritageStaging
     save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
     search_config:
       metadata_backend: swh-search
