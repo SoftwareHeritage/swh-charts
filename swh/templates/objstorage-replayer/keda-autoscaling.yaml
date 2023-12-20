@@ -1,0 +1,8 @@
+{{ if .Values.objstorageReplayer.enabled -}}
+{{ range $deployment_name, $deployment_config := .Values.objstorageReplayer.deployments }}
+{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
+           (hasKey $deployment_config "autoScaling") -}}
+{{ include "swh.objstorageReplayer.autoscaling" (dict "deployment_name" $deployment_name "deployment_config" $deployment_config "Values" $.Values) }}
+{{- end -}}
+{{ end -}}
+{{- end -}}

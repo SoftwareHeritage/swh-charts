@@ -464,7 +464,7 @@ storage_replayer:
   #     batchSize: 1000
   #     autoScaling:
   #       poolInterval: 120
-  #       lagThreashold: 1000
+  #       lagThreshold: 1000
   #       minReplicaCount: 1
   #       maxReplicaCount: 10
 
@@ -1479,3 +1479,28 @@ counters:
     enabled: false
     # countersConfigurationRef: remoteCountersConfiguration
     # journalConfigurationRef: journalClientCountersConfiguration
+
+objstorageReplayer:
+  enabled: false
+  # journalClientConfigurationRef: journalClientConfiguration
+  # sourceObjstorageConfigurationRef: fakeRemoteObjstorageConfiguration
+  # destinationObjstorageConfigurationRef: fakeRemoteObjstorageConfiguration
+  # deployments:
+  #  other-objstorage:
+  #    journalClientOverrides:
+  #      group_id: my-group-id
+  #    destinationObjstorageConfigurationRef: targetRWObjstorageConfigurtion
+  #    sourceObjectStorageConfigurationRef: sourceROObjstorageConfiguration
+  #    fetchConcurrency: 2
+  #    # If defined, autoscaling configuration should not be defined
+  #    replicas: 1
+  #    # If defined, replicas configuration should not be defined
+  #    # if sasl is activated on the connection, the kafka username must
+  #    # be configured in a secret to allow the keda autoscaling to work
+  #    autoScaling:
+  #      poolInterval: 120
+  #      lagThreashold: 1000
+  #      minReplicaCount: 1
+  #      maxReplicaCount: 5
+  #      stopWhenNoActivity: true
+  #      lagThreshold: 1000

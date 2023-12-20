@@ -11,7 +11,8 @@
    * Otherwise, we may have some extra secrets and as a result an extra indirection to follow
    */}}
 {{- $configurationRef := get $configuration "configurationRef" | default .configurationRef -}}
-{{- include "swh.service.fromYaml" (dict "service" "objstorage"
+{{- $keyName := .serviceName | default "objstorage" -}}
+{{- include "swh.service.fromYaml" (dict "service" $keyName
                                          "configurationRef" $configurationRef
                                          "Values" .Values) }}
 {{- end -}}
