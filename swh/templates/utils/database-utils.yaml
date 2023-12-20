@@ -42,7 +42,7 @@ data:
     postgresql_conf = get_postgresql_config(storage_config)
 
     if postgresql_conf is None:
-      print("No posgresql configuration found!\n")
+      print("No postgresql configuration found!\n")
       exit(1)
 
     f = open("/tmp/config.yml", "w")
