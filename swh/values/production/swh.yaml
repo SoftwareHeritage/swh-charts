@@ -41,6 +41,28 @@ multiplexerRemoteConfiguration:
     filters_conf:
     - type: readonly
 
+roAwsObjectStorageLocalFallback:
+  cls: multiplexer
+  objstorages:
+  - cls: filtered
+    storage_conf:
+      cls: http
+      url: https://softwareheritage.s3.amazonaws.com/content/
+      compression: gzip
+      timeout: 120
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://objstorage-read-only-rpc-ingress
+    filters_conf:
+    - type: readonly
+
+wineryRWObjectstorageConfiguration:
+  cls: remote
+  url: http://gloin001.internal.cea.swh.network
+
 postgresqlROStorageConfiguration:
   cls: postgresql
   host: db.internal.softwareheritage.org
@@ -138,17 +160,19 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-scrubberJournalClientConfiguration:
+authenticatedJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
   group_id: swh-archive-prod-journalchecker
-  on_eof: restart
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
-  sasl.username: swh-archive-prod
+  sasl.username: ${BROKER_USER}
   sasl.password: ${BROKER_USER_PASSWORD}
   prefix: swh.journal.objects
   secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
@@ -796,7 +820,7 @@ toolbox:
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber-journal:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
-      journalClientConfigurationRef: scrubberJournalClientConfiguration
+      journalClientConfigurationRef: authenticatedJournalClientConfiguration
     scrubber-storage-primary:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStoragePrimaryConfiguration
@@ -908,7 +932,7 @@ scrubber:
   priorityClassName: background-workload
   journalChecker:
     enabled: true
-    journalClientConfigurationRef: scrubberJournalClientConfiguration
+    journalClientConfigurationRef: authenticatedJournalClientConfiguration
     deployments:
       directory:
         # Disabled until a fix or workaroud for swh/devel/swh-scrubber#4698
@@ -917,6 +941,7 @@ scrubber:
         configName: journal-checker-directory
         journalClientOverrides:
           batch_size: 100
+          on_eof: restart
         object: directory
         replicas: 2
         requestedCpu: 1
@@ -926,6 +951,7 @@ scrubber:
         journalClientOverrides:
           batch_size: 200
           privileged: true
+          on_eof: restart
         object: release
         replicas: 1
         requestedCpu: 1
@@ -934,6 +960,7 @@ scrubber:
         configName: journal-checker-revision
         journalClientOverrides:
           privileged: true
+          on_eof: restart
         object: revision
         replicas: 2
         requestedCpu: 1
@@ -941,6 +968,8 @@ scrubber:
       snapshot:
         configName: journal-checker-snapshot
         object: snapshot
+        journalClientOverrides:
+          on_eof: restart
         replicas: 2
         requestedCpu: 1
         requestedMemory: 250Mi
@@ -1251,3 +1280,18 @@ deposit:
     extraction_dir: "/tmp/swh-deposit/archive/"
     cache_uri: memcached:11211
 
+objstorageReplayer:
+  enabled: true
+  journalClientConfigurationRef: authenticatedJournalClientConfiguration
+  sourceObjstorageConfigurationRef: roAwsObjectStorageLocalFallback
+  destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
+  deployments:
+    winery:
+      replicas: 1
+      journalClientOverrides:
+        group_id: swh-archive-prod-winery-content-replayer
+        on_eof: latest
+      error_reporter:
+        host: redis-winery-replay.redis
+        port: 6379
+        db: 0

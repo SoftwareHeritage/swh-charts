@@ -318,3 +318,18 @@ counters:
               operator: In
               values:
               - "true"
+
+objstorageReplayer:
+  sentry:
+    enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: objstorage-replayer-sentry-dsn
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/replayer"
+            operator: In
+            values:
+            - "true"
