@@ -1290,7 +1290,7 @@ objstorageReplayer:
       replicas: 1
       journalClientOverrides:
         group_id: swh-archive-prod-winery-content-replayer
-        on_eof: latest
+        auto_offset_reset: earliest
       error_reporter:
         host: redis-winery-replay.redis
         port: 6379
