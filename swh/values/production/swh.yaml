@@ -1289,6 +1289,7 @@ objstorageReplayer:
     winery:
       replicas: 5
       fetchConcurrency: 10
+      checkDestination: "false"
       journalClientOverrides:
         group_id: swh-archive-prod-winery-content-replayer
         auto_offset_reset: earliest

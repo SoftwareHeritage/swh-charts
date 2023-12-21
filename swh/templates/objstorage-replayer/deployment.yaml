@@ -85,6 +85,8 @@ spec:
           value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: FETCH_CONCURRENCY
           value: {{ get $deployment_config "fetchConcurrency" | default 1 | quote }}
+        - name: CHECK_DST
+          value: {{ get $deployment_config "checkDestination" | default "true" | quote}}
         - name: LOGLEVEL
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
