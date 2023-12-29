@@ -1281,7 +1281,7 @@ deposit:
     cache_uri: memcached:11211
 
 objstorageReplayer:
-  enabled: false
+  enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   sourceObjstorageConfigurationRef: roAwsObjectStorageLocalFallback
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
