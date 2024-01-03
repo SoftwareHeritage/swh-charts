@@ -344,6 +344,7 @@ graphql:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+              - 192.168.50.0/24
             paths:
               - path: /graphql/
       gunicorn:
