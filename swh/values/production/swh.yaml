@@ -1217,6 +1217,7 @@ objstorage:
       hosts:
         - objstorage-read-only-rpc-ingress
         - objstorage.internal.softwareheritage.org
+        - objstorage.softwareheritage.org
       ingress:
         enabled: true
         # mandatory if ingress is enabled
