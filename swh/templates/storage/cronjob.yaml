@@ -11,7 +11,7 @@ metadata:
   name: {{ $cron_job }}-cronjob
 spec:
   # By default, at 00:05 each first day of the month
-  schedule: {{ $cron_config.cron | default "5 0 1 * *" | quote}}
+  schedule: {{ $cron_config.cron | default "5 0 * * mon" | quote}}
   {{- if $cron_config.concurrencyPolicy }}
   concurrencyPolicy: {{ $cron_config.concurrencyPolicy }}
   {{- end }}
