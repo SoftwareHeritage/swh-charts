@@ -957,7 +957,7 @@ storage:
         create-object-reference-partitions:
           enabled: true
           logLevel: INFO
-          cron: 5 0 1 * *
+          cron: 5 0 * * mon
           concurrencyPolicy: Forbid
 
     postgresql-read-only:
