@@ -63,13 +63,7 @@ spec:
               command:
               - /opt/swh/entrypoint.sh
               args:
-              - swh
-              - --log-level
-              - {{ $log_level }}
-              - storage
-              - {{ $cron_job }}
-              - "$(date +%Y-%m-%d)"
-              - "$(date -d '+1 month' +%Y-%m-%d)"
+              - create-object-references-partitions
               env:
                 - name: STATSD_HOST
                   value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
