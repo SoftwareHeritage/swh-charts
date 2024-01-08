@@ -707,7 +707,7 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_code_now:swh.loader.package.archive.tasks.LoadTarball
-      ackLate: false
+      ackLate: true
       autoScaling:
         stopWhenNoActivity: false
         queueThreshold: 1
