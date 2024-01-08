@@ -223,7 +223,7 @@ storage_replayer:
     enabled: false
   journalBrokers:
     hosts:
-      - journal1.i.s.s.n:4909
+      - journal2.i.s.s.n:4909
     user: swh-postgresql-stg
     groupIdName: postgresql
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
@@ -539,7 +539,7 @@ loader_metadata:
   prefix: swh.test.journal.objects
   journalBrokers:
     hosts:
-      - journal1.internal.s.s.n:4909
+      - journal2.internal.s.s.n:4909
     secretName: swh-archive-broker-secret
     user: swh-test-archive-stg
   autoScaling:
@@ -573,7 +573,7 @@ indexers:
     enabled: false
   journalBrokers:
     hosts:
-      - journal1.internal.staging.swh.network:9094
+      - journal2.internal.staging.swh.network:9094
     user: swh-archive-stg
   deployments:
     origin-intrinsic:

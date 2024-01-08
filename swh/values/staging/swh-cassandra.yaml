@@ -339,7 +339,7 @@ loader_metadata:
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
-      - journal1.internal.staging.swh.network:9094
+      - journal2.internal.staging.swh.network:9094
     user: swh-archive-stg
   autoScaling:
     maxReplicaCount: 1
@@ -361,7 +361,7 @@ storage_replayer:
   storageConfigurationRef: cassandraReplayerStorageConfiguration
   journalBrokers:
     hosts:
-      - journal1.internal.staging.swh.network:9094
+      - journal2.internal.staging.swh.network:9094
     user: swh-cassandra-stg
     groupIdName: cassandra
     secretName: swh-cassandra-broker-secret

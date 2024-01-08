@@ -64,7 +64,6 @@ postgresqlSchedulerConfiguration:
       secretKeyName: postgres-swh-scheduler-password
 
 internalSecuredKafkaBrokers:
-  - journal1.internal.staging.swh.network:9094
   - journal2.internal.staging.swh.network:9094
 
 scrubberJournalClientConfiguration:
@@ -291,7 +290,7 @@ indexers:
   journalBrokers:
     secretName: swh-archive-broker-secret
     hosts:
-      - journal1.internal.staging.swh.network:9094
+      - journal2.internal.staging.swh.network:9094
     user: swh-archive-stg
   deployments:
     # content-mimetype:
@@ -399,7 +398,7 @@ storage_replayer:
             - "true"
   journalBrokers:
     hosts:
-      - journal1.internal.staging.swh.network:9094
+      - journal2.internal.staging.swh.network:9094
     user: swh-postgresql-stg
     groupIdName: postgresql
     secretName: swh-postgresql-broker-secret

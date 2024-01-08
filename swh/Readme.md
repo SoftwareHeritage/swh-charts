@@ -163,7 +163,7 @@ No differences
      journal_client:
        cls: kafka
        brokers:
-         - journal1.internal.staging.swh.network:9094
+         - journal2.internal.staging.swh.network:9094
        sasl.username: swh-postgresql-stg
 ...
 ```

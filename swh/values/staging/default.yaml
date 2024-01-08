@@ -226,7 +226,6 @@ postgresqlScrubberConfiguration:
       secretKeyName: postgres-swh-scrubber-password
 
 kafkaBrokers:
-  - journal1.internal.staging.swh.network
   - journal2.internal.staging.swh.network
 
 elasticsearchInstances:
