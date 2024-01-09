@@ -18,11 +18,8 @@ remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress
 
-readOnlyStoragePipelineSteps:
-  - cls: retry
-
 remoteROStorageConfiguration:
-  pipelineStepsRef: readOnlyStoragePipelineSteps
+  pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteStorageConfiguration
 
 multiplexerRemoteConfiguration:
@@ -38,24 +35,6 @@ multiplexerRemoteConfiguration:
     storage_conf:
       cls: remote
       url: http://saam.internal.softwareheritage.org:5003/
-    filters_conf:
-    - type: readonly
-
-roAwsObjectStorageLocalFallback:
-  cls: multiplexer
-  objstorages:
-  - cls: filtered
-    storage_conf:
-      cls: http
-      url: https://softwareheritage.s3.amazonaws.com/content/
-      compression: gzip
-      timeout: 120
-    filters_conf:
-    - type: readonly
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://objstorage-read-only-rpc-ingress
     filters_conf:
     - type: readonly
 
@@ -88,7 +67,7 @@ postgresqlReadOnlyIndexerStorageConfiguration:
       secretKeyName: postgres-guest-password
 
 readOnlyStorageConfiguration:
-  pipelineStepsRef: readOnlyStoragePipelineSteps
+  pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: postgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageConfiguration
 
@@ -1284,7 +1263,7 @@ deposit:
 objstorageReplayer:
   enabled: false
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
-  sourceObjstorageConfigurationRef: roAwsObjectStorageLocalFallback
+  sourceObjstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
   deployments:
     winery:

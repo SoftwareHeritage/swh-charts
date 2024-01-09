@@ -221,6 +221,9 @@ storage:
         cpuPercentageUsage: 150
       hosts:
         - storage-cassandra-next-version.internal.staging.swh.network
+    cassandra-readonly:
+      enabled: false
+
 
 postgresqlWebConfiguration:
   host: db1.internal.staging.swh.network

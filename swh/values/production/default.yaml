@@ -74,7 +74,7 @@ pipelineAzureROObjstorageConfiguration:
   cls: multiplexer
   objstorages:
   - cls: filtered
-    storage_conf:
+    storage_conf: &azure-storage-conf
       cls: azure-prefixed
       accounts:
         '0':
@@ -152,7 +152,7 @@ pipelineAzureROObjstorageConfiguration:
 
 roObjstorageConfiguration:
   configurationRef: pipelineAzureROObjstorageConfiguration
-  secrets:
+  secrets: &azure-storage-secrets
     ACCOUNT_NAME_0:
       secretKeyRef: swh-objstorage-config
       secretKeyName: 0_account_name
@@ -249,6 +249,43 @@ roObjstorageConfiguration:
     API_SECRET_KEY_15:
       secretKeyRef: swh-objstorage-config
       secretKeyName: 15_api_secret_key
+
+roObjstorageAwsLocalAzureFallback:
+  cls: multiplexer
+  objstorages:
+  - cls: filtered
+    storage_conf:
+      # AWS storage
+      cls: http
+      url: https://softwareheritage.s3.amazonaws.com/content/
+      compression: gzip
+      timeout: 120
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf:
+      # banco/saam
+      cls: remote
+      url: http://objstorage-read-only-rpc-ingress
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf: *azure-storage-conf
+    filters_conf:
+    - type: readonly
+
+cassandraReadOnlyStorageAWSLocalAzureConfiguration:
+  storageConfigurationRef: cassandraROStorage
+  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
+  pipelineStepsRef: retryStoragePipelineSteps
+  secrets: *azure-storage-secrets
+
+roObjstorageAwsLocalAzureFallbackConfiguration:
+  configurationRef: roObjstorageAwsLocalAzureFallback
+  secrets: *azure-storage-secrets
+
+retryStoragePipelineSteps:
+  - cls: retry
 
 storagePipelineSteps:
   - cls: buffer
