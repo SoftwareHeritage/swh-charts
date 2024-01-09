@@ -17,6 +17,17 @@ tmpEphemeralStorage:
             requests:
               storage: 100Gi # no effects
 
+memcached:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/memcached"
+            operator: In
+            values:
+            - "true"
+
 checker_deposit:
   sentry:
     enabled: true

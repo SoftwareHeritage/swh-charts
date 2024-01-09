@@ -20,6 +20,10 @@ spec:
       labels:
         app: memcached
     spec:
+      {{- if $.Values.memcached.affinity }}
+      affinity:
+        {{ toYaml $.Values.memcached.affinity | nindent 8 }}
+      {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.memcached.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.memcached.priorityClassName }}
       {{ end }}
