@@ -143,7 +143,7 @@ spec:
             emptyDir: {}
           - name: web-configuration-template
             configMap:
-              name: web-configuration-template
+              name: web-{{ $.webType }}-configuration-template
               items:
               - key: "config.yml.template"
                 path: "config.yml.template"
