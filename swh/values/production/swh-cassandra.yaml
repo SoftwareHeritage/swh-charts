@@ -257,7 +257,7 @@ storage:
       requestedMemory: 1500Mi
       storageConfigurationRef: cassandraReadOnlyStorageAWSLocalAzureConfiguration
       hosts:
-        - storage-cassandra-ro.internal.softwareheritage.org
+        - storage-cassandra-ro.softwareheritage.org
         - storage-cassandra-read-only-rpc-ingress
       ingress:
         enabled: true
