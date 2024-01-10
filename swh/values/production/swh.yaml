@@ -1252,16 +1252,8 @@ deposit:
   replicas: 2
   ingress:
     enabled: true
-    secretName: swh-deposit-crt
     extraAnnotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
       kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: "true"
-      # The default behavior is true (when tls is enabled). We don't want that behavior
-      # since the rp is in charge of this
-      # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#server-side-https-enforcement-through-redirect
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    tlsEnabled: true
     endpoints:
       default:
         paths:
