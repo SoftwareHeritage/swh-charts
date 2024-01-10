@@ -33,7 +33,7 @@ cassandraROStorage:
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: true
+  initKeyspace: false
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
