@@ -62,7 +62,10 @@ spec:
   tls:
   - hosts:
     {{- range $host := $hosts }}
+    {{/* basic filtering so crt contains dns compliant host entries */}}
+    {{- if contains "." $host -}}
     - {{ $host }}
+    {{- end }}
     {{- end }}
     secretName: {{ $configuration.ingress.secretName }}
   {{- end }}
