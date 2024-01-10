@@ -200,6 +200,19 @@ scrubberROStoragePrimaryConfiguration:
 scrubberROStorageSecondaryConfiguration:
   storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
 
+depositDynamicConfiguration:
+  scheme: http
+  host: deposit-dynamic.internal.softwareheritage.org
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
+
 djangoDepositConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
@@ -437,7 +450,7 @@ checker_deposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
-  depositConfigurationRef: depositConfiguration
+  depositConfigurationRef: depositDynamicConfiguration
   autoScaling:
     queueThreshold: 1
     stopWhenNoActivity: false
@@ -452,7 +465,7 @@ loaders:
   enabled: true
   storageConfigurationRef: remoteSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
-  depositConfigurationRef: depositConfiguration
+  depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
@@ -542,7 +555,7 @@ loaders:
         maxReplicaCount: 2
       extraConfig:
         deposit:
-          url: "https://deposit.softwareheritage.org/1/private"
+          url: "http://deposit-dynamic.internal.softwareheritage.org/1/private"
           auth:
             username: "${DEPOSIT_USERNAME}"
             password: "${DEPOSIT_PASSWORD}"

@@ -131,8 +131,9 @@ Generate the deposit configuration for checkers & loaders.
                     (get $depositConfiguration "user") -}}
 {{- $pass := required (print "_helpers.tpl:deposit.configuration: The <pass> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "pass") -}}
+{{- $scheme := get $depositConfiguration "scheme" | default "https" -}}
 deposit:
-  url: https://{{ $host }}/1/private/
+  url: {{ $scheme }}://{{ $host }}/1/private/
   auth:
     username: {{ $user }}
     password: {{ $pass }}
