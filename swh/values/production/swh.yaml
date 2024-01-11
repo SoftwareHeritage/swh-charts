@@ -220,7 +220,7 @@ djangoDepositConfiguration:
       secretKeyName: deposit-django-secret-key
 
 azureDepositConfiguration:
-  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   container_name: deposit-tarballs
   content_type: application/octet-stream
   content_encoding: ""
