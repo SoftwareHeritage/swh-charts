@@ -357,7 +357,7 @@ Generate the configuration for a journal_writer configuration entry
 {{- $kafkaBrokers := get .Values (get $configuration "brokersConfigurationRef") -}}
 {{- $_ := unset $configuration "brokersConfigurationRef" -}}
 {{ .serviceType }}:
-  {{ toYaml $configuration | nindent 2 }}
+  {{- toYaml $configuration | nindent 2 }}
   brokers:
   {{- range $broker := $kafkaBrokers }}
   - {{ $broker }}
