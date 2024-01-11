@@ -39,7 +39,7 @@ indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   cls: kafka
   prefix: swh.journal.indexed
-  client_id: swh.idx_storage.journal_writer.storage1
+  client_id: swh.idx_storage.journal_writer.${HOSTNAME}
   producer_config:
     message.max.bytes: 1000000000
 
@@ -48,7 +48,7 @@ storageJournalWriterConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
   prefix: swh.journal.objects
-  clientId: swh.storage.journal_writer.storage1
+  clientId: swh.storage.journal_writer.${HOSTNAME}
   anonymize: true
 
 postgresqlSchedulerConfiguration:

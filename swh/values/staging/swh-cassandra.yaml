@@ -511,7 +511,7 @@ storage_replayer:
 
 storageJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  clientId: swh.storage-cassandra.journal_writer.storage
+  clientId: swh.storage-cassandra.journal_writer.${HOSTNAME}
   producerConfig:
     message.max.bytes: 1000000000
 
