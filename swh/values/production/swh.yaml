@@ -1140,13 +1140,8 @@ web:
         - archive-dynamic.internal.softwareheritage.org
       ingress:
         enabled: true
-        secretName: swh-web-crt
         extraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
           kubernetes.io/ingress.class: nginx
-          kubernetes.io/tls-acme: "true"
-          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        tlsEnabled: true
         endpoints:
           default:
             paths:
