@@ -921,6 +921,7 @@ objstorage:
         # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-read-only-rpc-ingress
+        - objstorage-rp.internal.staging.swh.network
       ingress:
         enabled: true
         # mandatory if ingress is enabled
