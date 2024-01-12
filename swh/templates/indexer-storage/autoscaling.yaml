@@ -1,11 +1,11 @@
-{{- if .Values.indexerStorage.enabled -}}
+{{ if .Values.indexerStorage.enabled }}
 {{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
-{{- if and (or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled"))
-           (hasKey $storage_config "autoScaling") -}}
-{{- include "swh.autoscale" (dict "Values"        $.Values
-                                  "serviceType"   ( print "indexer-storage-" $storage_type )
-                                  "configuration" $storage_config) -}}
-{{- end -}}
-{{ end -}}
-{{- end -}}
-
+{{ if and (or (not (hasKey $storage_config "enabled"))
+              (get $storage_config "enabled"))
+          (hasKey $storage_config "autoScaling") }}
+{{ include "swh.autoscale" (dict "Values"        $.Values
+                                 "serviceType"   ( print "indexer-storage-" $storage_type )
+                                 "configuration" $storage_config) }}
+{{ end }}
+{{ end }}
+{{ end }}
