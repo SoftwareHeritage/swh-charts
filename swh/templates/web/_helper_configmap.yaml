@@ -76,9 +76,9 @@ data:
     {{- include "swh.web.throttling" (dict "configurationRef" .configuration.throttlingConfigurationRef
                                            "Values" .Values) | nindent 4 -}}
     {{- end }}
-    {{- if .Values.web.keycloakConfigurationRef }}
+    {{- if .configuration.keycloakConfigurationRef }}
     {{- include "swh.service.fromYaml" (dict "service" "keycloak"
-                                             "configurationRef" .Values.web.keycloakConfigurationRef
+                                             "configurationRef" .configuration.keycloakConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{ end }}
     {{- if .configuration.extraConfig -}}
