@@ -319,13 +319,17 @@ remoteVaultConfiguration:
   cls: remote
   url: http://vangogh.euwest.azure.internal.softwareheritage.org:5005/
 
-remoteIndexerStorageConfiguration:
-    cls: remote
-    url: http://saam.internal.softwareheritage.org:5007/
+legacyIndexerStorageConfiguration:
+  cls: remote
+  url: http://saam.internal.softwareheritage.org:5007/
 
 remoteReadOnlyIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-only-rpc-ingress
+
+remoteReadWriteIndexerStorageConfiguration:
+  cls: remote
+  url: http://indexer-storage-read-write-rpc-ingress
 
 remoteCountersConfiguration:
     cls: remote
