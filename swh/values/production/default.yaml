@@ -323,6 +323,10 @@ remoteIndexerStorageConfiguration:
     cls: remote
     url: http://saam.internal.softwareheritage.org:5007/
 
+remoteReadOnlyIndexerStorageConfiguration:
+  cls: remote
+  url: http://indexer-storage-read-only-rpc-ingress
+
 remoteCountersConfiguration:
     cls: remote
     url: http://counters1.internal.softwareheritage.org:5011/

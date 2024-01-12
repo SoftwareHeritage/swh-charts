@@ -2,10 +2,6 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-remoteReadOnlyIndexerStorageConfiguration:
-  cls: remote
-  url: http://indexer-storage-read-only-rpc-ingress
-
 saamStorageConfiguration:
   cls: remote
   url: http://saam.internal.softwareheritage.org:5002

@@ -321,7 +321,7 @@ web:
       schedulerConfigurationRef: remoteSchedulerConfiguration
       storageConfigurationRef: remoteStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
-      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
