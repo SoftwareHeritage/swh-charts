@@ -21,6 +21,8 @@ ingressNginx:
   requestedMemory: 200Mi
   config:
     worker-processes: 6
+    # Make NGINX forwards the X-Forwarded-* headers
+    use-forwarded-headers: true
   replicaCount: 2
 
 certManager:
