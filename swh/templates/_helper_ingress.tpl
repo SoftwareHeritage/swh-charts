@@ -50,7 +50,7 @@ spec:
       {{- range $path_config := $paths }}
       {{- $port := get $path_config "port" | default $configuration.port }}
       - path: {{ get $path_config "path" }}
-        pathType: Prefix
+        pathType: {{ get $path_config "pathType" | default "Prefix" }}
         backend:
           service:
             name: {{ $serviceType }}
