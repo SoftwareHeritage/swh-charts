@@ -722,6 +722,7 @@ search:
     cpuPercentageUsage: 75
   hosts:
     - search-rpc-ingress
+    - search.internal.staging.swh.network
   ingress:
     enabled: true
     # Optional: the ingress classname to use
