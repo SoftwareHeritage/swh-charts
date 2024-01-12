@@ -1,8 +1,8 @@
 {{ if .Values.indexers.enabled -}}
 {{- $secretName := $.Values.indexers.journalBrokers.secretName -}}
-{{- $configurationChecksum := include (print $.Template.BasePath "/indexers/configmap.yaml") . -}}
 {{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
 {{- $indexer_name := ( print "indexer-" $indexer_type ) -}}
+{{- $configurationChecksum := include "swh.indexer.configmap" (dict "indexer_type" $indexer_type "deployment_config" $deployment_config "Values" $.Values) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
