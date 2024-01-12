@@ -1213,9 +1213,6 @@ web:
       #   cpuPercentageUsage: 100
       hosts:
         - webapp1.internal.softwareheritage.org
-        - archive.softwareheritage.org
-        - base.softwareheritage.org
-        - archive.internal.softwareheritage.org
       ingress:
         enabled: true
         secretName: swh-web-crt
