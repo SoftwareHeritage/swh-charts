@@ -232,13 +232,14 @@ azureDepositConfiguration:
 graphql:
   enabled: true
   deployments:
-    moma:
+    # Main instance to serve https://archive.softwaheritage.org/graphql/
+    archive:
       replicas: 2
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
       hosts:
-        - graphql.internal.softwareheritage.org
+        - archive.softwareheritage.org
       ingress:
         enabled: true
         extraAnnotations:
@@ -247,7 +248,7 @@ graphql:
         endpoints:
           default:
             paths:
-              - path: /
+              - path: /graphql/
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
@@ -262,6 +263,7 @@ graphql:
         client: swh-web
         cacheUrl: memcached://memcached:11211
       maxRawContentSize: 10000
+    # Instance to serve https://webapp1.internal.softwaheritage.org/graphql/
     webapp1:
       replicas: 1
       priorityClassName: low-workload
