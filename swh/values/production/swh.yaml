@@ -1113,8 +1113,8 @@ web:
   enabled: true
   logLevel: INFO
   deployments:
-    # Test instance (only opened internally)
-    app1:
+    # Main instance to serve archive.softwareheritage.org
+    archive:
       requestedCpu: 500m
       requestedMemory: 1024Mi
       refreshSavecodenowStatus:
@@ -1128,6 +1128,84 @@ web:
         configurationRef: postgresqlSyncmailmapsConfiguration
         priorityClassName: frontend-rpc-workload
         cron: "15 * * * *"
+      replicas: 2
+      # autoScaling:
+      #   minReplicaCount: 2
+      #   maxReplicaCount: 4
+      #   cpuPercentageUsage: 100
+      hosts:
+        - archive.softwareheritage.org
+        - base.softwareheritage.org
+        - archive.internal.softwareheritage.org
+        - archive-dynamic.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        secretName: swh-web-crt
+        extraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/ingress.class: nginx
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        tlsEnabled: true
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
+          authenticated:
+            paths:
+              - path: /api/1/provenance/
+              - path: /api/1/entity/
+              - path: /api/1/content/[^/]+/symbol/
+            # auth-file with authentication
+            authentication: swh/web-auth-secrets
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      depositConfigurationRef: depositConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      extraConfig:
+        search_config:
+          metadata_backend: swh-search
+        content_display_max_size: 5242880
+        history_counters_url: http://counters1.internal.softwareheritage.org:5011/counters_history/history.json#
+        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+        swh_extra_django_apps:
+          - swh.web.add_forge_now
+          - swh.web.archive_coverage
+          - swh.web.badges
+          - swh.web.banners
+          - swh.web.deposit
+          - swh.web.inbound_email
+          - swh.web.jslicenses
+          - swh.web.mailmap
+          - swh.web.metrics
+          - swh.web.save_code_now
+          - swh.web.save_origin_webhooks
+          - swh.web.vault
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
+        matomo:
+          url: https://piwik.inria.fr/
+          site_id: 59
+    # Test instance
+    app1:
+      requestedCpu: 500m
+      requestedMemory: 1024Mi
+      refreshSavecodenowStatus:
+        enabled: false
+      syncMailmaps:
+        enabled: false
       replicas: 2
       # autoScaling:
       #   minReplicaCount: 2
