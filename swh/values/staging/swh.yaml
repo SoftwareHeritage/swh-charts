@@ -734,7 +734,7 @@ search:
       nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: clusterNetworkRanges
+    whitelistSourceRangeRef: stagingNetworkRanges
     endpoints:
       default:
         paths:
