@@ -1,5 +1,6 @@
 {{ if .Values.indexers.enabled -}}
 {{- $secretName := $.Values.indexers.journalBrokers.secretName -}}
+{{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
 {{- $indexer_name := ( print "indexer-" $indexer_type ) -}}
 {{- $configurationChecksum := include "swh.indexer.configmap" (dict "indexer_type" $indexer_type "deployment_config" $deployment_config "Values" $.Values) -}}
@@ -27,6 +28,7 @@ spec:
       annotations:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       {{- if $.Values.indexers.affinity }}
       affinity:
@@ -38,8 +40,10 @@ spec:
       terminationGracePeriodSeconds: {{ $.Values.indexers.terminationGracePeriodSeconds | default 3600 }}
       initContainers:
         - name: prepare-configuration
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
           {{ if $secretName }}
           env:
           - name: BROKER_USER_PASSWORD
@@ -49,17 +53,13 @@ spec:
                 key: BROKER_USER_PASSWORD
                 optional: false
           {{ end }}
-          command:
-            - /entrypoint.sh
           volumeMounts:
-          - name: configuration-template
-            mountPath: /entrypoint.sh
-            subPath: "init-container-entrypoint.sh"
-            readOnly: true
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
       containers:
       - name: indexers
         image: {{ $.Values.swh_indexer_image }}:{{ $.Values.swh_indexer_image_version }}
@@ -124,13 +124,14 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: {{ $indexer_name }}-template
-          defaultMode: 0777
+          name: {{ $indexer_name }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-          - key: "init-container-entrypoint.sh"
-            path: "init-container-entrypoint.sh"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
       - name: indexer-utils
         configMap:
           name: indexer-utils

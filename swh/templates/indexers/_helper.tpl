@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $indexer_name }}-template
+  name: {{ $indexer_name }}-configuration-template
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
@@ -44,17 +44,4 @@ data:
     {{ $option }}: {{ toYaml $value | nindent 6 }}
       {{- end }}
     {{- end }}
-
-  init-container-entrypoint.sh: |
-    #!/bin/bash
-
-    set -e
-
-    CONFIG_FILE=/etc/swh/config.yml
-
-    # substitute environment variables when creating the default config.yml
-    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
-      > $CONFIG_FILE
-
-    exit 0
 {{ end }}
