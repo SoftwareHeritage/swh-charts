@@ -982,6 +982,7 @@ storage:
       storageConfigurationRef: readOnlyStorageConfiguration
       hosts:
         - storage-postgresql-read-only-rpc-ingress
+        - storage-ro.internal.staging.swh.network
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
