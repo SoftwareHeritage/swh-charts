@@ -24,7 +24,7 @@ data:
                                              "configurationRef" .Values.deposit.storageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "storage_metadata"
-                                             "configurationRef" .Values.deposit.storageConfigurationRef
+                                             "configurationRef" .Values.deposit.storageMetadataConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                              "configurationRef" .Values.deposit.schedulerConfigurationRef
