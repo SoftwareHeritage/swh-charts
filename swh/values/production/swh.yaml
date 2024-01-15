@@ -1113,8 +1113,8 @@ web:
   deployments:
     # Main instance to serve archive.softwareheritage.org
     archive:
-      requestedCpu: 500m
-      requestedMemory: 1024Mi
+      requestedCpu: 350m
+      requestedMemory: 3072Mi
       refreshSavecodenowStatus:
         enabled: true
         concurrencyPolicy: Forbid
