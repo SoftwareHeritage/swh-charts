@@ -1329,7 +1329,7 @@ deposit:
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: remoteStorageConfiguration
+  storageMetadataConfigurationRef: saamStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
