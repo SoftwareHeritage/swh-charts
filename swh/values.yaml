@@ -851,7 +851,7 @@ memcached:
   enabled: false
   priorityClassName: storages
   image: memcached:1.6.18
-  memory: 256m
+  memory: 256
   requestedCpu: 100m
   requestedMemory: 300Mi
   prometheus:

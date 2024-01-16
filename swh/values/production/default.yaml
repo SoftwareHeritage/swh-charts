@@ -30,6 +30,8 @@ keycloakConfiguration:
 
 memcached:
   enabled: true
+  memory: 1024
+  requestedMemory: 1024Mi
 
 podPriority:
   enabled: true
