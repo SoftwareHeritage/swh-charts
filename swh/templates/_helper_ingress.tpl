@@ -21,6 +21,17 @@ metadata:
   namespace: {{ $.Values.namespace }}
   name: {{ $serviceType }}-ingress-{{ $endpoint_definition }}
   annotations:
+  {{- if or (not (hasKey $configuration.ingress "useEndpointsAsUpstream")) (eq $configuration.ingress.useEndpointsAsUpstream false) -}}
+  {{- /* undocumented swh's ingress option to configure the upstreams to use the service ip.
+        By default, ips of endpoints are directly used by nginx to load balance the requests, but it's
+        ineffective for non-"idempotent" requests (POST).
+        So by default, the ingresses are configured to use the service as upstream.
+        https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#service-upstream
+        Using the default behavior (endpoints ips) should not be necessary according to the swh services architecture,
+        but allowing it just in case
+   */}}
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  {{- end }}
   {{- if $whitelistSourceRange }}
     nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRange }}
   {{- end }}
