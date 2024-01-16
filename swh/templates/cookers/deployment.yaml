@@ -43,8 +43,8 @@ spec:
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
           env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.cookers.celeryConfigurationRef) | indent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
