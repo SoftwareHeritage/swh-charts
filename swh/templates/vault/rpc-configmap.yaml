@@ -15,9 +15,8 @@ data:
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                              "configurationRef" .Values.vault.schedulerConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-    {{- include "swh.service.fromYaml" (dict "service" "objstorage"
-                                             "configurationRef" .Values.vault.objstorageConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.objstorageConfiguration" (dict "configurationRef" .Values.vault.objstorageConfigurationRef
+                                                    "Values" .Values) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "cache"
                                              "configurationRef" .Values.vault.cacheConfigurationRef
                                              "Values" .Values) | nindent 4 }}

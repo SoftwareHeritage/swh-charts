@@ -44,6 +44,8 @@ spec:
                                                        "Values" .Values) | nindent 12 }}
             {{ include "swh.secrets.environment" (dict "configurationRef" .Values.vault.cacheConfigurationRef
                                                        "Values" .Values) | nindent 12 }}
+            {{ include "swh.secrets.environment.inline" (dict "configurationRef" .Values.vault.objstorageConfigurationRef
+                                                              "Values" $.Values) | nindent 12 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

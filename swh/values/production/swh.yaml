@@ -1404,7 +1404,7 @@ vault:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   vaultConfigurationRef: postgresqlVaultConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
-  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
+  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
   cacheConfigurationRef: azureCacheConfiguration
   replicas: 2
   gunicorn:
