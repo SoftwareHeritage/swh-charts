@@ -4,6 +4,7 @@
 {{- $indexer_name := ( print "indexer-" $indexer_type ) -}}
 {{- $configurationChecksum := include "swh.indexer.configmap" (dict "indexer_type" $indexer_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $journalConfigurationRef := or $deployment_config.journalClientConfigurationRef $.Values.indexers.journalClientConfigurationRef -}}
+{{- $objstorageConfigurationRef := or $deployment_config.objstorageConfigurationRef $.Values.indexers.objstorageConfigurationRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,6 +48,8 @@ spec:
           env:
             {{ include "swh.secrets.environment" (dict "Values" $.Values
                                            "configurationRef" $journalConfigurationRef ) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "Values" $.Values
+                                           "configurationRef" $objstorageConfigurationRef ) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
