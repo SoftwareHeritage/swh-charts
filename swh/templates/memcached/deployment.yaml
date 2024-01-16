@@ -32,7 +32,7 @@ spec:
         image: "{{ .Values.memcached.image }}"
         args:
           - -m
-          - {{ .Values.memcached.memory }}
+          - {{ .Values.memcached.memory | quote }}
         imagePullPolicy: IfNotPresent
         resources:
           requests:
