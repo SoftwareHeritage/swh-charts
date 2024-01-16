@@ -20,7 +20,7 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: {{ first $.Values.storage_replayer.journalBrokers.hosts }}
+      bootstrapServers: {{ join "," $.Values.storage_replayer.journalBrokers.hosts }}
       consumerGroup: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ required "groupIdName not specified" $.Values.storage_replayer.journalBrokers.groupIdName }}-replayer-{{ $deployment }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest

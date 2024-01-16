@@ -57,7 +57,7 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: {{ first .kafkaConfiguration.brokers }}
+      bootstrapServers: {{ join "," .kafkaConfiguration.brokers }}
       consumerGroup: {{ .kafkaConfiguration.group_id }}
       lagThreshold: {{ get .autoscalingConfiguration "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest

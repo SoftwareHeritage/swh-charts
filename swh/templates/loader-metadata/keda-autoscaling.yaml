@@ -21,7 +21,7 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: {{ first .Values.loader_metadata.journalBrokers.hosts }}
+      bootstrapServers: {{ join "," .Values.loader_metadata.journalBrokers.hosts }}
       consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
