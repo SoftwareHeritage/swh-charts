@@ -86,7 +86,7 @@ azureCacheConfiguration:
   secrets:
     API_SECRET_KEY:
       secretKeyRef: swh-vault-azure-secret
-      secretKeyName: azure-swh-vault
+      secretKeyName: azure-swh-vault-key
 
 postgresqlStorageConfiguration:
   cls: postgresql
