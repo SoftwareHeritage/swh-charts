@@ -880,6 +880,31 @@ indexerStorage:
         threads: 2
         workers: 4
 
+indexers:
+  enabled: true
+  priorityClassName: low-workload
+  storageConfigurationRef: remoteROStorageConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  indexerStorageConfigurationRef: remoteReadWriteIndexerStorageConfiguration
+  objstorageConfigurationRef: roObjstorageAwsAzureLocalFallbackConfiguration
+  journalClientConfigurationRef: authenticatedJournalClientConfiguration
+  deployments:
+    extrinsic:
+      indexer_type: extrinsic_metadata
+      journalClientOverrides:
+        group_id: swh.indexer.journal_client.extrinsic_metadata
+        prefix: swh.journal.objects
+        batch_size: 200
+      requestedCpu: 50m
+      requestedMemory: 100Mi
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 6
+
 search:
   enabled: true
   priorityClassName: frontend-rpc
