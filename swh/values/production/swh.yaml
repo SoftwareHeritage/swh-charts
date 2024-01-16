@@ -1151,8 +1151,17 @@ web:
   deployments:
     # Main instance to serve archive.softwareheritage.org
     archive:
+      replicas: 4
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
+      # autoScaling:
+      #   minReplicaCount: 2
+      #   maxReplicaCount: 4
+      #   cpuPercentageUsage: 100
       requestedCpu: 350m
-      requestedMemory: 3072Mi
+      requestedMemory: 6144Mi
       refreshSavecodenowStatus:
         enabled: true
         concurrencyPolicy: Forbid
@@ -1164,11 +1173,6 @@ web:
         configurationRef: postgresqlSyncmailmapsConfiguration
         priorityClassName: frontend-rpc-workload
         cron: "15 * * * *"
-      replicas: 2
-      # autoScaling:
-      #   minReplicaCount: 2
-      #   maxReplicaCount: 4
-      #   cpuPercentageUsage: 100
       hosts:
         - archive.softwareheritage.org
         - base.softwareheritage.org
