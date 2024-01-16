@@ -230,6 +230,9 @@ postgresqlScrubberConfiguration:
 kafkaBrokers:
   - journal2.internal.staging.swh.network
 
+internalSecuredKakaBrokers:
+  - journal2.internal.staging.swh.network:9094
+
 elasticsearchInstances:
   - host: search-esnode0.internal.staging.swh.network
     port: 9200
@@ -262,6 +265,22 @@ journalClientCountersConfiguration:
   - skipped_content
   - snapshot
   message.max.bytes: 524288000
+
+authenticatedJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
 
 depositConfiguration:
   host: deposit-dynamic.internal.staging.swh.network

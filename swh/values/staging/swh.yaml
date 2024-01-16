@@ -287,11 +287,7 @@ indexers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
-  journalBrokers:
-    secretName: swh-archive-broker-secret
-    hosts:
-      - journal2.internal.staging.swh.network:9094
-    user: swh-archive-stg
+  journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     # content-mimetype:
     #   indexer_type: content_mimetype
@@ -335,9 +331,9 @@ indexers:
     #     maxReplicaCount: 2
     origin-intrinsic:
       indexer_type: origin_intrinsic_metadata
-      consumerGroup: swh.indexer.journal_client.origin_intrinsic_metadata
-      prefix: swh.journal.objects
-      batch_size: 200
+      journalClientOverrides:
+        group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
+        batch_size: 200
       requestedCpu: 50m
       requestedMemory: 100Mi
       extraConfig:
@@ -349,9 +345,10 @@ indexers:
         maxReplicaCount: 6
     extrinsic:
       indexer_type: extrinsic_metadata
-      consumerGroup: swh.indexer.journal_client.extrinsic_metadata
-      prefix: swh.journal.objects
-      batch_size: 200
+      journalClientOverrides:
+        group_id: swh-archive-stg-swh.indexer.journal_client.extrinsic_metadata
+        prefix: swh.journal.objects
+        batch_size: 200
       requestedCpu: 50m
       requestedMemory: 100Mi
       extraConfig:

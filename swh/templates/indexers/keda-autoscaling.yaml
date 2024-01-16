@@ -1,30 +1,9 @@
 {{ if .Values.indexers.enabled -}}
-{{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
-{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
-{{ if $autoscalingConfig }}
-{{- $journalUser := $.Values.indexers.journalBrokers.user -}}
-{{- $consumerGroup := get $deployment_config "consumerGroup" -}}
----
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: indexer-{{ $indexer_type }}-scaledobject
-  namespace: {{ $.Values.namespace }}
-spec:
-  scaleTargetRef:
-    name: indexer-{{ $indexer_type }}
-  pollingInterval: {{ get $autoscalingConfig "poolInterval" | default 120 }}
-  minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
-  maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
-  triggers:
-  - type: kafka
-    metadata:
-      bootstrapServers: {{ first $.Values.indexers.journalBrokers.hosts }}
-      consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
-      lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
-      offsetResetPolicy: earliest
-    authenticationRef:
-      name: keda-indexers-trigger-authentication-{{ $indexer_type }}
-{{ end }}
-{{ end }}
+{{- range $deployment_name, $deployment_config := .Values.indexers.deployments -}}
+{{- if and (or (not (hasKey $deployment_config "enabled"))
+               (get $deployment_config "enabled"))
+           (hasKey $deployment_config "autoScaling") -}}
+{{ include "swh.indexer.autoscaling" (dict "deployment_name" $deployment_name "deployment_config" $deployment_config "Values" $.Values) }}
+{{- end -}}
+{{- end -}}
 {{- end -}}

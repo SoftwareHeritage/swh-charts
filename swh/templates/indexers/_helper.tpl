@@ -1,7 +1,8 @@
 {{ define "swh.indexer.configmap" }}
 {{ $indexer_name := ( print "indexer-" .indexer_type ) }}
-{{- $journalUser := .Values.indexers.journalBrokers.user -}}
-{{- $consumerGroup := get .deployment_config "consumerGroup" -}}
+{{- $journalClientConfigurationRef := or .deployment_config.journalClientConfigurationRef .Values.indexers.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in indexers (" .deployment_name ")  configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -20,28 +21,30 @@ data:
     {{- include "swh.service.fromYaml" (dict "service" "objstorage"
                                              "configurationRef" .Values.indexers.objstorageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-    journal:
-      brokers: {{ toYaml .Values.indexers.journalBrokers.hosts | nindent 8 }}
-      {{ if $journalUser }}
-      group_id: {{ $journalUser }}-{{ $consumerGroup }}
-      {{ else }}
-      group_id: {{ $consumerGroup }}
-      {{ end -}}
-      prefix: {{ get .deployment_config "prefix" }}
-      {{ if .deployment_config.batch_size }}
-      batch_size: {{ .deployment_config.batch_size }}
-      {{ end -}}
-
-      {{ if $journalUser }}
-      sasl.mechanism: SCRAM-SHA-512
-      security.protocol: SASL_SSL
-      sasl.username: {{ $journalUser }}
-      sasl.password: ${BROKER_USER_PASSWORD}
-      {{ end -}}
-
+    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal" "configurationRef" $journalClientConfigurationRef
+                                      "overrides" $journalClientOverrides
+                                      "Values" .Values) | nindent 4 }}
     {{- if .deployment_config.extraConfig -}}
       {{- range $option, $value := .deployment_config.extraConfig }}
     {{ $option }}: {{ toYaml $value | nindent 6 }}
       {{- end }}
     {{- end }}
+{{ end }}
+
+{{ define "swh.indexer.autoscaling" }}
+{{- $journalClientConfigurationRef := or .deployment_config.journalClientConfigurationRef .Values.indexers.journalClientConfigurationRef -}}
+{{- $journalClientBaseConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in indexers (" .deployment_name ")  configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
+{{- $journalClientConfiguration := deepCopy $journalClientBaseConfiguration }}
+{{- $journalClientConfiguration := mustMergeOverwrite $journalClientConfiguration $journalClientOverrides -}}
+{{- $brokersConfigurationRef := $journalClientConfiguration.brokersConfigurationRef -}}
+{{- $brokers := get .Values $brokersConfigurationRef -}}
+{{- $_ := set $journalClientConfiguration "brokers" $brokers -}}
+{{- $_ := unset $journalClientConfiguration "brokersConfigurationRef" -}}
+{{- $_ := required (print "group_id property is mandatory in <" .journalClientConfigurationRef "> map") (get $journalClientConfiguration "group_id") -}}
+{{- include "swh.keda.kafkaAutoscaler" (dict
+                                "name" (print "indexers-" .deployment_name)
+                                "kafkaConfiguration" $journalClientConfiguration
+                                "autoscalingConfiguration" .deployment_config.autoScaling
+                                "Values"        .Values) -}}
 {{ end }}

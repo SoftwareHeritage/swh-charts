@@ -547,6 +547,23 @@ indexers:
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
+  journalClientConfigurationRef: journalClientConfiguration
+  # deployments:
+  #  foo:
+  #    journalClientOverrides:
+  #      group_id: my-group-id
+  #    # If defined, autoscaling configuration should not be defined
+  #    replicas: 1
+  #    # If defined, replicas configuration should not be defined
+  #    # if sasl is activated on the connection, the kafka username must
+  #    # be configured in a secret to allow the keda autoscaling to work
+  #    autoScaling:
+  #      poolInterval: 120
+  #      lagThreashold: 1000
+  #      minReplicaCount: 1
+  #      maxReplicaCount: 5
+  #      stopWhenNoActivity: true
+  #      lagThreshold: 1000
 
 listers:
   enabled: false
