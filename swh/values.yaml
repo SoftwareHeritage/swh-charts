@@ -882,7 +882,7 @@ memcached:
   prometheus:
     # Activate the deployment of the memcached exporter and ServiceMonitor
     enabled: true
-    image: quay.io/prometheus/memcached-exporter:v0.11.1
+    image: quay.io/prometheus/memcached-exporter:v0.14.2
 
 toolbox:
   enabled: false
