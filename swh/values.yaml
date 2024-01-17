@@ -869,7 +869,7 @@ statsd_exporter:
   enabled: false
   priorityClassName: system
   image: prom/statsd-exporter
-  imageVersion: "v0.22.7"
+  imageVersion: "v0.26.0"
 
 memcached:
   # Deploy a memcached instance used by the webapp and graphql for sessions caching
