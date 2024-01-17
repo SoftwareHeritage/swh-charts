@@ -1,63 +1,11 @@
 {{ if .Values.cookers.enabled -}}
-{{- range $cooker_type, $deployment_config := .Values.cookers.deployments -}}
-{{ if get $deployment_config "autoScaling" }}
-{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
-{{- $cooker_name := ( print "cooker-" $cooker_type ) -}}
-{{ if $autoscalingConfig }}
----
-apiVersion: keda.sh/v1alpha1
-kind: TriggerAuthentication
-metadata:
-  name: amqp-authentication-{{ $cooker_name }}
-  namespace: {{ $.Values.namespace }}
-spec:
-  secretTargetRef:
-  - parameter: host            # "host" is required by the scalerObject trigger metadata
-    name: common-secrets
-    key: rabbitmq-http-host
-
----
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: {{ $cooker_name }}-operators
-  namespace: {{ $.Values.namespace }}
-spec:
-  scaleTargetRef:
-    apiVersion:    apps/v1     # Optional. Default: apps/v1
-    kind:          Deployment  # Optional. Default: Deployment
-    # Mandatory. Must be in same namespace as ScaledObject
-    name:          {{ $cooker_name }}
-    # envSourceContainerName: {container-name} # Optional. Default:
-                                               # .spec.template.spec.containers[0]
-  pollingInterval:  30                         # Optional. Default: 30 seconds
-  cooldownPeriod:   3600                       # Optional. Default: 300 seconds
-  idleReplicaCount: 0                          # Optional. Must be less than
-                                               # minReplicaCount
-  minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
-  maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
-  triggers:
-    {{- range $queue := get $deployment_config "queues" }}
-  - type: rabbitmq
-    authenticationRef:
-      name: amqp-authentication-{{ $cooker_name }}
-    metadata:
-      protocol: auto                 # Optional. Specifies protocol to use,
-                                     # either amqp or http, or auto to
-                                     # autodetect based on the `host` value.
-                                     # Default value is auto.
-      mode: QueueLength              # QueueLength to trigger on number of msgs in queue
-      excludeUnacknowledged: "false" # QueueLength should include unacked messages
-                                     # Implies "http" protocol is used
-      value: {{ get $autoscalingConfig "queueThreshold" | default 1 | quote }}
-      queueName: {{ $queue }}
-      vhostName: /                   # Optional. If not specified, use the vhost in the
-                                     # `host` connection string. Alternatively, you can
-                                     # use existing environment variables to read
-                                     # configuration from: See details in "Parameter
-                                     # list" section hostFromEnv: RABBITMQ_HOST%
-    {{- end }}
-{{ end }}
+{{- range $cooker_type, $configuration := .Values.cookers.deployments -}}
+{{ if and (or (not (hasKey $configuration "enabled"))
+              (get $configuration "enabled"))
+          (hasKey $configuration "autoScaling") }}
+{{- include "swh.keda.celeryAutoscaler" (dict "name"          (print "cooker-" $cooker_type)
+                                              "configuration" $configuration
+                                              "Values"        $.Values) -}}
 {{ end }}
 {{ end }}
 {{- end -}}

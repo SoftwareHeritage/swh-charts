@@ -102,3 +102,71 @@ spec:
 {{- end -}}
 
 {{- end -}}
+
+{{/*
+   * Create a kind TriggerAuthentication & ScaledObject for celery
+   *
+   * params:
+   *   name (str)          : Service Name (e.g. cooker-simple, ...)
+   *   configuration (dict): Full Service configuration dict
+   *   Values (dict)       : Global dict of values
+   */}}
+{{- define "swh.keda.celeryAutoscaler" -}}
+{{- $autoscalingConfig := .configuration.autoScaling -}}
+---
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: amqp-authentication-{{ .name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  secretTargetRef:
+  - parameter: host            # "host" is required by the scalerObject trigger metadata
+    name: common-secrets
+    key: rabbitmq-http-host
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .name }}-operators
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion:    apps/v1     # Optional. Default: apps/v1
+    kind:          Deployment  # Optional. Default: Deployment
+    # Mandatory. Must be in same namespace as ScaledObject
+    name:          {{ .name }}
+    # envSourceContainerName: {container-name} # Optional. Default:
+                                               # .spec.template.spec.containers[0]
+  pollingInterval:  30                         # Optional. Default: 30 seconds
+  cooldownPeriod:   3600                       # Optional. Default: 300 seconds
+  {{- if or (not (hasKey $autoscalingConfig "stopWhenNoActivity"))
+            (get $autoscalingConfig "stopWhenNoActivity") }}
+  idleReplicaCount: 0                          # Set to 0 to stop all the workers when
+                                               # there is no activity on the queue
+  {{- end }}
+  minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
+  maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
+  triggers:
+    {{- range $queue := get .configuration "queues" }}
+  - type: rabbitmq
+    authenticationRef:
+      name: amqp-authentication-{{ $.name }}
+    metadata:
+      protocol: auto                 # Optional. Specifies protocol to use,
+                                     # either amqp or http, or auto to
+                                     # autodetect based on the `host` value.
+                                     # Default value is auto.
+      mode: QueueLength              # QueueLength to trigger on number of msgs in queue
+      excludeUnacknowledged: "false" # QueueLength should include unacked messages
+                                     # Implies "http" protocol is used
+      value: {{ get $autoscalingConfig "queueThreshold" | default 1 | quote }}
+      queueName: {{ $queue }}
+      vhostName: /                   # Optional. If not specified, use the vhost in the
+                                     # `host` connection string. Alternatively, you can
+                                     # use existing environment variables to read
+                                     # configuration from: See details in "Parameter
+                                     # list" section hostFromEnv: RABBITMQ_HOST%
+    {{- end }}
+{{ end }}
