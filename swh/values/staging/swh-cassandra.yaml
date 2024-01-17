@@ -733,7 +733,6 @@ cookers:
       queues:
         - swh.vault.cooking_tasks.SWHBatchCookingTask
       autoScaling:
-        stopWhenNoActivity: false
         minReplicaCount: 1
         maxReplicaCount: 2
 
