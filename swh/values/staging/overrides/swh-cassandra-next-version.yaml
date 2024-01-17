@@ -16,6 +16,16 @@ remoteCountersConfiguration:
   cls: remote
   url: http://counters-rpc-ingress-next-version
 
+externalServices:
+  enabled: true
+  services:
+    vault:
+      internalName: vault-rpc-ingress-next-version
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    counters:
+      internalName: counters-rpc-ingress-next-version
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+
 counters:
   rpc:
     replicas: 1
