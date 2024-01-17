@@ -3,6 +3,9 @@
 {{ if and (or (not (hasKey $configuration "enabled"))
               (get $configuration "enabled"))
           (hasKey $configuration "autoScaling") }}
+{{- if not (hasKey $configuration.autoScaling "queueThreshold") }}
+{{- $configuration := set $configuration.autoScaling "queueThreshold" $.Values.cookers.autoScaling.queueThreshold -}}
+{{- end -}}
 {{- include "swh.keda.celeryAutoscaler" (dict "name"          (print "cooker-" $cooker_type)
                                               "configuration" $configuration
                                               "Values"        $.Values) -}}

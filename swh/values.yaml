@@ -528,6 +528,8 @@ cookers:
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # celeryConfigurationRef: consumerCeleryConfiguration
   # vaultConfigurationRef: remoteVaultConfiguration
+  autoScaling:
+    queueThreshold: 1
 
 checker_deposit:
   enabled: false
