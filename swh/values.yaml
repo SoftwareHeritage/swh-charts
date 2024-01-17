@@ -875,7 +875,7 @@ memcached:
   # Deploy a memcached instance used by the webapp and graphql for sessions caching
   enabled: false
   priorityClassName: storages
-  image: memcached:1.6.18
+  image: memcached:1.6.23
   memory: 256
   requestedCpu: 100m
   requestedMemory: 300Mi
