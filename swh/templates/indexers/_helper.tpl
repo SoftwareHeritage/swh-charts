@@ -21,7 +21,7 @@ data:
     {{- include "swh.objstorageConfiguration" (dict "serviceName" "objstorage"
                                              "configurationRef" .Values.indexers.objstorageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal" "configurationRef" $journalClientConfigurationRef
+    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal_client" "configurationRef" $journalClientConfigurationRef
                                       "overrides" $journalClientOverrides
                                       "Values" .Values) | nindent 4 }}
     {{- if .deployment_config.extraConfig -}}
