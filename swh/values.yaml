@@ -537,6 +537,8 @@ checker_deposit:
   storageConfigurationRef: defaultReadOnlyStorageClientConfiguration
   # celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
+  autoScaling:
+    cooldownPeriod: 3600
 
 indexers:
   enabled: false
