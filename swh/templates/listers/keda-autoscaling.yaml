@@ -3,6 +3,13 @@
 {{ if and (or (not (hasKey $configuration "enabled"))
               (get $configuration "enabled"))
           (hasKey $configuration "autoScaling") }}
+{{- if not (hasKey $configuration.autoScaling "queueThreshold") }}
+{{- $configuration := set $configuration.autoScaling "queueThreshold" $.Values.listers.autoScaling.queueThreshold -}}
+{{- end -}}
+{{- if not (hasKey $configuration.autoScaling "cooldownPeriod") }}
+{{- $configuration := set $configuration.autoScaling "cooldownPeriod" $.Values.listers.autoScaling.cooldownPeriod -}}
+{{- end -}}
+
 {{- include "swh.keda.celeryAutoscaler" (dict "name"          (print "lister-" $lister_type)
                                               "configuration" $configuration
                                               "Values"        $.Values) -}}

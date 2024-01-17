@@ -140,7 +140,8 @@ spec:
     # envSourceContainerName: {container-name} # Optional. Default:
                                                # .spec.template.spec.containers[0]
   pollingInterval:  30                         # Optional. Default: 30 seconds
-  cooldownPeriod:   3600                       # Optional. Default: 300 seconds
+  cooldownPeriod:   {{ get $autoscalingConfig "cooldownPeriod" | default 300 }}
+                                               # ^ Optional. Default: 300 seconds
   {{- if or (not (hasKey $autoscalingConfig "stopWhenNoActivity"))
             (get $autoscalingConfig "stopWhenNoActivity") }}
   idleReplicaCount: 0                          # Set to 0 to stop all the workers when
@@ -161,7 +162,7 @@ spec:
       mode: QueueLength              # QueueLength to trigger on number of msgs in queue
       excludeUnacknowledged: "false" # QueueLength should include unacked messages
                                      # Implies "http" protocol is used
-      value: {{ get $autoscalingConfig "queueThreshold" | default 1 | quote }}
+      value: {{ get $autoscalingConfig "queueThreshold" | default 10 | quote }}
       queueName: {{ $queue }}
       vhostName: /                   # Optional. If not specified, use the vhost in the
                                      # `host` connection string. Alternatively, you can

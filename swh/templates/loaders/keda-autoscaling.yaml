@@ -1,49 +1,11 @@
 {{ if .Values.loaders.enabled -}}
-{{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
-{{ if get $deployment_config "autoScaling" }}
-{{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
-{{- $loader_name := ( print "loader-" $loader_type ) -}}
----
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: {{ $loader_name }}-operators
-  namespace: {{ $.Values.namespace }}
-spec:
-  scaleTargetRef:
-    apiVersion:    apps/v1     # Optional. Default: apps/v1
-    kind:          Deployment  # Optional. Default: Deployment
-    # Mandatory. Must be in same namespace as ScaledObject
-    name:          {{ $loader_name }}
-    # envSourceContainerName: {container-name} # Optional. Default:
-                                               # .spec.template.spec.containers[0]
-  pollingInterval:  30                         # Optional. Default: 30 seconds
-  cooldownPeriod:   300                        # Optional. Default: 300 seconds
-  {{- if or (not (hasKey $autoscalingConfig "stopWhenNoActivity")) (get $autoscalingConfig "stopWhenNoActivity") }}
-  idleReplicaCount: 0                          # Set to 0 to stop all the workers when there is
-                                               # no activity on the queue
-  {{- end }}
-  minReplicaCount:  {{ get $autoscalingConfig "minReplicaCount" | default 0 }}
-  maxReplicaCount:  {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
-  triggers:
-    {{- range $queue := get $deployment_config "queues" }}
-  - type: rabbitmq
-    authenticationRef:
-      name: amqp-authentication-{{ $loader_name }}
-    metadata:
-      protocol: auto                 # Optional. Specifies protocol to use,
-                                     # either amqp or http, or auto to
-                                     # autodetect based on the `host` value.
-                                     # Default value is auto.
-      mode: QueueLength              # QueueLength to trigger on number of msgs in queue
-      excludeUnacknowledged: "false" # QueueLength should include unacked messages
-                                     # Implies "http" protocol is used
-      value: {{ get $autoscalingConfig "queueThreshold" | default 10 | quote }}
-      queueName: {{ $queue }}
-      vhostName: /                   # Vhost to use for the connection
-    {{- end }}
-{{- end -}}
+{{- range $loader_type, $configuration := .Values.loaders.deployments -}}
+{{ if and (or (not (hasKey $configuration "enabled"))
+              (get $configuration "enabled"))
+          (hasKey $configuration "autoScaling") }}
+{{- include "swh.keda.celeryAutoscaler" (dict "name"          (print "loader-" $loader_type)
+                                              "configuration" $configuration
+                                              "Values"        $.Values) -}}
 {{ end }}
 {{ end }}
 {{- end -}}

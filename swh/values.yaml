@@ -568,6 +568,10 @@ indexers:
 listers:
   enabled: false
   priorityClassName: normal-workload
+  # General autoScaling option, this can be overridden per instance
+  autoScaling:
+    queueThreshold: 1
+    cooldownPeriod: 3600
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
