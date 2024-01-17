@@ -722,6 +722,7 @@ cookers:
   vaultConfigurationRef: remoteVaultConfiguration
   deployments:
     simple:
+      ackLate: true
       queues:
         - swh.vault.cooking_tasks.SWHCookingTask
       autoScaling:
