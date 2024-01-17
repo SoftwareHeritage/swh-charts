@@ -12,6 +12,19 @@ vault:
   hosts:
     - vault-rpc-ingress-next-version
 
+remoteCountersConfiguration:
+  cls: remote
+  url: http://counters-rpc-ingress-next-version
+
+counters:
+  rpc:
+    replicas: 1
+    autoScaling:
+      minReplicaCount: 1
+      maxReplicaCount: 1
+    hosts:
+      - counters-rpc-ingress-next-version
+
 loaders:
   terminationGracePeriodSeconds: 60
   deployments:
