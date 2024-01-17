@@ -656,7 +656,9 @@ loaders:
           - rpm
           - diff
       autoScaling:
+        stopWhenNoActivity: false
         maxReplicaCount: 2
+        minReplicaCount: 2
     npm:
       requestedMemory: 256Mi
       requestedCpu: 200m
