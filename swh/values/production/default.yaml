@@ -319,7 +319,7 @@ remoteSchedulerConfiguration:
 
 remoteVaultConfiguration:
   cls: remote
-  url: http://vangogh.euwest.azure.internal.softwareheritage.org:5005/
+  url: http://vault-rpc-ingress
 
 legacyIndexerStorageConfiguration:
   cls: remote
