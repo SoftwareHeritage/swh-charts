@@ -42,6 +42,15 @@ wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://gloin001.internal.cea.swh.network
 
+saamZfsObjstorageConfiguration:
+  cls: multiplexer
+  objstorages:
+  - cls: pathslicing
+    root: "/srv/softwareheritage/objects"
+    slicing: 0:2/0:5
+    compression: none
+  client_max_size: 1073741824
+
 readOnlyStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
@@ -1361,6 +1370,41 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    saam-zfs:
+      enabled: true
+      requestedCpu: 250m
+      requestedMemory: 1024Mi
+      replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
+      objstorageConfigurationRef: saamZfsObjstorageConfiguration
+      volumes:
+        pathslicing-rw:
+          mountPath: /srv/softwareheritage/objects
+          volumeDefinition:
+            hostPath:
+              path: /srv/softwareheritage/objects
+              type: Directory
+      # Deploy an ingress to access the objstorage
+      hosts:
+        - objstorage-rw-saam-zfs-rpc-ingress
+      ingress:
+        enabled: true
+        # mandatory if ingress is enabled
+        # the hostname on which the objstorage must be reachable
+        # Optional: the ingress classname to use
+        className: nginx
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 deposit:
   enabled: true
