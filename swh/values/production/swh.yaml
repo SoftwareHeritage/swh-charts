@@ -178,7 +178,7 @@ secondaryPostgresqlRWStorageConfiguration:
 
 secondaryPostgresqlROStorageConfiguration:
   cls: postgresql
-  host: massmoca.internal.softwareheritage.org
+  host: postgresql-storage-replica.internal.softwareheritage.org
   port: 5432
   user: guest
   pass: ${POSTGRESQL_PASSWORD}
