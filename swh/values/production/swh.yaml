@@ -38,18 +38,6 @@ wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://gloin001.internal.cea.swh.network
 
-postgresqlROStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-rw.internal.softwareheritage.org
-  port: 5432
-  user: guest
-  pass: ${POSTGRESQL_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-guest-password
-
 postgresqlReadOnlyIndexerStorageConfiguration:
   cls: postgresql
   host: postgresql-indexer-rw.internal.softwareheritage.org
@@ -64,7 +52,7 @@ postgresqlReadOnlyIndexerStorageConfiguration:
 
 readOnlyStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: postgresqlROStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageConfiguration
 
 postgresqlDepositConfiguration:
