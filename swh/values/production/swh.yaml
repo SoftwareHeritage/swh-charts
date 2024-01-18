@@ -962,7 +962,7 @@ search:
           - origin_extrinsic_metadata
 
 scrubber:
-  enabled: true
+  enabled: false
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   storageConfigurationRef: remoteSaamStorageConfiguration
   priorityClassName: background-workload
