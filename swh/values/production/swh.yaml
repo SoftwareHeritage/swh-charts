@@ -302,7 +302,7 @@ graphql:
       maxRawContentSize: 10000
 
 listers:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
