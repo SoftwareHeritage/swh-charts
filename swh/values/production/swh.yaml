@@ -52,7 +52,7 @@ postgresqlReadOnlyIndexerStorageConfiguration:
 
 readOnlyStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
+  storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageConfiguration
 
 postgresqlDepositConfiguration:
