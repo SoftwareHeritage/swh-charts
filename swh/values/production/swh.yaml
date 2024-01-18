@@ -1387,6 +1387,15 @@ objstorage:
             hostPath:
               path: /srv/softwareheritage/objects
               type: Directory
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/objstorage-saam-zfs
+                operator: In
+                values:
+                - "true"
       # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-rw-saam-zfs-rpc-ingress
