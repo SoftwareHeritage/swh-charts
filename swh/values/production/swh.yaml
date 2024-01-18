@@ -757,7 +757,7 @@ scheduler:
   alerts:
     enabled: false
   recurrent:
-    enabled: false
+    enabled: true
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
@@ -789,20 +789,20 @@ scheduler:
             # vpn network
             - 192.168.101.0/24
   updateMetrics:
-    enabled: false
+    enabled: true
     concurrencyPolicy: Forbid
     # At minute 27 past every 4th hour from 3 through 23
     cron: "27 3-23/4 * * *"
   journalClient:
-    enabled: false
+    enabled: true
     journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
     runner-priority:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 10
       extraConfig:
@@ -813,7 +813,7 @@ scheduler:
         - load-archive-files
         - load-hg
     listener:
-      enabled: false
+      enabled: true
       logLevel: INFO
 
 toolbox:
