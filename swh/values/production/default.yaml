@@ -371,7 +371,7 @@ depositConfiguration:
 
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-indexer-rw.internal.softwareheritage.org
   db: softwareheritage-indexer
   port: 5432
   user: swhstorage
@@ -383,7 +383,7 @@ postgresqlIndexerStorageConfiguration:
 
 postgresqlScrubberConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-scrubber-rw.internal.softwareheritage.org
   port: '5432'
   user: swh-scrubber
   pass: ${SCRUBBER_POSTGRESQL_PASSWORD}

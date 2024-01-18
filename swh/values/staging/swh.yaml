@@ -2,7 +2,7 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-postgresqlRWStorageConfiguration:
+primaryPostgresqlRWStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
@@ -14,7 +14,7 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-postgresql-common-secret
       secretKeyName: postgres-swh-password
 
-postgresqlROStorageConfiguration:
+primaryPostgresqlROStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
@@ -28,12 +28,12 @@ postgresqlROStorageConfiguration:
 
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
-  storageConfigurationRef: postgresqlRWStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjectStorage
 
 ## Direct postgresql connection without any filter or objstorage
 scrubberROStorageConfiguration:
-  storageConfigurationRef: postgresqlROStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
 
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
@@ -86,13 +86,13 @@ rwStoragePipelineSteps:
 
 readWriteStorageConfiguration:
   pipelineStepsRef: rwStoragePipelineSteps
-  storageConfigurationRef: postgresqlRWStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
 
 readOnlyStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
-  storageConfigurationRef: postgresqlROStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
 
 listers:
@@ -573,7 +573,7 @@ toolbox:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
     storage:
-      storageDbConfigurationRef: postgresqlRWStorageConfiguration
+      storageDbConfigurationRef: primaryPostgresqlRWStorageConfiguration
     scrubber-journal:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration

@@ -8,7 +8,7 @@
 ## ./test.sh
 
 CONTEXT_SIZE=10
-MAIN_BRANCH=production
+MAIN_BRANCH=${1:-production}
 APP=swh
 BRANCH="$(git symbolic-ref --quiet HEAD | sed 's|refs/heads/||')"
 
