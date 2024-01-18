@@ -474,6 +474,7 @@ loaders:
   depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
+      enabled: false
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
