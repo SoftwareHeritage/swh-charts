@@ -1004,7 +1004,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 250Mi
   storageChecker:
-    enabled: true
+    enabled: false
     deployments:
       primary-directory-references:
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
