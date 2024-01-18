@@ -944,7 +944,7 @@ search:
           - origin_extrinsic_metadata
 
 scrubber:
-  enabled: false
+  enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   storageConfigurationRef: remoteSaamStorageConfiguration
   priorityClassName: background-workload
