@@ -456,7 +456,7 @@ checker_deposit:
   limitedCpu: 1000m
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositDynamicConfiguration
