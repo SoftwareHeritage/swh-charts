@@ -398,7 +398,7 @@ toolbox:
       storageConfigurationRef: scrubberROStorageConfiguration
 
 scrubber:
-  enabled: true
+  enabled: false
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
   storageChecker:
