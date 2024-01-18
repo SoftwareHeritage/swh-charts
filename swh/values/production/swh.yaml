@@ -40,7 +40,7 @@ wineryRWObjectstorageConfiguration:
 
 postgresqlROStorageConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
   user: guest
   pass: ${POSTGRESQL_PASSWORD}
@@ -52,7 +52,7 @@ postgresqlROStorageConfiguration:
 
 postgresqlReadOnlyIndexerStorageConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-indexer-rw.internal.softwareheritage.org
   db: softwareheritage-indexer
   port: 5432
   user: guest
@@ -68,7 +68,7 @@ readOnlyStorageConfiguration:
   objstorageConfigurationRef: roObjstorageConfiguration
 
 postgresqlDepositConfiguration:
-  host: db.internal.softwareheritage.org
+  host: postgresql-deposit-rw.internal.softwareheritage.org
   port: 5432
   db: softwareheritage-deposit
   user: swhstorage
@@ -90,7 +90,7 @@ azureCacheConfiguration:
 
 postgresqlStorageConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
   user: swhstorage
   pass: ${POSTGRESQL_PASSWORD}
@@ -102,7 +102,7 @@ postgresqlStorageConfiguration:
 
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
   db: softwareheritage
   user: swhmailmap
@@ -113,7 +113,7 @@ postgresqlSyncmailmapsConfiguration:
       secretKeyName: postgres-syncmailmap-password
 
 postgresqlWebConfiguration:
-  host: db.internal.softwareheritage.org
+  host: postgresql-web-rw.internal.softwareheritage.org
   port: 5432
   db: swh-web
   user: swh-web
@@ -125,7 +125,7 @@ postgresqlWebConfiguration:
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-scheduler-rw.internal.softwareheritage.org
   port: 5432
   user: swhscheduler
   pass: ${POSTGRESQL_PASSWORD}
@@ -137,7 +137,7 @@ postgresqlSchedulerConfiguration:
 
 postgresqlVaultConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-vault-rw.internal.softwareheritage.org
   port: 5432
   db: swh-vault
   user: swh-vault
@@ -166,7 +166,7 @@ authenticatedJournalClientConfiguration:
 
 primaryPostgresqlROStorageConfiguration:
   cls: postgresql
-  host: db.internal.softwareheritage.org
+  host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
   user: guest
   pass: ${POSTGRESQL_PASSWORD}
@@ -178,7 +178,7 @@ primaryPostgresqlROStorageConfiguration:
 
 secondaryPostgresqlRWStorageConfiguration:
   cls: postgresql
-  host: massmoca.internal.softwareheritage.org
+  host: postgresql-storage-replica.internal.softwareheritage.org
   port: 5432
   user: swhstorage
   pass: ${POSTGRESQL_PASSWORD}

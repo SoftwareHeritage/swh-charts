@@ -195,7 +195,7 @@ sentry:
 # TODO: define this configuration
 
 # postgresqlWebConfiguration:
-#   host: db.internal.softwareheritage.org
+#   host: postgresql-web-rw.internal.softwareheritage.org
 #   port: 5432
 #   db: swh-web
 #   user: swh-web
@@ -206,7 +206,7 @@ sentry:
 #       secretKeyName: postgres-swh-web-password
 
 # postgresqlDepositConfiguration:
-#   host: db.internal.softwareheritage.org
+#   host: postgresql-deposit-rw.internal.softwareheritage.org
 #   port: 5432
 #   db: swh-deposit
 #   user: swh-deposit
