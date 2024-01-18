@@ -35,9 +35,15 @@ spec:
         checksum/database-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
-      {{- if $.Values.storage.affinity }}
+      {{- $nodeSelector := $storage_config.nodeSelector | default $.Values.storage.nodeSelector | default dict -}}
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- $affinity := $storage_config.affinity | default $.Values.storage.affinity | default dict -}}
+      {{- if $affinity }}
       affinity:
-        {{- toYaml $.Values.storage.affinity | nindent 8 }}
+        {{- toYaml $affinity | nindent 8 }}
       {{- end }}
 
       {{- if and $.Values.podPriority.enabled $.Values.storage.priorityClassName }}
@@ -140,6 +146,11 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          {{- range $volume_name, $volume_config := $storage_config.extraVolumes }}
+          - name: {{ $volume_name }}
+            mountPath: {{ $volume_config.mountPath }}
+            readOnly: {{ $volume_config.readOnly | default "false" }}
+          {{ end }}
       volumes:
       - name: configuration
         emptyDir: {}
@@ -157,6 +168,10 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
+      {{ range $volume_name, $volume_config := $storage_config.extraVolumes }}
+      - name: {{ $volume_name }}
+        {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
+      {{ end }}
 
 {{ end }}
 {{ end -}}

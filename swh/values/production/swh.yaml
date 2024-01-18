@@ -42,14 +42,17 @@ wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://gloin001.internal.cea.swh.network
 
-saamZfsObjstorageConfiguration:
-  cls: multiplexer
-  objstorages:
-  - cls: pathslicing
-    root: "/srv/softwareheritage/objects"
-    slicing: 0:2/0:5
-    compression: none
-  client_max_size: 1073741824
+postgresqlRWStorageConfiguration:
+  cls: postgresql
+  host: postgresql-storage-rw.internal.softwareheritage.org
+  port: 5432
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
 
 readOnlyStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
@@ -1141,6 +1144,14 @@ scrubber:
         requestedCpu: 150m
         requestedMemory: 128Mi
 
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  prefix: swh.journal.objects
+  clientId: swh.storage.journal_writer.${HOSTNAME}
+  producerConfig:
+    message.max.bytes: 1000000000
+  anonymize: true
+
 storage:
   enabled: true
   deployments:
@@ -1171,6 +1182,55 @@ storage:
       gunicorn:
         threads: 4
         workers: 8
+    # Main instance used by loaders to write
+    postgresql-saam-zfs:
+      requestedCpu: 500m
+      requestedMemory: 1024Mi
+      replicas: 4
+      gunicorn:
+        workers: 8
+        threads: 4
+        timeout: 3600
+      nodeSelector:
+        kubernetes.io/hostname: saam
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/storage-pathslicing
+                operator: In
+                values:
+                - "true"
+      storageConfigurationRef: rwStoragePostgresqlWithSaamObjstorageConfiguration
+      extraVolumes:
+        pathslicing-rw:
+          # This must match what's declared in the instance config key
+          # storageConfigurationRef just above
+          mountPath: /srv/softwareheritage/objects
+          volumeDefinition:
+            hostPath:
+              path: /srv/softwareheritage/objects
+              type: Directory
+      hosts:
+        - storage-read-write-rpc-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      cronjobs:
+        create-object-reference-partitions:
+          enabled: true
+          logLevel: INFO
+          cron: 5 0 * * mon
+          concurrencyPolicy: Forbid
 
 web:
   enabled: true
@@ -1381,7 +1441,7 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 3600
-      objstorageConfigurationRef: saamZfsObjstorageConfiguration
+      objstorageConfigurationRef: rpcPathslicingSaamZfsObjstorageConfiguration
       extraVolumes:
         pathslicing-ro:
           mountPath: /srv/softwareheritage/objects

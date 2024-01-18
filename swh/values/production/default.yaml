@@ -318,6 +318,36 @@ roObjstorageAwsAzureLocalFallbackConfiguration:
   configurationRef: roObjstorageAwsLocalAzureFallback
   secrets: *azure-storage-secrets
 
+pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
+  cls: pathslicing
+  root: "/srv/softwareheritage/objects"
+  slicing: 0:2/0:5
+  compression: none
+
+rwObjstorageLocalSaamAndAzure:
+  cls: multiplexer
+  objstorages:
+  - *objstorage-saam-zfs-pathslicing-conf
+  - *azure-storage-conf
+
+rpcPathslicingSaamZfsObjstorageConfiguration:
+  cls: multiplexer
+  objstorages:
+  - *objstorage-saam-zfs-pathslicing-conf
+  filters_conf:
+    - type: readonly
+  client_max_size: 1073741824
+
+rwStoragePipelineSteps:
+  - cls: record_references
+
+rwStoragePostgresqlWithSaamObjstorageConfiguration:
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  objstorageConfigurationRef: rwObjstorageLocalSaamAndAzure
+  pipelineStepsRef: rwStoragePipelineSteps
+  secrets: *azure-storage-secrets
+
 retryStoragePipelineSteps:
   - cls: retry
 
@@ -507,4 +537,7 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-saam-zfs:
       internalName: objstorage-ro-saam-zfs-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-rw-postgresql-saam:
+      internalName: storage-rw-postgresql-saam-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
