@@ -594,7 +594,7 @@ indexerStorage:
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
-    secretKeyName: indexer-storage-sentry-dsn
+    secretKeyName: indexer-sentry-dsn
   deployments:
     # rpc:
     #   # Don't configure the replicas if autoscaling is configured
