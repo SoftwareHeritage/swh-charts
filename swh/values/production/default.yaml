@@ -484,6 +484,9 @@ externalServices:
     indexer-storage-read-only:
       internalName: indexer-storage-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    indexer-storage-read-write:
+      internalName: indexer-storage-read-write-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-read-only:
       internalName: objstorage-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
