@@ -940,6 +940,13 @@ search:
       default:
         paths:
           - path: /
+      read-only:
+        paths:
+          - path: /origin-read/
+        extraWhitelistSourceRange:
+          # vpn access
+          - 192.168.101.0/24
+
   journalClients:
     enabled: true
     priorityClassName: normal-workload
