@@ -923,6 +923,7 @@ search:
   #   cpuPercentageUsage: 100
   hosts:
     - search-rpc-ingress
+    - search.internal.softwareheritage.org
   ingress:
     enabled: true
     # Optional: the ingress classname to use
@@ -934,7 +935,7 @@ search:
       nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
       nginx.ingress.kubernetes.io/proxy-body-size: "4G"
     # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: clusterNetworkRanges
+    whitelistSourceRangeRef: internalNetworkRanges
     endpoints:
       default:
         paths:
