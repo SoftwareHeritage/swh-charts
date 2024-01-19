@@ -892,7 +892,7 @@ indexers:
     extrinsic:
       indexer_type: extrinsic_metadata
       journalClientOverrides:
-        group_id: swh.indexer.journal_client.extrinsic_metadata
+        group_id: ${BROKER_USER}-swh.indexer.journal_client.extrinsic_metadata
         prefix: swh.journal.objects
         batch_size: 200
       requestedCpu: 50m
