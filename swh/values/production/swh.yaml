@@ -69,10 +69,9 @@ postgresqlDepositConfiguration:
 azureCacheConfiguration:
   cls: azure
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
-  api_secret_key: ${API_SECRET_KEY}
   container_name: contents-uncompressed
   secrets:
-    API_SECRET_KEY:
+    ACCOUNT_KEY:
       secretKeyRef: swh-vault-azure-secret
       secretKeyName: azure-swh-vault-key
 
