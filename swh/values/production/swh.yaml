@@ -910,19 +910,17 @@ search:
   priorityClassName: frontend-rpc
   logLevel: INFO
   elasticsearchConfigurationRef: elasticsearchConfiguration
-  # replicas: 2
+  replicas: 2
   gunicorn:
-    threads: 5
-    workers: 4
+    workers: 2
+    threads: 2
     timeout: 3600
-  # RPC services may have different profiles than the rest so they need their specific
-  # setup
-  # requestedMemory: 512Mi
-  # requestedCpu: 500m
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 100
+  requestedCpu: 250m
+  requestedMemory: 512Mi
+  # autoScaling:
+  #   minReplicaCount: 2
+  #   maxReplicaCount: 4
+  #   cpuPercentageUsage: 100
   hosts:
     - search-rpc-ingress
   ingress:
