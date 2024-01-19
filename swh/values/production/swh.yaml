@@ -1120,6 +1120,7 @@ storage:
       storageConfigurationRef: readOnlyStorageConfiguration
       hosts:
         - storage-azure-read-only-rpc-ingress
+        - storage-postgresql-ro.internal.softwareheritage.org
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
