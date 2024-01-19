@@ -280,6 +280,30 @@ roObjstorageAwsLocalAzureFallback:
     filters_conf:
     - type: readonly
 
+roObjstorageAwsAzureLocalFallback:
+  cls: multiplexer
+  objstorages:
+  - cls: filtered
+    storage_conf:
+      # AWS storage
+      cls: http
+      url: https://softwareheritage.s3.amazonaws.com/content/
+      compression: gzip
+      timeout: 120
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf: *azure-storage-conf
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf:
+      # banco/saam
+      cls: remote
+      url: http://objstorage-read-only-rpc-ingress
+    filters_conf:
+    - type: readonly
+
 cassandraReadOnlyStorageAWSLocalAzureConfiguration:
   storageConfigurationRef: cassandraROStorage
   objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
@@ -287,6 +311,10 @@ cassandraReadOnlyStorageAWSLocalAzureConfiguration:
   secrets: *azure-storage-secrets
 
 roObjstorageAwsLocalAzureFallbackConfiguration:
+  configurationRef: roObjstorageAwsLocalAzureFallback
+  secrets: *azure-storage-secrets
+
+roObjstorageAwsAzureLocalFallbackConfiguration:
   configurationRef: roObjstorageAwsLocalAzureFallback
   secrets: *azure-storage-secrets
 
