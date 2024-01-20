@@ -409,6 +409,18 @@ postgresqlIndexerStorageConfiguration:
       secretKeyRef: swh-indexer-storage-postgresql-secret
       secretKeyName: postgres-swh-indexer-password
 
+postgresqlReadOnlyIndexerStorageConfiguration:
+  cls: postgresql
+  host: postgresql-indexer-rw.internal.softwareheritage.org
+  db: softwareheritage-indexer
+  port: 5432
+  user: guest
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-indexer-storage-postgresql-secret
+      secretKeyName: postgres-guest-password
+
 postgresqlScrubberConfiguration:
   cls: postgresql
   host: postgresql-scrubber-rw.internal.softwareheritage.org
@@ -456,11 +468,11 @@ webThrottling:
       limiter_rate:
         default: 120/h
 
-journalWriteConfiguration:
+indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   cls: kafka
   prefix: swh.journal.indexed
-  client_id: swh.idx_storage.journal_writer.saam
+  client_id: swh.idx_storage.journal_writer.${HOSTNAME}
   producer_config:
     message.max.bytes: 1000000000
 
