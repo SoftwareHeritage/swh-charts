@@ -1133,7 +1133,7 @@ storage:
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 10
-        cpuPercentageUsage: 150
+        cpuPercentageUsage: 75
       requestedCpu: 500m
       requestedMemory: 1500Mi
       storageConfigurationRef: readOnlyStorageConfiguration
