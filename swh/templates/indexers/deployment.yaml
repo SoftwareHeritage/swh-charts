@@ -112,11 +112,15 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
+          {{- if ne "extrinsic_metadata" $deployment_config.indexer_type }}
           - name: localstorage
             mountPath: /tmp
+          {{- end }}
       volumes:
+      {{- if ne "extrinsic_metadata" $deployment_config.indexer_type }}
       - name: localstorage
         {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | nindent 8 }}
+      {{- end }}
       - name: configuration
         emptyDir: {}
       - name: configuration-template
