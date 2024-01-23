@@ -33,6 +33,11 @@ spec:
                                                                      "Values" $.Values) | sha256sum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
+      {{- $nodeSelector := $objstorage_config.nodeSelector | default $.Values.objstorage.nodeSelector | default dict -}}
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
       {{- $affinity := $objstorage_config.affinity | default $.Values.objstorage.affinity | default dict -}}
       {{- if $affinity }}
       affinity:

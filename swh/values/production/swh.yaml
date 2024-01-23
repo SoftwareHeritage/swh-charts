@@ -1387,12 +1387,17 @@ objstorage:
             hostPath:
               path: /srv/softwareheritage/objects
               type: Directory
+              readOnly: true
+      # Deploy only on saam
+      nodeSelector:
+        kubernetes.io/hostname: saam
+      # And add a specific affinity
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: swh/objstorage-saam-zfs
+              - key: swh/objstorage-pathslicing
                 operator: In
                 values:
                 - "true"
