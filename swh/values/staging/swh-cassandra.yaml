@@ -869,7 +869,7 @@ objstorage:
         minReplicaCount: 2
         maxReplicaCount: 10
         cpuPercentageUsage: 100
-      volumes:
+      extraVolumes:
         staging-pathslicing-rw:
           mountPath: /srv/softwareheritage/objects
           volumeDefinition:
@@ -908,7 +908,7 @@ objstorage:
         minReplicaCount: 2
         maxReplicaCount: 10
         cpuPercentageUsage: 100
-      volumes:
+      extraVolumes:
         staging-pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
           readOnly: true

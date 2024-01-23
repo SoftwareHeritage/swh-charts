@@ -136,7 +136,7 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-          {{- range $volume_name, $volume_config := $objstorage_config.volumes }}
+          {{- range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
           - name: {{ $volume_name }}
             mountPath: {{ $volume_config.mountPath }}
             readOnly: {{ $volume_config.readOnly | default "false" }}
@@ -154,7 +154,7 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{ range $volume_name, $volume_config := $objstorage_config.volumes }}
+      {{ range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
       - name: {{ $volume_name }}
         {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
       {{ end }}

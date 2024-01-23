@@ -894,7 +894,7 @@ objstorage:
         workers: 2
         timeout: 60
       replicas: 1
-      volumes:
+      extraVolumes:
         pathslicing-rw:
           mountPath: /srv/swh/objects
           volumeDefinition:
@@ -928,7 +928,7 @@ objstorage:
         workers: 2
         timeout: 60
       replicas: 1
-      volumes:
+      extraVolumes:
         pathslicing-ro:
           mountPath: /srv/swh/objects
           readOnly: true

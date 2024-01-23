@@ -1380,7 +1380,7 @@ objstorage:
         threads: 2
         timeout: 3600
       objstorageConfigurationRef: saamZfsObjstorageConfiguration
-      volumes:
+      extraVolumes:
         pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
           volumeDefinition:
