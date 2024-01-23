@@ -1370,7 +1370,7 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-    saam-zfs:
+    ro-saam-zfs:
       enabled: true
       requestedCpu: 250m
       requestedMemory: 1024Mi
@@ -1381,7 +1381,7 @@ objstorage:
         timeout: 3600
       objstorageConfigurationRef: saamZfsObjstorageConfiguration
       volumes:
-        pathslicing-rw:
+        pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
           volumeDefinition:
             hostPath:
@@ -1403,7 +1403,7 @@ objstorage:
                 - "true"
       # Deploy an ingress to access the objstorage
       hosts:
-        - objstorage-rw-saam-zfs-rpc-ingress
+        - objstorage-ro-saam-zfs-rpc-ingress
       ingress:
         enabled: true
         # mandatory if ingress is enabled

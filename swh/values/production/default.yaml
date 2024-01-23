@@ -505,6 +505,6 @@ externalServices:
     vault:
       internalName: vault-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-rw-saam-zfs:
-      internalName: objstorage-rw-saam-zfs-rpc-ingress
+    objstorage-ro-saam-zfs:
+      internalName: objstorage-ro-saam-zfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
