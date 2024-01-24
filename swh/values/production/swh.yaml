@@ -558,6 +558,16 @@ loaders:
             username: "${DEPOSIT_USERNAME}"
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
+    directory:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
+      queues:
+        - swh.loader.core.tasks.LoadTarballDirectory
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
     git:
       priorityClassName: low-workload
       queues:
