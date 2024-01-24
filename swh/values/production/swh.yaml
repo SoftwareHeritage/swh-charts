@@ -22,22 +22,6 @@ remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteStorageConfiguration
 
-multiplexerRemoteConfiguration:
-  cls: multiplexer
-  objstorages:
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://banco.internal.softwareheritage.org:5003/
-    filters_conf:
-    - type: readonly
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://saam.internal.softwareheritage.org:5003/
-    filters_conf:
-    - type: readonly
-
 wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://gloin001.internal.cea.swh.network
@@ -1408,7 +1392,7 @@ objstorage:
         workers: 4
         timeout: 60
       replicas: 2
-      objstorageConfigurationRef: multiplexerRemoteConfiguration
+      objstorageConfigurationRef: multiplexerBancoSaamRemoteConfiguration
         # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-read-only-rpc-ingress

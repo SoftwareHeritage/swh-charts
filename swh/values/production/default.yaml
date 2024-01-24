@@ -324,6 +324,22 @@ pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
   slicing: 0:2/0:5
   compression: none
 
+multiplexerBancoSaamRemoteConfiguration:
+  cls: multiplexer
+  objstorages:
+  - cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://banco.internal.softwareheritage.org:5003/
+    filters_conf:
+    - type: readonly
+  - cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://saam.internal.softwareheritage.org:5003/
+    filters_conf:
+    - type: readonly
+
 rwObjstorageLocalSaamAndAzure:
   cls: multiplexer
   objstorages:
