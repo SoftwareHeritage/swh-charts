@@ -336,7 +336,7 @@ multiplexerBancoSaamRemoteConfiguration:
   - cls: filtered
     storage_conf:
       cls: remote
-      url: http://saam.internal.softwareheritage.org:5003/
+      url: http://objstorage-ro-saam-zfs-rpc-ingress
     filters_conf:
     - type: readonly
 
