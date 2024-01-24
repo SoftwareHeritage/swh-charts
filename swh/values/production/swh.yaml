@@ -1113,6 +1113,8 @@ scrubber:
         object: release
         replicas: 2
       secondary-revision-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         storageConfigurationRef: scrubberROStorageSecondaryConfiguration
         configName: storage-secondary-references-revision
         replicas: 2
