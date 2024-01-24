@@ -628,6 +628,14 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 4
+    hg-checkout:
+      image: swh_loader_mercurial_image
+      queues:
+        - swh.loader.mercurial.tasks.LoadMercurialCheckout
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 768Mi
+      requestedCpu: 500m
     maven:
       image: swh_loader_package_image
       queues:
