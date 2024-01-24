@@ -742,6 +742,16 @@ loaders:
       requestedMemory: 6144Mi
       requestedCpu: 100m
       limitedMemory: 25600Mi
+    svn-export:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1024Mi
+      limitedCpu: 1500m
+      queues:
+        - swh.loader.svn.tasks.LoadSvnExport
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_svn_image
 
 loader_metadata:
   enabled: true
