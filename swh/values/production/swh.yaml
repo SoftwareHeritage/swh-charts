@@ -583,6 +583,14 @@ loaders:
       requestedCpu: 100m
       sysctls:
         net.ipv4.tcp_dsack: 0
+    git-checkout:
+      image: swh_loader_git_image
+      queues:
+        - swh.loader.git.tasks.LoadGitCheckout
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 256Mi
+      requestedCpu: 500m
     git-large-repository:
       image: swh_loader_git_image
       requestedMemory: 1024Mi
