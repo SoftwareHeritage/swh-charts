@@ -331,9 +331,8 @@ rwObjstorageLocalSaamAndAzure:
   - *azure-storage-conf
 
 rpcPathslicingSaamZfsObjstorageConfiguration:
-  cls: multiplexer
-  objstorages:
-  - *objstorage-saam-zfs-pathslicing-conf
+  cls: filtered
+  storage_conf: *objstorage-saam-zfs-pathslicing-conf
   filters_conf:
     - type: readonly
   client_max_size: 1073741824
