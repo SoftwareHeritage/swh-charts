@@ -315,7 +315,7 @@ roObjstorageAwsLocalAzureFallbackConfiguration:
   secrets: *azure-storage-secrets
 
 roObjstorageAwsAzureLocalFallbackConfiguration:
-  configurationRef: roObjstorageAwsLocalAzureFallback
+  configurationRef: roObjstorageAwsAzureLocalFallback
   secrets: *azure-storage-secrets
 
 pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
