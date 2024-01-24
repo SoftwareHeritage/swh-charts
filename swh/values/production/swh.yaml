@@ -2,13 +2,13 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-saamStorageConfiguration:
+legacyRpcRWSaamStorageConfiguration:
   cls: remote
   url: http://saam.internal.softwareheritage.org:5002
 
-remoteSaamStorageConfiguration:
+legacyRemoteRpcRWSaamStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: saamStorageConfiguration
+  storageConfigurationRef: legacyRpcRWSaamStorageConfiguration
 
 remoteStorageConfiguration:
   cls: remote
@@ -453,7 +453,7 @@ checker_deposit:
 
 loaders:
   enabled: true
-  storageConfigurationRef: remoteSaamStorageConfiguration
+  storageConfigurationRef: legacyRemoteRpcRWSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositDynamicConfiguration
   deployments:
@@ -753,7 +753,7 @@ loaders:
 
 loader_metadata:
   enabled: true
-  storageConfigurationRef: remoteSaamStorageConfiguration
+  storageConfigurationRef: legacyRemoteRpcRWSaamStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
@@ -1029,7 +1029,7 @@ search:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: remoteSaamStorageConfiguration
+  storageConfigurationRef: legacyRemoteRpcRWSaamStorageConfiguration
   priorityClassName: background-workload
   journalChecker:
     enabled: true
@@ -1555,7 +1555,7 @@ deposit:
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: saamStorageConfiguration
+  storageMetadataConfigurationRef: legacyRpcRWSaamStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
