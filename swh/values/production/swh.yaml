@@ -754,6 +754,11 @@ scheduler:
         read-only:
           paths:
             - path: /scheduler_metrics/get
+              pathType: Exact
+            - path: /listers/get
+              pathType: Exact
+            - path: /lister/get
+              pathType: Exact
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
