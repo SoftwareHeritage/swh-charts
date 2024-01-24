@@ -931,6 +931,14 @@ search:
           - path: /
       read-only:
         paths:
+          - path: /
+            pathType: Exact
+          - path: /origin/search
+            pathType: Exact
+          - path: /origin/get
+            pathType: Exact
+          - path: /visit_types_count
+            pathType: Exact
           - path: /origin-read/
         extraWhitelistSourceRange:
           # vpn access
