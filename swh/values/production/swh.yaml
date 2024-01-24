@@ -379,6 +379,15 @@ listers:
       - swh.lister.npm.tasks.NpmListerTask
       autoScaling:
         maxReplicaCount: 1
+    nixguix:
+      queues:
+      - swh.lister.nixguix.tasks.NixGuixListerTask
+      autoScaling:
+        maxReplicaCount: 1
+      extraConfig:
+        # extra extensions to ignore
+        extensions_to_ignore:
+          - rock
     opam:
       queues:
       - swh.lister.opam.tasks.OpamListerTask
