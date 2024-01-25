@@ -537,6 +537,8 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
+      # Override locally to use the dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedCpu: 1000m
       requestedMemory: 2048Mi
       queues:
