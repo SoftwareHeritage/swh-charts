@@ -62,6 +62,7 @@ storage_replayer:
             - "true"
 
 cookers:
+  maxBundleSize: 1073741824
   sentry:
     enabled: true
   affinity:

@@ -4,6 +4,7 @@
 {{ $cooker_name := ( print "cooker-" $cooker_type ) }}
 {{ $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 {{ $log_level := get $deployment_config "logLevel" | default "INFO" | quote }}
+{{- $max_bundle_size := or $deployment_config.maxBundleSize $.Values.cookers.maxBundleSize -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -29,7 +30,9 @@ data:
                                              "configurationRef" $.Values.cookers.graphConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
     {{- end }}
-    max_bundle_size: 1073741824
+    {{- if $max_bundle_size }}
+    max_bundle_size: {{ $max_bundle_size | int }}
+    {{- end }}
     {{- include "celery.configuration" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
       task_acks_late: {{ get $deployment_config "ackLate" | default false }}
