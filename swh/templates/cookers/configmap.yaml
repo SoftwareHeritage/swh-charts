@@ -59,8 +59,7 @@ data:
     CONFIG_FILE_WIP=/tmp/wip-config.yml
 
     # substitute environment variables when creating the default config.yml
-    eval echo \""$(</etc/swh/configuration-template/config.yml.template)"\" \
-      > $CONFIG_FILE
+    cat /etc/swh/configuration-template/config.yml.template | envsubst > $CONFIG_FILE
 
     {{- if $enable_sentry }}
     SENTRY_SETTINGS_PATH=/etc/credentials/sentry-settings/sentry_settings_for_celery_tasks
