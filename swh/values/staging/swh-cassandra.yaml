@@ -720,6 +720,7 @@ cookers:
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
+  threadPoolSize: 4
   deployments:
     simple:
       ackLate: true
