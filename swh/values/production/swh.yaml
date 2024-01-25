@@ -4,7 +4,7 @@ searchJournalClientConfiguration:
 
 rpcRWSaamStorageConfiguration:
   cls: remote
-  url: http://storage-read-write-rpc-ingress
+  url: http://storage-rw-postgresql-saam-ingress
 
 remoteRpcRWSaamStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
@@ -1271,7 +1271,7 @@ storage:
               path: /srv/softwareheritage/objects
               type: Directory
       hosts:
-        - storage-read-write-rpc-ingress
+        - storage-rw-postgresql-saam-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
