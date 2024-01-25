@@ -1200,7 +1200,7 @@ storage:
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 10
-        cpuPercentageUsage: 75
+        cpuPercentageUsage: 50
       requestedCpu: 500m
       requestedMemory: 1500Mi
       storageConfigurationRef: readOnlyStorageConfiguration
@@ -1230,7 +1230,7 @@ storage:
       autoScaling:
         minReplicaCount: 4
         maxReplicaCount: 10
-        cpuPercentageUsage: 75
+        cpuPercentageUsage: 50
       gunicorn:
         workers: 32
         threads: 1
