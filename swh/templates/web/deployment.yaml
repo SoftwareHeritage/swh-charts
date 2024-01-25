@@ -150,12 +150,8 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 30
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: webapp
-              httpHeaders:
-                - name: Host
-                  value: {{ first $web_config.hosts }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30
