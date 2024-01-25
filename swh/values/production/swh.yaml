@@ -22,9 +22,8 @@ remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress
 
-remoteGraphConfiguration:
-  cls: remote
-  url: http://graph.internal.softwareheritage.org:5009
+vaultGraphConfiguration:
+  url: http://graph.internal.softwareheritage.org:5009/graph
 
 remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
@@ -1629,7 +1628,7 @@ cookers:
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
-  graphConfigurationRef: remoteGraphConfiguration
+  graphConfigurationRef: vaultGraphConfiguration
   objstorageConfigurationRef: roObjstorageAwsAzureLocalFallbackConfiguration
   deployments:
     simple:
