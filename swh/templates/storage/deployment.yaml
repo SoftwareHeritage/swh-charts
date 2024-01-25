@@ -102,8 +102,7 @@ spec:
             failureThreshold: 30
             periodSeconds: 5
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: rpc
             initialDelaySeconds: 10
             periodSeconds: 5
