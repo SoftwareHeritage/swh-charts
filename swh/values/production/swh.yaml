@@ -466,6 +466,8 @@ loaders:
   depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
+      # Override to test the migration to dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
@@ -719,6 +721,8 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
+      # Override to test the migration to dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 2048Mi
       requestedCpu: 200m
       limitedMemory: 25600Mi
