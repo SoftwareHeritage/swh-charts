@@ -2,6 +2,14 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
+rpcRWSaamStorageConfiguration:
+  cls: remote
+  url: http://storage-read-write-rpc-ingress
+
+remoteRpcRWSaamStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: rpcRWSaamStorageConfiguration
+
 legacyRpcRWSaamStorageConfiguration:
   cls: remote
   url: http://saam.internal.softwareheritage.org:5002
@@ -559,6 +567,8 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     directory:
+      # Override to test the migration to dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 768Mi
       requestedCpu: 1000m
       queues:
