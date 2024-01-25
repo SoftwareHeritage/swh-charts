@@ -1228,7 +1228,10 @@ storage:
     postgresql-saam-zfs:
       requestedCpu: 1000m
       requestedMemory: 2048Mi
-      replicas: 4
+      autoScaling:
+        minReplicaCount: 4
+        maxReplicaCount: 10
+        cpuPercentageUsage: 75
       gunicorn:
         workers: 8
         threads: 4
