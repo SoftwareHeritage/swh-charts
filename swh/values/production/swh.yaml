@@ -1250,8 +1250,8 @@ storage:
         workers: 8
     # Main instance used by loaders to write
     postgresql-saam-zfs:
-      requestedCpu: 500m
-      requestedMemory: 1024Mi
+      requestedCpu: 1000m
+      requestedMemory: 2048Mi
       replicas: 4
       gunicorn:
         workers: 8
