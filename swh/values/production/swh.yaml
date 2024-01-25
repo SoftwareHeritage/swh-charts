@@ -466,7 +466,7 @@ loaders:
   depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
-      # Override to test the migration to dynamic saam rpc incrementally
+      # Override locally to use the dynamic saam rpc incrementally
       storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       image: swh_loader_git_image
       requestedMemory: 1024Mi
@@ -486,6 +486,8 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     add-forge-now-slow:
+      # Override locally to use the dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
@@ -569,7 +571,7 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     directory:
-      # Override to test the migration to dynamic saam rpc incrementally
+      # Override locally to use the dynamic saam rpc incrementally
       storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 768Mi
       requestedCpu: 1000m
@@ -579,6 +581,8 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     git:
+      # Override locally to use the dynamic saam rpc incrementally
+      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
@@ -721,7 +725,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
-      # Override to test the migration to dynamic saam rpc incrementally
+      # Override locally to use the dynamic saam rpc incrementally
       storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 2048Mi
       requestedCpu: 200m
