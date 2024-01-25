@@ -537,8 +537,8 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
-      requestedMemory: 256Mi
-      requestedCpu: 200m
+      requestedCpu: 1000m
+      requestedMemory: 2048Mi
       queues:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
