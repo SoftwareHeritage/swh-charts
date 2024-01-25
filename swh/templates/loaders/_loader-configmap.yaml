@@ -3,6 +3,7 @@
 {{- $loader_name := ( print "loader-" .loader_type ) -}}
 {{- $use_json_logger := get .deployment_config "useJsonLogger" | default true -}}
 {{- $log_level := get .deployment_config "logLevel" | default "INFO" | quote -}}
+{{- $storageConfigRef := get .deployment_config "storageConfigurationRef" | default .Values.loaders.storageConfigurationRef -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -11,7 +12,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.loaders.storageConfigurationRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigRef
                                                  "Values" .Values) | nindent 4 }}
 
     {{- if .deployment_config.extraConfig -}}
