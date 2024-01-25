@@ -10,14 +10,6 @@ remoteRpcRWSaamStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: rpcRWSaamStorageConfiguration
 
-legacyRpcRWSaamStorageConfiguration:
-  cls: remote
-  url: http://saam.internal.softwareheritage.org:5002
-
-legacyRemoteRpcRWSaamStorageConfiguration:
-  pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: legacyRpcRWSaamStorageConfiguration
-
 remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress
@@ -462,13 +454,11 @@ checker_deposit:
 
 loaders:
   enabled: true
-  storageConfigurationRef: legacyRemoteRpcRWSaamStorageConfiguration
+  storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
@@ -487,8 +477,6 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     add-forge-now-slow:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       image: swh_loader_git_image
       requestedMemory: 1024Mi
       requestedCpu: 500m
@@ -538,8 +526,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedCpu: 1000m
       requestedMemory: 2048Mi
       queues:
@@ -574,8 +560,6 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     directory:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 768Mi
       requestedCpu: 1000m
       queues:
@@ -584,8 +568,6 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     git:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
@@ -702,8 +684,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
-      # Override locally to use the dynamic saam rpc incrementally
-      storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
       requestedMemory: 2048Mi
       requestedCpu: 200m
       limitedMemory: 25600Mi
@@ -1024,7 +1004,7 @@ search:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: legacyRemoteRpcRWSaamStorageConfiguration
+  storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
   priorityClassName: background-workload
   journalChecker:
     enabled: true
@@ -1556,7 +1536,7 @@ deposit:
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: legacyRpcRWSaamStorageConfiguration
+  storageMetadataConfigurationRef: rpcRWSaamStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
