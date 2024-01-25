@@ -45,6 +45,10 @@ spec:
           env:
             {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
                                                        "Values" $.Values) | nindent 10 }}
+            {{- if $.Values.cookers.objstorageConfigurationRef }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.objstorageConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
+            {{- end }}
           command:
             - /entrypoint.sh
           volumeMounts:

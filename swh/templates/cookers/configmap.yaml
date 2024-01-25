@@ -19,6 +19,11 @@ data:
                                              "configurationRef" $.Values.cookers.vaultConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
 
+    {{- if $.Values.cookers.objstorageConfigurationRef }}
+    {{- include "swh.objstorageConfiguration" (dict "service" "objstorage"
+                                             "configurationRef" $.Values.cookers.objstorageConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
+    {{- end }}
     {{- if $.Values.cookers.graphConfigurationRef }}
     {{- include "swh.service.fromYaml" (dict "service" "graph"
                                              "configurationRef" $.Values.cookers.graphConfigurationRef

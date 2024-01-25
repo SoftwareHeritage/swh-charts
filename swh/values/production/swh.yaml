@@ -1628,6 +1628,7 @@ cookers:
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   graphConfigurationRef: remoteGraphConfiguration
+  objstorageConfigurationRef: roObjstorageAwsAzureLocalFallbackConfiguration
   deployments:
     simple:
       ackLate: true
