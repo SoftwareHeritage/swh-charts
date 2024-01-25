@@ -1486,7 +1486,9 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 3600
-      objstorageConfigurationRef: rpcPathslicingSaamZfsObjstorageConfiguration
+      objstorageConfigurationRef: readonlySaamZfsObjstorageConfiguration
+      extraRpcConfiguration:
+        client_max_size: 1073741824
       extraVolumes:
         pathslicing-ro:
           mountPath: /srv/softwareheritage/objects

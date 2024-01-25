@@ -11,5 +11,8 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.objstorageConfiguration" (dict "configurationRef" .configuration.objstorageConfigurationRef
-                                                    "Values" .Values) | nindent 4 }}
+                                                   "Values" .Values) | nindent 4 }}
+    {{- if .configuration.extraRpcConfiguration -}}
+    {{- .configuration.extraRpcConfiguration | toYaml | nindent 4 }}
+    {{- end -}}
 {{- end -}}

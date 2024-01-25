@@ -346,12 +346,11 @@ rwObjstorageLocalSaamAndAzure:
   - *objstorage-saam-zfs-pathslicing-conf
   - *azure-storage-conf
 
-rpcPathslicingSaamZfsObjstorageConfiguration:
+readonlySaamZfsObjstorageConfiguration:
   cls: filtered
   storage_conf: *objstorage-saam-zfs-pathslicing-conf
   filters_conf:
     - type: readonly
-  client_max_size: 1073741824
 
 rwStoragePipelineSteps:
   - cls: record_references
