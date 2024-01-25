@@ -262,6 +262,7 @@ postgresqlWebConfiguration:
 web:
   deployments:
     cassandra:
+      metricsScrapingEnabled: false
       replicas: 1
       autoScaling:
         minReplicaCount: 1

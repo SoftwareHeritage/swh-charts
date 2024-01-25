@@ -8,6 +8,8 @@ kind: Service
 metadata:
   name: {{ .serviceType }}
   namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .serviceType }}
 spec:
   type: ClusterIP
   selector:

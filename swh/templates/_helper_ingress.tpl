@@ -20,6 +20,9 @@ kind: Ingress
 metadata:
   namespace: {{ $.Values.namespace }}
   name: {{ $serviceType }}-ingress-{{ $endpoint_definition }}
+  labels:
+    app: {{ $serviceType }}
+    endpoint-definition: {{ $endpoint_definition }}
   annotations:
   {{- if or (not (hasKey $configuration.ingress "useEndpointsAsUpstream")) (eq $configuration.ingress.useEndpointsAsUpstream false) -}}
   {{- /* undocumented swh's ingress option to configure the upstreams to use the service ip.

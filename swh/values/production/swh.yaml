@@ -1366,6 +1366,7 @@ web:
           site_id: 59
     # Test instance
     app1:
+      metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 1024Mi
       refreshSavecodenowStatus:

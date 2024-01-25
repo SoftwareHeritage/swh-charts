@@ -288,6 +288,7 @@ web:
   logLevel: INFO
   deployments:
     cassandra:
+      metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 500Mi
       autoScaling:

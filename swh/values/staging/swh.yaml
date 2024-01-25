@@ -785,6 +785,7 @@ web:
   logLevel: INFO
   deployments:
     postgresql:
+      metricsScrapingEnabled: false
       # small footprint because this webapp is almost not used, only for tests
       replicas: 1
       requestedCpu: 50m
