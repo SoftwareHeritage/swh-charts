@@ -1233,8 +1233,8 @@ storage:
         maxReplicaCount: 10
         cpuPercentageUsage: 75
       gunicorn:
-        workers: 8
-        threads: 4
+        workers: 32
+        threads: 1
         timeout: 3600
       nodeSelector:
         kubernetes.io/hostname: saam
