@@ -561,8 +561,6 @@ loaders:
     directory:
       requestedMemory: 768Mi
       requestedCpu: 1000m
-      limitedMemory: 1024Mi
-      limitedCpu: 1500m
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
