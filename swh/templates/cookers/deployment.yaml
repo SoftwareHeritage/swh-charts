@@ -43,11 +43,11 @@ spec:
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
           env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
+            {{- include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
+                                                        "Values" $.Values) | indent 10 }}
             {{- if $.Values.cookers.objstorageConfigurationRef }}
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.objstorageConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
+            {{- include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.objstorageConfigurationRef
+                                                        "Values" $.Values) | indent 10 }}
             {{- end }}
           command:
             - /entrypoint.sh

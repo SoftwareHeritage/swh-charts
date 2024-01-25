@@ -28,7 +28,7 @@ data:
     {{- include "swh.service.fromYaml" (dict "service" "graph"
                                              "configurationRef" $.Values.cookers.graphConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
-    {{ end }}
+    {{- end }}
     max_bundle_size: 1073741824
     {{- include "celery.configuration" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
