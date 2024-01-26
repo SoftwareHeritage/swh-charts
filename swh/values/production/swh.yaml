@@ -1510,6 +1510,57 @@ objstorage:
           default:
             paths:
               - path: /
+    ro-banco-xfs:
+      enabled: true
+      requestedCpu: 250m
+      requestedMemory: 1024Mi
+      replicas: 2
+      gunicorn:
+        workers: 8
+        threads: 1
+        timeout: 3600
+      objstorageConfigurationRef: readonlyBancoXfsObjstorageConfiguration
+      extraRpcConfiguration:
+        client_max_size: 1073741824
+      extraVolumes:
+        pathslicing-ro:
+          mountPath: /srv/softwareheritage/objects
+          volumeDefinition:
+            hostPath:
+              path: /srv/softwareheritage/objects
+              type: Directory
+              readOnly: true
+      # Deploy only this specific objstorage instance on banco
+      nodeSelector:
+        kubernetes.io/hostname: banco
+      # And add a specific affinity
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/objstorage-pathslicing
+                operator: In
+                values:
+                - "true"
+      # Deploy an ingress to access the objstorage
+      hosts:
+        - objstorage-ro-banco-xfs-rpc-ingress
+      ingress:
+        enabled: true
+        # mandatory if ingress is enabled
+        # the hostname on which the objstorage must be reachable
+        # Optional: the ingress classname to use
+        className: nginx
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 deposit:
   enabled: true

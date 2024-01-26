@@ -320,6 +320,11 @@ pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
   slicing: 0:2/0:5
   compression: none
 
+readonlyBancoXfsObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/softwareheritage/objects"
+  slicing: 0:2/2:4/4:6
+
 multiplexerBancoSaamRemoteConfiguration:
   cls: multiplexer
   objstorages:
@@ -547,6 +552,9 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-saam-zfs:
       internalName: objstorage-ro-saam-zfs-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-ro-banco-xfs:
+      internalName: objstorage-ro-banco-xfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-rw-postgresql-saam:
       internalName: storage-rw-postgresql-saam-ingress
