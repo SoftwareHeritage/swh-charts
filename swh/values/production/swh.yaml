@@ -45,8 +45,10 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
 
+emptyStoragePipelineSteps: []
+
 readOnlyStorageConfiguration:
-  pipelineStepsRef: retryStoragePipelineSteps
+  pipelineStepsRef: emptyStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageConfiguration
 
