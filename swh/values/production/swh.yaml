@@ -50,7 +50,7 @@ emptyStoragePipelineSteps: []
 readOnlyStorageConfiguration:
   pipelineStepsRef: emptyStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
-  objstorageConfigurationRef: roObjstorageConfiguration
+  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
 
 postgresqlDepositConfiguration:
   host: postgresql-deposit-rw.internal.softwareheritage.org

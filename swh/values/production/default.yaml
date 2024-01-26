@@ -259,20 +259,16 @@ roObjstorageConfiguration:
 roObjstorageAwsLocalAzureFallback:
   cls: multiplexer
   objstorages:
+  - cls: http
+    url: https://softwareheritage.s3.amazonaws.com/content/
+    compression: gzip
+    timeout: 120
+  - cls: remote
+    url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: filtered
     storage_conf:
-      # AWS storage
-      cls: http
-      url: https://softwareheritage.s3.amazonaws.com/content/
-      compression: gzip
-      timeout: 120
-    filters_conf:
-    - type: readonly
-  - cls: filtered
-    storage_conf:
-      # banco/saam
       cls: remote
-      url: http://objstorage-read-only-rpc-ingress
+      url: http://banco.internal.softwareheritage.org:5003/
     filters_conf:
     - type: readonly
   - cls: filtered
