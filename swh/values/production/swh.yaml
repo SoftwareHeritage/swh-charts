@@ -1639,9 +1639,8 @@ cookers:
       queues:
         - swh.vault.cooking_tasks.SWHCookingTask
       autoScaling:
-        stopWhenNoActivity: false
-        minReplicaCount: 20
-        maxReplicaCount: 20
+        minReplicaCount: 1
+        maxReplicaCount: 8
     # According to current data, only the previous cooking task are running, hence the
     # lower number of pods
     batch:
