@@ -127,12 +127,8 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 30
           livenessProbe:
-            httpGet:
-              path: /
+            tcpSocket:
               port: deposit-app
-              httpHeaders:
-                - name: Host
-                  value: {{ first .Values.deposit.hosts }}
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30
