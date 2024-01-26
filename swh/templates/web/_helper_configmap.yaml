@@ -17,11 +17,13 @@ data:
       {{- range $host := $hosts }}
       - {{ $host }}
       {{- end }}
+      - ${POD_IP}
     {{- if and .Values.environment (eq .Values.environment "production") }}
     production_server_names:
       {{- range $host := $hosts }}
       - {{ $host }}
       {{- end }}
+      - ${POD_IP}
     {{- end }}
     {{- include "swh.service.fromYaml" (dict "service" "storage"
                                              "configurationRef" .configuration.storageConfigurationRef

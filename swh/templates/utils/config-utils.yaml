@@ -10,6 +10,8 @@ data:
 
     set -eu
 
+    export POD_IP=$(hostname -i)
+
     TEMPLATE=/etc/swh/configuration-template/config.yml.template
     TARGET=/etc/swh/config.yml
 
