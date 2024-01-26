@@ -34,12 +34,14 @@ Create a global storage configuration based on configuration section aggregation
 {{- $indent := 2 -}}
 storage:
 {{ if $pipelineStepsRef -}}
-{{- $pipelineSteps := get .Values $pipelineStepsRef -}}
-{{- if not $pipelineSteps -}}
+{{- if not (hasKey .Values $pipelineStepsRef) -}}
   {{ fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) }}
-{{- end }}  cls: pipeline
+{{- end -}}
+{{- $pipelineSteps := get .Values $pipelineStepsRef }}  cls: pipeline
   steps:
+{{- if $pipelineSteps }}
 {{ toYaml $pipelineSteps | indent 2 }}
+{{- end }}
 {{ end -}}
 {{- if eq $storageType "remote" -}}
 {{ include "swh.storage.remote" (dict "configurationRef" $storageServiceConfigurationRef
