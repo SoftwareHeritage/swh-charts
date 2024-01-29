@@ -1474,11 +1474,11 @@ objstorage:
       extraVolumes:
         pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
+          readOnly: true
           volumeDefinition:
             hostPath:
               path: /srv/softwareheritage/objects
               type: Directory
-              readOnly: true
       # Deploy only on saam
       nodeSelector:
         kubernetes.io/hostname: saam
