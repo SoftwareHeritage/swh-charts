@@ -1214,7 +1214,7 @@ storage:
         maxReplicaCount: 10
         cpuPercentageUsage: 50
       gunicorn:
-        workers: 32
+        workers: 16
         threads: 1
         timeout: 3600
       nodeSelector:
