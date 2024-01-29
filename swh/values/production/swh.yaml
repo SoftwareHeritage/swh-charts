@@ -374,7 +374,7 @@ listers:
       autoScaling:
         maxReplicaCount: 1
       requestedCpu: 1000m
-      requestedMemory: 6144Mi
+      requestedMemory: 6Gi
     npm:
       queues:
       - swh.lister.npm.tasks.NpmListerTask
@@ -449,7 +449,7 @@ checker_deposit:
     maxReplicaCount: 2
   requestedMemory: 100Mi
   requestedCpu: 100m
-  limitedMemory: 1024Mi
+  limitedMemory: 1Gi
   limitedCpu: 1000m
 
 loaders:
@@ -460,9 +460,9 @@ loaders:
   deployments:
     add-forge-now:
       image: swh_loader_git_image
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 500m
-      limitedMemory: 25600Mi
+      limitedMemory: 25Gi
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
@@ -478,9 +478,9 @@ loaders:
             pack_size_bytes: 34359738368
     add-forge-now-slow:
       image: swh_loader_git_image
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 500m
-      limitedMemory: 25600Mi
+      limitedMemory: 25Gi
       queues:
         - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
@@ -503,7 +503,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     bzr:
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 1000m
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
@@ -527,7 +527,7 @@ loaders:
         maxReplicaCount: 1
     cvs:
       requestedCpu: 1000m
-      requestedMemory: 2048Mi
+      requestedMemory: 2Gi
       queues:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
@@ -592,7 +592,7 @@ loaders:
       requestedCpu: 500m
     git-large-repository:
       image: swh_loader_git_image
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 800m
       queues:
         - large_repository:swh.loader.git.tasks.UpdateGitRepository
@@ -665,7 +665,7 @@ loaders:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
         maxReplicaCount: 4
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 1000m
     pypi:
       requestedMemory: 256Mi
@@ -684,9 +684,9 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
-      requestedMemory: 2048Mi
+      requestedMemory: 2Gi
       requestedCpu: 200m
-      limitedMemory: 25600Mi
+      limitedMemory: 25Gi
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
@@ -712,13 +712,13 @@ loaders:
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         maxReplicaCount: 4
-      requestedMemory: 6144Mi
+      requestedMemory: 6Gi
       requestedCpu: 100m
-      limitedMemory: 25600Mi
+      limitedMemory: 25Gi
     svn-export:
       requestedMemory: 768Mi
       requestedCpu: 1000m
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
       limitedCpu: 1500m
       queues:
         - swh.loader.svn.tasks.LoadSvnExport
@@ -1184,7 +1184,7 @@ storage:
         maxReplicaCount: 10
         cpuPercentageUsage: 50
       requestedCpu: 500m
-      requestedMemory: 1500Mi
+      requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyStorageConfiguration
       hosts:
         - storage-azure-read-only-rpc-ingress
@@ -1208,7 +1208,7 @@ storage:
     # Main instance used by loaders to write
     postgresql-saam-zfs:
       requestedCpu: 1000m
-      requestedMemory: 2048Mi
+      requestedMemory: 2Gi
       autoScaling:
         minReplicaCount: 4
         maxReplicaCount: 10
@@ -1274,7 +1274,7 @@ web:
       #   maxReplicaCount: 4
       #   cpuPercentageUsage: 100
       requestedCpu: 350m
-      requestedMemory: 6144Mi
+      requestedMemory: 6Gi
       refreshSavecodenowStatus:
         enabled: true
         concurrencyPolicy: Forbid
@@ -1350,7 +1350,7 @@ web:
     app1:
       metricsScrapingEnabled: false
       requestedCpu: 500m
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       refreshSavecodenowStatus:
         enabled: false
       syncMailmaps:
@@ -1462,7 +1462,7 @@ objstorage:
     ro-saam-zfs:
       enabled: true
       requestedCpu: 250m
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       replicas: 2
       gunicorn:
         workers: 4

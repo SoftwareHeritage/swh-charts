@@ -31,7 +31,7 @@ keycloakConfiguration:
 memcached:
   enabled: true
   memory: 1024
-  requestedMemory: 1024Mi
+  requestedMemory: 1Gi
 
 podPriority:
   enabled: true

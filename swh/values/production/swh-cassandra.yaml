@@ -254,7 +254,7 @@ storage:
         maxReplicaCount: 3
         cpuPercentageUsage: 150
       requestedCpu: 500m
-      requestedMemory: 1500Mi
+      requestedMemory: 1.5Gi
       storageConfigurationRef: cassandraReadOnlyStorageAWSLocalAzureConfiguration
       hosts:
         - storage-cassandra-ro.softwareheritage.org

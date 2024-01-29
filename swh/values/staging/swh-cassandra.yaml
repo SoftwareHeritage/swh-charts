@@ -89,7 +89,7 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 3
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 200m
     add-forge-now-slow:
       image: swh_loader_git_image
@@ -99,7 +99,7 @@ loaders:
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 200m
     arch:
       image: swh_loader_package_image
@@ -196,7 +196,7 @@ loaders:
     svn-export:
       requestedMemory: 768Mi
       requestedCpu: 1000m
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
       limitedCpu: 1500m
       queues:
         - swh.loader.svn.tasks.LoadSvnExport
@@ -291,7 +291,7 @@ loaders:
         - swh.loader.package.opam.tasks.LoadOpam
       autoScaling:
         maxReplicaCount: 1
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       requestedCpu: 1300m
     pypi:
       requestedMemory: 256Mi
@@ -315,7 +315,7 @@ loaders:
         - swh.loader.package.rpm.tasks.LoadRpm
       autoScaling:
         maxReplicaCount: 1
-      requestedMemory: 3072Mi
+      requestedMemory: 3Gi
       requestedCpu: 1000m
     svn:
       queues:
@@ -324,9 +324,9 @@ loaders:
         - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         maxReplicaCount: 1
-      requestedMemory: 6144Mi
+      requestedMemory: 6Gi
       requestedCpu: 100m
-      limitedMemory: 25600Mi
+      limitedMemory: 25Gi
 
 loader_metadata:
   enabled: true

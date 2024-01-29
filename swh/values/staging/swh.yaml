@@ -203,7 +203,7 @@ listers:
       autoScaling:
         maxReplicaCount: 1
       requestedCpu: 1000m
-      requestedMemory: 6144Mi
+      requestedMemory: 6Gi
     nixguix:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
@@ -278,7 +278,7 @@ checker_deposit:
     maxReplicaCount: 1
   requestedMemory: 100Mi
   requestedCpu: 100m
-  limitedMemory: 1024Mi
+  limitedMemory: 1Gi
   limitedCpu: 1000m
 
 indexers:
@@ -964,7 +964,7 @@ storage:
         maxReplicaCount: 10
         cpuPercentageUsage: 150
       requestedCpu: 500m
-      requestedMemory: 1500Mi
+      requestedMemory: 1.5Gi
       storageConfigurationRef: readWriteStorageConfiguration
       hosts:
         - storage-postgresql-read-write-rpc-ingress
@@ -995,7 +995,7 @@ storage:
         maxReplicaCount: 10
         cpuPercentageUsage: 150
       requestedCpu: 500m
-      requestedMemory: 1500Mi
+      requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyStorageConfiguration
       hosts:
         - storage-postgresql-read-only-rpc-ingress
