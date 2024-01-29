@@ -436,6 +436,8 @@ scrubber:
         requestedCpu: 500m
         requestedMemory: 200Mi
       revision-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-hashes-revision
         object: revision
         requestedCpu: 500m
