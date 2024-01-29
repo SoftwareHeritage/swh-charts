@@ -51,9 +51,9 @@ spec:
         - protocol: TCP
           port: 6379
     - from:
-        - podSelector:
+        - namespaceSelector:
             matchLabels:
-              app.kubernetes.io/name: redis-svix
+              kubernetes.io/metadata.name: svix-server
       ports:
         - protocol: TCP
           port: 9121
