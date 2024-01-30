@@ -8,6 +8,7 @@ UID=1000
 ACTIVATE_SNAPSHOT=--update-snapshot
 SWH_CHART=swh
 CC_CHART=cluster-components
+CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
 swh-test:
@@ -137,6 +138,48 @@ cc-template-admin:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/admin-rke2.yaml \
+      --debug
+
+ccf-template-admin-rke2:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/admin-rke2.yaml \
+      -n default --create-namespace --debug
+
+ccf-template-archive-production-rke2:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/archive-production-rke2.yaml \
+      --debug
+
+ccf-template-archive-staging-rke2:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/archive-staging-rke2.yaml \
+      --debug
+
+ccf-template-gitlab-production:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/gitlab-production.yaml \
+      --debug
+
+ccf-template-gitlab-staging:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/gitlab-staging.yaml \
+      --debug
+
+ccf-template-rancher:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/rancher.yaml \
+      --debug
+
+ccf-template-test-staging-rke2:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/test-staging-rke2.yaml \
       --debug
 
 ss-minikube:
