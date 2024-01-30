@@ -1517,7 +1517,7 @@ objstorage:
     ro-banco-xfs:
       enabled: true
       requestedCpu: 250m
-      requestedMemory: 1024Mi
+      requestedMemory: 1Gi
       replicas: 2
       gunicorn:
         workers: 8
