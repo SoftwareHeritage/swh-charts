@@ -12,8 +12,10 @@ metallb:
         matchExpressions:
         # Do not install metallb speaker pod on any node with such label (whatever the
         # value)
-        - key: "swh/metallbExclude"
-          operator: DoesNotExist
+        - key: "metallbSpeaker"
+          operator: NotIn
+          values:
+            - "false"
 
 ingressNginx:
   enabled: true
