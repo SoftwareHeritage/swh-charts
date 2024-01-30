@@ -13,6 +13,10 @@ spec:
     targetRevision: {{ .Values.metallb.version }}
     helm:
       releaseName: metallb
+      {{- if .Values.metallb.extraConfig }}
+      values: |
+        {{- toYaml .Values.metallb.extraConfig | nindent 8 }}
+      {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.metallb.namespace }}
@@ -29,10 +33,4 @@ spec:
     kind: 'CustomResourceDefinition'
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
-  {{- if .Values.metallb.extraConfig }}
-  helm:
-    values:
-      {{- toYaml .Values.metallb.extraConfig | nindent 6 }}
-  {{- end }}
-
 {{ end }}
