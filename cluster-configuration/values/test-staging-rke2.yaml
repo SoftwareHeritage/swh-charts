@@ -13,7 +13,7 @@ metallb:
         - key: "swh/metallbExclude"
           operator: IsNot
           values:
-            - "true"
+            - true
 
 ingressNginx:
   enabled: true
