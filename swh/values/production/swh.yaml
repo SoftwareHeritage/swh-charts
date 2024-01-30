@@ -739,7 +739,7 @@ loaders:
         - osdn:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 24
+        maxReplicaCount: 32
       extraConfig:
         overrides:
           swh.loader.git.loader.GitLoader:
