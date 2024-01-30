@@ -726,6 +726,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_svn_image
     osdn:
+      image: swh_loader_savecodenow_image
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 25Gi
