@@ -13,9 +13,9 @@ spec:
     targetRevision: {{ .Values.metallb.version }}
     helm:
       releaseName: metallb
-      {{- if .Values.metallb.extraConfig }}
+      {{- if .Values.metallb.values }}
       values: |
-        {{- toYaml .Values.metallb.extraConfig | nindent 8 }}
+        {{- toYaml .Values.metallb.values | nindent 8 }}
       {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}

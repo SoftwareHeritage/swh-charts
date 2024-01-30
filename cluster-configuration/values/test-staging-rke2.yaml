@@ -4,14 +4,16 @@ clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clust
 
 metallb:
   enabled: true
-  extraConfig:
+  values:
     # Install any extra configuration to pass along to the helm chart
     # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
     speaker:
       nodeSelector:
         matchExpressions:
         - key: "swh/metallbExclude"
-          operator: DoesNotExist
+          operator: IsNot
+          values:
+            - "true"
 
 ingressNginx:
   enabled: true
