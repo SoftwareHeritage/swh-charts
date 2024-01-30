@@ -29,4 +29,10 @@ spec:
     kind: 'CustomResourceDefinition'
     jsonPointers:
     - /spec/conversion/webhook/clientConfig/caBundle
+  {{- if .Values.metallb.extraConfig }}
+  helm:
+    values:
+      {{- toYaml .Values.metallb.extraConfig | nindent 6 }}
+  {{- end }}
+
 {{ end }}
