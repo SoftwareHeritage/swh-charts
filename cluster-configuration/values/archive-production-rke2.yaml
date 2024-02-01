@@ -7,6 +7,17 @@ clusterConfiguration:
 
 metallb:
   enabled: true
+  values:
+    # Install any extra configuration to pass along to the helm chart
+    # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
+    speaker:
+      tolerations:
+        # Do not execute pods on node with 'noMetallbSpeaker' taint (pods already
+        # running are evicted)
+      - key: "noMetallbSpeaker"
+        operator: "Exists"
+        effect: "NoExecute"
+        tolerationSeconds: 0
 
 ingressNginx:
   enabled: true

@@ -9,8 +9,8 @@ metallb:
     # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
     speaker:
       tolerations:
-        # Do not execute pods on node with 'NoSpeaker' label (pods already running are
-        # evicted)
+        # Do not execute pods on node with 'noMetallbSpeaker' taint (pods already
+        # running are evicted)
       - key: "noMetallbSpeaker"
         operator: "Exists"
         effect: "NoExecute"
