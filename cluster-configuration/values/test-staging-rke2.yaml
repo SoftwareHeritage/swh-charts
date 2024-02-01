@@ -9,10 +9,11 @@ metallb:
     # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
     speaker:
       tolerations:
-        # Do not schedule pods on node with 'NoSpeaker' label
+        # Do not execute pods on node with 'NoSpeaker' label (pods already running are
+        # evicted)
       - key: "noMetallbSpeaker"
         operator: "Exists"
-        effect: "NoSchedule"
+        effect: "NoExecute"
 
 ingressNginx:
   enabled: true
