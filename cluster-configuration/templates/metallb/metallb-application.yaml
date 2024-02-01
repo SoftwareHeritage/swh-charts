@@ -14,7 +14,7 @@ spec:
     helm:
       releaseName: metallb
       {{- if .Values.metallb.values }}
-      values:
+      values: |
         {{- toYaml .Values.metallb.values | nindent 8 }}
       {{- end }}
   destination:
