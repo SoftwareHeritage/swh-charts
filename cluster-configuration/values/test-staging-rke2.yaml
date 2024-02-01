@@ -8,14 +8,11 @@ metallb:
     # Install any extra configuration to pass along to the helm chart
     # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
     speaker:
-      nodeSelector:
-        matchExpressions:
-        # Do not install metallb speaker pod on any node with such label (whatever the
-        # value)
-        - key: "metallbSpeaker"
-          operator: NotIn
-          values:
-            - "false"
+      tolerations:
+        # Do not schedule pods on node with 'NoSpeaker' label
+      - key: "noMetallbSpeaker"
+        operator: "Exists"
+        effect: "NoSchedule"
 
 ingressNginx:
   enabled: true
