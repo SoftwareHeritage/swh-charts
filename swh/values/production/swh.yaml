@@ -59,6 +59,7 @@ azureCacheConfiguration:
   cls: azure
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   container_name: contents-uncompressed
+  compression: none
   secrets:
     ACCOUNT_KEY:
       secretKeyRef: swh-vault-azure-secret
