@@ -1287,6 +1287,9 @@ storage:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
           nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
         endpoints:
           default:
             paths:
