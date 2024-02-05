@@ -523,6 +523,13 @@ indexerJournalWriterConfiguration:
 
 addForgeNowConfiguration:
   email_address: add-forge-now@archive.softwareheritage.org
+  gitlab_pipeline:
+    trigger_url: https://gitlab.softwareheritage.org/api/v4/projects/474/trigger/pipeline
+    token: ${GITLAB_AFN_TOKEN}
+  secrets:
+    GITLAB_AFN_TOKEN:
+      secretKeyRef: common-secrets
+      secretKeyName: gitlab_afn_token
 
 web:
   # Due to the number of cpus on the production nodes
