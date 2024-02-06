@@ -163,7 +163,7 @@ loaders:
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 6
       image: swh_loader_package_image
     git:
       priorityClassName: low-workload
