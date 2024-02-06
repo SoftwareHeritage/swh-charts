@@ -12,7 +12,7 @@ metallb:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              matchExpressions:
+              - matchExpressions:
                 # No metallb speaker pod on node with following label (with any value)
                 - key: "noMetallbSpeaker"
                   operator: DoesNotExist
