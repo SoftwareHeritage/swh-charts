@@ -828,6 +828,7 @@ scheduler:
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
+            - 192.168.130.221
   updateMetrics:
     enabled: true
     concurrencyPolicy: Forbid
