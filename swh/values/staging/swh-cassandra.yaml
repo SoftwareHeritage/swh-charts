@@ -182,7 +182,7 @@ loaders:
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 3
       requestedMemory: 256Mi
       requestedCpu: 500m
     hg-checkout:
