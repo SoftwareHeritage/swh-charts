@@ -811,8 +811,8 @@ scheduler:
           paths:
             - path: /
           extraWhitelistSourceRange:
-          # staging-runner0 add-forge-now
-            - 192.168.130.221
+          # add-forge-now runner0 in staging network
+            - 192.168.130.221/32
         read-only:
           paths:
             - path: /scheduler_metrics/get
@@ -828,7 +828,8 @@ scheduler:
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
-            - 192.168.130.221
+            # add-forge-now runner0 in staging network
+            - 192.168.130.221/32
   updateMetrics:
     enabled: true
     concurrencyPolicy: Forbid
