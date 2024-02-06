@@ -7,6 +7,18 @@ clusterConfiguration:
 
 metallb:
   enabled: true
+  values:
+    # Install any extra configuration to pass along to the helm chart
+    # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106
+    speaker:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                # No metallb speaker pod on node with following label (with any value)
+                - key: "noMetallbSpeaker"
+                  operator: DoesNotExist
 
 ingressNginx:
   enabled: true
