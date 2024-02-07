@@ -15,7 +15,7 @@ data:
 
     cache_file=$1
     static_file=$2
-    host=${3:-"{{$host }}"}
+    host=${3:-"{{ $host }}"}
 
     static_file_stanza=""
     if [ -n "${static_file}" ]; then

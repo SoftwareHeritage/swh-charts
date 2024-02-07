@@ -1771,8 +1771,7 @@ counters:
     historyFiles:
       # cache file
       - history.json
-      # static counter history (from swh's inception)
-      - static_history.json
+      - '""'
   rpc:
     enabled: true
     fetchStaticHistory: true
