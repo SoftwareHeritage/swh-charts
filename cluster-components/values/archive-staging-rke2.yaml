@@ -39,3 +39,24 @@ svix:
 alerting:
   enabled: true
   environment: staging
+
+scrapeExternalMetrics:
+  enabled: true
+  deployments:
+    cassandra:
+      namespace: cassandra
+      metricsName: jmx-exporter
+      serviceMonitorName: cassandra-jmx-exporter
+      port: 7070
+      ips:
+        - 192.168.130.181
+        - 192.168.130.182
+        - 192.168.130.183
+      relabelings:
+        # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+        - sourceLabels:
+            - __address__
+          targetLabel: __address__
+          regex: "192.168.130.18(\\d)(.*)"
+          replacement: "cassandra$1.internal.staging.swh.network$2"
+          action: replace

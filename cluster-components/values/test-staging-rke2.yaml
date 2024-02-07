@@ -37,3 +37,22 @@ svix:
     persistentVolume: false
   whitelistSubnets: "[10.42.0.0/16,10.43.0.0/16]"
 
+scrapeExternalMetrics:
+  enabled: true
+  deployments:
+    # Integrate the rabbitmq metrics into the cluster. To allow crafting alertmanager
+    # alerts. With this, we need to deactivate the prometheus scrapping from pergamon to
+    # avoid duplicates (those are not readable from the cluster alertmanager)
+    rabbitmq:
+      namespace: rabbitmq
+      port: 9419
+      ips:
+        - 192.168.130.50
+      relabelings:
+        # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+        - sourceLabels:
+            - __address__
+          targetLabel: __address__
+          regex: "192.168.130.50(.*)"
+          replacement: "scheduler0.internal.staging.swh.network$1"
+          action: replace

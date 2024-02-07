@@ -1,0 +1,24 @@
+# This defines a service to be monitored by the service monitor
+{{- if .Values.scrapeExternalMetrics.enabled -}}
+{{- range $deployment, $deployment_config := .Values.scrapeExternalMetrics.deployments -}}
+{{- $metrics_name := get $deployment_config "metricsName" | default (print $deployment "-metrics") -}}
+{{- $port := $deployment_config.port -}}
+{{- $target_port := $deployment_config.targetPort | default $port -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $deployment_config.namespace }}
+  name: {{ $deployment }}-servers-svc
+  labels:
+    app: {{ $deployment }}
+spec:
+  type: ExternalName
+  externalName: "fake-url"
+  ports:
+    - name: {{ $metrics_name }}
+      port: {{ $port }}
+      targetPort: {{ $target_port }}
+      protocol: {{ $deployment_config.protocol | default "TCP" }}
+{{- end }}
+{{- end }}

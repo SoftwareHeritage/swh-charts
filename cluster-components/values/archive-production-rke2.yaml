@@ -4,3 +4,37 @@ podPriority:
 alerting:
   enabled: true
   environment: production
+
+scrapeExternalMetrics:
+  enabled: true
+  deployments:
+    cassandra:
+      namespace: cassandra
+      metricsName: jmx-exporter
+      serviceMonitorName: cassandra-jmx-exporter
+      port: 7070
+      ips:
+        - 192.168.100.181
+        - 192.168.100.182
+        - 192.168.100.183
+        - 192.168.100.184
+        - 192.168.100.185
+        - 192.168.100.186
+        - 192.168.100.187
+        - 192.168.100.188
+        - 192.168.100.189
+        - 192.168.100.190
+      relabelings:
+        # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+        - sourceLabels:
+            - __address__
+          targetLabel: __address__
+          regex: "192.168.100.18(\\d)(.*)"
+          replacement: "cassandra0$1.internal.softwareheritage.org$2"
+          action: replace
+        - sourceLabels:
+            - __address__
+          targetLabel: __address__
+          regex: "192.168.100.19(\\d)(.*)"
+          replacement: "cassandra1$1.internal.softwareheritage.org$2"
+          action: replace

@@ -1,0 +1,24 @@
+# This defines the external endpoints ips to connect to scrape metrics
+{{- if .Values.scrapeExternalMetrics.enabled -}}
+{{- range $deployment, $deployment_config := .Values.scrapeExternalMetrics.deployments -}}
+{{- $metrics_name := get $deployment_config "metricsName" | default (print $deployment "-metrics") -}}
+{{- $port := $deployment_config.port -}}
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  namespace: {{ $deployment_config.namespace }}
+  name: {{ $deployment }}-servers-svc
+  labels:
+    app: {{ $deployment }}
+subsets:
+  - addresses:
+    {{- range $ip := $deployment_config.ips | default list }}
+    - ip: {{ $ip }}
+    {{- end }}
+    ports:
+      - name: {{ $metrics_name }}
+        port: {{ $port }}
+        protocol: {{ $deployment_config.protocol | default "TCP" }}
+{{- end }}
+{{- end }}

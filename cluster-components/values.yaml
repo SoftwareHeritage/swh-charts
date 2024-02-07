@@ -117,3 +117,24 @@ alerting:
     smallDelay: 15m
   cassandra:
     unrepairedSize: 214748364800
+
+scrapeExternalMetrics:
+  enabled: false
+  interval: 30s
+  deployments:
+    # rabbitmq:
+    #   interval: 60s
+    #   namespace: rabbitmq
+    #   port: 9419
+    #   ips:
+    #     - 192.168.130.50
+    # cassandra:
+    #   namespace: cassandra
+    #   metricsName: jmx
+    #   serviceMonitorName: cassandra-jmx-exporter
+    #   port: 7070
+    #   ips:
+    #     - 192.168.130.181
+    #     - 192.168.130.182
+    #     - 192.168.130.183
+
