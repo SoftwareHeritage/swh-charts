@@ -230,6 +230,19 @@ journalClientCountersConfiguration:
   - snapshot
   message.max.bytes: 524288000
 
+countersRedis:
+  cls: redis
+  host: counters1.internal.softwareheritage.org:6379
+
+countersHistoryConfiguration:
+  cls: prometheus
+  prometheus_host: thanos.internal.admin.swh.network
+  prometheus_port: 19191
+  live_data_start: 1618415227
+  interval: 12h
+  labels:
+    environment: production
+
 graphql:
   enabled: true
   deployments:
@@ -1760,32 +1773,32 @@ counters:
       - history.json
       # static counter history (from swh's inception)
       - static_history.json
-  # rpc:
-  #   enabled: true
-  #   fetchStaticHistory: false
-  #   cacheBaseDirectory: /srv/softwareheritage/counters
-  #   countersConfigurationRef: stagingRedis
-  #   historyConfigurationRef: historyConfiguration
-  #   gunicorn:
-  #     threads: 1
-  #     workers: 1
-  #     timeout: 10
-  #   replicas: 1
-  #   # autoScaling:
-  #   #   minReplicaCount: 2
-  #   #   maxReplicaCount: 4
-  #   #   cpuPercentageUsage: 100
-  #   hosts:
-  #     - counters-rpc-ingress
-  #     - counters.internal.staging.swh.network
-  #   ingress:
-  #     enabled: true
-  #     # Default allowed ip ranges that can be extended per ingress definitions paths
-  #     whitelistSourceRangeRef: stagingNetworkRanges
-  #     endpoints:
-  #       default:
-  #         paths:
-  #           - path: /
-  #         extraWhitelistSourceRange:
-  #           # vpn network
-  #           - 192.168.101.0/24
+  rpc:
+    enabled: true
+    fetchStaticHistory: true
+    cacheBaseDirectory: /srv/softwareheritage/counters
+    countersConfigurationRef: countersRedis
+    historyConfigurationRef: countersHistoryConfiguration
+    replicas: 2
+    gunicorn:
+      workers: 2
+      threads: 1
+      timeout: 10
+    # autoScaling:
+    #   minReplicaCount: 2
+    #   maxReplicaCount: 4
+    #   cpuPercentageUsage: 100
+    hosts:
+      - counters-rpc-ingress
+      - counters.internal.softwareheritage.org
+    ingress:
+      enabled: true
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRangeRef: internalNetworkRanges
+      endpoints:
+        default:
+          paths:
+            - path: /
+          extraWhitelistSourceRange:
+            # vpn network
+            - 192.168.101.0/24

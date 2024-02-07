@@ -566,3 +566,6 @@ externalServices:
     storage-rw-postgresql-saam:
       internalName: storage-rw-postgresql-saam-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    counters:
+      internalName: counters-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
