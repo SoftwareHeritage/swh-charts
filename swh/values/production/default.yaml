@@ -408,7 +408,7 @@ remoteReadWriteIndexerStorageConfiguration:
 
 remoteCountersConfiguration:
     cls: remote
-    url: http://counters1.internal.softwareheritage.org:5011/
+    url: http://counters-rpc-ingress
 
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
