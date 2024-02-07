@@ -1750,14 +1750,16 @@ counters:
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
-  # refreshCountersCache:
-  #   enabled: true
-  #   cron: "0 */1 * * *"
-  #   concurrencyPolicy: Forbid
-  #   countersConfigurationRef: remoteCountersConfiguration
-  #   historyFiles:
-  #     - history.json
-  #     - '""'
+  refreshCountersCache:
+    enabled: true
+    cron: "0 */1 * * *"
+    concurrencyPolicy: Forbid
+    countersConfigurationRef: remoteCountersConfiguration
+    historyFiles:
+      # cache file
+      - history.json
+      # static counter history (from swh's inception)
+      - static_history.json
   # rpc:
   #   enabled: true
   #   fetchStaticHistory: false
