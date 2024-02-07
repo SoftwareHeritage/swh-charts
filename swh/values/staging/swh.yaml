@@ -629,6 +629,10 @@ scheduler:
               pathType: Exact
             - path: /task_type/get_all
               pathType: Exact
+            - path: /visit_stats/get
+              pathType: Exact
+            - path: /origins/get
+              pathType: Exact
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
