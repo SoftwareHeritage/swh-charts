@@ -214,6 +214,22 @@ azureDepositConfiguration:
       secretKeyRef: swh-deposit-azure-secret
       secretKeyName: azure-swh-deposit-key
 
+journalClientCountersConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh.counters.journal_client
+  prefix: swh.journal.objects
+  object_types:
+  - content
+  - directory
+  - origin
+  - origin_visit
+  - origin_visit_status
+  - release
+  - revision
+  - skipped_content
+  - snapshot
+  message.max.bytes: 524288000
+
 graphql:
   enabled: true
   deployments:
@@ -1727,3 +1743,47 @@ cookers:
       autoScaling:
         minReplicaCount: 1
         maxReplicaCount: 2
+
+counters:
+  enabled: true
+  journalClient:
+    enabled: true
+    countersConfigurationRef: remoteCountersConfiguration
+    journalConfigurationRef: journalClientCountersConfiguration
+  # refreshCountersCache:
+  #   enabled: true
+  #   cron: "0 */1 * * *"
+  #   concurrencyPolicy: Forbid
+  #   countersConfigurationRef: remoteCountersConfiguration
+  #   historyFiles:
+  #     - history.json
+  #     - '""'
+  # rpc:
+  #   enabled: true
+  #   fetchStaticHistory: false
+  #   cacheBaseDirectory: /srv/softwareheritage/counters
+  #   countersConfigurationRef: stagingRedis
+  #   historyConfigurationRef: historyConfiguration
+  #   gunicorn:
+  #     threads: 1
+  #     workers: 1
+  #     timeout: 10
+  #   replicas: 1
+  #   # autoScaling:
+  #   #   minReplicaCount: 2
+  #   #   maxReplicaCount: 4
+  #   #   cpuPercentageUsage: 100
+  #   hosts:
+  #     - counters-rpc-ingress
+  #     - counters.internal.staging.swh.network
+  #   ingress:
+  #     enabled: true
+  #     # Default allowed ip ranges that can be extended per ingress definitions paths
+  #     whitelistSourceRangeRef: stagingNetworkRanges
+  #     endpoints:
+  #       default:
+  #         paths:
+  #           - path: /
+  #         extraWhitelistSourceRange:
+  #           # vpn network
+  #           - 192.168.101.0/24
