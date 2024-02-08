@@ -599,7 +599,17 @@ scheduler:
       instances:  # We may have more than one rabbitmq per environment
         scheduler0:
           threshold: 10000
-
+    staleSchedulerListerTasks:
+      period: 30m
+      severity: critical
+      instances:
+        incremental:
+          interval: "1 day"
+          threshold: 172800  # 2 days in seconds
+        full:
+          interval: "90 days"
+          # can be overriden at the instance alert level
+          threshold: 7776000  # 90 days (max recurring period for listing)
   recurrent:
     enabled: true
     requestedMemory: 400Mi

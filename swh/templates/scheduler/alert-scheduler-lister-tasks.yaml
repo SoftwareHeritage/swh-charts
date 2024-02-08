@@ -1,0 +1,37 @@
+{{- if and .Values.scheduler.enabled .Values.scheduler.alerts.enabled .Values.scheduler.alerts.staleSchedulerListerTasks }}
+{{- $environment := .Values.environment -}}
+{{- $namespace := .Values.namespace -}}
+{{- with .Values.scheduler.alerts.staleSchedulerListerTasks -}}
+{{- $defaultThreshold := .threshold -}}
+{{- $severity := .severity | default $.Values.scheduler.alerts.severity -}}
+{{- $period := .period | default $.Values.scheduler.alerts.period -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    app: swh-alerts
+  name: scheduler-stale-recurring-tasks.rules
+  namespace: {{ $namespace }}
+spec:
+  groups:
+  - name: scheduler-stale-recurring-tasks.rules
+    rules:
+    {{ range $instance, $instance_config := .instances }}
+    {{- $threshold := $instance_config.threshold | default $defaultThreshold -}}
+    {{- $interval := $instance_config.interval -}}
+    {{- $instance_name := print $instance ".*" -}}
+    - alert: SchedulerStaleRecurringTask-{{ $instance }}
+      expr: |-
+        histogram_quantile(0.1, sum(sql_swh_scheduler_delay{environment={{ $environment | quote }}, policy="recurring",current_interval={{ $interval | quote }},status="next_run_scheduled"}) by (le)) > {{ $threshold }}
+      annotations:
+        description: "{{ $environment }}: Stale scheduler {{ $instance }} lister tasks in scheduler <{{"{{"}} $labels.name {{"}}"}}> (server: <{{"{{"}} $labels.server {{"}}"}}>)"
+        summary: "Existing lister tasks in stale state in environment <{{ $environment }}>"
+      for: {{ $period }}
+      labels:
+        severity: {{ $severity }}
+        namespace: cattle-monitoring-system
+    {{ end }}
+
+{{ end }}
+{{ end }}

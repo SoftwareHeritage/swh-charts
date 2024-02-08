@@ -994,6 +994,17 @@ scheduler:
       #     # can be overriden at the instance alert level
       #     period: 30m
       #     severity: warning
+    # staleSchedulerTasks:
+    #   period: 30m
+    #   severity: critical
+    #   instances:
+    #     incremental:
+    #       interval: "1 day"
+    #       threshold: 172800  # 2 days in seconds
+    #     full:
+    #       interval: "90 days"
+    #       # can be overriden at the instance alert level
+    #       threshold: 7776000  # 90 days (max recurring period for listing)
 
   # requestedMemory: 512Mi
   # requestedCpu: 500m
