@@ -552,10 +552,14 @@ web:
       # Usual consumption with visits webhook is 200m cpu (/2 replicas)
       # Scale up if a real burst happen (>1 cpu per pod)
       requestedCpu: 100m
-      requestedMemory: 300Mi
+      requestedMemory: 512Mi
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
       autoScaling:
         minReplicaCount: 2
-        maxReplicaCount: 4 # 4 to test the autoscaling in extreme scenarios
+        maxReplicaCount: 4  # 4 to test the autoscaling in extreme scenarios
         cpuPercentageUsage: 1000
       hosts:
         - webapp.staging.swh.network
