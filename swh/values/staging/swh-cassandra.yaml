@@ -560,7 +560,7 @@ web:
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 4  # 4 to test the autoscaling in extreme scenarios
-        cpuPercentageUsage: 1000
+        cpuPercentageUsage: 75
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
