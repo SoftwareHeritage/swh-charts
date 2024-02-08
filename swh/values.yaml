@@ -983,10 +983,17 @@ scheduler:
     secretKeyName: sentry-dsn
   alerts:
     enabled: false
-    tooManyMessagesInQueue:
-      threshold: 100000
-      period: 30m
-      severity: warning
+    # period: 30m
+    # severity: warning
+    # tooManyMessagesInQueue:
+      # threshold: 100000
+      # instances:
+      #   rabbitmq-node:
+      #     # can be overriden at the instance alert level
+      #     threshold: 100000
+      #     # can be overriden at the instance alert level
+      #     period: 30m
+      #     severity: warning
 
   # requestedMemory: 512Mi
   # requestedCpu: 500m
