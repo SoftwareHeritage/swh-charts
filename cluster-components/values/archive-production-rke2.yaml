@@ -38,3 +38,19 @@ scrapeExternalMetrics:
           regex: "192.168.100.19(\\d)(.*)"
           replacement: "cassandra1$1.internal.softwareheritage.org$2"
           action: replace
+    # Integrate the rabbitmq metrics into the cluster. To allow crafting alertmanager
+    # alerts. With this, we need to deactivate the prometheus scrapping from pergamon to
+    # avoid duplicates (those are not readable from the cluster alertmanager)
+    rabbitmq:
+      namespace: rabbitmq
+      port: 9419
+      ips:
+        - 192.168.100.104
+      relabelings:
+        # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+        - sourceLabels:
+            - __address__
+          targetLabel: __address__
+          regex: "192.168.100.104(.*)"
+          replacement: "saatchi.internal.softwareheritage.org$1"
+          action: replace
