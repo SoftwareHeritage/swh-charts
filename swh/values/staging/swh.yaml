@@ -592,7 +592,9 @@ scheduler:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
-    enabled: false
+    enabled: true
+    tooManyMessagesInQueue:
+      threshold: 4000
   recurrent:
     enabled: true
     requestedMemory: 400Mi
