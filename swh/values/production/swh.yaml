@@ -1023,7 +1023,7 @@ indexers:
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
       indexer_type: content_mimetype
       journalClientOverrides:
-        group_id: swh-indexer-prod-01-swh.indexer.journal_client.content_mimetypexs
+        group_id: swh-indexer-prod-01-swh.indexer.journal_client.content_mimetype
         batch_size: 200
       extraConfig:
         tools:
