@@ -22,7 +22,7 @@ spec:
     {{- $instance_name := print $instance ".*" -}}
     - alert: RabbitmqTooManyMessagesInQueue-{{ $instance }}
       expr: |-
-        max_over_time(rabbitmq_queue_messages_ready{environment={{ $environment | quote }}, instance=~{{ $instance_name | quote }}}[5m]) > {{ $threshold }}
+        max_over_time(rabbitmq_queue_messages_ready{instance=~{{ $instance_name | quote }}}[5m]) > {{ $threshold }}
       annotations:
         description: "{{ $environment }}: High number of messages in rabbitmq queue <{{"{{"}} $labels.name {{"}}"}}> (server: <{{"{{"}} $labels.server {{"}}"}}>)"
         summary: "A queue exceeds a given threshold in environment <{{ $environment }}>, rabbitmq instance <{{ $instance }}>"
