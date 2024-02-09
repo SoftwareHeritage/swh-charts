@@ -815,7 +815,13 @@ scheduler:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
-    enabled: false
+    enabled: true
+    period: 15m
+    severity: warning
+    tooManyMessagesInQueue:
+      instances:  # We may have more than one rabbitmq per environment
+        saatchi:
+          threshold: 30000
   recurrent:
     enabled: true
   rpc:
