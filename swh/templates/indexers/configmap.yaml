@@ -1,5 +1,8 @@
 {{ if .Values.indexers.enabled -}}
 {{- range $indexer_type, $deployment_config := .Values.indexers.deployments -}}
+{{- if and (or (not (hasKey $deployment_config "enabled"))
+               (get $deployment_config "enabled")) -}}
 {{ include "swh.indexer.configmap" (dict "indexer_type" $indexer_type "deployment_config" $deployment_config "Values" $.Values) }}
+{{- end -}}
 {{- end -}}
 {{- end -}}

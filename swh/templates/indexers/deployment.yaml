@@ -5,6 +5,9 @@
 {{- $configurationChecksum := include "swh.indexer.configmap" (dict "indexer_type" $indexer_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $journalConfigurationRef := or $deployment_config.journalClientConfigurationRef $.Values.indexers.journalClientConfigurationRef -}}
 {{- $objstorageConfigurationRef := or $deployment_config.objstorageConfigurationRef $.Values.indexers.objstorageConfigurationRef -}}
+{{- if and (or (not (hasKey $deployment_config "enabled"))
+               (get $deployment_config "enabled")) -}}
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -140,5 +143,6 @@ spec:
           items:
           - key: "pre-stop-idempotent.sh"
             path: "pre-stop.sh"
+{{ end }}
 {{ end }}
 {{- end -}}
