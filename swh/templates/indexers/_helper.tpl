@@ -46,5 +46,5 @@ data:
                                 "name" (print "indexer-" .deployment_name)
                                 "kafkaConfiguration" $journalClientConfiguration
                                 "autoscalingConfiguration" .deployment_config.autoScaling
-                                "Values"        .Values) -}}
+                                "Values"        .Values) }}
 {{ end }}
