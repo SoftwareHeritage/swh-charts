@@ -25,7 +25,7 @@ spec:
         max_over_time(rabbitmq_queue_messages_ready{instance=~{{ $instance_name | quote }}}[5m]) > {{ $threshold }}
       annotations:
         description: "{{ $environment }}: High number of messages in rabbitmq queue <{{"{{"}} $labels.queue {{"}}"}}> (server: <{{"{{"}} $labels.cluster {{"}}"}}>)"
-        summary: "Queue <{{"{{"}} $labels.queue {{"}}"}}> exceeds <{{"{{"}} $threshold {{"}}"}}> in rabbitmq <{{ $instance }}> (environment <{{ $environment }}>)"
+        summary: "A queue exceeds a given threshold in environment <{{ $environment }}>, rabbitmq instance <{{ $instance }}>"
       for: {{ $period }}
       labels:
         severity: {{ $severity }}
