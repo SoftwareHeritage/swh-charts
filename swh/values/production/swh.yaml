@@ -141,6 +141,22 @@ authenticatedJournalClientConfiguration:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
 
+authenticatedIndexerProd01JournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-indexer-prod-01-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-indexer-prod-01-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 primaryPostgresqlROStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
@@ -1001,6 +1017,22 @@ indexers:
           configuration: {}
       autoScaling:
         maxReplicaCount: 12
+    content-mimetype:
+      autoScaling:
+        maxReplicaCount: 1
+      journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
+      indexer_type: content_mimetype
+      journalClientOverrides:
+        group_id: swh-indexer-prod-01-swh.indexer.journal_client.content_mimetypexs
+        batch_size: 200
+      extraConfig:
+        tools:
+          name: file
+          version: 2:0.4.15-2
+          configuration:
+            type: library
+            debian-package: python3-magic
+        write_batch_size: 1000
 
 search:
   enabled: true
