@@ -593,7 +593,7 @@ scheduler:
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
     enabled: true
-    period: 30m
+    period: 5m
     severity: warning
     tooManyMessagesInQueue:
       instances:  # We may have more than one rabbitmq per environment
