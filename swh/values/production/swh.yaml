@@ -1034,6 +1034,7 @@ indexers:
             debian-package: python3-magic
         write_batch_size: 1000
     origin-intrinsic:
+      enabled: false
       autoScaling:
         maxReplicaCount: 1
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
