@@ -593,12 +593,12 @@ scheduler:
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
     enabled: true
-    period: 1m
+    period: 15m
     severity: warning
     tooManyMessagesInQueue:
       instances:  # We may have more than one rabbitmq per environment
         scheduler0:
-          threshold: 800
+          threshold: 10000
 
   recurrent:
     enabled: true
