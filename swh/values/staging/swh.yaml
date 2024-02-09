@@ -598,7 +598,7 @@ scheduler:
     tooManyMessagesInQueue:
       instances:  # We may have more than one rabbitmq per environment
         scheduler0:
-          threshold: 4000
+          threshold: 800
 
   recurrent:
     enabled: true
