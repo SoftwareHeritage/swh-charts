@@ -1033,6 +1033,19 @@ indexers:
             type: library
             debian-package: python3-magic
         write_batch_size: 1000
+    origin-intrinsic:
+      autoScaling:
+        maxReplicaCount: 1
+      journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
+      indexer_type: origin_intrinsic_metadata
+      journalClientOverrides:
+        group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
+        batch_size: 200
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
 
 search:
   enabled: true
