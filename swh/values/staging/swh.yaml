@@ -682,9 +682,7 @@ scheduler:
       enabled: true
       logLevel: INFO
       requestedMemory: 100Mi
-      limitedMemory: 200Mi
       requestedCpu: 10m
-      limitedCpu: 20m
 
 indexerStorage:
   enabled: true
