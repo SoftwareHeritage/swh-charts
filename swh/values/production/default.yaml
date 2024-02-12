@@ -382,6 +382,10 @@ storagePipelineSteps:
   - cls: filter
   - cls: retry
 
+remoteROCassandraRpcIngressStorageConfiguration:
+  cls: remote
+  url: http://storage-cassandra-read-only-rpc-ingress
+
 remoteSearchConfiguration:
   cls: remote
   url: http://search-rpc-ingress
@@ -544,6 +548,9 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-azure-read-only:
       internalName: storage-azure-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-cassandra-read-only:
+      internalName: storage-cassandra-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     indexer-storage-read-only:
       internalName: indexer-storage-read-only-rpc-ingress

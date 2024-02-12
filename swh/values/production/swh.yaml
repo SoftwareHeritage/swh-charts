@@ -21,6 +21,10 @@ remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteStorageConfiguration
 
+remoteROCassandraIngressStorageConfiguration:
+  pipelineStepsRef: retryStoragePipelineSteps
+  storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
+
 wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://gloin001.internal.cea.swh.network
@@ -1034,10 +1038,10 @@ indexers:
             debian-package: python3-magic
         write_batch_size: 1000
     origin-intrinsic:
-      enabled: false
+      enabled: true
       autoScaling:
         maxReplicaCount: 1
-      storageConfigurationRef: remoteROStorageConfiguration
+      storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
