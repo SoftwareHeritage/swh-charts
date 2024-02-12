@@ -49,10 +49,10 @@ spec:
           command:
           - /entrypoints/prepare-configuration.sh
           env:
-            {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $journalConfigurationRef ) | nindent 10 }}
-            {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $objstorageConfigurationRef ) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $journalConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $objstorageConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

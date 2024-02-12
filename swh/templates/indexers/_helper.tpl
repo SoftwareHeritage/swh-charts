@@ -42,9 +42,9 @@ data:
 {{- $_ := set $journalClientConfiguration "brokers" $brokers -}}
 {{- $_ := unset $journalClientConfiguration "brokersConfigurationRef" -}}
 {{- $_ := required (print "group_id property is mandatory in <" .journalClientConfigurationRef "> map") (get $journalClientConfiguration "group_id") -}}
-{{- include "swh.keda.kafkaAutoscaler" (dict
-                                "name" (print "indexer-" .deployment_name)
-                                "kafkaConfiguration" $journalClientConfiguration
-                                "autoscalingConfiguration" .deployment_config.autoScaling
-                                "Values"        .Values) }}
+{{- include "swh.keda.kafkaAutoscaler"
+  (dict "name"                     (print "indexer-" .deployment_name)
+        "kafkaConfiguration"       $journalClientConfiguration
+        "autoscalingConfiguration" .deployment_config.autoScaling
+        "Values"                   .Values) }}
 {{ end }}
