@@ -4,6 +4,7 @@
 {{- $journalClientConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in indexers (" .deployment_name ")  configuration") (get .Values $journalClientConfigurationRef) -}}
 {{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
 {{- $objstorageConfigurationRef := or .deployment_config.objstorageConfigurationRef .Values.indexers.objstorageConfigurationRef -}}
+{{- $storageConfigurationRef := or .deployment_config.storageConfigurationRef .Values.indexers.storageConfigurationRef -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,7 +13,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.indexers.storageConfigurationRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
                                                  "Values" .Values ) | nindent 4 }}
     {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.indexers.schedulerConfigurationRef
                                                    "Values" .Values) | nindent 4 }}
