@@ -1,6 +1,6 @@
 namespace: swh-cassandra
 
-remoteStorageConfiguration:
+remoteCassandraStorageConfiguration:
   cls: remote
   url: http://storage-cassandra:5002
 
@@ -601,7 +601,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: remoteStorageConfiguration
+      storageConfigurationRef: remoteCassandraStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
@@ -840,8 +840,8 @@ deposit:
         authentication: swh-cassandra/deposit-auth-secrets
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteCassandraStorageConfiguration
+  storageMetadataConfigurationRef: remoteCassandraStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration

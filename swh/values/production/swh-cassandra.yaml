@@ -68,7 +68,7 @@ localRpcROStorageService:
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
-remoteStorageConfiguration:
+remoteCassandraStorageConfiguration:
   cls: remote
   url: http://storage-cassandra:5002
 
@@ -320,7 +320,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: remoteStorageConfiguration
+      storageConfigurationRef: remoteCassandraStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
