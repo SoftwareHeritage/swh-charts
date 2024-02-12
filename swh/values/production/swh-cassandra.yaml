@@ -243,11 +243,13 @@ storage_replayer:
 storage:
   enabled: true
   deployments:
+    # not-exposed read-write instance
     cassandra:
       replicas: 2
       requestedCpu: 500m
       requestedMemory: 500Mi
       storageConfigurationRef: cassandraStorageConfiguration
+    # public facing instance (behind authentication)
     cassandra-readonly:
       autoScaling:
         minReplicaCount: 1
@@ -258,7 +260,6 @@ storage:
       storageConfigurationRef: cassandraReadOnlyStorageAWSLocalAzureConfiguration
       hosts:
         - storage-cassandra-ro.softwareheritage.org
-        - storage-cassandra-read-only-rpc-ingress
       ingress:
         enabled: true
         tlsEnabled: false
