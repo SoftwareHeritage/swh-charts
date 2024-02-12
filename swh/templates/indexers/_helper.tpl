@@ -13,19 +13,25 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
-                                                 "Values" .Values ) | nindent 4 }}
-    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.indexers.schedulerConfigurationRef
-                                                   "Values" .Values) | nindent 4 }}
-    {{- include "swh.service.fromYaml" (dict "service" "indexer_storage"
-                                             "configurationRef" .Values.indexers.indexerStorageConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-    {{- include "swh.objstorageConfiguration" (dict "serviceName" "objstorage"
-                                             "configurationRef" $objstorageConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal_client" "configurationRef" $journalClientConfigurationRef
-                                      "overrides" $journalClientOverrides
-                                      "Values" .Values) | nindent 4 }}
+    {{- include "swh.storageConfiguration"
+      (dict "configurationRef" $storageConfigurationRef
+            "Values"           .Values ) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration"
+      (dict "configurationRef" .Values.indexers.schedulerConfigurationRef
+            "Values"           .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml"
+      (dict "service"          "indexer_storage"
+            "configurationRef" .Values.indexers.indexerStorageConfigurationRef
+            "Values"           .Values) | nindent 4 }}
+    {{- include "swh.objstorageConfiguration"
+      (dict "serviceName"      "objstorage"
+            "configurationRef" $objstorageConfigurationRef
+            "Values"           .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration"
+      (dict "serviceType"      "journal_client"
+            "configurationRef" $journalClientConfigurationRef
+            "overrides"        $journalClientOverrides
+            "Values"           .Values) | nindent 4 }}
     {{- if .deployment_config.extraConfig -}}
       {{- range $option, $value := .deployment_config.extraConfig }}
     {{ $option }}: {{ toYaml $value | nindent 6 }}
