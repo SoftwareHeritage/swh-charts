@@ -330,7 +330,6 @@ indexers:
     #   autoScaling:
     #     maxReplicaCount: 2
     origin-intrinsic:
-      enabled: false
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
