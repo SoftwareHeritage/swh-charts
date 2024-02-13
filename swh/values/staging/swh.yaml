@@ -398,7 +398,7 @@ graphql:
       requestedMemory: 150Mi
 
 storage_replayer:
-  enabled: true
+  enabled: false
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
