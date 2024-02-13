@@ -76,7 +76,7 @@ azureCacheConfiguration:
       secretKeyName: azure-swh-vault-key
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: rpcRWStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
@@ -329,7 +329,7 @@ loaders:
       limitedMemory: 25Gi
 
 loader_metadata:
-  enabled: true
+  enabled: false
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
@@ -345,7 +345,7 @@ loader_metadata:
   requestedCpu: 10m
 
 storage_replayer:
-  enabled: true
+  enabled: false
 
   affinity:
     nodeAffinity:
