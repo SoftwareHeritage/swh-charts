@@ -138,3 +138,35 @@ scrapeExternalMetrics:
     #     - 192.168.130.182
     #     - 192.168.130.183
 
+# Configuration for the local docker registry cache
+dockerCache:
+  enabled: false
+  priorityClassName: cluster-components-system
+  namespace: docker-cache
+  ingress:
+    hosts:
+      - docker-cache.admin.swh.network
+    tls:
+      enabled: false
+      # clusterIssuer: letsencrypt-production
+  imageName: registry
+  imageVersion: latest
+  imagePullPolicy: Always
+  storageRequest: 10Gi
+  storageClassName: ceph-rbd
+  instances:
+    docker.io:
+      enabled: true
+      remoteUrl: https://registry-1.docker.io
+      # httpPrefix: /docker.io/
+      # storageRequest: 5Gi
+      # storageClassName: ceph-cephfs
+    swh:
+      enabled: true
+      remoteUrl: https://container-registry.softwareheritage.org
+    registry.k8s.io:
+      enabled: true
+    quay.io:
+      enabled: false
+    ghcr.io:
+      enabled: false

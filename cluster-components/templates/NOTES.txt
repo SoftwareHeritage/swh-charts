@@ -20,3 +20,16 @@ This installed/upgraded:
 {{- if .Values.svix.enabled }}
 - svix-server.
 {{ end }}
+{{- if .Values.dockerCache.enabled }}
+{{- $dockerCacheProto := .Values.dockerCache.ingress.tls.enabled | ternary "https://" "http://" }}
+- a local docker pull-through cache, for:
+{{- range $instanceName, $instanceConfig := .Values.dockerCache.instances }}
+{{- if $instanceConfig.enabled }}
+{{- $httpPrefix := get $instanceConfig "httpPrefix" | default (printf "/%s/" $instanceName) }}
+  - {{ $instanceConfig.remoteUrl }} on
+      {{- range $dockerCacheHost := $.Values.dockerCache.ingress.hosts }}
+      {{ $dockerCacheProto }}{{ $dockerCacheHost }}{{ $httpPrefix }}
+      {{- end }}
+{{- end }}
+{{- end }}
+{{ end }}

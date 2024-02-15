@@ -1,0 +1,20 @@
+{{/*
+* Build common variables for a dockerCache instance. This generates a yaml blob
+* that can be piped to fromYaml
+*/}}
+{{- define "swh.dockerCache.instanceVars" }}
+{{- $mergedConfig :=  merge (deepCopy .instanceConfig) (deepCopy .Values.dockerCache) }}
+{{- $imageName := get $mergedConfig "imageName" | default "registry" }}
+{{- $imageVersion:= get $mergedConfig "imageVersion" | default "2" }}
+---
+serviceName: {{ print "dockercache-" (regexReplaceAll "[^a-z-]+" .instanceName "-") | quote }}
+httpPrefix: {{ get .instanceConfig "httpPrefix" | default (printf "/%s/" .instanceName) | quote }}
+portNumber: {{ get .instanceConfig "port" | default 5000 | int }}
+portName: http
+storageRequest: {{ get $mergedConfig "storageRequest" | quote }}
+storageClassName: {{ get $mergedConfig "storageClassName" | quote }}
+imageSpec: {{ printf "%s:%s" $imageName $imageVersion | quote }}
+imagePullPolicy: {{ get $mergedConfig "imagePullPolicy" | default "IfNotPresent" }}
+priorityClassName: {{ $.Values.podPriority.enabled | ternary (get $mergedConfig "priorityClassName") "" | quote }}
+remoteUrl: {{ get .instanceConfig "remoteUrl" | default (printf "https://%s" .instanceName) | quote }}
+{{ end -}}

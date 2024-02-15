@@ -1,0 +1,52 @@
+{{- if .Values.dockerCache.enabled }}
+{{- $namespace := .Values.dockerCache.namespace -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-cache-ingress
+  namespace: {{ $namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    {{- if .Values.dockerCache.ingress.tls.enabled }}
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    {{- if .Values.dockerCache.ingress.tls.clusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.dockerCache.ingress.tls.clusterIssuer }}
+    {{- end }}
+    {{- end }}
+spec:
+  ingressClassName: nginx
+  rules:
+{{- range $registryHostName := .Values.dockerCache.ingress.hosts }}
+{{- range $instanceName, $instanceConfig := $.Values.dockerCache.instances }}
+{{- if $instanceConfig.enabled }}
+{{- $instanceVars := include "swh.dockerCache.instanceVars"
+            (dict "instanceName" $instanceName
+                  "instanceConfig" $instanceConfig
+                  "Values" $.Values) | fromYaml }}
+    - host: {{ $registryHostName }}
+      http:
+        paths:
+          - path: {{ $instanceVars.httpPrefix | quote }}
+            {{- /* use ImplementationSpecific to allow dots */}}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: {{ $instanceVars.serviceName }}
+                port:
+                  name: {{ $instanceVars.portName }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- if .Values.dockerCache.ingress.tls.enabled }}
+  tls:
+    - secretName: docker-cache-crt
+      hosts:
+{{- range $registryHostName := .Values.dockerCache.ingress.hosts }}
+      - {{ $registryHostName }}
+{{- end }}
+{{- end }}
+{{- end }}

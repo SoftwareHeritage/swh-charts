@@ -1,0 +1,77 @@
+{{- if .Values.dockerCache.enabled }}
+{{- $namespace := .Values.dockerCache.namespace -}}
+{{- range $instanceName, $instanceConfig := .Values.dockerCache.instances }}
+{{- if $instanceConfig.enabled }}
+{{- $instanceVars := include "swh.dockerCache.instanceVars"
+            (dict "instanceName" $instanceName
+                  "instanceConfig" $instanceConfig
+                  "Values" $.Values) | fromYaml }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $instanceVars.serviceName }}
+  namespace: {{ $namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ $instanceVars.serviceName }}
+  template:
+    metadata:
+      labels:
+        app: {{ $instanceVars.serviceName }}
+    spec:
+      {{- if $instanceVars.priorityClassName }}
+      priorityClassName: {{ $instanceVars.priorityClassName }}
+      {{- end }}
+      containers:
+        - name: docker-cache
+          image: {{ $instanceVars.imageSpec }}
+          imagePullPolicy: {{ $instanceVars.imagePullPolicy }}
+          env:
+            - name: REGISTRY_HTTP_ADDR
+              value: ":{{ $instanceVars.portNumber }}"
+            - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+              value: "/var/lib/registry"
+            - name: REGISTRY_STORAGE_DELETE_ENABLED
+              value: "true"
+            - name: REGISTRY_HTTP_PREFIX
+              value: {{ $instanceVars.httpPrefix | quote }}
+            - name: REGISTRY_PROXY_REMOTEURL
+              value: {{ $instanceVars.remoteUrl | quote }}
+          ports:
+            - name: {{ $instanceVars.portName }}
+              containerPort: {{ $instanceVars.portNumber }}
+          volumeMounts:
+            - name: image-store
+              mountPath: "/var/lib/registry"
+  volumeClaimTemplates:
+    - metadata:
+        name: image-store
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ $instanceVars.storageRequest }}
+        storageClassName: {{ $instanceVars.storageClassName }}
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ $instanceVars.serviceName }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $instanceVars.serviceName }}
+spec:
+  selector:
+    app: {{ $instanceVars.serviceName }}
+  ports:
+    - name: {{ $instanceVars.portName }}
+      port: {{ $instanceVars.portNumber }}
+      targetPort: {{ $instanceVars.portNumber }}
+{{- end }}
+{{- end }}
+{{- end }}

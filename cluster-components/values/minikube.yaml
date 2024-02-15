@@ -50,3 +50,12 @@ svix:
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
+
+dockerCache:
+  enabled: false
+  ingress:
+    tls:
+      enabled: true
+  instances:
+    quay.io:
+      enabled: false
