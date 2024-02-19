@@ -92,21 +92,6 @@ readOnlyStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
 
-checker_deposit:
-  enabled: true
-  storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: consumerCeleryConfiguration
-  depositConfigurationRef: depositConfiguration
-  autoScaling:
-    queueThreshold: 1
-    stopWhenNoActivity: false
-    minReplicaCount: 1
-    maxReplicaCount: 1
-  requestedMemory: 100Mi
-  requestedCpu: 100m
-  limitedMemory: 1Gi
-  limitedCpu: 1000m
-
 graphql:
   enabled: true
   deployments:

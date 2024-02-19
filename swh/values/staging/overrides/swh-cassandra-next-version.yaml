@@ -347,3 +347,6 @@ listers:
 
 indexers:
   enabled: false
+
+checker_deposit:
+  enabled: false
