@@ -749,6 +749,8 @@ toolbox:
       webhooksConfigurationRef: svixConfiguration
     indexer-storage:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    vault:
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 scrubber:
   enabled: true

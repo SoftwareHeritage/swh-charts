@@ -300,8 +300,6 @@ toolbox:
     scrubber-storage:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
-    vault:
-      vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 scheduler:
   enabled: true
