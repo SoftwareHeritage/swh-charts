@@ -344,3 +344,6 @@ webhooks:
 
 listers:
   enabled: false
+
+indexers:
+  enabled: false
