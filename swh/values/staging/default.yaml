@@ -229,7 +229,7 @@ postgresqlScrubberConfiguration:
 kafkaBrokers:
   - journal2.internal.staging.swh.network
 
-internalSecuredKakaBrokers:
+internalSecuredKafkaBrokers:
   - journal2.internal.staging.swh.network:9094
 
 elasticsearchInstances:
