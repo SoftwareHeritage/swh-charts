@@ -341,3 +341,6 @@ objstorage:
 
 webhooks:
   enabled: false
+
+listers:
+  enabled: false
