@@ -236,6 +236,14 @@ kafkaBrokers:
 internalSecuredKafkaBrokers:
   - journal2.internal.staging.swh.network:9094
 
+indexerJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  cls: kafka
+  prefix: swh.journal.indexed
+  client_id: swh.idx_storage.journal_writer.${HOSTNAME}
+  producer_config:
+    message.max.bytes: 1000000000
+
 elasticsearchInstances:
   - host: search-esnode0.internal.staging.swh.network
     port: 9200

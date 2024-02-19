@@ -353,3 +353,9 @@ checker_deposit:
 
 search:
   enabled: false
+
+scheduler:
+  enabled: false
+
+indexerStorage:
+  enabled: false
