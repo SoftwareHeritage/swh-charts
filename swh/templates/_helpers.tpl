@@ -328,7 +328,7 @@ Generate the configuration for a journal configuration key
 {{- define "swh.journalClientConfiguration" -}}
 {{- $journalConfiguration := get .Values .configurationRef -}}
 {{- $brokersRef := required (print "brokersConfigurationRef is mandatory in <" $journalConfiguration "> map" ) (get $journalConfiguration "brokersConfigurationRef") -}}
-{{- $brokers := required (print "<" $brokersRef "> is mandatory is mandatory in the global values <" .Values "> map") (get .Values $brokersRef) -}}
+{{- $brokers := required (print "<" $brokersRef "> is mandatory in the global values <" .Values "> map") (get .Values $brokersRef) -}}
 {{- $configuration := deepCopy $journalConfiguration }}
 {{- $overrides := .overrides | default dict }}
 {{- $configuration := mustMergeOverwrite $configuration $overrides -}}
