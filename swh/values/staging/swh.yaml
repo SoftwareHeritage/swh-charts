@@ -39,18 +39,6 @@ storageJournalWriterConfiguration:
   clientId: swh.storage.journal_writer.${HOSTNAME}
   anonymize: true
 
-postgresqlSchedulerConfiguration:
-  cls: postgresql
-  host: db1.internal.staging.swh.network
-  port: '5432'
-  user: swh-scheduler
-  pass: ${POSTGRESQL_PASSWORD}
-  db: swh-scheduler
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scheduler-postgresql-common-secret
-      secretKeyName: postgres-swh-scheduler-password
-
 scrubberJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -289,9 +277,6 @@ storage_replayer:
 toolbox:
   enabled: true
   configs:
-    scheduler:
-      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
-      celeryConfigurationRef: producerCeleryConfiguration
     storage:
       storageDbConfigurationRef: primaryPostgresqlRWStorageConfiguration
     scrubber-journal:
@@ -300,105 +285,6 @@ toolbox:
     scrubber-storage:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
-
-scheduler:
-  enabled: true
-  sentry:
-    enabled: true
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: producerCeleryConfiguration
-  alerts:
-    enabled: true
-    period: 15m
-    severity: warning
-    tooManyMessagesInQueue:
-      instances:  # We may have more than one rabbitmq per environment
-        scheduler0:
-          threshold: 10000
-
-  recurrent:
-    enabled: true
-    requestedMemory: 400Mi
-    requestedCpu: 10m
-  rpc:
-    enabled: true
-    # The scheduler instance to use for rpc must be a postgresql instance
-    schedulerConfigurationRef: postgresqlSchedulerConfiguration
-    replicas: 2
-    gunicorn:
-      threads: 5
-      workers: 4
-      timeout: 60
-    hosts:
-      - scheduler.internal.staging.swh.network
-    ingress:
-      enabled: true
-      # TODO: Improve the authorization internal cluster ip range.
-      # Default allowed ip ranges that can be extended per ingress definitions paths
-      whitelistSourceRangeRef: stagingNetworkRanges
-      endpoints:
-        default:
-          paths:
-            - path: /
-        read-only:
-          paths:
-            - path: /scheduler_metrics/get
-              pathType: Exact
-            - path: /listers/get
-              pathType: Exact
-            - path: /lister/get
-              pathType: Exact
-            - path: /task_type/get
-              pathType: Exact
-            - path: /task_type/get_all
-              pathType: Exact
-            - path: /visit_stats/get
-              pathType: Exact
-            - path: /origins/get
-              pathType: Exact
-          extraWhitelistSourceRange:
-            # vpn network
-            - 192.168.101.0/24
-    requestedMemory: 700Mi
-    requestedCpu: 50m
-  updateMetrics:
-    enabled: true
-    concurrencyPolicy: Forbid
-    cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
-  journalClient:
-    enabled: true
-    journalConfigurationRef: journalClientConfiguration
-    requestedMemory: 100Mi
-    requestedCpu: 10m
-  extraServices:
-    runner:
-      enabled: true
-      logLevel: INFO
-      period: 10
-      requestedMemory: 100Mi
-      limitedMemory: 200Mi
-      requestedCpu: 10m
-      limitedCpu: 20m
-    runner-priority:
-      enabled: true
-      logLevel: INFO
-      period: 10
-      requestedMemory: 50Mi
-      limitedMemory: 100Mi
-      requestedCpu: 5m
-      limitedCpu: 10m
-      extraConfig:
-        - load-bzr
-        - load-cvs
-        - load-git
-        - load-svn
-        - load-archive-files
-        - load-hg
-    listener:
-      enabled: true
-      logLevel: INFO
-      requestedMemory: 100Mi
-      requestedCpu: 10m
 
 web:
   enabled: true

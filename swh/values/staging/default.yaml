@@ -206,6 +206,18 @@ guestCeleryConfiguration:
       secretKeyRef: amqp-secrets
       secretKeyName: read-only
 
+postgresqlSchedulerConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: swh-scheduler
+  pass: ${POSTGRESQL_PASSWORD}
+  db: swh-scheduler
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scheduler-postgresql-common-secret
+      secretKeyName: postgres-swh-scheduler-password
+
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network

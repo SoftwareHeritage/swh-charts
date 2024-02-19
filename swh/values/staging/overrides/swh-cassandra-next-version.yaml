@@ -359,3 +359,6 @@ scheduler:
 
 indexerStorage:
   enabled: false
+
+scheduler:
+  enabled: false
