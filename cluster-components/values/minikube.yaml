@@ -1,9 +1,9 @@
 cert-manager:
-  enabled: true
+  enabled: false
 
 # Relay cluster's alerts to the ircrelay
 alertmanager:
-  enabled: true
+  enabled: false
   ircrelay:
     enabled: true
     host: https://alertmanager-irc-relay.admin.swh.network/minikube-swh-sysadm
@@ -11,10 +11,10 @@ alertmanager:
 # Activate prometheus as this is not previously done (in contrast with other clusters
 # provisioned by terraform which does the prometheus configuration too)
 prometheus:
-  enabled: true
+  enabled: false
 
 alertmanagerIrcRelay:
-  enabled: true
+  enabled: false
   ingress:
     enabled: true
   # Optional username for the bot to use (configured from secrets in other clusters)
@@ -27,7 +27,7 @@ alertmanagerIrcRelay:
   limitedCpu: "200m"
 
 blackboxExporter:
-  enabled: true
+  enabled: false
 
 podPriority:
   enabled: true
