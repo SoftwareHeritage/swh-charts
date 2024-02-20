@@ -425,4 +425,4 @@ inboundEmailConfiguration:
   secrets:
     INBOUND_EMAIL_SHARED_KEY:
       secretKeyRef: common-secrets
-      secretKeyName: web-inbound-email-secret
+      secretKeyName: web-inbound-email-shared-key
