@@ -225,7 +225,7 @@ loaders:
         maxReplicaCount: 1
       extraConfig:
         deposit:
-          url: "https://deposit-dynamic.internal.staging.swh.network/1/private"
+          url: "http://deposit-dynamic.internal.staging.swh.network/1/private"
           auth:
             username: "${DEPOSIT_USERNAME}"
             password: "${DEPOSIT_PASSWORD}"
