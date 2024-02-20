@@ -540,6 +540,12 @@ web:
   # nginx starts a lot of workers by default which consumes more memory than the default
   nginxRequestedMemory: 90Mi
 
+inboundEmailConfiguration:
+  secrets:
+    INBOUND_EMAIL_SHARED_KEY:
+      secretKeyRef: common-secrets
+      secretKeyName: web-inbound-email-shared-key
+
 externalServices:
   enabled: true
   services:
