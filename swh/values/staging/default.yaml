@@ -306,7 +306,7 @@ authenticatedJournalClientConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 depositConfiguration:
-  host: deposit-dynamic.internal.staging.swh.network
+  host: deposit.staging.swh.network
   user: ${DEPOSIT_USERNAME}
   pass: ${DEPOSIT_PASSWORD}
   secrets:
