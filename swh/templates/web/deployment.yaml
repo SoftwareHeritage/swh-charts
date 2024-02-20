@@ -73,6 +73,10 @@ spec:
             {{- include "swh.secrets.environment" (dict "Values" $.Values
                                                         "configurationRef" $web_config.webhooksConfigurationRef) | nindent 12 }}
             {{- end -}}
+            {{- if $web_config.inboundEmailConfigurationRef -}}
+            {{- include "swh.secrets.environment" (dict "Values" $.Values
+                                                        "configurationRef" $web_config.inboundEmailConfigurationRef) | nindent 12 }}
+            {{- end -}}
             {{- if $.Values.web.sentry.enabled }}
             - name: SWH_SENTRY_DSN
               valueFrom:

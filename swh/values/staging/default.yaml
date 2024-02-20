@@ -420,3 +420,9 @@ webhooksConfiguration:
     WEBHOOKS_SECRET:
       secretKeyRef: common-secrets
       secretKeyName: webhooks-secret
+
+inboundEmailConfiguration:
+  secrets:
+    INBOUND_EMAIL_SHARED_KEY:
+      secretKeyRef: common-secrets
+      secretKeyName: web-inbound-email-secret
