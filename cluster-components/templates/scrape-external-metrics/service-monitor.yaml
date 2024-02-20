@@ -3,7 +3,7 @@
 {{- if .Values.scrapeExternalMetrics.enabled -}}
 {{- range $deployment, $deployment_config := .Values.scrapeExternalMetrics.deployments -}}
 {{- $metrics_name := get $deployment_config "metricsName" | default (print $deployment "-metrics") -}}
-{{- $port := $deployment_config.port -}}
+{{- $port := $deployment_config.port }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
