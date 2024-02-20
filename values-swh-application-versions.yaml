@@ -7,7 +7,7 @@ swh_deposit_checkers_image_version: '20240213.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
 swh_deposit_image_version: '20240216.1'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
-swh_graphql_image_version: '20240216.1'
+swh_graphql_image_version: '20240220.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
 swh_indexer_image_version: '20240213.1'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
@@ -39,7 +39,7 @@ swh_scheduler_image_version: '20240213.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
 swh_scrubber_image_version: '20240216.1'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
-swh_search_image_version: '20240216.1'
+swh_search_image_version: '20240220.1'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
 swh_storage_image_version: '20240213.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
@@ -53,6 +53,6 @@ swh_vault_cookers_image_version: '20240213.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20240213.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20240216.1'
+swh_web_image_version: '20240220.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20240202.1'
