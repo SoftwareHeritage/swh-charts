@@ -35,7 +35,7 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.toolbox.priorityClassName }}
       {{ end }}
       initContainers:
-{{- range $service_type, $deployment_config := .Values.toolbox.configs }}
+      {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
         - name: prepare-configuration-{{ $service_type }}
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
@@ -47,11 +47,11 @@ spec:
           env:
           {{- range $k, $v := $deployment_config }}
             {{ if eq $k "storageConfigurationRef" }}
-{{ include "swh.storage.secretsEnvironment" (dict "Values" $.Values
-                                                  "configurationRef" $v) | indent 10 }}
+            {{ include "swh.storage.secretsEnvironment" (dict "configurationRef" $v
+                                                              "Values" $.Values) | nindent 10 }}
             {{ else }}
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $v) | indent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $v
+                                                       "Values" $.Values) | nindent 10 }}
             {{ end }}
           {{ end }}
           volumeMounts:
@@ -59,7 +59,7 @@ spec:
             mountPath: /etc/swh
           - name: configuration-{{ $service_type }}-template
             mountPath: /etc/swh/configuration-template
-{{- end }}
+      {{- end }}
       containers:
       - name: swh-toolbox
         image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
@@ -82,7 +82,7 @@ spec:
       volumes:
       - name: configuration
         emptyDir: {}
-{{ range $service_type, $deployment_config := .Values.toolbox.configs }}
+      {{ range $service_type, $deployment_config := .Values.toolbox.configs }}
       - name: configuration-{{ $service_type }}-template
         configMap:
           name: toolbox-{{ $service_type }}-template
@@ -90,7 +90,7 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-{{ end }}
+      {{ end }}
       - name: toolbox-script-utils
         configMap:
           name: toolbox-script-utils

@@ -10,47 +10,55 @@ metadata:
 data:
   config.yml.template: |
 {{- if hasKey $deployment_config "storageDbConfigurationRef" }}
-  {{- include "swh.postgresql" (dict "serviceType" "storage"
-                            "configurationRef" (get $deployment_config "storageDbConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "storage"
+          "configurationRef" (get $deployment_config "storageDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "storageConfigurationRef" }}
   {{- include "swh.storageConfiguration" (dict "configurationRef" (get $deployment_config "storageConfigurationRef")
                             "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "schedulerDbConfigurationRef" }}
-  {{- include "swh.postgresql" (dict "serviceType" "scheduler"
-                            "configurationRef" (get $deployment_config "schedulerDbConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "scheduler"
+          "configurationRef" (get $deployment_config "schedulerDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "celeryConfigurationRef" }}
-  {{- include "celery.configuration" (dict "configurationRef" (get $deployment_config "celeryConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "celery.configuration"
+    (dict "configurationRef" (get $deployment_config "celeryConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "scrubberDbConfigurationRef" }}
-  {{- include "swh.postgresql" (dict "serviceType" "scrubber"
-                            "configurationRef" (get $deployment_config "scrubberDbConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "scrubber"
+          "configurationRef" (get $deployment_config "scrubberDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "vaultDbConfigurationRef" }}
-  {{- include "swh.postgresql" (dict "serviceType" "vault"
-                            "configurationRef" (get $deployment_config "vaultDbConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "vault"
+          "configurationRef" (get $deployment_config "vaultDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "indexerDbConfigurationRef" }}
-  {{- include "swh.postgresql" (dict "serviceType" "indexer_storage"
-                            "configurationRef" (get $deployment_config "indexerDbConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "indexer_storage"
+          "configurationRef" (get $deployment_config "indexerDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "journalClientConfigurationRef" }}
-  {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal"
-                            "configurationRef" (get $deployment_config "journalClientConfigurationRef")
-                            "Values" $.Values) | nindent 4 -}}
+  {{- include "swh.journalClientConfiguration"
+    (dict "serviceType" "journal"
+          "configurationRef" (get $deployment_config "journalClientConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
 {{ end }}
 {{- if hasKey $deployment_config "webhooksConfigurationRef" }}
-  {{- include "swh.service.fromYaml" (dict "service" "webhooks"
-                            "configurationRef" $.Values.toolbox.configs.webhooks.webhooksConfigurationRef
-                            "Values" $.Values) | nindent 4 }}
+  {{- include "swh.service.fromYaml"
+    (dict "service" "webhooks"
+          "configurationRef" $.Values.toolbox.configs.webhooks.webhooksConfigurationRef
+          "Values" $.Values) | nindent 4 }}
 {{ end }}
 {{ end }}
 {{ end }}
