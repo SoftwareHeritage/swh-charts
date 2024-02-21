@@ -14,7 +14,7 @@ data:
 
     export SWH_CONFIG_FILENAME=/etc/swh/config-scheduler.yml
 
-    swh scheduler -C $SWH_CONFIG_FILENAME task-type register
+    swh scheduler task-type register
   check-db-version.sh: |
     #!/bin/bash
 
