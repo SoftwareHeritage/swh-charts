@@ -749,14 +749,17 @@ toolbox:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
     scrubber-storage:
+      moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
-    webhooks:
-      webhooksConfigurationRef: svixConfiguration
     indexer-storage:
+      moduleName: indexer
+      moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
 
 scrubber:
   enabled: true

@@ -919,6 +919,7 @@ toolbox:
     storage:
       storageDbConfigurationRef: postgresqlStorageConfiguration
     storage-secondary:
+      moduleName: storage
       storageDbConfigurationRef: secondaryPostgresqlRWStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
@@ -927,12 +928,16 @@ toolbox:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: authenticatedJournalClientConfiguration
     scrubber-storage-primary:
+      moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStoragePrimaryConfiguration
     scrubber-storage-secondary:
+      moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageSecondaryConfiguration
     indexer-storage:
+      moduleName: indexer
+      moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 indexerStorage:

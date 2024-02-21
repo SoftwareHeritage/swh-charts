@@ -23,75 +23,98 @@ data:
     TEMP_FILE=/tmp/db-version.txt
 
     MODULE=$1
-    CODE_VERSION=${2-""}
-    DB_VERSION=${3-""}
 
-    if [ -z ${MODULE} ]; then
+    if [ -z "${MODULE}" ]; then
       echo The environment variable must be defined with the module to check
-      echo for example "storage"
+      echo for example modules <storage>, <indexer>, <scrubber>, ...
       exit 1
+    fi
+
+    MODULE_CONFIG=${2-"/etc/swh/config-$MODULE.yml"}
+    MODULE_CONFIG_KEY=${3-""}
+    CODE_VERSION=${4-""}
+    DB_VERSION=${5-""}
+
+    cli="swh db --config-file=${MODULE_CONFIG} version ${MODULE}"
+
+    if [ ! -z "${CODE_VERSION}" ]; then
+      cli="${cli} --to-version ${CODE_VERSION}"
+    fi
+
+    if [ ! -z "${MODULE_CONFIG_KEY}" ]; then
+      cli="${cli} --module-config-key=${MODULE_CONFIG_KEY}"
     fi
 
     # checking the database status
-    swh db --config-file=/etc/swh/config-${MODULE}.yml version "${MODULE}" | \
-      tee "${TEMP_FILE}"
+    $cli | tee "${TEMP_FILE}"
 
-    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
-    DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
+    CODE_VERSION=$(awk -F': ' '/code/ {print $2}' ${TEMP_FILE})
+    DB_VERSION=$(awk -F': ' '/^version/ {print $2}' ${TEMP_FILE})
 
-    if [ -e "${CODE_VERSION}" ]; then
-      echo "Unable to find the code version"
+    if [ -z "${CODE_VERSION}" ]; then
+      echo "Unable to find the code version."
       exit 1
     fi
 
-    if [ -e "${DB_VERSION}" ]; then
-      echo "Unable to find the code version"
+    if [ -z "${DB_VERSION}" ]; then
+      echo "Unable to find the code version."
       exit 1
     fi
 
-    if [ "$DB_VERSION" -eq "$CODE_VERSION" ]; then
-      echo "Database already configured at the latest version"
+    if [ "${DB_VERSION}" -eq "${CODE_VERSION}" ]; then
+      msg="Database already configured at the latest version."
     else
-      echo "Migration required from $DB_VERSION to $CODE_VERSION."
+      msg="Migration required from <${DB_VERSION}> to <${CODE_VERSION}>."
     fi
+    echo $msg
 
   migrate-db-version.sh: |
     #!/bin/bash
 
     set -eu
 
-    TEMP_FILE=/tmp/db-version.txt
-
     MODULE=$1
-    CODE_VERSION=${2-""}
 
     if [ -z "${MODULE}" ]; then
       echo The environment variable must be defined with the module to check
-      echo for example "storage"
+      echo for example modules <storage>, <indexer>, <scrubber>, ...
       exit 1
     fi
 
+    MODULE_CONFIG=${2-"/etc/swh/config-$MODULE.yml"}
+    MODULE_CONFIG_KEY=${3-""}
+    CODE_VERSION=${4-""}
+
+    cli="swh db --config-file=${MODULE_CONFIG} upgrade ${MODULE}"
+
     if [ ! -z "${CODE_VERSION}" ]; then
-      swh db --config-file=/etc/swh/config-${MODULE}.yml upgrade "${MODULE}" \
-        --to-version ${CODE_VERSION}
-    else
-      swh db --config-file=/etc/swh/config-${MODULE}.yml upgrade "${MODULE}"
+      cli="${cli} --to-version ${CODE_VERSION}"
     fi
 
+    if [ ! -z "${MODULE_CONFIG_KEY}" ]; then
+      cli="${cli} --module-config-key=${MODULE_CONFIG_KEY}"
+    fi
+
+    set -x
+    $cli
+
 {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
+  {{- $module_name := $deployment_config.moduleName | default $service_type }}
+  {{- $module_config := $deployment_config.moduleConfig | default (print "/etc/swh/config-" $service_type ".yml") }}
+  {{- $module_config_key := $deployment_config.moduleConfigKey | default $module_name }}
   check-{{ $service_type }}-db-version.sh: |
     #!/bin/bash
 
     set -eu
 
-    /opt/swh/bin/check-db-version.sh {{ $service_type }}
+    /opt/swh/bin/check-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
 
   migrate-{{ $service_type }}-db-version.sh: |
     #!/bin/bash
 
     set -eu
 
-    /opt/swh/bin/migrate-db-version.sh {{ $service_type }}
+    /opt/swh/bin/migrate-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
 
 {{ end }}
 {{- end -}}

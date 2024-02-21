@@ -283,6 +283,7 @@ toolbox:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       journalClientConfigurationRef: scrubberJournalClientConfiguration
     scrubber-storage:
+      moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
 
