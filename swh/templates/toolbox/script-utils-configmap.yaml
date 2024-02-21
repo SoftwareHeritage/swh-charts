@@ -19,84 +19,94 @@ data:
     #!/bin/bash
 
     set -eu
+    set -o pipefail
 
-    TEMP_FILE=/tmp/db-version.txt
+    if [ "$#" -lt 1 ]; then
+      echo >&2 "\
+    usage: $0 MODULE_NAME [CONFIG_FILE [CONFIG_KEY]]
 
-    MODULE=$1
+    Check whether MODULE_NAME, configured in the CONFIG_KEY key of
+    CONFIG_FILE, needs a migration.
 
-    if [ -z "${MODULE}" ]; then
-      echo The environment variable must be defined with the module to check
-      echo for example modules <storage>, <indexer>, <scrubber>, ...
-      exit 1
+    CONFIG_FILE defaults to /etc/swh/config-<MODULE_NAME>.yml
+    CONFIG_KEY sets which key is used in the config to find the database
+    config. It defaults to <MODULE_NAME>
+
+    This script exits with code 1 if the settings are wrong, and with code
+    2 if a migration is needed.
+    "
+      exit 127
     fi
 
-    MODULE_CONFIG=${2-"/etc/swh/config-$MODULE.yml"}
-    MODULE_CONFIG_KEY=${3-""}
-    CODE_VERSION=${4-""}
-    DB_VERSION=${5-""}
+    MODULE_NAME="$1"
 
-    cli="swh db --config-file=${MODULE_CONFIG} version ${MODULE}"
+    CONFIG_FILE="${2:-/etc/swh/config-${MODULE_NAME}.yml}"
+    CONFIG_KEY="${3:-$MODULE_NAME}"
 
-    if [ ! -z "${CODE_VERSION}" ]; then
-      cli="${cli} --to-version ${CODE_VERSION}"
-    fi
+    # Create a temporary file, open it for writing as fd 3, for reading as fd 4 and 5
+    TEMP_FILE="$(mktemp)"
 
-    if [ ! -z "${MODULE_CONFIG_KEY}" ]; then
-      cli="${cli} --module-config-key=${MODULE_CONFIG_KEY}"
-    fi
+    exec 3>"${TEMP_FILE}"
+    exec 4<"${TEMP_FILE}"
+    exec 5<"${TEMP_FILE}"
 
-    # checking the database status
-    $cli | tee "${TEMP_FILE}"
+    # and remove the tempfile
+    rm -f "${TEMP_FILE}"
 
-    CODE_VERSION=$(awk -F': ' '/code/ {print $2}' ${TEMP_FILE})
-    DB_VERSION=$(awk -F': ' '/^version/ {print $2}' ${TEMP_FILE})
+    # check the database status into the tempfile
+    swh db --config-file="${CONFIG_FILE}" version "${MODULE_NAME}" \
+      --module-config-key="${CONFIG_KEY}" | tee >&2 /dev/fd/3
+
+    # Read the code and db version from the tempfile
+    CODE_VERSION="$(awk -F': ' '/code/ {print $2}' <&4)"
+    DB_VERSION="$(awk -F': ' '/^version/ {print $2}' <&5)"
 
     if [ -z "${CODE_VERSION}" ]; then
-      echo "Unable to find the code version."
+      echo >&2 "Unable to find the code version."
       exit 1
     fi
 
     if [ -z "${DB_VERSION}" ]; then
-      echo "Unable to find the code version."
+      echo >&2 "Unable to find the database version."
       exit 1
     fi
 
     if [ "${DB_VERSION}" -eq "${CODE_VERSION}" ]; then
-      msg="Database already configured at the latest version."
+      echo "Database already configured at the latest version."
     else
-      msg="Migration required from <${DB_VERSION}> to <${CODE_VERSION}>."
+      echo "Migration required from <${DB_VERSION}> to <${CODE_VERSION}>."
+      exit 2
     fi
-    echo $msg
 
   migrate-db-version.sh: |
     #!/bin/bash
 
     set -eu
 
-    MODULE=$1
+    if [ "$#" -lt 1 ]; then
+      echo >&2 "\
+    usage: $0 MODULE_NAME [CONFIG_FILE [CONFIG_KEY [TO_VERSION]]]]
 
-    if [ -z "${MODULE}" ]; then
-      echo The environment variable must be defined with the module to check
-      echo for example modules <storage>, <indexer>, <scrubber>, ...
-      exit 1
+    Migrate the database for MODULE_NAME, configured in the CONFIG_KEY key
+    of CONFIG_FILE, to TO_VERSION.
+
+    CONFIG_FILE defaults to /etc/swh/config-<MODULE_NAME>.yml
+    CONFIG_KEY sets which key is used in the config to find the database
+      config. It defaults to <MODULE_NAME>
+    TO_VERSION defaults to the latest schema version defined in <MODULE_NAME>
+    "
+      exit 127
     fi
 
-    MODULE_CONFIG=${2-"/etc/swh/config-$MODULE.yml"}
-    MODULE_CONFIG_KEY=${3-""}
-    CODE_VERSION=${4-""}
+    MODULE_NAME="$1"
 
-    cli="swh db --config-file=${MODULE_CONFIG} upgrade ${MODULE}"
+    CONFIG_FILE="${2:-/etc/swh/config-${MODULE_NAME}.yml}"
+    CONFIG_KEY="${3:-$MODULE_NAME}"
+    TO_VERSION="${4:-}"
 
-    if [ ! -z "${CODE_VERSION}" ]; then
-      cli="${cli} --to-version ${CODE_VERSION}"
-    fi
-
-    if [ ! -z "${MODULE_CONFIG_KEY}" ]; then
-      cli="${cli} --module-config-key=${MODULE_CONFIG_KEY}"
-    fi
-
-    set -x
-    $cli
+    exec swh db --config-file="${CONFIG_FILE}" upgrade "${MODULE_NAME}" \
+      --module-config-key="${CONFIG_KEY}" \
+      ${TO_VERSION:+"--to-version=${TO_VERSION}"}
 
 {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
   {{- $module_name := $deployment_config.moduleName | default $service_type }}
@@ -107,14 +117,14 @@ data:
 
     set -eu
 
-    /opt/swh/bin/check-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
+    exec /opt/swh/bin/check-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
 
   migrate-{{ $service_type }}-db-version.sh: |
     #!/bin/bash
 
     set -eu
 
-    /opt/swh/bin/migrate-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
+    exec /opt/swh/bin/migrate-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
 
 {{ end }}
 {{- end -}}
