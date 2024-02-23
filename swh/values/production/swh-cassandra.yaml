@@ -457,6 +457,8 @@ scrubber:
         object: release
         replicas: 4
       revision-references:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-cassandra-references-revision
         object: revision
         requestedCpu: 500m
