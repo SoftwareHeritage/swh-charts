@@ -40,9 +40,19 @@ spec:
               value: {{ $instanceVars.httpPrefix | quote }}
             - name: REGISTRY_PROXY_REMOTEURL
               value: {{ $instanceVars.remoteUrl | quote }}
+            {{- if $instanceVars.metricsEnabled }}
+            - name: REGISTRY_HTTP_DEBUG_ADDR
+              value: ":{{ $instanceVars.metricsPortNumber }}"
+            - name: REGISTRY_HTTP_DEBUG_PROMETHEUS_ENABLED
+              value: "true"
+            {{- end }}
           ports:
             - name: {{ $instanceVars.portName }}
               containerPort: {{ $instanceVars.portNumber }}
+            {{- if $instanceVars.metricsEnabled }}
+            - name: {{ $instanceVars.metricsPortName }}
+              containerPort: {{ $instanceVars.metricsPortNumber }}
+            {{- end }}
           volumeMounts:
             - name: image-store
               mountPath: "/var/lib/registry"
@@ -72,6 +82,11 @@ spec:
     - name: {{ $instanceVars.portName }}
       port: {{ $instanceVars.portNumber }}
       targetPort: {{ $instanceVars.portNumber }}
+    {{- if $instanceVars.metricsEnabled }}
+    - name: {{ $instanceVars.metricsPortName }}
+      port: {{ $instanceVars.metricsPortNumber }}
+      targetPort: {{ $instanceVars.metricsPortNumber }}
+    {{- end }}
 {{- end }}
 {{- end }}
 {{- end }}

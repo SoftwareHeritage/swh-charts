@@ -154,6 +154,8 @@ dockerCache:
   imagePullPolicy: Always
   storageRequest: 10Gi
   storageClassName: ceph-rbd
+  metrics:
+    enabled: true
   instances:
     docker.io:
       enabled: true
@@ -166,6 +168,9 @@ dockerCache:
       remoteUrl: https://container-registry.softwareheritage.org
     registry.k8s.io:
       enabled: true
+      # metrics:
+      #   enabled:
+      #     false
     quay.io:
       enabled: false
     ghcr.io:

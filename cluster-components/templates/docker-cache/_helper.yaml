@@ -9,8 +9,11 @@
 ---
 serviceName: {{ print "dockercache-" (regexReplaceAll "[^a-z-]+" .instanceName "-") | quote }}
 httpPrefix: {{ get .instanceConfig "httpPrefix" | default (printf "/%s/" .instanceName) | quote }}
+portName: "http"
 portNumber: {{ get .instanceConfig "port" | default 5000 | int }}
-portName: http
+metricsEnabled: {{ dig "metrics" "enabled" true .instanceConfig | ternary "true" "false" }}
+metricsPortName: "http-metrics"
+metricsPortNumber: {{ dig "metrics" "port" 5001 .instanceConfig | int }}
 storageRequest: {{ get $mergedConfig "storageRequest" | quote }}
 storageClassName: {{ get $mergedConfig "storageClassName" | quote }}
 imageSpec: {{ printf "%s:%s" $imageName $imageVersion | quote }}

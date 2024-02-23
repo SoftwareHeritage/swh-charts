@@ -1,0 +1,37 @@
+{{- if .Values.dockerCache.enabled }}
+{{- $namespace := .Values.dockerCache.namespace -}}
+{{- range $instanceName, $instanceConfig := .Values.dockerCache.instances }}
+{{- if $instanceConfig.enabled }}
+{{- $instanceVars := include "swh.dockerCache.instanceVars"
+            (dict "instanceName" $instanceName
+                  "instanceConfig" $instanceConfig
+                  "Values" $.Values) | fromYaml }}
+{{- if $instanceVars.metricsEnabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $instanceVars.serviceName }}
+  labels:
+    app: {{ $instanceVars.serviceName }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ $instanceVars.serviceName }}
+  namespaceSelector:
+    matchNames:
+      - {{ $namespace }}
+  endpoints:
+    - port: {{ $instanceVars.metricsPortName }}
+      scheme: http
+      interval: 30s
+      path: /metrics
+      relabelings:
+        - action: Replace
+          replacement: {{ $instanceName }}
+          targetLabel: instance
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
