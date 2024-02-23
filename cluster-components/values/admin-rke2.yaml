@@ -15,3 +15,34 @@ blackboxExporter:
 
 podPriority:
   enabled: true
+
+dockerCache:
+  enabled: true
+  ingress:
+    hosts:
+      - docker-cache.admin.swh.network
+      - docker-cache.internal.admin.swh.network
+    tls:
+      enabled: true
+      clusterIssuer: letsencrypt-production
+  imageName: registry
+  imageVersion: "2.8.3"
+  imagePullPolicy: IfNotPresent
+  storageRequest: 40Gi
+  storageClassName: ceph-rbd
+  instances:
+    docker.io:
+      enabled: true
+      remoteUrl: https://registry-1.docker.io
+    swh:
+      enabled: true
+      remoteUrl: https://container-registry.softwareheritage.org
+    registry.k8s.io:
+      enabled: true
+      storageRequest: 10Gi
+    quay.io:
+      enabled: true
+      storageRequest: 20Gi
+    ghcr.io:
+      enabled: true
+      storageRequest: 10Gi
