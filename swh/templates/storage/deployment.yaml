@@ -151,8 +151,8 @@ spec:
             readOnly: {{ $volume_config.readOnly | default "false" }}
           {{- end }}
         {{- if $storage_config.dnsConfigurationRef }}
-        {{ include "swh.dns.configuration"  (dict "Values" $.Values
-                                              "configurationRef" $storage_config.dnsConfigurationRef) | nindent 6 }}
+        {{- include "swh.dns.configuration"  (dict "Values" $.Values
+                                              "configurationRef" $storage_config.dnsConfigurationRef) | indent 6 }}
         {{- end }}
       volumes:
       - name: configuration

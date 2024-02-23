@@ -386,7 +386,7 @@ Generate the resolver configuration
 {{- $configuration := deepCopy (get .Values .configurationRef) -}}
 {{- if $configuration.policy }}
 dnsPolicy: "{{ $configuration.policy }}"
-{{- end -}}
+{{- end }}
 dnsConfig:
 {{- if $configuration.ndots }}
   options:
