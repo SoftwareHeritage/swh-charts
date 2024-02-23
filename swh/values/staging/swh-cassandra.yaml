@@ -772,7 +772,7 @@ scrubber:
       directory-references:
         configName: storage-cassandra-references-directory
         object: directory
-        replicas: 1
+        replicas: 4
         requestedCpu: 400m
         requestedMemory: 200Mi
       directory-hashes:
