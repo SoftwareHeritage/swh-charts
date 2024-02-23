@@ -435,13 +435,13 @@ scrubber:
       directory-references:
         configName: storage-cassandra-references-directory
         object: directory
-        replicas: 4
+        replicas: 8
         requestedCpu: 400m
         requestedMemory: 200Mi
       directory-hashes:
         configName: storage-cassandra-hashes-directory
         object: directory
-        replicas: 4
+        replicas: 8
         requestedCpu: 400m
         requestedMemory: 200Mi
       release-references:
