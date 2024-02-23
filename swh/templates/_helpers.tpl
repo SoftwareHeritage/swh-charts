@@ -378,3 +378,31 @@ Generate the configuration for search
   hosts:
   {{ toYaml $elasticsearchInstances | nindent 4 }}
 {{- end -}}
+
+{{/*
+Generate the resolver configuration
+*/}}
+{{- define "swh.dns.configuration" -}}
+{{- $configuration := deepCopy (get .Values .configurationRef) -}}
+{{- if $configuration.policy }}
+dnsPolicy: "{{ $configuration.policy }}"
+{{- end -}}
+dnsConfig:
+{{- if $configuration.ndots }}
+  options:
+    - name: ndots
+      value: "{{ $configuration.ndots }}"
+{{- end }}
+{{- if $configuration.search }}
+  searches:
+    - {{ $configuration.search }}
+    - svc.{{ $configuration.search }}
+    - {{ .Values.namespace }}.svc.{{ $configuration.search }}
+{{- end }}
+{{- if $configuration.nameservers }}
+  nameservers:
+  {{- range $nameserver := $configuration.nameservers }}
+    - {{ $nameserver }}
+  {{- end }}
+{{- end }}
+{{- end -}}

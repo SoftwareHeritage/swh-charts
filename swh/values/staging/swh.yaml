@@ -508,6 +508,7 @@ storage:
       requestedCpu: 500m
       requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyStorageConfiguration
+      dnsConfigurationRef: dnsConfiguration
       hosts:
         - storage-postgresql-read-only-rpc-ingress
         - storage-ro.internal.staging.swh.network

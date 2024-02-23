@@ -351,3 +351,9 @@ objstorageReplayer:
             operator: In
             values:
             - "true"
+
+dnsConfiguration:
+  ndots: 2
+  search: "cluster.local"
+#  nameservers: [ 10.43.0.10 ]
+#  policy: None

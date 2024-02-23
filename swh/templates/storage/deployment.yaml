@@ -149,7 +149,11 @@ spec:
           - name: {{ $volume_name }}
             mountPath: {{ $volume_config.mountPath }}
             readOnly: {{ $volume_config.readOnly | default "false" }}
-          {{ end }}
+          {{- end }}
+        {{- if $storage_config.dnsConfigurationRef }}
+        {{ include "swh.dns.configuration"  (dict "Values" $.Values
+                                              "configurationRef" $storage_config.dnsConfigurationRef) | nindent 6 }}
+        {{- end }}
       volumes:
       - name: configuration
         emptyDir: {}
