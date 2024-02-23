@@ -393,11 +393,14 @@ dnsConfig:
     - name: ndots
       value: "{{ $configuration.ndots }}"
 {{- end }}
-{{- if $configuration.search }}
+{{- if $configuration.overrideSearch }}
   searches:
-    - {{ $configuration.search }}
-    - svc.{{ $configuration.search }}
-    - {{ .Values.namespace }}.svc.{{ $configuration.search }}
+    - cluster.local
+    - svc.cluster.local
+    - {{ .Values.namespace }}.svc.cluster.local
+{{- range $extraSearch := get $configuration "extraSearch" | default (list) }}
+    - {{ $extraSearch }}
+{{- end }}
 {{- end }}
 {{- if $configuration.nameservers }}
   nameservers:

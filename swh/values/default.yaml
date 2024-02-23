@@ -354,6 +354,8 @@ objstorageReplayer:
 
 dnsConfiguration:
   ndots: 2
-  search: "cluster.local"
+  overrideSearch: true
+#   extraSearch:
+#     - internal.softwareheritage.org
 #  nameservers: [ 10.43.0.10 ]
 #  policy: None
