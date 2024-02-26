@@ -1364,7 +1364,7 @@ storage:
                 values:
                 - "true"
       storageConfigurationRef: rwStoragePostgresqlWithSaamObjstorageConfiguration
-#      dnsConfigurationRef: dnsConfiguration
+      dnsConfigurationRef: dnsConfiguration
       extraVolumes:
         pathslicing-rw:
           # This must match what's declared in the instance config key
