@@ -63,14 +63,14 @@ scrubberROStorageConfiguration:
 # TODO: Use a true read-only storage
 localRpcROStorageService:
   cls: remote
-  url: http://storage-cassandra:5002
+  url: http://storage-cassandra-read-only-rpc-ingress
 
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcROStorageService
 
 remoteCassandraStorageConfiguration:
   cls: remote
-  url: http://storage-cassandra:5002
+  url: http://storage-cassandra-read-only-rpc-ingress
 
 storage_replayer:
   enabled: true
@@ -243,12 +243,6 @@ storage_replayer:
 storage:
   enabled: true
   deployments:
-    # not-exposed read-write instance
-    cassandra:
-      replicas: 2
-      requestedCpu: 500m
-      requestedMemory: 500Mi
-      storageConfigurationRef: cassandraStorageConfiguration
     # public facing instance (behind authentication)
     cassandra-readonly:
       autoScaling:
@@ -272,6 +266,7 @@ storage:
             paths:
               - path: /
             authentication: swh-cassandra/ingress-storage-cassandra-ro-auth-secrets
+    # Use cassandra readonly instance
     cassandra-readonly-internal:
       autoScaling:
         minReplicaCount: 1
