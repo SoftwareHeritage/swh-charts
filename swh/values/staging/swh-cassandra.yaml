@@ -2,11 +2,11 @@ namespace: swh-cassandra
 
 remoteCassandraStorageConfiguration:
   cls: remote
-  url: http://storage-cassandra:5002
+  url: http://storage-cassandra.internal.staging.swh.network
 
 localRpcRWStorageConfiguration:
   cls: remote
-  url: http://storage-cassandra:5002
+  url: http://storage-cassandra.internal.staging.swh.network
 
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
