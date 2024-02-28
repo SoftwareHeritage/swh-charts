@@ -64,7 +64,7 @@ data:
     {{- end -}}
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
-    secret_key: ${DJANGO_SECRET_KEY}
+    secret_key: "${DJANGO_SECRET_KEY}"
     {{- if .configuration.databaseConfigurationRef }}
     production_db:
     {{- include "django.postgresql" (dict "configurationRef" .configuration.databaseConfigurationRef
