@@ -1397,6 +1397,16 @@ storage:
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid
 
+djangoWebConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY_FALLBACK_1:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key-fallback-1
+    DJANGO_SECRET_KEY_FALLBACK_2:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key-fallback-2
+
+
 web:
   enabled: true
   logLevel: INFO
