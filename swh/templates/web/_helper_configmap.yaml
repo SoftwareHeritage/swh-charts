@@ -75,7 +75,7 @@ data:
     {{- if $fallbackEnvVars }}
     secret_key_fallbacks:
     {{- range $envVarName := $fallbackEnvVars }}
-      - "${{ "{" }}{{ $envVarName }}{{ "}" }}
+      - "${{ "{" }}{{ $envVarName }}{{ "}" }}"
     {{- end }}
     {{- end }}
     {{- if .configuration.databaseConfigurationRef }}
