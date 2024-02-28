@@ -42,13 +42,10 @@ spec:
                 mountPath: /etc/swh/config
             {{ end }}
             - name: prepare-web-configuration
-              image: debian:bullseye
+              image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
               imagePullPolicy: IfNotPresent
               command:
-              - /bin/bash
-              args:
-              - -c
-              - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+                - /entrypoints/prepare-configuration.sh
               env:
                 {{- if $.webConfiguration.databaseConfigurationRef }}
                 {{- include "swh.secrets.environment" (dict "Values" $.Values
@@ -81,6 +78,9 @@ spec:
                 mountPath: /etc/swh
               - name: web-configuration-template
                 mountPath: /etc/swh/configuration-template
+              - name: config-utils
+                mountPath: /entrypoints
+                readOnly: true
           containers:
             - name: {{ $.serviceType }}
               resources:
@@ -141,6 +141,10 @@ spec:
           volumes:
           - name: configuration
             emptyDir: {}
+          - name: config-utils
+            configMap:
+              name: config-utils
+              defaultMode: 0555
           - name: web-configuration-template
             configMap:
               name: web-{{ $.webType }}-configuration-template
