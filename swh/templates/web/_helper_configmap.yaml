@@ -65,6 +65,19 @@ data:
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: "${DJANGO_SECRET_KEY}"
+    {{- $secrets := (get .Values .configuration.djangoConfigurationRef).secrets }}
+    {{- $fallbackEnvVars := (list) }}
+    {{- range $envVar, $secret := $secrets }}
+    {{- if hasPrefix "DJANGO_SECRET_KEY_FALLBACK_" $envVar }}
+    {{- $fallbackEnvVars = mustAppend $fallbackEnvVars $envVar }}
+    {{- end }}
+    {{- end }}
+    {{- if $fallbackEnvVars }}
+    secret_key_fallbacks:
+    {{- range $envVarName := $fallbackEnvVars }}
+      - "${{ "{" }}{{ $envVarName }}{{ "}" }}
+    {{- end }}
+    {{- end }}
     {{- if .configuration.databaseConfigurationRef }}
     production_db:
     {{- include "django.postgresql" (dict "configurationRef" .configuration.databaseConfigurationRef
