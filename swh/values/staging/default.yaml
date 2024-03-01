@@ -372,6 +372,9 @@ externalServices:
     objstorage-read-write:
       internalName: objstorage-read-write-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-db1-read-write:
+      internalName: objstorage-db1-rw-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-read-only:
       internalName: objstorage-read-only-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

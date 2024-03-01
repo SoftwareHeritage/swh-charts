@@ -897,6 +897,44 @@ objstorage:
     # Each key will be an objstorage instance to be deployed
     # The mandatory objstorageConfigurationRef key should target a dict
     # with the specific objstorage configuration
+    db1-read-write:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: db1
+      replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 60
+      extraVolumes:
+        staging-pathslicing-rw:
+          mountPath: /srv/softwareheritage/objects
+          volumeDefinition:
+            hostPath:
+              path: /srv/softwareheritage/objects
+              type: Directory
+      # mandatory
+      # check readWriteStorageConfiguration example to configure your storage
+      objstorageConfigurationRef: pathslicingObjstorageConfiguration
+      extraRpcConfiguration:
+        client_max_size: 1073741824
+      hosts:
+        - objstorage-db1-rw-rpc-ingress
+      ingress:
+        enabled: true
+        # mandatory if ingress is enabled
+        # the hostname on which the objstorage must be reachable
+        # Optional: the ingress classname to use
+        className: nginx
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
     storage1-read-write:
       enabled: true
       nodeSelector:
