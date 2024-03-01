@@ -996,7 +996,9 @@ objstorage:
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: pathslicingObjstorageConfiguration
-        # Deploy an ingress to access the objstorage
+      extraRpcConfiguration:
+        client_max_size: 1073741824
+      # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-storage1-ro-rpc-ingress
       ingress:
@@ -1036,7 +1038,9 @@ objstorage:
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: pathslicingObjstorageConfiguration
-        # Deploy an ingress to access the objstorage
+      extraRpcConfiguration:
+        client_max_size: 1073741824
+      # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-db1-ro-rpc-ingress
       ingress:
@@ -1060,6 +1064,8 @@ objstorage:
         threads: 2
         timeout: 60
       objstorageConfigurationRef: multiplexerReadOnlyObjstorageConfiguration
+      extraRpcConfiguration:
+        client_max_size: 1073741824
       hosts:
         - objstorage-read-only-rpc-ingress
         - objstorage-ro.internal.staging.swh.network
