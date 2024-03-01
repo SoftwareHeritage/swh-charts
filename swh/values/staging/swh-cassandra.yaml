@@ -1055,7 +1055,7 @@ objstorage:
           default:
             paths:
               - path: /
-    # db1 read-only objstorage
+    # read-only objstorage
     multiplexer-read-only:
       enabled: true
       replicas: 2
