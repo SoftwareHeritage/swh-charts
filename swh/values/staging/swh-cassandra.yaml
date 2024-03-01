@@ -102,18 +102,21 @@ loaders:
       requestedMemory: 1Gi
       requestedCpu: 200m
     arch:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.arch.tasks.LoadArch
       autoScaling:
         maxReplicaCount: 1
     aur:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.aur.tasks.LoadAur
       autoScaling:
         maxReplicaCount: 1
     archive:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -122,12 +125,14 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     bioconductor:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.bioconductor.tasks.LoadBioconductor
       autoScaling:
         maxReplicaCount: 1
     bzr:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
@@ -135,6 +140,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cran:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -143,6 +149,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
@@ -150,6 +157,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     content:
+      enabled: false
       requestedCpu: 350m
       requestedMemory: 150Mi
       queues:
@@ -158,6 +166,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     directory:
+      enabled: false
       requestedMemory: 768Mi
       requestedCpu: 1000m
       queues:
@@ -178,6 +187,7 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 100m
     git-checkout:
+      enabled: false
       image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
@@ -186,6 +196,7 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 500m
     hg-checkout:
+      enabled: false
       image: swh_loader_mercurial_image
       queues:
         - swh.loader.mercurial.tasks.LoadMercurialCheckout
@@ -194,6 +205,7 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 500m
     svn-export:
+      enabled: false
       requestedMemory: 768Mi
       requestedCpu: 1000m
       limitedMemory: 1Gi
@@ -204,6 +216,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_svn_image
     debian:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -231,6 +244,7 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     golang:
+      enabled: false
       image: swh_loader_package_image
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -262,6 +276,7 @@ loaders:
       requestedMemory: 200Mi
       requestedCpu: 50m
     maven:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
@@ -270,6 +285,7 @@ loaders:
       requestedMemory: 600Mi
       requestedCpu: 500m
     mercurial:
+      enabled: false
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
@@ -278,6 +294,7 @@ loaders:
       requestedMemory: 124Mi
       requestedCpu: 500m
     npm:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -286,6 +303,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     opam:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
@@ -294,6 +312,7 @@ loaders:
       requestedMemory: 1Gi
       requestedCpu: 1300m
     pypi:
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -302,6 +321,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     pubdev:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
@@ -310,6 +330,7 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 800m
     rpm:
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.rpm.tasks.LoadRpm
@@ -318,6 +339,7 @@ loaders:
       requestedMemory: 3Gi
       requestedCpu: 1000m
     svn:
+      enabled: false
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
