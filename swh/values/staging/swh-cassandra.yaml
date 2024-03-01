@@ -163,7 +163,7 @@ loaders:
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
-        maxReplicaCount: 6
+        maxReplicaCount: 1
       image: swh_loader_package_image
     git:
       priorityClassName: low-workload
@@ -172,7 +172,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 2
+        maxReplicaCount: 1
         minReplicaCount: 1
         stopWhenNoActivity: false
       requestedMemory: 768Mi
@@ -182,7 +182,7 @@ loaders:
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
       autoScaling:
-        maxReplicaCount: 3
+        maxReplicaCount: 1
       requestedMemory: 256Mi
       requestedCpu: 500m
     hg-checkout:
