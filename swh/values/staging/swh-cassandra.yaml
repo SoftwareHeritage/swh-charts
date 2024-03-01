@@ -897,16 +897,15 @@ objstorage:
     # Each key will be an objstorage instance to be deployed
     # The mandatory objstorageConfigurationRef key should target a dict
     # with the specific objstorage configuration
-    read-write:
+    storage1-read-write:
       enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: storage1
+      replicas: 2
       gunicorn:
-        threads: 5
-        workers: 2
+        workers: 4
+        threads: 2
         timeout: 60
-      autoScaling:
-        minReplicaCount: 2
-        maxReplicaCount: 10
-        cpuPercentageUsage: 100
       extraVolumes:
         staging-pathslicing-rw:
           mountPath: /srv/softwareheritage/objects
@@ -937,16 +936,16 @@ objstorage:
           default:
             paths:
               - path: /
-    read-only:
+    # storage1 read-only objstorage
+    storage1-read-only:
       enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: storage1
+      replicas: 2
       gunicorn:
-        threads: 5
-        workers: 2
+        workers: 4
+        threads: 2
         timeout: 60
-      autoScaling:
-        minReplicaCount: 2
-        maxReplicaCount: 10
-        cpuPercentageUsage: 100
       extraVolumes:
         staging-pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
