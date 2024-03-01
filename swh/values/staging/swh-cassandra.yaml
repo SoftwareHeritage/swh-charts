@@ -976,9 +976,6 @@ objstorage:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     # db1 read-only objstorage
     db1-read-only:
       enabled: true
@@ -1016,9 +1013,6 @@ objstorage:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     # db1 read-only objstorage
     multiplexer-read-only:
       enabled: true
@@ -1043,6 +1037,9 @@ objstorage:
           default:
             paths:
               - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
 
 webhooks:
   enabled: true
