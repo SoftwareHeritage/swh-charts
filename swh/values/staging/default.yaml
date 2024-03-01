@@ -29,7 +29,7 @@ searchJournalClientConfiguration:
 noopObjectStorage:
   cls: noop
 
-readWriteObjstorageConfiguration:
+pathslicingObjstorageConfiguration:
   cls: pathslicing
   root: "/srv/softwareheritage/objects"
   slicing: 0:1/1:5

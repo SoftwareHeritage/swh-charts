@@ -917,7 +917,7 @@ objstorage:
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
-      objstorageConfigurationRef: readWriteObjstorageConfiguration
+      objstorageConfigurationRef: pathslicingObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
       hosts:
@@ -958,7 +958,7 @@ objstorage:
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
-      objstorageConfigurationRef: readWriteObjstorageConfiguration
+      objstorageConfigurationRef: pathslicingObjstorageConfiguration
         # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-read-only-rpc-ingress
