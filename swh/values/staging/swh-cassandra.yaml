@@ -16,6 +16,17 @@ rpcRWStorageConfiguration:
 localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcRWStorageConfiguration
 
+pathslicingObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/softwareheritage/objects"
+  slicing: 0:1/1:5
+
+pathslicingNoCompressionObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/softwareheritage/objects"
+  slicing: 0:1/1:5
+  compression: none
+
 cassandraSeeds:
   - cassandra1.internal.staging.swh.network
   - cassandra2.internal.staging.swh.network
@@ -915,7 +926,7 @@ objstorage:
               type: Directory
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
-      objstorageConfigurationRef: pathslicingObjstorageConfiguration
+      objstorageConfigurationRef: pathslicingNoCompressionObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
       hosts:
@@ -1084,6 +1095,29 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    # read-write objstorage
+    multiplexer-read-write:
+      enabled: true
+      replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 60
+      objstorageConfigurationRef: multiplexerReadWriteObjstorageConfiguration
+      hosts:
+        - objstorage-multiplexer-read-write-rpc-ingress
+      ingress:
+        enabled: true
+        className: nginx
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 webhooks:
   enabled: true
