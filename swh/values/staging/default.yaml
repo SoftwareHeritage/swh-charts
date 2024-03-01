@@ -400,10 +400,6 @@ objstorage:
             operator: In
             values:
             - "true"
-          - key: kubernetes.io/hostname
-            operator: In
-            values:
-            - "storage1"
 
 svixConfiguration:
   svix:
