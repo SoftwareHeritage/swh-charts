@@ -376,9 +376,6 @@ externalServices:
     storage-postgresql-read-only:
       internalName: storage-postgresql-read-only-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-read-write:
-      internalName: objstorage-read-write-rpc-ingress
-      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-multiplexer-read-write-rpc-ingress:
       internalName: objstorage-multiplexer-read-write-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
