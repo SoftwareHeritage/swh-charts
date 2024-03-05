@@ -175,7 +175,7 @@ remoteSchedulerConfiguration:
 
 remoteReadWriteObjstorageConfiguration:
   cls: remote
-  url: http://objstorage-read-write-rpc-ingress
+  url: http://objstorage-multiplexer-read-write-rpc-ingress
 
 remoteReadOnlyObjstorageConfiguration:
   cls: remote
