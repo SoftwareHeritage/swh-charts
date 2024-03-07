@@ -1,5 +1,5 @@
 # Relay prometheus alerts to the admin cluster's ingress relay
-alertmanager:
+alertmanagerConfig:
   enabled: true
 
 svix:

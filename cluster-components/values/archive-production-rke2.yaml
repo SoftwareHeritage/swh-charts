@@ -5,6 +5,9 @@ alerting:
   enabled: true
   environment: production
 
+alertmanagerConfig:
+  enabled: true
+
 scrapeExternalMetrics:
   enabled: true
   deployments:

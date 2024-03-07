@@ -6,12 +6,15 @@ This installed/upgraded:
   http://alertmanager-irc-relay:{{ .Values.alertmanagerIrcRelay.http_port }}/{{ .Values.alertmanagerIrcRelay.room }}
 {{ end }}
 {{- if and .Values.alertmanagerIrcRelay.enabled .Values.alertmanagerIrcRelay.ingress.enabled }}
-- An alert manager irc relay ingress exposed at {{ .Values.alertmanager.ircrelay.host
-  }}. Any alerts sent from a cluster with access to this ingress will be propagated to
+- An alert manager irc relay ingress exposed at :
+{{- range $host := .Values.alertmanagerIrcRelay.ingress.hosts }}
+  - {{ $host }}
+{{ end }}
+  Any alerts sent from a cluster with access to this ingress will be propagated to
   irc #{{ .Values.alertmanagerIrcRelay.room }} room
 {{ end }}
-{{- if and .Values.alertmanager.enabled .Values.alertmanager.ircrelay.enabled }}
-- Allows to relay alertmanager's alerts to the relay exposed at {{ .Values.alertmanager.ircrelay.host }}
+{{- if .Values.alertmanagerConfig.enabled }}
+- Allows to relay alertmanager's alerts to the relay exposed at {{ .Values.alertmanagerConfig.ircRelayHost }}
 {{ end }}
 {{- if .Values.blackboxExporter.enabled }}
 - blackbox exporter. This installs probes to expand monitoring to http(s), DNS, ...

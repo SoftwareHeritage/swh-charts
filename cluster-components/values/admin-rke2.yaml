@@ -8,7 +8,7 @@ alertmanagerIrcRelay:
       clusterIssuer: letsencrypt-production
 
 alertmanagerConfig:
-  host: https://alertmanager-irc-relay.internal.admin.swh.network/swh-sysadm
+  enabled: true
 
 blackboxExporter:
   enabled: true

@@ -1,4 +1,3 @@
 __snapshot__
-/cluster-components/charts/
 /swh/Chart.lock
-/swh/charts/
+charts

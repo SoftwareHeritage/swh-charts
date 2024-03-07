@@ -1,10 +1,10 @@
-{{- if and .Values.alertmanagerConfig.enabled }}
+{{- if .Values.alertmanagerConfig.enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: irc-relay-config
-  namespace: cattle-monitoring-system
+  namespace: {{ .Values.alertmanagerConfig.namespace }}
 spec:
   route:
     groupBy: ['...']
@@ -25,13 +25,15 @@ spec:
     - name: ircrelay
       webhookConfigs:
         - sendResolved: true
-          url: {{ .Values.alertmanager.ircrelay.host }}
+          url: {{ .Values.alertmanagerConfig.ircRelayHost }}
+          {{ if .Values.alertmanagerConfig.authentication.enabled -}}
           httpConfig:
             basicAuth:
               username:
-                key: user
-                name: alertmanager-irc-relay-config
+                key: {{ .Values.alertmanagerConfig.authentication.userKeyRef }}
+                name: {{ .Values.alertmanagerConfig.authentication.secretRef }}
               password:
-                key: password
-                name: alertmanager-irc-relay-config
+                key: {{ .Values.alertmanagerConfig.authentication.passwordKeyRef }}
+                name: {{ .Values.alertmanagerConfig.authentication.secretRef }}
+          {{- end -}}
 {{ end }}

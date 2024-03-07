@@ -10,19 +10,6 @@ cert-manager:
   # Supported in the chart, not seen on the pods...
   priorityClassName: cluster-components-system
 
-# This configuration is swh specific (and independent from the prometheus configuration
-# already done during terraform provisioning). When activated, this allows to relay the
-# cluster's prometheus alerts to the cluster admin's alertmanager ingress irc relay
-alertmanager:
-  enabled: false
-  # Supported in the chart, not seen on the pods...
-  priorityClassName: cluster-components-system
-  ircrelay:
-    enabled: true
-    host: https://alertmanager-irc-relay.internal.admin.swh.network/swh-sysadm
-    # .htaccess or authentication credentials
-    # secret:
-
 prometheus:
   enabled: false
   # Not working somehow... Charts reference it but it's not seen in minikube
@@ -35,9 +22,19 @@ prometheus:
   kube-state-metrics:
     namespaceOverride: cattle-monitoring-system
 
+# This configuration is swh specific (and independent from the prometheus configuration
+# already done during terraform provisioning). When activated, this allows to relay the
+# cluster's prometheus alerts to the cluster admin's alertmanager ingress irc relay
 alertmanagerConfig:
-  enabled: true
-  host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
+  enabled: false
+  namespace: cattle-monitoring-system
+  ircRelayHost: https://alertmanager-irc-relay.internal.admin.swh.network/swh-sysadm
+  # .htaccess or authentication credentials
+  authentication:
+    enabled: true
+    secretRef: alertmanager-irc-relay-config
+    userKeyRef: user
+    passwordKeyRef: password
 
 alertmanagerIrcRelay:
   enabled: false
