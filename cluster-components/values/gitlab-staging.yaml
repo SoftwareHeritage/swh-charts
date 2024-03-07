@@ -1,0 +1,4 @@
+alertmanagerConfig:
+  enabled: true
+  namespace: monitoring
+  host: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
