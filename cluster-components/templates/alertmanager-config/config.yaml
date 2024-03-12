@@ -11,7 +11,7 @@ spec:
     groupWait: 31s
     groupInterval: 120s
     repeatInterval: 12h
-    receiver: ircrelay
+    receiver: "null"
     continue: true
     routes:
       - receiver: "null"
@@ -19,7 +19,8 @@ spec:
         matchers:
         - name: "alertname"
           regex: true
-          value: "InfoInhibitor"
+          value: "InfoInhibitor|Watchdog"
+      - receiver: ircrelay
   receivers:
     - name: "null"
     - name: ircrelay
