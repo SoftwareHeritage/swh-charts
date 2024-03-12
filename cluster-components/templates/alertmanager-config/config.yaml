@@ -6,9 +6,9 @@ metadata:
   name: irc-relay-config
   namespace: {{ .Values.alertmanagerConfig.namespace }}
 spec:
-  {{- if .Values.alertmanagerConfig.inhibitorRules }}
-  inhibitorRules:
-    {{- toYaml .Values.alertmanagerConfig.inhibitorRules | nindent 4 }}
+  {{- if .Values.alertmanagerConfig.inhibitRules }}
+  inhibitRules:
+    {{- toYaml .Values.alertmanagerConfig.inhibitRules | nindent 4 }}
   {{- end }}
   route:
     groupBy: ['...']

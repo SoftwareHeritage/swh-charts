@@ -2,7 +2,7 @@ alertmanagerConfig:
   enabled: true
   namespace: monitoring
   ircRelayHost: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
-  inhibitorRules:
+  inhibitRules:
     - targetMatch:
       - name: alertname
         value: KubeCPUOvercommit
