@@ -1550,3 +1550,64 @@ objstorageReplayer:
   #      maxReplicaCount: 5
   #      stopWhenNoActivity: true
   #      lagThreshold: 1000
+
+cassandraChecks:
+  enabled: false
+  # priorityClassName: swh-background-workload
+  # directoryOutput: /volume/cassandra-checks
+  # volumeSize: 8Gi
+  # storagePostgresqlConfigurationRef: storagePostgresqlConfiguration
+  # storageCassandraConfigurationRef: storageCassandraConfiguration
+  # journalClientConfigurationRef: journalClientConfiguration
+  # deployments:
+  #   content:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - content
+  #       batch_size: 1000
+  #   # Those can be large, so the batch is smaller
+  #   directory:
+  #     replicas: 2
+  #       object_type:
+  #         - directory
+  #     journalClientOverrides:
+  #       batch_size: 100
+  #   # We need the authenticated & privileged access to compare revision
+  #   revision:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - revision
+  #       batch_size: 100
+  #       privileged: true
+  #   # We need the authenticated & privileged access to compare revision
+  #   release:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - release
+  #       batch_size: 1000
+  #       privileged: true
+  #   origin:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - origin
+  #         - origin_visit
+  #         - origin_visit_status
+  #       batch_size: 1000
+  #   metadata:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - extid
+  #         - raw_extrinsic_metadata
+  #       batch_size: 1000
+  #   snapshot:
+  #     replicas: 2
+  #     journalClientOverrides:
+  #       object_type:
+  #         - snapshot
+  #       batch_size: 1000
+

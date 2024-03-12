@@ -1,0 +1,77 @@
+{{ define "cassandra_checks.postgresql.config" }}
+{{- $configuration := get .Values .configurationRef -}}
+{{- $host := required
+    (print "_helper-configmap.yaml:postgresql-config: The <host> property is mandatory in " .configurationRef)
+    (get $configuration "host") -}}
+{{- $port := required
+    (print "_helper-configmap.yaml:postgresql-config: The <port> property is mandatory in " .configurationRef)
+    (get $configuration "port") -}}
+{{- $db := required
+    (print "_helper-configmap.yaml:postgresql-config: The <db> property is mandatory in " .configurationRef)
+    (get $configuration "db") -}}
+{{- $user := required
+    (print "_helper-configmap.yaml:postgresql-config: The <user> property is mandatory in " .configurationRef)
+    (get $configuration "user") -}}
+{{- $password := required
+    (print "_helper-configmap.yaml:postgresql-config: The <password> property is mandatory in " .configurationRef)
+    (get $configuration "pass") -}}
+postgresql:
+  db: host={{ $host }} port={{ $port }} dbname={{ $db }} user={{ $user }} password={{ $password }}
+  objstorage:
+    cls: noop
+{{ end }}
+
+{{/*
+Generate the configuration for a cassandra storage
+*/}}
+{{- define "cassandra_check.cassandra.config" -}}
+{{- $storageConfiguration := get .Values .configurationRef -}}
+{{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
+{{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
+{{- $authProvider := get  $storageConfiguration "authProvider" -}}
+{{- $keyspace := required (print "The keyspace property is mandatory in " .configurationRef)
+                    (get $storageConfiguration "keyspace") -}}
+{{- $specificOptions := get $storageConfiguration "specificOptions" -}}
+cassandra:
+  hosts:
+  {{ toYaml $cassandraSeeds | nindent 2 }}
+  keyspace: {{ $keyspace }}
+  consistency_level: {{ get $storageConfiguration "consistencyLevel" }}
+  {{ if $authProvider }}
+  auth_provider:
+    {{ toYaml $authProvider | nindent 4 }}
+  {{ end -}}
+  {{- if $specificOptions -}}
+  {{ toYaml (get $storageConfiguration "specificOptions") | nindent 2 }}
+  {{- end -}}
+{{- end -}}
+
+
+{{ define "cassandra.checks.configmap" }}
+{{- $journalClientConfigurationRef := or .configuration.journalClientConfigurationRef .Values.cassandraChecks.journalClientConfigurationRef -}}
+{{- $journalClientOverrides := deepCopy (get .configuration "journalClientOverrides" | default (dict)) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .serviceType }}-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    top_level_path: {{ $.Values.cassandraChecks.directoryOutput }}
+
+    {{- include "cassandra_checks.postgresql.config"
+      (dict "configurationRef" $.Values.cassandraChecks.storagePostgresqlConfigurationRef
+            "Values" $.Values) | nindent 4 -}}
+
+    {{- include "swh.journalClientConfiguration"
+      (dict "configurationRef" $journalClientConfigurationRef
+            "serviceType"      "journal_client"
+            "overrides"        $journalClientOverrides
+            "Values"           .Values) | nindent 4 }}
+
+    {{- include "cassandra_check.cassandra.config"
+      (dict "configurationRef" $.Values.cassandraChecks.storageCassandraConfigurationRef
+            "Values" $.Values) | nindent 4 }}
+
+{{ end }}

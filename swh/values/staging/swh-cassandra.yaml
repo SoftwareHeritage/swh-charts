@@ -64,6 +64,25 @@ cassandraROStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
+cassandraChecksROStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-ro
+    password: ${CASSANDRA_PASSWORD}
+  specificOptions:
+    directory_entries_insert_algo: batch
+    objstorage:
+      cls: noop
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-ro-password
+
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: noopObjectStorage
@@ -1625,4 +1644,67 @@ scheduler:
       logLevel: INFO
       requestedMemory: 100Mi
       requestedCpu: 10m
+
+journalClientCassandraChecksConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  message.max.bytes: 524288000
+  prefix: swh.journal.objects
+  group_id: swh-gsa-test
+  # To override per instance
+  object_types: []
+  secrets:
+    BROKER_USER:
+      secretKeyRef: cassandra-checks-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: cassandra-checks-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
+cassandraChecks:
+  enabled: true
+  priorityClassName: swh-background-workload
+  directoryOutput: /volume/staging-cassandra-checks
+  volumeSize: "20Gi"
+  storagePostgresqlConfigurationRef: primaryPostgresqlROStorageConfiguration
+  storageCassandraConfigurationRef: cassandraChecksROStorage
+  journalClientConfigurationRef: journalClientCassandraChecksConfiguration
+  deployments:
+    # origin:
+    #   replicas: 4
+    #   journalClientOverrides:
+    #     object_types:
+    #       - origin
+    #       - origin_visit
+    #       - origin_visit_status
+    #     batch_size: 1000
+    content:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+        - content
+        batch_size: 1000
+    # directory:
+    #   replicas: 2
+    #   journalClientOverrides:
+    #     object_types:
+    #       - directory
+    #     batch_size: 50
+    # revision:
+    #   replicas: 2
+    #   journalClientOverrides:
+    #     object_types:
+    #       - revision
+    #     batch_size: 50
+    #     privileged: true
+    # release:
+    #   replicas: 2
+    #   journalClientOverrides:
+    #     object_types:
+    #       - release
+    #     batch_size: 50
+    #     privileged: true
 

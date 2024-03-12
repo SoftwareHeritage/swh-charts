@@ -1,0 +1,128 @@
+{{- if .Values.cassandraChecks.enabled -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cassandra-checks-pvc
+  namespace: swh-cassandra
+spec:
+  storageClassName: cephfs
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ $.Values.cassandraChecks.volumeSize | default "20Gi" }}
+
+{{ range $service_type, $deployment_config := .Values.cassandraChecks.deployments -}}
+{{- $service_name := ( print "cassandra-checks-" $service_type ) -}}
+{{- $configurationChecksum := include "cassandra.checks.configmap"
+  (dict "serviceType" $service_name
+        "configuration" $deployment_config
+        "Values" $.Values) | sha256sum -}}
+{{- $affinity := get $deployment_config "affinity" | default $.Values.cassandraChecks.affinity -}}
+{{- $priority_class_name := get $deployment_config "priorityClassName" | default $.Values.cassandraChecks.priorityClassName -}}
+{{- $requested_cpu := get $deployment_config "requestedCpu" -}}
+{{- $requested_memory := get $deployment_config "requestedMemory" -}}
+{{- $limited_cpu := get $deployment_config "limitedCpu" -}}
+{{- $limited_memory := get $deployment_config "limitedMemory" -}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $service_name }}
+  name: {{ $service_name }}
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: {{ $deployment_config.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ $service_name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $service_name }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      {{ if $affinity }}
+      affinity:
+        {{ toYaml $affinity | nindent 8 }}
+      {{ end }}
+      priorityClassName: {{ $priority_class_name }}
+      containers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.storagePostgresqlConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.storageCassandraConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
+            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.journalClientConfigurationRef
+                                                       "Values" $.Values) | nindent 10 }}
+          command:
+            - /entrypoints/prepare-configuration.sh
+          volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+        # Main container
+        - name: {{ $service_name }}
+          resources:
+            requests:
+              memory: {{ $requested_memory | default "512Mi" }}
+              cpu: {{ $requested_cpu | default "500m" }}
+            {{ if or $limited_cpu $limited_memory }}
+            limits:
+              {{ if $limited_memory }}
+              memory: {{ $limited_memory }}
+              {{ end }}
+              {{ if $limited_cpu }}
+              cpu: {{ $limited_cpu }}
+              {{ end }}
+            {{ end }}
+          command:
+            - /opt/swh/entrypoint.sh
+          image: {{ $.Values.cassandra_checks_image }}:{{ $.Values.cassandra_checks_image_version }}
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: cassandra-checks-volume
+            mountPath: /volume
+          env:
+          - name: SWH_CONFIG_FILENAME
+            value: /etc/swh/config.yml
+      volumes:
+        - name: configuration
+          emptyDir: {}
+        - name: configuration-template
+          configMap:
+            name: {{ $service_name }}-template
+            defaultMode: 0777
+            items:
+            - key: "config.yml.template"
+              path: "config.yml.template"
+        - name: config-utils
+          configMap:
+            name: config-utils
+            defaultMode: 0555
+        - name: cassandra-checks-volume
+          persistentVolumeClaim:
+            claimName: cassandra-checks-pvc
+{{- end -}}
+{{ end }}

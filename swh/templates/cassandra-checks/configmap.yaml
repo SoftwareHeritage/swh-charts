@@ -1,0 +1,8 @@
+{{ if .Values.cassandraChecks.enabled }}
+{{- range $check_type, $deployment_config := .Values.cassandraChecks.deployments -}}
+{{ include "cassandra.checks.configmap"
+  (dict "serviceType" ( print "cassandra-checks-" $check_type )
+        "configuration" $deployment_config
+        "Values" $.Values) }}
+{{- end -}}
+{{ end }}

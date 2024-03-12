@@ -359,3 +359,14 @@ dnsConfiguration:
 #    - internal.softwareheritage.org
 #  nameservers: [ 10.43.0.10 ]
 #  policy: None
+
+cassandraChecks:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/journal_client
+            operator: In
+            values:
+            - "true"

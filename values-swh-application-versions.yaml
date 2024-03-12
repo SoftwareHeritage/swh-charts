@@ -1,3 +1,5 @@
+cassandra_checks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/cassandra_checks
+cassandra_checks_image_version: '20240311.2'
 software_stories_image: container-registry.softwareheritage.org/swh/infra/swh-apps/software_stories
 software_stories_image_version: '20230912.1'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
