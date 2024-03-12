@@ -124,5 +124,5 @@ spec:
         - name: cassandra-checks-volume
           persistentVolumeClaim:
             claimName: cassandra-checks-pvc
-{{- end -}}
+{{ end -}}
 {{ end }}
