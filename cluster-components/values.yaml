@@ -35,6 +35,11 @@ alertmanagerConfig:
     secretRef: alertmanager-irc-relay-config
     userKeyRef: user
     passwordKeyRef: password
+  # inhibitorRules:
+  #   - targetMatch:
+  #     - name: mylabel
+  #       value: myvalue
+  #     ...
 
 alertmanagerIrcRelay:
   enabled: false
