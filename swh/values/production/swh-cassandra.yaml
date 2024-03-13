@@ -44,6 +44,25 @@ cassandraROStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
+cassandraChecksROStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: false
+  consistencyLevel: LOCAL_QUORUM
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-ro
+    password: ${CASSANDRA_PASSWORD}
+  specificOptions:
+    directory_entries_insert_algo: batch
+    objstorage:
+      cls: noop
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-ro-password
+
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: noopObjectStorage
@@ -481,3 +500,96 @@ scrubber:
         object: snapshot
         requestedCpu: 650m
         requestedMemory: 500Mi
+
+journalClientCassandraChecksConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  message.max.bytes: 524288000
+  prefix: swh.journal.objects
+  group_id: swh-archive-prod-checks
+  # To override per instance
+  object_types: []
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
+cassandraChecks:
+  enabled: true
+  directoryOutput: /volume/production-cassandra-checks
+  volume:
+    name: cassandra-checks-volume
+    mountPath: /volume
+    # readOnly: true
+    volumeDefinition:
+      hostPath:
+        path: /volume
+        type: Directory
+  priorityClassName: swh-background-workload
+  nodeSelector:
+    kubernetes.io/hostname: rancher-node-metal01
+  storagePostgresqlConfigurationRef: postgresqlROStorageConfiguration
+  storageCassandraConfigurationRef: cassandraChecksROStorage
+  journalClientConfigurationRef: journalClientCassandraChecksConfiguration
+  deployments:
+    origin:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+          - origin
+          - origin_visit
+          - origin_visit_status
+        batch_size: 1000
+    content:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+        - content
+        - skipped_content
+        batch_size: 1000
+    directory:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+          - directory
+        batch_size: 50
+    revision:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+          - revision
+        batch_size: 1000
+        privileged: true
+    release:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+          - release
+        batch_size: 1000
+        privileged: true
+    snapshot:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+          - snapshot
+        batch_size: 50
+    extid:
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+        - extid
+        batch_size: 100
+    metadata:
+      enabled: false
+      replicas: 2
+      journalClientOverrides:
+        object_types:
+        - raw_extrinsic_metadata
+        batch_size: 1000
