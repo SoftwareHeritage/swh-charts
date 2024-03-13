@@ -1654,15 +1654,15 @@ journalClientCassandraChecksConfiguration:
   sasl.password: ${BROKER_USER_PASSWORD}
   message.max.bytes: 524288000
   prefix: swh.journal.objects
-  group_id: swh-gsa-test
+  group_id: swh-archive-stg-checks
   # To override per instance
   object_types: []
   secrets:
     BROKER_USER:
-      secretKeyRef: cassandra-checks-broker-secret
+      secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER
     BROKER_USER_PASSWORD:
-      secretKeyRef: cassandra-checks-broker-secret
+      secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
 
 cassandraChecks:
