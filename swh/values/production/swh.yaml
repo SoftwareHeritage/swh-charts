@@ -69,18 +69,6 @@ azureCacheConfiguration:
       secretKeyRef: swh-vault-azure-secret
       secretKeyName: azure-swh-vault-key
 
-postgresqlStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-rw.internal.softwareheritage.org
-  port: 5432
-  user: swhstorage
-  pass: ${POSTGRESQL_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
-
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
@@ -917,7 +905,7 @@ toolbox:
   enabled: true
   configs:
     storage:
-      storageDbConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlRWStorageConfiguration
     storage-secondary:
       moduleName: storage
       storageDbConfigurationRef: secondaryPostgresqlRWStorageConfiguration
