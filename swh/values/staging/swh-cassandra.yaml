@@ -1666,7 +1666,7 @@ journalClientCassandraChecksConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 cassandraChecks:
-  enabled: false
+  enabled: true
   directoryOutput: /volume/staging-cassandra-checks
   volume:
     name: cassandra-checks-volume
