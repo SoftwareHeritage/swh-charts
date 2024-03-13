@@ -1682,17 +1682,17 @@ cassandraChecks:
     #       - origin_visit_status
     #     batch_size: 1000
     content:
-      replicas: 2
+      replicas: 1
       journalClientOverrides:
         object_types:
         - content
         batch_size: 1000
-    directory:
-      replicas: 2
-      journalClientOverrides:
-        object_types:
-          - directory
-        batch_size: 50
+    # directory:
+    #   replicas: 2
+    #   journalClientOverrides:
+    #     object_types:
+    #       - directory
+    #     batch_size: 50
     # revision:
     #   replicas: 2
     #   journalClientOverrides:
