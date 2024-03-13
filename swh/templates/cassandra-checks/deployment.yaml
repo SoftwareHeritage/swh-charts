@@ -14,7 +14,7 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: {{ $.Values.cassandraChecks.volume.size | default "20Gi" }}
+      storage: {{ $.Values.cassandraChecks.volumeClaim.size | default "20Gi" }}
 {{ end }}
 
 {{ range $service_type, $deployment_config := .Values.cassandraChecks.deployments -}}

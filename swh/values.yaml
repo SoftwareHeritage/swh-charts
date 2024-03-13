@@ -1558,8 +1558,7 @@ cassandraChecks:
   # volume:
   #   name: cassandra-checks-volume
   #   mountPath: /volume
-  #   size: 20Gi
-  #   # readOnly: true
+  #   readOnly: false
   #   volumeDefinition:  # either disk setup
   #     hostPath:
   #       path: /volume
@@ -1570,6 +1569,7 @@ cassandraChecks:
   # volumeClaim:  # Specific pvc to declare
   #   storageClassName: cephfs
   #   name: cassandra-checks-pvc
+  #   size: 20Gi
   # volumeSize: 8Gi
   # storagePostgresqlConfigurationRef: storagePostgresqlConfiguration
   # storageCassandraConfigurationRef: storageCassandraConfiguration

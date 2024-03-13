@@ -1671,7 +1671,6 @@ cassandraChecks:
   volume:
     name: cassandra-checks-volume
     mountPath: /volume
-    size: 20Gi
     # readOnly: true
     volumeDefinition:
       hostPath:
@@ -1683,6 +1682,7 @@ cassandraChecks:
   # volumeClaim:
   #   storageClassName: cephfs
   #   name: cassandra-checks-pvc
+  #   size: 20Gi
 
   priorityClassName: swh-background-workload
   nodeSelector:
