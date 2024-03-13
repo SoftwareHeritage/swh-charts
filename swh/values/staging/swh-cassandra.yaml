@@ -1740,7 +1740,7 @@ cassandraChecks:
         batch_size: 100
     metadata:
       enabled: false
-      logLevel: DEBUG
+      # logLevel: DEBUG
       replicas: 1
       journalClientOverrides:
         object_types:
