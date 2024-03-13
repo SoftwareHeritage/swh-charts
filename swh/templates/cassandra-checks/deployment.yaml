@@ -24,6 +24,7 @@ spec:
         "configuration" $deployment_config
         "Values" $.Values) | sha256sum -}}
 {{- $affinity := get $deployment_config "affinity" | default $.Values.cassandraChecks.affinity -}}
+{{- $nodeSelector := $.Values.cassandraChecks.nodeSelector | default dict -}}
 {{- $priority_class_name := get $deployment_config "priorityClassName" | default $.Values.cassandraChecks.priorityClassName -}}
 {{- $requested_cpu := get $deployment_config "requestedCpu" -}}
 {{- $requested_memory := get $deployment_config "requestedMemory" -}}
@@ -57,6 +58,10 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
       {{ if $affinity }}
       affinity:
         {{ toYaml $affinity | nindent 8 }}

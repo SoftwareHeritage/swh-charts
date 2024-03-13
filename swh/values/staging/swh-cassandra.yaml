@@ -1684,6 +1684,8 @@ cassandraChecks:
   #   name: cassandra-checks-pvc
 
   priorityClassName: swh-background-workload
+  nodeSelector:
+    kubernetes.io/hostname: rancher-node-staging-rke2-metal01
   storagePostgresqlConfigurationRef: primaryPostgresqlROStorageConfiguration
   storageCassandraConfigurationRef: cassandraChecksROStorage
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
