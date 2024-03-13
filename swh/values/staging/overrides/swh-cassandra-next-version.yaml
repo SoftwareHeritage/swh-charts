@@ -360,5 +360,5 @@ scheduler:
 indexerStorage:
   enabled: false
 
-scheduler:
+cassandraChecks:
   enabled: false
