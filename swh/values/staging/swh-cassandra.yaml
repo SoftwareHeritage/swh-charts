@@ -1665,10 +1665,25 @@ journalClientCassandraChecksConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 cassandraChecks:
-  enabled: false
-  priorityClassName: swh-background-workload
+  enabled: true
   directoryOutput: /volume/staging-cassandra-checks
-  volumeSize: "20Gi"
+  volume:
+    name: cassandra-checks-volume
+    mountPath: /volume
+    size: 20Gi
+    # readOnly: true
+    volumeDefinition:
+      hostPath:
+        path: /volume
+        type: Directory
+  #   volumeDefinition:
+  #     persistentVolumeClaim:
+  #       claimName: cassandra-checks-pvc
+  # volumeClaim:
+  #   storageClassName: cephfs
+  #   name: cassandra-checks-pvc
+
+  priorityClassName: swh-background-workload
   storagePostgresqlConfigurationRef: primaryPostgresqlROStorageConfiguration
   storageCassandraConfigurationRef: cassandraChecksROStorage
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration

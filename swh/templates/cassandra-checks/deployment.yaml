@@ -1,18 +1,21 @@
 {{- if .Values.cassandraChecks.enabled -}}
+
+{{- if and .Values.cassandraChecks.volumeClaim -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: cassandra-checks-pvc
+  name: {{ .Values.cassandraChecks.volumeClaim.name }}
   namespace: swh-cassandra
 spec:
-  storageClassName: cephfs
+  storageClassName: {{ .Values.cassandraChecks.volumeClaim.storageClassName }}
   accessModes:
     - ReadWriteMany
   volumeMode: Filesystem
   resources:
     requests:
-      storage: {{ $.Values.cassandraChecks.volumeSize | default "20Gi" }}
+      storage: {{ $.Values.cassandraChecks.volume.size | default "20Gi" }}
+{{ end }}
 
 {{ range $service_type, $deployment_config := .Values.cassandraChecks.deployments -}}
 {{- $service_name := ( print "cassandra-checks-" $service_type ) -}}
@@ -99,14 +102,17 @@ spec:
             - /opt/swh/entrypoint.sh
           image: {{ $.Values.cassandra_checks_image }}:{{ $.Values.cassandra_checks_image_version }}
           imagePullPolicy: IfNotPresent
-          volumeMounts:
-          - name: configuration
-            mountPath: /etc/swh
-          - name: cassandra-checks-volume
-            mountPath: /volume
           env:
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+            {{ if $.Values.cassandraChecks.volume }}
+          - name: {{ $.Values.cassandraChecks.volume.name }}
+            mountPath: {{ $.Values.cassandraChecks.volume.mountPath }}
+            readOnly: {{ $.Values.cassandraChecks.volume.readOnly | default "false" }}
+            {{ end }}
       volumes:
         - name: configuration
           emptyDir: {}
@@ -121,8 +127,10 @@ spec:
           configMap:
             name: config-utils
             defaultMode: 0555
-        - name: cassandra-checks-volume
-          persistentVolumeClaim:
-            claimName: cassandra-checks-pvc
-{{ end -}}
+          {{ if and $.Values.cassandraChecks.volume $.Values.cassandraChecks.volume.volumeDefinition }}
+        - name: {{ $.Values.cassandraChecks.volume.name }}
+          {{- toYaml $.Values.cassandraChecks.volume.volumeDefinition | nindent 10 }}
+          {{ end }}
+
+{{ end }}
 {{ end }}

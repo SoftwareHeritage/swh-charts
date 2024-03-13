@@ -1555,6 +1555,21 @@ cassandraChecks:
   enabled: false
   # priorityClassName: swh-background-workload
   # directoryOutput: /volume/cassandra-checks
+  # volume:
+  #   name: cassandra-checks-volume
+  #   mountPath: /volume
+  #   size: 20Gi
+  #   # readOnly: true
+  #   volumeDefinition:  # either disk setup
+  #     hostPath:
+  #       path: /volume
+  #       type: Directory
+  #   volumeDefinition:  # or pvc claim setup (report to <volumeClaim> key)
+  #     persistentVolumeClaim:
+  #       claimName: cassandra-checks-pvc
+  # volumeClaim:  # Specific pvc to declare
+  #   storageClassName: cephfs
+  #   name: cassandra-checks-pvc
   # volumeSize: 8Gi
   # storagePostgresqlConfigurationRef: storagePostgresqlConfiguration
   # storageCassandraConfigurationRef: storageCassandraConfiguration
