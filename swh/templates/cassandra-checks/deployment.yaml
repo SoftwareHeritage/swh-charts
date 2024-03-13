@@ -108,6 +108,8 @@ spec:
           image: {{ $.Values.cassandra_checks_image }}:{{ $.Values.cassandra_checks_image_version }}
           imagePullPolicy: IfNotPresent
           env:
+          - name: LOG_LEVEL
+            value: {{ $.Values.cassandraChecks.logLevel | default "INFO" }}
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml
           volumeMounts:

@@ -1553,6 +1553,7 @@ objstorageReplayer:
 
 cassandraChecks:
   enabled: false
+  logLevel: INFO
   # priorityClassName: swh-background-workload
   # directoryOutput: /volume/cassandra-checks
   # volume:
