@@ -1646,6 +1646,7 @@ scheduler:
       requestedCpu: 10m
 
 journalClientCassandraChecksConfiguration:
+  cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
