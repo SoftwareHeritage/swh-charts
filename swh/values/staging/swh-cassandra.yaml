@@ -1705,6 +1705,12 @@ cassandraChecks:
         object_types:
         - content
         batch_size: 1000
+    extid:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+        - extid
+        batch_size: 1000
     # directory:
     #   replicas: 2
     #   journalClientOverrides:
