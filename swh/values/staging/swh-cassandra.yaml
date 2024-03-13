@@ -1739,6 +1739,7 @@ cassandraChecks:
         - extid
         batch_size: 100
     metadata:
+      enabled: false
       replicas: 1
       journalClientOverrides:
         object_types:
