@@ -1665,7 +1665,7 @@ journalClientCassandraChecksConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 cassandraChecks:
-  enabled: true
+  enabled: false
   priorityClassName: swh-background-workload
   directoryOutput: /volume/staging-cassandra-checks
   volumeSize: "20Gi"
