@@ -1691,44 +1691,57 @@ cassandraChecks:
   storageCassandraConfigurationRef: cassandraChecksROStorage
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
   deployments:
-    # origin:
-    #   replicas: 4
-    #   journalClientOverrides:
-    #     object_types:
-    #       - origin
-    #       - origin_visit
-    #       - origin_visit_status
-    #     batch_size: 1000
+    origin:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+          - origin
+          - origin_visit
+          - origin_visit_status
+        batch_size: 1000
     content:
       replicas: 1
       journalClientOverrides:
         object_types:
         - content
+        - skipped_content
         batch_size: 1000
+    directory:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+          - directory
+        batch_size: 50
+    revision:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+          - revision
+        batch_size: 1000
+        privileged: true
+    release:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+          - release
+        batch_size: 1000
+        privileged: true
+    snapshot:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+          - snapshot
+        batch_size: 50
     extid:
       replicas: 1
       journalClientOverrides:
         object_types:
         - extid
+        batch_size: 100
+    metadata:
+      replicas: 1
+      journalClientOverrides:
+        object_types:
+        - raw_extrinsic_metadata
         batch_size: 1000
-    # directory:
-    #   replicas: 2
-    #   journalClientOverrides:
-    #     object_types:
-    #       - directory
-    #     batch_size: 50
-    # revision:
-    #   replicas: 2
-    #   journalClientOverrides:
-    #     object_types:
-    #       - revision
-    #     batch_size: 50
-    #     privileged: true
-    # release:
-    #   replicas: 2
-    #   journalClientOverrides:
-    #     object_types:
-    #       - release
-    #     batch_size: 50
-    #     privileged: true
 
