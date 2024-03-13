@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: cassandra-checks-pvc-debug
+  name: cassandra-checks-pvc
   namespace: swh-cassandra
 spec:
   storageClassName: cephfs
@@ -123,6 +123,6 @@ spec:
             defaultMode: 0555
         - name: cassandra-checks-volume
           persistentVolumeClaim:
-            claimName: cassandra-checks-pvc-debug
+            claimName: cassandra-checks-pvc
 {{ end -}}
 {{ end }}
