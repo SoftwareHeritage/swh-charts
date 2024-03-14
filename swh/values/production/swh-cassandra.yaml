@@ -549,7 +549,7 @@ cassandraChecks:
           - origin_visit_status
         batch_size: 1000
     content:
-      replicas: 2
+      replicas: 6
       journalClientOverrides:
         object_types:
         - content
