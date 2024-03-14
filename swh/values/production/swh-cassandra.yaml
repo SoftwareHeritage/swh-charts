@@ -540,7 +540,8 @@ cassandraChecks:
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
   deployments:
     origin:
-      replicas: 2
+      replicas: 4
+      requestedMemory: 1.5Gi
       journalClientOverrides:
         object_types:
           - origin
