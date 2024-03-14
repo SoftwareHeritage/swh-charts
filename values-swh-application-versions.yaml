@@ -29,9 +29,9 @@ swh_loader_metadata_image_version: '20240304.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
 swh_loader_package_image_version: '20240304.1'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
-swh_loader_savecodenow_image_version: '20240304.1'
+swh_loader_savecodenow_image_version: '20240314.1'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
-swh_loader_svn_image_version: '20240304.1'
+swh_loader_svn_image_version: '20240314.1'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
 swh_objstorage_image_version: '20240229.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
@@ -47,7 +47,7 @@ swh_storage_image_version: '20240229.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20240229.1'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20240304.1'
+swh_toolbox_image_version: '20240314.1'
 swh_utils_image: container-registry.softwareheritage.org/swh/infra/swh-apps/utils
 swh_utils_image_version: '20231211.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
