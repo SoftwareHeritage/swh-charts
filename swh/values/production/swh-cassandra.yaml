@@ -585,7 +585,7 @@ cassandraChecks:
       journalClientOverrides:
         object_types:
           - snapshot
-        batch_size: 50
+        batch_size: 200
     extid:
       replicas: 4
       journalClientOverrides:
