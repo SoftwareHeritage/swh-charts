@@ -1742,7 +1742,7 @@ deposit:
     cache_uri: memcached:11211
 
 objstorageReplayer:
-  enabled: true
+  enabled: false
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   sourceObjstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
