@@ -549,47 +549,47 @@ cassandraChecks:
           - origin_visit_status
         batch_size: 1000
     content:
-      replicas: 6
+      replicas: 8
       journalClientOverrides:
         object_types:
         - content
         - skipped_content
         batch_size: 1000
     directory:
-      replicas: 6
+      replicas: 12
       journalClientOverrides:
         object_types:
           - directory
         batch_size: 50
     revision:
-      replicas: 4
+      replicas: 6
       journalClientOverrides:
         object_types:
           - revision
         batch_size: 1000
         privileged: true
     release:
-      replicas: 2
+      replicas: 4
       journalClientOverrides:
         object_types:
           - release
         batch_size: 1000
         privileged: true
     snapshot:
-      replicas: 2
+      replicas: 4
       journalClientOverrides:
         object_types:
           - snapshot
         batch_size: 50
     extid:
-      replicas: 2
+      replicas: 4
       journalClientOverrides:
         object_types:
         - extid
         batch_size: 100
     metadata:
       enabled: false
-      replicas: 2
+      replicas: 6
       journalClientOverrides:
         object_types:
         - raw_extrinsic_metadata
