@@ -102,13 +102,17 @@ swh-template-production-cassandra:
       -n swh --create-namespace --debug
 
 cc-minikube:
+	kubectl --context minikube create namespace cluster-components ; \
+	kubectl --context minikube --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	helm --kube-context minikube upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
-      -n default --create-namespace --debug
+      --namespace cluster-components --create-namespace --debug
 
 cc-uninstall:
-	helm --kube-context minikube uninstall $(CC_CHART) -n default
+	helm --kube-context minikube uninstall $(CC_CHART) --namespace cluster-components; \
+    kubectl --context minikube --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context minikube delete namespace cluster-components
 
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
