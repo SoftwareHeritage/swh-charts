@@ -2,6 +2,8 @@
 {{ with .Values.svix -}}
 {{ $redisDsn := .redisDsn | default "redis" -}}
 {{ $postgresDsn := .postgresDsn | default "postgres" -}}
+{{ $queueType := ternary "rabbitmq" "redis" .rabbitmq.enabled -}}
+{{ $rabbitmqDsn := .rabbitmqDsn | default "rabbitmq" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -73,10 +75,28 @@ spec:
                   key: APP_DB_USER
             - name: WAIT_FOR
               value: "true"  # We want to wait for the default services
+            - name: SVIX_LOG_LEVEL
+              value: trace
             - name: SVIX_REDIS_DSN
               value: "redis://{{ $redisDsn }}:6379"
             - name: SVIX_DB_DSN
               value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@{{ $postgresDsn }}"
+            - name: SVIX_QUEUE_TYPE
+              value: {{ $queueType }}
+            {{- if .rabbitmq.enabled }}
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: AMQP_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: AMQP_PASS
+            - name: SVIX_RABBIT_DSN
+              value: "amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@{{ $rabbitmqDsn }}"
+            {{- end }}
             {{- if .tls_disable }}
             - name: SVIX_DANGEROUS_DISABLE_TLS_VERIFICATION
               value: "true"

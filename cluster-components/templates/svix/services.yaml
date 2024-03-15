@@ -35,6 +35,27 @@ spec:
       name: redis
 {{- end }}
 {{- end }}
+{{ if .Values.svix.rabbitmq.enabled -}}
+{{- with .Values.svix }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  namespace: {{ .namespace }}
+spec:
+  type: ClusterIP
+  selector:
+    app: svix-rabbitmq
+  ports:
+    - port: 5672
+      targetPort: 5672
+      name: rabbitmq
+    - port: 15672
+      targetPort: 15672
+      name: rabbitmq-management
+{{- end }}
+{{- end }}
 {{- with .Values.svix }}
 ---
 apiVersion: v1

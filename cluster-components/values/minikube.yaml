@@ -46,11 +46,18 @@ svix:
   requestedCpu: 100m
   namespace: cluster-components
   postgres:
-    enabled: false
+    enabled: true
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
   redis:
+    enabled: true
+    requestedMemory: 100Mi
+    requestedCpu: 100m
+    persistentVolume: false
+  # When rabbitmq is activated too, this uses this messaging system instead of redis
+  # we still need redis as a cache backend though
+  rabbitmq:
     enabled: false
     requestedMemory: 100Mi
     requestedCpu: 100m

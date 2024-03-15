@@ -1,0 +1,73 @@
+{{ if and .Values.svix.enabled .Values.svix.rabbitmq.enabled -}}
+{{ with .Values.svix -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ .namespace }}
+  name: svix-rabbitmq
+  labels:
+    app: svix-rabbitmq
+spec:
+  revisionHistoryLimit: 2
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: svix-rabbitmq
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: svix-rabbitmq
+    spec:
+      {{- if .affinity }}
+      affinity:
+        {{- toYaml .affinity | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management-alpine
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5672
+              name: rabbitmq
+          resources:
+            requests:
+              memory: {{ .rabbitmq.requestedMemory | default "512Mi" }}
+              cpu: {{ .rabbitmq.requestedCpu | default "500m" }}
+          volumeMounts:
+            - name: rabbitmq-data
+              mountPath: /data
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: AMQP_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: svix-server-secrets
+                  key: AMQP_PASS
+      volumes:
+      - name: rabbitmq-data
+      {{- if .rabbitmq.persistentVolume }}
+        volumeClaimTemplate:
+          metadata:
+            labels:
+              type: persistent-volume
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+            storageClassName: local-persistent
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end }}
+{{- end }}
