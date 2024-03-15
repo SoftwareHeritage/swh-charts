@@ -541,11 +541,20 @@ cassandraChecks:
   deployments:
     origin:
       replicas: 4
-      requestedMemory: 1.5Gi
       journalClientOverrides:
         object_types:
           - origin
+        batch_size: 1000
+    origin-visit:
+      replicas: 4
+      journalClientOverrides:
+        object_types:
           - origin_visit
+        batch_size: 1000
+    origin-visit-status:
+      replicas: 4
+      journalClientOverrides:
+        object_types:
           - origin_visit_status
         batch_size: 1000
     skipped-content:
