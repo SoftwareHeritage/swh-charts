@@ -46,10 +46,12 @@ svix:
   requestedCpu: 100m
   namespace: cluster-components
   postgres:
+    enabled: false
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
   redis:
+    enabled: false
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
