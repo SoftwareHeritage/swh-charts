@@ -564,7 +564,7 @@ cassandraChecks:
         - skipped_content
         batch_size: 1000
     content:
-      replicas: 8
+      replicas: 16
       journalClientOverrides:
         object_types:
         - content
