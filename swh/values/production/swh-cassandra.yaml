@@ -570,7 +570,7 @@ cassandraChecks:
         - content
         batch_size: 1000
     directory:
-      replicas: 12
+      replicas: 24
       journalClientOverrides:
         object_types:
           - directory
