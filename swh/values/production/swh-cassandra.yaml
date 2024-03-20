@@ -540,7 +540,8 @@ cassandraChecks:
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
   deployments:
     origin:
-      replicas: 4
+      enabled: False
+      replicas: 1
       journalClientOverrides:
         object_types:
           - origin
@@ -584,6 +585,7 @@ cassandraChecks:
         batch_size: 1000
         privileged: true
     release:
+      enabled: False
       replicas: 1
       journalClientOverrides:
         object_types:
