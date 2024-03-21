@@ -57,3 +57,38 @@ scrapeExternalMetrics:
           regex: "192.168.100.104(.*)"
           replacement: "saatchi.internal.softwareheritage.org$1"
           action: replace
+
+svix:
+  enabled: true
+  version: v1.16
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: svix-server
+            operator: In
+            values:
+            - "true"
+  ingress:
+    host: svix.internal.softwareheritage.org
+    createTLS: true
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    whitelistSourceRange:
+      # cluster internal range ip
+      - 10.42.0.0/16
+      - 10.43.0.0/16
+      # admin ip
+      - 192.168.50.0/24
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  namespace: svix-server
+  redis:
+    managedByChart: false
+    dsn: redis-sa-svix.svix-server
+    podSelectorPolicy:
+      app: redis-sa-svix
+  postgresDsn: albertina.internal.softwareheritage.org
