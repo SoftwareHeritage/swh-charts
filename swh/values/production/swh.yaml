@@ -125,6 +125,7 @@ authenticatedJournalClientConfiguration:
   sasl.username: ${BROKER_USER}
   sasl.password: ${BROKER_USER_PASSWORD}
   prefix: swh.journal.objects
+  message.max.bytes: "524288000"
   secrets:
     BROKER_USER:
       secretKeyRef: swh-archive-broker-secret

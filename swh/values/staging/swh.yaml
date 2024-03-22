@@ -37,6 +37,7 @@ scrubberJournalClientConfiguration:
   sasl.username: swh-archive-stg
   sasl.password: ${BROKER_USER_PASSWORD}
   prefix: swh.journal.objects
+  message.max.bytes: 524288000
   secrets:
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
