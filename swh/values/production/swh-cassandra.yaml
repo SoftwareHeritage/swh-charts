@@ -593,7 +593,7 @@ cassandraChecks:
         batch_size: 1000
         privileged: true
     snapshot:
-      replicas: 4
+      replicas: 2
       journalClientOverrides:
         object_types:
           - snapshot
