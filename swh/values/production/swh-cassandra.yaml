@@ -523,14 +523,14 @@ journalClientCassandraChecksConfiguration:
 
 cassandraChecks:
   enabled: true
-  directoryOutput: /srv/kubernetes/volumes/cassandra-checks-volume
+  directoryOutput: /volume/cassandra-checks-volume
   volume:
     name: cassandra-checks-volume
     mountPath: /volume
     # readOnly: true
     volumeDefinition:
       hostPath:
-        path: /volume
+        path: /srv/kubernetes/volumes
         type: Directory
   priorityClassName: swh-background-workload
   nodeSelector:
