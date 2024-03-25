@@ -572,7 +572,6 @@ cassandraChecks:
         - skipped_content
         batch_size: 1000
     content:
-      enabled: False
       replicas: 24
       journalClientOverrides:
         on_eof: stop
