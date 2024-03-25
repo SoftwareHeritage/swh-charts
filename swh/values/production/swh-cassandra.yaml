@@ -543,7 +543,7 @@ cassandraChecks:
       enabled: False
       replicas: 1
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
           - origin
         batch_size: 1000
@@ -551,7 +551,7 @@ cassandraChecks:
       #enabled: False
       replicas: 4
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
           - origin_visit
         batch_size: 1000
@@ -559,7 +559,7 @@ cassandraChecks:
       #enabled: False
       replicas: 4
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
           - origin_visit_status
         batch_size: 1000
@@ -567,7 +567,7 @@ cassandraChecks:
       enabled: False
       replicas: 1
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
         - skipped_content
         batch_size: 1000
@@ -590,7 +590,7 @@ cassandraChecks:
       replicas: 12
       requestedCpu: 600m
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
           - revision
         batch_size: 1000
@@ -608,7 +608,7 @@ cassandraChecks:
       enabled: False
       replicas: 2
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
           - snapshot
         batch_size: 200
@@ -616,7 +616,7 @@ cassandraChecks:
       #enabled: False
       replicas: 4
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
         - extid
         batch_size: 200
@@ -624,7 +624,7 @@ cassandraChecks:
       enabled: false
       replicas: 6
       journalClientOverrides:
-        on_eof: stop
+        #on_eof: stop
         object_types:
         - raw_extrinsic_metadata
         batch_size: 1000
