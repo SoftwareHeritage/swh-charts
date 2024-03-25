@@ -523,7 +523,7 @@ journalClientCassandraChecksConfiguration:
 
 cassandraChecks:
   enabled: true
-  directoryOutput: /srv/kubernetes/volumes/
+  directoryOutput: /srv/kubernetes/volumes/cassandra-checks-volume
   volume:
     name: cassandra-checks-volume
     mountPath: /volume
