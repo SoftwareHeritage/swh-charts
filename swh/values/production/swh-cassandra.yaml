@@ -556,7 +556,7 @@ cassandraChecks:
           - origin_visit
         batch_size: 1000
     origin-visit-status:
-      enabled: False
+      #enabled: False
       replicas: 4
       journalClientOverrides:
         on_eof: stop
