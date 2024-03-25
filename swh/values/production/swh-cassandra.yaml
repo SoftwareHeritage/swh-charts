@@ -547,12 +547,14 @@ cassandraChecks:
           - origin
         batch_size: 1000
     origin-visit:
+      enabled: False
       replicas: 4
       journalClientOverrides:
         object_types:
           - origin_visit
         batch_size: 1000
     origin-visit-status:
+      enabled: False
       replicas: 4
       journalClientOverrides:
         object_types:
@@ -566,18 +568,21 @@ cassandraChecks:
         - skipped_content
         batch_size: 1000
     content:
+      enabled: False
       replicas: 24
       journalClientOverrides:
         object_types:
         - content
         batch_size: 1000
     directory:
+      enabled: False
       replicas: 24
       journalClientOverrides:
         object_types:
           - directory
         batch_size: 200
     revision:
+      enabled: False
       replicas: 12
       requestedCpu: 600m
       journalClientOverrides:
@@ -601,6 +606,7 @@ cassandraChecks:
           - snapshot
         batch_size: 200
     extid:
+      enabled: False
       replicas: 4
       journalClientOverrides:
         object_types:
