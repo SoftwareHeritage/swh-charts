@@ -579,8 +579,7 @@ cassandraChecks:
         - content
         batch_size: 1000
     directory:
-      enabled: False
-      replicas: 24
+      replicas: 32
       journalClientOverrides:
         on_eof: stop
         object_types:
