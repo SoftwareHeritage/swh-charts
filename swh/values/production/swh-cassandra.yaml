@@ -613,7 +613,7 @@ cassandraChecks:
           - snapshot
         batch_size: 200
     extid:
-      enabled: False
+      #enabled: False
       replicas: 4
       journalClientOverrides:
         on_eof: stop
