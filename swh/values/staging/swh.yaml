@@ -46,6 +46,12 @@ scrubberJournalClientConfiguration:
 rwStoragePipelineSteps:
   - cls: record_references
 
+emptyStoragePipelineSteps: []
+
+rwStoragePostgresqlConfiguration:
+  pipelineStepsRef: emptyStoragePipelineSteps
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
+
 readWriteStorageConfiguration:
   pipelineStepsRef: rwStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
@@ -485,6 +491,7 @@ storage:
       cronjobs:
         create-object-reference-partitions:
           enabled: true
+          storageConfigurationRef: rwStoragePostgresqlConfiguration
           logLevel: INFO
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid

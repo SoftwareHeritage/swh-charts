@@ -1,0 +1,13 @@
+{{ if .Values.storage.enabled -}}
+{{ range $storage_type, $storage_config := .Values.storage.deployments }}
+{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
+{{ range $cron_job, $cron_config := $storage_config.cronjobs | default dict }}
+{{- if or (not (hasKey $cron_config "enabled")) (get $cron_config "enabled") -}}
+{{ include "swh.storage.configmap" (dict "serviceType" (print "cronjob-" $cron_job)
+                                         "configuration" $cron_config
+                                         "Values" $.Values) }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

@@ -43,6 +43,10 @@ postgresqlRWStorageConfiguration:
 
 emptyStoragePipelineSteps: []
 
+rwStoragePostgresqlConfiguration:
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  pipelineStepsRef: emptyStoragePipelineSteps
+
 readOnlyStorageConfiguration:
   pipelineStepsRef: emptyStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
@@ -1382,6 +1386,7 @@ storage:
       cronjobs:
         create-object-reference-partitions:
           enabled: true
+          storageConfigurationRef: rwStoragePostgresqlConfiguration
           logLevel: INFO
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid

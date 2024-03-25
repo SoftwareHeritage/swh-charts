@@ -1,9 +1,10 @@
 {{ if .Values.storage.enabled -}}
 {{ range $storage_type, $storage_config := .Values.storage.deployments }}
 {{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
-{{ range $cron_job, $cron_config := $storage_config.cronjobs | default list }}
+{{ range $cron_job, $cron_config := $storage_config.cronjobs | default dict }}
 {{- if or (not (hasKey $cron_config "enabled")) (get $cron_config "enabled") -}}
 {{- $log_level := $cron_config.logLevel | default "INFO" -}}
+{{- $storageConfigurationRef := $cron_config.storageConfigurationRef -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -33,7 +34,7 @@ spec:
               command:
                 - /entrypoints/prepare-configuration.sh
               env:
-                {{ include "swh.secrets.environment.inline" (dict "configurationRef" $storage_config.storageConfigurationRef
+                {{ include "swh.secrets.environment.inline" (dict "configurationRef" $storageConfigurationRef
                                                                   "Values" $.Values) | nindent 14 }}
 
               volumeMounts:
@@ -63,7 +64,7 @@ spec:
               command:
               - /opt/swh/entrypoint.sh
               args:
-              - create-object-references-partitions
+              - {{ $cron_job }}
               env:
                 - name: STATSD_HOST
                   value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -97,7 +98,7 @@ spec:
             emptyDir: {}
           - name: configuration-template
             configMap:
-              name: storage-{{ $storage_type }}-configuration-template
+              name: cronjob-{{ $cron_job }}-configuration-template
               items:
               - key: "config.yml.template"
                 path: "config.yml.template"
