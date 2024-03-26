@@ -572,14 +572,14 @@ cassandraChecks:
         - skipped_content
         batch_size: 1000
     content:
-      replicas: 24
+      replicas: 48
       journalClientOverrides:
         #on_eof: stop
         object_types:
         - content
         batch_size: 1000
     directory:
-      replicas: 32
+      replicas: 48
       journalClientOverrides:
         #on_eof: stop
         object_types:
@@ -587,7 +587,7 @@ cassandraChecks:
         batch_size: 200
     revision:
       #enabled: False
-      replicas: 12
+      replicas: 24
       requestedCpu: 600m
       journalClientOverrides:
         #on_eof: stop
