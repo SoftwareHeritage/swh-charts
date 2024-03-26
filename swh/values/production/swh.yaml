@@ -904,6 +904,7 @@ scheduler:
         - load-hg
     listener:
       enabled: true
+      replicas: 2
       logLevel: INFO
 
 toolbox:

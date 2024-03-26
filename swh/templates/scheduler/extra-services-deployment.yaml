@@ -24,6 +24,9 @@ metadata:
     app: {{ $service_name }}
 spec:
   revisionHistoryLimit: 2
+  {{ if $deployment_config.replicas -}}
+  replicas: {{ $deployment_config.replicas }}
+  {{ end -}}
   selector:
     matchLabels:
       app: {{ $service_name }}
