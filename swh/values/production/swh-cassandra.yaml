@@ -522,7 +522,7 @@ journalClientCassandraChecksConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 cassandraChecks:
-  enabled: False
+  enabled: true
   directoryOutput: /volume/cassandra-checks-volume
   volume:
     name: cassandra-checks-volume
@@ -540,8 +540,8 @@ cassandraChecks:
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
   deployments:
     origin:
-      enabled: False
-      replicas: 1
+      #enabled: False
+      replicas: 4
       journalClientOverrides:
         #on_eof: stop
         object_types:
