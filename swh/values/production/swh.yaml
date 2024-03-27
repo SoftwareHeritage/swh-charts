@@ -1851,7 +1851,7 @@ counters:
     cacheBaseDirectory: /srv/softwareheritage/counters
     countersConfigurationRef: countersRedis
     historyConfigurationRef: countersHistoryConfiguration
-    replicas: 1
+    replicas: 2
     gunicorn:
       workers: 2
       threads: 1
