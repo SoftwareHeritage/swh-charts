@@ -36,7 +36,7 @@ svix:
   requestedMemory: 100Mi
   requestedCpu: 100m
   namespace: svix-server
-  redisDsn: redis
+  redisDsn: redis-svix-leader-external-service
   postgresDsn: db1.internal.staging.swh.network
 
 alerting:
