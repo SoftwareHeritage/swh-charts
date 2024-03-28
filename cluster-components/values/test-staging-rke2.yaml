@@ -31,3 +31,18 @@ svix:
     requestedCpu: 100m
     persistentVolume: false
   whitelistSubnets: "[10.42.0.0/16,10.43.0.0/16]"
+
+podPriority:
+  enabled: true
+  priorities:
+    # Note that each priority will be prefixed with its namespace (when declared in the
+    # deployment). Because priority have a cluster-wide visibility (independently from
+    # its namespace).
+    system:
+      range: 50000-100000
+      value: 75000
+      description: Highest pod priorities (ingress, operator, collector, controller)
+    storages:
+      range: 25000-26000
+      value: 25500
+      description: Backend storages used by other services (memcached, redis, ...)
