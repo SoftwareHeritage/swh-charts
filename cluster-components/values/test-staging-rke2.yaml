@@ -30,9 +30,4 @@ svix:
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
-  redis:
-    enabled: true
-    requestedMemory: 100Mi
-    requestedCpu: 100m
-    persistentVolume: false
   whitelistSubnets: "[10.42.0.0/16,10.43.0.0/16]"
