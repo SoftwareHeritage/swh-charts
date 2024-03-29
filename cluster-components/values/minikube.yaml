@@ -51,7 +51,7 @@ svix:
     requestedCpu: 100m
     persistentVolume: false
   redis:
-    enabled: false
+    managedByChart: false
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false

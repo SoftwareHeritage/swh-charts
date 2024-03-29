@@ -29,6 +29,7 @@ spec:
         - protocol: TCP
           port: 8071
 ---
+{{- $podSelectorPolicy := .Values.svix.redis.podSelectorPolicy | default dict -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -37,8 +38,10 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-{{- if .Values.svix.redis.enabled }}
+{{- if .Values.svix.redis.managedByChart }}
       app: svix-redis
+{{- else if $podSelectorPolicy }}
+      {{ toYaml $podSelectorPolicy -}}
 {{- else }}
       app: redis-svix
 {{- end }}

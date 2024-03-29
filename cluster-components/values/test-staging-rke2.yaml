@@ -30,7 +30,13 @@ svix:
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false
-  redisDsn: redis-svix-leader
+  redis:
+    # If false, the redis is not deployed through the chart but through
+    # the k8s-cluster-config repository configuration
+    managedByChart: false
+    dsn: redis-svix-leader
+    podSelectorPolicy:
+      app: redis-svix-leader
   whitelistSubnets: "[10.42.0.0/16,10.43.0.0/16]"
 
 podPriority:
