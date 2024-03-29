@@ -86,6 +86,8 @@ spec:
           value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
         - name: STATSD_PORT
           value: {{ .Values.statsdPort | default "9125" | quote }}
+        - name: STATSD_TAGS
+          value: deployment:loader-metadata
         - name: LOGLEVEL
           value: {{ .Values.loader_metadata.logLevel | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME

@@ -95,6 +95,8 @@ spec:
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:storage-replayer-{{ $deployment }}
           {{- if $.Values.storage_replayer.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}

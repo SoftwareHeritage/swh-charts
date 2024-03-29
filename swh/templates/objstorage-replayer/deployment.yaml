@@ -83,6 +83,8 @@ spec:
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: STATSD_TAGS
+          value: deployment:objstorage-replayer-{{ $deployment }}
         - name: FETCH_CONCURRENCY
           value: {{ get $deployment_config "fetchConcurrency" | default 1 | quote }}
         - name: CHECK_DST

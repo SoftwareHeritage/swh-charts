@@ -124,6 +124,8 @@ spec:
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $serviceType }}
             - name: LOG_LEVEL
               value: {{ $storage_config.logLevel | default $.Values.storage.logLevel | quote }}
           {{- if $.Values.storage.sentry.enabled }}

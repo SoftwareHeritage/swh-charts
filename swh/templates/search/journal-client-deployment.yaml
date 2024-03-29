@@ -86,6 +86,8 @@ spec:
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $journal_client_name }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: LOG_LEVEL

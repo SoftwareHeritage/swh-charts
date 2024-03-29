@@ -175,6 +175,8 @@ spec:
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $serviceType }}
             - name: LOG_LEVEL
               value: {{ $web_config.logLevel | default $.Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME

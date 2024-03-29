@@ -90,6 +90,8 @@ spec:
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
+        - name: STATSD_TAGS
+          value: deployment:scrubber-journalchecker-{{ $deployment }}
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
         - name: LOGLEVEL

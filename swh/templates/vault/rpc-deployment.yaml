@@ -104,6 +104,8 @@ spec:
               value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:vault-rpc
             - name: LOG_LEVEL
               value: {{ .Values.vault.logLevel | default "INFO" }}
           {{- if .Values.vault.sentry.enabled }}
