@@ -37,7 +37,9 @@ svix:
     dsn: redis-svix-leader
     podSelectorPolicy:
       app: redis-svix-leader
-  whitelistSubnets: "[10.42.0.0/16,10.43.0.0/16]"
+  whitelistSubnets:
+    - 10.42.0.0/16
+    - 10.43.0.0/16
 
 podPriority:
   enabled: true
