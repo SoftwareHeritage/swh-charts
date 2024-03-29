@@ -22,67 +22,65 @@ host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ 
 Create a global storage configuration based on configuration section aggregation
 */}}
 {{- define "swh.storageConfiguration" -}}
-{{- $storageConfiguration := get .Values .configurationRef  -}}
-{{- if not $storageConfiguration -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration" )}}{{- end -}}
-{{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
+{{- $storageConfiguration := get .Values .configurationRef -}}
+{{- if not $storageConfiguration -}}
+  {{- fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration") -}}
+{{- end -}}
 {{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}
-{{- if not $storageServiceConfigurationRef -}}{{ fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef)}}{{- end -}}
+{{- if not $storageServiceConfigurationRef -}}
+  {{- fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef) -}}
+{{- end -}}
 {{- $storageServiceConfiguration := get .Values $storageServiceConfigurationRef -}}
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
-{{- $objstorageConfigurationRef :=  get $storageConfiguration "objstorageConfigurationRef" -}}
-{{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
-{{- $indent := 2 -}}
-storage:
-{{ if $pipelineStepsRef -}}
-{{- if not (hasKey .Values $pipelineStepsRef) -}}
-  {{ fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) }}
-{{- end -}}
-{{- $pipelineSteps := get .Values $pipelineStepsRef }}  cls: pipeline
-  steps:
-{{- if $pipelineSteps }}
-{{ toYaml $pipelineSteps | indent 2 }}
-{{- end }}
-{{ end -}}
+{{- $storageIncludeArgs := (dict "configurationRef" $storageServiceConfigurationRef "Values" .Values) -}}
+{{- $storageConfig := dict -}}
 {{- if eq $storageType "remote" -}}
-{{ include "swh.storage.remote" (dict "configurationRef" $storageServiceConfigurationRef
-                                      "pipelineStepsRef" $pipelineStepsRef
-                                      "Values" .Values) | indent $indent }}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.storage.remote" $storageIncludeArgs | fromYaml) -}}
 {{- else if eq $storageType "cassandra" -}}
-{{ include "swh.storage.cassandra" (dict "configurationRef" $storageServiceConfigurationRef
-                                         "pipelineStepsRef" $pipelineStepsRef
-                                         "Values" .Values) | indent $indent }}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.storage.cassandra" $storageIncludeArgs | fromYaml) -}}
 {{- else if eq $storageType "postgresql" -}}
-{{ include "swh.postgresql" (dict "Values" .Values
-                                  "configurationRef" $storageServiceConfigurationRef
-                                  "configurationInPipeline" $pipelineStepsRef) | indent $indent }}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.postgresql" $storageIncludeArgs | fromYaml) -}}
 {{- else -}}
-{{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
+  {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
-{{/* TODO: specific_options */}}
-{{- $extraIndent := ternary $indent (int (add $indent 2)) (empty $pipelineStepsRef) -}}
+
+{{- $objstorageConfigurationRef :=  get $storageConfiguration "objstorageConfigurationRef" -}}
 {{- if $objstorageConfigurationRef -}}
-{{- $objstorageConfiguration := get .Values $objstorageConfigurationRef -}}
-{{- $objectStorageType := get $objstorageConfiguration "cls" -}}
-  {{- include "swh.objstorageConfiguration" (dict "configurationRef" $objstorageConfigurationRef
-                                                  "Values" .Values) | nindent $extraIndent }}
+  {{- $objstorageConfiguration := get .Values $objstorageConfigurationRef -}}
+  {{- $objectStorageType := get $objstorageConfiguration "cls" -}}
+  {{- $objstorageConfig := include "swh.objstorageConfiguration"
+                                   (dict "configurationRef" $objstorageConfigurationRef
+                                         "Values" .Values) | fromYaml -}}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig $objstorageConfig -}}
 {{- end -}}
-{{- if $journalWriterConfigurationRef }}
-  {{ include "swh.storage.journalWriter" (dict "service_type" "journal_writer"
-                                               "configurationRef" $journalWriterConfigurationRef
-                                               "Values" .Values) | nindent $extraIndent }}
+
+{{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
+{{- if $journalWriterConfigurationRef -}}
+  {{- $journalWriterConfig := include "swh.storage.journalWriter"
+                                      (dict "service_type" "journal_writer"
+                                            "configurationRef" $journalWriterConfigurationRef
+                                            "Values" .Values) | fromYaml -}}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig $journalWriterConfig -}}
 {{- end -}}
+
+{{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
+{{- if $pipelineStepsRef -}}
+  {{- if not (hasKey .Values $pipelineStepsRef) -}}
+    {{- fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) -}}
+  {{- end -}}
+  {{- $pipelineSteps := mustAppend (get .Values $pipelineStepsRef | mustDeepCopy) $storageConfig -}}
+  {{- $storageConfig = (dict "cls" "pipeline" "steps" $pipelineSteps) -}}
+{{- end -}}
+{{- dict "storage" $storageConfig | toYaml -}}
 {{- end -}}
 
 {{/*
 Generate the configuration for a remote storage
 */}}
-{{- define "swh.storage.remote" -}}
-{{- $inPipeline := .pipelineStepsRef -}}
-{{- $indent := indent (ternary 0 2 (empty $inPipeline)) "" -}}
+{{- define "swh.storage.remote" }}
 {{- $storageConfiguration := get .Values .configurationRef -}}
-{{- if $inPipeline -}}- {{ end }}cls: remote
-{{ $indent }}url: {{ get $storageConfiguration "url" }}
-{{- end -}}
+{{ (dict "cls" "remote" "url" (get $storageConfiguration "url")) | toYaml }}
+{{ end -}}
 
 {{/*
 Create a global scheduler configuration based on scheduler section aggregation
@@ -146,24 +144,18 @@ deposit:
    * pipeline.
    */}}
 {{- define "swh.postgresql" -}}
-{{- $configurationInPipeline := .configurationInPipeline | default false -}}
-{{- if $configurationInPipeline -}}
-- cls: postgresql
-  db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
-                                        "Values" .Values) }}
-{{- else -}}
-{{ if .serviceType -}}
-{{ .serviceType }}:
-{{- end }}
-  cls: postgresql
-  db: {{ include "swh.connstring" (dict "configurationRef" .configurationRef
-                                        "Values" .Values) }}
-{{- end }}
+{{- $connstring := include "swh.connstring"
+                           (dict "configurationRef" .configurationRef
+                                 "Values" .Values) -}}
+{{- $config := (dict "cls" "postgresql" "db" $connstring) -}}
+{{- if .serviceType -}}
+  {{ $config = (dict .serviceType $config) }}
+{{- end -}}
+{{ toYaml $config }}
 {{- end -}}
 
 {{- define "django.postgresql" -}}
 {{- $configuration := get .Values .configurationRef -}}
-{{- $configurationInPipeline := .configurationInPipeline | default false -}}
 {{- $host := required (print "_helpers.tpl:django.postgresql: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
 {{- $port := required (print "_helpers.tpl:django.postgresql: The <port> property is mandatory in " .configurationRef)
@@ -185,28 +177,28 @@ deposit:
 Generate the configuration for a cassandra storage
 */}}
 {{- define "swh.storage.cassandra" -}}
-{{- $inPipeline := .pipelineStepsRef -}}
 {{- $storageConfiguration := get .Values .configurationRef -}}
 {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
 {{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
-{{- $authProvider := get  $storageConfiguration "authProvider" -}}
 {{- $keyspace := required (print "The keyspace property is mandatory in " .configurationRef)
                     (get $storageConfiguration "keyspace") -}}
-{{- $specificOptions := get $storageConfiguration "specificOptions" -}}
-{{- $indentationCount := ternary 0 2 (empty $inPipeline) -}}
-{{- $indent := indent $indentationCount "" -}}
-{{- $nextLevelIndentCount := (int (add $indentationCount 2)) -}}
-{{- if $inPipeline -}}- {{ end }}cls: cassandra
-{{ $indent }}hosts:
-{{ toYaml $cassandraSeeds | indent 2 }}
-{{ $indent }}keyspace: {{ $keyspace }}
-{{ $indent }}consistency_level: {{ get $storageConfiguration "consistencyLevel" }}
-{{ if $authProvider }}{{ $indent }}auth_provider:
-{{ toYaml $authProvider | indent $nextLevelIndentCount }}
-{{ end -}}
-{{- if $specificOptions -}}
-{{ toYaml (get $storageConfiguration "specificOptions") | indent $indentationCount }}
+
+{{- $config := (dict
+      "cls" "cassandra"
+      "hosts" $cassandraSeeds
+      "keyspace" $keyspace
+      "consistency_level" (get $storageConfiguration "consistencyLevel")) -}}
+
+{{- $authProvider := get $storageConfiguration "authProvider" -}}
+{{- if $authProvider -}}
+  {{- $config = mustMergeOverwrite $config (dict "auth_provider" $authProvider) -}}
 {{- end -}}
+
+{{- $specificOptions := get $storageConfiguration "specificOptions" -}}
+{{- if $specificOptions -}}
+  {{- $config = mustMergeOverwrite $config $specificOptions -}}
+{{- end -}}
+{{- toYaml $config -}}
 {{- end -}}
 
 {{/*
@@ -217,18 +209,17 @@ Generate the configuration for a storage journal broker
 {{- $brokersRef := get $journalWriterConfiguration "brokersConfigurationRef" -}}
 {{- $brokers := get .Values $brokersRef -}}
 {{- $clientId := required (print "clientId property is mandatory in " .configurationRef " map") (get $journalWriterConfiguration "clientId") -}}
-journal_writer:
-  cls: kafka
-  brokers:
-{{ toYaml $brokers | indent 2 }}
-  prefix: {{ get $journalWriterConfiguration "prefix" | default "swh.journal.objects" }}
-  client_id: {{ $clientId }}
-  anonymize: {{ get $journalWriterConfiguration "anonymize" | default true }}
-{{- $producerConfig := get $journalWriterConfiguration "producerConfig" -}}
-{{- if $producerConfig }}
-  producer_config:
-{{ toYaml $producerConfig | indent 4 }}
-{{- end }}
+{{- $config := (dict
+      "journal_writer" (dict
+        "cls" "kafka"
+        "brokers" $brokers
+        "prefix" (get $journalWriterConfiguration "prefix" | default "swh.journal.objects")
+        "clientId" $clientId
+        "anonymize" (get $journalWriterConfiguration "anonymize" | default true)
+        "producer_config" (get $journalWriterConfiguration "producerConfig" | default (dict))
+        )
+      ) -}}
+{{- toYaml $config -}}
 {{- end -}}
 
 {{/* Generate the init keyspace container configuration if needed */}}
