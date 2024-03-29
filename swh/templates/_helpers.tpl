@@ -214,7 +214,7 @@ Generate the configuration for a storage journal broker
         "cls" "kafka"
         "brokers" $brokers
         "prefix" (get $journalWriterConfiguration "prefix" | default "swh.journal.objects")
-        "clientId" $clientId
+        "client_id" $clientId
         "anonymize" (get $journalWriterConfiguration "anonymize" | default true)
         "producer_config" (get $journalWriterConfiguration "producerConfig" | default (dict))
         )
