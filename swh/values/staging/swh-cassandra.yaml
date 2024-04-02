@@ -92,6 +92,11 @@ cassandraStorageConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
 
+cassandraROStorageConfiguration:
+  storageConfigurationRef: cassandraROStorage
+  # XXX: migrate to inlined multiplexed config (to save a round trip through the ingress)?
+  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
+
 scrubberROStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
 
@@ -592,6 +597,27 @@ storage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+      gunicorn:
+        threads: 4
+        workers: 8
+    cassandra-read-only:
+      autoScaling:
+        minReplicaCount: 1
+        maxReplicaCount: 6
+        cpuPercentageUsage: 150
+      requestedCpu: 250m
+      requestedMemory: 500Mi
+      storageConfigurationRef: cassandraROStorageConfiguration
+      hosts:
+        - storage-cassandra-read-only-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          # XXX: probably not needed for read-only RPCs
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
       gunicorn:
         threads: 4
         workers: 8

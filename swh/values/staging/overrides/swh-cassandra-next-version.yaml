@@ -244,7 +244,7 @@ storage:
         cpuPercentageUsage: 150
       hosts:
         - storage-cassandra-next-version.internal.staging.swh.network
-    cassandra-readonly:
+    cassandra-read-only:
       enabled: false
 
 
