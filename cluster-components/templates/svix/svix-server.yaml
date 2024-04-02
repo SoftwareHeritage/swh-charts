@@ -1,6 +1,8 @@
 {{ if .Values.svix.enabled -}}
 {{ with .Values.svix -}}
 {{ $redisDsn := .redis.dsn | default "redis" -}}
+{{ $redisQueueType := .redis.queueType | default "redis" -}}
+{{ $redisCacheType := .redis.cacheType | default "redis" -}}
 {{ $postgresDsn := .postgresDsn | default "postgres" -}}
 ---
 apiVersion: apps/v1
@@ -73,6 +75,10 @@ spec:
                   key: APP_DB_USER
             - name: WAIT_FOR
               value: "true"  # We want to wait for the default services
+            - name: SVIX_QUEUE_TYPE
+              value: {{ $redisQueueType }}
+            - name: SVIX_CACHE_TYPE
+              value: {{ $redisCacheType }}
             - name: SVIX_REDIS_DSN
               value: "redis://{{ $redisDsn }}:6379"
             - name: SVIX_DB_DSN
