@@ -8,12 +8,12 @@ localRpcRWStorageConfiguration:
   cls: remote
   url: http://storage-cassandra.internal.staging.swh.network
 
+remoteReadOnlyStorageConfiguration:
+  cls: remote
+  url: http://storage-cassandra-read-only-ingress
+
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: localRpcRWStorageConfiguration
-
-# (Not so) readonly (namespace local) storage
-localRpcROStorageConfiguration:
   storageConfigurationRef: localRpcRWStorageConfiguration
 
 pathslicingObjstorageConfiguration:
@@ -679,7 +679,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: remoteCassandraStorageConfiguration
+      storageConfigurationRef: remoteReadOnlyStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
@@ -729,7 +729,7 @@ graphql:
       debug: yes
       sentry:
         enabled: true
-      storageConfigurationRef: localRpcROStorageConfiguration
+      storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       replicas: 2
       gunicorn:
@@ -931,7 +931,9 @@ deposit:
         authentication: swh-cassandra/deposit-auth-secrets
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteCassandraStorageConfiguration
+  # In prod this storage is read-only
+  storageConfigurationRef: remoteReadOnlyStorageConfiguration
+  # XXX: but this one is read-write?
   storageMetadataConfigurationRef: remoteCassandraStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
