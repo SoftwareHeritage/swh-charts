@@ -126,7 +126,6 @@ storage_replayer:
       autoScaling:
         maxReplicaCount: 64
     directory:
-      enabled: False
       objects:
         - directory
       privileged: true
