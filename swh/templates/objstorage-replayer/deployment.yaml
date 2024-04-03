@@ -3,9 +3,6 @@
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $deployment_config := include "swh.objstorageReplayer.deploymentConfig" (dict "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
-{{- $journalConfigurationRef := or $deployment_config.journalClientConfigurationRef $.Values.objstorageReplayer.journalClientConfigurationRef -}}
-{{- $sourceObjstorageConfigurationRef := or $deployment_config.sourceObjstorageConfigurationRef $.Values.objstorageReplayer.sourceObjstorageConfigurationRef -}}
-{{- $destinationObjstorageConfigurationRef := or $deployment_config.destinationObjstorageConfigurationRef $.Values.objstorageReplayer.destinationObjstorageConfigurationRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,13 +44,8 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env:
-            {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $journalConfigurationRef ) | nindent 10 }}
-            {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $sourceObjstorageConfigurationRef ) | nindent 10 }}
-            {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $destinationObjstorageConfigurationRef ) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+                                                                      "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
