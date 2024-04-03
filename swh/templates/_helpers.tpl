@@ -252,30 +252,6 @@ Generate the configuration for a storage journal broker
   {{- end -}}
 {{- end -}}
 
-{{/* Generate the secret environment yaml config if present in the config dict */}}
-{{- define "swh.secrets.environment" -}}
-  {{- $configuration := required (print "_helpers.tpl:swh.secrets.environment: Definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
-  {{- $secrets := get $configuration "secrets" -}}
-  {{- if $secrets -}}
-    {{- range $secretName, $secretsConfig := $secrets }}
-- name: {{ $secretName }}
-  valueFrom:
-    secretKeyRef:
-      name: {{ get $secretsConfig "secretKeyRef" }}
-      key: {{ get $secretsConfig "secretKeyName" }}
-      # 'name' secret must exist & include that ^ key
-      optional: false
-      {{- end -}}
-  {{- end -}}
-{{- end -}}
-
-{{/* Generate the storage environment config for database configuration if needed */}}
-{{- define "swh.storage.secretsEnvironment" -}}
-  {{- $storageDefinitionRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:Storage definition <" .configurationRef "> not found") (get .Values .configurationRef) -}}
-  {{- $storageConfigurationRef := required (print "_helpers.tpl:swh.storage.secretsEnvironment:storageConfigurationRef key needed in <" $storageDefinitionRef ">") (get $storageDefinitionRef "storageConfigurationRef") -}}
-{{ include "swh.secrets.environment" (dict "Values" .Values "configurationRef" $storageConfigurationRef) }}
-{{- end -}}
-
 {{/* Merge .newSecrets into .collectedSecrets */}}
 {{- define "swh.secrets.mergeDicts" -}}
 {{- range $secretName, $secretsConfig := .newSecrets -}}
