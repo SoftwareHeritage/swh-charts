@@ -38,11 +38,8 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          env:
-{{ include "swh.secrets.environment" (dict "Values" .Values
-                                           "configurationRef" .Values.checker_deposit.celeryConfigurationRef) | indent 10 }}
-{{ include "swh.secrets.environment" (dict "Values" .Values
-                                           "configurationRef" .Values.checker_deposit.depositConfigurationRef) | indent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.checker_deposit
+                                                                      "Values" .Values) | nindent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
