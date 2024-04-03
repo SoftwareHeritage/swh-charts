@@ -49,9 +49,8 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" $storage_config.indexerStorageConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $storage_config
+                                                                      "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
