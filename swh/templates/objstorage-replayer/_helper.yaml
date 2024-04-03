@@ -1,12 +1,19 @@
+{{/* Generate the hydrated deploymentConfig from the default values */}}
+{{- define "swh.objstorageReplayer.deploymentConfig" -}}
+{{- $defaults := pick .Values.objstorageReplayer
+                        "journalClientConfigurationRef"
+                        "sourceObjstorageConfigurationRef"
+                        "destinationObjstorageConfigurationRef" -}}
+{{- $merged := mustMerge .deployment_config $defaults -}}
+{{ $merged | toYaml }}
+{{- end -}}
+
 {{- define "swh.objstorageReplayer.configmap" -}}
-{{- $journalClientConfigurationRef := or .deployment_config.journalClientConfigurationRef .Values.objstorageReplayer.journalClientConfigurationRef -}}
+{{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef -}}
 {{- $journalClientConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in objstorageReplayer (" .deployment_name ")  configuration") (get .Values $journalClientConfigurationRef) -}}
 {{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
-{{- $sourceObjstorageConfigurationRef := or .deployment_config.sourceObjstorageConfigurationRef .Values.objstorageReplayer.sourceObjstorageConfigurationRef -}}
-{{- if not $sourceObjstorageConfigurationRef -}}
-  {{ fail (print "objstorage-replayer/_helper.yaml: deployment '" .deployment_name "' must declare a 'sourceObjstorageConfigurationRef' property" ) }}
-{{- end -}}
-{{- $destinationObjstorageConfigurationRef := or .deployment_config.destinationObjstorageConfigurationRef .Values.objstorageReplayer.destinationObjstorageConfigurationRef -}}
+{{- $sourceObjstorageConfigurationRef := .deployment_config.sourceObjstorageConfigurationRef | required (print "objstorage-replayer/_helper.yaml: deployment '" .deployment_name "' must declare a 'sourceObjstorageConfigurationRef' property" ) -}}
+{{- $destinationObjstorageConfigurationRef := .deployment_config.destinationObjstorageConfigurationRef -}}
 {{- if not $destinationObjstorageConfigurationRef -}}
   {{ fail (print "objstorage-replayer/_helper.yaml: deployment '" .deployment_name "' must declare a 'destinationObjstorageConfigurationRef' property" ) }}
 {{- end -}}
