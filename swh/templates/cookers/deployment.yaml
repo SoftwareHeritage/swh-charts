@@ -42,13 +42,8 @@ spec:
         - name: prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env:
-            {{- include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.celeryConfigurationRef
-                                                        "Values" $.Values) | indent 10 }}
-            {{- if $.Values.cookers.objstorageConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "configurationRef" $.Values.cookers.objstorageConfigurationRef
-                                                        "Values" $.Values) | indent 10 }}
-            {{- end }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.cookers
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
