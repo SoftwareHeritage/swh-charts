@@ -382,6 +382,9 @@ externalServices:
     deposit:
       internalName: deposit-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-cassandra-read-write:
+      internalName: storage-cassandra-read-write-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-cassandra-read-only:
       internalName: storage-cassandra-read-only-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

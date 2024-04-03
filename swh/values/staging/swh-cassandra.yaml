@@ -2,11 +2,11 @@ namespace: swh-cassandra
 
 remoteCassandraStorageConfiguration:
   cls: remote
-  url: http://storage-cassandra.internal.staging.swh.network
+  url: http://storage-cassandra-read-write-ingress
 
 localRpcRWStorageConfiguration:
   cls: remote
-  url: http://storage-cassandra.internal.staging.swh.network
+  url: http://storage-cassandra-read-write-ingress
 
 remoteReadOnlyStorageConfiguration:
   cls: remote
@@ -582,6 +582,7 @@ storage:
       requestedMemory: 1500Mi
       storageConfigurationRef: cassandraStorageConfiguration
       hosts:
+        - storage-cassandra-read-write-ingress
         - storage-cassandra.internal.staging.swh.network
       ingress:
         enabled: true
