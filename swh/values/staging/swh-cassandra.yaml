@@ -583,21 +583,13 @@ storage:
       storageConfigurationRef: cassandraStorageConfiguration
       hosts:
         - storage-cassandra-read-write-ingress
-        - storage-cassandra.internal.staging.swh.network
       ingress:
         enabled: true
-        whitelistSourceRangeRef: stagingNetworkRanges
+        whitelistSourceRangeRef: clusterNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
           nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
       gunicorn:
         threads: 4
         workers: 8
@@ -611,6 +603,7 @@ storage:
       storageConfigurationRef: cassandraROStorageConfiguration
       hosts:
         - storage-cassandra-read-only-ingress
+        - storage-cassandra.internal.staging.swh.network
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
@@ -619,6 +612,13 @@ storage:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
           nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
       gunicorn:
         threads: 4
         workers: 8
