@@ -3,7 +3,6 @@
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict "scrubberType" "storage" "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.scrubber.storageChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
-{{- $storageConfigurationRef := $deployment_config.storageConfigurationRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,11 +40,8 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.scrubber.scrubberDatabaseConfigurationRef) | indent 10 }}
-{{ include "swh.storage.secretsEnvironment" (dict "Values" $.Values
-                                           "configurationRef" $storageConfigurationRef) | indent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
           - /bin/bash
           args:
