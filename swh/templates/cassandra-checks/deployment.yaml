@@ -72,13 +72,9 @@ spec:
         - name: prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.storagePostgresqlConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.storageCassandraConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
-            {{ include "swh.secrets.environment" (dict "configurationRef" $.Values.cassandraChecks.journalClientConfigurationRef
-                                                       "Values" $.Values) | nindent 10 }}
+          {{/* To be updated if secrets appear in $deployment_config! */}}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.cassandraChecks
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoints/prepare-configuration.sh
           volumeMounts:
