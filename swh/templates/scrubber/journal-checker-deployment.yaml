@@ -1,6 +1,7 @@
 {{ if and .Values.scrubber.enabled .Values.scrubber.journalChecker.enabled -}}
 {{- range $deployment, $deployment_config := .Values.scrubber.journalChecker.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict "scrubberType" "journal" "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.scrubber.journalChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 ---
 apiVersion: apps/v1

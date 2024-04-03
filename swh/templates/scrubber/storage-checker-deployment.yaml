@@ -1,8 +1,9 @@
 {{ if and .Values.scrubber.enabled .Values.scrubber.storageChecker.enabled -}}
 {{- range $deployment, $deployment_config := .Values.scrubber.storageChecker.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict "scrubberType" "storage" "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.scrubber.storageChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
-{{- $storageConfigurationRef := (get $deployment_config "storageConfigurationRef") | default (get $.Values.scrubber.storageChecker "storageConfigurationRef") -}}
+{{- $storageConfigurationRef := $deployment_config.storageConfigurationRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

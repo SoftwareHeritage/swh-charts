@@ -1,8 +1,30 @@
+{{/* Merge a deployment_config with defaults pulled from .Values.scrubber.<scrubberType>Checker then .Values.scrubber,
+     according to which scrubberType this is */}}
+{{- define "swh.scrubber.deploymentConfig" -}}
+{{- $defaultKeys := list "scrubberDatabaseConfigurationRef" -}}
+{{- if (eq .scrubberType "storage") -}}
+  {{- $defaultKeys = mustAppend $defaultKeys "storageConfigurationRef" -}}
+{{- else if (eq .scrubberType "journal") -}}
+  {{- $defaultKeys = concat $defaultKeys (list "journalClientConfigurationRef" "journalClientOverrides") -}}
+{{- end -}}
+
+{{- $scrubberTypeValues := get .Values.scrubber (print $.scrubberType "Checker") | default (dict) -}}
+{{- $merged := .deployment_config -}}
+
+{{- range $defaultKey := $defaultKeys -}}
+  {{- $merged = mustMerge $merged
+                          (pick $scrubberTypeValues $defaultKey)
+                          (pick $.Values.scrubber $defaultKey) -}}
+{{- end -}}
+
+{{- $merged | toYaml -}}
+{{- end -}}
+
 {{ define "swh.scrubber.journalChecker.configmap" }}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.scrubber.sentry.enabled -}}
-{{- $journalClientConfigurationRef := .Values.scrubber.journalChecker.journalClientConfigurationRef -}}
-{{- $journalClientConfiguration := required (print "journalClientConfigurationRef " .journalClientConfigurationRef " not found in scrubber.journalChecker configuration") (get .Values $journalClientConfigurationRef) -}}
-{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
+{{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef " $journalClientConfigurationRef " not found in scrubber.journalChecker configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := get .deployment_config "journalClientOverrides" | default (dict) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -13,7 +35,7 @@ data:
   config.yml.template: |
     {{- include "swh.postgresql" (dict "serviceType" "scrubber"
                                       "Values" .Values
-                                      "configurationRef" .Values.scrubber.scrubberDatabaseConfigurationRef ) | nindent 4 }}
+                                      "configurationRef" .deployment_config.scrubberDatabaseConfigurationRef ) | nindent 4 }}
 
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
                                       "overrides" $journalClientOverrides
@@ -22,7 +44,7 @@ data:
 
 {{ define "swh.scrubber.storageChecker.configmap" }}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.scrubber.sentry.enabled -}}
-{{- $storageConfigurationRef := (get .deployment_config "storageConfigurationRef") | default (get .Values.scrubber.storageChecker "storageConfigurationRef") -}}
+{{- $storageConfigurationRef := .deployment_config.storageConfigurationRef -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -33,7 +55,7 @@ data:
   config.yml.template: |
     {{- include "swh.postgresql" (dict "serviceType" "scrubber"
                                       "Values" .Values
-                                      "configurationRef" .Values.scrubber.scrubberDatabaseConfigurationRef ) | nindent 4 }}
+                                      "configurationRef" .deployment_config.scrubberDatabaseConfigurationRef ) | nindent 4 }}
     {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
                                       "Values" .Values) | nindent 4 }}
 {{ end }}
