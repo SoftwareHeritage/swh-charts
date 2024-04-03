@@ -44,16 +44,9 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-{{ $service_type }}.yml
-          env:
-          {{- range $k, $v := $deployment_config }}
-            {{ if eq $k "storageConfigurationRef" }}
-            {{ include "swh.storage.secretsEnvironment" (dict "configurationRef" $v
-                                                              "Values" $.Values) | nindent 10 }}
-            {{ else if (hasSuffix "Ref" $k) }}
-            {{ include "swh.secrets.environment" (dict "configurationRef" $v
-                                                       "Values" $.Values) | nindent 10 }}
-            {{ end }}
-          {{ end }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+                  (dict "deploymentConfig" $deployment_config
+                        "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

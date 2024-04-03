@@ -297,6 +297,120 @@ Generate the configuration for a storage journal broker
 {{ include "swh.secrets.environment" (dict "Values" .Values "configurationRef" $storageConfigurationRef) }}
 {{- end -}}
 
+{{/* Merge .newSecrets into .collectedSecrets */}}
+{{- define "swh.secrets.mergeDicts" -}}
+{{- range $secretName, $secretsConfig := .newSecrets -}}
+  {{/* Check that the secret is not clashing */}}
+  {{- $collected := get $.collectedSecrets $secretName -}}
+  {{- if (and $collected (not (deepEqual $collected $secretsConfig))) -}}
+    {{- fail (print "_helpers.tpl:swh.secrets.mergeDicts: "
+                  "Duplicate secret <" $secretName ">, with incompatible values <"
+                  $collected "> and <" $secretsConfig "> at path " $.path) -}}
+  {{- end -}}
+  {{- $_ := set $.collectedSecrets $secretName $secretsConfig -}}
+{{- end -}}
+{{- end -}}
+
+{{/* Extract secrets from a deployment config; This traverses any reference, recursively. */}}
+{{- define "swh.secrets.dictFromDeploymentConfig" -}}
+{{/* Check mandatory keys */}}
+{{- if (not (hasKey . "deploymentConfig")) -}}
+  {{- fail "_helpers.tpl:swh.secrets.dictFromDeploymentConfig missing deploymentConfig" -}}
+{{- end -}}
+{{- if (not (hasKey . "Values")) -}}
+  {{- fail "_helpers.tpl:swh.secrets.dictFromDeploymentConfig missing Values" -}}
+{{- end -}}
+{{/* To access .Values from nested ranges */}}
+{{- $Values := .Values -}}
+{{/* Path inside the data structure */}}
+{{- $path := default "deploymentConfig" .path -}}
+
+{{- $collectedSecrets := dict -}}
+
+{{- range $key, $value := .deploymentConfig -}}
+  {{- if (eq $key "secrets") -}}
+    {{/* This config has secrets, pull them directly */}}
+    {{- include "swh.secrets.mergeDicts" (dict "collectedSecrets" $collectedSecrets
+                                               "newSecrets" $value
+                                               "path" $path) -}}
+  {{- else if (kindIs "map" $value) -}}
+    {{/* the value is a mapping, we should recurse into it to find more secrets */}}
+    {{- $nestedPath := (print $path "." $key) -}}
+    {{- $newSecrets := include "swh.secrets.dictFromDeploymentConfig" (dict "Values" $Values
+                                                                            "deploymentConfig" $value
+                                                                            "path" $nestedPath) | fromYaml -}}
+    {{- $_ := include "swh.secrets.mergeDicts" (dict "collectedSecrets" $collectedSecrets
+                                                     "newSecrets" $newSecrets
+                                                     "path" $nestedPath) -}}
+  {{- else if (and (ne "secretKeyRef" $key) (hasSuffix "Ref" $key)) -}}
+    {{/* This is an indirect config, we need to pull it from $Values then recurse */}}
+    {{- $referencedConfig := get $Values $value | required (print
+          "_helpers.tpl:swh.secrets.dictFromDeploymentConfig: "
+          "missing definition for <" $value "> referenced as a <" $key "> ") -}}
+    {{/* recurse into the referencedConfig */}}
+    {{- if (kindIs "map" $referencedConfig) -}}
+      {{/* referencedConfig is a map, we can just pass it to ourselves */}}
+      {{- $nestedPath := (print $path "." $key "> ." $value) -}}
+      {{- $newSecrets := include "swh.secrets.dictFromDeploymentConfig" (dict "Values" $Values
+                                                                              "deploymentConfig" $referencedConfig
+                                                                              "path" $nestedPath) | fromYaml -}}
+      {{- $_ := include "swh.secrets.mergeDicts" (dict "collectedSecrets" $collectedSecrets
+                                                       "newSecrets" $newSecrets
+                                                       "path" $nestedPath) -}}
+    {{- else if (kindIs "slice" $referencedConfig) -}}
+      {{/* referencedConfig is a list-like object, iterate over it */}}
+      {{- range $referencedItem := $referencedConfig -}}
+        {{- $nestedPath := (print $path "." $key "> ." $value "[]") -}}
+        {{- if (kindIs "map" $referencedItem) -}}
+          {{/* referencedItem is a map, we can just pass it to ourselves */}}
+          {{- $newSecrets := include "swh.secrets.dictFromDeploymentConfig" (dict "Values" $Values
+                                                                                  "deploymentConfig" $referencedItem
+                                                                                  "path" $nestedPath) | fromYaml -}}
+          {{- $_ := include "swh.secrets.mergeDicts" (dict "collectedSecrets" $collectedSecrets
+                                                           "newSecrets" $newSecrets
+                                                           "path" $nestedPath) -}}
+        {{- else -}}
+          {{/* $referencedItem has unsupported type, ignore it */}}
+        {{- end -}}
+      {{- end -}}
+    {{- else -}}
+      {{/* $referencedConfig has unsupported type, ignore it */}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if $collectedSecrets -}}
+{{ $collectedSecrets | toYaml }}
+{{- end -}}
+{{- end -}}
+
+{{/* Convert a secrets dict into an environment variable list */}}
+{{- define "swh.secrets.envFromDict" -}}
+{{- $envList := list -}}
+{{- range $secretName, $secretsConfig := .secrets -}}
+  {{- if $secretsConfig -}}
+    {{- $envList = mustAppend $envList (dict
+      "name" $secretName
+      "valueFrom" (dict
+        "secretKeyRef" (dict
+          "name" (get $secretsConfig "secretKeyRef")
+          "key" (get $secretsConfig "secretKeyName")
+          "optional" false))) -}}
+  {{- else -}}
+    {{ fail (print "Definition for collected secret <" $secretName "> is empty"
+             " when getting secrets for deployment configuration <" $.args.deploymentConfig ">") }}
+  {{- end -}}
+{{- end -}}
+{{ $envList | toYaml }}
+{{- end -}}
+
+{{/* Collect secrets from a deployment config, and generate an environment variable list */}}
+{{- define "swh.secrets.envFromDeploymentConfig" -}}
+{{- $secretsYaml := include "swh.secrets.dictFromDeploymentConfig" . -}}
+{{- if $secretsYaml -}}
+  {{- include "swh.secrets.envFromDict" (dict "args" . "secrets" (fromYaml $secretsYaml)) -}}
+{{- end -}}
+{{- end -}}
+
 {{/* Generate the check migration container configuration if needed */}}
 {{- define "swh.checkDatabaseVersionContainer" -}}
 - name: {{ .containerName | default "check-migration" }}
