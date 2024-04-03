@@ -50,9 +50,8 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-          env:
-            {{ include "swh.secrets.environment" (dict "configurationRef" .Values.counters.rpc.countersConfigurationRef
-                                                       "Values" .Values) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.counters.rpc
+                                                                      "Values" .Values) | nindent 10 }}
         {{- if .Values.counters.rpc.fetchStaticHistory }}
         - name: fetch-static-history
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
