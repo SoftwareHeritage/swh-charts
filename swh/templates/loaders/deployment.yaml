@@ -3,6 +3,8 @@
 {{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{/* Populate default values for these entries for the deployment from the top level loaders values */}}
+{{- $deploymentConfig := mustMerge $deployment_config (pick $.Values.loaders "celeryConfigurationRef" "storageConfigurationRef") -}}
 {{- $configurationChecksum := include "swh.loader.configmap" (dict "loader_type" $loader_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $loader_name := ( print "loader-" $loader_type ) -}}
 # if defined at the "typed" loader level
@@ -62,10 +64,10 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
 {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.loaders.celeryConfigurationRef) | indent 10 }}
-          {{ if ( eq "deposit" $loader_type ) -}}
+                                           "configurationRef" $deployment_config.celeryConfigurationRef) | indent 10 }}
+          {{ if $deployment_config.depositConfigurationRef -}}
 {{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.loaders.depositConfigurationRef) | indent 10 }}
+                                           "configurationRef" $deployment_config.depositConfigurationRef) | indent 10 }}
           {{ end }}
           command:
             - /entrypoint.sh

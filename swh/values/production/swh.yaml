@@ -499,7 +499,6 @@ loaders:
   enabled: true
   storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
-  depositConfigurationRef: depositDynamicConfiguration
   deployments:
     add-forge-now:
       image: swh_loader_git_image
@@ -595,6 +594,8 @@ loaders:
         stopWhenNoActivity: false
         minReplicaCount: 1
         maxReplicaCount: 2
+      # only used for secrets
+      depositConfigurationRef: depositDynamicConfiguration
       extraConfig:
         deposit:
           url: "http://deposit-dynamic.internal.softwareheritage.org/1/private"

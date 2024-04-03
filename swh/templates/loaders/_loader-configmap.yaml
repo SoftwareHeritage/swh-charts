@@ -3,7 +3,6 @@
 {{- $loader_name := ( print "loader-" .loader_type ) -}}
 {{- $use_json_logger := get .deployment_config "useJsonLogger" | default true -}}
 {{- $log_level := get .deployment_config "logLevel" | default "INFO" | quote -}}
-{{- $storageConfigRef := get .deployment_config "storageConfigurationRef" | default .Values.loaders.storageConfigurationRef -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,7 +11,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .deployment_config.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 
     {{- if .deployment_config.extraConfig -}}
@@ -21,7 +20,7 @@ data:
       {{- end }}
     {{- end }}
 
-    {{- include "celery.configuration" (dict "configurationRef" .Values.loaders.celeryConfigurationRef
+    {{- include "celery.configuration" (dict "configurationRef" .deployment_config.celeryConfigurationRef
                                              "Values" .Values) | nindent 4 }}
       task_acks_late: {{ get .deployment_config "ackLate" | default false }}
       task_queues:
