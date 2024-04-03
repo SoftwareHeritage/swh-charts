@@ -44,6 +44,19 @@ for f in $files; do
     $HELM_CMD $f > $output
 done
 
+LEGACY_DIFF_COMMAND="diff -U${CONTEXT_SIZE}"
+
+if command -v dyff >/dev/null; then
+  if [ -n "$DYFF_OPTS" ]; then
+    DYFF_OPTS="-s -c on"
+  fi
+  DIFF_COMMAND="dyff between ${DYFF_OPTS}"
+  USE_DYFF=true
+else
+  DIFF_COMMAND="${LEGACY_DIFF_COMMAND}"
+  USE_DYFF=false
+fi
+
 for f in $files; do
     output="$TMPDIR/$(basename $f)"
 
@@ -51,8 +64,18 @@ for f in $files; do
     echo
     echo "------------- diff for $f -------------"
     echo
-    set +e
-    diff -U${CONTEXT_SIZE} $output.before $output.after
-    [[ $? -gt 0 ]] || echo "No differences"
-    set -e
+    diff_retval=0
+
+    $DIFF_COMMAND "$output.before" "$output.after" || diff_retval=$?
+
+    if [ "$USE_DYFF" = "true" ]; then
+        if [ "$diff_retval" -eq 255 ]; then
+            echo "dyff failed, falling back to the legacy diff command"
+            $LEGACY_DIFF_COMMAND "$output.before" "$output.after" || echo "No differences"
+        fi
+    else
+        if [ "$diff_retval" -eq 0 ]; then
+            echo "No differences"
+        fi
+    fi
 done
