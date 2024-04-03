@@ -39,11 +39,8 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.webhooks.svixConfigurationRef) | indent 10 }}
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.webhooks.journalClientConfigurationRef) | indent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.webhooks
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
           - /bin/bash
           args:
