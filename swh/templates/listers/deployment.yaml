@@ -42,9 +42,9 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.listers.celeryConfigurationRef) | indent 10 }}
+          {{/* To be updated if secrets appear in $deployment_config! */}}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.listers
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:
