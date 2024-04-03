@@ -49,34 +49,6 @@ spec:
           command:
           - /entrypoints/prepare-configuration.sh
           env:
-            {{- if $web_config.databaseConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.databaseConfigurationRef) | nindent 12 -}}
-            {{ end }}
-            {{- if $web_config.djangoConfigurationRef }}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.djangoConfigurationRef) | nindent 12 }}
-            {{ end }}
-            {{- if $web_config.depositConfigurationRef -}}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.depositConfigurationRef) | nindent 12 }}
-            {{ end }}
-            {{- if $web_config.giveConfigurationRef -}}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.giveConfigurationRef) | nindent 12 }}
-            {{ end }}
-            {{- if $web_config.addForgeNowConfigurationRef -}}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.addForgeNowConfigurationRef) | nindent 12 }}
-            {{- end -}}
-            {{- if $web_config.webhooksConfigurationRef -}}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.webhooksConfigurationRef) | nindent 12 }}
-            {{- end -}}
-            {{- if $web_config.inboundEmailConfigurationRef -}}
-            {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                        "configurationRef" $web_config.inboundEmailConfigurationRef) | nindent 12 }}
-            {{- end -}}
             {{- if $.Values.web.sentry.enabled }}
             - name: SWH_SENTRY_DSN
               valueFrom:
@@ -86,7 +58,9 @@ spec:
                   # 'name' secret should exist & include key
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: false
-            {{ end }}
+            {{- end -}}
+            {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $web_config
+                                                                    "Values" $.Values) | nindent 12 }}
           volumeMounts:
             - name: configuration
               mountPath: /etc/swh
