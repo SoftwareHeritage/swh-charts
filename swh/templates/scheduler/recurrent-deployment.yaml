@@ -1,5 +1,6 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.recurrent.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/scheduler/recurrent-configmap.yaml") . -}}
+{{- $deployment_config := include "swh.scheduler.deploymentConfig" (dict "Values" .Values "deploymentConfig" .Values.scheduler.recurrent) | fromYaml -}}
 {{- $log_level := .Values.scheduler.recurrent.logLevel }}
 ---
 apiVersion: apps/v1
@@ -41,9 +42,8 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-          env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+                                                                      "Values" .Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

@@ -8,6 +8,7 @@
 {{- $configurationChecksum := include (print .Template.BasePath "/scheduler/extra-services-configmap.yaml") . -}}
 
 {{- range $service_type, $deployment_config := .Values.scheduler.extraServices -}}
+{{- $deployment_config = include "swh.scheduler.deploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | fromYaml -}}
 {{- $service_name := ( print "scheduler-" $service_type ) -}}
 {{- $log_level := get $deployment_config "logLevel" -}}
 
@@ -57,10 +58,8 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-          env:
-{{ include "swh.secrets.environment" (dict "Values" $.Values
-                                           "configurationRef" $.Values.scheduler.celeryConfigurationRef) | indent 10 }}
-
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+                                                                      "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh

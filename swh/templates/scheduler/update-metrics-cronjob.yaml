@@ -1,4 +1,5 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.updateMetrics.enabled -}}
+{{- $deployment_config := include "swh.scheduler.deploymentConfig" (dict "Values" .Values "deploymentConfig" .Values.scheduler.updateMetrics) | fromYaml -}}
 {{- $log_level := .Values.scheduler.updateMetrics.logLevel -}}
 apiVersion: batch/v1
 kind: CronJob
@@ -30,9 +31,8 @@ spec:
               args:
               - -c
               - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-              env:
-{{ include "swh.secrets.environment" (dict "Values" .Values
-                                           "configurationRef" .Values.scheduler.celeryConfigurationRef) | indent 14 }}
+              env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+                                                                          "Values" .Values) | nindent 14 }}
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
