@@ -47,22 +47,6 @@ spec:
               command:
                 - /entrypoints/prepare-configuration.sh
               env:
-                {{- if $.webConfiguration.databaseConfigurationRef }}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.webConfiguration.databaseConfigurationRef) | nindent 16 -}}
-                {{ end }}
-                {{- if $.webConfiguration.djangoConfigurationRef }}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.webConfiguration.djangoConfigurationRef) | nindent 16 }}
-                {{ end }}
-                {{- if $.webConfiguration.depositConfigurationRef -}}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.webConfiguration.depositConfigurationRef) | nindent 16 }}
-                {{ end }}
-                {{- if $.webConfiguration.giveConfigurationRef -}}
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.webConfiguration.giveConfigurationRef) | nindent 16 }}
-                {{ end }}
                 {{- if $.Values.web.sentry.enabled }}
                 - name: SWH_SENTRY_DSN
                   valueFrom:
@@ -72,7 +56,9 @@ spec:
                       # 'name' secret should exist & include key
                       # if the setting doesn't exist, sentry pushes will be disabled
                       optional: true
-                {{ end }}
+                {{- end -}}
+                {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.webConfiguration
+                                                                        "Values" $.Values) | nindent 16 }}
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
@@ -132,9 +118,7 @@ spec:
               {{- if $.pgService }}
                 - name: PGSERVICEFILE
                   value: /etc/swh/.pg_service.conf
-                {{- include "swh.secrets.environment" (dict "Values" $.Values
-                                                            "configurationRef" $.configuration.configurationRef) | nindent 16 }}
-
+                {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.configuration "Values" $.Values) | nindent 16 }}
               {{ end }}
               imagePullPolicy: IfNotPresent
               volumeMounts:
