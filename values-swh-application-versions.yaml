@@ -35,7 +35,7 @@ swh_loader_svn_image_version: '20240404.1'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
 swh_objstorage_image_version: '20240402.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
-swh_objstorage_replayer_image_version: '20240402.2'
+swh_objstorage_replayer_image_version: '20240402.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
 swh_scheduler_image_version: '20240404.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
