@@ -338,6 +338,19 @@ loaders:
         - swh.loader.package.npm.tasks.LoadNpm
       autoScaling:
         maxReplicaCount: 1
+    oneshot:
+      requestedMemory: 768Mi
+      requestedCpu: 200m
+      limitedMemory: 25Gi
+      queues:
+        - oneshot:swh.loader.cvs.tasks.LoadCvsRepository
+        - oneshot:swh.loader.git.tasks.UpdateGitRepository
+        - oneshot:swh.loader.mercurial.tasks.LoadMercurial
+        - oneshot:swh.loader.svn.tasks.LoadSvnRepository
+        - oneshot:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 10
     opam:
       enabled: false
       image: swh_loader_package_image
