@@ -65,13 +65,27 @@ Create a global storage configuration based on configuration section aggregation
 
 {{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
 {{- if $pipelineStepsRef -}}
-  {{- if not (hasKey .Values $pipelineStepsRef) -}}
-    {{- fail (print "_helpers.tpl:swh.storageConfiguration: No pipeline steps configuraton found:" $pipelineStepsRef) -}}
-  {{- end -}}
-  {{- $pipelineSteps := mustAppend (get .Values $pipelineStepsRef | mustDeepCopy) $storageConfig -}}
+  {{- $pipelineSteps := include "swh.storage.parsePipelineSteps" (dict "Values" .Values "pipelineStepsRef" $pipelineStepsRef) | fromYamlArray -}}
+  {{- $pipelineSteps = mustAppend $pipelineSteps $storageConfig -}}
   {{- $storageConfig = (dict "cls" "pipeline" "steps" $pipelineSteps) -}}
 {{- end -}}
 {{- dict "storage" $storageConfig | toYaml -}}
+{{- end -}}
+
+{{/* Parse a storage pipeline steps definition out of the .pipelineStepsRef key */}}
+{{- define "swh.storage.parsePipelineSteps" -}}
+{{- if not (hasKey .Values .pipelineStepsRef) -}}
+  {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: No pipeline steps configuraton found:" .pipelineStepsRef) -}}
+{{- end -}}
+{{- $Values := .Values -}}
+{{- $pipelineSteps := (list) -}}
+{{- range $pipelineStep := get $Values .pipelineStepsRef -}}
+  {{- if not (hasKey $pipelineStep "cls") -}}
+    {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
+  {{- end -}}
+  {{- $pipelineSteps = mustAppend $pipelineSteps $pipelineStep -}}
+{{- end -}}
+{{ $pipelineSteps | toYaml }}
 {{- end -}}
 
 {{/*
