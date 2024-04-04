@@ -50,6 +50,11 @@ spec:
         - podSelector:
             matchLabels:
               app: svix-server
+        {{- if $podSelectorPolicy }}
+        - podSelector:
+            matchLabels:
+              {{- toYaml $podSelectorPolicy | nindent 14 -}}
+        {{- end }}
       ports:
         - protocol: TCP
           port: 6379
