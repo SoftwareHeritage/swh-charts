@@ -34,11 +34,7 @@ svix:
     # If false, the redis is not deployed through the chart but through
     # the k8s-cluster-config repository configuration
     managedByChart: false
-    queueType: rediscluster
-    cacheType: rediscluster
-    dsn: redis-svix-leader
-    podSelectorPolicy:
-      app: redis-svix-leader
+    dsn: redis-svix
   whitelistSubnets:
     - 10.42.0.0/16
     - 10.43.0.0/16
