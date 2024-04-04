@@ -83,7 +83,17 @@ Create a global storage configuration based on configuration section aggregation
   {{- if not (hasKey $pipelineStep "cls") -}}
     {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
   {{- end -}}
-  {{- $pipelineSteps = mustAppend $pipelineSteps $pipelineStep -}}
+  {{- if (eq $pipelineStep.cls "masking") -}}
+    {{- if not (hasKey $pipelineStep "postgresqlConfigurationRef") -}}
+      {{- fail (print "_helpers.tpl:swh.storage.parsePpipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
+    {{- end -}}
+    {{- $maskingQueryDb := include "swh.connstring"
+                                   (dict "Values" $Values
+                                         "configurationRef" $pipelineStep.postgresqlConfigurationRef) -}}
+    {{- $pipelineSteps = mustAppend $pipelineSteps (dict "cls" "masking" "masking_db" $maskingQueryDb) -}}
+  {{- else -}}
+    {{- $pipelineSteps = mustAppend $pipelineSteps $pipelineStep -}}
+  {{- end -}}
 {{- end -}}
 {{ $pipelineSteps | toYaml }}
 {{- end -}}

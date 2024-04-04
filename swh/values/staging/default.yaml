@@ -75,6 +75,10 @@ storagePipelineStepsWithRecordReferences:
 readOnlyStoragePipelineSteps:
   - cls: retry
 
+readOnlyStorageBackendPipelineSteps:
+  - cls: masking
+    postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
+
 remoteReadWriteStorageConfiguration:
   cls: remote
   url: http://storage-postgresql-read-write-rpc-ingress
@@ -162,6 +166,19 @@ postgresqlMaskingAdminStorageConfiguration:
 postgresqlMaskingAdminStorageBaseConfiguration:
   cls: postgresql
   <<: *masking_admin_configuration
+
+# Passed as postgresqlConfigurationRef to the masking proxy storage
+# pipeline entry
+maskingQueryPostgresqlConfiguration:
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh-masking
+  user: guest
+  pass: ${MASKING_GUEST_PGPASSWORD}
+  secrets:
+    MASKING_GUEST_PGPASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-guest-password
 
 djangoWebConfiguration:
   secrets:

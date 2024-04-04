@@ -93,6 +93,7 @@ cassandraStorageConfiguration:
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
 
 cassandraROStorageConfiguration:
+  pipelineStepsRef: readOnlyStorageBackendPipelineSteps
   storageConfigurationRef: cassandraROStorage
   # XXX: migrate to inlined multiplexed config (to save a round trip through the ingress)?
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration

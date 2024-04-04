@@ -59,7 +59,7 @@ readWriteStorageConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
 
 readOnlyStorageConfiguration:
-  pipelineStepsRef: readOnlyStoragePipelineSteps
+  pipelineStepsRef: readOnlyStorageBackendPipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
 
