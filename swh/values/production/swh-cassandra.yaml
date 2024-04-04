@@ -540,7 +540,7 @@ cassandraChecks:
   journalClientConfigurationRef: journalClientCassandraChecksConfiguration
   deployments:
     origin:
-      #enabled: False
+      enabled: false
       replicas: 4
       journalClientOverrides:
         #on_eof: stop
@@ -548,7 +548,7 @@ cassandraChecks:
           - origin
         batch_size: 1000
     origin-visit:
-      #enabled: False
+      enabled: false
       replicas: 4
       journalClientOverrides:
         #on_eof: stop
@@ -613,7 +613,7 @@ cassandraChecks:
           - snapshot
         batch_size: 200
     extid:
-      #enabled: False
+      enabled: false
       replicas: 4
       journalClientOverrides:
         #on_eof: stop
