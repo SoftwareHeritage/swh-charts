@@ -40,11 +40,7 @@ svix:
     # When false, the redis is not deployed through the chart but through the
     # k8s-cluster-config repository configuration
     managedByChart: false
-    queueType: rediscluster
-    cacheType: rediscluster
-    dsn: redis-ha-svix-leader
-    podSelectorPolicy:
-      app: redis-ha-svix-leader
+    dsn: redis-svix.svix-server
   postgresDsn: db1.internal.staging.swh.network
 
 alerting:
