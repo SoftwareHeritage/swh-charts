@@ -840,6 +840,10 @@ toolbox:
       moduleName: indexer
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    masking:
+      moduleName: storage
+      storageConfigurationRef: postgresqlMaskingAdminStorageConfiguration
+      maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     webhooks:

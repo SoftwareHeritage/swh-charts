@@ -60,5 +60,11 @@ data:
           "configurationRef" $.Values.toolbox.configs.webhooks.webhooksConfigurationRef
           "Values" $.Values) | nindent 4 }}
 {{ end }}
+{{- if hasKey $deployment_config "maskingAdminConfigurationRef" }}
+  {{- include "swh.maskingAdminConfiguration"
+    (dict "serviceType" "masking_admin"
+          "configurationRef" (get $deployment_config "maskingAdminConfigurationRef")
+          "Values" $.Values) | nindent 4 }}
+{{ end }}
 {{ end }}
 {{ end }}
