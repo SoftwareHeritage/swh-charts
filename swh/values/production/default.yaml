@@ -513,7 +513,7 @@ maskingQueryPostgresqlConfiguration:
   pass: ${MASKING_GUEST_PGPASSWORD}
   secrets:
     MASKING_GUEST_PGPASSWORD:
-      secretKeyRef: swh-postgresql-common-secret
+      secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
 djangoWebConfiguration:
