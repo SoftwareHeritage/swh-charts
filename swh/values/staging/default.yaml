@@ -145,9 +145,7 @@ postgresqlSyncmailmapsConfiguration:
       secretKeyRef: swh-postgresql-syncmailmap-secret
       secretKeyName: postgres-syncmailmap-password
 
-# This is used by both the masking admin and the storage backend configuration
-# (used by the database management tools)
-maskingAdminPostgresqlConfiguration: &masking_admin_configuration
+maskingAdminPostgresqlConfiguration:
   host: db1.internal.staging.swh.network
   port: '5432'
   db: swh-masking
@@ -157,15 +155,6 @@ maskingAdminPostgresqlConfiguration: &masking_admin_configuration
     MASKING_ADMIN_PGPASSWORD:
       secretKeyRef: swh-postgresql-masking-secret
       secretKeyName: postgres-swh-masking-password
-
-# swh.toolbox config generation, via the "swh.storageConfig" include, requires
-# one level of indirection
-postgresqlMaskingAdminStorageConfiguration:
-  storageConfigurationRef: postgresqlMaskingAdminStorageBaseConfiguration
-
-postgresqlMaskingAdminStorageBaseConfiguration:
-  cls: postgresql
-  <<: *masking_admin_configuration
 
 # Passed as postgresqlConfigurationRef to the masking proxy storage
 # pipeline entry

@@ -857,7 +857,7 @@ toolbox:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     masking:
       moduleName: storage
-      storageConfigurationRef: postgresqlMaskingAdminStorageConfiguration
+      storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
