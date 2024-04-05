@@ -490,6 +490,17 @@ postgresqlScrubberConfiguration:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
+maskingAdminPostgresqlConfiguration:
+  host: postgresql-masking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-masking
+  user: swh-masking
+  pass: ${MASKING_ADMIN_PGPASSWORD}
+  secrets:
+    MASKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-masking-secret
+      secretKeyName: postgres-swh-masking-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:

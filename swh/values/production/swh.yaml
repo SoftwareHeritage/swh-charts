@@ -913,6 +913,10 @@ toolbox:
       moduleName: indexer
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    masking:
+      moduleName: storage
+      storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
+      maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
 
 indexerStorage:
   enabled: true
