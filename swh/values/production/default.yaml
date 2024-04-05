@@ -303,7 +303,7 @@ roObjstorageAwsAzureLocalFallback:
 cassandraReadOnlyStorageAWSLocalAzureConfiguration:
   storageConfigurationRef: cassandraROStorage
   objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
-  pipelineStepsRef: retryStoragePipelineSteps
+  pipelineStepsRef: maskingStoragePipelineSteps
   secrets: *azure-storage-secrets
 
 roObjstorageAwsLocalAzureFallbackConfiguration:
@@ -500,6 +500,21 @@ maskingAdminPostgresqlConfiguration:
     MASKING_ADMIN_PGPASSWORD:
       secretKeyRef: swh-postgresql-masking-secret
       secretKeyName: postgres-swh-masking-password
+
+maskingStoragePipelineSteps:
+  - cls: masking
+    postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
+
+maskingQueryPostgresqlConfiguration:
+  host: postgresql-masking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-masking
+  user: guest
+  pass: ${MASKING_GUEST_PGPASSWORD}
+  secrets:
+    MASKING_GUEST_PGPASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-guest-password
 
 djangoWebConfiguration:
   secrets:
