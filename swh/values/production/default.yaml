@@ -398,10 +398,6 @@ remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress
 
-legacyIndexerStorageConfiguration:
-  cls: remote
-  url: http://saam.internal.softwareheritage.org:5007/
-
 remoteReadOnlyIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-only-rpc-ingress
