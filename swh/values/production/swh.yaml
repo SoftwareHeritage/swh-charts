@@ -769,41 +769,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_svn_image
-    osdn:
-      image: swh_loader_savecodenow_image
-      requestedMemory: 2Gi
-      requestedCpu: 200m
-      limitedMemory: 25Gi
-      queues:
-        - osdn:swh.loader.bzr.tasks.LoadBazaar
-        - osdn:swh.loader.cvs.tasks.LoadCvsRepository
-        - osdn:swh.loader.git.tasks.UpdateGitRepository
-        - osdn:swh.loader.mercurial.tasks.LoadMercurial
-        - osdn:swh.loader.svn.tasks.LoadSvnRepository
-        - osdn:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 32
-      extraConfig:
-        overrides:
-          swh.loader.git.loader.GitLoader:
-            # 10Gib
-            temp_file_cutoff: 10737418240
-            # 32Gib
-            pack_size_bytes: 34359738368
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: "swh/loader"
-                    operator: In
-                    values:
-                      - "true"
-                  - key: "swh/large-scratch-fs"
-                    operator: In
-                    values:
-                      - "true"
 
 loader_metadata:
   enabled: true
