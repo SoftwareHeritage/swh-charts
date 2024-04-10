@@ -616,3 +616,19 @@ externalServices:
     counters:
       internalName: counters-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+
+svixConfiguration:
+  svix:
+    server_url: https://svix.internal.softwareheritage.org
+    auth_token: ${SVIX_AUTH_TOKEN}
+  event_retention_period: 7
+  secrets:
+    SVIX_AUTH_TOKEN:
+      secretKeyRef: common-secrets
+      secretKeyName: svix-token
+
+webhooksConfiguration:
+  secrets:
+    WEBHOOKS_SECRET:
+      secretKeyRef: common-secrets
+      secretKeyName: webhooks-secret

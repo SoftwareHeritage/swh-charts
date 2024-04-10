@@ -917,6 +917,8 @@ toolbox:
       moduleName: storage
       storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
 
 indexerStorage:
   enabled: true
@@ -1436,6 +1438,13 @@ web:
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
             authentication: swh/web-auth-secrets
+          webhooks:
+            paths:
+              - path: /save/origin/visit/webhook
+            extraWhitelistSourceRange:
+              - 192.168.100.1
+              - 192.168.100.2
+              - 192.168.100.3
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -1447,11 +1456,13 @@ web:
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
       addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
 
       extraConfig:
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
           metadata_backend: swh-search
         inbound_email:
@@ -1858,3 +1869,19 @@ counters:
           extraWhitelistSourceRange:
             # vpn network
             - 192.168.101.0/24
+
+webhooks:
+  enabled: true
+  svixConfigurationRef: svixConfiguration
+  journalClientConfigurationRef: journalClientConfiguration
+  priorityClassName: frontend-rpc-workload
+  deployments:
+    origin-visit-status:
+      replicas: 1
+      requestedCpu: 100m
+      requestedMemory: 100Mi
+      journalClientOverrides:
+        auto_offset_reset: latest
+        group_id: swh-archive-prod-webhooks
+        object_types:
+          - origin_visit_status
