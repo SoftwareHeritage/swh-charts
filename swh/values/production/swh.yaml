@@ -1406,7 +1406,7 @@ web:
       requestedCpu: 350m
       requestedMemory: 6Gi
       refreshSavecodenowStatus:
-        enabled: true
+        enabled: false
         concurrencyPolicy: Forbid
         priorityClassName: frontend-rpc-workload
         cron: "*/2 * * * *"
