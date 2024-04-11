@@ -1443,6 +1443,9 @@ web:
               - path: /save/origin/visit/webhook
             extraWhitelistSourceRange:
               - 192.168.100.0/24
+              # temporary access due to the absence of TLS termination on internal ingresses
+              # svix-server endpoints requires TLS connections
+              - 128.93.166.2/32
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
