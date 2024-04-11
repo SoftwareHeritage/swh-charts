@@ -586,7 +586,7 @@ cassandraChecks:
           - directory
         batch_size: 200
     revision:
-      #enabled: False
+      enabled: False
       replicas: 24
       requestedCpu: 600m
       journalClientOverrides:
