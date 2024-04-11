@@ -1750,15 +1750,15 @@ objstorageReplayer:
     winery:
       replicas: 24
       fetchConcurrency: 20
-      checkDestination: "false"
+      checkDestination: "true"
       journalClientOverrides:
-        group_id: swh-archive-prod-winery-content-replayer
+        group_id: swh-archive-prod-winery-content-replayer-check
         auto_offset_reset: earliest
         batch_size: 1000
       error_reporter:
         host: redis-winery-replay.redis
         port: 6379
-        db: 0
+        db: 1
 
 vault:
   enabled: true
