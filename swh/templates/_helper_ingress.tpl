@@ -72,7 +72,7 @@ spec:
               number: {{ $port }}
       {{ end }}
   {{- end }}
-  {{- if and $configuration.ingress.tlsEnabled $configuration.ingress.secretName }}
+  {{- if and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.secretName }}
   tls:
   - hosts:
     {{- range $host := $hosts }}
@@ -85,4 +85,3 @@ spec:
   {{- end }}
 {{ end }}
 {{ end }}
-
