@@ -1423,8 +1423,12 @@ web:
         - archive-dynamic.internal.softwareheritage.org
       ingress:
         enabled: true
+        secretName: swh-web-crt
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
         endpoints:
           default:
             paths:
