@@ -1443,6 +1443,7 @@ web:
             # auth-file with authentication
             authentication: swh/web-auth-secrets
           webhooks:
+            tlsEnabled: true
             paths:
               - path: /save/origin/visit/webhook
             extraWhitelistSourceRange:
