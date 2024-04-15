@@ -41,6 +41,9 @@ metadata:
   {{- if $configuration.ingress.extraAnnotations -}}
   {{ toYaml $configuration.ingress.extraAnnotations | nindent 4 }}
   {{- end -}}
+  {{- if and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.tlsExtraAnnotations -}}
+  {{ toYaml $configuration.ingress.tlsExtraAnnotations | nindent 4 }}
+  {{- end -}}
   {{- if $authenticated }}
     # type of authentication
     nginx.ingress.kubernetes.io/auth-type: basic

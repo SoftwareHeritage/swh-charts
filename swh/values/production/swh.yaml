@@ -1426,6 +1426,7 @@ web:
         secretName: swh-web-crt
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
+        tlsExtraAnnotations:
           cert-manager.io/cluster-issuer: letsencrypt-production-gandi
           kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
