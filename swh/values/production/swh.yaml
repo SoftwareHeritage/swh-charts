@@ -48,7 +48,7 @@ rwStoragePostgresqlConfiguration:
   pipelineStepsRef: emptyStoragePipelineSteps
 
 readOnlyStorageConfiguration:
-  pipelineStepsRef: emptyStoragePipelineSteps
+  pipelineStepsRef: maskingStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
 
