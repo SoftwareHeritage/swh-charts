@@ -343,7 +343,7 @@ listers:
       queues:
         - swh.lister.cgit.tasks.CGitListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
@@ -360,7 +360,7 @@ listers:
       - swh.lister.gitea.tasks.RangeGiteaLister
       - swh.lister.gitea.tasks.FullGiteaRelister
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     github-full:
       queues:
       - swh.lister.github.tasks.FullGitHubRelister
@@ -376,7 +376,7 @@ listers:
       queues:
       - swh.lister.gitiles.tasks.GitilesListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     gitlab:
       queues:
       - swh.lister.gitlab.tasks.IncrementalGitLabLister
@@ -387,7 +387,7 @@ listers:
       queues:
       - swh.lister.gitweb.tasks.GitwebListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     gnu-full:
       queues:
         - swh.lister.gnu.tasks.GNUListerTask
@@ -427,7 +427,7 @@ listers:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
       extraConfig:
         # extra extensions to ignore
         extensions_to_ignore:
@@ -446,7 +446,7 @@ listers:
       queues:
         - swh.lister.pagure.tasks.PagureListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
     phabricator:
       queues:
       - swh.lister.phabricator.tasks.FullPhabricatorLister
@@ -478,7 +478,7 @@ listers:
       queues:
       - swh.lister.stagit.tasks.StagitListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 2
 
 checker_deposit:
   enabled: true
