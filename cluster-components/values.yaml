@@ -126,6 +126,9 @@ alerting:
     smallDelay: 15m
   cassandra:
     unrepairedSize: 214748364800
+  saveCodeNow:
+    aggregatedPeriod: 1h
+    threshold: 10
 
 scrapeExternalMetrics:
   enabled: false

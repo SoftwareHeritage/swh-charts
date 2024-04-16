@@ -46,6 +46,8 @@ svix:
 alerting:
   enabled: true
   environment: staging
+  saveCodeNow:
+    threshold: 5
 
 scrapeExternalMetrics:
   enabled: true

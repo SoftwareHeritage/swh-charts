@@ -46,5 +46,14 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
+    - alert: SaveCodeNow_Is_Stale_In_{{ .environment | title }}
+      annotations:
+        description: "The save code now request status may be lagging for more than {{ trimSuffix "m" .period.tinyDelay }} minutes."
+        summary: "Please check the svix server on cluster {{"{{"}} $labels.cluster_name {{"}}"}}."
+      expr: avg_over_time(swh_web_submitted_save_requests{environment="{{ .environment }}",status="pending"}[{{ .saveCodeNow.aggregatedPeriod }}]) > {{ .saveCodeNow.threshold }}
+      for: {{ .period.tinyDelay }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
 {{- end }}
 {{- end }}
