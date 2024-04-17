@@ -72,7 +72,7 @@ journalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
 
-azureObjStorageConfiguration: &azure-storage-conf
+azureObjStorageRWConfiguration: &azure-storage-conf-rw
   cls: azure-prefixed
   accounts:
     '0':
@@ -140,7 +140,7 @@ azureObjStorageConfiguration: &azure-storage-conf
       api_secret_key: ${API_SECRET_KEY_15}
       container_name: contents
 
-azureObjStorageConfigurationSecrets: &azure-storage-secrets
+azureObjStorageRWConfigurationSecrets: &azure-storage-secrets-rw
   ACCOUNT_NAME_0:
     secretKeyRef: swh-objstorage-config
     secretKeyName: 0_account_name
@@ -238,10 +238,80 @@ azureObjStorageConfigurationSecrets: &azure-storage-secrets
     secretKeyRef: swh-objstorage-config
     secretKeyName: 15_api_secret_key
 
+azureObjStorageROConfiguration: &azure-storage-conf-ro
+  cls: azure-prefixed
+  accounts:
+    '0': ${AZURE_RO_URL_0}
+    '1': ${AZURE_RO_URL_1}
+    '2': ${AZURE_RO_URL_2}
+    '3': ${AZURE_RO_URL_3}
+    '4': ${AZURE_RO_URL_4}
+    '5': ${AZURE_RO_URL_5}
+    '6': ${AZURE_RO_URL_6}
+    '7': ${AZURE_RO_URL_7}
+    '8': ${AZURE_RO_URL_8}
+    '9': ${AZURE_RO_URL_9}
+    'a': ${AZURE_RO_URL_A}
+    'b': ${AZURE_RO_URL_B}
+    'c': ${AZURE_RO_URL_C}
+    'd': ${AZURE_RO_URL_D}
+    'e': ${AZURE_RO_URL_E}
+    'f': ${AZURE_RO_URL_F}
+
+azureObjStorageROConfigurationSecrets: &azure-storage-secrets-ro
+  AZURE_RO_URL_0:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_0
+  AZURE_RO_URL_1:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_1
+  AZURE_RO_URL_2:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_2
+  AZURE_RO_URL_3:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_3
+  AZURE_RO_URL_4:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_4
+  AZURE_RO_URL_5:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_5
+  AZURE_RO_URL_6:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_6
+  AZURE_RO_URL_7:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_7
+  AZURE_RO_URL_8:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_8
+  AZURE_RO_URL_9:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_9
+  AZURE_RO_URL_A:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_a
+  AZURE_RO_URL_B:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_b
+  AZURE_RO_URL_C:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_c
+  AZURE_RO_URL_D:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_d
+  AZURE_RO_URL_E:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_e
+  AZURE_RO_URL_F:
+    secretKeyRef: swh-objstorage-azure-ro
+    secretKeyName: container_url_f
+
 
 roObjstorageConfiguration:
   configurationRef: roObjstorageAwsLocalAzureFallback
-  secrets: *azure-storage-secrets
+  secrets: *azure-storage-secrets-ro
 
 roObjstorageAwsLocalAzureFallback:
   cls: multiplexer
@@ -254,10 +324,7 @@ roObjstorageAwsLocalAzureFallback:
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
     url: http://objstorage-ro-banco-xfs-rpc-ingress
-  - cls: filtered
-    storage_conf: *azure-storage-conf
-    filters_conf:
-    - type: readonly
+  - *azure-storage-conf-ro
 
 roObjstorageAwsAzureLocalFallback:
   cls: multiplexer
@@ -266,10 +333,7 @@ roObjstorageAwsAzureLocalFallback:
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
     timeout: 120
-  - cls: filtered
-    storage_conf: *azure-storage-conf
-    filters_conf:
-    - type: readonly
+  - *azure-storage-conf-ro
   - cls: remote
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
@@ -279,15 +343,15 @@ cassandraReadOnlyStorageAWSLocalAzureConfiguration:
   storageConfigurationRef: cassandraROStorage
   objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
   pipelineStepsRef: maskingStoragePipelineSteps
-  secrets: *azure-storage-secrets
+  secrets: *azure-storage-secrets-ro
 
 roObjstorageAwsLocalAzureFallbackConfiguration:
   configurationRef: roObjstorageAwsLocalAzureFallback
-  secrets: *azure-storage-secrets
+  secrets: *azure-storage-secrets-ro
 
 roObjstorageAwsAzureLocalFallbackConfiguration:
   configurationRef: roObjstorageAwsAzureLocalFallback
-  secrets: *azure-storage-secrets
+  secrets: *azure-storage-secrets-ro
 
 pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
   cls: pathslicing
@@ -312,7 +376,7 @@ rwObjstorageLocalSaamAndAzure:
   cls: multiplexer
   objstorages:
   - *objstorage-saam-zfs-pathslicing-conf
-  - *azure-storage-conf
+  - *azure-storage-conf-rw
 
 readonlySaamZfsObjstorageConfiguration:
   cls: filtered
@@ -328,7 +392,7 @@ rwStoragePostgresqlWithSaamObjstorageConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageLocalSaamAndAzure
   pipelineStepsRef: rwStoragePipelineSteps
-  secrets: *azure-storage-secrets
+  secrets: *azure-storage-secrets-rw
 
 retryStoragePipelineSteps:
   - cls: retry
