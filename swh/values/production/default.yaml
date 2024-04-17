@@ -238,22 +238,9 @@ azureObjStorageConfigurationSecrets: &azure-storage-secrets
     secretKeyRef: swh-objstorage-config
     secretKeyName: 15_api_secret_key
 
-pipelineAzureROObjstorageConfiguration:
-  cls: multiplexer
-  objstorages:
-  - cls: filtered
-    storage_conf: *azure-storage-conf
-    filters_conf:
-    - type: readonly
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://objstorage.internal.softwareheritage.org:5003/
-    filters_conf:
-    - type: readonly
 
 roObjstorageConfiguration:
-  configurationRef: pipelineAzureROObjstorageConfiguration
+  configurationRef: roObjstorageAwsLocalAzureFallback
   secrets: *azure-storage-secrets
 
 roObjstorageAwsLocalAzureFallback:
