@@ -316,6 +316,8 @@ roObjstorageConfiguration:
 roObjstorageBestEffort:
   cls: multiplexer
   objstorages:
+  - cls: remote
+    url: http://frontends.internal.cea.swh.network
   - cls: http
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
@@ -333,6 +335,8 @@ roObjstorageBestEffortConfiguration:
 roObjstorageHighParallelism:
   cls: multiplexer
   objstorages:
+  - cls: remote
+    url: http://frontends.internal.cea.swh.network
   - cls: http
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
@@ -351,6 +355,23 @@ cassandraReadOnlyStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
   objstorageConfigurationRef: roObjstorageBestEffort
   pipelineStepsRef: maskingStoragePipelineSteps
+  secrets: *azure-storage-secrets-ro
+
+roObjstorageForWineryReplayer:
+  cls: multiplexer
+  objstorages:
+  - cls: http
+    url: https://softwareheritage.s3.amazonaws.com/content/
+    compression: gzip
+    timeout: 120
+  - cls: remote
+    url: http://objstorage-ro-saam-zfs-rpc-ingress
+  - cls: remote
+    url: http://objstorage-ro-banco-xfs-rpc-ingress
+  - *azure-storage-conf-ro
+
+roObjstorageForWineryReplayerConfiguration:
+  configurationRef: roObjstorageForWineryReplayer
   secrets: *azure-storage-secrets-ro
 
 pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf

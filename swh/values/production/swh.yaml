@@ -1754,10 +1754,10 @@ deposit:
 objstorageReplayer:
   enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
-  sourceObjstorageConfigurationRef: roObjstorageBestEffortConfiguration
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
   deployments:
     winery:
+      sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 24
       fetchConcurrency: 20
       checkDestination: "true"
