@@ -27,7 +27,7 @@ remoteROCassandraIngressStorageConfiguration:
 
 wineryRWObjectstorageConfiguration:
   cls: remote
-  url: http://gloin001.internal.cea.swh.network
+  url: http://frontends.internal.cea.swh.network
 
 postgresqlRWStorageConfiguration:
   cls: postgresql
