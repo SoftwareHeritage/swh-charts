@@ -184,7 +184,6 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
-      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
@@ -389,7 +388,6 @@ loaders:
       requestedMemory: 3Gi
       requestedCpu: 1000m
     svn:
-      enabled: false
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
