@@ -252,12 +252,8 @@ roObjstorageAwsLocalAzureFallback:
     timeout: 120
   - cls: remote
     url: http://objstorage-ro-saam-zfs-rpc-ingress
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://objstorage-ro-banco-xfs-rpc-ingress
-    filters_conf:
-    - type: readonly
+  - cls: remote
+    url: http://objstorage-ro-banco-xfs-rpc-ingress
   - cls: filtered
     storage_conf: *azure-storage-conf
     filters_conf:
@@ -266,26 +262,18 @@ roObjstorageAwsLocalAzureFallback:
 roObjstorageAwsAzureLocalFallback:
   cls: multiplexer
   objstorages:
-  - cls: filtered
-    storage_conf:
-      # AWS storage
-      cls: http
-      url: https://softwareheritage.s3.amazonaws.com/content/
-      compression: gzip
-      timeout: 120
-    filters_conf:
-    - type: readonly
+  - cls: http
+    url: https://softwareheritage.s3.amazonaws.com/content/
+    compression: gzip
+    timeout: 120
   - cls: filtered
     storage_conf: *azure-storage-conf
     filters_conf:
     - type: readonly
-  - cls: filtered
-    storage_conf:
-      # banco/saam
-      cls: remote
-      url: http://objstorage-read-only-rpc-ingress
-    filters_conf:
-    - type: readonly
+  - cls: remote
+    url: http://objstorage-ro-saam-zfs-rpc-ingress
+  - cls: remote
+    url: http://objstorage-ro-banco-xfs-rpc-ingress
 
 cassandraReadOnlyStorageAWSLocalAzureConfiguration:
   storageConfigurationRef: cassandraROStorage
@@ -315,18 +303,10 @@ readonlyBancoXfsObjstorageConfiguration:
 multiplexerBancoSaamRemoteConfiguration:
   cls: multiplexer
   objstorages:
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://objstorage-ro-banco-xfs-rpc-ingress
-    filters_conf:
-    - type: readonly
-  - cls: filtered
-    storage_conf:
-      cls: remote
-      url: http://objstorage-ro-saam-zfs-rpc-ingress
-    filters_conf:
-    - type: readonly
+  - cls: remote
+    url: http://objstorage-ro-banco-xfs-rpc-ingress
+  - cls: remote
+    url: http://objstorage-ro-saam-zfs-rpc-ingress
 
 rwObjstorageLocalSaamAndAzure:
   cls: multiplexer
