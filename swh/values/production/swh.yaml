@@ -1423,7 +1423,7 @@ web:
         - archive-dynamic.internal.softwareheritage.org
       ingress:
         enabled: true
-        secretName: swh-web-crt
+        secretName: swh-web-archive-crt
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
         tlsExtraAnnotations:
