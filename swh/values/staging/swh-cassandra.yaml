@@ -222,7 +222,6 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 100m
     git-checkout:
-      enabled: false
       image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
