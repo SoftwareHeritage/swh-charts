@@ -50,7 +50,7 @@ rwStoragePostgresqlConfiguration:
 readOnlyStorageConfiguration:
   pipelineStepsRef: maskingStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
-  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
+  objstorageConfigurationRef: roObjstorageBestEffortConfiguration
 
 postgresqlDepositConfiguration:
   host: postgresql-deposit-rw.internal.softwareheritage.org
@@ -988,7 +988,7 @@ indexers:
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteReadWriteIndexerStorageConfiguration
-  objstorageConfigurationRef: roObjstorageAwsAzureLocalFallbackConfiguration
+  objstorageConfigurationRef: roObjstorageHighParallelismConfiguration
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     extrinsic:
@@ -1754,7 +1754,7 @@ deposit:
 objstorageReplayer:
   enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
-  sourceObjstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
+  sourceObjstorageConfigurationRef: roObjstorageBestEffortConfiguration
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
   deployments:
     winery:
@@ -1777,7 +1777,7 @@ vault:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   vaultConfigurationRef: postgresqlVaultConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
-  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallbackConfiguration
+  objstorageConfigurationRef: roObjstorageBestEffortConfiguration
   cacheConfigurationRef: azureCacheConfiguration
   replicas: 2
   gunicorn:
@@ -1814,7 +1814,7 @@ cookers:
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   graphConfigurationRef: vaultGraphConfiguration
-  objstorageConfigurationRef: roObjstorageAwsAzureLocalFallbackConfiguration
+  objstorageConfigurationRef: roObjstorageHighParallelismConfiguration
   deployments:
     simple:
       ackLate: true

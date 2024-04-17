@@ -310,10 +310,10 @@ azureObjStorageROConfigurationSecrets: &azure-storage-secrets-ro
 
 
 roObjstorageConfiguration:
-  configurationRef: roObjstorageAwsLocalAzureFallback
+  configurationRef: roObjstorageBestEffort
   secrets: *azure-storage-secrets-ro
 
-roObjstorageAwsLocalAzureFallback:
+roObjstorageBestEffort:
   cls: multiplexer
   objstorages:
   - cls: http
@@ -326,7 +326,11 @@ roObjstorageAwsLocalAzureFallback:
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - *azure-storage-conf-ro
 
-roObjstorageAwsAzureLocalFallback:
+roObjstorageBestEffortConfiguration:
+  configurationRef: roObjstorageBestEffort
+  secrets: *azure-storage-secrets-ro
+
+roObjstorageHighParallelism:
   cls: multiplexer
   objstorages:
   - cls: http
@@ -339,18 +343,14 @@ roObjstorageAwsAzureLocalFallback:
   - cls: remote
     url: http://objstorage-ro-banco-xfs-rpc-ingress
 
-cassandraReadOnlyStorageAWSLocalAzureConfiguration:
+roObjstorageHighParallelismConfiguration:
+  configurationRef: roObjstorageHighParallelism
+  secrets: *azure-storage-secrets-ro
+
+cassandraReadOnlyStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
-  objstorageConfigurationRef: roObjstorageAwsLocalAzureFallback
+  objstorageConfigurationRef: roObjstorageBestEffort
   pipelineStepsRef: maskingStoragePipelineSteps
-  secrets: *azure-storage-secrets-ro
-
-roObjstorageAwsLocalAzureFallbackConfiguration:
-  configurationRef: roObjstorageAwsLocalAzureFallback
-  secrets: *azure-storage-secrets-ro
-
-roObjstorageAwsAzureLocalFallbackConfiguration:
-  configurationRef: roObjstorageAwsAzureLocalFallback
   secrets: *azure-storage-secrets-ro
 
 pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf

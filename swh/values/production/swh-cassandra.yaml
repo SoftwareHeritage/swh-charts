@@ -270,7 +270,7 @@ storage:
         cpuPercentageUsage: 150
       requestedCpu: 500m
       requestedMemory: 1.5Gi
-      storageConfigurationRef: cassandraReadOnlyStorageAWSLocalAzureConfiguration
+      storageConfigurationRef: cassandraReadOnlyStorageConfiguration
       hosts:
         - storage-cassandra-ro.softwareheritage.org
       ingress:
@@ -293,7 +293,7 @@ storage:
         cpuPercentageUsage: 150
       requestedCpu: 500m
       requestedMemory: 1.5Gi
-      storageConfigurationRef: cassandraReadOnlyStorageAWSLocalAzureConfiguration
+      storageConfigurationRef: cassandraReadOnlyStorageConfiguration
       hosts:
         - storage-cassandra-read-only-rpc-ingress
       ingress:
