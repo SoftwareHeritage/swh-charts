@@ -4,11 +4,12 @@
 Create a Kind Ingress for service .serviceType
 */}}
 {{- define "swh.ingress" -}}
-{{- $serviceType := .serviceType }}
-{{- $configuration := .configuration }}
-{{- $hosts := $configuration.hosts }}
+{{- $serviceType := .serviceType -}}
+{{- $configuration := .configuration -}}
+{{- $hosts := pluck "hosts" $configuration.ingress $configuration | first -}}
 {{- $defaultWhitelistSourceRangeRef := $configuration.ingress.whitelistSourceRangeRef | default "inexistant" -}}
 {{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
+{{- $nameLabel := hasKey . "extraNameLabel" | ternary (print "ingress-" .extraNameLabel) "ingress" -}}
 {{- range $endpoint_definition, $endpoint_config := $configuration.ingress.endpoints -}}
 {{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
@@ -19,7 +20,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: {{ $serviceType }}-ingress-{{ $endpoint_definition }}
+  name: {{ $serviceType }}-{{ $nameLabel }}-{{ $endpoint_definition }}
   labels:
     app: {{ $serviceType }}
     endpoint-definition: {{ $endpoint_definition }}

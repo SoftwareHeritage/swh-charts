@@ -5,6 +5,17 @@
 {{- include "swh.ingress" (dict "serviceType"   ( print "objstorage-" $objstorage_type )
                                 "configuration" $deployment_config
                                 "Values"        $.Values) -}}
+{{- if $deployment_config.extraIngresses -}}
+{{ $extraNameLabelCtr := 0 }}
+{{ range $extra_ingress_config := $deployment_config.extraIngresses }}
+{{ $extraNameLabelCtr = add $extraNameLabelCtr 1 }}
+{{- $merged_ingress_config := mustMergeOverwrite (omit $deployment_config "extraIngresses" "ingress") (dict "ingress" (mustMergeOverwrite $deployment_config.ingress $extra_ingress_config)) -}}
+{{- include "swh.ingress" (dict "serviceType"    ( print "objstorage-" $objstorage_type )
+                                "configuration"  $merged_ingress_config
+                                "extraNameLabel" ( print "extra-" $extraNameLabelCtr )
+                                "Values"         $.Values) -}}
+{{- end -}}
+{{- end -}}
 {{- end -}}
 {{ end -}}
 {{- end -}}
