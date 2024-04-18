@@ -388,6 +388,12 @@ readonlyBancoXfsObjstorageConfiguration:
 multiplexerForLocalStoragesConfiguration:
   cls: multiplexer
   objstorages:
+  - cls: filtered
+    storage_conf:
+      cls: remote
+      url: http://frontends.internal.cea.swh.network
+    filters_conf:
+      - type: readonly
   - cls: remote
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - cls: remote
