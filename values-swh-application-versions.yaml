@@ -5,9 +5,9 @@ software_stories_image_version: '20230912.1'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20240229.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
-swh_deposit_checkers_image_version: '20240404.1'
+swh_deposit_checkers_image_version: '20240418.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
-swh_deposit_image_version: '20240404.1'
+swh_deposit_image_version: '20240418.1'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20240404.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
