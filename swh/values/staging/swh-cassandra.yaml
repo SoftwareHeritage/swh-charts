@@ -1133,8 +1133,7 @@ objstorage:
           endpoints:
             default:
               extraWhitelistSourceRange: []
-
-
+              authentication: swh-cassandra/ingress-objstorage-ro-auth-secrets
     # read-write objstorage
     multiplexer-read-write:
       enabled: true
