@@ -1453,6 +1453,7 @@ web:
               # svix-server endpoints requires TLS connections
               - 128.93.166.2/32
               - 10.42.0.0/16
+              - 10.43.0.0/16
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
