@@ -385,7 +385,7 @@ readonlyBancoXfsObjstorageConfiguration:
   root: "/srv/softwareheritage/objects"
   slicing: 0:2/2:4/4:6
 
-multiplexerBancoSaamRemoteConfiguration:
+multiplexerForLocalStoragesConfiguration:
   cls: multiplexer
   objstorages:
   - cls: remote
