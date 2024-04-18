@@ -335,7 +335,7 @@ Generate the configuration for a storage journal broker
     {{- $_ := include "swh.secrets.mergeDicts" (dict "collectedSecrets" $collectedSecrets
                                                      "newSecrets" $newSecrets
                                                      "path" $nestedPath) -}}
-  {{- else if (and (ne "secretKeyRef" $key) (hasSuffix "Ref" $key)) -}}
+  {{- else if (and (ne "secretKeyRef" $key) (hasSuffix "Ref" $key) (kindIs "string" $value)) -}}
     {{/* This is an indirect config, we need to pull it from $Values then recurse */}}
     {{- $referencedConfig := get $Values $value | required (print
           "_helpers.tpl:swh.secrets.dictFromDeploymentConfig: "
