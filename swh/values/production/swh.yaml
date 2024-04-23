@@ -1766,6 +1766,7 @@ objstorageReplayer:
   destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
   deployments:
     winery:
+      enabled: false
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 24
       fetchConcurrency: 20
