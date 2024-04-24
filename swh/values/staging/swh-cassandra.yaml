@@ -1000,6 +1000,9 @@ objstorage:
         client_max_size: 1073741824
       hosts:
         - objstorage-db1-rw-rpc-ingress
+        # Temporarily expose fqdn for access by the migration content script. This is to
+        # be removed when such objstorage content migration is done
+        - objstorage-db1-rw.internal.staging.swh.network
       ingress:
         enabled: true
         # mandatory if ingress is enabled
