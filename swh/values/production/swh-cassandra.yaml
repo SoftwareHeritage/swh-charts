@@ -453,6 +453,9 @@ scrubber:
         requestedCpu: 400m
         requestedMemory: 200Mi
       directory-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        # see also https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/issues/5310
+        enabled: false
         configName: storage-cassandra-hashes-directory
         object: directory
         replicas: 8
