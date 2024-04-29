@@ -86,7 +86,7 @@ spec:
           - swh
           - scrubber
           - check
-          - storage
+          - run
           - {{ $deployment_config.configName }}
         env:
         - name: STATSD_HOST
