@@ -567,7 +567,7 @@ cassandraChecks:
           - origin_visit_status
         batch_size: 1000
     skipped-content:
-      enabled: False
+      enabled: false
       replicas: 1
       journalClientOverrides:
         #on_eof: stop
@@ -589,7 +589,7 @@ cassandraChecks:
           - directory
         batch_size: 400
     revision:
-      enabled: False
+      enabled: false
       replicas: 24
       requestedCpu: 600m
       journalClientOverrides:
@@ -599,7 +599,7 @@ cassandraChecks:
         batch_size: 1000
         privileged: true
     release:
-      enabled: False
+      enabled: false
       replicas: 1
       journalClientOverrides:
         on_eof: stop
@@ -608,7 +608,7 @@ cassandraChecks:
         batch_size: 1000
         privileged: true
     snapshot:
-      enabled: False
+      enabled: false
       replicas: 2
       journalClientOverrides:
         #on_eof: stop
