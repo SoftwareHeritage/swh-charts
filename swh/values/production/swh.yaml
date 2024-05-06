@@ -1893,7 +1893,7 @@ webhooks:
   priorityClassName: frontend-rpc-workload
   deployments:
     origin-visit-status:
-      replicas: 1
+      replicas: 2
       requestedCpu: 100m
       requestedMemory: 100Mi
       journalClientOverrides:
