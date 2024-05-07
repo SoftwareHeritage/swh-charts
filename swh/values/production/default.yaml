@@ -316,8 +316,8 @@ roObjstorageConfiguration:
 roObjstorageBestEffort:
   cls: multiplexer
   objstorages:
-  # - cls: remote
-  #   url: http://winery-read-only.internal.cea.swh.network
+  - cls: remote
+    url: http://winery-read-only.internal.cea.swh.network
   - cls: http
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
@@ -335,8 +335,8 @@ roObjstorageBestEffortConfiguration:
 roObjstorageHighParallelism:
   cls: multiplexer
   objstorages:
-  # - cls: remote
-  #   url: http://winery-read-only.internal.cea.swh.network
+  - cls: remote
+    url: http://winery-read-only.internal.cea.swh.network
   - cls: http
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
@@ -388,8 +388,8 @@ readonlyBancoXfsObjstorageConfiguration:
 multiplexerForLocalStoragesConfiguration:
   cls: multiplexer
   objstorages:
-  # - cls: remote
-  #   url: http://winery-read-only.internal.cea.swh.network
+  - cls: remote
+    url: http://winery-read-only.internal.cea.swh.network
   - cls: remote
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - cls: remote
