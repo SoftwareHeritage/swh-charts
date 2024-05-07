@@ -357,6 +357,10 @@ cassandraReadOnlyStorageConfiguration:
   pipelineStepsRef: maskingStoragePipelineSteps
   secrets: *azure-storage-secrets-ro
 
+wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
+  cls: remote
+  url: http://winery-read-write.internal.cea.swh.network
+
 roObjstorageForWineryReplayer:
   cls: multiplexer
   objstorages:
@@ -410,10 +414,10 @@ multiplexerForLocalStoragesConfiguration:
   - cls: remote
     url: http://objstorage-ro-saam-zfs-rpc-ingress
 
-rwObjstorageLocalSaamAndAzure:
+rwObjstorageWineryAndAzure:
   cls: multiplexer
   objstorages:
-  - *objstorage-saam-zfs-pathslicing-conf
+  - *winery-objstorage-conf-rw
   - *azure-storage-conf-rw
 
 readonlySaamZfsObjstorageConfiguration:
@@ -425,10 +429,10 @@ readonlySaamZfsObjstorageConfiguration:
 rwStoragePipelineSteps:
   - cls: record_references
 
-rwStoragePostgresqlWithSaamObjstorageConfiguration:
+rwStoragePostgresqlWithWineryObjstorageConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
-  objstorageConfigurationRef: rwObjstorageLocalSaamAndAzure
+  objstorageConfigurationRef: rwObjstorageWineryAndAzure
   pipelineStepsRef: rwStoragePipelineSteps
   secrets: *azure-storage-secrets-rw
 
@@ -679,8 +683,8 @@ externalServices:
     objstorage-ro-banco-xfs:
       internalName: objstorage-ro-banco-xfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    storage-rw-postgresql-saam:
-      internalName: storage-rw-postgresql-saam-ingress
+    storage-rw-postgresql:
+      internalName: storage-rw-postgresql-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     counters:
       internalName: counters-rpc-ingress

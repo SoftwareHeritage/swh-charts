@@ -2,13 +2,13 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-rpcRWSaamStorageConfiguration:
+rpcRWStorageConfiguration:
   cls: remote
-  url: http://storage-rw-postgresql-saam-ingress
+  url: http://storage-rw-postgresql-ingress
 
-remoteRpcRWSaamStorageConfiguration:
+remoteRpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: rpcRWSaamStorageConfiguration
+  storageConfigurationRef: rpcRWStorageConfiguration
 
 remoteStorageConfiguration:
   cls: remote
@@ -24,10 +24,6 @@ remoteROStorageConfiguration:
 remoteROCassandraIngressStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
-
-wineryRWObjectstorageConfiguration:
-  cls: remote
-  url: http://winery-read-write.internal.cea.swh.network
 
 s3RWObjectstorageConfiguration:
   cls: s3
@@ -513,7 +509,7 @@ checker_deposit:
 
 loaders:
   enabled: true
-  storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
+  storageConfigurationRef: remoteRpcRWStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     add-forge-now:
@@ -802,7 +798,7 @@ loaders:
 
 loader_metadata:
   enabled: true
-  storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
+  storageConfigurationRef: remoteRpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
@@ -1133,7 +1129,7 @@ search:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: remoteRpcRWSaamStorageConfiguration
+  storageConfigurationRef: remoteRpcRWStorageConfiguration
   priorityClassName: background-workload
   journalChecker:
     enabled: true
@@ -1337,7 +1333,7 @@ storage:
         threads: 4
         workers: 8
     # Main instance used by loaders to write
-    postgresql-saam-zfs:
+    postgresql-winery:
       requestedCpu: 1000m
       requestedMemory: 2Gi
       autoScaling:
@@ -1348,30 +1344,10 @@ storage:
         workers: 16
         threads: 1
         timeout: 3600
-      nodeSelector:
-        kubernetes.io/hostname: saam
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: swh/storage-pathslicing
-                operator: In
-                values:
-                - "true"
-      storageConfigurationRef: rwStoragePostgresqlWithSaamObjstorageConfiguration
+      storageConfigurationRef: rwStoragePostgresqlWithWineryObjstorageConfiguration
       dnsConfigurationRef: dnsConfiguration
-      extraVolumes:
-        pathslicing-rw:
-          # This must match what's declared in the instance config key
-          # storageConfigurationRef just above
-          mountPath: /srv/softwareheritage/objects
-          volumeDefinition:
-            hostPath:
-              path: /srv/softwareheritage/objects
-              type: Directory
       hosts:
-        - storage-rw-postgresql-saam-ingress
+        - storage-rw-postgresql-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -1761,7 +1737,7 @@ deposit:
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: rpcRWSaamStorageConfiguration
+  storageMetadataConfigurationRef: rpcRWStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
@@ -1780,7 +1756,7 @@ objstorageReplayer:
   deployments:
     winery:
       enabled: true
-      destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
+      destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 4
       fetchConcurrency: 20
