@@ -29,6 +29,22 @@ wineryRWObjectstorageConfiguration:
   cls: remote
   url: http://winery-read-write.internal.cea.swh.network
 
+s3RWObjectstorageConfiguration:
+  cls: s3
+  compression: gzip
+  path_prefix: content
+  container_name: softwareheritage
+  key: ${S3_BUCKET_KEY}
+  secret: ${S3_BUCKET_SECRET}
+  timeout: 120
+  secrets:
+    S3_BUCKET_KEY:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-key
+    S3_BUCKET_SECRET:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-secret
+
 postgresqlRWStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
@@ -1761,10 +1777,10 @@ deposit:
 objstorageReplayer:
   enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
-  destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
   deployments:
     winery:
       enabled: true
+      destinationObjstorageConfigurationRef: wineryRWObjectstorageConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 4
       fetchConcurrency: 20
@@ -1777,6 +1793,20 @@ objstorageReplayer:
         host: redis-winery-replay.redis
         port: 6379
         db: 1
+    s3:
+      enabled: true
+      destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
+      sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
+      replicas: 4
+      fetchConcurrency: 20
+      journalClientOverrides:
+        group_id: swh-archive-prod-s3-content-replayer
+        auto_offset_reset: earliest
+        batch_size: 1000
+      autoScaling:
+        minReplicaCount: 4
+        stopWhenNoActivity: false
+        maxReplicaCount: 16
 
 vault:
   enabled: true
