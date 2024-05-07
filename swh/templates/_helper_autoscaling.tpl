@@ -54,6 +54,9 @@ spec:
   {{ if or (not (hasKey .autoscalingConfiguration "stopWhenNoActivity")) (get .autoscalingConfiguration "stopWhenNoActivity") -}}
   idleReplicaCount: 0
   {{ end -}}
+  {{- if hasKey .autoscalingConfiguration "advancedKedaConfig" }}
+  advanced: {{ .autoscalingConfiguration.advancedKedaConfig | toYaml | nindent 4 }}
+  {{ end -}}
   triggers:
   - type: kafka
     metadata:

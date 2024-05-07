@@ -1807,6 +1807,33 @@ objstorageReplayer:
         minReplicaCount: 4
         stopWhenNoActivity: false
         maxReplicaCount: 16
+        advancedKedaConfig:
+          horizontalPodAutoscalerConfig:
+            behavior:
+              scaleDown:
+                # Only scale down every 300 seconds
+                stabilizationWindowSeconds: 300
+                # Remove at most 25% or 4 pods over a 300 second period
+                selectPolicy: Min
+                policies:
+                - periodSeconds: 300
+                  type: Percent
+                  value: 25
+                - periodSeconds: 300
+                  type: Pods
+                  value: 4
+              scaleUp:
+                # Only scale up every 300 seconds
+                stabilizationWindowSeconds: 300
+                # Add at most 25% of total, or 4 pods, over a 300 second period
+                policies:
+                - periodSeconds: 300
+                  type: Percent
+                  value: 25
+                - periodSeconds: 300
+                  type: Pods
+                  value: 4
+                selectPolicy: Min
 
 vault:
   enabled: true
