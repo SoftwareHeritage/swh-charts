@@ -38,7 +38,7 @@ data:
       error_reporter:
       {{- toYaml .deployment_config.error_reporter | nindent 8 }}
     {{ end }}
-{{- end -}}
+{{ end -}}
 
 {{/*
   Configure the autoscaling for a deployment type
