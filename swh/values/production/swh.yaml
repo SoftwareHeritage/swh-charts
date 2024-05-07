@@ -1348,6 +1348,7 @@ storage:
       dnsConfigurationRef: dnsConfiguration
       hosts:
         - storage-rw-postgresql-ingress
+        - storage-rw-postgresql-saam-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
