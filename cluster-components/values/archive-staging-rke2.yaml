@@ -10,7 +10,7 @@ podPriority:
 
 svix:
   enabled: true
-  version: v1.21
+  version: v1.23
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
