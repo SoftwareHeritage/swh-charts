@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
+
+set -e
 
 ## Compare the helm output difference between the current branch and the production branch
 ## All the files must be commited to have an effect
