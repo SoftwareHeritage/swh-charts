@@ -1456,7 +1456,7 @@ counters:
   enabled: false
   port: 5011
   sentry:
-    enabled: false
+    enabled: true
     secretKeyRef: common-secrets
     secretKeyName: counters-sentry-dsn
   refreshCountersCache:
