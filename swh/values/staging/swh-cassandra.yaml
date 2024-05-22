@@ -1216,6 +1216,7 @@ counters:
     cacheBaseDirectory: /srv/softwareheritage/counters
     countersConfigurationRef: stagingRedis
     historyConfigurationRef: historyConfiguration
+    scrapeMetrics: true
     gunicorn:
       threads: 1
       workers: 1
