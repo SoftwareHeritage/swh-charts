@@ -1490,6 +1490,10 @@ counters:
     #   minReplicaCount: 2
     #   maxReplicaCount: 10
     #   cpuPercentageUsage: 100
+    # If true, it will deploy a ServiceMonitor to store the counters values in prometheus.
+    # It's used by the /refresh_metrics endpoint to generate the temporal data for the webapp
+    # graphics
+    # scrapeMetrics: false
     ingress:
       enabled: false
       # Optional: the ingress classname to use

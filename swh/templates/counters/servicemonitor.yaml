@@ -1,0 +1,21 @@
+{{ if and .Values.counters.enabled .Values.counters.rpc.enabled .Values.counters.rpc.scrapeMetrics -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: counters-rpc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: "counters-rpc-sm"
+spec:
+  endpoints:
+  - path: /metrics
+    port: rpc
+    interval: 60s
+  selector:
+    matchLabels:
+      app: counters-rpc
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.namespace }}
+{{- end -}}
