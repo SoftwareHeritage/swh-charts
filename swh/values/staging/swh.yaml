@@ -56,7 +56,6 @@ readWriteStorageConfiguration:
   pipelineStepsRef: rwStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
-  journalWriterConfigurationRef: storageJournalWriterConfiguration
 
 readOnlyStorageConfiguration:
   pipelineStepsRef: readOnlyStorageBackendPipelineSteps
