@@ -79,6 +79,10 @@ readOnlyStorageBackendPipelineSteps:
   - cls: masking
     postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
 
+readWriteStorageBackendPipelineSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+
 remoteReadWriteStorageConfiguration:
   cls: remote
   url: http://storage-postgresql-read-write-rpc-ingress
@@ -166,6 +170,30 @@ maskingQueryPostgresqlConfiguration:
   pass: ${MASKING_GUEST_PGPASSWORD}
   secrets:
     MASKING_GUEST_PGPASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-guest-password
+
+blockingAdminPostgresqlConfiguration:
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh-blocking
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
+  secrets:
+   BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
+
+# Passed as postgresqlConfigurationRef to the blocking proxy storage
+# pipeline entry
+blockingQueryPostgresqlConfiguration:
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  db: swh-blocking
+  user: guest
+  pass: ${BLOCKING_GUEST_PGPASSWORD}
+  secrets:
+    BLOCKING_GUEST_PGPASSWORD:
       secretKeyRef: swh-postgresql-common-secret
       secretKeyName: postgres-guest-password
 

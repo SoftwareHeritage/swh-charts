@@ -66,5 +66,11 @@ data:
           "configurationRef" (get $deployment_config "maskingAdminConfigurationRef")
           "Values" $.Values) | nindent 4 }}
 {{ end }}
+{{- if hasKey $deployment_config "blockingAdminConfigurationRef" }}
+  {{- include "swh.blockingAdminConfiguration"
+    (dict "serviceType" "blocking_admin"
+          "configurationRef" (get $deployment_config "blockingAdminConfigurationRef")
+          "Values" $.Values) | nindent 4 }}
+{{ end }}
 {{ end }}
 {{ end }}

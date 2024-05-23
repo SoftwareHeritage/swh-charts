@@ -83,14 +83,17 @@ Create a global storage configuration based on configuration section aggregation
   {{- if not (hasKey $pipelineStep "cls") -}}
     {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
   {{- end -}}
-  {{- if (eq $pipelineStep.cls "masking") -}}
+  {{- if (or (eq $pipelineStep.cls "masking") (eq $pipelineStep.cls "blocking")) -}}
     {{- if not (hasKey $pipelineStep "postgresqlConfigurationRef") -}}
-      {{- fail (print "_helpers.tpl:swh.storage.parsePpipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
+      {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
     {{- end -}}
-    {{- $maskingQueryDb := include "swh.connstring"
-                                   (dict "Values" $Values
-                                         "configurationRef" $pipelineStep.postgresqlConfigurationRef) -}}
-    {{- $pipelineSteps = mustAppend $pipelineSteps (dict "cls" "masking" "masking_db" $maskingQueryDb) -}}
+    {{- $cls := $pipelineStep.cls -}}
+    {{- $keyDb := print $cls "_db" -}}
+    {{- $queryDb := include "swh.connstring"
+                            (dict "configurationRef" $pipelineStep.postgresqlConfigurationRef
+                                  "Values" $Values) -}}
+
+    {{- $pipelineSteps = mustAppend $pipelineSteps (dict "cls" $cls $keyDb $queryDb) -}}
   {{- else -}}
     {{- $pipelineSteps = mustAppend $pipelineSteps $pipelineStep -}}
   {{- end -}}
@@ -134,6 +137,20 @@ Create a global scheduler configuration based on scheduler section aggregation
                            (dict "configurationRef" .configurationRef
                                  "Values" .Values) -}}
 {{- $config := (dict "masking_db" $connstring) -}}
+{{- if .serviceType -}}
+  {{ $config = (dict .serviceType $config) }}
+{{- end -}}
+{{ toYaml $config }}
+{{- end -}}
+
+{{/* Generate the configuration for a BlockingAdmin.
+     If serviceType is set, generate it within the given section
+   */}}
+{{- define "swh.blockingAdminConfiguration" -}}
+{{- $connstring := include "swh.connstring"
+                           (dict "configurationRef" .configurationRef
+                                 "Values" .Values) -}}
+{{- $config := (dict "blocking_db" $connstring) -}}
 {{- if .serviceType -}}
   {{ $config = (dict .serviceType $config) }}
 {{- end -}}
@@ -507,3 +524,15 @@ dnsConfig:
   {{- end }}
 {{- end }}
 {{- end -}}
+
+{{/*
+Debug variable during chart development.
+To use like this:
+
+template "swh.var_dump" $variable
+
+*/}}
+{{- define "swh.var_dump" -}}
+{{- . | mustToPrettyJson | printf "####\nJSON output:\n%s\n####" | fail }}
+{{- end -}}
+

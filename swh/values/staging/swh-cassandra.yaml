@@ -87,7 +87,8 @@ cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: noopObjectStorage
 
-cassandraStorageConfiguration:
+cassandraRWStorageConfiguration:
+  pipelineStepsRef: readWriteStorageBackendPipelineSteps
   storageConfigurationRef: cassandraStorage
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
@@ -593,7 +594,7 @@ storage:
         cpuPercentageUsage: 150
       requestedCpu: 500m
       requestedMemory: 1500Mi
-      storageConfigurationRef: cassandraStorageConfiguration
+      storageConfigurationRef: cassandraRWStorageConfiguration
       hosts:
         - storage-cassandra-read-write-ingress
       ingress:
@@ -856,6 +857,10 @@ toolbox:
       moduleName: storage
       storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+    blocking:
+      moduleName: storage
+      storageDbConfigurationRef: blockingAdminPostgresqlConfiguration
+      blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     webhooks:

@@ -44,6 +44,8 @@ scrubberJournalClientConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 rwStoragePipelineSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
   - cls: record_references
 
 emptyStoragePipelineSteps: []
