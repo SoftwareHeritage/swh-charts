@@ -1685,7 +1685,6 @@ scheduler:
       requestedMemory: 100Mi
       limitedMemory: 200Mi
       requestedCpu: 10m
-      limitedCpu: 20m
     runner-priority:
       enabled: true
       logLevel: INFO
@@ -1693,7 +1692,6 @@ scheduler:
       requestedMemory: 50Mi
       limitedMemory: 100Mi
       requestedCpu: 5m
-      limitedCpu: 10m
       extraConfig:
         - load-bzr
         - load-cvs
