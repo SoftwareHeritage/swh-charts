@@ -891,11 +891,11 @@ toolbox:
       webhooksConfigurationRef: svixConfiguration
 
 scrubber:
-  enabled: false
+  enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
   storageChecker:
-    enabled: true
+    enabled: false
     storageConfigurationRef: scrubberROStorageConfiguration
     deployments:
       directory-references:
@@ -954,6 +954,17 @@ scrubber:
         object: snapshot
         requestedCpu: 650m
         requestedMemory: 500Mi
+  objstorageChecker:
+    enabled: true
+    storageConfigurationRef: scrubberROStorageConfiguration
+    journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
+    objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
+    deployments:
+      content:
+        configName: objstorage-content
+        replicas: 2
+        requestedCpu: 400m
+        requestedMemory: 200Mi
 
 deposit:
   enabled: true

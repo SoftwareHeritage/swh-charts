@@ -4,6 +4,8 @@
 {{- $defaultKeys := list "scrubberDatabaseConfigurationRef" -}}
 {{- if (eq .scrubberType "storage") -}}
   {{- $defaultKeys = mustAppend $defaultKeys "storageConfigurationRef" -}}
+{{- else if (eq .scrubberType "objstorage") -}}
+  {{- $defaultKeys = concat $defaultKeys (list "objstorageConfigurationRef" "storageConfigurationRef" "journalClientConfigurationRef") -}}
 {{- else if (eq .scrubberType "journal") -}}
   {{- $defaultKeys = concat $defaultKeys (list "journalClientConfigurationRef" "journalClientOverrides") -}}
 {{- end -}}
@@ -57,5 +59,32 @@ data:
                                       "Values" .Values
                                       "configurationRef" .deployment_config.scrubberDatabaseConfigurationRef ) | nindent 4 }}
     {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
+                                      "Values" .Values) | nindent 4 }}
+{{ end }}
+
+{{ define "swh.scrubber.objstorageChecker.configmap" }}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.scrubber.sentry.enabled -}}
+{{- $storageConfigurationRef := .deployment_config.storageConfigurationRef -}}
+{{- $objstorageConfigurationRef := .deployment_config.objstorageConfigurationRef -}}
+{{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef " $journalClientConfigurationRef " not found in scrubber.journalChecker configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := get .deployment_config "journalClientOverrides" | default (dict) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: scrubber-objstoragechecker-{{ .client_name }}-template
+data:
+  config.yml.template: |
+    {{- include "swh.postgresql" (dict "serviceType" "scrubber"
+                                      "Values" .Values
+                                      "configurationRef" .deployment_config.scrubberDatabaseConfigurationRef ) | nindent 4 }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
+                                      "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
+                                      "overrides" $journalClientOverrides
+                                      "Values" .Values) | nindent 4 }}
+    {{- include "swh.objstorageConfiguration" (dict "configurationRef" $objstorageConfigurationRef
                                       "Values" .Values) | nindent 4 }}
 {{ end }}

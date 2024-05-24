@@ -1293,6 +1293,8 @@ scrubber:
         object: snapshot
         requestedCpu: 150m
         requestedMemory: 128Mi
+  objstorageChecker:
+    enabled: false
 
 storageJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers

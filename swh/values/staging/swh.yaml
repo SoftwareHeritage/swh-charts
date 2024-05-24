@@ -461,6 +461,8 @@ scrubber:
         replicas: 1
         requestedCpu: 1
         requestedMemory: 250Mi
+  objstorageChecker:
+    enabled: false
 
 storage:
   enabled: true

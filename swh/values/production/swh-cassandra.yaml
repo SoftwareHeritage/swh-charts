@@ -503,6 +503,8 @@ scrubber:
         object: snapshot
         requestedCpu: 650m
         requestedMemory: 500Mi
+  objstorageChecker:
+    enabled: false
 
 journalClientCassandraChecksConfiguration:
   cls: kafka

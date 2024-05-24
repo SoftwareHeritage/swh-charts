@@ -1,22 +1,29 @@
-{{ if and .Values.scrubber.enabled .Values.scrubber.storageChecker.enabled -}}
-{{- range $deployment, $deployment_config := .Values.scrubber.storageChecker.deployments -}}
+{{ if and .Values.scrubber.enabled .Values.scrubber.objstorageChecker.enabled -}}
+{{- range $deployment, $deployment_config := .Values.scrubber.objstorageChecker.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
-{{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict "scrubberType" "storage" "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
-{{- $configurationChecksum := include "swh.scrubber.storageChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+{{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict
+    "scrubberType" "objstorage"
+    "deployment_config" $deployment_config
+    "Values" $.Values) | fromYaml -}}
+{{- $configurationChecksum := include "swh.scrubber.objstorageChecker.configmap" (dict
+    "client_name" $deployment
+    "deployment_config" $deployment_config
+    "Values" $.Values) | sha256sum -}}
+{{ $name := ( print "scrubber-objstoragechecker-" $deployment ) }}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: scrubber-storagechecker-{{ $deployment }}
+  name: {{ $name }}
   namespace: {{ $.Values.namespace }}
   labels:
-    app: scrubber-storagechecker-{{ $deployment }}
+    app: {{ $name }}
 spec:
   revisionHistoryLimit: 2
   replicas: {{ $deployment_config.replicas | default 1 }}
   selector:
     matchLabels:
-      app: scrubber-storagechecker-{{ $deployment }}
+      app: {{ $name }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -24,10 +31,10 @@ spec:
   template:
     metadata:
       labels:
-        app: scrubber-storagechecker-{{ $deployment }}
+        app: {{ $name }}
       annotations:
         # Force a rollout upgrade if the configuration changes
-        checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config: {{ $configurationChecksum }}
     spec:
       {{- if $.Values.scrubber.affinity }}
       affinity:
@@ -38,16 +45,17 @@ spec:
       {{ end }}
       initContainers:
         - name: prepare-configuration
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
+          {{/* To be updated if secrets appear in $deployment_config! */}}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.cassandraChecks
                                                                       "Values" $.Values) | nindent 10 }}
           command:
-          - /bin/bash
-          args:
-          - -c
-          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+            - /entrypoints/prepare-configuration.sh
           volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
@@ -60,9 +68,9 @@ spec:
                                                                 "imagePrefixName" "swh_scrubber_image"
                                                                 "module" "scrubber") | nindent 8 }}
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-storage-migration"
+                                                                "containerName" "check-objstorage-migration"
                                                                 "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "storage") | nindent 8 }}
+                                                                "module" "objstorage") | nindent 8 }}
       containers:
       - name: storage-checker
         resources:
@@ -94,7 +102,7 @@ spec:
         - name: STATSD_PORT
           value: {{ $.Values.statsdPort | default "9125" | quote }}
         - name: STATSD_TAGS
-          value: deployment:scrubber-storagechecker-{{ $deployment }}
+          value: deployment:scrubber-objstoragechecker-{{ $deployment }}
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
         - name: SWH_LOG_LEVEL
@@ -122,7 +130,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: scrubber-storagechecker-{{ $deployment }}-template
+          name: {{ $name }}-template
           defaultMode: 0777
           items:
           - key: "config.yml.template"
@@ -131,6 +139,11 @@ spec:
         configMap:
           name: database-utils
           defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+
 {{ end }}
 {{ end }}
 {{ end }}
