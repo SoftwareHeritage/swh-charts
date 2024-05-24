@@ -867,7 +867,7 @@ toolbox:
       webhooksConfigurationRef: svixConfiguration
 
 scrubber:
-  enabled: true
+  enabled: false
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
   storageChecker:
