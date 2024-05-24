@@ -22,7 +22,6 @@ metallb:
 
 ingressNginx:
   enabled: true
-  version: 4.10.1
   applicationNameOverride: archive-production-rke2-ingress-nginx
   defaultClass: true
   watchIngressWithoutClass: true

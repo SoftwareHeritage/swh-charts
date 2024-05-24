@@ -29,7 +29,7 @@ metallb:
 
 ingressNginx:
   enabled: false
-  version: 4.4.0
+  version: 4.10.1
   namespace: ingress-nginx
   # Needed when a chart use the application name to
   # name deployed objects. The names can't be longer than 63 characters

@@ -7,7 +7,6 @@ metallb:
 
 ingressNginx:
   enabled: true
-  version: 4.10.1
   defaultClass: true
   watchIngressWithoutClass: true
   annotations:
