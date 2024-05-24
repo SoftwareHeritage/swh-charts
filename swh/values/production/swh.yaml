@@ -1779,7 +1779,7 @@ objstorageReplayer:
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     winery:
-      enabled: true
+      enabled: false
       destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 16
