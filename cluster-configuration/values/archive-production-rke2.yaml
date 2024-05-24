@@ -22,6 +22,7 @@ metallb:
 
 ingressNginx:
   enabled: true
+  version: 4.10.1
   applicationNameOverride: archive-production-rke2-ingress-nginx
   defaultClass: true
   watchIngressWithoutClass: true
@@ -35,7 +36,7 @@ ingressNginx:
     worker-processes: 6
     # Make NGINX forwards the X-Forwarded-* headers
     use-forwarded-headers: true
-  replicaCount: 2
+  replicaCount: 6
 
 certManager:
   enabled: true
