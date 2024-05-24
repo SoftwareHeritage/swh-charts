@@ -9,15 +9,50 @@ data:
     from swh.core import config
     from swh.storage.cassandra import create_keyspace
 
-    c=config.read('/etc/swh/config.yml')
+    def get_cassandra_config(storage_config):
+        if storage_config["cls"] == 'cassandra' :
+            return storage_config
 
-    storage_config = c["storage"]
-    hosts = storage_config.get("hosts")
+        if storage_config["cls"] == 'pipeline':
+            cassandra_config = storage_config["steps"][-1]
+            if cassandra_config["cls"] != "cassandra":
+                raise ValueError(
+                    "Misconfigured pipeline, the last step must be the actual "
+                    "cassandra storage configuration."
+                )
 
-    # print(f"************ storage_config: {storage_config}" )
-    # print(f"************ hosts: {hosts}" )
+            return cassandra_config
 
-    create_keyspace(hosts=hosts, keyspace='swh', auth_provider=storage_config.get("auth_provider"))
+        raise ValueError(
+            "Misconfigured storage configuration. It must be either a <pipeline> "
+            "or a <cassandra> storage instance."
+        )
+
+    full_config = config.read('/etc/swh/config.yml')
+    storage_config = full_config["storage"]
+    cassandra_conf = get_cassandra_config(storage_config)
+    hosts = cassandra_conf.get("hosts")
+    if not hosts:
+        raise ValueError(
+            "Misconfigured cassandra configuration, "
+            "<hosts> key must be provided."
+        )
+
+    auth_provider = cassandra_conf.get("auth_provider")
+    if not auth_provider:
+        raise ValueError(
+            "Misconfigured cassandra configuration, "
+            "<auth_provider> key must be provided."
+        )
+
+    keyspace = cassandra_conf.get("keyspace")
+    if not keyspace:
+        raise ValueError(
+            "Misconfigured cassandra configuration, "
+            "<keyspace> key must be provided."
+        )
+
+    create_keyspace(hosts=hosts, keyspace=keyspace, auth_provider=auth_provider)
 
   extract-storage-postgresql-config-py: |
     import yaml
