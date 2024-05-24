@@ -76,7 +76,7 @@ spec:
             {{- if ( get $deployment_config "limitedMemory" ) }}
               memory: {{ get $deployment_config "limitedMemory" }}
             {{- end }}
-            {{- if ( get $deployment_config "limitedMemory" ) }}
+            {{- if ( get $deployment_config "limitedCpu" ) }}
               cpu: {{ ( get $deployment_config "limitedCpu" ) }}
             {{- end }}
           {{ end }}
