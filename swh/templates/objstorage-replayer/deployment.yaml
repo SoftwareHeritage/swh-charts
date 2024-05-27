@@ -82,7 +82,7 @@ spec:
           value: {{ get $deployment_config "fetchConcurrency" | default 1 | quote }}
         - name: CHECK_DST
           value: {{ get $deployment_config "checkDestination" | default "true" | quote}}
-        - name: LOGLEVEL
+        - name: SWH_LOG_LEVEL
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml

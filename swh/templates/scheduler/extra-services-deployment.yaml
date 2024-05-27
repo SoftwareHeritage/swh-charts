@@ -129,7 +129,7 @@ spec:
               value: deployment:{{ $service_name }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
-            - name: LOG_LEVEL
+            - name: SWH_LOG_LEVEL
               value: {{ $log_level | default "INFO" | quote }}
           {{- if ( get $sentry "enabled" ) }}
             - name: SWH_SENTRY_ENVIRONMENT

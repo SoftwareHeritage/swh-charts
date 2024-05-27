@@ -88,7 +88,7 @@ spec:
           value: {{ .Values.statsdPort | default "9125" | quote }}
         - name: STATSD_TAGS
           value: deployment:loader-metadata
-        - name: LOGLEVEL
+        - name: SWH_LOG_LEVEL
           value: {{ .Values.loader_metadata.logLevel | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml

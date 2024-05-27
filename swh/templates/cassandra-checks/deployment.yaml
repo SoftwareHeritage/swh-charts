@@ -105,7 +105,7 @@ spec:
           image: {{ $.Values.cassandra_checks_image }}:{{ $.Values.cassandra_checks_image_version }}
           imagePullPolicy: IfNotPresent
           env:
-          - name: LOG_LEVEL
+          - name: SWH_LOG_LEVEL
             value: {{ $deployment_config.logLevel | default $.Values.cassandraChecks.logLevel | default "INFO" }}
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml

@@ -151,7 +151,7 @@ spec:
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:{{ $serviceType }}
-            - name: LOG_LEVEL
+            - name: SWH_LOG_LEVEL
               value: {{ $web_config.logLevel | default $.Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml

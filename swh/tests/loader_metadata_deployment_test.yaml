@@ -34,7 +34,7 @@ tests:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_PORT")].value
           value: "9125"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "LOGLEVEL")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_LOG_LEVEL")].value
           value: INFO
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value
@@ -117,7 +117,7 @@ tests:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "STATSD_PORT")].value
           value: "5219"
       - equal:
-          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "LOGLEVEL")].value
+          path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_LOG_LEVEL")].value
           value: DEBUG
       - equal:
           path: spec.template.spec.containers[?(@.name == "loader-metadata")].env[?(@.name == "SWH_SENTRY_ENVIRONMENT")].value

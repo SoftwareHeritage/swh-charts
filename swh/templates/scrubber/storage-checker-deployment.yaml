@@ -97,7 +97,7 @@ spec:
           value: deployment:scrubber-storagechecker-{{ $deployment }}
         - name: MAX_TASKS_PER_CHILD
           value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
-        - name: LOGLEVEL
+        - name: SWH_LOG_LEVEL
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml

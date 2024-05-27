@@ -117,7 +117,7 @@ spec:
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: {{ .serviceType }}
-            - name: LOG_LEVEL
+            - name: SWH_LOG_LEVEL
               value: {{ .configuration.logLevel | default .Values.storage.logLevel | quote }}
           {{- if .Values.storage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
