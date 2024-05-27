@@ -99,6 +99,8 @@ spec:
         volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+        {{- include "swh.dns.configuration"  (dict "Values" $.Values
+                                              "configurationRef" $deployment_config.dnsConfigurationRef) | indent 6 }}
       volumes:
       - name: configuration
         emptyDir: {}

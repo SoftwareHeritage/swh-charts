@@ -1928,6 +1928,7 @@ webhooks:
   deployments:
     origin-visit-status:
       replicas: 1
+      dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
       journalClientOverrides:
