@@ -726,3 +726,7 @@ webhooksConfiguration:
     WEBHOOKS_SECRET:
       secretKeyRef: common-secrets
       secretKeyName: webhooks-secret
+
+roStorageJournalReadWriteConfiguration:
+  storageConfigurationRef: postgresqlROStorageConfiguration
+  journalConfigurationRef: storageJournalWriterConfiguration

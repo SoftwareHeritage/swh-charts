@@ -1,0 +1,147 @@
+{{ if .Values.storage_backfiller.enabled -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
+{{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{- range $deployment, $deployment_config := .Values.storage_backfiller.deployments -}}
+{{- $serviceType := ( print "storage-" $deployment ) -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}
+  labels:
+    app: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}
+      annotations:
+        checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
+                                                                  "configuration" $deployment_config
+                                                                  "Values" $.Values) | sha256sum }}
+        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
+        checksum/config-utils: {{ $configUtilsPathChecksum }}
+    spec:
+      restartPolicy: Never
+      {{- if $.Values.storage_backfiller.affinity }}
+      affinity:
+        {{- toYaml $.Values.storage_backfiller.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.storage_backfiller.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.storage_backfiller.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+        {{- if $deployment_config.checkDbVersion }}
+        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                             "imagePrefixName" "swh_storage_image"
+                                                             "module" "storage") | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ get $deployment_config "object_type" }}-{{ $deployment }}
+          image: {{ $.Values.swh_storage_image }}:{{ $.Values.storage_backfiller.imageVersion }}
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: {{ $deployment_config.requestedMemory | default "512Mi" }}
+              cpu: {{ $deployment_config.requestedCpu | default "500m" }}
+            {{- if or $deployment_config.limitedMemory $deployment_config.limitedCpu }}
+            limits:
+              {{- if $deployment_config.limitedMemory }}
+              memory: {{ $deployment_config.limitedMemory }}
+              {{- end }}
+              {{- if $deployment_config.limitedCpu }}
+              cpu: {{ $deployment_config.limitedCpu }}
+              {{- end }}
+            {{- end }}
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - /etc/swh/config.yml
+            initialDelaySeconds: 15
+            failureThreshold: 5
+            periodSeconds: 5
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - /etc/swh/config.yml
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /opt/swh/entrypoint.sh
+          args:
+          - swh
+          - storage
+          - -C
+          - $SWH_CONFIG_FILENAME
+          - backfill
+          - --start-object
+          - {{ get $deployment_config "start_object" }}
+          - --end-object
+          - {{ get $deployment_config "end_object" }}
+          - {{ get $deployment_config "object_type" }}
+          env:
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $serviceType }}
+            - name: LOG_LEVEL
+              value: {{ $deployment_config.logLevel | default $.Values.storage.logLevel | quote }}
+          {{- if $.Values.storage.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.storage
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.storage.sentry.secretKeyRef }}
+                  key: {{ $.Values.storage.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: database-utils
+        configMap:
+          name: database-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+
+{{ end }}
+{{- end }}

@@ -1936,3 +1936,24 @@ webhooks:
         group_id: swh-archive-prod-webhooks
         object_types:
           - origin_visit_status
+
+storage_backfiller:
+  imageVersion: 20240523.1
+  enabled: true
+  deployments:
+    content:
+      checkDbVersion: true
+      storageConfigurationRef: roStorageJournalReadWriteConfiguration
+      object_type: raw_extrinsic_metadata
+      start_object: swh:1:cnt:0000000000000000000000000000000000000000
+      end_object: swh:1:cnt:ffffffffffffffffffffffffffffffffffffffff
+      requestedCpu: 450m
+      requestedMemory: 1200Mi
+    release:
+      checkDbVersion: true
+      storageConfigurationRef: roStorageJournalReadWriteConfiguration
+      object_type: raw_extrinsic_metadata
+      start_object: swh:1:rel:0000000000000000000000000000000000000000
+      end_object: swh:1:rel:ffffffffffffffffffffffffffffffffffffffff
+      requestedCpu: 450m
+      requestedMemory: 1200Mi

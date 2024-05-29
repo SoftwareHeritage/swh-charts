@@ -370,3 +370,16 @@ cassandraChecks:
             operator: In
             values:
             - "true"
+
+storage_backfiller:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/backfiller"
+            operator: In
+            values:
+            - "true"
