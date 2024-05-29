@@ -74,6 +74,7 @@ journalClientConfiguration:
 
 azureObjStorageRWConfiguration: &azure-storage-conf-rw
   cls: azure-prefixed
+  name: azure
   accounts:
     '0':
       account_name: ${ACCOUNT_NAME_0}
@@ -240,6 +241,7 @@ azureObjStorageRWConfigurationSecrets: &azure-storage-secrets-rw
 
 azureObjStorageROConfiguration: &azure-storage-conf-ro
   cls: azure-prefixed
+  name: azure
   accounts:
     '0': ${AZURE_RO_URL_0}
     '1': ${AZURE_RO_URL_1}
@@ -317,14 +319,18 @@ roObjstorageBestEffort:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: winery
     url: http://winery-read-only.internal.cea.swh.network
   - cls: http
+    name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
     timeout: 120
   - cls: remote
+    name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
+    name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - *azure-storage-conf-ro
 
@@ -336,15 +342,19 @@ roObjstorageHighParallelism:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: winery
     url: http://winery-read-only.internal.cea.swh.network
   - cls: http
+    name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
     timeout: 120
   - *azure-storage-conf-ro
   - cls: remote
+    name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
+    name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
 
 roObjstorageHighParallelismConfiguration:
@@ -359,18 +369,22 @@ cassandraReadOnlyStorageConfiguration:
 
 wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
   cls: remote
+  name: winery
   url: http://winery-read-write.internal.cea.swh.network
 
 roObjstorageForWineryReplayer:
   cls: multiplexer
   objstorages:
   - cls: http
+    name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
     timeout: 120
   - cls: remote
+    name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
+    name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - *azure-storage-conf-ro
 
@@ -382,10 +396,13 @@ roObjstorageForS3Replayer:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: winery
     url: http://winery-read-only.internal.cea.swh.network
   - cls: remote
+    name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress
   - cls: remote
+    name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - *azure-storage-conf-ro
 
@@ -408,10 +425,13 @@ multiplexerForLocalStoragesConfiguration:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: winery
     url: http://winery-read-only.internal.cea.swh.network
   - cls: remote
+    name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
   - cls: remote
+    name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress
 
 rwObjstorageWineryAndAzure:

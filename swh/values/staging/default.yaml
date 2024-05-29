@@ -33,16 +33,20 @@ multiplexerReadOnlyObjstorageConfiguration:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: storage1
     url: http://objstorage-storage1-ro-rpc-ingress
   - cls: remote
+    name: db1
     url: http://objstorage-db1-ro-rpc-ingress
 
 multiplexerReadWriteObjstorageConfiguration:
   cls: multiplexer
   objstorages:
   - cls: remote
+    name: db1
     url: http://objstorage-db1-rw-rpc-ingress
   - cls: filtered
+    name: storage1
     storage_conf:
       cls: remote
       url: http://objstorage-storage1-ro-rpc-ingress
