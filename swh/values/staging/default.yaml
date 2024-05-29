@@ -45,13 +45,11 @@ multiplexerReadWriteObjstorageConfiguration:
   - cls: remote
     name: db1
     url: http://objstorage-db1-rw-rpc-ingress
-  - cls: filtered
+  - cls: read-only
     name: storage1
-    storage_conf:
+    storage:
       cls: remote
       url: http://objstorage-storage1-ro-rpc-ingress
-    filters_conf:
-    - type: readonly
 
 storagePipelineSteps:
   - &bufferStorage
@@ -100,12 +98,10 @@ remoteROStorageConfiguration:
   storageConfigurationRef: remoteReadOnlyStorageConfiguration
 
 remoteROObjstorageConfiguration:
-  cls: filtered
-  storage_conf:
+  cls: read-only
+  storage:
     cls: remote
     url: http://objstorage-read-only-rpc-ingress
-  filters_conf:
-    - type: readonly
 
 postgresqlVaultConfiguration:
   cls: postgresql

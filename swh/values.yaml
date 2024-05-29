@@ -144,17 +144,16 @@ sentry:
 # readOnlyObjstorageConfiguration:
 #   cls: multiplexer
 #   objstorages:
-#     storage_conf:
+#   - cls: read-only
+#     name: first-backend
+#     storage:
 #       cls: remote
 #       url: http://storage1.i.s.o:5003/
-#     filters_conf:
-#     - type: readonly
-#   - cls: filtered
-#     storage_conf:
+#   - cls: read-only
+#     name: second-backend
+#     storage:
 #       cls: remote
 #       url: http://storage2.i.s.o:5003/
-#     filters_conf:
-#     - type: readonly
 
 # Typical storage configuration
 # Use references to other entries to assemble

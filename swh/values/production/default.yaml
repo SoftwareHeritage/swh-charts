@@ -441,10 +441,8 @@ rwObjstorageWineryAndAzure:
   - *azure-storage-conf-rw
 
 readonlySaamZfsObjstorageConfiguration:
-  cls: filtered
-  storage_conf: *objstorage-saam-zfs-pathslicing-conf
-  filters_conf:
-    - type: readonly
+  cls: read-only
+  storage: *objstorage-saam-zfs-pathslicing-conf
 
 rwStoragePipelineSteps:
   - cls: record_references
