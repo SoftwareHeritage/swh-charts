@@ -1938,12 +1938,12 @@ webhooks:
           - origin_visit_status
 
 storage_backfiller:
-  imageVersion: 20240523.1
   enabled: true
+  imageVersion: 20240523.1
   deployments:
     content:
       checkDbVersion: true
-      storageConfigurationRef: roStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
       object_type: raw_extrinsic_metadata
       start_object: swh:1:cnt:0000000000000000000000000000000000000000
       end_object: swh:1:cnt:ffffffffffffffffffffffffffffffffffffffff
@@ -1951,9 +1951,17 @@ storage_backfiller:
       requestedMemory: 1200Mi
     release:
       checkDbVersion: true
-      storageConfigurationRef: roStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
       object_type: raw_extrinsic_metadata
       start_object: swh:1:rel:0000000000000000000000000000000000000000
       end_object: swh:1:rel:ffffffffffffffffffffffffffffffffffffffff
+      requestedCpu: 450m
+      requestedMemory: 1200Mi
+    snapshot:
+      checkDbVersion: true
+      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      object_type: raw_extrinsic_metadata
+      start_object: swh:1:snp:0000000000000000000000000000000000000000
+      end_object: swh:1:snp:ffffffffffffffffffffffffffffffffffffffff
       requestedCpu: 450m
       requestedMemory: 1200Mi
