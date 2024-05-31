@@ -12,20 +12,22 @@
 {{- $pos := add $first (mul $i $step) -}}
 {{- $firstSwhid := printf "%s:%015x%s" $prefix $pos (repeat 24 "0") -}}
 {{- $lastSwhid := printf "%s:%015x%s" $prefix (sub (add $pos $step) 1) (repeat 24 "f") }}
+{{- $objectType := ( get $deployment_config "object_type" ) }}
+{{- $name := ( print "storage-backfiller-" $objectType "-" $deployment ) }}
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}-{{ $i }}
+  name: {{ $name }}-{{ $i }}
   labels:
-    app: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}-{{ $i }}
+    app: {{ $name }}-{{ $i }}
 spec:
   backoffLimit: 0
   template:
     metadata:
       labels:
-        app: storage-backfiller-{{ get $deployment_config "object_type" }}-{{ $deployment }}
+        app: {{ $name }}
       annotations:
         checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
                                                                   "configuration" $deployment_config
@@ -105,7 +107,7 @@ spec:
           - {{ $firstSwhid }}
           - --end-object
           - {{ $lastSwhid }}
-          - {{ get $deployment_config "object_type" }}
+          - {{ $objectType }}
           env:
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
