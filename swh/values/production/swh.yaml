@@ -1940,6 +1940,7 @@ webhooks:
 storage_backfiller:
   enabled: true
   imageVersion: 20240523.1
+  priorityClassName: swh-background-workload
   deployments:
     content:
       checkDbVersion: true
