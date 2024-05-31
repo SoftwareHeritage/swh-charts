@@ -10,8 +10,8 @@
 {{- $step := ceil (div (sub $last $first) $ranges)  -}}
 {{ range $i := until $ranges }}
 {{- $pos := add $first (mul $i $step) -}}
-{{- $firstSwhid := printf "%s:%015x%s" $prefix $pos (repeat 24 "0") -}}
-{{- $lastSwhid := printf "%s:%015x%s" $prefix (sub (add $pos $step) 1) (repeat 24 "f") }}
+{{- $firstSwhid := printf "%s:%015x%s" $prefix $pos (repeat 25 "0") -}}
+{{- $lastSwhid := printf "%s:%015x%s" $prefix (sub (add $pos $step) 1) (repeat 25 "f") }}
 {{- $objectType := ( get $deployment_config "object_type" ) }}
 {{- $name := ( print "storage-backfiller-" $objectType "-" $deployment ) }}
 ---

@@ -1939,7 +1939,8 @@ webhooks:
 
 storage_backfiller:
   enabled: true
-  imageVersion: 20240523.1
+  # pin version to avoid stopping jobs during new deployment
+  imageVersion: 20240531.1
   priorityClassName: swh-background-workload
   deployments:
     content:
