@@ -80,21 +80,6 @@ spec:
               cpu: {{ $deployment_config.limitedCpu }}
               {{- end }}
             {{- end }}
-          readinessProbe:
-            exec:
-              command:
-                - cat
-                - /etc/swh/config.yml
-            initialDelaySeconds: 15
-            failureThreshold: 5
-            periodSeconds: 5
-          livenessProbe:
-            exec:
-              command:
-                - cat
-                - /etc/swh/config.yml
-            initialDelaySeconds: 10
-            periodSeconds: 5
           command:
           - /opt/swh/entrypoint.sh
           args:
