@@ -99,7 +99,7 @@ spec:
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:{{ $serviceType }}
+              value: deployment:{{ $name }}
             - name: SWH_LOG_LEVEL
               value: {{ $deployment_config.logLevel | default $.Values.storage.logLevel | quote }}
           {{- if $.Values.storage.sentry.enabled }}
@@ -126,7 +126,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: {{ $serviceType }}-configuration-template
+          name: {{ $name }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
