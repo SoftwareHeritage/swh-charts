@@ -64,7 +64,7 @@ spec:
                                                              "module" "storage") | nindent 8 }}
         {{- end }}
       containers:
-        - name: {{ get $deployment_config "object_type" }}-{{ $deployment }}
+        - name: {{ get $deployment_config "object_type" | replace "_" "-" }}-{{ $deployment }}
           image: {{ $.Values.swh_storage_image }}:{{ $.Values.storage_backfiller.imageVersion }}
           imagePullPolicy: IfNotPresent
           resources:
