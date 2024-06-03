@@ -86,7 +86,7 @@ spec:
           - swh
           - storage
           - -C
-          - $SWH_CONFIG_FILENAME
+          - /etc/swh/config.yml
           - backfill
           - --start-object
           - {{ $firstSwhid }}
