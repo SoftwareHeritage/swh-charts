@@ -13,7 +13,7 @@
 {{- $firstSwhid := printf "%s:%015x%s" $prefix $pos (repeat 25 "0") -}}
 {{- $lastSwhid := printf "%s:%015x%s" $prefix (sub (add $pos $step) 1) (repeat 25 "f") }}
 {{- $objectType := ( get $deployment_config "object_type" ) }}
-{{- $name := ( print "storage-backfiller-" $objectType "-" $deployment ) }}
+{{- $name := ( print "storage-backfiller-" ( $objectType | replace "_" "-" ) "-" $deployment ) }}
 ---
 apiVersion: batch/v1
 kind: Job
