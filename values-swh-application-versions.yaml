@@ -19,7 +19,7 @@ swh_lister_image_version: '20240603.1'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
 swh_loader_bzr_image_version: '20240603.1'
 swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_cvs
-swh_loader_cvs_image_version: '20240603.1'
+swh_loader_cvs_image_version: '20240603.2'
 swh_loader_git_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git
 swh_loader_git_image_version: '20240603.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
@@ -29,7 +29,7 @@ swh_loader_metadata_image_version: '20240603.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
 swh_loader_package_image_version: '20240603.1'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
-swh_loader_savecodenow_image_version: '20240603.1'
+swh_loader_savecodenow_image_version: '20240603.2'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
 swh_loader_svn_image_version: '20240603.1'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
@@ -47,7 +47,7 @@ swh_storage_image_version: '20240603.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20240603.3'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20240603.1'
+swh_toolbox_image_version: '20240603.2'
 swh_utils_image: container-registry.softwareheritage.org/swh/infra/swh-apps/utils
 swh_utils_image_version: '20231211.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
