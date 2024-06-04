@@ -11,6 +11,11 @@ CC_CHART=cluster-components
 CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
+# use: make VERBOSE=1 to actually have the command displayed
+ifndef VERBOSE
+.SILENT:
+endif
+
 swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
 	  $(IMAGE) swh
