@@ -14,7 +14,39 @@ Create a Kind Ingress for service .serviceType
 {{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
-{{- $authenticated := get $endpoint_config "authentication" -}}
+
+{{- $annotations := (dict) -}}
+
+{{- if or (not (hasKey $configuration.ingress "useEndpointsAsUpstream")) (eq $configuration.ingress.useEndpointsAsUpstream false) -}}
+{{/* undocumented swh's ingress option to configure the upstreams to use the service ip.
+        By default, ips of endpoints are directly used by nginx to load balance the requests, but it's
+        ineffective for non-"idempotent" requests (POST).
+        So by default, the ingresses are configured to use the service as upstream.
+        https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#service-upstream
+        Using the default behavior (endpoints ips) should not be necessary according to the swh services architecture,
+        but allowing it just in case
+*/}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/service-upstream" "true") -}}
+{{- end }}
+
+{{- if $whitelistSourceRange -}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/whitelist-source-range" $whitelistSourceRange ) -}}
+{{- end -}}
+{{- if and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.tlsExtraAnnotations -}}
+  {{- $annotations = mustMergeOverwrite $annotations $configuration.ingress.tlsExtraAnnotations }}
+{{- end -}}
+{{- if get $endpoint_config "authentication" -}}
+  {{/* type of authentication */}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/auth-type" "basic") -}}
+  {{/* an htpasswd file in the key auth within the secret */}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/auth-secret-type" "auth-file") -}}
+  {{/* name of the secret that contains the user/password definitions */}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/auth-secret" $endpoint_config.authentication) -}}
+  {{/* message to display with an appropriate context why the authentication is required */}}
+  {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/auth-realm" "Authentication Required") -}}
+{{- end -}}
+
+{{- $annotations = mustMergeOverwrite $annotations ($configuration.ingress.extraAnnotations | default dict) -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -24,38 +56,7 @@ metadata:
   labels:
     app: {{ $serviceType }}
     endpoint-definition: {{ $endpoint_definition }}
-  annotations:
-  {{- if or (not (hasKey $configuration.ingress "useEndpointsAsUpstream")) (eq $configuration.ingress.useEndpointsAsUpstream false) -}}
-  {{- /* undocumented swh's ingress option to configure the upstreams to use the service ip.
-        By default, ips of endpoints are directly used by nginx to load balance the requests, but it's
-        ineffective for non-"idempotent" requests (POST).
-        So by default, the ingresses are configured to use the service as upstream.
-        https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#service-upstream
-        Using the default behavior (endpoints ips) should not be necessary according to the swh services architecture,
-        but allowing it just in case
-   */}}
-    nginx.ingress.kubernetes.io/service-upstream: "true"
-  {{- end }}
-  {{- if $whitelistSourceRange }}
-    nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRange }}
-  {{- end }}
-  {{- if $configuration.ingress.extraAnnotations -}}
-  {{ toYaml $configuration.ingress.extraAnnotations | nindent 4 }}
-  {{- end -}}
-  {{- if and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.tlsExtraAnnotations -}}
-  {{ toYaml $configuration.ingress.tlsExtraAnnotations | nindent 4 }}
-  {{- end -}}
-  {{- if $authenticated }}
-    # type of authentication
-    nginx.ingress.kubernetes.io/auth-type: basic
-    # an htpasswd file in the key auth within the secret
-    nginx.ingress.kubernetes.io/auth-secret-type: auth-file
-    # name of the secret that contains the user/password definitions
-    nginx.ingress.kubernetes.io/auth-secret: {{ $authenticated }}
-    # message to display with an appropriate context why the authentication is required
-    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
-  {{- end }}
-
+  annotations: {{ $annotations | toYaml | nindent 4 }}
 spec:
   {{- if $configuration.ingress.className }}
   ingressClassName: {{ $configuration.ingress.className }}
