@@ -26,6 +26,7 @@ pathslicingNoCompressionObjstorageConfiguration:
   root: "/srv/softwareheritage/objects"
   slicing: 0:1/1:5
   compression: none
+  allow_delete: true
 
 cassandraSeeds:
   - cassandra1.internal.staging.swh.network
@@ -1023,6 +1024,13 @@ objstorage:
           default:
             paths:
               - path: /
+          delete:
+            paths:
+              - path: /content/delete
+                pathType: Exact
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
     # storage1 read-only objstorage
     storage1-read-only:
       enabled: true
