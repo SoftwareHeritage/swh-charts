@@ -47,6 +47,8 @@ Create a Kind Ingress for service .serviceType
 {{- end -}}
 
 {{- $annotations = mustMergeOverwrite $annotations ($configuration.ingress.extraAnnotations | default dict) -}}
+{{- $annotations = mustMergeOverwrite $annotations ($endpoint_config.extraAnnotations | default dict) -}}
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
