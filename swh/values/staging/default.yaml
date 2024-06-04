@@ -190,12 +190,14 @@ blockingQueryPostgresqlConfiguration:
   host: db1.internal.staging.swh.network
   port: '5432'
   db: swh-blocking
-  user: guest
-  pass: ${BLOCKING_GUEST_PGPASSWORD}
+  # The blocking proxy writes to a log table (blocked_origin_log)
+  # It needs write credentials
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
   secrets:
-    BLOCKING_GUEST_PGPASSWORD:
-      secretKeyRef: swh-postgresql-common-secret
-      secretKeyName: postgres-guest-password
+    BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
 
 djangoWebConfiguration:
   secrets:
