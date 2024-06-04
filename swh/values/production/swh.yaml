@@ -1946,7 +1946,8 @@ storage_backfiller:
     content:
       enabled: true
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 1
       prefix: swh:1:cnt
@@ -1955,7 +1956,8 @@ storage_backfiller:
     release:
       enabled: false
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 1
       prefix: swh:1:rel
@@ -1964,7 +1966,8 @@ storage_backfiller:
     snapshot:
       enabled: false
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 1
       prefix: swh:1:snp
@@ -1973,7 +1976,8 @@ storage_backfiller:
     directory:
       enabled: false
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 16
       prefix: swh:1:dir
@@ -1982,7 +1986,8 @@ storage_backfiller:
     revision:
       enabled: false
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 16
       prefix: swh:1:rev
@@ -1991,7 +1996,8 @@ storage_backfiller:
     origin:
       enabled: false
       checkDbVersion: true
-      storageConfigurationRef: ROStorageJournalReadWriteConfiguration
+      storageConfigurationRef: ROStorageConfiguration
+      journalConfigurationRef: storageJournalWriterConfiguration
       object_type: raw_extrinsic_metadata
       ranges: 16
       prefix: swh:1:ori

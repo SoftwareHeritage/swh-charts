@@ -3,7 +3,7 @@
 {{- if (get $deployment_config "enabled") -}}
 {{- $objectType := ( get $deployment_config "object_type" | replace "_" "-" ) }}
 {{- $serviceType := ( print "storage-backfiller-" $objectType "-" $deployment ) }}
-{{ include "swh.storage.configmap" (dict "serviceType" $serviceType
+{{ include "swh.backfiller.configmap" (dict "serviceType" $serviceType
                                          "configuration" $deployment_config
                                          "Values" $.Values) }}
 {{- end -}}

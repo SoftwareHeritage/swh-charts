@@ -13,3 +13,17 @@ data:
     {{- include "swh.storageConfiguration" (dict "configurationRef" .configuration.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 {{- end -}}
+{{ define "swh.backfiller.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .configuration.storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
+    {{- include "swh.storage.journalWriter" (dict "configurationRef" .configuration.journalConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
+{{- end -}}
