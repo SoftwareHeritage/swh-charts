@@ -11,6 +11,8 @@ CC_CHART=cluster-components
 CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
+MINIKUBE_CONTEXT=minikube
+
 # use: make VERBOSE=1 to actually have the command displayed
 ifndef VERBOSE
 .SILENT:
@@ -47,8 +49,8 @@ ss-helm-diff:
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube:
-	kubectl --context minikube create namespace swh ; \
-	kubectl --context minikube --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(MINIKUBE_CONTEXT) create namespace swh ; \
+	kubectl --context $(MINIKUBE_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	helm --kube-context minikube upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
@@ -56,8 +58,8 @@ swh-minikube:
 
 swh-uninstall:
 	helm --kube-context minikube uninstall $(SWH_CHART) -n swh ; \
-    kubectl --context minikube --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context minikube delete namespace swh
+    kubectl --context $(MINIKUBE_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(MINIKUBE_CONTEXT) delete namespace swh
 
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
@@ -107,8 +109,8 @@ swh-template-production-cassandra:
       -n swh --create-namespace --debug
 
 cc-minikube:
-	kubectl --context minikube create namespace cluster-components ; \
-	kubectl --context minikube --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(MINIKUBE_CONTEXT) create namespace cluster-components ; \
+	kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	helm --kube-context minikube upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
@@ -116,8 +118,8 @@ cc-minikube:
 
 cc-uninstall:
 	helm --kube-context minikube uninstall $(CC_CHART) --namespace cluster-components; \
-    kubectl --context minikube --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context minikube delete namespace cluster-components
+    kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(MINIKUBE_CONTEXT) delete namespace cluster-components
 
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
