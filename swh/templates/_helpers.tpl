@@ -395,8 +395,10 @@ Generate the configuration for a storage journal broker
 
 {{/* Generate the check migration container configuration if needed */}}
 {{- define "swh.checkDatabaseVersionContainer" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
 - name: {{ .containerName | default "check-migration" }}
-  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
   command:
   - /entrypoints/check-{{ .module }}-db-version.sh
   env:

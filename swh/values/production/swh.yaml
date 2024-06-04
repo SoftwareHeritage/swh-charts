@@ -1941,6 +1941,7 @@ storage_backfiller:
   enabled: true
   # pin version to avoid stopping jobs during new deployment
   imageVersion: '20240603.1'
+  swhUtilsImageVersion: '20231211.1'
   priorityClassName: background-workload
   deployments:
     content:

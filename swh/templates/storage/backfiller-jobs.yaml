@@ -46,7 +46,7 @@ spec:
       {{ end }}
       initContainers:
         - name: prepare-configuration
-          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.storage_backfiller.swhUtilsImageVersion }}
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
@@ -62,7 +62,8 @@ spec:
         {{- if $deployment_config.checkDbVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_storage_image"
-                                                             "module" "storage") | nindent 8 }}
+                                                             "module" "storage"
+                                                             "imageVersion" $.Values.storage_backfiller.imageVersion ) | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ get $deployment_config "object_type" | replace "_" "-" }}-{{ $deployment }}
