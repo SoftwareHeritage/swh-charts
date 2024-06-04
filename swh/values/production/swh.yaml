@@ -926,8 +926,8 @@ toolbox:
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     masking:
-      moduleName: storage
-      storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
+      moduleName: storage.proxies.masking
+      moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration

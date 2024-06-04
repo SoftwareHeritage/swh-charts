@@ -854,12 +854,12 @@ toolbox:
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     masking:
-      moduleName: storage
-      storageDbConfigurationRef: maskingAdminPostgresqlConfiguration
+      moduleName: storage.proxies.masking
+      moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
     blocking:
-      moduleName: storage
-      storageDbConfigurationRef: blockingAdminPostgresqlConfiguration
+      moduleName: storage.proxies.blocking
+      moduleConfigKey: blocking_admin
       blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration

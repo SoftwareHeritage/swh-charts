@@ -150,6 +150,7 @@ postgresqlSyncmailmapsConfiguration:
       secretKeyName: postgres-syncmailmap-password
 
 maskingAdminPostgresqlConfiguration:
+  cls: postgresql
   host: db1.internal.staging.swh.network
   port: '5432'
   db: swh-masking

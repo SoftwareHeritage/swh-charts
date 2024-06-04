@@ -129,34 +129,6 @@ Create a global scheduler configuration based on scheduler section aggregation
 {{- end -}}
 {{- end -}}
 
-{{/* Generate the configuration for a MaskingAdmin.
-     If serviceType is set, generate it within the given section
-   */}}
-{{- define "swh.maskingAdminConfiguration" -}}
-{{- $connstring := include "swh.connstring"
-                           (dict "configurationRef" .configurationRef
-                                 "Values" .Values) -}}
-{{- $config := (dict "masking_db" $connstring) -}}
-{{- if .serviceType -}}
-  {{ $config = (dict .serviceType $config) }}
-{{- end -}}
-{{ toYaml $config }}
-{{- end -}}
-
-{{/* Generate the configuration for a BlockingAdmin.
-     If serviceType is set, generate it within the given section
-   */}}
-{{- define "swh.blockingAdminConfiguration" -}}
-{{- $connstring := include "swh.connstring"
-                           (dict "configurationRef" .configurationRef
-                                 "Values" .Values) -}}
-{{- $config := (dict "blocking_db" $connstring) -}}
-{{- if .serviceType -}}
-  {{ $config = (dict .serviceType $config) }}
-{{- end -}}
-{{ toYaml $config }}
-{{- end -}}
-
 {{/*
 Generate the celery configuration. This will need evolution to deal with more celery
 configuration keys.
