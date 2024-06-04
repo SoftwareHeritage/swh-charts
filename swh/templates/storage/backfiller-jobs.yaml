@@ -2,6 +2,7 @@
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- range $deployment, $deployment_config := .Values.storage_backfiller.deployments -}}
+{{- if (get $deployment_config "enabled") -}}
 {{- $serviceType := ( print "storage-" $deployment ) -}}
 {{ $last := "0xFFFFFFFFFFFFFFF" | int64 }}
 {{- $first := 0 | int64 -}}
@@ -139,6 +140,7 @@ spec:
           name: config-utils
           defaultMode: 0555
 {{ $pos := add $pos $step -}}
+{{ end }}
 {{ end }}
 {{ end }}
 {{- end }}
