@@ -11,6 +11,7 @@ Create a Kind Ingress for service .serviceType
 {{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
 {{- $nameLabel := hasKey . "extraNameLabel" | ternary (print "ingress-" .extraNameLabel) "ingress" -}}
 {{- range $endpoint_definition, $endpoint_config := $configuration.ingress.endpoints -}}
+{{- if $endpoint_config }}
 {{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
@@ -90,5 +91,6 @@ spec:
     {{- end }}
     secretName: {{ $configuration.ingress.secretName }}
   {{- end }}
+{{ end -}}
 {{ end }}
 {{ end }}

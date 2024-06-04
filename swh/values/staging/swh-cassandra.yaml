@@ -1024,13 +1024,19 @@ objstorage:
           default:
             paths:
               - path: /
-          delete:
+          deny-delete:
             paths:
               - path: /content/delete
-                pathType: Exact
+                pathType: Prefix
             extraAnnotations:
               nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
               nginx.ingress.kubernetes.io/whitelist-source-range: null
+      extraIngresses:
+        - hosts:
+          - objstorage-db1-delete-rpc-ingress
+          endpoints:
+            deny-delete: null
+
     # storage1 read-only objstorage
     storage1-read-only:
       enabled: true
