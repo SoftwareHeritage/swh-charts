@@ -267,6 +267,8 @@ web:
       autoScaling:
         minReplicaCount: 1
         maxReplicaCount: 1
+      extraConfig:
+        history_counters_url: http://counters-rpc-ingress-next-version/counters_history/history.json#
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network
       refreshSavecodenowStatus:
