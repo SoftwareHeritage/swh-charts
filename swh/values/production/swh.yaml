@@ -1954,7 +1954,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     release:
-      enabled: false
+      enabled: true
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1964,7 +1964,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     snapshot:
-      enabled: false
+      enabled: true
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1974,7 +1974,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     directory:
-      enabled: false
+      enabled: true
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1984,7 +1984,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     revision:
-      enabled: false
+      enabled: true
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1994,7 +1994,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     origin:
-      enabled: false
+      enabled: true
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
