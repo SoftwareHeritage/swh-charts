@@ -1626,3 +1626,21 @@ cassandraChecks:
   #         - snapshot
   #       batch_size: 1000
 
+storage_backfiller:
+  enabled: false
+  # # pin versions to avoid stopping jobs during new deployment
+  # imageVersion: '20240603.1'
+  # swhUtilsImageVersion: '20231211.1'
+  # priorityClassName: background-workload
+  # deployments:
+  #   # Example of deployment
+  #   content:
+  #     enabled: true
+  #     checkDbVersion: true
+  #     storageConfigurationRef: ROStorageConfiguration
+  #     journalConfigurationRef: storageJournalWriterConfiguration
+  #     object_type: raw_extrinsic_metadata
+  #     ranges: 1
+  #     prefix: swh:1:cnt
+  #     requestedCpu: 450m
+  #     requestedMemory: 1200Mi
