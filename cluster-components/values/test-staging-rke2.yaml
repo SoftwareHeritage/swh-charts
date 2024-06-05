@@ -16,3 +16,108 @@ podPriority:
       range: 25000-26000
       value: 25500
       description: Backend storages used by other services (memcached, redis, ...)
+
+minioTestObjectStore:
+  destinationPath: s3://test/
+  endpointURL: https://minio.admin.swh.network
+  s3Credentials:
+    accessKeyId:
+      name: minio-test-bucket-secret
+      key: ACCESS_KEY_ID
+    secretAccessKey:
+      name: minio-test-bucket-secret
+      key: ACCESS_SECRET_KEY
+  wal:
+    compression: gzip
+  data:
+    additionalCommandArgs:
+      - "--min-chunk-size=5MB"
+      - "--read-timeout=60"
+      - "-vv"
+
+clusterStagingDb1:
+  name: cluster-staging-db1
+  password:
+    name: cluster-staging-db1-postgres-user-credential
+    key: password
+  connectionParameters:
+    # Use the correct IP or host name for the source database
+    host: db1.internal.staging.swh.network
+    user: postgres
+    port: "5433"
+
+cloudnativePg:
+  enabled: true
+  namespace: cnpg
+  # Specific postgresql setup (can be overridden per instance)
+  postgresql:
+    parameters:
+      max_worker_processes: "60"
+    pg_hba:
+      # To access through TCP/IP you will need to get username
+      # and password from the secret cluster-example-custom-app
+      - host all all all md5
+      # not for production: Trust any incoming requests
+      # - host all all 0.0.0.0/0 trust
+  # Exists as many cluster as we want
+  deployments:
+    staging-secondary-dbs:
+      instances: 3
+      barmanObjectStoreRef: minioTestObjectStore
+      externalClusterRef: clusterStagingDb1
+      pooler:
+        enabled: false
+        default_pool_size: "10"
+        max_client_conn: "1000"
+        instances: 3
+        type: rw
+      # Managed dbs
+      initdb:
+        type: monolith
+        databases:
+        - swh-blocking
+        - swh-deposit
+        - swh-masking
+        # - swh-scheduler
+        - swh-vault
+        - swh-web
+        source: cluster-staging-db1
+      backup:
+        enabled: true
+        retention: "30d"
+        name: daily-midnight
+        # every day at midnight
+        cron: "0 0 0 * * *"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "swh/storage"
+                operator: In
+                values:
+                - "true"
+    # staging-archive-db:
+    #   instances: 1
+    #   barmanobjectstoreRef: minioTestObjectStore
+    #   externalClusterRef: clusterStagingDb1
+    #   pooler:
+    #     enabled: false
+    #     default_pool_size: "10"
+    #     max_client_conn: "1000"
+    #     instances: 3
+    #     type: rw
+    #   nodeSelector:
+    #     kubernetes.io/hostname: rancher-node-test-rke2-worker3
+    #   # Managed dbs (optional)
+    #   initdb:
+    #     type: microservice
+    #     databases:
+    #       - swh
+    #     source: cluster-staging-db1
+    #   backup:
+    #     enabled: false
+    #     retention: "10d"
+    #     name: dayly-at-one
+    #     # every day at 1am
+    #     cron: "0 0 1 * * *"

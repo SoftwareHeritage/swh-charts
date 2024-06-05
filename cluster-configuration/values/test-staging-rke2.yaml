@@ -37,3 +37,6 @@ certManager:
   enabled: true
   webhookGandiEnabled: true
   useGandiDNS: true
+
+cloudnativePg:
+  enabled: true
