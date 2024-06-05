@@ -1893,6 +1893,7 @@ counters:
   rpc:
     enabled: true
     fetchStaticHistory: true
+    scrapeMetrics: true
     cacheBaseDirectory: /srv/softwareheritage/counters
     countersConfigurationRef: countersRedis
     historyConfigurationRef: countersHistoryConfiguration
