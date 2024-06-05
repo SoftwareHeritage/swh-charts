@@ -1136,6 +1136,13 @@ objstorage:
           default:
             paths:
               - path: /
+          deny-delete:
+            paths:
+              - path: /content/delete
+                pathType: Prefix
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
     # read-only objstorage
     multiplexer-read-only:
       enabled: true
@@ -1165,6 +1172,13 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+          deny-delete:
+            paths:
+              - path: /content/delete
+                pathType: Prefix
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
       extraIngresses:
         # Allow access through the public reverse proxy (authenticated) for all IPs
         - hosts:
@@ -1197,6 +1211,13 @@ objstorage:
           default:
             paths:
               - path: /
+          deny-delete:
+            paths:
+              - path: /content/delete
+                pathType: Prefix
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
 
 webhooks:
   enabled: true
