@@ -85,7 +85,7 @@ cassandraChecksROStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
-cassandraReplayerStorageConfiguration:
+cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: noopObjectStorage
 
@@ -445,7 +445,7 @@ storage_replayer:
             operator: In
             values:
             - "true"
-  storageConfigurationRef: cassandraReplayerStorageConfiguration
+  storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
   journalBrokers:
     hosts:
       - journal2.internal.staging.swh.network:9094
