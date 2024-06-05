@@ -468,6 +468,12 @@ externalServices:
     objstorage-storage1-read-only:
       internalName: objstorage-storage1-ro-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-db1-delete:
+      internalName: objstorage-db1-delete-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-storage1-delete:
+      internalName: objstorage-storage1-delete-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     counters:
       internalName: counters-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
