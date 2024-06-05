@@ -69,7 +69,7 @@ Create a global storage configuration based on configuration section aggregation
   {{- $pipelineSteps = mustAppend $pipelineSteps $storageConfig -}}
   {{- $storageConfig = (dict "cls" "pipeline" "steps" $pipelineSteps) -}}
 {{- end -}}
-{{- dict "storage" $storageConfig | toYaml -}}
+{{- dict (get . "service" | default "storage") $storageConfig | toYaml -}}
 {{- end -}}
 
 {{/* Parse a storage pipeline steps definition out of the .pipelineStepsRef key */}}
