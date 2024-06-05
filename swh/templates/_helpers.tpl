@@ -56,7 +56,7 @@ Create a global storage configuration based on configuration section aggregation
 
 {{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
 {{- if $journalWriterConfigurationRef -}}
-  {{- $journalWriterConfig := include "swh.storage.journalWriter"
+  {{- $journalWriterConfig := include "swh.journalWriterConfiguration"
                                       (dict "service_type" "journal_writer"
                                             "configurationRef" $journalWriterConfigurationRef
                                             "Values" .Values) | fromYaml -}}
@@ -229,15 +229,15 @@ Generate the configuration for a cassandra storage
 {{- end -}}
 
 {{/*
-Generate the configuration for a storage journal broker
+Generate the configuration for a journal writer
 */}}
-{{- define "swh.storage.journalWriter" -}}
+{{- define "swh.journalWriterConfiguration" -}}
 {{- $journalWriterConfiguration := get .Values .configurationRef -}}
 {{- $brokersRef := get $journalWriterConfiguration "brokersConfigurationRef" -}}
 {{- $brokers := get .Values $brokersRef -}}
 {{- $clientId := required (print "clientId property is mandatory in " .configurationRef " map") (get $journalWriterConfiguration "clientId") -}}
 {{- $config := (dict
-      "journal_writer" (dict
+      (get . "service" | default "journal_writer") (dict
         "cls" "kafka"
         "brokers" $brokers
         "prefix" (get $journalWriterConfiguration "prefix" | default "swh.journal.objects")

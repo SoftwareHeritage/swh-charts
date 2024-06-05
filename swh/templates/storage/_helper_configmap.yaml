@@ -24,6 +24,6 @@ data:
   config.yml.template: |
     {{- include "swh.storageConfiguration" (dict "configurationRef" .configuration.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
-    {{- include "swh.storage.journalWriter" (dict "configurationRef" .configuration.journalConfigurationRef
-                                                 "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalWriterConfiguration" (dict "configurationRef" .configuration.journalConfigurationRef
+                                                       "Values" .Values) | nindent 4 }}
 {{- end -}}
