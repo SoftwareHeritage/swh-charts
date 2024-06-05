@@ -194,6 +194,12 @@ cloudnativePg:
   nameOverride: cloudnative-pg
   # secrets must be stored in the same namespace
   # namespace: cnpg
+  # Specific postgresql setup (can be overridden per instance)
+  # postgresql:
+  #   parameters:
+  #     max_worker_processes: "60"
+  #   pg_hba:
+  #     - host all all all md5
   # Deploys as many postgresql clusters in the deployment section
   deployments:
     # Name of the cluster is the key followed by its configuration

@@ -7,6 +7,7 @@
 {{- $externalClusterDict := get $.Values $externalClusterRef -}}
 {{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
 {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
+{{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -75,15 +76,10 @@ spec:
 
   # Parameters and pg_hba configuration will be append
   # to the default ones to make the cluster work
+  {{- if $config_postgresql }}
   postgresql:
-    parameters:
-      max_worker_processes: "60"
-    pg_hba:
-      # To access through TCP/IP you will need to get username
-      # and password from the secret cluster-example-custom-app
-      - host all all all md5
-      # not for production: Trust any incoming requests
-      # - host all all 0.0.0.0/0 trust
+    {{- toYaml $config_postgresql | nindent 4 }}
+  {{ end }}
 
   storage:
     storageClass: local-persistent
