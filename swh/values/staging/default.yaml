@@ -113,6 +113,18 @@ remoteROObjstorageConfiguration:
     cls: remote
     url: http://objstorage-read-only-rpc-ingress
 
+primaryPostgresqlRWStorageConfiguration:
+  cls: postgresql
+  host: db1.internal.staging.swh.network
+  port: '5432'
+  user: swh
+  pass: ${POSTGRESQL_PASSWORD}
+  db: swh
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-common-secret
+      secretKeyName: postgres-swh-password
+
 postgresqlVaultConfiguration:
   cls: postgresql
   host: db1.internal.staging.swh.network

@@ -89,6 +89,10 @@ cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: noopObjectStorage
 
+postgresqlRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
+  objstorageConfigurationRef: noopObjectStorage
+
 cassandraRWStorageConfiguration:
   pipelineStepsRef: readWriteStorageBackendPipelineSteps
   storageConfigurationRef: cassandraStorage
