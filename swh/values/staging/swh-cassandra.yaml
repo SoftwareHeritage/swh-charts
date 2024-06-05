@@ -93,6 +93,10 @@ postgresqlRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjectStorage
 
+postgresqlRWReadOnlyObjstorageStorageConfiguration:
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
+  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
+
 cassandraRWStorageConfiguration:
   pipelineStepsRef: readWriteStorageBackendPipelineSteps
   storageConfigurationRef: cassandraStorage
@@ -1915,3 +1919,80 @@ cassandraChecks:
         - raw_extrinsic_metadata
         batch_size: 1000
 
+alterGraphConfiguration:
+  # XXX: this is the production graph, but alter needs a graph
+  url: http://graph.internal.softwareheritage.org:5009/graph
+  timeout: null
+
+db1DeleteObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-db1-delete-rpc-ingress
+
+storage1DeleteObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-storage1-delete-rpc-ingress
+
+alter:
+  enabled: true
+  directoryOutput: /srv/recovery-bundles
+  deployment:
+    volume:
+      name: alter-recovery-bundle-volumes
+      mountPath: /srv/recovery-bundles
+      volumeDefinition:
+        persistentVolumeClaim:
+          claimName: alter-recovery-bundles-pvc
+    volumeClaim:
+      storageClassName: cephfs
+      name: alter-recovery-bundles-pvc
+      size: 30Gi
+
+  inventoryStorageConfigurationRef: postgresqlRWReadOnlyObjstorageStorageConfiguration
+  graphConfigurationRef: alterGraphConfiguration
+  restorationStorageConfigurationRef: rpcRWStorageConfiguration
+  removalSearches:
+    search:
+      searchConfigurationRef: remoteSearchConfiguration
+  removalStorages:
+    cassandra:
+      storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+    postgresql:
+      storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+  removalObjstorages:
+    db1:
+      objstorageConfigurationRef: db1DeleteObjstorageConfiguration
+    storage1:
+      objstorageConfigurationRef: storage1DeleteObjstorageConfiguration
+  removalJournals:
+    journal:
+      journalWriterConfigurationRef: storageJournalWriterConfiguration
+
+  recoveryBundlesConfiguration:
+    # XXX: these come from the swh.alter tests
+    #
+    # ALI_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1VREXCYE5WNMUD0WSCF7F6CH3FGQ9P6PGD25QHY7QX8PGDN87P37QQD3L2G"
+    # )
+    # BOB_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1UPJU3AF4M0NPLSLGVDWJU38F3MDE3JJM48E8NST8V3YKU077HEVSQVPZC2"
+    # )
+    # CAMILLE_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1NPLST9VXL6E9DEHCVVPUTGH60ZRJFLPZ5HDM93MJW993CGFQ49PQU90RVL"
+    # )
+    # DLIQUE_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1NPT3PFA7N03DFQY9GN764T4TJCZSLP36YV4S98FLYN0YGX2539GSSFUT4F"
+    # )
+
+    secret_sharing:
+      minimum_required_groups: 2
+      groups:
+        legal:
+          minimum_required_shares: 1
+          recipient_keys:
+            Ali: age123hpq9m25xsmx7caqvyv8k3fxaqastc3evyq9q7myur7l9ukj4dsnp7a5v
+            Bob: age1mrhte5tlpzpz57gg85nzcefqc5pm5usmakqpuurxux7ry2rmhdgs7r9u68
+        sysadmins:
+          minimum_required_shares: 1
+          recipient_keys:
+            Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
+            Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze

@@ -1,0 +1,5 @@
+{{ if .Values.alter.enabled }}
+{{ include "alter.configmap"
+  (dict "serviceType" "alter"
+        "Values" $.Values) }}
+{{ end }}

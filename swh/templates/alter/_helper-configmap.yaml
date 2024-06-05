@@ -1,0 +1,67 @@
+{{- define "alter.config.fromYaml" -}}
+{{- $alterConfiguration := (dict) -}}
+{{- $alterConfiguration = include "swh.storageConfiguration" (dict
+                                      "service" "storage"
+                                      "configurationRef" .Values.alter.inventoryStorageConfigurationRef
+                                      "Values" .Values) | fromYaml | mustMerge $alterConfiguration -}}
+{{- $alterConfiguration = include "swh.service.fromYaml" (dict
+                                      "service" "graph"
+                                      "configurationRef" .Values.alter.graphConfigurationRef
+                                      "Values" .Values) | fromYaml | mustMerge $alterConfiguration -}}
+{{- $alterConfiguration = include "swh.storageConfiguration" (dict
+                                      "service" "restoration_storage"
+                                      "configurationRef" .Values.alter.restorationStorageConfigurationRef
+                                      "Values" .Values) | fromYaml | mustMerge $alterConfiguration -}}
+
+{{- $removalSearches := (dict) -}}
+{{- range $searchName, $searchConfig := .Values.alter.removalSearches -}}
+{{- $removalSearches := include "swh.service.fromYaml" (dict
+                                    "service" $searchName
+                                    "configurationRef" $searchConfig.searchConfigurationRef
+                                    "Values" $.Values) | fromYaml | mustMerge $removalSearches -}}
+{{- end -}}
+{{- $alterConfiguration = mustMerge $alterConfiguration (dict "removal_searches" $removalSearches) -}}
+
+{{- $removalStorages := (dict) -}}
+{{- range $storageName, $storageConfig := .Values.alter.removalStorages -}}
+{{- $removalStorages := include "swh.storageConfiguration" (dict
+                                    "service" $storageName
+                                    "configurationRef" $storageConfig.storageConfigurationRef
+                                    "Values" $.Values) | fromYaml | mustMerge $removalStorages -}}
+{{- end -}}
+{{- $alterConfiguration = mustMerge $alterConfiguration (dict "removal_storages" $removalStorages) -}}
+
+{{- $removalObjstorages := (dict) -}}
+{{- range $objstorageName, $objstorageConfig := .Values.alter.removalObjstorages -}}
+{{- $removalObjstorages := include "swh.objstorageConfiguration" (dict
+                                       "serviceName" $objstorageName
+                                       "configurationRef" $objstorageConfig.objstorageConfigurationRef
+                                       "Values" $.Values) | fromYaml | mustMerge $removalObjstorages -}}
+{{- end -}}
+{{- $alterConfiguration = mustMerge $alterConfiguration (dict "removal_objstorages" $removalObjstorages) -}}
+
+{{- $removalJournals := (dict) -}}
+{{- range $journalWriterName, $journalWriterConfig := .Values.alter.removalJournals -}}
+{{- $removalJournals := include "swh.journalWriterConfiguration" (dict
+                                    "service" $journalWriterName
+                                    "configurationRef" $journalWriterConfig.journalWriterConfigurationRef
+                                    "Values" $.Values) | fromYaml | mustMerge $removalJournals -}}
+{{- end -}}
+{{- $alterConfiguration = mustMerge $alterConfiguration (dict "removal_journals" $removalJournals) -}}
+
+{{- $alterConfiguration = mustMerge $alterConfiguration (dict "recovery_bundles" .Values.alter.recoveryBundlesConfiguration ) -}}
+
+{{ $alterConfiguration | toYaml }}
+{{- end -}}
+
+{{- define "alter.configmap" -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .serviceType }}-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "alter.config.fromYaml" (dict "Values" .Values) | nindent 4 -}}
+{{ end }}

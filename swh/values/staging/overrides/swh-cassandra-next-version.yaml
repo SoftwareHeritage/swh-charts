@@ -375,3 +375,6 @@ indexerStorage:
 
 cassandraChecks:
   enabled: false
+
+alter:
+  enabled: false

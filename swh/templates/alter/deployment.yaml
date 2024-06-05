@@ -1,0 +1,136 @@
+{{- if .Values.alter.enabled -}}
+
+{{- if .Values.alter.deployment.volumeClaim -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.alter.deployment.volumeClaim.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.alter.deployment.volumeClaim.storageClassName }}
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: {{ .Values.alter.deployment.volumeClaim.size | default "20Gi" }}
+{{ end }}
+
+{{- $service_name := "alter" -}}
+{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
+{{- $affinity := .Values.alter.deployment.affinity -}}
+{{- $nodeSelector := .Values.alter.deployment.nodeSelector | default dict -}}
+{{- $priority_class_name := .Values.alter.deployment.priorityClassName -}}
+{{- $requested_cpu := get .Values.alter.deployment "requestedCpu" -}}
+{{- $requested_memory := get .Values.alter.deployment "requestedMemory" -}}
+{{- $limited_cpu := get .Values.alter.deployment "limitedCpu" -}}
+{{- $limited_memory := get .Values.alter.deployment "limitedMemory" -}}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $service_name }}
+  name: {{ $service_name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.alter.replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ $service_name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $service_name }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{ if $affinity }}
+      affinity:
+        {{ toYaml $affinity | nindent 8 }}
+      {{ end }}
+      priorityClassName: {{ $priority_class_name }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          {{/* To be updated if secrets appear in $deployment_config! */}}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.alter
+                                                                      "Values" .Values) | nindent 10 }}
+          command:
+            - /entrypoints/prepare-configuration.sh
+          volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        - name: {{ $service_name }}
+          resources:
+            requests:
+              memory: {{ $requested_memory | default "512Mi" }}
+              cpu: {{ $requested_cpu | default "500m" }}
+            {{ if or $limited_cpu $limited_memory }}
+            limits:
+              {{ if $limited_memory }}
+              memory: {{ $limited_memory }}
+              {{ end }}
+              {{ if $limited_cpu }}
+              cpu: {{ $limited_cpu }}
+              {{ end }}
+            {{ end }}
+          command:
+            - /opt/swh/entrypoint.sh
+          image: {{ .Values.swh_alter_image }}:{{ .Values.swh_alter_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: SWH_LOG_LEVEL
+            value: {{ .Values.alter.logLevel | default "INFO" }}
+          - name: SWH_CONFIG_FILENAME
+            value: /etc/swh/config.yml
+            {{ if .Values.alter.deployment.volume }}
+          - name: HISTFILE
+            value: {{ .Values.alter.deployment.volume.mountPath }}/.bash_history
+            {{ end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+            {{ if .Values.alter.deployment.volume }}
+          - name: {{ .Values.alter.deployment.volume.name }}
+            mountPath: {{ .Values.alter.deployment.volume.mountPath }}
+            readOnly: {{ .Values.alter.deployment.volume.readOnly | default "false" }}
+            {{ end }}
+      volumes:
+        - name: configuration
+          emptyDir: {}
+        - name: configuration-template
+          configMap:
+            name: {{ $service_name }}-template
+            defaultMode: 0777
+            items:
+            - key: "config.yml.template"
+              path: "config.yml.template"
+        - name: config-utils
+          configMap:
+            name: config-utils
+            defaultMode: 0555
+        {{- if and .Values.alter.deployment.volume .Values.alter.deployment.volume.volumeDefinition -}}
+          {{- (list (mustMerge (dict "name" .Values.alter.deployment.volume.name) .Values.alter.deployment.volume.volumeDefinition)) | toYaml | nindent 8 -}}
+        {{- end -}}
+{{ end }}

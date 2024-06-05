@@ -385,3 +385,20 @@ storage_backfiller:
             operator: In
             values:
             - "true"
+
+
+alter:
+  sentry:
+    enabled: true
+    # secretKeyRef: common-secrets
+    # secretKeyName: alter-sentry-dsn
+  deployment:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: "swh/alter"
+              operator: In
+              values:
+              - "true"
