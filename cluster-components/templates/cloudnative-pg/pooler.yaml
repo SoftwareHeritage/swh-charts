@@ -1,0 +1,41 @@
+{{ if .Values.cloudnativePg.enabled -}}
+{{ $namespace := .Values.cloudnativePg.namespace -}}
+{{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
+{{ if and $cluster_config.pooler $cluster_config.pooler.enabled }}
+{{- $pooler_instances := $cluster_config.pooler.instances -}}
+{{- $pooler_type := $cluster_config.pooler.type -}}
+{{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
+{{- $max_client_conn := $cluster_config.pooler.max_client_conn | default "1000" -}}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: {{ $cluster_name}}-pooler-{{ $pooler_type }}
+  namespace: {{ $namespace }}
+spec:
+  instances: {{ $pooler_instances }}
+  type: {{ $pooler_type }}
+  cluster:
+    name: {{ $cluster_name }}
+
+  serviceTemplate:
+    metadata:
+      labels:
+        app: {{ $cluster_name}}-pooler
+      annotations:
+        # To be able to share the same ip for several services
+        # https://metallb.org/usage/#ip-address-sharing
+        metallb.universe.tf/allow-shared-ip: clusterIP
+    spec:
+      type: LoadBalancer
+      externalTrafficPolicy: Cluster
+
+  pgbouncer:
+    poolMode: session
+    parameters:
+      max_client_conn: {{ $max_client_conn | quote }}
+      default_pool_size: {{ $default_pool_size | quote }}
+
+{{ end }}
+{{ end }}
+{{ end }}

@@ -188,3 +188,51 @@ dockerCache:
       enabled: false
     ghcr.io:
       enabled: false
+
+cloudnativePg:
+  enabled: false
+  nameOverride: cloudnative-pg
+  # secrets must be stored in the same namespace
+  # namespace: cnpg
+  # Deploys as many postgresql clusters in the deployment section
+  deployments:
+    # Name of the cluster is the key followed by its configuration
+    # clustername:
+    #   # nb of replicas
+    #   instances: 3
+    #   # affinity: {}
+    #   # nodeSelector: {}
+    #   # barman object store configuration reference if backups are enabled
+    #   barmanObjectStoreRef: minioTestObjectStore
+    #   # Upstream cluster to start the dbs from
+    #   externalClusterRef: clusterStagingDb1
+    #   # Whether we enable a pooler (pgbouncher) for access
+    #   pooler:
+    #     enabled: true
+    #     default_pool_size: "10"
+    #     max_client_conn: "1000"
+    #     instances: 3
+    #     type: rw
+    #   # To initialize the dbs to be managed within the new pg cluster
+    #   initdb:
+    #     # type:
+    #     # - microservice: destination cluster is designed to host a single app
+    #     # database owned by the specified application user (recommended)
+    #     # - monolith: destination cluster is designed to host multiple databases
+    #     # and different users, imported from the source cluster
+    #     type: monolith
+    #     dbs:
+    #     - swh-deposit
+    #     - swh-scheduler
+    #     - swh-web
+    #     - swh-vault
+    #     # - swh-blocking
+    #     # - swh-masking
+    #     source: cluster-staging-db1
+    #   # Whether to enable regular backups
+    #   backup:
+    #     enabled: true
+    #     retention: "30d"
+    #     name: daily-midnight
+    #     # every day at midnight
+    #     cron: "0 0 0 * * *"

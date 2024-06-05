@@ -1,0 +1,116 @@
+{{- if .Values.cloudnativePg.enabled -}}
+{{- $namespace := .Values.cloudnativePg.namespace -}}
+{{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
+{{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" -}}
+{{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
+{{- $externalClusterRef := get $cluster_config "externalClusterRef" -}}
+{{- $externalClusterDict := get $.Values $externalClusterRef -}}
+{{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
+{{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ $cluster_name }}
+  namespace: {{ $namespace }}
+spec:
+  instances: {{ $cluster_config.instances | default 3 }}
+  # Rolling update strategy:
+  # - unsupervised: automated update of the primary once all
+  #                 replicas have been upgraded (default)
+  # - supervised: requires manual supervision to perform
+  #               the switchover of the primary
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+
+  {{- if $cluster_config.affinity }}
+  affinity:
+    {{ toYaml $cluster_config.affinity | nindent 4 }}
+  {{ end }}
+
+  {{- if $cluster_config.nodeSelector }}
+  nodeSelector:
+    {{ toYaml $cluster_config.nodeSelector | nindent 4 }}
+  {{ end }}
+
+  {{- if $cluster_config.initdb }}
+  bootstrap:
+    initdb:
+      {{ if eq $db_type "microservice" }}
+      # Use the following to define the database's name (default <app>).
+      # And its associated owner
+      database: {{ first $databases }}
+      owner: {{ first $databases }}
+      {{ end }}
+      # The following optionals are the equivalent of flags passed to initdb
+      # commented because those are already the default values
+      # --encoding
+      # encoding: UTF8
+      # --lc-ctype
+      # localeCType: C
+      # --lc-collate
+      # localeCollate: C
+      # -k option to enable checksums on data pages to help detect I/O
+      # -corruption
+      dataChecksums: true
+      import:
+        # 2 types possibles
+        # - monolith: for one cluster with all dbs
+        # - microservice (recommended): one db per cluster (lots of pods)
+        type: {{ $db_type }}
+        databases:
+          {{- toYaml $databases | nindent 10 }}
+        {{ if eq $db_type "monolith" }}
+        roles:
+          - "*"
+        {{ end }}
+        source:
+          externalCluster: {{ $cluster_config.initdb.source }}
+
+  {{- if $externalClusterDict }}
+  externalClusters:
+    {{- toYaml (list $externalClusterDict) | nindent 4 }}
+  {{- end }}
+  {{- end }}
+
+  # Parameters and pg_hba configuration will be append
+  # to the default ones to make the cluster work
+  postgresql:
+    parameters:
+      max_worker_processes: "60"
+    pg_hba:
+      # To access through TCP/IP you will need to get username
+      # and password from the secret cluster-example-custom-app
+      - host all all all md5
+      # not for production: Trust any incoming requests
+      # - host all all 0.0.0.0/0 trust
+
+  storage:
+    storageClass: local-persistent
+    size: 1Gi
+  # walStorage:
+  #   storageClass: local-persistent
+  #   size: 1Gi
+
+  monitoring:
+    enablePodMonitor: true
+
+  {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
+  # Backup properties
+  # This assumes a local minio setup
+  backup:
+    volumeSnapshot:
+      className: local-persistent
+      online: true
+      # onlineConfiguration:
+      #   immediateCheckpoint: true
+      #   waitForArchive: false
+    retentionPolicy: {{ $cluster_config.backup.retention | default "30d" | quote }}
+    {{- if $barmanObjectStoreDict }}
+    barmanObjectStore:
+      {{- toYaml $barmanObjectStoreDict | nindent 6 }}
+    {{- end }}
+  {{ end }}
+
+{{ end }}
+{{ end }}
