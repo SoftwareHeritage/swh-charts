@@ -1938,14 +1938,14 @@ webhooks:
           - origin_visit_status
 
 storage_backfiller:
-  enabled: true
+  enabled: false
   # pin version to avoid stopping jobs during new deployment
   imageVersion: '20240603.1'
   swhUtilsImageVersion: '20231211.1'
   priorityClassName: background-workload
   deployments:
     content:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1955,7 +1955,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     release:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1965,7 +1965,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     snapshot:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1975,7 +1975,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     directory:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1985,7 +1985,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     revision:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
@@ -1995,7 +1995,7 @@ storage_backfiller:
       requestedCpu: 450m
       requestedMemory: 1200Mi
     origin:
-      enabled: true
+      enabled: false
       checkDbVersion: true
       storageConfigurationRef: ROStorageConfiguration
       journalConfigurationRef: storageJournalWriterConfiguration
