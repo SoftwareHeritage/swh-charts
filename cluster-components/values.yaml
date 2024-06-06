@@ -129,6 +129,7 @@ alerting:
   saveCodeNow:
     aggregatedPeriod: 1h
     threshold: 10
+  runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks"
 
 scrapeExternalMetrics:
   enabled: false

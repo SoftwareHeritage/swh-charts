@@ -55,5 +55,19 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
+    - alert: HPA_Maxed_Out_In_{{ .environment | title }}
+      annotations:
+        description: HPA {{"{{"}} $labels.namespace {{"}}"}}/{{"{{"}} $labels.horizontalpodautoscaler {{"}}"}}
+          has been running at max replicas for longer than {{ trimSuffix "m" .period.smallDelay }} minutes.
+        runbook_url: {{ .runbookUrl }}/kubernetes/kubehpamaxedout
+        summary: HPA is running at max replicas
+      expr: |-
+        kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace=~".*"}
+          ==
+        kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace=~".*"}
+      for: {{ .period.smallDelay }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
 {{- end }}
 {{- end }}
