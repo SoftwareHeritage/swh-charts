@@ -1,10 +1,12 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{- $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
+{{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" | default
+      (get $.Values.cloudnativePg "barmanObjectStoreRef") -}}
 {{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
-{{- $externalClusterRef := get $cluster_config "externalClusterRef" -}}
+{{- $externalClusterRef := get $cluster_config "externalClusterRef" | default
+      (get $.Values.cloudnativePg "externalClusterRef") -}}
 {{- $externalClusterDict := get $.Values $externalClusterRef -}}
 {{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
 {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
