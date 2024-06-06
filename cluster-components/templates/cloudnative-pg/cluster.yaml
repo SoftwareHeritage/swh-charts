@@ -18,7 +18,7 @@ metadata:
   name: {{ $cluster_name }}
   namespace: {{ $namespace }}
 spec:
-  instances: {{ $cluster_config.instances | default 3 }}
+  instances: {{ $cluster_config.instances | default 1 }}
   # Rolling update strategy:
   # - unsupervised: automated update of the primary once all
   #                 replicas have been upgraded (default)
