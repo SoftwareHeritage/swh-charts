@@ -56,11 +56,7 @@ cloudnativePg:
     parameters:
       max_worker_processes: "60"
     pg_hba:
-      # To access through TCP/IP you will need to get username
-      # and password from the secret cluster-example-custom-app
       - host all all all md5
-      # not for production: Trust any incoming requests
-      # - host all all 0.0.0.0/0 trust
   # Exists as many cluster as we want
   deployments:
     staging-secondary-dbs:
