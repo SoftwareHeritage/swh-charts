@@ -14,9 +14,10 @@ metadata:
 spec:
   schedule: {{ $backup_cron }}
   # backupOwnerReference
-  # none: no owner reference for created backup objects (same behavior as before the field was introduced)
-  # self: sets the Scheduled backup object as owner of the backup
-  # cluster: set the cluster as owner of the backup
+  # - none: no owner reference for created backup objects (same behavior as
+  #   before the field was introduced)
+  # - self: sets the Scheduled backup object as owner of the backup
+  # - cluster: set the cluster as owner of the backup
   backupOwnerReference: self
   cluster:
     name: {{ $cluster_name }}
