@@ -62,6 +62,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     staging-secondary-dbs:
+      enabled: true
       instances: 3
       barmanObjectStoreRef: minioTestObjectStore
       externalClusterRef: clusterStagingDb1

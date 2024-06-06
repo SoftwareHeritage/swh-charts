@@ -1,7 +1,8 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{ $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{ if and $cluster_config.backup $cluster_config.backup.enabled }}
+{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
+{{- if and $cluster_config.backup $cluster_config.backup.enabled -}}
 {{- $backup_name := $cluster_config.backup.name -}}
 {{- $backup_cron := $cluster_config.backup.cron -}}
 ---
@@ -19,6 +20,8 @@ spec:
   backupOwnerReference: self
   cluster:
     name: {{ $cluster_name }}
+
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}

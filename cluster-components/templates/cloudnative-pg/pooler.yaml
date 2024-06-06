@@ -1,7 +1,8 @@
 {{ if .Values.cloudnativePg.enabled -}}
 {{ $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{ if and $cluster_config.pooler $cluster_config.pooler.enabled }}
+{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
+{{- if and $cluster_config.pooler $cluster_config.pooler.enabled -}}
 {{- $pooler_instances := $cluster_config.pooler.instances -}}
 {{- $pooler_type := $cluster_config.pooler.type -}}
 {{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
@@ -36,6 +37,7 @@ spec:
       max_client_conn: {{ $max_client_conn | quote }}
       default_pool_size: {{ $default_pool_size | quote }}
 
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}

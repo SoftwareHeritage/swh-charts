@@ -2,6 +2,7 @@
 {{- $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" -}}
+{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
 {{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
 {{- $externalClusterRef := get $cluster_config "externalClusterRef" -}}
 {{- $externalClusterDict := get $.Values $externalClusterRef -}}
@@ -108,5 +109,6 @@ spec:
     {{- end }}
   {{ end }}
 
+{{ end }}
 {{ end }}
 {{ end }}
