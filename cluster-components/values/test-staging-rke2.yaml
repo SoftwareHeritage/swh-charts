@@ -67,11 +67,10 @@ cloudnativePg:
       enabled: true
       instances: 3
       pooler:
-        enabled: false
+        enabled: true
+        type: rw
         default_pool_size: "10"
         max_client_conn: "1000"
-        instances: 3
-        type: rw
       # Managed dbs
       initdb:
         type: monolith
