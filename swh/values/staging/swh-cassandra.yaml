@@ -114,6 +114,22 @@ azureCacheConfiguration:
       secretKeyRef: swh-vault-azure-secret
       secretKeyName: azure-swh-vault-key
 
+scrubberObjstorageJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-stg-objstorage
+  on_eof: restart
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-archive-stg
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  message.max.bytes: 524288000
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 loaders:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
@@ -851,6 +867,12 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
+    scrubber-objstorage:
+      moduleName: scrubber
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageConfiguration
+      journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
+      objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
     indexer-storage:
       moduleName: indexer
       moduleConfigKey: indexer_storage
