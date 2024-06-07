@@ -72,5 +72,10 @@ data:
           "configurationRef" (get $deployment_config "blockingAdminConfigurationRef")
           "Values" $.Values) | nindent 4 }}
 {{ end }}
+{{- if hasKey $deployment_config "objstorageConfigurationRef" }}
+    {{- include "swh.objstorageConfiguration" (dict "service" "objstorage"
+          "configurationRef" (get $deployment_config "objstorageConfigurationRef")
+          "Values" $.Values) | nindent 4 }}
+{{ end }}
 {{ end }}
 {{ end }}
