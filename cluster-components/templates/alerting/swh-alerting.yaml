@@ -62,9 +62,9 @@ spec:
         runbook_url: {{ .runbookUrl }}/kubernetes/kubehpamaxedout
         summary: HPA is running at max replicas
       expr: |-
-        kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace=~".*"}
+        kube_horizontalpodautoscaler_status_current_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace!~"swh-cassandra-next-version"}
           ==
-        kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace=~".*"}
+        kube_horizontalpodautoscaler_spec_max_replicas{horizontalpodautoscaler!~"keda-hpa-.*", job="kube-state-metrics", namespace!~"swh-cassandra-next-version"}
       for: {{ .period.smallDelay }}
       labels:
         severity: warning
