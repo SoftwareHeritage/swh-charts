@@ -87,3 +87,72 @@ scrapeExternalMetrics:
           regex: "192.168.130.50(.*)"
           replacement: "scheduler0.internal.staging.swh.network$1"
           action: replace
+
+# TODO: Determine where we want to store wals
+minioTestObjectStore:
+  destinationPath: s3://test/
+  endpointURL: https://minio.admin.swh.network
+  s3Credentials:
+    accessKeyId:
+      name: minio-test-bucket-secret
+      key: ACCESS_KEY_ID
+    secretAccessKey:
+      name: minio-test-bucket-secret
+      key: ACCESS_SECRET_KEY
+  wal:
+    compression: gzip
+  data:
+    additionalCommandArgs:
+      - "--min-chunk-size=5MB"
+      - "--read-timeout=60"
+      - "-vv"
+
+clusterStagingDb1:
+  name: cluster-staging-db1
+  password:
+    name: cluster-staging-db1-postgres-user-credential
+    key: password
+  connectionParameters:
+    # Use the correct IP or host name for the source database
+    host: db1.internal.staging.swh.network
+    user: postgres
+    port: "5433"
+
+cloudnativePg:
+  enabled: true
+  namespace: swh-cassandra-next-version
+  # Specific postgresql setup (can be overridden per instance)
+  barmanobjectstoreRef: minioTestObjectStore
+  externalClusterRef: clusterStagingDb1
+  postgresql:
+    parameters:
+      max_worker_processes: "60"
+    pg_hba:
+      - host all all all md5
+  # Exists as many cluster as we want
+  deployments:
+    staging-secondary-dbs:
+      enabled: true
+      instances: 3
+      pooler:
+        enabled: true
+        type: rw
+        default_pool_size: "10"
+        max_client_conn: "1000"
+      # Managed dbs
+      initdb:
+        type: monolith
+        databases:
+        - swh-blocking
+        - swh-deposit
+        - swh-masking
+        - swh-vault
+        - swh-web
+        - swh-scheduler
+        source: cluster-staging-db1
+      backup:
+        enabled: true
+        retention: "30d"
+        name: daily-midnight
+        # every day at midnight
+        cron: "0 0 0 * * *"
