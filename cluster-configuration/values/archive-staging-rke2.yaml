@@ -45,3 +45,5 @@ otlpCollector:
     - http://esnode3.internal.softwareheritage.org:9200
     - http://esnode7.internal.softwareheritage.org:9200
 
+cloudnativePg:
+  enabled: true
