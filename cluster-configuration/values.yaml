@@ -74,4 +74,5 @@ otlpCollector:
 cloudnativePg:
   enabled: false
   namespace: cnpg-system
+  # https://cloudnative-pg.io/documentation/1.23/installation_upgrade/#upgrades
   version: 0.21.4

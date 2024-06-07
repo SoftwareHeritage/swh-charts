@@ -25,6 +25,7 @@ spec:
   #                 replicas have been upgraded (default)
   # - supervised: requires manual supervision to perform
   #               the switchover of the primary
+  # https://cloudnative-pg.io/documentation/1.23/rolling_update/
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
 
