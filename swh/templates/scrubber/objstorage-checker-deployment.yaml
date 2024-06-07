@@ -48,7 +48,7 @@ spec:
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           {{/* To be updated if secrets appear in $deployment_config! */}}
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.cassandraChecks
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deployment_config
                                                                       "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoints/prepare-configuration.sh
