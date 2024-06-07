@@ -1,11 +1,34 @@
 namespace: swh-cassandra-next-version
 
+postgresqlWebConfiguration:
+  host: staging-secondary-dbs-rw
+  port: 5432
+  db: swh-web
+  user: swh-web
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
+postgresqlVaultConfiguration:
+  host: staging-secondary-dbs-rw
+  port: 5432
+  db: swh-vault
+  user: swh-vault
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-vault-postgresql-secret
+      secretKeyName: postgres-swh-vault-password
+
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress-next-version
 
 vault:
   replicas: 1
+  vaultConfigurationRef: postgresqlVaultConfiguration
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
@@ -246,18 +269,6 @@ storage:
         - storage-cassandra-next-version.internal.staging.swh.network
     cassandra-read-only:
       enabled: false
-
-
-postgresqlWebConfiguration:
-  host: db1.internal.staging.swh.network
-  port: 5432
-  db: swh-web-next-version
-  user: swh-web-next-version
-  pass: ${POSTGRESQL_PASSWORD}
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-web-secrets
-      secretKeyName: postgres-swh-web-password
 
 web:
   deployments:
