@@ -57,6 +57,15 @@ cloudnativePg:
       max_worker_processes: "60"
     pg_hba:
       - host all all all md5
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/storage"
+            operator: In
+            values:
+            - "true"
   # Exists as many cluster as we want
   deployments:
     staging-secondary-dbs:
@@ -83,15 +92,6 @@ cloudnativePg:
         name: daily-midnight
         # every day at midnight
         cron: "0 0 0 * * *"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "swh/storage"
-                operator: In
-                values:
-                - "true"
     staging-archive-db:
       enabled: true
       pooler:
@@ -100,8 +100,6 @@ cloudnativePg:
         max_client_conn: "1000"
         instances: 3
         type: rw
-      nodeSelector:
-        kubernetes.io/hostname: rancher-node-test-rke2-worker3
       # Managed dbs (optional)
       initdb:
         type: microservice
@@ -115,3 +113,12 @@ cloudnativePg:
         name: dayly-at-one
         # every day at 1am
         cron: "0 0 1 * * *"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "kubernetes.io/hostname"
+                operator: In
+                values:
+                - "rancher-node-test-rke2-worker3"

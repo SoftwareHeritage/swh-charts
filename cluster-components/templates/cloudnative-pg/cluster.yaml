@@ -11,6 +11,7 @@
 {{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
 {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
+{{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -27,14 +28,9 @@ spec:
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
 
-  {{- if $cluster_config.affinity }}
+  {{- if $affinity }}
   affinity:
-    {{- toYaml $cluster_config.affinity | nindent 4 }}
-  {{ end }}
-
-  {{- if $cluster_config.nodeSelector }}
-  nodeSelector:
-    {{- toYaml $cluster_config.nodeSelector | nindent 4 }}
+    {{- toYaml $affinity | nindent 4 }}
   {{ end }}
 
   {{- if $cluster_config.initdb }}
