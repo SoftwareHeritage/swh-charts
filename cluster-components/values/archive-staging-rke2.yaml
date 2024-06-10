@@ -149,10 +149,4 @@ cloudnativePg:
         - swh-vault
         - swh-web
         - swh-scheduler
-      backup:
-        enabled: true
-        retention: "30d"
-        name: daily-midnight
-        # every day at midnight
-        cron: "0 0 0 * * *"
         source: cluster-pg-staging-db1

@@ -61,11 +61,6 @@ cloudnativePg:
   deployments:
     staging-secondary-dbs:
       enabled: true
-      pooler:
-        enabled: true
-        type: rw
-        default_pool_size: "10"
-        max_client_conn: "1000"
       instances: 1
       # Managed dbs
       initdb:
@@ -84,13 +79,7 @@ cloudnativePg:
         # every day at midnight
         cron: "0 0 0 * * *"
     staging-archive-db:
-      enabled: true
-      pooler:
-        enabled: false
-        default_pool_size: "10"
-        max_client_conn: "1000"
-        instances: 3
-        type: rw
+      enabled: false
       # Managed dbs (optional)
       initdb:
         type: microservice
