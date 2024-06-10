@@ -47,7 +47,7 @@ clusterStagingDb1:
     port: "5433"
 
 cloudnativePg:
-  enabled: false
+  enabled: true
   namespace: cnpg
   # Specific postgresql setup (can be overridden per instance)
   barmanobjectstoreRef: minioTestObjectStore
