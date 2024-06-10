@@ -61,12 +61,12 @@ cloudnativePg:
   deployments:
     staging-secondary-dbs:
       enabled: true
-      instances: 3
       pooler:
         enabled: true
         type: rw
         default_pool_size: "10"
         max_client_conn: "1000"
+      instances: 1
       # Managed dbs
       initdb:
         type: monolith

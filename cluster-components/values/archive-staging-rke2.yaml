@@ -133,7 +133,7 @@ cloudnativePg:
   deployments:
     staging-secondary-dbs:
       enabled: true
-      instances: 3
+      instances: 1
       pooler:
         enabled: true
         type: rw
