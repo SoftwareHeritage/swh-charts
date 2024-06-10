@@ -39,4 +39,4 @@ certManager:
   useGandiDNS: true
 
 cloudnativePg:
-  enabled: true
+  enabled: false
