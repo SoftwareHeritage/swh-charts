@@ -39,4 +39,5 @@ certManager:
   useGandiDNS: true
 
 cloudnativePg:
-  enabled: false
+  enabled: true
+  version: 0.21.3
