@@ -1012,6 +1012,31 @@ scheduler:
       opam:
       - policy: origins_without_last_update
         weight: 100
+      git-checkout:
+      - policy: origins_without_last_update
+        weight: 100
+      hg-checkout:
+      - policy: origins_without_last_update
+        weight: 100
+      svn-export:
+      - policy: origins_without_last_update
+        weight: 100
+      tarball-directory:
+      - policy: origins_without_last_update
+        weight: 100
+      content:
+      - policy: origins_without_last_update
+        weight: 100
+      git:
+      - policy: origins_without_last_update
+        weight: 85
+        tablesample: 0.1
+      - policy: never_visited_oldest_update_first
+        weight: 10
+        tablesample: 0.1
+      - policy: already_visited_order_by_lag
+        weight: 5
+        tablesample: 0.1
   rpc:
     enabled: false
     port: 5008
