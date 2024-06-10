@@ -107,8 +107,8 @@ minioTestObjectStore:
       - "--read-timeout=60"
       - "-vv"
 
-clusterStagingDb1:
-  name: cluster-staging-db1
+clusterPgStagingDb1:
+  name: cluster-pg-staging-db1
   password:
     name: cluster-staging-db1-postgres-user-credential
     key: password
@@ -123,7 +123,7 @@ cloudnativePg:
   namespace: swh-cassandra-next-version
   # Specific postgresql setup (can be overridden per instance)
   barmanobjectstoreRef: minioTestObjectStore
-  externalClusterRef: clusterStagingDb1
+  externalClusterRef: clusterPgStagingDb1
   postgresql:
     parameters:
       max_worker_processes: "60"
@@ -149,10 +149,10 @@ cloudnativePg:
         - swh-vault
         - swh-web
         - swh-scheduler
-        source: cluster-staging-db1
       backup:
         enabled: true
         retention: "30d"
         name: daily-midnight
         # every day at midnight
         cron: "0 0 0 * * *"
+        source: cluster-pg-staging-db1
