@@ -1401,7 +1401,7 @@ web:
       requestedCpu: 350m
       requestedMemory: 6Gi
       refreshSavecodenowStatus:
-        enabled: false
+        enabled: true
         concurrencyPolicy: Forbid
         priorityClassName: frontend-rpc-workload
         cron: "*/2 * * * *"
@@ -1930,7 +1930,7 @@ webhooks:
   priorityClassName: frontend-rpc-workload
   deployments:
     origin-visit-status:
-      replicas: 1
+      replicas: 0
       dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
