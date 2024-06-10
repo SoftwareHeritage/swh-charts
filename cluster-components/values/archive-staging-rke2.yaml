@@ -126,6 +126,7 @@ cloudnativePg:
   externalClusterRef: clusterPgStagingDb1
   postgresql:
     parameters:
+      # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
       max_worker_processes: "60"
       # max_connections: "400"
       # shared_buffers: "32GB" # min 128kB
@@ -141,7 +142,7 @@ cloudnativePg:
   deployments:
     next-version-dbs:
       enabled: true
-      instances: 1
+      instances: 3
       pooler:
         enabled: true
         type: rw
