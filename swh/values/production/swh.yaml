@@ -833,7 +833,7 @@ scheduler:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
     schedulerConfigurationRef: postgresqlSchedulerConfiguration
-    replicas: 2
+    replicas: 4
     gunicorn:
       threads: 4
       workers: 8
@@ -896,7 +896,7 @@ scheduler:
         - load-hg
     listener:
       enabled: true
-      replicas: 2
+      replicas: 4
       logLevel: INFO
 
 toolbox:
