@@ -1934,6 +1934,7 @@ webhooks:
       dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
+      logLevel: INFO httpx:WARNING
       journalClientOverrides:
         auto_offset_reset: latest
         group_id: swh-archive-prod-webhooks
