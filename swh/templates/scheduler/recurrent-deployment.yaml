@@ -68,12 +68,7 @@ spec:
           command:
           - /opt/swh/entrypoint.sh
           args:
-          # - shell
-          # - sleep
-          # - infinity
           - swh
-          - --log-level
-          - {{ $log_level | default "INFO" }}
           - scheduler
           - --config-file
           - /etc/swh/config.yml
