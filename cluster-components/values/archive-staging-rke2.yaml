@@ -131,7 +131,7 @@ cloudnativePg:
       - host all all all md5
   # Exists as many cluster as we want
   deployments:
-    staging-secondary-dbs:
+    next-version-dbs:
       enabled: true
       instances: 1
       pooler:
