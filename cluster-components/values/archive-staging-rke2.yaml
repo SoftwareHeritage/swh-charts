@@ -88,25 +88,6 @@ scrapeExternalMetrics:
           replacement: "scheduler0.internal.staging.swh.network$1"
           action: replace
 
-# TODO: Determine where we want to store wals
-minioTestObjectStore:
-  destinationPath: s3://test/
-  endpointURL: https://minio.admin.swh.network
-  s3Credentials:
-    accessKeyId:
-      name: minio-test-bucket-secret
-      key: ACCESS_KEY_ID
-    secretAccessKey:
-      name: minio-test-bucket-secret
-      key: ACCESS_SECRET_KEY
-  wal:
-    compression: gzip
-  data:
-    additionalCommandArgs:
-      - "--min-chunk-size=5MB"
-      - "--read-timeout=60"
-      - "-vv"
-
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
   password:
@@ -122,7 +103,6 @@ cloudnativePg:
   enabled: true
   namespace: swh-cassandra-next-version
   # Specific postgresql setup (can be overridden per instance)
-  barmanobjectstoreRef: minioTestObjectStore
   externalClusterRef: clusterPgStagingDb1
   postgresql:
     parameters:
