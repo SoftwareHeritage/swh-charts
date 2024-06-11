@@ -122,6 +122,7 @@ cloudnativePg:
   deployments:
     next-version-dbs:
       enabled: true
+      testing: true
       instances: 1
       pooler:
         enabled: false

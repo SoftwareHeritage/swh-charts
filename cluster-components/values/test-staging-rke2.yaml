@@ -48,6 +48,7 @@ clusterPgStagingDb1:
 
 cloudnativePg:
   enabled: true
+  testing: true
   namespace: cnpg
   # Where to store backup (if enabled)
   # barmanobjectstoreRef: minioTestObjectStore
