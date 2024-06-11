@@ -29,6 +29,16 @@ searchJournalClientConfiguration:
 noopObjectStorage:
   cls: noop
 
+remoteStorage1ReadOnlyObjstorageConfiguration:
+  cls: remote
+  name: storage1
+  url: http://objstorage-storage1-ro-rpc-ingress
+
+remoteDb1ReadOnlyObjstorageConfiguration:
+  cls: remote
+  name: db1
+  url: http://objstorage-db1-ro-rpc-ingress
+
 multiplexerReadOnlyObjstorageConfiguration:
   cls: multiplexer
   objstorages:

@@ -867,12 +867,18 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
-    scrubber-objstorage:
+    scrubber-objstorage-db1:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
       journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
-      objstorageConfigurationRef: remoteReadWriteObjstorageConfiguration
+      objstorageConfigurationRef: remoteDb1ReadOnlyObjstorageConfiguration
+    scrubber-objstorage-storage1:
+      moduleName: scrubber
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageConfiguration
+      journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
+      objstorageConfigurationRef: remoteStorage1ReadOnlyObjstorageConfiguration
     indexer-storage:
       moduleName: indexer
       moduleConfigKey: indexer_storage
