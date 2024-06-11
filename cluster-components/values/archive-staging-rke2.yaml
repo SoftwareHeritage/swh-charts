@@ -116,8 +116,8 @@ cloudnativePg:
       # lc_monetary: 'C.UTF-8' # locale for monetary formatting
       # lc_numeric: 'C.UTF-8' # locale for number formatting
       # lc_time: 'C.UTF-8' # locale for time formatting
-      pg_hba:
-      - host all all all md5
+    pg_hba:
+    - host all all all md5
   # Exists as many cluster as we want
   deployments:
     next-version-dbs:
