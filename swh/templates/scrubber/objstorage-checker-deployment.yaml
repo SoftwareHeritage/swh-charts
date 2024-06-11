@@ -68,9 +68,9 @@ spec:
                                                                 "imagePrefixName" "swh_scrubber_image"
                                                                 "module" "scrubber") | nindent 8 }}
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-objstorage-migration"
+                                                                "containerName" "check-storage-migration"
                                                                 "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "objstorage") | nindent 8 }}
+                                                                "module" "storage") | nindent 8 }}
       containers:
       - name: storage-checker
         resources:
