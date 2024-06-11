@@ -51,6 +51,7 @@ cloudnativePg:
   namespace: cnpg
   # Specific postgresql setup (can be overridden per instance)
   barmanobjectstoreRef: minioTestObjectStore
+  # Cluster Postgresql to read db to initialize from
   externalClusterRef: clusterPgStagingDb1
   postgresql:
     parameters:

@@ -7,7 +7,7 @@
 {{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
 {{- $externalClusterRef := get $cluster_config "externalClusterRef" | default
       (get $.Values.cloudnativePg "externalClusterRef") -}}
-{{- $externalClusterDict := get $.Values $externalClusterRef -}}
+{{- $externalPgClusterDict := get $.Values $externalClusterRef -}}
 {{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
 {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
@@ -68,9 +68,10 @@ spec:
         source:
           externalCluster: {{ $cluster_config.initdb.source }}
 
-  {{- if $externalClusterDict }}
+  # Reference to postgresql source cluster to initialize db(s) from
+  {{- if $externalPgClusterDict }}
   externalClusters:
-    {{- toYaml (list $externalClusterDict) | nindent 4 }}
+    {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
   {{- end }}
   {{- end }}
 
