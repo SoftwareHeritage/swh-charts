@@ -33,6 +33,10 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.loader_metadata.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: 3600
+      {{- if .Values.loader_metadata.dnsConfigurationRef }}
+      {{- include "swh.dns.configuration"  (dict "Values" $.Values
+                                            "configurationRef" .Values.loader_metadata.dnsConfigurationRef) | indent 6 }}
+      {{- end }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
@@ -81,10 +85,6 @@ spec:
           preStop:
             exec:
               command: ["/pre-stop.sh"]
-        {{- if .Values.loader_metadata.dnsConfigurationRef }}
-        {{- include "swh.dns.configuration"  (dict "Values" $.Values
-                                              "configurationRef" .Values.loader_metadata.dnsConfigurationRef) | indent 8 }}
-        {{- end }}
         env:
         - name: STATSD_HOST
           value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
