@@ -355,7 +355,7 @@ objstorageReplayer:
             - "true"
 
 dnsConfiguration:
-  ndots: 2
+  ndots: 1
   overrideSearch: true
 #  extraSearch:
 #    - internal.softwareheritage.org
