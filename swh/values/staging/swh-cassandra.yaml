@@ -967,13 +967,13 @@ scrubber:
     deployments:
       storage1:
         objstorageConfigurationRef: remoteStorage1ReadOnlyObjstorageConfiguration
-        configName: objstorage-content
+        configName: objstorage-storage1-content
         replicas: 2
         requestedCpu: 400m
         requestedMemory: 200Mi
       db1:
         objstorageConfigurationRef: remoteDb1ReadOnlyObjstorageConfiguration
-        configName: objstorage-content
+        configName: objstorage-db1-content
         replicas: 2
         requestedCpu: 400m
         requestedMemory: 200Mi
