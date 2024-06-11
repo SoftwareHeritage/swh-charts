@@ -473,6 +473,8 @@ loader_metadata:
   sentrySwhPackage: swh.loader.metadata
   requestedMemory: 350Mi
   requestedCpu: 80m
+  # Override the default dns configuration (ndots, search domains, ...)
+  # dnsConfiguration: dnsConfiguration
   # terminationGracePeriodSeconds: 3600
   # mandatory
   # check defaultStorageConfiguration example to configure your storage

@@ -76,6 +76,7 @@ cookers:
             - "true"
 
 loader_metadata:
+  dnsConfigurationRef: dnsConfiguration
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

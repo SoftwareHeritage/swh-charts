@@ -81,6 +81,10 @@ spec:
           preStop:
             exec:
               command: ["/pre-stop.sh"]
+        {{- if .Values.loader_metadata.dnsConfigurationRef }}
+        {{- include "swh.dns.configuration"  (dict "Values" $.Values
+                                              "configurationRef" .Values.loader_metadata.dnsConfigurationRef) | indent 8 }}
+        {{- end }}
         env:
         - name: STATSD_HOST
           value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
