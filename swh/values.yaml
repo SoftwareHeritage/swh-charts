@@ -504,11 +504,14 @@ loaders:
   # celeryConfigurationRef: consumerCeleryConfiguration
   # sysctls:
   #   net.ipv4.tcp_dsack: 0
+  # Override global loaders dns configuration (can be changed per loader too)
+  # dnsConfigurationRef: dnsConfigurationRef
   deployments:
   # Example of deployments
     # git:
     #   requestedMemory: 256Mi
     #   requestedCpu: 200m
+    #   dnsConfigurationRef: dnsConfigurationRef
     #   queues:
     #     - swh.loader.git.tasks.UpdateGitRepository
     #   sysctls:

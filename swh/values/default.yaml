@@ -101,6 +101,7 @@ indexers:
             - "true"
 
 loaders:
+  dnsConfigurationRef: dnsConfiguration
   sentry:
     enabled: true
   affinity:

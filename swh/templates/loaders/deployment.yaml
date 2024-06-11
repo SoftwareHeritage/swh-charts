@@ -22,6 +22,7 @@
 {{- $loader_affinity := get $deployment_config "affinity" | default $.Values.loaders.affinity }}
 {{- $loader_priority_class_name := get $deployment_config "priorityClassName" -}}
 {{- $loader_sysctls := get $deployment_config "sysctls" | default $.Values.loaders.sysctls | default (dict) }}
+{{- $dnsConfigurationRef := get $deployment_config "dnsConfigurationRef" | default $.Values.loaders.dnsConfigurationRef | default (dict) -}}
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 ---
 apiVersion: apps/v1
@@ -110,6 +111,10 @@ spec:
           preStop:
             exec:
               command: ["/pre-stop.sh"]
+        {{- if $dnsConfigurationRef }}
+        {{- include "swh.dns.configuration"  (dict "Values" $.Values
+                                              "configurationRef" $dnsConfigurationRef) | indent 8 }}
+        {{- end }}
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
