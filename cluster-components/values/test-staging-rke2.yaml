@@ -17,23 +17,23 @@ podPriority:
       value: 25500
       description: Backend storages used by other services (memcached, redis, ...)
 
-minioTestObjectStore:
-  destinationPath: s3://test/
-  endpointURL: https://minio.admin.swh.network
-  s3Credentials:
-    accessKeyId:
-      name: minio-test-bucket-secret
-      key: ACCESS_KEY_ID
-    secretAccessKey:
-      name: minio-test-bucket-secret
-      key: ACCESS_SECRET_KEY
-  wal:
-    compression: gzip
-  data:
-    additionalCommandArgs:
-      - "--min-chunk-size=5MB"
-      - "--read-timeout=60"
-      - "-vv"
+# minioTestObjectStore:
+#   destinationPath: s3://test/
+#   endpointURL: https://minio.admin.swh.network
+#   s3Credentials:
+#     accessKeyId:
+#       name: minio-test-bucket-secret
+#       key: ACCESS_KEY_ID
+#     secretAccessKey:
+#       name: minio-test-bucket-secret
+#       key: ACCESS_SECRET_KEY
+#   wal:
+#     compression: gzip
+#   data:
+#     additionalCommandArgs:
+#       - "--min-chunk-size=5MB"
+#       - "--read-timeout=60"
+#       - "-vv"
 
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
@@ -49,8 +49,8 @@ clusterPgStagingDb1:
 cloudnativePg:
   enabled: true
   namespace: cnpg
-  # Specific postgresql setup (can be overridden per instance)
-  barmanobjectstoreRef: minioTestObjectStore
+  # Where to store backup (if enabled)
+  # barmanobjectstoreRef: minioTestObjectStore
   # Cluster Postgresql to read db to initialize from
   externalClusterRef: clusterPgStagingDb1
   postgresql:
