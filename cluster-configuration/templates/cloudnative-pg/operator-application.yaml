@@ -23,4 +23,6 @@ spec:
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - ServerSideApply=true
 {{ end }}
