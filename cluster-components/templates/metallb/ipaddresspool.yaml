@@ -1,0 +1,20 @@
+{{- if .Values.metallb.enabled -}}
+{{- $cluster_name :=
+  required
+    (print "Cluster name configuration key <.Values.clusterName> required")
+    .Values.clusterName -}}
+{{- $ipAddressPoolName := print $cluster_name "-metallb-pool" -}}
+{{- $ipAddressPool :=
+  required
+    (print "IP address pool configuration key <.Values.metallb.ipAddressPool> required")
+    .Values.metallb.ipAddressPool -}}
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ $ipAddressPoolName }}
+  namespace: metallb
+spec:
+  addresses:
+  {{- toYaml $ipAddressPool | nindent 4 }}
+{{ end }}

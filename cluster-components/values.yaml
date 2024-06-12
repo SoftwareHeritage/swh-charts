@@ -1,4 +1,7 @@
 ---
+# Should be set
+# clusterName: ""
+
 # Main common configuration for the chart.
 namespace: cluster-components
 
@@ -9,6 +12,13 @@ cert-manager:
   enabled: false
   # Supported in the chart, not seen on the pods...
   priorityClassName: cluster-components-system
+
+# Whether to activate metallb and allocate some ipAddressPool
+metallb:
+  enabled: false
+  # ipAddressPool:
+  #   - ip1
+  #   - ip2
 
 prometheus:
   enabled: false
