@@ -347,7 +347,7 @@ scrubber:
   enabled: false
 
 toolbox:
-  enabled: false
+  enabled: true
 
 objstorage:
   enabled: false
