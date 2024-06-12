@@ -410,11 +410,12 @@ roObjstorageForS3ReplayerConfiguration:
   configurationRef: roObjstorageForS3Replayer
   secrets: *azure-storage-secrets-ro
 
-pathslicingSaamZfsObjstorageConfiguration: &objstorage-saam-zfs-pathslicing-conf
+pathslicingSaamZfsObjstorageConfiguration:
   cls: pathslicing
   root: "/srv/softwareheritage/objects"
   slicing: 0:2/0:5
   compression: none
+  allow_delete: true
 
 readonlyBancoXfsObjstorageConfiguration:
   cls: pathslicing
@@ -439,10 +440,6 @@ rwObjstorageWineryAndAzure:
   objstorages:
   - *winery-objstorage-conf-rw
   - *azure-storage-conf-rw
-
-readonlySaamZfsObjstorageConfiguration:
-  cls: read-only
-  storage: *objstorage-saam-zfs-pathslicing-conf
 
 rwStoragePipelineSteps:
   - cls: record_references
@@ -697,6 +694,9 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-saam-zfs:
       internalName: objstorage-ro-saam-zfs-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-delete-saam-zfs:
+      internalName: objstorage-delete-saam-zfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-banco-xfs:
       internalName: objstorage-ro-banco-xfs-rpc-ingress

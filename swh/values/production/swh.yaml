@@ -1621,13 +1621,12 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 3600
-      objstorageConfigurationRef: readonlySaamZfsObjstorageConfiguration
+      objstorageConfigurationRef: pathslicingSaamZfsObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
       extraVolumes:
-        pathslicing-ro:
+        pathslicing:
           mountPath: /srv/softwareheritage/objects
-          readOnly: true
           volumeDefinition:
             hostPath:
               path: /srv/softwareheritage/objects
@@ -1663,6 +1662,25 @@ objstorage:
           default:
             paths:
               - path: /
+          deny-write:
+            paths:
+              - path: /content/add
+                path_type: Prefix
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
+          deny-delete:
+            paths:
+              - path: /content/delete
+                path_type: Prefix
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
+              nginx.ingress.kubernetes.io/whitelist-source-range: null
+      extraIngresses:
+        - hosts:
+            - objstorage-delete-saam-zfs-rpc-ingress
+          endpoints:
+            deny-delete: null
     ro-banco-xfs:
       enabled: true
       requestedCpu: 250m
