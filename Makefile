@@ -124,30 +124,35 @@ cc-uninstall:
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
       -n default --create-namespace --debug
 
 cc-template-test:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/test-staging-rke2.yaml \
       --debug
 
 cc-template-staging:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/archive-staging-rke2.yaml \
       --debug
 
 cc-template-production:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/archive-production-rke2.yaml \
       --debug
 
 cc-template-admin:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/admin-rke2.yaml \
       --debug
 
