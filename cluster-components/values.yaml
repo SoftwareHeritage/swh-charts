@@ -203,17 +203,24 @@ cloudnativePg:
   # Deploys as many postgresql clusters in the deployment section
   deployments:
     # Name of the cluster is the key followed by its configuration
-    # clustername:
+    # cluster-pg-name:
+    #   # whether to enable the <cluster-pg-name> deployment
+    #   enabled: false
+    #   # whether it's a testing node (if so, disables some security checks for
+    #   # drain/uncordon operations), false by default
+    #   testing: false
     #   # nb of replicas
-    #   instances: 3
+    #   instances: 1
     #   # affinity: {}
     #   # nodeSelector: {}
-    #   # barman object store configuration reference if backups are enabled
+    #   # (optional) barman object store configuration reference if backups are enabled
     #   barmanObjectStoreRef: minioTestObjectStore
-    #   # Upstream cluster to start the dbs from
-    #   externalClusterRef: clusterStagingDb1
+    #   # (optional) Upstream cluster to start the dbs from
+    #   externalClusterRef: clusterPgStagingDb1
     #   # Whether we enable a pooler (pgbouncher) for access
     #   pooler:
+    #     # Whether to activate a pgbouncer service (useful for accessing that pg
+    #     # cluster instance from outside the kubernetes cluster via a load-balancer)
     #     enabled: true
     #     default_pool_size: "10"
     #     max_client_conn: "1000"
@@ -221,6 +228,8 @@ cloudnativePg:
     #     type: rw
     #   # To initialize the dbs to be managed within the new pg cluster
     #   initdb:
+    #     # Whether to initialize some dbs from another (external) pg cluster
+    #     enabled: true
     #     # type:
     #     # - microservice: destination cluster is designed to host a single app
     #     # database owned by the specified application user (recommended)
@@ -234,7 +243,7 @@ cloudnativePg:
     #     - swh-vault
     #     # - swh-blocking
     #     # - swh-masking
-    #     source: cluster-staging-db1
+    #     source: cluster-pg-staging-db1
     #   # Whether to enable regular backups
     #   backup:
     #     enabled: true
