@@ -36,6 +36,12 @@ data:
           "configurationRef" (get $deployment_config "scrubberDbConfigurationRef")
           "Values" $.Values) | nindent 4 -}}
 {{ end }}
+{{- if hasKey $deployment_config "webDbConfigurationRef" }}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "web"
+          "configurationRef" (get $deployment_config "webDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
+{{ end }}
 {{- if hasKey $deployment_config "vaultDbConfigurationRef" }}
   {{- include "swh.postgresql"
     (dict "serviceType" "vault"

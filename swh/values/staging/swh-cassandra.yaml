@@ -901,6 +901,8 @@ toolbox:
       blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
+    web:
+      webDbConfigurationRef: postgresqlWebConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
 
