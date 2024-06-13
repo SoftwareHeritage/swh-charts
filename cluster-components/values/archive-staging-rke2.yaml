@@ -8,7 +8,7 @@ alertmanagerConfig:
   enabled: true
 
 metallb:
-  enabled: true
+  enabled: false
   # Generic ipAddressPool (e.g. for main cluster ingress)
   ipAddressPools:
     # main external-ip for LoadBalancer (but postgres')
