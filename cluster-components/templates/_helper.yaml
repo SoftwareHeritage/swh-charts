@@ -1,0 +1,10 @@
+{{/*
+Debug variable during chart development.
+To use like this:
+
+template "cc.var_dump" $variable
+
+*/}}
+{{- define "cc.var_dump" -}}
+{{- . | mustToPrettyJson | printf "####\nJSON output:\n%s\n####" | fail }}
+{{- end -}}
