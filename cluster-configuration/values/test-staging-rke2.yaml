@@ -4,7 +4,6 @@ clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clust
 
 metallb:
   enabled: true
-  version: 0.13.9
   values:
     # Install any extra configuration to pass along to the helm chart
     # e.g. https://github.com/helm/charts/blob/master/stable/metallb/values.yaml#L106

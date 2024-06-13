@@ -25,7 +25,7 @@ certManager:
 metallb:
   enabled: false
   namespace: metallb
-  version: 0.13.7
+  version: 0.13.9
 
 ingressNginx:
   enabled: false
