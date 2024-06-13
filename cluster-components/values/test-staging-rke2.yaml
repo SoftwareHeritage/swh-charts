@@ -28,7 +28,7 @@ metallb:
             - key: app
               operator: In
               values:
-                - staging-secondary-dbs-pooler-ro
+                - staging-secondary-dbs-pooler
 
 podPriority:
   enabled: true
