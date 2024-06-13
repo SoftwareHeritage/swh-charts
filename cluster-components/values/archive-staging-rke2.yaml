@@ -125,7 +125,7 @@ cloudnativePg:
       testing: true
       instances: 1
       pooler:
-        enabled: true
+        enabled: false
         type: rw
         default_pool_size: "10"
         max_client_conn: "1000"
