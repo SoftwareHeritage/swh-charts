@@ -7,7 +7,22 @@ alertmanagerConfig:
 metallb:
   enabled: true
   ipAddressPool:
+  # Generic ipAddressPool (e.g. for main cluster ingress)
     - 192.168.130.209/32
+  # Specific ip address pool limited to a specific service in a namespace
+  pinnedIpAddressPool:
+    ipAddressPool:
+      - 192.168.130.208/32
+    serviceAllocation:
+      priority: 50
+      namespaces:
+        - cnpg
+      serviceSelectors:
+        - matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - staging-secondary-dbs-pooler-ro
 
 podPriority:
   enabled: true
@@ -87,6 +102,9 @@ cloudnativePg:
         name: daily-midnight
         # every day at midnight
         cron: "0 0 0 * * *"
+      pooler:
+        enabled: true
+        type: ro
     staging-archive-db:
       enabled: false
       # Managed dbs (optional)
