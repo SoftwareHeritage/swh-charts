@@ -80,6 +80,13 @@ cassandraStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-rw-password
 
+noopObjstorageConfiguration:
+  cls: noop
+
+cassandraRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
 elasticsearchInstances:
   - host: search-esnode4.internal.softwareheritage.org
     port: 9200
@@ -267,6 +274,11 @@ azureObjStorageRWConfigurationSecrets: &azure-storage-secrets-rw
   API_SECRET_KEY_15:
     secretKeyRef: swh-objstorage-config
     secretKeyName: 15_api_secret_key
+
+azureDeleteObjstorageConfiguration: &azure-storage-conf-delete
+  <<: *azure-storage-conf-rw
+  allow_delete: true
+  secrets: *azure-storage-secrets-rw
 
 azureObjStorageROConfiguration: &azure-storage-conf-ro
   cls: azure-prefixed
