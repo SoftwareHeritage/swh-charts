@@ -14,8 +14,8 @@ alertmanagerConfig:
 
 metallb:
   enabled: true
-  ipAddressPool:
-    - 192.168.50.139/32
+  ipAddressPools:
+    - ip: 192.168.50.139/32
 
 blackboxExporter:
   enabled: true

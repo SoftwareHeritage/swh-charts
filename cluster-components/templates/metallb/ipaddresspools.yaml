@@ -1,0 +1,47 @@
+{{- if and .Values.metallb.enabled -}}
+{{- $cluster_name :=
+  required
+    (print "Cluster name configuration key <.Values.clusterName> required")
+    .Values.clusterName -}}
+{{- $ipAddressPoolName := print $cluster_name "-metallb-pool" -}}
+{{- $l2AdvertisementName := "l2-advertisement" -}}
+{{- $ipAddressPools :=
+  required
+    (print "IP address pools configuration key <.Values.metallb.ipAddressPools> required")
+    .Values.metallb.ipAddressPools -}}
+
+{{- range $ipAddressPool := $ipAddressPools -}}
+{{- $serviceAllocation := $ipAddressPool.serviceAllocation -}}
+{{ if $serviceAllocation }}
+{{- $suffixName :=
+  required
+    (print "IP address pool configuration key <.$ipAddressPool.suffixName> required")
+    $ipAddressPool.suffixName -}}
+{{- $ipAddressPoolName = print $ipAddressPoolName "-" $suffixName -}}
+{{- $l2AdvertisementName = print $l2AdvertisementName "-" $suffixName -}}
+{{ end }}
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: {{ $l2AdvertisementName }}
+  namespace: metallb
+spec:
+  ipAddressPools:
+  - {{ $ipAddressPoolName }}
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: {{ $ipAddressPoolName }}
+  namespace: metallb
+spec:
+  addresses:
+    {{- toYaml (list $ipAddressPool.ip) | nindent 4 }}
+  {{ if $serviceAllocation }}
+  serviceAllocation:
+    {{- toYaml $serviceAllocation | nindent 4 }}
+  {{ end }}
+
+{{ end }}
+{{ end }}
