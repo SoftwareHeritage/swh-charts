@@ -9,9 +9,27 @@ alertmanagerConfig:
 
 metallb:
   enabled: true
+  # Generic ipAddressPool (e.g. for main cluster ingress)
   ipAddressPool:
     # main external-ip for LoadBalancer (but postgres')
     - 192.168.130.139/32
+  # Specific ip address pool limited to a specific service in a namespace
+  pinnedIpAddressPool:
+    ipAddressPool:
+      - 192.168.130.138/32
+    serviceAllocation:
+      priority: 50
+      namespaces:
+        - swh-cassandra-next-version
+      # namespaceSelectors:
+      #   - matchLabels:
+      #       app: next-version-dbs-pooler
+      serviceSelectors:
+        - matchExpressions:
+          - key: app
+            operator: In
+            values:
+              - next-version-dbs-pooler
 
 podPriority:
   enabled: true
