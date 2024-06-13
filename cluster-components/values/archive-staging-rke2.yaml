@@ -8,7 +8,7 @@ alertmanagerConfig:
   enabled: true
 
 metallb:
-  enabled: false
+  enabled: true
   # Generic ipAddressPool (e.g. for main cluster ingress)
   ipAddressPools:
     # main external-ip for LoadBalancer (but postgres')
@@ -151,7 +151,7 @@ cloudnativePg:
       testing: true
       instances: 1
       pooler:
-        enabled: false
+        enabled: true
         type: rw
         default_pool_size: "10"
         max_client_conn: "1000"
