@@ -51,6 +51,35 @@ internalSecuredKafkaBrokers:
   - kafka3.internal.softwareheritage.org:9094
   - kafka4.internal.softwareheritage.org:9094
 
+cassandraSeeds:
+  - cassandra01.internal.softwareheritage.org
+  - cassandra02.internal.softwareheritage.org
+  - cassandra03.internal.softwareheritage.org
+  - cassandra04.internal.softwareheritage.org
+  - cassandra05.internal.softwareheritage.org
+  - cassandra06.internal.softwareheritage.org
+  - cassandra07.internal.softwareheritage.org
+  - cassandra08.internal.softwareheritage.org
+  - cassandra09.internal.softwareheritage.org
+  - cassandra10.internal.softwareheritage.org
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: false
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: swh-rw
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_PASSWORD:
+      secretKeyRef: common-secrets
+      secretKeyName: cassandra-swh-rw-password
+
 elasticsearchInstances:
   - host: search-esnode4.internal.softwareheritage.org
     port: 9200
