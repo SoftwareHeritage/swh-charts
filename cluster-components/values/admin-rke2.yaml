@@ -13,7 +13,7 @@ alertmanagerConfig:
   enabled: true
 
 metallb:
-  enabled: false
+  enabled: true
   ipAddressPools:
     - ip: 192.168.50.139/32
 
