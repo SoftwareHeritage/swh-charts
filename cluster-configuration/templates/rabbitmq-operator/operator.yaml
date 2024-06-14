@@ -9,7 +9,7 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    chart: bitnami/rabbitmq-cluster-operator
+    chart: rabbitmq-cluster-operator
     repoURL: https://charts.bitnami.com/bitnami
     targetRevision: {{ .Values.rabbitmq.version }}
     helm:
