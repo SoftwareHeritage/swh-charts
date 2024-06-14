@@ -40,3 +40,6 @@ certManager:
 
 cloudnativePg:
   enabled: true
+
+rabbitmq:
+  enabled: true
