@@ -26,8 +26,11 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 
-noopObjectStorage:
+noopObjstorageConfiguration:
   cls: noop
+
+memoryStorage:
+  cls: memory
 
 remoteStorage1ReadOnlyObjstorageConfiguration:
   cls: remote
@@ -106,6 +109,10 @@ remoteReadOnlyStorageConfiguration:
 remoteROStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
   storageConfigurationRef: remoteReadOnlyStorageConfiguration
+
+memoryNoopStorageConfiguration:
+  storageConfigurationRef: memoryStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 remoteROObjstorageConfiguration:
   cls: read-only

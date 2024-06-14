@@ -36,7 +36,7 @@ cassandraChecksROStorage:
 
 cassandraReplayerStorageConfiguration:
   storageConfigurationRef: cassandraStorage
-  objstorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 cassandraStorageConfiguration:
   storageConfigurationRef: cassandraStorage

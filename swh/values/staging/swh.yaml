@@ -1,7 +1,7 @@
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineStepsWithRecordReferences
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
-  objstorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 ## Direct postgresql connection without any filter or objstorage
 scrubberROStorageConfiguration:

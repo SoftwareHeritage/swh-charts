@@ -36,8 +36,8 @@ memcached:
 podPriority:
   enabled: true
 
-noopObjectStorage:
-  cls: noop
+memoryStorage:
+  cls: memory
 
 kafkaBrokers:
   - kafka1.internal.softwareheritage.org
@@ -79,6 +79,17 @@ cassandraStorage:
     CASSANDRA_PASSWORD:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-rw-password
+
+noopObjstorageConfiguration:
+  cls: noop
+
+cassandraRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+memoryNoopStorageConfiguration:
+  storageConfigurationRef: memoryStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 elasticsearchInstances:
   - host: search-esnode4.internal.softwareheritage.org
@@ -267,6 +278,11 @@ azureObjStorageRWConfigurationSecrets: &azure-storage-secrets-rw
   API_SECRET_KEY_15:
     secretKeyRef: swh-objstorage-config
     secretKeyName: 15_api_secret_key
+
+azureDeleteObjstorageConfiguration: &azure-storage-conf-delete
+  <<: *azure-storage-conf-rw
+  allow_delete: true
+  secrets: *azure-storage-secrets-rw
 
 azureObjStorageROConfiguration: &azure-storage-conf-ro
   cls: azure-prefixed
@@ -634,6 +650,32 @@ maskingQueryPostgresqlConfiguration:
     MASKING_GUEST_PGPASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
+
+blockingAdminPostgresqlConfiguration:
+  host: postgresql-blocking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-blocking
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
+  secrets:
+   BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
+
+# Passed as postgresqlConfigurationRef to the blocking proxy storage
+# pipeline entry
+blockingQueryPostgresqlConfiguration:
+  host: postgresql-blocking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-blocking
+  # The blocking proxy writes to a log table (blocked_origin_log)
+  # It needs write credentials
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
+  secrets:
+    BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
 
 djangoWebConfiguration:
   secrets:
