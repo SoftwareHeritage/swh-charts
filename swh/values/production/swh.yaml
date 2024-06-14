@@ -938,6 +938,10 @@ toolbox:
       moduleName: storage.proxies.masking
       moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+    blocking:
+      moduleName: storage.proxies.blocking
+      moduleConfigKey: blocking_admin
+      blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
 

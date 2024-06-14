@@ -647,6 +647,32 @@ maskingQueryPostgresqlConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
+blockingAdminPostgresqlConfiguration:
+  host: postgresql-blocking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-blocking
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
+  secrets:
+   BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
+
+# Passed as postgresqlConfigurationRef to the blocking proxy storage
+# pipeline entry
+blockingQueryPostgresqlConfiguration:
+  host: postgresql-blocking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-blocking
+  # The blocking proxy writes to a log table (blocked_origin_log)
+  # It needs write credentials
+  user: swh-blocking
+  pass: ${BLOCKING_ADMIN_PGPASSWORD}
+  secrets:
+    BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-blocking-secret
+      secretKeyName: postgres-swh-blocking-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
