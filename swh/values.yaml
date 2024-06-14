@@ -132,7 +132,7 @@ sentry:
 #     - cls: retry
 
 # Noop object storage configuration
-# noopObjectStorage:
+# noopObjstorageConfiguration:
 #   cls: noop
 
 # readWriteObjstorageConfiguration:
@@ -172,7 +172,7 @@ sentry:
 #   # storageConfigurationRef: postgresqlStorageConfiguration
 
 #   # journalWriterConfigurationRef: journalWriterConfiguration
-#   # objstorageConfigurationRef: noopObjectStorage
+#   # objstorageConfigurationRef: noopObjstorageConfiguration
 
 # defaultStorageConfiguration:
 #   storageConfigurationRef: postgresqlStorageConfiguration

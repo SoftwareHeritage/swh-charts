@@ -87,11 +87,11 @@ cassandraChecksROStorage:
 
 cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
-  objstorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 postgresqlRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
-  objstorageConfigurationRef: noopObjectStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 postgresqlRWReadOnlyObjstorageStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
@@ -895,10 +895,12 @@ toolbox:
       moduleName: storage.proxies.masking
       moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+      storageConfigurationRef: memoryNoopStorageConfiguration
     blocking:
       moduleName: storage.proxies.blocking
       moduleConfigKey: blocking_admin
       blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
+      storageConfigurationRef: memoryNoopStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     web:

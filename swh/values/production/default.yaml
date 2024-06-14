@@ -36,8 +36,8 @@ memcached:
 podPriority:
   enabled: true
 
-noopObjectStorage:
-  cls: noop
+memoryStorage:
+  cls: memory
 
 kafkaBrokers:
   - kafka1.internal.softwareheritage.org
@@ -85,6 +85,10 @@ noopObjstorageConfiguration:
 
 cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+memoryNoopStorageConfiguration:
+  storageConfigurationRef: memoryStorage
   objstorageConfigurationRef: noopObjstorageConfiguration
 
 elasticsearchInstances:

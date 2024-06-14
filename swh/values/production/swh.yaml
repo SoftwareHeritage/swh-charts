@@ -938,10 +938,14 @@ toolbox:
       moduleName: storage.proxies.masking
       moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+      # needed for the `swh storage` cli to work...
+      storageConfigurationRef: memoryNoopStorageConfiguration
     blocking:
       moduleName: storage.proxies.blocking
       moduleConfigKey: blocking_admin
       blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
+      # needed for the `swh storage` cli to work...
+      storageConfigurationRef: memoryNoopStorageConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
 

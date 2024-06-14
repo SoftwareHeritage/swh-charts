@@ -40,6 +40,8 @@ Create a global storage configuration based on configuration section aggregation
   {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.storage.cassandra" $storageIncludeArgs | fromYaml) -}}
 {{- else if eq $storageType "postgresql" -}}
   {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.postgresql" $storageIncludeArgs | fromYaml) -}}
+{{- else if eq $storageType "memory" -}}
+  {{- $storageConfig = mustMergeOverwrite $storageConfig (dict "cls" "memory") -}}
 {{- else -}}
   {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
