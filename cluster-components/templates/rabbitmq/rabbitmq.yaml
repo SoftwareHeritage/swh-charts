@@ -1,0 +1,58 @@
+{{- if .Values.rabbitmq.enabled -}}
+{{- range $deployment_name, $deployment_config := .Values.rabbitmq.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- $name := print "rabbitmq-" $deployment_name -}}
+{{- $affinity := $deployment_config.affinity | default $.Values.rabbitmq.affinity | default dict -}}
+{{- $requestedMemory := $deployment_config.requestedMemory | default $.Values.rabbitmq.requestedMemory -}}
+{{- $requestedCpu := $deployment_config.requestedCpu | default $.Values.rabbitmq.requestedCpu -}}
+{{- $limitedMemory := $deployment_config.limitedMemory | default $.Values.rabbitmq.limitedMemory -}}
+{{- $limitedCpu := $deployment_config.limitedCpu | default $.Values.rabbitmq.limitedCpu -}}
+{{- $storageVolume := $deployment_config.storageVolume | default $.Values.rabbitmq.storageVolume -}}
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: {{ $name }}
+  namespace: {{ $.Values.rabbitmq.namespace }}
+spec:
+  replicas: {{ $deployment_config.replicas | default $.Values.rabbitmq.replicas | default 1 }}
+  rabbitmq:
+    additionalConfig: |
+      log.console.level = {{ $deployment_config.logLevel | default $.Values.rabbitmq.logLevel | default "info" }}
+    additionalPlugins:
+      - rabbitmq_management
+      - rabbitmq_prometheus
+  secretBackend:
+    externalSecret:
+      name: {{ $name }}-secret
+  persistence:
+    storageClassName: {{ get $storageVolume "class" }}
+    storage: {{ $storageVolume.size | default "1Gi" }}
+  resources:
+    requests:
+    {{- if or $requestedMemory $requestedCpu }}
+      {{- if $requestedMemory }}
+      memory: {{ $requestedMemory }}
+      {{- end }}
+      {{- if $requestedCpu }}
+      cpu: {{ $requestedCpu }}
+      {{- end }}
+    {{ end }}
+    {{- if or $limitedMemory $limitedCpu }}
+    limits:
+      {{- if $limitedMemory }}
+      memory: {{ $limitedMemory }}
+      {{- end }}
+      {{- if $limitedCpu }}
+      cpu: {{ $limitedCpu }}
+      {{- end }}
+    {{ end }}
+
+  {{- if $affinity }}
+  affinity:
+    {{- toYaml $affinity | nindent 4 }}
+  {{ end }}
+
+{{ end }}
+{{ end }}
+{{- end -}}

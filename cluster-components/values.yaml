@@ -261,3 +261,32 @@ cloudnativePg:
     #     name: daily-midnight
     #     # every day at midnight
     #     cron: "0 0 0 * * *"
+
+rabbitmq:
+  enabled: false
+  namespace: rabbitmq
+  # Number of replicas per deployment instance (can be overridden per instance config)
+  # replicas: 1
+  # The storage volumes to use (can be overridden per instance config)
+  # storageVolume:
+  #   class: local-persistent
+  #   size: "1Gi"
+  # The resources requests and limits (can be overridden per deployment instance)
+  # requestedMemory: 1Gi
+  # requestedCpu: 500m
+  # limitedMemory: 2Gi
+  # limitedCpu: 1000m
+  # logLevel: info
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: "swh/backend"
+  #           operator: In
+  #           values:
+  #           - "true"
+  # deployments:
+  #   # name of the desired instance
+  #   scheduler:
+  #     enabled: true
