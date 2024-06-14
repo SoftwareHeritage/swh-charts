@@ -8,3 +8,14 @@ cloudnativePg:
             operator: In
             values:
             - "true"
+
+rabbitmq:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/backend"
+            operator: In
+            values:
+            - "true"

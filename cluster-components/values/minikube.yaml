@@ -64,3 +64,14 @@ dockerCache:
   instances:
     quay.io:
       enabled: false
+
+rabbitmq:
+  enabled: true
+  namespace: cluster-components
+  logLevel: info
+  storageVolume:
+    class: standard
+  deployments:
+    scheduler:
+      enabled: true
+      replicas: 3
