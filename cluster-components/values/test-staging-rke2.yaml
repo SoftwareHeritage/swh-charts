@@ -135,3 +135,10 @@ cloudnativePg:
                 operator: In
                 values:
                 - "rancher-node-test-rke2-worker3"
+
+rabbitmq:
+  enabled: true
+  replicas: 1
+  deployments:
+    scheduler:
+      enabled: true

@@ -10,6 +10,8 @@ cloudnativePg:
             - "true"
 
 rabbitmq:
+  storageVolume:
+    class: local-persistent
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
