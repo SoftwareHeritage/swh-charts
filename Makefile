@@ -51,13 +51,13 @@ helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 swh-minikube:
 	kubectl --context $(MINIKUBE_CONTEXT) create namespace swh ; \
 	kubectl --context $(MINIKUBE_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context minikube upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
       -n swh --debug
 
 swh-uninstall:
-	helm --kube-context minikube uninstall $(SWH_CHART) -n swh ; \
+	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
     kubectl --context $(MINIKUBE_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	kubectl --context $(MINIKUBE_CONTEXT) delete namespace swh
 
@@ -111,13 +111,13 @@ swh-template-production-cassandra:
 cc-minikube:
 	kubectl --context $(MINIKUBE_CONTEXT) create namespace cluster-components ; \
 	kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context minikube upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
       --namespace cluster-components --create-namespace --debug
 
 cc-uninstall:
-	helm --kube-context minikube uninstall $(CC_CHART) --namespace cluster-components; \
+	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
     kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	kubectl --context $(MINIKUBE_CONTEXT) delete namespace cluster-components
 
@@ -199,13 +199,13 @@ ccf-template-test-staging-rke2:
       --debug
 
 ss-minikube:
-	helm --kube-context minikube upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/minikube.yaml \
       -n software-stories --create-namespace --debug
 
 ss-uninstall:
-	helm --kube-context minikube uninstall $(SS_CHART) -n software-stories
+	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(SS_CHART) -n software-stories
 
 ss-template:
 	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
