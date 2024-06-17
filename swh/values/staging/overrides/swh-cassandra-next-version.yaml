@@ -22,9 +22,37 @@ postgresqlVaultConfiguration:
       secretKeyRef: swh-vault-postgresql-secret
       secretKeyName: postgres-swh-vault-password
 
+postgresqlSchedulerConfiguration:
+  host: next-version-dbs-rw
+  port: 5432
+  db: swh-scheduler
+  user: swh-scheduler
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scheduler-postgresql-common-secret
+      secretKeyName: postgres-swh-scheduler-password
+
+producerCeleryConfiguration:
+  host: rabbitmq-scheduler
+  port: 5672
+  user: ${AMQP_USERNAME}
+  pass: ${AMQP_PASSWORD}
+  secrets:
+    AMQP_USERNAME:
+      secretKeyRef: rabbitmq-scheduler-secret
+      secretKeyName: username
+    AMQP_PASSWORD:
+      secretKeyRef: rabbitmq-scheduler-secret
+      secretKeyName: password
+
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress-next-version
+
+remoteSchedulerConfiguration:
+  cls: remote
+  url: http://scheduler-rpc
 
 vault:
   replicas: 1
@@ -343,6 +371,29 @@ podPriority:
     background-workload:
       value: -10900
 
+scheduler:
+  enabled: true
+  sentry:
+    enabled: false
+  alerts:
+    enabled: false
+  rpc:
+    enabled: true
+    ingress:
+      enabled: false
+  updateMetrics:
+    enabled: false
+  journalClient:
+    enabled: false
+  extraServices:
+    runner:
+      enabled: true
+    runner-priority:
+      enabled: true
+    listener:
+      enabled: true
+      replicas: 1
+
 scrubber:
   enabled: false
 
@@ -365,9 +416,6 @@ checker_deposit:
   enabled: false
 
 search:
-  enabled: false
-
-scheduler:
   enabled: false
 
 indexerStorage:
