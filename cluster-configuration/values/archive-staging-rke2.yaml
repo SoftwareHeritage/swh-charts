@@ -47,3 +47,6 @@ otlpCollector:
 
 cloudnativePg:
   enabled: true
+
+rabbitmq:
+  enabled: true
