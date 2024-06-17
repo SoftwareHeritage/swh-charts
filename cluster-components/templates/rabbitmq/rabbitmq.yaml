@@ -13,7 +13,7 @@ apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
   name: {{ $name }}
-  namespace: {{ $.Values.rabbitmq.namespace }}
+  namespace: {{ $deployment_config.namespace | default $.Values.rabbitmq.namespace }}
 spec:
   replicas: {{ $deployment_config.replicas | default $.Values.rabbitmq.replicas | default 1 }}
   rabbitmq:
