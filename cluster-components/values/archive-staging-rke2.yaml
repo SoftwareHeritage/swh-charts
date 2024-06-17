@@ -166,3 +166,11 @@ cloudnativePg:
         - swh-web
         - swh-scheduler
         source: cluster-pg-staging-db1
+
+rabbitmq:
+  enabled: true
+  replicas: 1
+  deployments:
+    scheduler:
+      enabled: true
+      namespace: swh-cassandra-next-version
