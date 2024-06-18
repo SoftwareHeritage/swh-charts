@@ -13,6 +13,7 @@
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 {{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $cluster_config.testing | default "false" -}}
+{{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativepg.secretKeyRef -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -46,6 +47,10 @@ spec:
       # And its associated owner
       database: {{ first $databases }}
       owner: {{ first $databases }}
+      {{ end }}
+      {{ if $secretKeyRef }}
+      secret:
+        name: {{ $secretKeyRef }}
       {{ end }}
       # The following optionals are the equivalent of flags passed to initdb
       # commented because those are already the default values
