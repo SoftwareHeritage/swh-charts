@@ -146,6 +146,12 @@ cloudnativePg:
     - host all all all md5
   # Exists as many cluster as we want
   deployments:
+    next-version-swh:
+      enabled: true
+      initdb:
+        type: microservice
+        databases:
+          - swh
     next-version-dbs:
       enabled: true
       testing: true
