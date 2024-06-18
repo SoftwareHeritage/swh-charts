@@ -52,7 +52,7 @@ remoteVaultConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  url: http://scheduler-rpc
+  url: http://scheduler-rpc:5008
 
 vault:
   replicas: 1
