@@ -13,7 +13,8 @@
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 {{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $cluster_config.testing | default "false" -}}
-{{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativepg.secretKeyRef -}}
+{{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
+{{- $roles := $cluster_config.roles | default $.Values.cloudnative-pg.roles -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -37,6 +38,12 @@ spec:
   {{- if $affinity }}
   affinity:
     {{- toYaml $affinity | nindent 4 }}
+  {{ end }}
+
+  {{- if $roles }}
+  managed:
+    roles:
+      {{ toYaml $roles | nindent 6 }}
   {{ end }}
 
   {{- if $cluster_config.initdb }}
