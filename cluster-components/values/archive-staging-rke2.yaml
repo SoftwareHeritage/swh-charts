@@ -144,12 +144,21 @@ cloudnativePg:
       # lc_time: 'C.UTF-8' # locale for time formatting
     pg_hba:
     - host all all all md5
+  roles:
+    - name: guest
+      ensure: present
+      comment: Guest
+      login: true
+      superuser: false
+      passwordSecret:
+        name: swh-postgresql-guest-secret
   # Exists as many cluster as we want
   deployments:
     next-version-swh:
       enabled: true
       initdb:
         type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-secret
         databases:
           - swh
     next-version-dbs:

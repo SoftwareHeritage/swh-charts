@@ -14,7 +14,7 @@
 {{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $cluster_config.testing | default "false" -}}
 {{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
-{{- $roles := $cluster_config.roles | default $.Values.cloudnative-pg.roles -}}
+{{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
