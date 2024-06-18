@@ -58,6 +58,7 @@ spec:
       # -k option to enable checksums on data pages to help detect I/O
       # -corruption
       dataChecksums: true
+      {{ if $cluster_config.initdb.source }}
       import:
         # 2 types possibles
         # - monolith: for one cluster with all dbs
@@ -71,9 +72,10 @@ spec:
         {{ end }}
         source:
           externalCluster: {{ $cluster_config.initdb.source }}
+      {{ end }}
 
   # Reference to postgresql source cluster to initialize db(s) from
-  {{- if $externalPgClusterDict }}
+  {{- if and $cluster_config.initdb $cluster_config.initdb.source $externalPgClusterDict }}
   externalClusters:
     {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
   {{- end }}
