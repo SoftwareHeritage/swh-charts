@@ -75,3 +75,19 @@ rabbitmq:
     scheduler:
       enabled: true
       replicas: 3
+
+cloudnativePg:
+  enabled: false
+  namespace: cluster-components
+  testing: true
+  storage:
+    storageClass: standard
+    size: 1Gi
+  deployments:
+    archive:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-swh-postgresql-secret
+        databases:
+          - swh
