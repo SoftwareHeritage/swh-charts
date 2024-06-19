@@ -1010,3 +1010,6 @@ counters:
     limitedMemory: 30Mi
     requestedCpu: 50m
     limitedCpu: 100m
+
+alter:
+  enabled: false
