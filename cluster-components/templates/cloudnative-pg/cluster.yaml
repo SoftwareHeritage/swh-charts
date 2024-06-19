@@ -13,7 +13,6 @@
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 {{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $cluster_config.testing | default "false" -}}
-{{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
 {{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
 {{- $storage := $cluster_config.storage | default $.Values.cloudnativePg.storage | default dict -}}
 ---
@@ -48,6 +47,8 @@ spec:
   {{ end }}
 
   {{- if $cluster_config.initdb }}
+  {{- $secretKeyRef := $cluster_config.initdb.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
+
   bootstrap:
     initdb:
       {{ if eq $db_type "microservice" }}
