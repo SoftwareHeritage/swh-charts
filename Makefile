@@ -124,9 +124,8 @@ cc-uninstall:
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
-      --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
-      -n default --create-namespace --debug
+      --namespace cluster-components --create-namespace --debug
 
 cc-template-test-staging-rke2:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
