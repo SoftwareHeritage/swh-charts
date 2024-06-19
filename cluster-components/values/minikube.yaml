@@ -83,6 +83,17 @@ cloudnativePg:
   storage:
     storageClass: standard
     size: 1Gi
+  postgresql:
+    pg_hba:
+    - host all all all md5
+  roles:
+    - name: guest
+      ensure: present
+      comment: Guest
+      login: true
+      superuser: false
+      passwordSecret:
+        name: swh-guest-postgresql-secret
   deployments:
     archive:
       enabled: true

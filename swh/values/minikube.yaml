@@ -46,17 +46,20 @@ fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
   realm_name: SwhMinikube
 
-fakePostgresqlStorageConfiguration:
+postgresqlStorageConfiguration:
   cls: postgresql
-  host: db1.i.s.s.n
+  host: archive-rw.cluster-components
   port: 5432
-  db: swh-storage
-  user: swh
+  db: swh
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-swh-postgresql-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
+      secretKeyRef: swh-swh-postgresql-secret
+      secretKeyName: password
 
 fakePostgresqlDepositConfiguration:
   host: db1.i.s.s.n
@@ -161,8 +164,8 @@ djangoDepositConfiguration:
 fakeRemoteStorageConfigurationRef:
   storageConfigurationRef: fakeRemoteStorageConfiguration
 
-fakePostgresqlStorageConfigurationRef:
-  storageConfigurationRef: fakePostgresqlStorageConfiguration
+postgresqlStorageConfigurationPipeline:
+  storageConfigurationRef: postgresqlStorageConfiguration
 
 kafkaBrokers:
   - fakeBroker1
@@ -209,13 +212,13 @@ fakeDepositConfiguration:
 storage:
   enabled: false
   deployments:
-    foobar:
-      storageConfigurationRef: fakePostgresqlStorageConfigurationRef
+    archive:
+      storageConfigurationRef: postgresqlStorageConfigurationPipeline
       migrate:
         check: false
       cronjobs:
         foobar-action:
-          enabled: true
+          enabled: false
           logLevel: INFO
           cron: "0 0 1 * *"
 
@@ -411,7 +414,7 @@ toolbox:
   enabled: false
   configs:
     storage:
-      storageDbConfigurationRef: fakePostgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: fakePostgresqlSchedulerConfiguration
       celeryConfigurationRef: fakeCeleryConfiguration
@@ -420,7 +423,7 @@ toolbox:
 #      journalClientConfigurationRef: scrubberJournalClientConfiguration
 #    scrubber-storage:
 #      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
-#      storageConfigurationRef: fakePostgresqlStorageConfiguration
+#      storageConfigurationRef: postgresqlStorageConfiguration
     vault:
       vaultDbConfigurationRef: fakePostgresqlVaultConfiguration
     indexer-storage:
