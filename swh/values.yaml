@@ -663,6 +663,10 @@ storage:
   #            operator: In
   #            values:
   #            - "true"
+  # Whether to do extra actions on the backend used by the storage
+  backend:
+    # Do we check the backend version
+    check: false
   deployments:
     # postgresql:
     #   # loglevel can be overriden per instance
