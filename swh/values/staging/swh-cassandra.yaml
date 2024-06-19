@@ -973,7 +973,7 @@ scrubber:
         requestedCpu: 650m
         requestedMemory: 500Mi
   objstorageChecker:
-    enabled: false
+    enabled: true
     storageConfigurationRef: scrubberROStorageConfiguration
     journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
     deployments:
