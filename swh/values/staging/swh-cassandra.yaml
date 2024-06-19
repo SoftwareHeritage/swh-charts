@@ -716,6 +716,8 @@ web:
             # auth-file with authentication
             authentication: swh-cassandra/web-auth-secrets
           webhooks:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/limit-connections: "3"
             paths:
               - path: /save/origin/visit/webhook
             extraWhitelistSourceRange:
