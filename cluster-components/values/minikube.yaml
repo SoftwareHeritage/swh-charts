@@ -78,7 +78,7 @@ rabbitmq:
 
 cloudnativePg:
   enabled: false
-  namespace: cluster-components
+  namespace: swh
   testing: true
   storage:
     storageClass: standard

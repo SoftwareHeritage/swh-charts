@@ -665,8 +665,12 @@ storage:
   #            - "true"
   # Whether to do extra actions on the backend used by the storage
   backend:
-    # Do we check the backend version
+    # When true, initalize the backend
+    initialize: false
+    # When true, check db & code versions and do not start if they diverge
     check: false
+    # When true, migrate or initialize db model
+    migrate: false
   deployments:
     # postgresql:
     #   # loglevel can be overriden per instance
@@ -676,6 +680,13 @@ storage:
     #   # Don't configure the replicas if autoscaling is configured
     #   # and vice-versa
     #   # replicas: 1
+    #   backend:
+    #     # When true, initalize the backend
+    #     initialize: false
+    #     # When true, check db & code versions and do not start if they diverge
+    #     check: false
+    #     # When true, migrate or initialize db model
+    #     migrate: false
     #   requestedCpu: 50m
     #   requestedMemory: 100Mi
     #   # autoScaling:
@@ -689,8 +700,6 @@ storage:
     #   # mandatory
     #   # check defaultStorageConfiguration example to configure your storage
     #   # storageConfigurationRef: defaultStorageConfiguration
-    #   # When true, check db & code versions and do not start if they diverge
-    #   checkDbVersion: false
     #   # Deploy an ingress to access the storage
     #   ingress:
     #     enabled: false

@@ -4,8 +4,9 @@
 {{ range $storage_type, $storage_config := .Values.storage.deployments }}
 {{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
 {{- $serviceType := ( print "storage-" $storage_type ) -}}
-{{- $checkDbVersion := (and $storage_config.backend $storage_config.backend.check) | default $.Values.storage.backend.check | default false -}}
-
+{{- $checkBackendVersion := (and $storage_config.backend $storage_config.backend.check) | default $.Values.storage.backend.check | default false -}}
+{{- $migrateBackend := (and $storage_config.backend $storage_config.backend.migrate) | default $.Values.storage.backend.migrate | default false -}}
+{{- $initializeBackendConfig := (and $storage_config.backend $storage_config.backend.initialize) | default $.Values.storage.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -69,10 +70,21 @@ spec:
         {{ include "swh.storage.cassandra.initKeyspaceContainer" (dict "Values" $.Values
                                                                        "configurationRef" $storage_config.storageConfigurationRef
                                                                        "imagePrefixName" "swh_storage_image") | nindent 8 }}
-        {{- if $checkDbVersion }}
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend" (dict "Values" $.Values
+                                                 "imagePrefixName" "swh_toolbox_image"
+                                                 "module" "storage"
+                                                 "config" $initializeBackendConfig) | nindent 8 }}
+        {{- end }}
+        {{- if $checkBackendVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_storage_image"
                                                              "module" "storage") | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend" (dict "Values" $.Values
+                                              "imagePrefixName" "swh_toolbox_image"
+                                              "module" "storage") | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ $serviceType }}

@@ -1,0 +1,47 @@
+{{/* Generate the initialize backend container configuration if needed */}}
+{{- define "swh.initializeBackend" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "initialize-backend" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/initialize-{{ .module }}-db-version.sh
+  env:
+  - name: MODULE
+    value: {{ .module }}
+  - name: SWH_PGDATABASE
+    value: {{ .config.database }}
+  - name: SWH_PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ .config.adminSecret }}
+        key: password
+  - name: SWH_PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: {{ .config.adminSecret }}
+        key: host
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
+{{/* Generate the initialize backend container configuration if needed */}}
+{{- define "swh.migrateBackend" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "migrate-backend" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/migrate-{{ .module }}-db-version.sh
+  env:
+  - name: MODULE
+    value: {{ .module }}
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}

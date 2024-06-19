@@ -48,7 +48,7 @@ fakeKeycloakConfiguration:
 
 postgresqlStorageConfiguration:
   cls: postgresql
-  host: archive-rw.cluster-components
+  host: archive-rw
   port: 5432
   db: swh
   user: ${POSTGRESQL_USERNAME}
@@ -214,8 +214,12 @@ storage:
   deployments:
     archive:
       storageConfigurationRef: postgresqlStorageConfigurationPipeline
-      migrate:
-        check: false
+      backend:
+        initialize:
+          adminSecret: archive-superuser
+          database: swh
+        check: true
+        migrate: true
       cronjobs:
         foobar-action:
           enabled: false

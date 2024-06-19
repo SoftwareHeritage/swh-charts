@@ -84,7 +84,7 @@ data:
     f.write(yaml.dump({"storage": postgresql_conf}))
 
   check-storage-db-version.sh: |
-    #!/bin/bash
+    #!/usr/bin/env bash
 
     set -eu
 
@@ -105,8 +105,13 @@ data:
     # checking the database status
     swh db --config-file=/tmp/config.yml version "${MODULE}" | tee "${TEMP_FILE}"
 
-    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
-    DB_VERSION=$(awk -F':' '/^version/ {print $2}' ${TEMP_FILE})
+    CODE_VERSION=$(awk -F':' '/code / {print $2}' ${TEMP_FILE})
+    # trim
+    CODE_VERSION=${CODE_VERSION#"${CODE_VERSION%%[![:space:]]*}"}
+
+    DB_VERSION=$(awk -F':' '/^version: / {print $2}' ${TEMP_FILE})
+    # trim it
+    DB_VERSION=${DB_VERSION#"${DB_VERSION%%[![:space:]]*}"}
 
     if [ -e "${CODE_VERSION}" ]; then
       echo "Unable to find the code version"
@@ -118,9 +123,99 @@ data:
       exit 1
     fi
 
-    if [ "$DB_VERSION" -ne "$CODE_VERSION" ]; then
+    if [ "$DB_VERSION" != "$CODE_VERSION" ]; then
       echo "code and DB versions are different. Blocking the deployment"
       exit 1
+    fi
+
+  migrate-storage-db-version.sh: |
+    #!/usr/bin/env bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+    TEMP_CONFIG=/tmp/config.yml
+
+    if [ -z ${MODULE} ]; then
+      echo The env variable must be defined with the module to check
+      echo for example "storage"
+      exit 1
+    fi
+
+    # extracting the postgresql configuration from a full configuration
+    # possibly with a pipeline
+    set +e
+    python /entrypoints/extract-storage-postgresql-config-py || exit 0
+    set -e
+
+    # checking the database status
+    swh db --config-file=$TEMP_CONFIG version "${MODULE}" | tee "${TEMP_FILE}"
+
+    CODE_VERSION=$(awk -F':' '/code / {print $2}' ${TEMP_FILE})
+    # trim
+    CODE_VERSION=${CODE_VERSION#"${CODE_VERSION%%[![:space:]]*}"}
+
+    DB_VERSION=$(awk -F':' '/^version: / {print $2}' ${TEMP_FILE})
+    # trim it
+    DB_VERSION=${DB_VERSION#"${DB_VERSION%%[![:space:]]*}"}
+
+    if [ "${DB_VERSION}" = "None" ]; then
+      echo "The database should be initialized..."
+
+    elif [ "$DB_VERSION" != "$CODE_VERSION" ]; then
+      swh db --config-file="${TEMP_CONFIG}" upgrade "${MODULE_NAME}"
+
+    else
+      echo "The database is initialized and up-to-date, nothing to do!"
+      echo "Continue with the deployment."
+
+    fi
+
+  initialize-storage-db-version.sh: |
+    #!/usr/bin/env bash
+
+    set -eu
+
+    TEMP_FILE=/tmp/db-version.txt
+    TEMP_CONFIG=/tmp/config.yml
+
+    if [ -z ${MODULE} ]; then
+      echo The env variable must be defined with the module to check
+      echo for example "storage"
+      exit 1
+    fi
+
+    # extracting the postgresql configuration from a full configuration
+    # possibly with a pipeline
+    set +e
+    python /entrypoints/extract-storage-postgresql-config-py || exit 0
+    set -e
+
+    # checking the database status
+    swh db --config-file=$TEMP_CONFIG version "${MODULE}" | tee "${TEMP_FILE}"
+
+    set -x
+    CODE_VERSION=$(awk -F':' '/code/ {print $2}' ${TEMP_FILE})
+    # trim
+    CODE_VERSION=${CODE_VERSION#"${CODE_VERSION%%[![:space:]]*}"}
+
+    DB_VERSION=$(awk -F':' '/^version: / {print $2}' ${TEMP_FILE})
+    # trim
+    DB_VERSION=${DB_VERSION#"${DB_VERSION%%[![:space:]]*}"}
+
+    if [ "${DB_VERSION}" = "None" ]; then
+      # This must be run as "postgres" user (for pg extensions installation)
+      uri=postgresql://postgres:$SWH_PGPASSWORD@$SWH_PGHOST:5432/$SWH_PGDATABASE
+      swh db init-admin --db-name=$uri "${MODULE}"
+      # This must be run with the owner of the db
+      swh db --config-file=$TEMP_CONFIG init "${MODULE}"
+
+    elif [ "$DB_VERSION" != "$CODE_VERSION" ]; then
+      echo "Code and DB versions are different."
+
+    else
+      echo "The database is initialized and up-to-date, nothing to do!"
+      echo "Continue with the deployment."
     fi
 
   check-indexer-storage-db-version.sh: |
