@@ -210,6 +210,10 @@ cloudnativePg:
   #     max_worker_processes: "60"
   #   pg_hba:
   #     - host all all all md5
+  # Specific storage to use to persist data (can be overridden per instance)
+  # storage:
+  #   storageClass: local-persistent
+  #   size: 1Gi
   # Deploys as many postgresql clusters in the deployment section
   deployments:
     # Name of the cluster is the key followed by its configuration

@@ -1,4 +1,7 @@
 cloudnativePg:
+  storage:
+    storageClass: local-persistent
+    size: 1Gi
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

@@ -15,6 +15,7 @@
 {{- $testing := $cluster_config.testing | default "false" -}}
 {{- $secretKeyRef := $cluster_config.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
 {{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
+{{- $storage := $cluster_config.storage | default $.Values.cloudnativePg.storage | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -100,9 +101,10 @@ spec:
     {{- toYaml $config_postgresql | nindent 4 }}
   {{ end }}
 
+  {{- if $storage }}
   storage:
-    storageClass: local-persistent
-    size: 1Gi
+    {{- toYaml $storage | nindent 4 }}
+  {{ end }}
   # walStorage:
   #   storageClass: local-persistent
   #   size: 1Gi
