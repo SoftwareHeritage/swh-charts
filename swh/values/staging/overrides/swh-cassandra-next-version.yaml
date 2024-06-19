@@ -46,6 +46,34 @@ producerCeleryConfiguration:
       secretKeyRef: rabbitmq-scheduler-secret
       secretKeyName: password
 
+postgresqlRWStorageConfiguration:
+  cls: postgresql
+  host: next-version-swh-rw
+  port: '5432'
+  db: swh
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyName: username
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyName: password
+
+rwStoragePipelineSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+
+readWriteStorageConfiguration:
+  pipelineStepsRef: rwStoragePipelineSteps
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage-postgresql-read-write:5002
+
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress-next-version
@@ -288,15 +316,22 @@ storage_replayer:
 
 storage:
   deployments:
+    # Deactivate those instance in swh-cassandra-next-version namespace
     cassandra:
-      autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 2
-        cpuPercentageUsage: 150
-      hosts:
-        - storage-cassandra-next-version.internal.staging.swh.network
+      enabled: false
+    # Deactivate those instance in swh-cassandra-next-version namespace
     cassandra-read-only:
       enabled: false
+    # To the benefit of a storage postgresql instance
+    postgresql-read-write:
+      enabled: true
+      storageConfigurationRef: readWriteStorageConfiguration
+      backend:
+        initialize:
+          adminSecret: next-version-swh-superuser
+          database: swh
+        check: false
+        migrate: false
 
 web:
   deployments:
