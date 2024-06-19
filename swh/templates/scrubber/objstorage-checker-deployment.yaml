@@ -96,6 +96,7 @@ spec:
           - check
           - run
           - {{ $deployment_config.configName }}
+          - --use-journal
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
