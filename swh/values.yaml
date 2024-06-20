@@ -1503,6 +1503,13 @@ webhooks:
   enabled: false
   sentry:
     enabled: false
+  #autoScaling:
+  #  poolInterval: 120
+  #  lagThreashold: 1000
+  #  minReplicaCount: 1
+  #  maxReplicaCount: 5
+  #  stopWhenNoActivity: true
+  #  lagThreshold: 1000
   #affinity:
   #  nodeAffinity:
   #    requiredDuringSchedulingIgnoredDuringExecution:
@@ -1517,7 +1524,10 @@ webhooks:
   #priorityClassName: frontend-rpc-workload
   #deployments:
   #  origin-visit-status:
-  #    replicas: 1
+  #    # Only if autoscaling is not configured
+  #    replicas: 2
+  #    autoscaling:
+  #      # override any global autoscaling property here
   #    requestedCpu: 100m
   #    requestedMemory: 100Mi
   #    journalClientOverrides:

@@ -12,7 +12,9 @@ metadata:
     app: webhooks-{{ $deployment }}
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ $deployment_config.replicas | default 1 }}
+  {{ if  $deployment_config.replicas -}}
+  replicas: {{ $deployment_config.replicas }}
+  {{ end -}}
   selector:
     matchLabels:
       app: webhooks-{{ $deployment }}

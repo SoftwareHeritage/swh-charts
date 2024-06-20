@@ -1,0 +1,18 @@
+{{ if .Values.webhooks.enabled -}}
+{{- range $deployment, $deploymentConfiguration := .Values.webhooks.deployments -}}
+{{- if or (hasKey $.Values.webhooks "autoScaling") (hasKey $deploymentConfiguration "autoScaling") -}}
+{{- $globalAutoscalingConfiguration := get $.Values.webhooks "autoScaling" | default dict -}}
+{{- $deploymentAutoscalingConfiguration := get $deploymentConfiguration "autoScaling" | default dict -}}
+{{- $autoscalingConfiguration := mustMergeOverwrite $globalAutoscalingConfiguration $deploymentAutoscalingConfiguration -}}
+{{- $journalClientConfigurationRef := get $deploymentConfiguration "journalClientConfigurationRef" | default $.Values.webhooks.journalClientConfigurationRef -}}
+{{- $journalClientOverrides := get $deploymentConfiguration "journalClientOverrides" | default dict -}}
+{{- $name := print "webhooks-" $deployment -}}
+{{- include "swh.journalClient.autoscaler" (dict
+                                "name" $name
+                                "autoscalingConfiguration" $autoscalingConfiguration
+                                "journalClientConfigurationRef" $journalClientConfigurationRef
+                                "journalClientOverrides" $journalClientOverrides
+                                "Values"        $.Values) -}}
+{{- end }}
+{{- end }}
+{{- end -}}

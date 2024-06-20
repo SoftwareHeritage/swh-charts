@@ -28,6 +28,28 @@ spec:
   {{- end -}}
 {{- end -}}
 
+{{/*
+parameters:
+  - name (mandatory): Base name of the autoscaling objects
+  - autoscalingConfiguration (mandatory): Dict with the autoscaling configuration (maxReplicaCount, ..)
+  - journalClientConfigurationRef (mandatory): pointer to the journalClient configuration
+  - journalClientOverrides (mandatory): Dict with some configuration overrides, can be en empty dict
+*/}}
+{{- define "swh.journalClient.autoscaler" -}}
+{{- $journalClientBaseConfiguration := required (print "journalClientConfigurationRef '" .journalClientConfigurationRef "' not found") (get .Values .journalClientConfigurationRef) -}}
+{{- $journalClientConfiguration := deepCopy $journalClientBaseConfiguration }}
+{{- $journalClientConfiguration := mustMergeOverwrite $journalClientConfiguration .journalClientOverrides -}}
+{{- $brokersConfigurationRef := $journalClientConfiguration.brokersConfigurationRef -}}
+{{- $brokers := get .Values $brokersConfigurationRef -}}
+{{- $_ := set $journalClientConfiguration "brokers" $brokers -}}
+{{- $_ := unset $journalClientConfiguration "brokersConfigurationRef" -}}
+{{- $_ := required (print "group_id property is mandatory in <" .journalClientConfigurationRef "> map") (get $journalClientConfiguration "group_id") -}}
+{{- include "swh.keda.kafkaAutoscaler" (dict
+                                "name" .name
+                                "kafkaConfiguration" $journalClientConfiguration
+                                "autoscalingConfiguration" .autoscalingConfiguration
+                                "Values"        .Values) -}}
+{{- end -}}
 
 {{/*
 Create a keda's kafka autoscaler
