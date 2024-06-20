@@ -1283,6 +1283,8 @@ webhooks:
   svixConfigurationRef: svixConfiguration
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
+  autoScaling:
+    maxReplicaCount: 2
   deployments:
     origin-visit-status:
       dnsConfigurationRef: dnsConfiguration
