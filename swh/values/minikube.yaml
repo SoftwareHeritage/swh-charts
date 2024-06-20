@@ -22,9 +22,9 @@ fakeRemoteCountersConfiguration:
   cls: remote
   url: http://fake-counters.i.s.s.n:5011
 
-fakeRemoteIndexerStorageConfiguration:
+remoteIndexerStorageConfiguration:
   cls: remote
-  url: http://storage1.i.s.s.n:7005
+  url: http://indexer-storage-read-write:5007
 
 fakeRemoteObjstorageConfiguration:
   cls: remote
@@ -83,17 +83,20 @@ fakeSyncmailmapsConfiguration:
       secretKeyRef: swhmailmap-postgresql-secret
       secretKeyName: postgres-swhmailmap-password
 
-fakePostgresqlIndexerStorageConfiguration:
+postgresqlIndexerStorageConfiguration:
   cls: postgresql
-  host: db1.i.s.s.n
+  host: indexer-storage-rw
   port: 5432
-  db: swh-indexer
-  user: swh-indexer
-  pass: ${POSTGRESQL_PASSWORD}
+  db: swh-indexer-storage
+  user: ${POSTGRESQL_IDX_USERNAME}
+  pass: ${POSTGRESQL_IDX_PASSWORD}
   secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
+    POSTGRESQL_IDX_USERNAME:
+      secretKeyRef: swh-indexer-storage-swh-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_IDX_PASSWORD:
+      secretKeyRef: swh-indexer-storage-swh-postgresql-secret
+      secretKeyName: password
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
@@ -448,7 +451,7 @@ toolbox:
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
-      indexerDbConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 celeryConfiguration:
   host: rabbitmq-scheduler.cluster-components
@@ -581,7 +584,7 @@ indexers:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  indexerStorageConfigurationRef: fakeRemoteIndexerStorageConfiguration
+  indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
   sentry:
     enabled: false
@@ -761,14 +764,24 @@ indexerStorage:
   enabled: false
   deployments:
     read-write:
-      checkDbVersion: false
+      enabled: true
+      backend:
+        # When true, initalize the backend, leave it empty to do nothing
+        initialize:
+          adminSecret: indexer-storage-superuser
+          database: swh-indexer-storage
+        # When true, check db & code versions and do not start if they diverge
+        check: true
+        # When true, migrate or initialize db model
+        migrate: true
+
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 2
         cpuPercentageUsage: 90
       requestedCpu: 500m
       requestedMemory: 512Mi
-      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
       hosts:
         - indexer-storage-read-write.i.s.s.n
@@ -782,9 +795,10 @@ indexerStorage:
         threads: 1
         workers: 2
     read-only:
+      enabled: false
       checkDbVersion: false
       replicas: 1
-      indexerStorageConfigurationRef: fakePostgresqlIndexerStorageConfiguration
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
       hosts:
         - indexer-storage-read-only.i.s.s.n
       ingress:

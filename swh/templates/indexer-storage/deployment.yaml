@@ -7,6 +7,9 @@
   (dict "serviceType" $serviceType
         "configuration" $storage_config
         "Values" $.Values) | sha256sum -}}
+{{- $checkBackendVersion := (and $storage_config.backend $storage_config.backend.check) | default $.Values.indexerStorage.backend.check | default false -}}
+{{- $migrateBackend := (and $storage_config.backend $storage_config.backend.migrate) | default $.Values.indexerStorage.backend.migrate | default false -}}
+{{- $initializeBackendConfig := (and $storage_config.backend $storage_config.backend.initialize) | default $.Values.indexerStorage.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -59,10 +62,24 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{- if $storage_config.checkDbVersion }}
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend" (dict "Values" $.Values
+                                                 "imagePrefixName" "swh_toolbox_image"
+                                                 "module" "indexer"
+                                                 "config" $initializeBackendConfig
+                                                 "moduleConfigKey" "indexer_storage") | nindent 8 }}
+        {{- end }}
+        {{- if $checkBackendVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_indexer_storage_image"
-                                                             "module" "indexer-storage") | nindent 8 }}
+                                                             "module" "indexer"
+                                                             "moduleConfigKey" "indexer_storage") | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend" (dict "Values" $.Values
+                                              "imagePrefixName" "swh_toolbox_image"
+                                              "module" "indexer"
+                                              "moduleConfigKey" "indexer_storage") | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ $serviceType }}

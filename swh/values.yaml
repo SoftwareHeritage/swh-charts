@@ -599,6 +599,15 @@ indexerStorage:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: indexer-sentry-dsn
+  backend:
+    # When true, initalize the backend, leave it empty to do nothing
+    # initialize:
+    #   adminSecret: vault-superuser
+    #   database: swh-vault
+    # When true, check db & code versions and do not start if they diverge
+    check: false
+    # When true, migrate or initialize db model
+    migrate: false
   deployments:
     # rpc:
     #   # Don't configure the replicas if autoscaling is configured
