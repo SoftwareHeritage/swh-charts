@@ -123,3 +123,10 @@ cloudnativePg:
         secretKeyRef: swh-indexer-storage-swh-postgresql-secret
         databases:
           - swh-indexer
+    web:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-web-swh-postgresql-secret
+        databases:
+          - swh-web

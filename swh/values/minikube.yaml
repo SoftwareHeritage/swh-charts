@@ -30,13 +30,9 @@ fakeRemoteObjstorageConfiguration:
   cls: remote
   url: http://storage1.i.s.s.n:3005
 
-fakeRemoteStorageMetadataConfiguration:
+remoteStorageMetadataConfiguration:
   cls: remote
-  url: http://storage1.i.s.s.n:2005
-
-fakeRemoteStorageConfiguration:
-  cls: remote
-  url: http://storage1.i.s.s.n:2005
+  url: http://storage-rpc:5002
 
 remoteSchedulerConfiguration:
   cls: remote
@@ -125,16 +121,19 @@ fakePostgresqlScrubberConfiguration:
       secretKeyRef: swh-scrubber-postgresql-common-secret
       secretKeyName: postgres-swh-scrubber-password
 
-fakePostgresqlWebConfiguration:
-  host: db1.i.s.s.n
+postgresqlWebConfiguration:
+  host: web-rw
   port: 5432
   db: swh-web
-  user: swh-web
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_WEB_USERNAME}
+  pass: ${POSTGRESQL_WEB_PASSWORD}
   secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-web-secret
-      secretKeyName: postgres-swh-web-password
+    POSTGRESQL_WEB_USERNAME:
+      secretKeyRef: swh-web-swh-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_WEB_PASSWORD:
+      secretKeyRef: swh-web-swh-postgresql-secret
+      secretKeyName: password
 
 postgresqlVaultConfiguration:
   cls: postgresql
@@ -175,7 +174,7 @@ djangoDepositConfiguration:
       secretKeyName: deposit-django-secret-key
 
 fakeRemoteStorageConfigurationRef:
-  storageConfigurationRef: fakeRemoteStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
 
 postgresqlStorageConfigurationPipeline:
   storageConfigurationRef: postgresqlStorageConfiguration
@@ -288,23 +287,25 @@ web:
   deployments:
     minikube:
       enabled: true
+      migrations:
+        enabled: true
       hosts:
         - webapp.internal.minikube
       requestedMemory: 50Mi
       requestedCpu: 50m
-      storageConfigurationRef: fakeRemoteStorageConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
       searchConfigurationRef: fakeRemoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       countersConfigurationRef: fakeRemoteCountersConfiguration
-      databaseConfigurationRef: fakePostgresqlWebConfiguration
+      databaseConfigurationRef: postgresqlWebConfiguration
       djangoConfigurationRef: djangoWebConfiguration
       depositConfigurationRef: fakeDepositConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
       keycloakConfigurationRef: fakeKeycloakConfiguration
       ingress:
-        enabled: true
+        enabled: false
         tlsEnabled: true
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
@@ -328,7 +329,7 @@ web:
             authentication: basic-auth
       autoScaling:
         minReplicaCount: 1
-        maxReplicaCount: 2
+        maxReplicaCount: 1
         cpuPercentageUsage: 50
       refreshSavecodenowStatus:
         enabled: false
@@ -384,8 +385,8 @@ deposit:
   requestedMemory: 50Mi
   requestedCpu: 50m
   migrationsEnabled: false
-  storageConfigurationRef: fakeRemoteStorageConfiguration
-  storageMetadataConfigurationRef: fakeRemoteStorageMetadataConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
+  storageMetadataConfigurationRef: remoteStorageMetadataConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   databaseConfigurationRef: fakePostgresqlDepositConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
@@ -863,7 +864,7 @@ search:
     enabled: false
     priorityClassName: normal-workload
     searchConfigurationRef: fakeRemoteSearchConfiguration
-    storageConfigurationRef: fakeRemoteStorageConfiguration
+    storageConfigurationRef: remoteStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
