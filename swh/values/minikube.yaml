@@ -6,17 +6,17 @@ sentry:
 statsd_exporter:
   enabled: false
 
-fakeRemoteSchedulerConfiguration:
+remoteSchedulerConfiguration:
   cls: remote
-  url: http://fake-scheduler.i.s.s.n:5008
+  url: http://scheduler-rpc:5008
 
 fakeRemoteSearchConfiguration:
   cls: remote
   url: http://fake-search.i.s.s.n:5010
 
-fakeRemoteVaultConfiguration:
+remoteVaultConfiguration:
   cls: remote
-  url: http://fake-vault.i.s.s.n:5005
+  url: http://vault-rpc:5005
 
 fakeRemoteCountersConfiguration:
   cls: remote
@@ -133,24 +133,31 @@ fakePostgresqlWebConfiguration:
       secretKeyRef: swh-postgresql-web-secret
       secretKeyName: postgres-swh-web-password
 
-fakePostgresqlVaultConfiguration:
+postgresqlVaultConfiguration:
   cls: postgresql
-  host: db1.i.s.s.n
+  host: vault-rw
   port: '5432'
   db: swh-vault
-  user: swh-vault
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_VAULT_USERNAME}
+  pass: ${POSTGRESQL_VAULT_PASSWORD}
   secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-vault-secret
-      secretKeyName: postgres-swh-vault-password
+    POSTGRESQL_VAULT_USERNAME:
+      secretKeyRef: swh-vault-swh-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_VAULT_PASSWORD:
+      secretKeyRef: swh-vault-swh-postgresql-secret
+      secretKeyName: password
 
 readOnlyStoragePipelineSteps:
   - cls: retry
 
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage-rpc:5002
+
 remoteROStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
-  storageConfigurationRef: fakeRemoteStorageConfiguration
+  storageConfigurationRef: remoteStorageConfiguration
 
 djangoWebConfiguration:
   secrets:
@@ -284,8 +291,8 @@ web:
       requestedCpu: 50m
       storageConfigurationRef: fakeRemoteStorageConfiguration
       searchConfigurationRef: fakeRemoteSearchConfiguration
-      schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
-      vaultConfigurationRef: fakeRemoteVaultConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
       countersConfigurationRef: fakeRemoteCountersConfiguration
       databaseConfigurationRef: fakePostgresqlWebConfiguration
       djangoConfigurationRef: djangoWebConfiguration
@@ -376,7 +383,7 @@ deposit:
   migrationsEnabled: false
   storageConfigurationRef: fakeRemoteStorageConfiguration
   storageMetadataConfigurationRef: fakeRemoteStorageMetadataConfiguration
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   databaseConfigurationRef: fakePostgresqlDepositConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   keycloakConfigurationRef: fakeKeycloakConfiguration
@@ -439,7 +446,7 @@ toolbox:
 #      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
 #      storageConfigurationRef: postgresqlStorageConfiguration
     vault:
-      vaultDbConfigurationRef: fakePostgresqlVaultConfiguration
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
       indexerDbConfigurationRef: fakePostgresqlIndexerStorageConfiguration
 
@@ -541,7 +548,7 @@ scheduler:
 loader_metadata:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.test.journal_client
   prefix: swh.test.journal.objects
   journalBrokers:
@@ -564,7 +571,7 @@ cookers:
     enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
   celeryConfigurationRef: fakeCeleryConfiguration
-  vaultConfigurationRef: fakeRemoteVaultConfiguration
+  vaultConfigurationRef: remoteVaultConfiguration
   deployments:
     simple:
       queues:
@@ -573,7 +580,7 @@ cookers:
 indexers:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: fakeRemoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
   sentry:
@@ -620,7 +627,7 @@ graphql:
 listers:
   enabled: false
   storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: fakeCeleryConfiguration
   deployments:
     cgit:
@@ -684,16 +691,22 @@ vault:
     enabled: false
     secretKeyRef: vault-sentry-secrets
     secretKeyName: sentry-dsn
+  backend:
+    initialize:
+      adminSecret: vault-superuser
+      database: swh-vault
+    check: true
+    migrate: true
+
   logLevel: INFO
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
-  vaultConfigurationRef: fakePostgresqlVaultConfiguration
+  vaultConfigurationRef: postgresqlVaultConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
 
   # The scheduler instance to use for rpc must be a postgresql instance
-  # schedulerConfigurationRef: postgresqlSchedulerConfiguration
-  # replicas: 2
+  schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  replicas: 1
   gunicorn:
     threads: 5
     workers: 2

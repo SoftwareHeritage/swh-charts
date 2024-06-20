@@ -1,4 +1,7 @@
 {{ if .Values.vault.enabled -}}
+{{- $checkBackendVersion := $.Values.vault.backend.check | default false -}}
+{{- $migrateBackend := $.Values.vault.backend.migrate | default false -}}
+{{- $initializeBackendConfig := $.Values.vault.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,6 +52,22 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend" (dict "Values" $.Values
+                                                 "imagePrefixName" "swh_toolbox_image"
+                                                 "module" "vault"
+                                                 "config" $initializeBackendConfig) | nindent 8 }}
+        {{- end }}
+        {{- if $checkBackendVersion }}
+        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                             "imagePrefixName" "swh_vault_image"
+                                                             "module" "vault") | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend" (dict "Values" $.Values
+                                              "imagePrefixName" "swh_toolbox_image"
+                                              "module" "vault") | nindent 8 }}
+        {{- end }}
       containers:
         - name: vault-rpc
           resources:
@@ -133,5 +152,9 @@ spec:
       - name: config-utils
         configMap:
           name: config-utils
+          defaultMode: 0555
+      - name: database-utils
+        configMap:
+          name: database-utils
           defaultMode: 0555
 {{- end -}}

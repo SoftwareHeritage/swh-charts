@@ -109,3 +109,10 @@ cloudnativePg:
         secretKeyRef: swh-scheduler-swh-postgresql-secret
         databases:
           - swh-scheduler
+    vault:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-vault-swh-postgresql-secret
+        databases:
+          - swh-vault
