@@ -1458,6 +1458,11 @@ web:
             # auth-file with authentication
             authentication: swh/web-auth-secrets
           webhooks:
+            extraAnnotations:
+              # The number of connections to allow is estimated to ~1.5x the number
+              # of webhook journal client for the scn endpoint
+              # Another estimated could be around 1 connection per ~15 origin_visits_status/s
+              nginx.ingress.kubernetes.io/limit-connections: "10"
             tlsEnabled: true
             paths:
               - path: /save/origin/visit/webhook
