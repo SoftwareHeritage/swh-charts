@@ -61,14 +61,13 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
-rwStoragePipelineSteps:
-  - cls: blocking
-    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
-
-readWriteStorageConfiguration:
-  pipelineStepsRef: rwStoragePipelineSteps
+storageRWConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
+
+rpcRWStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: remoteStorageConfiguration
 
 remoteStorageConfiguration:
   cls: remote
@@ -116,6 +115,7 @@ counters:
 
 loaders:
   terminationGracePeriodSeconds: 60
+  storageConfigurationRef: rpcRWStorageConfiguration
   deployments:
     # Force the deployment of one pod of each type to at least
     # ensure they start (not enough but it's a first step)
@@ -325,7 +325,7 @@ storage:
     # To the benefit of a storage postgresql instance
     postgresql-read-write:
       enabled: true
-      storageConfigurationRef: readWriteStorageConfiguration
+      storageConfigurationRef: storageRWConfiguration
       backend:
         initialize:
           adminSecret: next-version-swh-superuser
