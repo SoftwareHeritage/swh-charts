@@ -38,9 +38,9 @@ fakeRemoteStorageConfiguration:
   cls: remote
   url: http://storage1.i.s.s.n:2005
 
-fakeRemoteSchedulerConfiguration:
+remoteSchedulerConfiguration:
   cls: remote
-  url: http://scheduler.i.s.s.n
+  url: http://scheduler-rpc:5008
 
 fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
@@ -95,17 +95,20 @@ fakePostgresqlIndexerStorageConfiguration:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-swh-storage-password
 
-fakePostgresqlSchedulerConfiguration:
+postgresqlSchedulerConfiguration:
   cls: postgresql
-  host: db1.i.s.s.n
+  host: scheduler-rw
   port: 5432
   db: swh-scheduler
-  user: swh
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-scheduler-swh-postgresql-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scheduler-postgresql-common-secret
-      secretKeyName: postgres-swh-scheduler-password
+      secretKeyRef: swh-scheduler-swh-postgresql-secret
+      secretKeyName: password
 
 fakePostgresqlScrubberConfiguration:
   cls: postgresql
@@ -415,13 +418,20 @@ deposit:
     cache_uri: memcached:11211
 
 toolbox:
-  enabled: false
+  enabled: true
   configs:
     storage:
       storageDbConfigurationRef: postgresqlStorageConfiguration
     scheduler:
-      schedulerDbConfigurationRef: fakePostgresqlSchedulerConfiguration
-      celeryConfigurationRef: fakeCeleryConfiguration
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: celeryConfiguration
+      backend:
+        initialize:
+          adminSecret: scheduler-superuser
+          database: swh-scheduler
+        check: true
+        migrate: true
+
 #    scrubber-journal:
 #      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
 #      journalClientConfigurationRef: scrubberJournalClientConfiguration
@@ -433,28 +443,27 @@ toolbox:
     indexer-storage:
       indexerDbConfigurationRef: fakePostgresqlIndexerStorageConfiguration
 
-fakeCeleryConfiguration:
-  host: fake-scheduler.i.s.s.n
+celeryConfiguration:
+  host: rabbitmq-scheduler.cluster-components
   port: 5672
-  user: fakeguest
+  user: ${AMQP_USERNAME}
   pass: ${AMQP_PASSWORD}
   secrets:
+    AMQP_USERNAME:
+      secretKeyRef: rabbitmq-scheduler-secret
+      secretKeyName: username
     AMQP_PASSWORD:
-      secretKeyRef: amqp-secrets
-      secretKeyName: guest-password
+      secretKeyRef: rabbitmq-scheduler-secret
+      secretKeyName: password
 
 scheduler:
   enabled: false
-  schedulerConfigurationRef: fakeRemoteSchedulerConfiguration
-  celeryConfigurationRef: fakeCeleryConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  celeryConfigurationRef: celeryConfiguration
   alerts:
     enabled: false
   recurrent:
-    enabled: false
-    requestedMemory: 10Mi
-    limitedMemory: 20Mi
-    requestedCpu: 10m
-    limitedCpu: 20m
+    enabled: true
     schedulerPolicies:
       default:
       - policy: never_visited_oldest_update_first
@@ -463,23 +472,26 @@ scheduler:
       - policy: origins_without_last_update
         weight: 100
   rpc:
-    enabled: false
-    schedulerConfigurationRef: fakePostgresqlSchedulerConfiguration
-    requestedMemory: 20Mi
-    limitedMemory: 40Mi
-    requestedCpu: 10m
-    limitedCpu: 20m
+    enabled: true
+    schedulerConfigurationRef: postgresqlSchedulerConfiguration
     replicas: 1
     gunicorn:
       threads: 1
       workers: 1
       timeout: 10
+    backend:
+      initialize:
+        adminSecret: scheduler-superuser
+        database: swh-scheduler
+      check: true
+      migrate: true
+
     # autoScaling:
     #   minReplicaCount: 4
     #   maxReplicaCount: 20
     #   cpuPercentageUsage: 150
-    hosts:
-      - myscheduler.minikube.domain
+    # hosts:
+    #   - myscheduler.minikube.domain
     ingress:
       enabled: false
       # Default allowed ip ranges that can be extended per ingress definitions paths
@@ -511,36 +523,20 @@ scheduler:
   journalClient:
     enabled: false
     journalConfigurationRef: journalClientConfiguration
-    requestedMemory: 15Mi
-    limitedMemory: 30Mi
-    requestedCpu: 50m
-    limitedCpu: 100m
   extraServices:
     runner:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 100
-      requestedMemory: 5Mi
-      limitedMemory: 10Mi
-      requestedCpu: 10m
-      limitedCpu: 20m
     runner-priority:
-      enabled: false
+      enabled: true
       logLevel: INFO
       period: 100
-      requestedMemory: 6Mi
-      limitedMemory: 12Mi
-      requestedCpu: 10m
-      limitedCpu: 20m
       extraConfig:
         - load-git
     listener:
-      enabled: false
+      enabled: true
       logLevel: INFO
-      requestedMemory: 7Mi
-      limitedMemory: 14Mi
-      requestedCpu: 10m
-      limitedCpu: 20m
 
 loader_metadata:
   enabled: false

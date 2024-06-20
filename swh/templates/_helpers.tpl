@@ -402,10 +402,71 @@ Generate the configuration for a journal writer
 - name: {{ .containerName | default "check-migration" }}
   image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
   command:
-  - /entrypoints/check-{{ .module }}-db-version.sh
+  - /entrypoints/check-backend-version.sh
   env:
   - name: MODULE
     value: {{ .module }}
+  - name: MODULE_CONFIG_KEY
+    value: {{ .moduleConfigKey | default "" }}
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
+{{/* Generate the initialize backend container configuration if needed */}}
+{{- define "swh.initializeBackend" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "initialize-backend" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/initialize-backend.sh
+  env:
+  - name: MODULE
+    value: {{ .module }}
+  - name: MODULE_CONFIG_KEY
+    value: {{ .moduleConfigKey | default "" }}
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  - name: SWH_PGDATABASE
+    value: {{ .config.database }}
+  - name: SWH_PGPASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: {{ .config.adminSecret }}
+        key: password
+  - name: SWH_PGHOST
+    valueFrom:
+      secretKeyRef:
+        name: {{ .config.adminSecret }}
+        key: host
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
+{{/* Generate the initialize backend container configuration if needed */}}
+{{- define "swh.migrateBackend" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+{{- $entrypoint := eq .module "storage" | ternary "migrate-storage-db-version.sh" "migrate-db-version.sh" -}}
+- name: {{ .containerName | default "migrate-backend" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/migrate-backend.sh
+  env:
+  - name: MODULE
+    value: {{ .module }}
+  - name: MODULE_CONFIG_KEY
+    value: {{ .moduleConfigKey | default "" }}
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh

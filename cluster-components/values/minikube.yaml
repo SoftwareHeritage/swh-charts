@@ -74,7 +74,7 @@ rabbitmq:
   deployments:
     scheduler:
       enabled: true
-      replicas: 3
+      replicas: 1
 
 cloudnativePg:
   enabled: false
@@ -102,3 +102,10 @@ cloudnativePg:
         secretKeyRef: swh-swh-postgresql-secret
         databases:
           - swh
+    scheduler:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-scheduler-swh-postgresql-secret
+        databases:
+          - swh-scheduler

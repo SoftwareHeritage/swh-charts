@@ -56,13 +56,13 @@ spec:
         #       A workaround is needed as the registration is not idempotent
         #       and can't be launched each time a scrubber is launched
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-scrubber-migration"
-                                                                "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "scrubber") | nindent 8 }}
+                                                              "containerName" "check-scrubber-migration"
+                                                              "imagePrefixName" "swh_scrubber_image"
+                                                              "module" "scrubber") | nindent 8 }}
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-storage-migration"
-                                                                "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "storage") | nindent 8 }}
+                                                              "containerName" "check-storage-migration"
+                                                              "imagePrefixName" "swh_scrubber_image"
+                                                              "module" "storage") | nindent 8 }}
       containers:
       - name: storage-checker
         resources:

@@ -1,4 +1,7 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled -}}
+{{- $checkBackendVersion := $.Values.scheduler.rpc.backend.check | default false -}}
+{{- $migrateBackend := $.Values.scheduler.rpc.backend.migrate | default false -}}
+{{- $initializeBackendConfig := $.Values.scheduler.rpc.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,6 +52,22 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend" (dict "Values" $.Values
+                                                 "imagePrefixName" "swh_toolbox_image"
+                                                 "module" "scheduler"
+                                                 "config" $initializeBackendConfig) | nindent 8 }}
+        {{- end }}
+        {{- if $checkBackendVersion }}
+        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                             "imagePrefixName" "swh_scheduler_image"
+                                                             "module" "scheduler") | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend" (dict "Values" $.Values
+                                              "imagePrefixName" "swh_toolbox_image"
+                                              "module" "scheduler") | nindent 8 }}
+        {{- end }}
       containers:
         - name: scheduler-rpc
           resources:
@@ -130,4 +149,8 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: database-utils
+        configMap:
+          name: database-utils
+          defaultMode: 0555
 {{- end -}}
