@@ -15,7 +15,7 @@ swh_graphql_image_version: '20240614.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
 swh_indexer_image_version: '20240614.1'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
-swh_indexer_storage_image_version: '20240614.1'
+swh_indexer_storage_image_version: '20240618.1'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
 swh_lister_image_version: '20240613.1'
 swh_loader_bzr_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_bzr
@@ -49,7 +49,7 @@ swh_storage_image_version: '20240613.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20240613.1'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20240614.1'
+swh_toolbox_image_version: '20240618.1'
 swh_utils_image: container-registry.softwareheritage.org/swh/infra/swh-apps/utils
 swh_utils_image_version: '20231211.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
