@@ -387,6 +387,11 @@ fakeAzureDepositConfiguration:
 
 deposit:
   enabled: false
+  # autoScaling:
+  #   minReplicaCount: 1
+  #   maxReplicaCount: 2
+  #   cpuPercentageUsage: 50
+  replicas: 1
   requestedMemory: 50Mi
   requestedCpu: 50m
   migrationsEnabled: true
@@ -485,10 +490,13 @@ scheduler:
       workers: 1
       timeout: 10
     backend:
+      # initialize db if empty?
       initialize:
         adminSecret: scheduler-superuser
         database: swh-scheduler
+      # check db version with latest code?
       check: true
+      # migrate db?
       migrate: true
 
     # autoScaling:

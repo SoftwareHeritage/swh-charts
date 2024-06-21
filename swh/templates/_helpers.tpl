@@ -455,7 +455,6 @@ Generate the configuration for a journal writer
 {{- define "swh.migrateBackend" -}}
 {{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
         required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
-{{- $entrypoint := eq .module "storage" | ternary "migrate-storage-db-version.sh" "migrate-db-version.sh" -}}
 - name: {{ .containerName | default "migrate-backend" }}
   image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
   command:
