@@ -130,3 +130,10 @@ cloudnativePg:
         secretKeyRef: swh-web-swh-postgresql-secret
         databases:
           - swh-web
+    scrubber:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-scrubber-swh-postgresql-secret
+        databases:
+          - swh-scrubber
