@@ -948,6 +948,8 @@ toolbox:
       storageConfigurationRef: memoryNoopStorageConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+    vault:
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 indexerStorage:
   enabled: true
