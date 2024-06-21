@@ -295,10 +295,13 @@ web:
       enabled: true
       migrations:
         enabled: true
+      replicas: 1
+      # autoScaling:
+      #   minReplicaCount: 1
+      #   maxReplicaCount: 1
+      #   cpuPercentageUsage: 50
       hosts:
-        - webapp.internal.minikube
-      requestedMemory: 50Mi
-      requestedCpu: 50m
+        - web-minikube
       storageConfigurationRef: remoteStorageConfiguration
       searchConfigurationRef: fakeRemoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -308,36 +311,31 @@ web:
       djangoConfigurationRef: djangoWebConfiguration
       depositConfigurationRef: depositApiConfiguration
       giveConfigurationRef: giveConfiguration
-      throttlingConfigurationRef: webThrottling
-      keycloakConfigurationRef: fakeKeycloakConfiguration
+      # throttlingConfigurationRef: webThrottling
+      # keycloakConfigurationRef: fakeKeycloakConfiguration
       ingress:
         enabled: false
-        tlsEnabled: true
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-        whitelistSourceRangeRef: internalNetworkRanges
-        endpoints:
-          default:
-            paths:
-              - path: /
-              - path: /static
-                port: 80
-          authenticated:
-            paths:
-              - path: /api/1/provenance/
-              - path: /api/1/entity/
-              - path: /api/1/content/[^/]+/symbol/
-            # auth-file with authentication
-            authentication: basic-auth
-      replicas: 1
-      # autoScaling:
-      #   minReplicaCount: 1
-      #   maxReplicaCount: 1
-      #   cpuPercentageUsage: 50
+        # tlsEnabled: true
+        # extraAnnotations:
+        #   nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+        #   nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+        #   nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+        #   nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+        #   nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        # whitelistSourceRangeRef: internalNetworkRanges
+        # endpoints:
+        #   default:
+        #     paths:
+        #       - path: /
+        #       - path: /static
+        #         port: 80
+        #   authenticated:
+        #     paths:
+        #       - path: /api/1/provenance/
+        #       - path: /api/1/entity/
+        #       - path: /api/1/content/[^/]+/symbol/
+        #     # auth-file with authentication
+        #     authentication: basic-auth
       refreshSavecodenowStatus:
         enabled: false
         cron: "* 5 * * *"
@@ -372,7 +370,7 @@ web:
         - swh.web.vault
         matomo: {}
         deposit:
-          private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
+          private_api_url: "http://deposit-rpc/1/private/"
           private_api_user: "${DEPOSIT_API_USERNAME}"
           private_api_password: "${DEPOSIT_API_PASSWORD}"
         give:
@@ -422,11 +420,6 @@ deposit:
           - path: /1/private/
         # auth-file with authentication
         authentication: swh/deposit-auth-secrets
-  # autoScaling:
-  #   minReplicaCount: 1
-  #   maxReplicaCount: 2
-  #   cpuPercentageUsage: 50
-  replicas: 1
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets
