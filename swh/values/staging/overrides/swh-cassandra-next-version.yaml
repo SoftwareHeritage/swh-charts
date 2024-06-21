@@ -33,7 +33,7 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-postgresql-common-secret
       secretKeyName: postgres-swh-scheduler-password
 
-producerCeleryConfiguration:
+celeryConfiguration:
   host: rabbitmq-scheduler
   port: 5672
   user: ${AMQP_USERNAME}
@@ -67,6 +67,13 @@ storageRWConfiguration:
 
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: remoteStorageConfiguration
+
+retryStoragePipelineSteps:
+  - cls: retry
+
+remoteROStorageConfiguration:
+  pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteStorageConfiguration
 
 remoteStorageConfiguration:
@@ -459,11 +466,17 @@ webhooks:
 
 listers:
   enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  celeryConfigurationRef: celeryConfiguration
   deployments:
     nixguix:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
       autoScaling:
+        queueThreshold: 1
+        stopWhenNoActivity: false
+        minReplicaCount: 1
         maxReplicaCount: 1
       extraConfig:
         # extra extensions to ignore
