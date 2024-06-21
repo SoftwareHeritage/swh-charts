@@ -87,6 +87,11 @@ vault:
   autoScaling:
     minReplicaCount: 1
     maxReplicaCount: 1
+  backend:
+    # check db version with latest code?
+    check: true
+    # migrate db?
+    migrate: false
   hosts:
     - vault-rpc-ingress-next-version
 
@@ -337,6 +342,8 @@ web:
   deployments:
     cassandra:
       metricsScrapingEnabled: false
+      migrations:
+        enabled: false
       replicas: 1
       autoScaling:
         minReplicaCount: 1
@@ -373,6 +380,8 @@ web:
 
 deposit:
   enabled: false
+  migrations:
+    enabled: false
 
 graphql:
   deployments:
@@ -414,6 +423,13 @@ scheduler:
     enabled: false
   rpc:
     enabled: true
+    backend:
+      # check db version with latest code?
+      check: true
+      # migrate db?
+      migrate: false
+      # register task types?
+      register: true
     ingress:
       enabled: false
   updateMetrics:
