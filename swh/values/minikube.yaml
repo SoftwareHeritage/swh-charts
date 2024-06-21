@@ -173,7 +173,7 @@ djangoDepositConfiguration:
       secretKeyRef: deposit-django-secrets
       secretKeyName: deposit-django-secret-key
 
-fakeRemoteStorageConfigurationRef:
+remoteStorageConfigurationRef:
   storageConfigurationRef: remoteStorageConfiguration
 
 postgresqlStorageConfigurationPipeline:
@@ -247,7 +247,7 @@ storage_replayer:
       - journal2.i.s.s.n:4909
     user: swh-postgresql-stg
     groupIdName: postgresql
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationRef
   checkDbVersion: false
   deployments:
     content:
@@ -551,7 +551,7 @@ scheduler:
 
 loader_metadata:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationRef
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.test.journal_client
   prefix: swh.test.journal.objects
@@ -565,16 +565,16 @@ loader_metadata:
 
 checker_deposit:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  celeryConfigurationRef: fakeCeleryConfiguration
+  storageConfigurationRef: remoteStorageConfigurationRef
+  celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: fakeDepositConfiguration
 
 cookers:
   enabled: false
   sentry:
     enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  celeryConfigurationRef: fakeCeleryConfiguration
+  storageConfigurationRef: remoteStorageConfigurationRef
+  celeryConfigurationRef: celeryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   deployments:
     simple:
@@ -583,7 +583,7 @@ cookers:
 
 indexers:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationRef
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
@@ -611,7 +611,7 @@ graphql:
   enabled: false
   deployments:
     fake:
-      storageConfigurationRef: fakeRemoteStorageConfigurationRef
+      storageConfigurationRef: remoteStorageConfigurationRef
       searchConfigurationRef: fakeRemoteSearchConfiguration
       debug: no
       introspection: no
@@ -630,9 +630,9 @@ graphql:
 
 listers:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationRef
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  celeryConfigurationRef: fakeCeleryConfiguration
+  celeryConfigurationRef: celeryConfiguration
   deployments:
     cgit:
       queues:
@@ -642,8 +642,8 @@ listers:
 
 loaders:
   enabled: false
-  storageConfigurationRef: fakeRemoteStorageConfigurationRef
-  celeryConfigurationRef: fakeCeleryConfiguration
+  storageConfigurationRef: remoteStorageConfigurationRef
+  celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: fakeDepositConfiguration
   deployments:
     git:
