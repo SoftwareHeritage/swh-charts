@@ -57,16 +57,19 @@ postgresqlStorageConfiguration:
       secretKeyRef: swh-swh-postgresql-secret
       secretKeyName: password
 
-fakePostgresqlDepositConfiguration:
-  host: db1.i.s.s.n
+postgresqlDepositConfiguration:
+  host: deposit-rw
   port: 5432
   db: swh-deposit
-  user: swh-deposit
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_DEPOSIT_USERNAME}
+  pass: ${POSTGRESQL_DEPOSIT_PASSWORD}
   secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-deposit-secret
-      secretKeyName: postgres-swh-deposit-password
+    POSTGRESQL_DEPOSIT_USERNAME:
+      secretKeyRef: swh-deposit-swh-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_DEPOSIT_PASSWORD:
+      secretKeyRef: swh-deposit-swh-postgresql-secret
+      secretKeyName: password
 
 fakeSyncmailmapsConfiguration:
   host: db1.i.s.s.n
@@ -212,15 +215,15 @@ searchJournalClientConfiguration:
       secretKeyRef: deposit-secrets # Any secret can do the job
       secretKeyName: username
 
-fakeDepositConfiguration:
-  host: deposit.i.i.s.n
-  user: ${DEPOSIT_USERNAME}
-  pass: ${DEPOSIT_PASSWORD}
+depositApiConfiguration:
+  host: deposit-rpc
+  user: ${DEPOSIT_API_USERNAME}
+  pass: ${DEPOSIT_API_PASSWORD}
   secrets:
-    DEPOSIT_USERNAME:
+    DEPOSIT_API_USERNAME:
       secretKeyRef: deposit-secrets
       secretKeyName: username
-    DEPOSIT_PASSWORD:
+    DEPOSIT_API_PASSWORD:
       secretKeyRef: deposit-secrets
       secretKeyName: password
 
@@ -303,7 +306,7 @@ web:
       countersConfigurationRef: fakeRemoteCountersConfiguration
       databaseConfigurationRef: postgresqlWebConfiguration
       djangoConfigurationRef: djangoWebConfiguration
-      depositConfigurationRef: fakeDepositConfiguration
+      depositConfigurationRef: depositApiConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
       keycloakConfigurationRef: fakeKeycloakConfiguration
@@ -330,10 +333,11 @@ web:
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
             authentication: basic-auth
-      autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 1
-        cpuPercentageUsage: 50
+      replicas: 1
+      # autoScaling:
+      #   minReplicaCount: 1
+      #   maxReplicaCount: 1
+      #   cpuPercentageUsage: 50
       refreshSavecodenowStatus:
         enabled: false
         cron: "* 5 * * *"
@@ -369,8 +373,8 @@ web:
         matomo: {}
         deposit:
           private_api_url: "https://deposit-rp.i.s.s.n/1/private/"
-          private_api_user: "${DEPOSIT_USERNAME}"
-          private_api_password: "${DEPOSIT_PASSWORD}"
+          private_api_user: "${DEPOSIT_API_USERNAME}"
+          private_api_password: "${DEPOSIT_API_PASSWORD}"
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
@@ -387,18 +391,18 @@ deposit:
   enabled: false
   requestedMemory: 50Mi
   requestedCpu: 50m
-  migrationsEnabled: false
+  migrationsEnabled: true
   storageConfigurationRef: remoteStorageConfiguration
   storageMetadataConfigurationRef: remoteStorageMetadataConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  databaseConfigurationRef: fakePostgresqlDepositConfiguration
+  databaseConfigurationRef: postgresqlDepositConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   keycloakConfigurationRef: fakeKeycloakConfiguration
   blobstorageConfigurationRef: fakeAzureDepositConfiguration
   hosts:
     - localhost
   ingress:
-    enabled: true
+    enabled: false
     tlsEnabled: true
     extraAnnotations:
       nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
@@ -418,10 +422,11 @@ deposit:
           - path: /1/private/
         # auth-file with authentication
         authentication: swh/deposit-auth-secrets
-  autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 2
-    cpuPercentageUsage: 50
+  # autoScaling:
+  #   minReplicaCount: 1
+  #   maxReplicaCount: 2
+  #   cpuPercentageUsage: 50
+  replicas: 1
   sentry:
     enabled: false
     secretKeyRef: sentry-secrets
@@ -563,7 +568,7 @@ checker_deposit:
   enabled: false
   storageConfigurationRef: remoteStorageConfigurationRef
   celeryConfigurationRef: celeryConfiguration
-  depositConfigurationRef: fakeDepositConfiguration
+  depositConfigurationRef: depositApiConfiguration
 
 cookers:
   enabled: false
@@ -640,7 +645,7 @@ loaders:
   enabled: false
   storageConfigurationRef: remoteStorageConfigurationRef
   celeryConfigurationRef: celeryConfiguration
-  depositConfigurationRef: fakeDepositConfiguration
+  depositConfigurationRef: depositApiConfiguration
   deployments:
     git:
       priorityClassName: low-workload
@@ -656,8 +661,8 @@ loaders:
         deposit:
           url: "https://deposit-rp.i.s.s.n/1/private"
           auth:
-            username: "${DEPOSIT_USERNAME}"
-            password: "${DEPOSIT_PASSWORD}"
+            username: "${DEPOSIT_API_USERNAME}"
+            password: "${DEPOSIT_API_PASSWORD}"
         default_filename: archive.tar
       requestedMemory: 50Mi
       requestedCpu: 50m
@@ -717,10 +722,11 @@ vault:
   requestedCpu: 500m
   limitedMemory: 512Mi
   limitedCpu: 500m
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 10
-    cpuPercentageUsage: 100
+  replicas: 1
+  # autoScaling:
+  #   minReplicaCount: 2
+  #   maxReplicaCount: 10
+  #   cpuPercentageUsage: 100
   hosts:
     - vault.localdomain
   ingress:
