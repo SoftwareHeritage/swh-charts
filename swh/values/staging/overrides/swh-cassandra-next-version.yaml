@@ -458,7 +458,17 @@ webhooks:
   enabled: false
 
 listers:
-  enabled: false
+  enabled: true
+  deployments:
+    nixguix:
+      queues:
+      - swh.lister.nixguix.tasks.NixGuixListerTask
+      autoScaling:
+        maxReplicaCount: 1
+      extraConfig:
+        # extra extensions to ignore
+        extensions_to_ignore:
+          - rock
 
 indexers:
   enabled: false
