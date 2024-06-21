@@ -109,17 +109,20 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-scheduler-swh-postgresql-secret
       secretKeyName: password
 
-fakePostgresqlScrubberConfiguration:
+postgresqlScrubberConfiguration:
   cls: postgresql
-  host: db1.i.s.s.n
+  host: scrubber-rw
   port: 5432
   db: swh-scrubber
-  user: swh-scrubber
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_SCRUBBER_USERNAME}
+  pass: ${POSTGRESQL_SCRUBBER_PASSWORD}
   secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scrubber-postgresql-common-secret
-      secretKeyName: postgres-swh-scrubber-password
+    POSTGRESQL_SCRUBBER_USERNAME:
+      secretKeyRef: swh-scrubber-swh-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_SCRUBBER_PASSWORD:
+      secretKeyRef: swh-scrubber-swh-postgresql-secret
+      secretKeyName: password
 
 postgresqlWebConfiguration:
   host: web-rw
@@ -428,32 +431,6 @@ deposit:
     extraction_dir: "/tmp/swh-deposit/archive/"
     cache_uri: memcached:11211
 
-toolbox:
-  enabled: true
-  configs:
-    storage:
-      storageDbConfigurationRef: postgresqlStorageConfiguration
-    scheduler:
-      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
-      celeryConfigurationRef: celeryConfiguration
-      backend:
-        initialize:
-          adminSecret: scheduler-superuser
-          database: swh-scheduler
-        check: true
-        migrate: true
-
-#    scrubber-journal:
-#      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
-#      journalClientConfigurationRef: scrubberJournalClientConfiguration
-#    scrubber-storage:
-#      scrubberDbConfigurationRef: fakePostgresqlScrubberConfiguration
-#      storageConfigurationRef: postgresqlStorageConfiguration
-    vault:
-      vaultDbConfigurationRef: postgresqlVaultConfiguration
-    indexer-storage:
-      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
-
 celeryConfiguration:
   host: rabbitmq-scheduler.cluster-components
   port: 5672
@@ -466,6 +443,25 @@ celeryConfiguration:
     AMQP_PASSWORD:
       secretKeyRef: rabbitmq-scheduler-secret
       secretKeyName: password
+
+toolbox:
+  enabled: true
+  configs:
+    storage:
+      storageDbConfigurationRef: postgresqlStorageConfiguration
+    scheduler:
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: celeryConfiguration
+    scrubber-storage:
+      moduleName: scrubber
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageDbConfigurationRef: postgresqlStorageConfiguration
+    vault:
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
+    indexer-storage:
+      moduleName: indexer
+      moduleConfigKey: indexer_storage
+      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 scheduler:
   enabled: false
@@ -883,23 +879,22 @@ search:
 
 scrubber:
   enabled: false
-  scrubberDatabaseConfigurationRef: fakePostgresqlScrubberConfiguration
+  scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
   journalChecker:
-    enabled: true
+    enabled: false
     journalClientConfigurationRef: journalClientConfiguration
     deployments:
-      directory:
-        configName: journal-fake-directory
-        journalClientOverrides:
-          batch_size: 100
-        object: directory
-        # replicas: 2
       release:
         configName: journal-fake-release
         journalClientOverrides:
           batch_size: 200
         object: release
+  storageChecker:
+    enabled: false
+  objstorageChecker:
+    enabled: false
+
 
 fakeObjstorageConfiguration:
   cls: pathslicing
