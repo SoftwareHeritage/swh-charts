@@ -5,6 +5,13 @@ metadata:
   name: database-utils
   namespace: {{ $.Values.namespace }}
 data:
+  register-task-types.sh: |
+    #!/usr/bin/env bash
+
+    set -eux
+
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    swh scheduler task-type register
   init-keyspace.py: |
     from swh.core import config
     from swh.storage.cassandra import create_keyspace

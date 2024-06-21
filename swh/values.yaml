@@ -1089,6 +1089,8 @@ scheduler:
       check: false
       # When true, migrate or initialize db model
       migrate: false
+      # When true, register the scheduler task types
+      register: false
 
     # The scheduler instance to use for rpc must be a postgresql instance
     # schedulerConfigurationRef: postgresqlSchedulerConfiguration

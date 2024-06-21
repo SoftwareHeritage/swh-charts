@@ -498,6 +498,8 @@ scheduler:
       check: true
       # migrate db?
       migrate: true
+      # register task types?
+      register: true
 
     # autoScaling:
     #   minReplicaCount: 4
