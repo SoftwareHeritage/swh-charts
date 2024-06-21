@@ -128,6 +128,7 @@ counters:
 loaders:
   terminationGracePeriodSeconds: 60
   storageConfigurationRef: rpcRWStorageConfiguration
+  celeryConfigurationRef: celeryConfiguration
   deployments:
     # Force the deployment of one pod of each type to at least
     # ensure they start (not enough but it's a first step)
@@ -424,6 +425,8 @@ podPriority:
 
 scheduler:
   enabled: true
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  celeryConfigurationRef: celeryConfiguration
   sentry:
     enabled: false
   alerts:
