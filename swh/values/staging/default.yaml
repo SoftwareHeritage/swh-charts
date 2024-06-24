@@ -358,7 +358,7 @@ postgresqlScrubberConfiguration:
       secretKeyName: postgres-swh-scrubber-password
 
 kafkaBrokers:
-  - journal2.internal.staging.swh.network
+  - journal2.internal.staging.swh.network:9092
 
 internalSecuredKafkaBrokers:
   - journal2.internal.staging.swh.network:9094
