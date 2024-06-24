@@ -40,10 +40,10 @@ memoryStorage:
   cls: memory
 
 kafkaBrokers:
-  - kafka1.internal.softwareheritage.org
-  - kafka2.internal.softwareheritage.org
-  - kafka3.internal.softwareheritage.org
-  - kafka4.internal.softwareheritage.org
+  - kafka1.internal.softwareheritage.org:9092
+  - kafka2.internal.softwareheritage.org:9092
+  - kafka3.internal.softwareheritage.org:9092
+  - kafka4.internal.softwareheritage.org:9092
 
 internalSecuredKafkaBrokers:
   - kafka1.internal.softwareheritage.org:9094
