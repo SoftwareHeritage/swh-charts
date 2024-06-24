@@ -489,6 +489,8 @@ rwObjstorageWineryAndAzure:
   - *azure-storage-conf-rw
 
 rwStoragePipelineSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
   - cls: record_references
 
 rwStoragePostgresqlWithWineryObjstorageConfiguration:
@@ -672,8 +674,6 @@ blockingAdminPostgresqlConfiguration:
       secretKeyRef: swh-postgresql-blocking-secret
       secretKeyName: postgres-swh-blocking-password
 
-# Passed as postgresqlConfigurationRef to the blocking proxy storage
-# pipeline entry
 blockingQueryPostgresqlConfiguration:
   host: postgresql-blocking-rw.internal.softwareheritage.org
   port: '5432'
