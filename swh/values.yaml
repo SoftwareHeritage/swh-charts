@@ -1266,6 +1266,10 @@ scrubber:
     # Mandatory if enabled
     # secretKeyRef: swh-scrubber-sentry-secret
     # secretKeyName: sentry-dsn
+  backend:
+    check: true
+    migrate: false
+    initialize: false
   # affinity:
   #   nodeAffinity:
   #     requiredDuringSchedulingIgnoredDuringExecution:

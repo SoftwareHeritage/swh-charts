@@ -890,6 +890,10 @@ scrubber:
   enabled: false
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
+  backend:
+    check: true
+    migrate: false
+
   journalChecker:
     enabled: false
     journalClientConfigurationRef: journalClientConfiguration
@@ -901,9 +905,30 @@ scrubber:
         object: release
   storageChecker:
     enabled: false
+    storageConfigurationRef: postgresqlStorageConfigurationPipeline
+    deployments:
+      object:
+        backend:
+          check: true
+          migrate: true
+          initialize:
+            database: swh-scrubber
+            adminSecret: scrubber-superuser
+        configName: directory
   objstorageChecker:
     enabled: false
+    enabled: true
+    storageConfigurationRef: postgresqlStorageConfigurationPipeline
+    journalClientConfigurationRef: journalClientConfiguration
+    deployments:
+      storage:
+        objstorageConfigurationRef: remoteStorageReadOnlyObjstorageConfiguration
+        configName: objstorage-storage-content
 
+remoteStorageReadOnlyObjstorageConfiguration:
+  cls: remote
+  name: storage
+  url: http://objstorage-storage-ro-rpc-ingress
 
 fakeObjstorageConfiguration:
   cls: pathslicing

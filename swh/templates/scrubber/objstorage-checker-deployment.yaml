@@ -10,6 +10,9 @@
     "deployment_config" $deployment_config
     "Values" $.Values) | sha256sum -}}
 {{ $name := ( print "scrubber-objstoragechecker-" $deployment ) }}
+{{- $checkBackendVersion := (and $deployment_config.backend $deployment_config.backend.check) | default $.Values.scrubber.backend.check | default false -}}
+{{- $migrateBackend := (and $deployment_config.backend $deployment_config.backend.migrate) | default $.Values.scrubber.backend.migrate | default false -}}
+{{- $initializeBackendConfig := (and $deployment_config.backend $deployment_config.backend.initialize) | default $.Values.scrubber.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,17 +63,30 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend" (dict "Values" $.Values
+                                                 "imagePrefixName" "swh_toolbox_image"
+                                                 "module" "scrubber"
+                                                 "config" $initializeBackendConfig) | nindent 8 }}
+        {{- end }}
         # TODO: Add the "datastore" registration
         #       A workaround is needed as the registration is not idempotent
         #       and can't be launched each time a scrubber is launched
+        {{ if $checkBackendVersion }}
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-scrubber-migration"
-                                                                "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "scrubber") | nindent 8 }}
+                                                              "containerName" "check-scrubber-migration"
+                                                              "imagePrefixName" "swh_scrubber_image"
+                                                              "module" "scrubber") | nindent 8 }}
         {{- include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                                "containerName" "check-storage-migration"
-                                                                "imagePrefixName" "swh_scrubber_image"
-                                                                "module" "storage") | nindent 8 }}
+                                                              "containerName" "check-storage-migration"
+                                                              "imagePrefixName" "swh_scrubber_image"
+                                                              "module" "storage") | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend" (dict "Values" $.Values
+                                              "imagePrefixName" "swh_toolbox_image"
+                                              "module" "scrubber") | nindent 8 }}
+        {{- end }}
       containers:
       - name: storage-checker
         resources:
