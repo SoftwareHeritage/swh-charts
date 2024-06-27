@@ -35,7 +35,7 @@ podPriority:
 svix:
   enabled: false
   ingress:
-    enabled: false
+    enabled: true
     host: svix-test.local
     createTLS: false
     # annotations:

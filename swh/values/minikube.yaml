@@ -377,6 +377,43 @@ web:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
 
+svixConfiguration:
+  svix:
+    server_url: https://svix-test.local
+    auth_token: ${SVIX_AUTH_TOKEN}
+  event_retention_period: 7
+  secrets:
+    SVIX_AUTH_TOKEN:
+      secretKeyRef: svix-server-secrets
+      secretKeyName: svix-token
+
+webhooksConfiguration:
+  secrets:
+    WEBHOOKS_SECRET:
+      secretKeyRef: svix-server-secrets
+      secretKeyName: webhooks-secret
+
+dnsConfiguration:
+  ndots: 1
+  overrideSearch: true
+
+webhooks:
+  enabled: false
+  svixConfigurationRef: svixConfiguration
+  journalClientConfigurationRef: journalClientConfiguration
+  priorityClassName: frontend-rpc-workload
+  replicas: 1
+  deployments:
+    origin-visit-status:
+      dnsConfigurationRef: dnsConfiguration
+      requestedCpu: 100m
+      requestedMemory: 100Mi
+      journalClientOverrides:
+        auto_offset_reset: latest
+        group_id: swh-minikube-stg-webhooks
+        object_types:
+          - origin_visit_status
+
 fakeAzureDepositConfiguration:
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
   container_name: "deposit-contents"
