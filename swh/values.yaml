@@ -1526,38 +1526,38 @@ webhooks:
   enabled: false
   sentry:
     enabled: false
-  #autoScaling:
-  #  poolInterval: 120
-  #  lagThreashold: 1000
-  #  minReplicaCount: 1
-  #  maxReplicaCount: 5
-  #  stopWhenNoActivity: true
-  #  lagThreshold: 1000
-  #affinity:
-  #  nodeAffinity:
-  #    requiredDuringSchedulingIgnoredDuringExecution:
-  #      nodeSelectorTerms:
-  #      - matchExpressions:
-  #        - key: swh/webhooks
-  #          operator: In
-  #          values:
-  #          - "true"
-  #svixConfigurationRef: svixConfiguration
-  #journalClientConfigurationRef: journalClientConfiguration
-  #priorityClassName: frontend-rpc-workload
-  #deployments:
-  #  origin-visit-status:
-  #    # Only if autoscaling is not configured
-  #    replicas: 2
-  #    autoscaling:
-  #      # override any global autoscaling property here
-  #    requestedCpu: 100m
-  #    requestedMemory: 100Mi
-  #    journalClientOverrides:
-  #      group_id: my-webhook-group-id
-  #      auto_offset_reset: latest
-  #      object_types:
-  #        - origin_visit_status
+  # autoScaling:
+  #   poolInterval: 120
+  #   lagThreashold: 1000
+  #   minReplicaCount: 1
+  #   maxReplicaCount: 5
+  #   stopWhenNoActivity: true
+  #   lagThreshold: 1000
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: swh/webhooks
+  #           operator: In
+  #           values:
+  #           - "true"
+  # svixConfigurationRef: svixConfiguration
+  # journalClientConfigurationRef: journalClientConfiguration
+  # priorityClassName: frontend-rpc-workload
+  # deployments:
+  #   origin-visit-status:
+  #     # Only if autoscaling is not configured
+  #     replicas: 2
+  #     autoscaling:
+  #       # override any global autoscaling property here
+  #     requestedCpu: 100m
+  #     requestedMemory: 100Mi
+  #     journalClientOverrides:
+  #       group_id: my-webhook-group-id
+  #       auto_offset_reset: latest
+  #       object_types:
+  #         - origin_visit_status
 
 counters:
   enabled: false
