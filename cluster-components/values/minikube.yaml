@@ -36,12 +36,12 @@ svix:
   enabled: false
   ingress:
     enabled: true
-    host: svix-test.local
+    host: svix-test
     createTLS: false
     # annotations:
     #   foo: bar
-    whitelistSourceRange:
-    - 192.168.49.0/24
+    # whitelistSourceRange:
+    # - 192.168.49.0/24
   requestedMemory: 100Mi
   requestedCpu: 100m
   namespace: cluster-components

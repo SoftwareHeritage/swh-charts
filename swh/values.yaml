@@ -1526,6 +1526,10 @@ webhooks:
   enabled: false
   sentry:
     enabled: false
+  # Backend initialization which can be overridden per deployment instance
+  backend:
+    # Whether to register the default swh webhook event types in svix
+    registerEventTypes: false
   # autoScaling:
   #   poolInterval: 120
   #   lagThreashold: 1000
@@ -1549,6 +1553,8 @@ webhooks:
   #   origin-visit-status:
   #     # Only if autoscaling is not configured
   #     replicas: 2
+  #     # backend configuration override
+  #     backend: {}
   #     autoscaling:
   #       # override any global autoscaling property here
   #     requestedCpu: 100m

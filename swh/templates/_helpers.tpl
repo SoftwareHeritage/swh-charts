@@ -493,6 +493,27 @@ Generate the configuration for a journal writer
     mountPath: /entrypoints
 {{- end -}}
 
+{{/* Register webhook event types in svix backend if needed */}}
+{{- define "swh.registerWebhookEventTypes" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "register-webhook-event-types" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/register-webhook-event-types.sh
+  env:
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  - name: SWH_LOG_LEVEL
+    value: INFO
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
+
 {{/*
 Generate the configuration for a journal configuration key
 */}}

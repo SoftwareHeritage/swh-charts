@@ -12,6 +12,16 @@ data:
 
     # Uses internally the environment variable SWH_CONFIG_FILENAME
     swh scheduler task-type register
+  register-webhook-event-types.sh: |
+    #!/usr/bin/env bash
+
+    set -ex
+
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    swh webhooks event-type register-defaults
+
+    # List results
+    swh webhooks event-type list
   register-scrubber-configuration.sh: |
     #!/usr/bin/env bash
 

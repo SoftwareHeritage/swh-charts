@@ -379,7 +379,7 @@ web:
 
 svixConfiguration:
   svix:
-    server_url: https://svix-test.local
+    server_url: http://svix.cluster-components:8071
     auth_token: ${SVIX_AUTH_TOKEN}
   event_retention_period: 7
   secrets:
@@ -403,11 +403,14 @@ webhooks:
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
   replicas: 1
+
   deployments:
     origin-visit-status:
       dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
+      backend:
+        registerEventTypes: true
       journalClientOverrides:
         auto_offset_reset: latest
         group_id: swh-minikube-stg-webhooks
