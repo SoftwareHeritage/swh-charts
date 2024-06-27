@@ -67,9 +67,6 @@ scrapeExternalMetrics:
 
 svix:
   enabled: true
-  # Svix-server version must match the svix python library
-  # in the swh-webhooks image's requirements.
-  version: v1.23
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

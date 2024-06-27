@@ -34,7 +34,6 @@ podPriority:
 
 svix:
   enabled: false
-  version: v1.16
   ingress:
     host: svix-test.local
     createTLS: false
