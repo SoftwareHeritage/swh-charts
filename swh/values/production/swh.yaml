@@ -1989,6 +1989,7 @@ webhooks:
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
   autoScaling:
+    minReplicaCount: 2
     maxReplicaCount: 5
     lagThreshold: 5000
   deployments:
