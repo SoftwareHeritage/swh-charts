@@ -49,6 +49,24 @@ cassandraReadOnlyStorageConfiguration:
 scrubberROStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
 
+scrubberObjstorageJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-prod-objstoragechecker
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 # (Not so) readonly (namespace local) storage
 # TODO: Use a true read-only storage
 localRpcROStorageService:
@@ -410,11 +428,11 @@ toolbox:
       storageConfigurationRef: scrubberROStorageConfiguration
 
 scrubber:
-  enabled: false
+  enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
   storageChecker:
-    enabled: true
+    enabled: false
     storageConfigurationRef: scrubberROStorageConfiguration
     deployments:
       directory-references:
@@ -475,7 +493,22 @@ scrubber:
         requestedCpu: 650m
         requestedMemory: 500Mi
   objstorageChecker:
-    enabled: false
+    enabled: true
+    storageConfigurationRef: scrubberROStorageConfiguration
+    journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
+    deployments:
+      banco:
+        objstorageConfigurationRef: remoteBancoReadOnlyObjstorageConfiguration
+        configName: objstorage-banco-content
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+      saam:
+        objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
+        configName: objstorage-saam-content
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
 
 journalClientCassandraChecksConfiguration:
   cls: kafka

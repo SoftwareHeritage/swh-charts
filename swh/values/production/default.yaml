@@ -545,6 +545,16 @@ remoteCountersConfiguration:
     cls: remote
     url: http://counters-rpc-ingress
 
+remoteBancoReadOnlyObjstorageConfiguration:
+  cls: remote
+  name: banco
+  url: http://objstorage-ro-banco-xfs-rpc-ingress
+
+remoteSaamReadOnlyObjstorageConfiguration:
+  cls: remote
+  name: saam
+  url: http://objstorage-ro-saam-zfs-rpc-ingress
+
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
   port: 5672
