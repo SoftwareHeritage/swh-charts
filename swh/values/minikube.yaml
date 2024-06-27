@@ -914,9 +914,17 @@ scrubber:
           initialize:
             database: swh-scrubber
             adminSecret: scrubber-superuser
+          config:
+            name: directory
+            objectType: directory
+            backend: storage
+            checkHashes: true
+            # checkReferences: false
+            # nbPartitions: 16
+
         configName: directory
+
   objstorageChecker:
-    enabled: false
     enabled: true
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
     journalClientConfigurationRef: journalClientConfiguration

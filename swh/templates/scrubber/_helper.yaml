@@ -88,3 +88,37 @@ data:
     {{- include "swh.objstorageConfiguration" (dict "configurationRef" $objstorageConfigurationRef
                                       "Values" .Values) | nindent 4 }}
 {{ end }}
+
+
+{{/* Create the scrubber configuration in the backend if needed */}}
+{{- define "swh.initializeScrubberConfig" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+{{- $name := required (print "<.config.name> of the configuration") .config.name -}}
+{{- $object_type := required (print "<.config.objectType> of the configuration") .config.objectType -}}
+{{- $backend := required (print "<.config.backend> of the configuration") .config.backend -}}
+- name: {{ .containerName | default "initiliaze-scrubber-configuration" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/register-scrubber-configuration.sh
+  env:
+  - name: NAME
+    value: {{ $name }}
+  - name: OBJECT_TYPE
+    value: {{ $object_type }}
+  - name: BACKEND
+    value: {{ $backend }}
+  - name: NB_PARTITIONS
+    value: {{ .config.nbPartitions | default "" }}
+  - name: CHECK_HASHES
+    value: {{ .config.checkHashes | default "false" | quote }}
+  - name: CHECK_REFERENCES
+    value: {{ .config.checkReferences | default "false" | quote }}
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}

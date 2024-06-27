@@ -13,6 +13,7 @@
 {{- $checkBackendVersion := (and $deployment_config.backend $deployment_config.backend.check) | default $.Values.scrubber.backend.check | default false -}}
 {{- $migrateBackend := (and $deployment_config.backend $deployment_config.backend.migrate) | default $.Values.scrubber.backend.migrate | default false -}}
 {{- $initializeBackendConfig := (and $deployment_config.backend $deployment_config.backend.initialize) | default $.Values.scrubber.backend.initialize | default false -}}
+{{- $initializeScrubberConfig := (and $deployment_config.backend $deployment_config.backend.config) | default $.Values.scrubber.backend.config | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

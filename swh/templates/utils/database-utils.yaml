@@ -12,6 +12,66 @@ data:
 
     # Uses internally the environment variable SWH_CONFIG_FILENAME
     swh scheduler task-type register
+  register-scrubber-configuration.sh: |
+    #!/usr/bin/env bash
+
+    set -eux
+
+    # Note: The subcommand swh uses internally the environment variable
+    # SWH_CONFIG_FILENAME
+
+    # Usage: swh scrubber check init [OPTIONS] {storage|journal|objstorage}
+    #
+    #   Initialise a scrubber check configuration for the datastore defined in the
+    #   configuration file and given object_type.
+    #
+    #   A checker configuration configuration consists simply in a set of:
+    #
+    #   - backend: the datastore type being scrubbed (storage, objstorage or
+    #   journal),
+    #
+    #   - object-type: the type of object being checked,
+    #
+    #   - nb-partitions: the number of partitions the hash space is divided   in;
+    #   must be a power of 2,
+    #
+    #   - name: an unique name for easier reference,
+    #
+    #   - check-hashes: flag (default to True) to select the hash validation step
+    #   for   this scrubbing configuration,
+    #
+    #   - check-references: flag (default to True for storage and False for the
+    #   journal   backend) to select the reference validation step for this
+    #   scrubbing configuration.
+    #
+    # Options:
+    #   --object-type [snapshot|revision|release|directory|content]
+    #   --nb-partitions INTEGER
+    #   --name TEXT
+    #   --check-hashes / --no-check-hashes
+    #   --check-references / --no-check-references
+    #   -h, --help                      Show this message and exit.
+
+    extra_cmd=""
+    [ ! -z "${NB_PARTITIONS}" ] && extra_cmd="${extra_cmd} --nb-partitions $NB_PARTITIONS"
+    [ "${CHECK_HASHES}" = "false" ] && extra_cmd="${extra_cmd} --no-check-hashes"
+    [ "${CHECK_REFERENCES}" = "false" ] && extra_cmd="${extra_cmd} --no-check-references"
+
+    # Check whether the configuration already exists (the subcommand script is not
+    # idempotent)
+    config_exists=$(swh scrubber check list | awk -v name=$NAME '/name/{print substr($2,1,length($2)-1)}')
+
+    if [ "${config_exists}" = "${NAME}" ]; then
+        echo "Configuration ${NAME} already exists in scrubber, do nothing"
+        exit 0
+    fi
+
+    swh scrubber check init \
+      --name $NAME \
+      --object-type $OBJECT_TYPE \
+      $extra_cmd \
+      $BACKEND
+
   init-keyspace.py: |
     from swh.core import config
     from swh.storage.cassandra import create_keyspace

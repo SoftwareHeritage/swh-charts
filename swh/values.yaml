@@ -1281,29 +1281,48 @@ scrubber:
   #           - "true"
   storageChecker:
     enabled: false
-    # # default configuration of the storage
-    # # it must have a direct access to the database (class postgresql or cassandra)
-    # # It can be overriden by instance
-    # storageConfigurationRef: primaryPostgresqlROStorageConfiguration
-    # deployments:
-    #   object:
-    #     enabled: false
-    #     configName: mydb-directory
-    #     # logLevel: INFO
-    #     # override of the storage configuration
-    #     # storageConfigurationRef: otherPostgresqlROStorageConfiguration
-    #     # the kind of object to check
-    #     # must be one of the following:
-    #     #   - directory
-    #     #   - release
-    #     #   - revision
-    #     #   - snapshot
-    #     object: directory
-    #     # replicas: 1
-    #     # requestedCpu: 500m
-    #     # requestedMemory: 512Mi
-    #     # limitedCpu:
-    #     # limitedMemory:
+    # default configuration of the storage
+    # it must have a direct access to the database (class postgresql or cassandra)
+    # It can be overriden by instance
+    storageConfigurationRef: primaryPostgresqlROStorageConfiguration
+    deployments:
+      # directory:
+      #   enabled: false
+      #   configName: mydb-directory
+      #   backend:
+      #     check: true
+      #     migrate: false
+      #     initialize: false
+      #     # Create a scrubber configuration if needed
+      #     config:
+      #       # Configuration name (must match 'configName' below)
+      #       name: mydb-directory
+      #       # Object-type scrubbed
+      #       objectType: directory
+      #       # Nature of the storage scrubbed
+      #       backend: storage
+      #       # Check for corruptions
+      #       checkHashes: true
+      #       # Check for missing objects
+      #       checkReferences: true
+      #       # Number of partitions the hash space is divided into (power of 2)
+      #       # nbPartitions: 16
+
+      #   # logLevel: INFO
+      #   # override of the storage configuration
+      #   # storageConfigurationRef: otherPostgresqlROStorageConfiguration
+      #   # the kind of object to check
+      #   # must be one of the following:
+      #   #   - directory
+      #   #   - release
+      #   #   - revision
+      #   #   - snapshot
+      #   object: directory
+      #   # replicas: 1
+      #   # requestedCpu: 500m
+      #   # requestedMemory: 512Mi
+      #   # limitedCpu:
+      #   # limitedMemory:
   journalChecker:
     enabled: false
     journalClientConfigurationRef: journalClientConfiguration
