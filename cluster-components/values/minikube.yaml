@@ -35,6 +35,7 @@ podPriority:
 svix:
   enabled: false
   ingress:
+    enabled: false
     host: svix-test.local
     createTLS: false
     # annotations:
@@ -46,14 +47,13 @@ svix:
   namespace: cluster-components
   postgres:
     enabled: false
-    requestedMemory: 100Mi
-    requestedCpu: 100m
     persistentVolume: false
   redis:
-    managedByChart: false
-    requestedMemory: 100Mi
-    requestedCpu: 100m
+    enabled: false
+    # When true, redis instance is deployed through the chart
+    managedByChart: true
     persistentVolume: false
+    dsn: redis
 
 dockerCache:
   enabled: false
