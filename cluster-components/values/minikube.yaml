@@ -46,10 +46,10 @@ svix:
   requestedCpu: 100m
   namespace: cluster-components
   postgres:
-    enabled: false
+    enabled: true
     persistentVolume: false
   redis:
-    enabled: false
+    enabled: true
     # When true, redis instance is deployed through the chart
     managedByChart: true
     persistentVolume: false
