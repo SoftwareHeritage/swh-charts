@@ -88,6 +88,11 @@ spec:
                                               "imagePrefixName" "swh_toolbox_image"
                                               "module" "scrubber") | nindent 8 }}
         {{- end }}
+        {{- if $initializeScrubberConfig }}
+        {{ include "swh.initializeScrubberConfig" (dict "Values" $.Values
+                                                        "imagePrefixName" "swh_toolbox_image"
+                                                        "config" $initializeScrubberConfig) | nindent 8 }}
+        {{- end }}
       containers:
       - name: storage-checker
         resources:
