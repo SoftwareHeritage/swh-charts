@@ -697,11 +697,23 @@ listers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: celeryConfiguration
   deployments:
+    pypi:
+      queues:
+      - swh.lister.pypi.tasks.PyPIListerTask
+      autoScaling:
+        maxReplicaCount: 1
     cgit:
       queues:
       - swh.lister.cgit.tasks.CGitListerTask
       requestedMemory: 50Mi
       requestedCpu: 50m
+    gitlab:
+      queues:
+      - swh.lister.gitlab.tasks.IncrementalGitLabLister
+      - swh.lister.gitlab.tasks.RangeGitLabLister
+      - swh.lister.gitlab.tasks.FullGitLabRelister
+      autoScaling:
+        maxReplicaCount: 1
 
 loaders:
   enabled: false
@@ -715,19 +727,14 @@ loaders:
         - swh.loader.git.tasks.UpdateGitRepository
       requestedMemory: 50Mi
       requestedCpu: 50m
-    deposit:
+    pypi:
+      requestedMemory: 256Mi
+      requestedCpu: 200m
       image: swh_loader_package_image
       queues:
-        - swh.loader.package.deposit.tasks.LoadDeposit
-      extraConfig:
-        deposit:
-          url: "https://deposit-rp.i.s.s.n/1/private"
-          auth:
-            username: "${DEPOSIT_API_USERNAME}"
-            password: "${DEPOSIT_API_PASSWORD}"
-        default_filename: archive.tar
-      requestedMemory: 50Mi
-      requestedCpu: 50m
+        - swh.loader.package.pypi.tasks.LoadPyPI
+      autoScaling:
+        maxReplicaCount: 1
 
 memcached:
   enabled: false
