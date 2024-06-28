@@ -513,22 +513,22 @@ scrubber:
             checkHashes: true
             checkReferences: false
             nbPartitions: 65536
-      # saam:
-      #   objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
-      #   configName: objstorage-saam-content
-      #   replicas: 4
-      #   requestedCpu: 400m
-      #   requestedMemory: 200Mi
-      #   backend:
-      #     check: true
-      #     migrate: false
-      #     config:
-      #       name: objstorage-saam-content
-      #       objectType: content
-      #       backend: objstorage
-      #       checkHashes: true
-      #       checkReferences: false
-      #       nbPartitions: 65536
+      saam:
+        objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
+        configName: objstorage-saam-content
+        replicas: 1
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+        backend:
+          check: true
+          migrate: false
+          config:
+            name: objstorage-saam-content
+            objectType: content
+            backend: objstorage
+            checkHashes: true
+            checkReferences: false
+            nbPartitions: 65536
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
