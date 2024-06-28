@@ -59,7 +59,7 @@ data:
 
     # Check whether the configuration already exists (the subcommand script is not
     # idempotent)
-    config_exists=$(swh scrubber check list | awk -v name=$NAME '/name/{print substr($2,1,length($2)-1)}')
+    config_exists=$(swh scrubber check list | grep $NAME | awk '{print substr($2,1,length($2)-1)}')
 
     if [ "${config_exists}" = "${NAME}" ]; then
         echo "Configuration ${NAME} already exists in scrubber, do nothing"

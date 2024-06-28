@@ -903,11 +903,13 @@ scrubber:
         journalClientOverrides:
           batch_size: 200
         object: release
+
   storageChecker:
     enabled: false
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
     deployments:
       object:
+        configName: storage-checker-directory
         backend:
           check: true
           migrate: true
@@ -915,14 +917,12 @@ scrubber:
             database: swh-scrubber
             adminSecret: scrubber-superuser
           config:
-            name: directory
+            name: storage-checker-directory
             objectType: directory
             backend: storage
             checkHashes: true
             # checkReferences: false
             # nbPartitions: 16
-
-        configName: directory
 
   objstorageChecker:
     enabled: true
@@ -931,7 +931,17 @@ scrubber:
     deployments:
       storage:
         objstorageConfigurationRef: remoteStorageReadOnlyObjstorageConfiguration
-        configName: objstorage-storage-content
+        configName: objstorage-checker-content
+        backend:
+          check: false
+          migrate: false
+          config:
+            name: objstorage-checker-content
+            objectType: content
+            backend: objstorage
+            checkHashes: true
+            # checkReferences: false
+            # nbPartitions: 16
 
 remoteStorageReadOnlyObjstorageConfiguration:
   cls: remote
