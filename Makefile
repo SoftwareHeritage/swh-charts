@@ -13,6 +13,21 @@ SS_CHART=software-stories
 
 MINIKUBE_CONTEXT=minikube
 
+CC_LOCAL_OVERRIDE=minikube-cc.override.yaml
+SWH_LOCAL_OVERRIDE=minikube-swh.override.yaml
+
+ifeq (,$(wildcard $(CC_LOCAL_OVERRIDE)))
+  CC_VALUES_OVERRIDE := --debug
+else
+  CC_VALUES_OVERRIDE := --values $(CC_LOCAL_OVERRIDE)
+endif
+
+ifeq (,$(wildcard $(SWH_LOCAL_OVERRIDE)))
+  SWH_VALUES_OVERRIDE := --debug
+else
+  SWH_VALUES_OVERRIDE := --values $(SWH_LOCAL_OVERRIDE)
+endif
+
 # use: make VERBOSE=1 to actually have the command displayed
 ifndef VERBOSE
 .SILENT:
@@ -54,6 +69,7 @@ swh-minikube:
 	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
+      $(SWH_VALUES_OVERRIDE) \
       -n swh --debug
 
 swh-uninstall:
@@ -113,9 +129,11 @@ cc-minikube:
 	kubectl --context $(MINIKUBE_CONTEXT) create namespace swh; \
 	kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	kubectl --context $(MINIKUBE_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
+      --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
+      $(CC_VALUES_OVERRIDE) \
       --namespace cluster-components --create-namespace --debug
 
 cc-uninstall:
