@@ -521,6 +521,8 @@ toolbox:
       moduleName: indexer
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
 
 scheduler:
   enabled: false
