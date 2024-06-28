@@ -513,6 +513,37 @@ Generate the configuration for a journal writer
     mountPath: /entrypoints
 {{- end -}}
 
+{{/* Register webhook endpoints in svix backend if needed */}}
+{{- define "swh.registerWebhookEventTypeEndpoints" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+{{- $url := required (print "<.config.url> is mandatory") .config.url -}}
+{{- $webhookToken := required (print "<.config.webhookToken> dict is mandatory") .config.webhookToken -}}
+{{- $secretTokenName := required (print "<.config.webhookToken.name> secret name is mandatory") $webhookToken.name -}}
+{{- $secretTokenKey := required (print "<.config.webhookToken.name> secret key is mandatory") $webhookToken.key -}}
+- name: {{ .containerName | default "register-webhook-event-type-endpoints" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/register-webhook-event-type-endpoints.sh
+  env:
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  - name: SWH_LOG_LEVEL
+    value: INFO
+  - name: URL
+    value: {{ $url }}
+  - name: TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: {{ $secretTokenName }}
+        key: {{ $secretTokenKey }}
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
 
 {{/*
 Generate the configuration for a journal configuration key

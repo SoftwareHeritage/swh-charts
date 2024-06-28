@@ -1530,6 +1530,14 @@ webhooks:
   backend:
     # Whether to register the default swh webhook event types in svix
     registerEventTypes: false
+    # Whether to register the endpoints (where to forward events in the web api)
+    # Leave it empty to not register those
+    # registerEndpoints:
+    #   url: https://<web-api-host>/save/origin/visit/webhook/
+    #   webhookToken:
+    #     name: svix-server-secrets
+    #     key: webhook-secret
+
   # autoScaling:
   #   poolInterval: 120
   #   lagThreashold: 1000

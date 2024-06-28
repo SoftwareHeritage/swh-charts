@@ -388,10 +388,18 @@ svixConfiguration:
       secretKeyName: svix-token
 
 webhooksConfiguration:
+  # For the webapp and toolbox (webhooks) configuration
   secrets:
     WEBHOOKS_SECRET:
       secretKeyRef: svix-server-secrets
       secretKeyName: webhooks-secret
+
+webhookRegisterEndpointConfiguration:
+  # specifically for the register event type endpoint in webhooks
+  url: https://web-minikube/save/origin/visit/webhook/
+  webhookSecret:
+    key: svix-server-secrets
+    name: webhook-secret
 
 dnsConfiguration:
   ndots: 1
@@ -411,6 +419,11 @@ webhooks:
       requestedMemory: 100Mi
       backend:
         registerEventTypes: true
+        registerEndpoints:
+          url: https://web-minikube/save/origin/visit/webhook/
+          webhookToken:
+            name: svix-server-secrets
+            key: webhooks-secret
       journalClientOverrides:
         auto_offset_reset: latest
         group_id: swh-minikube-stg-webhooks

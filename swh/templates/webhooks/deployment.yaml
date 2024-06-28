@@ -3,6 +3,7 @@
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $configurationChecksum := include "swh.webhooks.configmap" (dict "deployment" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $registerEventTypes := and $deployment_config.backend $deployment_config.backend.registerEventTypes | default $.Values.webhooks.backend.registerEventTypes | default false -}}
+{{- $registerEndpointsConfig := and $deployment_config.backend $deployment_config.backend.registerEndpoints | default $.Values.webhooks.backend.registerEndpoints | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -59,6 +60,11 @@ spec:
           (dict "imagePrefixName" "swh_toolbox_image"
                 "Values" $.Values) | nindent 8 }}
         {{- end }}
+        {{- if $registerEndpointsConfig }}
+        {{ include "swh.registerWebhookEventTypeEndpoints"
+          (dict "imagePrefixName" "swh_toolbox_image"
+                "config" $registerEndpointsConfig
+                "Values" $.Values) | nindent 8 }}
         {{- end }}
       containers:
       - name: webhooks

@@ -22,6 +22,16 @@ data:
 
     # List results
     swh webhooks event-type list
+  register-webhook-event-type-endpoints.sh: |
+    #!/usr/bin/env bash
+
+    set -ex
+
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    swh webhooks endpoint create origin.visit "$URL" --secret "${TOKEN}"
+
+    swh webhooks endpoint list origin.visit
+
   register-scrubber-configuration.sh: |
     #!/usr/bin/env bash
 
