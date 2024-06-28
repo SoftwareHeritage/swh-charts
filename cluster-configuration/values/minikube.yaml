@@ -1,5 +1,34 @@
 environment: test
 clusterName: minikube
 
+# This activates the operators for tests purposes [1] [2]. We cannot actually use this
+# within the local cluster (e.g. kind or minikube) without an argocd installed.
+
+# [1] make ccf-template
+# [2] make ccf-helm-diff
+
 rabbitmq:
-  enabled: false
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add bitnami https://charts.bitnami.com/bitnami
+  # helm --kube-context $CLUSTER_CONTEXT install rabbitmq-operator \
+  #   bitnami/rabbitmq-cluster-operator
+  enabled: true
+
+cloudnative-pg:
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add cnpg https://cloudnative-pg.github.io/charts
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install cloudnative-pg \
+  #   --namespace cnpg-system \
+  #   --create-namespace \
+  #   cnpg/cloudnative-pg
+  enabled: true
+
+kafka:
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add strimzi https://strimzi.io/charts/
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install kafka-operator \
+  #   --namespace kafka-system \
+  #   --create-namespace \
+  #   strimzi/strimzi-kafka-operator \
+  #   --set watchAnyNamespace=true
+  enabled: true
