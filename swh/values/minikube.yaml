@@ -311,6 +311,7 @@ web:
       djangoConfigurationRef: djangoWebConfiguration
       depositConfigurationRef: depositApiConfiguration
       giveConfigurationRef: giveConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       ingress:
@@ -336,9 +337,10 @@ web:
         #       - path: /api/1/content/[^/]+/symbol/
         #     # auth-file with authentication
         #     authentication: basic-auth
-      refreshSavecodenowStatus:
-        enabled: false
-        cron: "* 5 * * *"
+      # (either this cron of the webhookConfigurationRef entry key)
+      # refreshSavecodenowStatus:
+      #   enabled: false
+      #   cron: "* 5 * * *"
       syncMailmaps:
         enabled: false
         cron: "30 * * * *"
@@ -352,6 +354,7 @@ web:
         search_config:
           metadata_backend: swh-indexer-storage
         content_display_max_size: 5242880
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         history_counters_url: http://counters0.i.s.s.n:5011/counters_history/history.json
         add_forge_now:
           email_address: add-forge-now@webapp.s.s.n
