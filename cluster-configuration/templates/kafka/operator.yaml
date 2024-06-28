@@ -1,0 +1,28 @@
+{{ if .Values.kafka.enabled -}}
+{{- $appName := print .Values.clusterName "-kafka-operator" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: strimzi-kafka-operator
+    repoURL: https://strimzi.io/charts/
+    targetRevision: {{ .Values.kafka.version }}
+    helm:
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ $appName }}
+      values: |
+        watchAnyNamespace: true
+
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.kafka.namespace | default "strimzi" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+{{ end }}
