@@ -109,7 +109,7 @@ data:
   - name: BACKEND
     value: {{ $backend }}
   - name: NB_PARTITIONS
-    value: {{ .config.nbPartitions | default "" }}
+    value: {{ .config.nbPartitions | default "" | quote }}
   - name: CHECK_HASHES
     value: {{ .config.checkHashes | default "false" | quote }}
   - name: CHECK_REFERENCES
