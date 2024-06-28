@@ -500,7 +500,7 @@ scrubber:
       banco:
         objstorageConfigurationRef: remoteBancoReadOnlyObjstorageConfiguration
         configName: objstorage-banco-content
-        replicas: 1
+        replicas: 4
         requestedCpu: 400m
         requestedMemory: 200Mi
         backend:
@@ -516,7 +516,7 @@ scrubber:
       saam:
         objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
         configName: objstorage-saam-content
-        replicas: 1
+        replicas: 4
         requestedCpu: 400m
         requestedMemory: 200Mi
         backend:
