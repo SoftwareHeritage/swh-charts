@@ -189,23 +189,24 @@ kafkaBrokers:
   - fakeBroker1
   - fakeBroker2
 
-journalClientConfiguration:
+schedulerJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  group_id: swh.scheduler.journal_client
-  prefix: swh.toto
-  sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
-  sasl.username: swh-minikube
-  sasl.password: ${BROKER_USER_PASSWORD}
-  secrets:
-    BROKER_USER_PASSWORD:
-      secretKeyRef: broker-secrets # Any secret can do the job
-      secretKeyName: password
+  group_id: swh-scheduler-journal-client
+
+journalCheckerClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh-minikube-journalchecker
+  prefix: swh.journal.objects
+
+webhookJournalClientConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh-webhooks-journal-client
 
 searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  group_id: swh.search.journal_client
-  prefix: swh.toto
+  group_id: swh-search-journal-client
+  prefix: swh.journal.objects
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
   sasl.username: swh-minikube
@@ -411,7 +412,7 @@ dnsConfiguration:
 webhooks:
   enabled: false
   svixConfigurationRef: svixConfiguration
-  journalClientConfigurationRef: journalClientConfiguration
+  journalClientConfigurationRef: webhookJournalClientConfiguration
   priorityClassName: frontend-rpc-workload
   replicas: 1
 
@@ -594,8 +595,8 @@ scheduler:
     # Execute at each minute
     cron: "0/10 * * * *"
   journalClient:
-    enabled: false
-    journalConfigurationRef: journalClientConfiguration
+    enabled: true
+    journalConfigurationRef: schedulerJournalClientConfiguration
   extraServices:
     runner:
       enabled: true
@@ -954,7 +955,7 @@ scrubber:
 
   journalChecker:
     enabled: false
-    journalClientConfigurationRef: journalClientConfiguration
+    journalClientConfigurationRef: journalCheckerClientConfiguration
     deployments:
       release:
         configName: journal-fake-release
@@ -985,7 +986,7 @@ scrubber:
   objstorageChecker:
     enabled: true
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
-    journalClientConfigurationRef: journalClientConfiguration
+    journalClientConfigurationRef: journalCheckerClientConfiguration
     deployments:
       storage:
         objstorageConfigurationRef: remoteStorageReadOnlyObjstorageConfiguration
@@ -1143,7 +1144,7 @@ counters:
   journalClient:
     enabled: false
     countersConfigurationRef: fakeRemoteCountersConfiguration
-    journalConfigurationRef: journalClientConfiguration
+    journalConfigurationRef: schedulerJournalClientConfiguration
     requestedMemory: 15Mi
     limitedMemory: 30Mi
     requestedCpu: 50m
