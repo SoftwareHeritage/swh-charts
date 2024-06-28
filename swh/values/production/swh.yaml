@@ -1991,7 +1991,7 @@ webhooks:
   autoScaling:
     minReplicaCount: 2
     maxReplicaCount: 5
-    lagThreshold: 5000
+    lagThreshold: 2000
   deployments:
     origin-visit-status:
       replicas: 0
