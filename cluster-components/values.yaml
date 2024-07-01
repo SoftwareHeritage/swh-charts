@@ -308,3 +308,52 @@ rabbitmq:
   #   # name of the desired instance
   #   scheduler:
   #     enabled: true
+
+kafka:
+  enabled: false
+  namespace: kafka-system
+  # Number of replicas (can be overridden per instance)
+  # replicas: 1
+  # Replication factor
+  # replicationFactor: 2
+  # minInSyncReplicas: 1
+  deployments:
+    # cluster-name:
+    #   # zookeeper:
+    #   #   storage:
+    #   #     type: persistent-claim
+    #   #     size: 1Gi
+    #   #     deleteClaim: false
+    #   # # Either a standalone kafka instance with a jbod setup
+    #   # # storage:
+    #   # #   type: jbod
+    #   # #   volumes:
+    #   # #   - id: 0
+    #   # #     type: persistent-claim
+    #   # #     size: 1Gi
+    #   # #     deleteClaim: false
+    #   # #   - id: 1
+    #   # #     type: persistent-claim
+    #   # #     size: 1Gi
+    #   # #     deleteClaim: false
+    #   # or a pool of kafka nodes with their own replicas and storage
+    #   # # pools:
+    #   # #   pool-a:
+    #   # #     # replicas: 3
+    #   # #     storage:
+    #   # #       type: jbod
+    #   # #       volumes:
+    #   # #         - id: 0
+    #   # #           type: persistent-claim
+    #   # #           size: 1Gi
+    #   # #           deleteClaim: false
+    #   # #   pool-b:
+    #   # #     storage:
+    #   # #       type: jbod
+    #   # #       volumes:
+    #   # #         - id: 0
+    #   # #           type: persistent-claim
+    #   # #           size: 1Gi
+    #   # #           deleteClaim: false
+
+

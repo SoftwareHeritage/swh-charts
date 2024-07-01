@@ -143,3 +143,45 @@ cloudnativePg:
         secretKeyRef: swh-deposit-swh-postgresql-secret
         databases:
           - swh-deposit
+
+kafka:
+  enabled: false
+  replicas: 1
+  replicationFactor: 1
+  minInSyncReplicas: 1
+  deployments:
+    kafka-cluster:
+      zookeeper:
+        storage:
+          type: persistent-claim
+          size: 1Gi
+          deleteClaim: false
+      # storage:
+      #   type: jbod
+      #   volumes:
+      #   - id: 0
+      #     type: persistent-claim
+      #     size: 1Gi
+      #     deleteClaim: false
+      #   - id: 1
+      #     type: persistent-claim
+      #     size: 1Gi
+      #     deleteClaim: false
+      pools:
+        pool-a:
+          storage:
+            type: jbod
+            volumes:
+              - id: 0
+                type: persistent-claim
+                size: 1Gi
+                deleteClaim: false
+        pool-b:
+          storage:
+            type: jbod
+            volumes:
+              - id: 0
+                type: persistent-claim
+                size: 1Gi
+                deleteClaim: false
+

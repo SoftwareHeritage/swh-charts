@@ -1,0 +1,25 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{ if $clusterConfig.pools }}
+{{- range $poolName, $poolConfig := $clusterConfig.pools -}}
+{{- $replicas := $poolConfig.replicas | default $clusterConfig.replicas | default $.Values.kafka.replicas -}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: {{ $poolName }}
+  namespace: {{ $.Values.kafka.namespace }}
+  labels:
+    strimzi.io/cluster: {{ $clusterName }}
+spec:
+  replicas: {{ $replicas }}
+  roles:
+    - broker
+  {{- if $poolConfig.storage }}
+  storage:
+    {{- toYaml $poolConfig.storage | nindent 4 }}
+  {{- end }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

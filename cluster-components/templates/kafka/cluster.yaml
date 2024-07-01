@@ -1,0 +1,50 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- $replicas := $clusterConfig.replicas | default $.Values.kafka.replicas -}}
+{{- $zookeeperReplicas := $clusterConfig.zookeeper.replicas | default $.Values.kafka.replicas -}}
+{{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
+{{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ $clusterName }}
+  namespace: {{ $.Values.kafka.namespace }}
+  annotations:
+    {{- if $clusterConfig.pools }}
+    strimzi.io/node-pools: enabled
+    {{- end }}
+spec:
+  kafka:
+    version: 3.7.0
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    config:
+      offsets.topic.replication.factor: {{ $replicationFactor }}
+      transaction.state.log.replication.factor: {{ $replicationFactor }}
+      default.replication.factor: {{ $replicationFactor }}
+      transaction.state.log.min.isr: {{ $minInSyncReplica }}
+      min.insync.replicas: {{ $minInSyncReplica }}
+      inter.broker.protocol.version: "3.7"
+  {{- if $clusterConfig.storage }}
+  storage:
+    {{- toYaml $clusterConfig.storage | nindent 4 }}
+  {{- end }}
+  {{- if $clusterConfig.zookeeper }}
+  zookeeper:
+    replicas: {{ $zookeeperReplicas }}
+    {{- toYaml $clusterConfig.zookeeper | nindent 4 }}
+  {{- end }}
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+
+{{ end }}
+{{ end }}
