@@ -186,8 +186,7 @@ postgresqlStorageConfigurationPipeline:
   storageConfigurationRef: postgresqlStorageConfiguration
 
 kafkaBrokers:
-  - fakeBroker1
-  - fakeBroker2
+  - kafka-cluster-kafka-brokers.kafka-system
 
 schedulerJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
@@ -228,11 +227,22 @@ depositApiConfiguration:
       secretKeyRef: deposit-secrets
       secretKeyName: password
 
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  prefix: swh.journal.objects
+  clientId: swh.storage.journal_writer.${HOSTNAME}
+  producerConfig:
+    message.max.bytes: 1000000000
+
+rwStoragePostgresqlWithJournalConfiguration:
+  storageConfigurationRef: postgresqlStorageConfiguration
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+
 storage:
   enabled: false
   deployments:
     archive:
-      storageConfigurationRef: postgresqlStorageConfigurationPipeline
+      storageConfigurationRef: rwStoragePostgresqlWithJournalConfiguration
       backend:
         initialize:
           adminSecret: archive-superuser
@@ -727,14 +737,49 @@ loaders:
         - swh.loader.git.tasks.UpdateGitRepository
       requestedMemory: 50Mi
       requestedCpu: 50m
+      replicas: 1
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
-      autoScaling:
-        maxReplicaCount: 1
+      replicas: 1
+    add-forge-now:
+      image: swh_loader_git_image
+      requestedMemory: 512Mi
+      requestedCpu: 500m
+      limitedMemory: 2Gi
+      queues:
+        - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
+      ackLate: true
+      replicas: 2
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
+    save-code-now:
+      requestedMemory: 512Mi
+      requestedCpu: 200m
+      limitedMemory: 1Gi
+      queues:
+        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      replicas: 2
+
 
 memcached:
   enabled: false
@@ -961,17 +1006,25 @@ scrubber:
     migrate: false
 
   journalChecker:
-    enabled: false
+    enabled: true
     journalClientConfigurationRef: journalCheckerClientConfiguration
     deployments:
       release:
-        configName: journal-fake-release
+        configName: journal-checker-release
         journalClientOverrides:
           batch_size: 200
         object: release
+        backend:
+          config:
+            name: journal-checker-release
+            objectType: release
+            backend: journal
+            checkHashes: true
+            # checkReferences: false
+            # nbPartitions: 16
 
   storageChecker:
-    enabled: false
+    enabled: true
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
     deployments:
       object:
@@ -991,7 +1044,7 @@ scrubber:
             # nbPartitions: 16
 
   objstorageChecker:
-    enabled: true
+    enabled: false
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
     journalClientConfigurationRef: journalCheckerClientConfiguration
     deployments:
