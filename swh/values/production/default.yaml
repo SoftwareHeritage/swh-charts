@@ -362,6 +362,7 @@ roObjstorageConfiguration:
 
 roObjstorageBestEffort:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: remote
     name: winery
@@ -388,6 +389,7 @@ roObjstorageBestEffortConfiguration:
 
 roObjstorageHighParallelism:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: remote
     name: winery
@@ -425,6 +427,7 @@ wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
 
 roObjstorageForWineryReplayer:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: http
     name: s3
@@ -445,6 +448,7 @@ roObjstorageForWineryReplayerConfiguration:
 
 roObjstorageForS3Replayer:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: remote
     name: winery
@@ -480,6 +484,7 @@ pathslicingBancoXfsObjstorageConfiguration:
 
 multiplexerForLocalStoragesConfiguration:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: remote
     name: winery

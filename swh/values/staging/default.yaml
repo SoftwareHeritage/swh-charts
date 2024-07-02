@@ -44,6 +44,7 @@ remoteDb1ReadOnlyObjstorageConfiguration:
 
 multiplexerReadOnlyObjstorageConfiguration:
   cls: multiplexer
+  readonly: true
   objstorages:
   - cls: remote
     name: storage1
