@@ -306,6 +306,7 @@ web:
       enabled: true
       migrations:
         enabled: true
+      metricsScrapingEnabled: false
       replicas: 1
       # autoScaling:
       #   minReplicaCount: 1
