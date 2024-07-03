@@ -159,13 +159,16 @@ postgresqlVaultConfiguration:
 readOnlyStoragePipelineSteps:
   - cls: retry
 
-remoteStorageConfiguration:
+remoteRWStorageConfiguration:
   cls: remote
-  url: http://storage-archive:5002
+  url: http://storage-rw-archive-cassandra:5002
 
 remoteROStorageConfiguration:
-  pipelineStepsRef: readOnlyStoragePipelineSteps
-  storageConfigurationRef: remoteStorageConfiguration
+  cls: remote
+  url: http://storage-ro-archive-postgresql:5002
+
+remoteStorageConfigurationForVault:
+  storageConfigurationRef: remoteROStorageConfiguration
 
 djangoWebConfiguration:
   secrets:
@@ -179,8 +182,8 @@ djangoDepositConfiguration:
       secretKeyRef: deposit-django-secrets
       secretKeyName: deposit-django-secret-key
 
-remoteStorageConfigurationRef:
-  storageConfigurationRef: remoteStorageConfiguration
+remoteStorageConfigurationForReplayer:
+  storageConfigurationRef: remoteRWStorageConfiguration
 
 postgresqlStorageConfigurationPipeline:
   storageConfigurationRef: postgresqlStorageConfiguration
@@ -234,15 +237,50 @@ storageJournalWriterConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
 
-rwStoragePostgresqlWithJournalConfiguration:
+# rwStoragePostgresqlWithJournalConfiguration:
+#   storageConfigurationRef: postgresqlStorageConfiguration
+#   journalWriterConfigurationRef: storageJournalWriterConfiguration
+
+cassandraSeeds:
+  - cassandra-cluster-dc1-service
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: ${CASSANDRA_USERNAME}
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_USERNAME:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: username
+    CASSANDRA_PASSWORD:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: password
+
+rwStorageCassandraWithJournalConfiguration:
+  storageConfigurationRef: cassandraStorage
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  # objstorageConfigurationRef: noopObjstorageConfiguration
+
+roStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
+  # objstorageConfigurationRef: noopObjstorageConfiguration
 
 storage:
   enabled: false
   deployments:
-    archive:
-      storageConfigurationRef: rwStoragePostgresqlWithJournalConfiguration
+    rw-archive-cassandra:
+      storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
+    ro-archive-postgresql:
+      storageConfigurationRef: roStoragePostgresqlConfiguration
       backend:
         initialize:
           adminSecret: archive-superuser
@@ -264,7 +302,7 @@ storage_replayer:
       - journal2.i.s.s.n:4909
     user: swh-postgresql-stg
     groupIdName: postgresql
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   checkDbVersion: false
   deployments:
     content:
@@ -314,7 +352,7 @@ web:
       #   cpuPercentageUsage: 50
       hosts:
         - web-minikube
-      storageConfigurationRef: remoteStorageConfiguration
+      storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: fakeRemoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
@@ -463,7 +501,7 @@ deposit:
   requestedMemory: 50Mi
   requestedCpu: 50m
   migrationsEnabled: true
-  storageConfigurationRef: remoteStorageConfiguration
+  storageConfigurationRef: remoteROStorageConfiguration
   storageMetadataConfigurationRef: remoteStorageMetadataConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   databaseConfigurationRef: postgresqlDepositConfiguration
@@ -625,7 +663,7 @@ scheduler:
 
 loader_metadata:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.test.journal_client
   prefix: swh.test.journal.objects
@@ -639,7 +677,7 @@ loader_metadata:
 
 checker_deposit:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: depositApiConfiguration
 
@@ -647,7 +685,7 @@ cookers:
   enabled: false
   sentry:
     enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   celeryConfigurationRef: celeryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   deployments:
@@ -657,7 +695,7 @@ cookers:
 
 indexers:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
@@ -685,7 +723,7 @@ graphql:
   enabled: false
   deployments:
     fake:
-      storageConfigurationRef: remoteStorageConfigurationRef
+      storageConfigurationRef: remoteStorageConfigurationForReplayer
       searchConfigurationRef: fakeRemoteSearchConfiguration
       debug: no
       introspection: no
@@ -704,7 +742,7 @@ graphql:
 
 listers:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: celeryConfiguration
   deployments:
@@ -728,7 +766,7 @@ listers:
 
 loaders:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationRef
+  storageConfigurationRef: remoteStorageConfigurationForReplayer
   celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: depositApiConfiguration
   deployments:
@@ -820,7 +858,7 @@ vault:
 
   logLevel: INFO
   vaultConfigurationRef: postgresqlVaultConfiguration
-  storageConfigurationRef: remoteROStorageConfiguration
+  storageConfigurationRef: remoteStorageConfigurationForVault
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
 
@@ -981,7 +1019,7 @@ search:
     enabled: false
     priorityClassName: normal-workload
     searchConfigurationRef: fakeRemoteSearchConfiguration
-    storageConfigurationRef: remoteStorageConfiguration
+    storageConfigurationRef: remoteROStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
