@@ -1,0 +1,49 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- $bootstrapServer := print $clusterName "-kafka-bootstrap:9093" -}}
+{{- range $userName, $userConfig := $clusterConfig.users -}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: {{ $userName }}
+  namespace: {{ $.Values.kafka.namespace }}
+  labels:
+    strimzi.io/cluster: {{ $clusterName }}
+spec:
+  authentication:
+    type: scram-sha-512
+    # https://strimzi.io/docs/operators/in-development/deploying#scram_sha_512_authentication
+    username: {{ $userName }}
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: {{ $userConfig.secret.ref }}
+          key: {{ $userConfig.secret.key }}
+  authorization:
+    type: simple
+    acls:
+      {{- range $resource := $userConfig.resources }}
+      # Example consumer Acls for topic $topicName using consumer group $groupName
+      {{- range $topicName := $resource.topics }}
+      - resource:
+          type: topic
+          name: {{ $topicName }}
+          patternType: literal
+        operations:
+          {{- toYaml $resource.operations | nindent 10 }}
+        host: "*"
+      {{- end }}
+      {{- range $groupName := $resource.groups }}
+      - resource:
+          type: group
+          name: {{ $groupName }}
+          patternType: literal
+        operations:
+          {{- toYaml $resource.operations | nindent 10 }}
+        host: "*"
+      {{- end }}
+      {{- end }}
+{{ end }}
+{{ end }}
+{{ end }}

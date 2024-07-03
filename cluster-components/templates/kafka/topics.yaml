@@ -1,0 +1,22 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- range $topicName, $topicConfig := $clusterConfig.topics -}}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: {{ $topicName | replace "_" "-" }}
+  namespace: {{ $.Values.kafka.namespace }}
+  labels:
+    strimzi.io/cluster: {{ $clusterName }}
+spec:
+  name: {{ $topicName }}
+  partitions: {{ $topicConfig.partitions | default 1 }}
+  replicas: {{ $topicConfig.replicas | default 1 }}
+  {{- if $topicConfig.config }}
+  config:
+    {{- toYaml $topicConfig.config | nindent 4 }}
+  {{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

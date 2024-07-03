@@ -26,6 +26,10 @@ spec:
         port: 9093
         type: internal
         tls: true
+        authentication:
+          type: scram-sha-512
+    authorization:
+      type: simple
     config:
       offsets.topic.replication.factor: {{ $replicationFactor }}
       transaction.state.log.replication.factor: {{ $replicationFactor }}

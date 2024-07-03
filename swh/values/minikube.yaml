@@ -32,7 +32,7 @@ fakeRemoteObjstorageConfiguration:
 
 remoteStorageMetadataConfiguration:
   cls: remote
-  url: http://storage-archive:5002
+  url: http://storage-rw-archive-cassandra:5002
 
 remoteSchedulerConfiguration:
   cls: remote
@@ -191,9 +191,20 @@ postgresqlStorageConfigurationPipeline:
 kafkaBrokers:
   - kafka-cluster-kafka-brokers.kafka-system
 
+# internalSecuredKafkaBrokers:
+#   - kafka-cluster-kafka-brokers.kafka-system:9093
+
 schedulerJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  group_id: swh-scheduler-journal-client
+  group_id: swh.scheduler.journal-client
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-minikube
+  sasl.password: ${BROKER_USER_PASSWORD}
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: kafka-user-secrets-test
+      secretKeyName: password
 
 journalCheckerClientConfiguration:
   cls: kafka
@@ -203,11 +214,11 @@ journalCheckerClientConfiguration:
 
 webhookJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  group_id: swh-webhooks-journal-client
+  group_id: swh-minikube-webhooks
 
 searchJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
-  group_id: swh-search-journal-client
+  group_id: swh-minikube-search
   prefix: swh.journal.objects
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
@@ -215,8 +226,8 @@ searchJournalClientConfiguration:
   sasl.password: ${BROKER_USER_PASSWORD}
   secrets:
     BROKER_USER_PASSWORD:
-      secretKeyRef: deposit-secrets # Any secret can do the job
-      secretKeyName: username
+      secretKeyRef: kafka-user-secrets-test
+      secretKeyName: password
 
 depositApiConfiguration:
   host: deposit-rpc
@@ -298,18 +309,32 @@ storage_replayer:
   sentry:
     enabled: false
   journalBrokers:
+    user: swh-minikube
+    secretName: kafka-user-secrets-swh-minikube
     hosts:
-      - journal2.i.s.s.n:4909
-    user: swh-postgresql-stg
+      - kafka-cluster-kafka-brokers.kafka-system:9093
+      # - kafka-cluster-pool-a-0.kafka-system:9093
+      # - kafka-cluster-pool-b-1.kafka-system:9093
     groupIdName: postgresql
   storageConfigurationRef: remoteStorageConfigurationForReplayer
   checkDbVersion: false
   deployments:
-    content:
+    origin:
       objects:
-        - content
-  requestedMemory: 50Mi
-  requestedCpu: 50m
+        - origin
+      batchSize: 1000
+      replicas: 1
+
+    # content:
+    #   objects:
+    #     - content
+    #   privileged: true
+
+    # directory:
+    #   objects:
+    #     - directory
+    #   privileged: true
+    #   batchSize: 250
 
 internalNetworkRanges:
   - 127.0.0.0/8
@@ -479,7 +504,7 @@ webhooks:
             key: webhooks-secret
       journalClientOverrides:
         auto_offset_reset: latest
-        group_id: swh-minikube-stg-webhooks
+        group_id: swh-minikube-webhooks
         object_types:
           - origin_visit_status
 

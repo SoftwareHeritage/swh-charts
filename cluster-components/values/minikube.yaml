@@ -184,6 +184,48 @@ kafka:
                 type: persistent-claim
                 size: 1Gi
                 deleteClaim: false
+      topics:
+        swh.journal.objects.origin:
+          partitions: 1
+          replicas: 1
+          config:
+            retention.ms: 7200000
+            segment.bytes: 1073741824
+        swh.journal.objects.content:
+          partitions: 1
+          replicas: 1
+        swh.journal.object.directory:
+          partitions: 1
+          replicas: 1
+
+      users:
+        swh-minikube:
+          secret:
+            ref: kafka-user-secrets-swh-minikube
+            key: BROKER_USER_PASSWORD
+          resources:
+            - topics:
+                - swh.journal.objects.origin
+                - swh.journal.objects.content
+                - swh.journal.objects.directory
+              groups:
+                - swh-minikube-postgresql-replayer-origin
+                - swh-minikube-postgresql-replayer-content
+                - swh-minikube-postgresql-replayer-directory
+              operations:
+                - Create
+                - Describe
+                - Read
+                - Write
+            - topics:
+                - swh.journal.objects.origin-visit-status
+              groups:
+                - swh-scheduler-journal-client
+              operations:
+                - Create
+                - Describe
+                - Read
+                - Write
 
 cassandra:
   enabled: false
