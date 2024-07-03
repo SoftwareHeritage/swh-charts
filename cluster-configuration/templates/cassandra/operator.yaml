@@ -1,0 +1,29 @@
+{{ if .Values.cassandra.enabled -}}
+{{- $appName := print .Values.clusterName "-cassandra-operator" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: k8ssandra-operator
+    repoURL: https://helm.k8ssandra.io/stable
+    targetRevision: {{ .Values.cassandra.version }}
+    helm:
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ $appName }}
+      values: |
+        global:
+          clusterScoped: true
+
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.cassandra.namespace | default "k8ssandra-operator" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+{{ end }}

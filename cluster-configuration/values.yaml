@@ -86,3 +86,8 @@ kafka:
   enabled: false
   namespace: kafka-system
   version: 0.41.0
+
+cassandra:
+  enabled: false
+  namespace: k8ssandra-operator
+  version: 1.17.0

@@ -32,3 +32,18 @@ kafka:
   #   strimzi/strimzi-kafka-operator \
   #   --set watchAnyNamespace=true
   enabled: true
+
+cassandra:
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add k8ssandra https://helm.k8ssandra.io/stable
+  # helm repo add jetstack https://charts.jetstack.io
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install cert-manager \
+  #   jetstack/cert-manager \
+  #   --namespace cert-manager --create-namespace \
+  #   --set installCRDs=true
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install k8ssandra-operator \
+  #   k8ssandra/k8ssandra-operator \
+  #   -n k8ssandra-operator --create-namespace \
+  #   --set global.clusterScoped=true
+  enabled: true
+
