@@ -96,6 +96,17 @@ blackboxExporter:
           preferred_ip_protocol: "ip4"
           fail_if_body_not_matches_regexp:
             - '<title>Software Heritage</title>'
+      icmp:
+        prober: icmp
+        icmp:
+          preferred_ip_protocol: ip4
+  # This config is needed for ICMP probing: you need NET_RAW to send ICMP
+  # packets as non-root.
+  securityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      add: ["NET_RAW"]
 
 podPriority:
   enabled: false
