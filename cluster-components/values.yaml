@@ -356,4 +356,13 @@ kafka:
     #   # #           size: 1Gi
     #   # #           deleteClaim: false
 
+cassandra:
+  enabled: false
+  namespace: cassandra-system
+  deployments:
+    # cluster-name and configuration
+    # cassandra-cluster:
+    #   datacenters:
+    #     - name: dc1
+    #       replicas: 3
 

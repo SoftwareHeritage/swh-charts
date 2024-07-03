@@ -263,7 +263,7 @@ Generate the configuration for a journal writer
     {{- if $initKeyspace -}}
       {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
       {{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
-- name: init-database
+- name: init-cassandra-keyspace
   image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   imagePullPolicy: IfNotPresent
   command:
