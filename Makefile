@@ -81,6 +81,7 @@ swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
+      $(SWH_VALUES_OVERRIDE) \
       -n swh --create-namespace --debug
 
 swh-template-staging:
@@ -145,6 +146,7 @@ cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
+      $(CC_VALUES_OVERRIDE) \
       --namespace cluster-components --create-namespace --debug
 
 cc-template-test-staging-rke2:
