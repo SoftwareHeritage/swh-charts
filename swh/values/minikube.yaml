@@ -310,12 +310,16 @@ storage_replayer:
     enabled: false
   journalBrokers:
     user: swh-minikube
-    secretName: kafka-user-secrets-swh-minikube
     hosts:
       - kafka-cluster-kafka-brokers.kafka-system:9093
       # - kafka-cluster-pool-a-0.kafka-system:9093
       # - kafka-cluster-pool-b-1.kafka-system:9093
     groupIdName: postgresql
+    secrets:
+      BROKER_USER_PASSWORD:
+        secretKeyRef: swh-minikube
+        secretKeyName: password
+
   storageConfigurationRef: remoteStorageConfigurationForReplayer
   checkDbVersion: false
   deployments:

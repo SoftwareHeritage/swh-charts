@@ -1,6 +1,7 @@
 {{ if .Values.storage_replayer.enabled -}}
 {{- $secretName := .Values.storage_replayer.journalBrokers.secretName -}}
-{{- if $secretName }}
+{{- $secrets := .Values.storage_replayer.journalBrokers.secrets -}}
+{{- if or $secretName $secrets }}
 {{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ if get $deployment_config "autoScaling" }}

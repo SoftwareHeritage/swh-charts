@@ -43,16 +43,16 @@ spec:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          {{- if $secretName }}
-          envFrom:
-          - secretRef:
-              name: {{ $.Values.storage_replayer.journalBrokers.secretName }}
-          {{ end }}
           command:
           - /bin/bash
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+          {{- if $secretName }} # deprecated
+          envFrom:
+          - secretRef:
+              name: {{ $secretName }}
+          {{ end }}
           env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.storage_replayer
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
