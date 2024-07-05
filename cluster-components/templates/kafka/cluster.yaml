@@ -17,6 +17,13 @@ metadata:
 spec:
   kafka:
     version: 3.7.0
+    {{ if not $clusterConfig.pools }}
+    replicas: {{ $replicas }}
+    {{- if $clusterConfig.storage }}
+    storage:
+    {{- toYaml $clusterConfig.storage | nindent 6 }}
+    {{- end }}
+    {{- end }}
     listeners:
       - name: plain
         port: 9092
@@ -37,10 +44,6 @@ spec:
       transaction.state.log.min.isr: {{ $minInSyncReplica }}
       min.insync.replicas: {{ $minInSyncReplica }}
       inter.broker.protocol.version: "3.7"
-  {{- if $clusterConfig.storage }}
-  storage:
-    {{- toYaml $clusterConfig.storage | nindent 4 }}
-  {{- end }}
   {{- if $clusterConfig.zookeeper }}
   zookeeper:
     replicas: {{ $zookeeperReplicas }}

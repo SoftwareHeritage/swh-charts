@@ -144,7 +144,6 @@ cc-minikube:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace kafka-system apply -f '$(SWH_CHART)/fake-secrets/kafka-user-secrets.yaml'; \
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
@@ -156,7 +155,6 @@ cc-minikube:
 cc-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace kafka-system delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
 
 cc-template:

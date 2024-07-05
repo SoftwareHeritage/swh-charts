@@ -146,9 +146,10 @@ cloudnativePg:
 
 kafka:
   enabled: false
-  replicas: 1
-  replicationFactor: 1
-  minInSyncReplicas: 1
+  namespace: swh
+  replicas: 3
+  replicationFactor: 2
+  minInSyncReplicas: 2
   deployments:
     kafka-cluster:
       zookeeper:

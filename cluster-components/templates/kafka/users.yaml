@@ -15,11 +15,11 @@ spec:
     type: scram-sha-512
     # https://strimzi.io/docs/operators/in-development/deploying#scram_sha_512_authentication
     username: {{ $userName }}
-    password:
-      valueFrom:
-        secretKeyRef:
-          name: {{ $userConfig.secret.ref }}
-          key: {{ $userConfig.secret.key }}
+    # password:
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: {{ $userConfig.secret.ref }}
+    #       key: {{ $userConfig.secret.key }}
   authorization:
     type: simple
     acls:
