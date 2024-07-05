@@ -11,7 +11,10 @@ CC_CHART=cluster-components
 CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
-MINIKUBE_CONTEXT=minikube
+# For sandboxed environment
+LOCAL_CLUSTER_CONTEXT=minikube
+# (deprecated) Retro-compatible name
+MINIKUBE_CONTEXT=$(LOCAL_CLUSTER_CONTEXT)
 
 CC_LOCAL_OVERRIDE=minikube-cc.override.yaml
 SWH_LOCAL_OVERRIDE=minikube-swh.override.yaml
@@ -32,6 +35,18 @@ endif
 ifndef VERBOSE
 .SILENT:
 endif
+
+local-cluster-create:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) create
+
+local-cluster-install-deps:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) install-deps
+
+local-cluster-cleanup-deps:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) cleanup-deps
+
+local-cluster-delete:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) delete
 
 swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
@@ -64,18 +79,18 @@ ss-helm-diff:
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube:
-	kubectl --context $(MINIKUBE_CONTEXT) create namespace swh ; \
-	kubectl --context $(MINIKUBE_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh ; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
       $(SWH_VALUES_OVERRIDE) \
       -n swh --debug
 
 swh-uninstall:
-	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
-    kubectl --context $(MINIKUBE_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(MINIKUBE_CONTEXT) delete namespace swh
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace swh
 
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
@@ -126,11 +141,12 @@ swh-template-production-cassandra:
       -n swh --create-namespace --debug
 
 cc-minikube:
-	kubectl --context $(MINIKUBE_CONTEXT) create namespace cluster-components; \
-	kubectl --context $(MINIKUBE_CONTEXT) create namespace swh; \
-	kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(MINIKUBE_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace kafka-system apply -f '$(SWH_CHART)/fake-secrets/kafka-user-secrets.yaml'; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
@@ -138,9 +154,10 @@ cc-minikube:
       --namespace cluster-components --create-namespace --debug
 
 cc-uninstall:
-	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
-    kubectl --context $(MINIKUBE_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(MINIKUBE_CONTEXT) delete namespace cluster-components
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace kafka-system delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
 
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
@@ -220,13 +237,13 @@ ccf-template-test-staging-rke2:
       --debug
 
 ss-minikube:
-	helm --kube-context $(MINIKUBE_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/minikube.yaml \
       -n software-stories --create-namespace --debug
 
 ss-uninstall:
-	helm --kube-context $(MINIKUBE_CONTEXT) uninstall $(SS_CHART) -n software-stories
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SS_CHART) -n software-stories
 
 ss-template:
 	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
