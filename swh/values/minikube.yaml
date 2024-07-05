@@ -672,8 +672,7 @@ loader_metadata:
       - journal2.internal.s.s.n:4909
     secretName: swh-archive-broker-secret
     user: swh-test-archive-stg
-  autoScaling:
-    enabled: false
+  replicas: 1
 
 checker_deposit:
   enabled: false
@@ -749,20 +748,19 @@ listers:
     pypi:
       queues:
       - swh.lister.pypi.tasks.PyPIListerTask
-      autoScaling:
-        maxReplicaCount: 1
+      replicas: 1
     cgit:
       queues:
       - swh.lister.cgit.tasks.CGitListerTask
       requestedMemory: 50Mi
       requestedCpu: 50m
+      replicas: 1
     gitlab:
       queues:
       - swh.lister.gitlab.tasks.IncrementalGitLabLister
       - swh.lister.gitlab.tasks.RangeGitLabLister
       - swh.lister.gitlab.tasks.FullGitLabRelister
-      autoScaling:
-        maxReplicaCount: 1
+      replicas: 1
 
 loaders:
   enabled: false
@@ -931,10 +929,7 @@ indexerStorage:
         # When true, migrate or initialize db model
         migrate: true
 
-      autoScaling:
-        minReplicaCount: 2
-        maxReplicaCount: 2
-        cpuPercentageUsage: 90
+      replicas: 1
       requestedCpu: 500m
       requestedMemory: 512Mi
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
@@ -994,18 +989,11 @@ search:
     threads: 5
     workers: 2
     timeout: 60
-  autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 2
-    cpuPercentageUsage: 80
+  replicas: 1
   # RPC services may have different profiles than the rest so they need their specific
   # setup
   requestedMemory: 512Mi
   requestedCpu: 500m
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 10
-    cpuPercentageUsage: 100
   hosts:
     - mysearch.minikube.domain
   ingress:
