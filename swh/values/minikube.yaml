@@ -322,7 +322,7 @@ storage:
           logLevel: INFO
           cron: "0 0 1 * *"
 
-storage_replayer:
+storageReplayer:
   enabled: false
   sentry:
     enabled: false

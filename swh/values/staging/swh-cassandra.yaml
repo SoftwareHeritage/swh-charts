@@ -441,7 +441,7 @@ loader_metadata:
   requestedMemory: 200Mi
   requestedCpu: 10m
 
-storage_replayer:
+storageReplayer:
   enabled: true
 
   affinity:

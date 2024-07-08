@@ -89,7 +89,7 @@ graphql:
       requestedCpu: 25m
       requestedMemory: 150Mi
 
-storage_replayer:
+storageReplayer:
   enabled: true
   affinity:
     nodeAffinity:

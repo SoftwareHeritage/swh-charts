@@ -80,7 +80,7 @@ remoteCassandraStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
-storage_replayer:
+storageReplayer:
   enabled: true
 
   affinity:

@@ -422,7 +422,7 @@ tmpEphemeralStorage:
   default:
     emptyDir: {}
 
-storage_replayer:
+storageReplayer:
   enabled: false
   priorityClassName: background-workload
   maxMessagesBytes: "524288000"

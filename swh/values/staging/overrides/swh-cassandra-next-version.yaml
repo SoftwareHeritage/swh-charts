@@ -250,7 +250,7 @@ loader_metadata:
     # TODO: Support this option
     # stopWhenNoActivity: false
 
-storage_replayer:
+storageReplayer:
   # Force the deployment of one pod of each type to at least
   # ensure they start (not enough but it's a first step)
   deployments:

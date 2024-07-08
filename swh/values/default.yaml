@@ -41,7 +41,7 @@ checker_deposit:
             values:
             - "true"
 
-storage_replayer:
+storageReplayer:
   sentry:
     enabled: true
   maxMessagesBytes: "524288000"

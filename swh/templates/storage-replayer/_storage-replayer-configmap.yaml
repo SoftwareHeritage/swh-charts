@@ -1,6 +1,6 @@
-{{ define "swh.storage_replayer.configmap" }}
-{{- $user := .Values.storage_replayer.journalBrokers.user -}}
-{{- $prefixGroupId := required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName -}}
+{{ define "swh.storageReplayer.configmap" }}
+{{- $user := .Values.storageReplayer.journalBrokers.user -}}
+{{- $prefixGroupId := required "groupIdName not specified" .Values.storageReplayer.journalBrokers.groupIdName -}}
 {{- $suffixGroupId := print "replayer-" .deployment -}}
 ---
 apiVersion: v1
@@ -10,13 +10,13 @@ metadata:
   name: storage-replayer-configuration-{{ .deployment }}-template
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storage_replayer.storageConfigurationRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.storageReplayer.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 
     journal_client:
       cls: kafka
       brokers:
-      {{- range $broker := .Values.storage_replayer.journalBrokers.hosts }}
+      {{- range $broker := .Values.storageReplayer.journalBrokers.hosts }}
         - {{ $broker }}
       {{- end }}
       {{- if $user }}  # Optional authentication
@@ -30,16 +30,16 @@ data:
       group_id: {{ $prefixGroupId }}-{{ $suffixGroupId }}
       {{- end }}
       batch_size: {{ get .deployment_config "batchSize" | default "200" }}
-      message.max.bytes: {{ .Values.storage_replayer.maxMessagesBytes }}
+      message.max.bytes: {{ .Values.storageReplayer.maxMessagesBytes }}
       privileged: {{ get .deployment_config "privileged" | default "false" }}
       object_types:
       {{- range $object := get .deployment_config "objects" }}
         - {{ $object }}
       {{- end }}
-    {{- if .Values.storage_replayer.error_reporter }}
+    {{- if .Values.storageReplayer.error_reporter }}
     replayer:
       error_reporter:
-      {{- range $option, $value := .Values.storage_replayer.error_reporter }}
+      {{- range $option, $value := .Values.storageReplayer.error_reporter }}
         {{ $option }}: {{ $value }}
       {{- end }}
     {{- end }}

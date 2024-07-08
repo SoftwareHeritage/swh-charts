@@ -1,9 +1,9 @@
-{{ if .Values.storage_replayer.enabled -}}
-{{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+{{ if .Values.storageReplayer.enabled -}}
+{{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
-{{ include "swh.storage_replayer.configmap" (dict "deployment" $deployment
-                                                  "deployment_config" $deployment_config
-                                                  "Values" $.Values) }}
+{{ include "swh.storageReplayer.configmap" (dict "deployment" $deployment
+                                                 "deployment_config" $deployment_config
+                                                 "Values" $.Values) }}
 {{- end -}}
 {{ end -}}
 {{ end }}

@@ -1,13 +1,13 @@
-{{ if .Values.storage_replayer.enabled -}}
-{{- $secretName := .Values.storage_replayer.journalBrokers.secretName -}}
-{{- $secrets := .Values.storage_replayer.journalBrokers.secrets -}}
+{{ if .Values.storageReplayer.enabled -}}
+{{- $secretName := .Values.storageReplayer.journalBrokers.secretName -}}
+{{- $secrets := .Values.storageReplayer.journalBrokers.secrets -}}
 {{- if or $secretName $secrets }}
-{{- range $deployment, $deployment_config := .Values.storage_replayer.deployments -}}
+{{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ if get $deployment_config "autoScaling" }}
 {{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
-{{- $user := .Values.storage_replayer.journalBrokers.user -}}
-{{- $prefixGroupId := required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName -}}
+{{- $user := $.Values.storageReplayer.journalBrokers.user -}}
+{{- $prefixGroupId := required "groupIdName not specified" $.Values.storageReplayer.journalBrokers.groupIdName -}}
 {{- $suffixGroupId := print "replayer-" $deployment -}}
 ---
 apiVersion: keda.sh/v1alpha1
