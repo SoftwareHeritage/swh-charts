@@ -89,8 +89,27 @@ graphql:
       requestedCpu: 25m
       requestedMemory: 150Mi
 
+storageReplayerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 storageReplayer:
   enabled: true
+  storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
+  journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -100,13 +119,6 @@ storageReplayer:
             operator: In
             values:
             - "true"
-  journalBrokers:
-    hosts:
-      - journal2.internal.staging.swh.network:9094
-    user: swh-postgresql-stg
-    groupIdName: postgresql
-    secretName: swh-postgresql-broker-secret
-  storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
   checkDbVersion: true
   error_reporter:
     host: redis-postgresql.redis
@@ -114,104 +126,114 @@ storageReplayer:
     db: 1
   deployments:
     content:
-      objects:
-        - content
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-content
+        object_types:
+          - content
       requestedCpu: 10m
       requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     directory:
-      objects:
-        - directory
-      batchSize: 250
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-directory
+        object_types:
+          - directory
+        batch_size: 250
       requestedCpu: 50m
       requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     extid:
-      objects:
-        - extid
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-extid
+        object_types:
+          - extid
+        batch_size: 1000
       # Full replay
-      #requestedCpu: 400m
+      # requestedCpu: 400m
       # equestedMemory: 200Mi
-      #Follow up consumption
+      # Follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     metadata:
-      objects:
-        - metadata_authority
-        - metadata_fetcher
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-metadata
+        object_types:
+          - metadata_authority
+          - metadata_fetcher
       # follow up consumption
       requestedCpu: 30m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     raw-extrinsic-metadata:
-      objects:
-        - raw_extrinsic_metadata
-      batchSize: 250
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-raw-extrinsic-metadata
+        object_types:
+          - raw_extrinsic_metadata
+        batch_size: 250
       # Full replay
-      #requestedCpu: 400m
-      #requestedMemory: 200Mi
+      # requestedCpu: 400m
+      # requestedMemory: 200Mi
       # follow up consumption
       requestedCpu: 20m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin:
-      objects:
-        - origin
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-origin
+        object_types:
+          - origin
+        batch_size: 1000
       # Full replay
-      #requestedCpu: 400m
-      #requestedMemory: 200Mi
-      #Follow up consumption
+      # requestedCpu: 400m
+      # requestedMemory: 200Mi
+      # Follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
-      objects:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-origin-visit
+        object_types:
         - origin_visit
-      batchSize: 1000
-      privileged: true
+        batch_size: 1000
       # Full replay
-      #requestedCpu: 400m
-      #requestedMemory: 400Mi
-      #Follow up consumption
+      # requestedCpu: 400m
+      # requestedMemory: 400Mi
+      # Follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit-status:
-      objects:
-        - origin_visit_status
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-origin-visit-status
+        object_types:
+          - origin_visit_status
+        batch_size: 1000
       # Full replay
-      #requestedCpu: 500m
-      #requestedMemory: 300Mi
-      #Follow up consumption
+      # requestedCpu: 500m
+      # requestedMemory: 300Mi
+      # Follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     release:
-      objects:
-        - release
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-release
+        object_types:
+          - release
+        batch_size: 1000
+        privileged: true
       # Full replay
-      #requestedCpu: 600m
+      # requestedCpu: 600m
       # requestedMemory: 300Mi
       # follow up consumption
       requestedCpu: 10m
@@ -219,39 +241,43 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     revision:
-      objects:
-        - revision
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-revision
+        object_types:
+          - revision
+        batch_size: 1000
+        privileged: true
       # Full replay
-      #requestedCpu: 750m
-      #requestedMemory: 750Mi
+      # requestedCpu: 750m
+      # requestedMemory: 750Mi
       # follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
-      objects:
-        - skipped_content
-      batchSize: 100
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-skipped-content
+        object_types:
+          - skipped_content
+        batch_size: 100
       # Full replay
-      #requestedCpu: 300m
-      #requestedMemory: 400Mi
+      # requestedCpu: 300m
+      # requestedMemory: 400Mi
       # follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
     snapshot:
-      objects:
-        - snapshot
-      batchSize: 250
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-postgresql-replayer-snapshot
+        object_types:
+          - snapshot
+        batch_size: 250
       # Full replay
-      #requestedCpu: 400m
-      #requestedMemory: 250Mi
+      # requestedCpu: 400m
+      # requestedMemory: 250Mi
       # follow up consumption
       requestedCpu: 10m
       requestedMemory: 50Mi

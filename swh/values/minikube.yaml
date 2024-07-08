@@ -322,34 +322,61 @@ storage:
           logLevel: INFO
           cron: "0 0 1 * *"
 
+storageReplayerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-minikube-journal-checker
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  privileged: false
+
 storageReplayer:
   enabled: false
   sentry:
     enabled: false
-  journalBrokers:
-    hosts:
-      - kafka-cluster-kafka-brokers
-    groupIdName: postgresql
-
+  journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   storageConfigurationRef: postgresqlStorageConfigurationPipeline
   checkDbVersion: false
   deployments:
     origin:
-      objects:
-        - origin
-      batchSize: 1000
       replicas: 1
-
+      journalClientOverrides:
+        group_id: postgresql-replayer-origin
+        object_types:
+          - origin
+          - origin_visit
+          - origin_visit_status
+        batch_size: 1000
     # content:
-    #   objects:
+    #   replicas: 1
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-content
+    #     object_types:
     #     - content
-    #   privileged: true
-
+    #     batch_size: 250
     # directory:
-    #   objects:
-    #     - directory
-    #   privileged: true
-    #   batchSize: 250
+    #   replicas: 1
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-directory
+    #     object_types:
+    #       - directory
+    #     batch_size: 250
+    # revision:
+    #   replicas: 1
+    #   group_id: postgresql-replayer-revision
+    #   journalClientOverrides:
+    #     object_types:
+    #       - revision
+    #     batch_size: 250
+    #     privileged: true
+    # release:
+    #   replicas: 1
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-release
+    #     object_types:
+    #       - release
+    #     batch_size: 250
+    #     privileged: true
 
 internalNetworkRanges:
   - 127.0.0.0/8

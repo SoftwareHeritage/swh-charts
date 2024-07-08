@@ -30,9 +30,10 @@ data:
     {{- include "swh.objstorageConfiguration" (dict "serviceName" "objstorage_dst"
                                       "configurationRef" $destinationObjstorageConfigurationRef
                                       "Values" .Values ) | nindent 4 }}
-    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal_client" "configurationRef" $journalClientConfigurationRef
-                                      "overrides" $journalClientOverrides
-                                      "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal_client"
+                                                       "configurationRef" $journalClientConfigurationRef
+                                                       "overrides" $journalClientOverrides
+                                                       "Values" .Values) | nindent 4 }}
     {{ if hasKey .deployment_config "error_reporter" -}}
     replayer:
       error_reporter:

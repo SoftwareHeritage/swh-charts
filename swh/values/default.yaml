@@ -44,10 +44,6 @@ checker_deposit:
 storageReplayer:
   sentry:
     enabled: true
-  maxMessagesBytes: "524288000"
-  journalBrokers:
-    # The name of the secret containing the BROKER_USER_PASSWORD value
-    secretName: storage-replayer-broker-secret
   cassandra:
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM

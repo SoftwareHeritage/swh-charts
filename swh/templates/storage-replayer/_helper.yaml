@@ -1,0 +1,51 @@
+{{ define "swh.storageReplayer.configmap" }}
+{{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef | default $.Values.storageReplayer.journalClientConfigurationRef -}}
+{{- $journalClientConfiguration := required (print "journalClientConfigurationRef <" $journalClientConfigurationRef "> not found in storageReplayer <" .deployment_name ">  configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default dict) -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: storage-replayer-configuration-{{ .deployment }}-template
+  namespace: {{ $.Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration"
+      (dict "configurationRef" .Values.storageReplayer.storageConfigurationRef
+            "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration"
+      (dict "serviceType" "journal_client"
+                          "configurationRef" $journalClientConfigurationRef
+                          "overrides" $journalClientOverrides
+                          "Values" .Values) | nindent 4 }}
+    {{- if .Values.storageReplayer.error_reporter }}
+    replayer:
+      error_reporter:
+      {{- range $option, $value := .Values.storageReplayer.error_reporter }}
+        {{ $option }}: {{ $value }}
+      {{- end }}
+    {{- end }}
+
+{{ end }}
+
+{{/*
+  Configure the autoscaling for a deployment type
+*/}}
+{{- define "swh.storageReplayer.autoscaling" -}}
+{{- $journalClientConfigurationRef := or .deployment_config.journalClientConfigurationRef .Values.storageReplayer.journalClientConfigurationRef -}}
+{{- $journalClientBaseConfiguration := required (print "journalClientConfigurationRef <" $journalClientConfigurationRef "> not found in storageReplayer <" .deployment_name ">  configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default dict) -}}
+{{- $journalClientConfiguration := deepCopy $journalClientBaseConfiguration }}
+{{- $journalClientConfiguration := mustMergeOverwrite $journalClientConfiguration $journalClientOverrides -}}
+{{- $brokersConfigurationRef := $journalClientConfiguration.brokersConfigurationRef -}}
+{{- $brokers := get .Values $brokersConfigurationRef -}}
+{{- $_ := set $journalClientConfiguration "brokers" $brokers -}}
+{{- $_ := unset $journalClientConfiguration "brokersConfigurationRef" -}}
+{{- $_ := required (print "<group_id> property is mandatory in <" $journalClientConfiguration "> map") (get $journalClientConfiguration "group_id") -}}
+{{- include "swh.keda.kafkaAutoscaler"
+      (dict "name" (print "storage-replayer-" .deployment_name)
+            "kafkaConfiguration" $journalClientConfiguration
+            "autoscalingConfiguration" .deployment_config.autoScaling
+            "Values" .Values) -}}
+
+{{- end -}}

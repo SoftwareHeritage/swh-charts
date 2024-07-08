@@ -422,19 +422,18 @@ tmpEphemeralStorage:
   default:
     emptyDir: {}
 
+# storageReplayerJournalClientConfiguration:
+#   cls: kafka
+#   brokersConfigurationRef: kafkaBrokers
+#   group_id: storage-replayer-journal-checker
+#   prefix: swh.journal.objects
+#   message.max.bytes: "524288000"
+#   privileged: false
+
 storageReplayer:
   enabled: false
   priorityClassName: background-workload
-  maxMessagesBytes: "524288000"
-  journalBrokers:
-    # (optional) The user name when topic reading with authentication is required
-    # user: myuser
-    # (optional) The name of the secret containing the BROKER_USER_PASSWORD value (
-    # required when associated with the user key)
-    # secretName: storage-replayer-broker-secret
-    # hosts:
-    # - broker1
-    # - broker2
+  journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageReplayerConfiguration
@@ -450,24 +449,47 @@ storageReplayer:
   checkDbVersion: false
 
   deployments:
-  # Example of deployments
-  #   origins:
-  #     privileged: false
-  #     objects:
-  #       - origin
-  #       - origin_visits
-  #       - origin_visits_status
-  #     batchSize: 250
-  #   revisions:
-  #     privileged: false
-  #     objects:
-  #       - revision
-  #     batchSize: 1000
-  #     autoScaling:
-  #       poolInterval: 120
-  #       lagThreshold: 1000
-  #       minReplicaCount: 1
-  #       maxReplicaCount: 10
+    # # Example of deployments
+    # origin:
+    #   replicas: 1
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-origin
+    #     object_types:
+    #       - origin
+    #       - origin_visit
+    #       - origin_visit_status
+    #     batch_size: 1000
+    # content:
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-content
+    #     object_types:
+    #     - content
+    #     batch_size: 250
+    # directory:
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-directory
+    #     object_types:
+    #       - directory
+    #     batch_size: 250
+    # revision:
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-revision
+    #     object_types:
+    #       - revision
+    #     batch_size: 250
+    #     privileged: true
+    #   autoScaling:
+    #     poolInterval: 120
+    #     lagThreshold: 1000
+    #     minReplicaCount: 1
+    #     maxReplicaCount: 10
+    # release:
+    #   journalClientOverrides:
+    #     group_id: postgresql-replayer-release
+    #     object_types:
+    #       - release
+    #     batch_size: 250
+    #     privileged: true
 
 loader_metadata:
   enabled: false

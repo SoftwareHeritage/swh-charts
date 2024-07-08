@@ -1,5 +1,4 @@
 {{ if .Values.storageReplayer.enabled -}}
-{{- $secretName := .Values.storageReplayer.journalBrokers.secretName -}}
 {{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . -}}
 {{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
@@ -48,11 +47,6 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-          {{- if $secretName }} # deprecated
-          envFrom:
-          - secretRef:
-              name: {{ $secretName }}
-          {{ end }}
           env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.storageReplayer
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:

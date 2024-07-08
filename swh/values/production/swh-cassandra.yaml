@@ -80,9 +80,27 @@ remoteCassandraStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
+storageReplayerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD
+
 storageReplayer:
   enabled: true
-
+  journalClientConfigurationRef: storageReplayerJournalClientConfiguration
+  storageConfigurationRef: cassandraReplayerStorageConfiguration
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -92,33 +110,26 @@ storageReplayer:
             operator: In
             values:
             - "true"
-  journalBrokers:
-    hosts:
-      - kafka1.internal.softwareheritage.org:9094
-      - kafka2.internal.softwareheritage.org:9094
-      - kafka3.internal.softwareheritage.org:9094
-      - kafka4.internal.softwareheritage.org:9094
-    user: swh-cassandra-prod
-    groupIdName: cassandra
-  storageConfigurationRef: cassandraReplayerStorageConfiguration
   error_reporter:
     host: redis-cassandra-replayers.redis
     port: 6379
     db: 1
   deployments:
     content:
-      objects:
-        - content
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-content
+        object_types:
+          - content
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
         maxReplicaCount: 64
     directory:
-      objects:
-        - directory
-      privileged: true
-      batchSize: 250
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-directory
+        object_types:
+          - directory
+        batch_size: 250
       # Full replay
       requestedCpu: 500m
       requestedMemory: 250Mi
@@ -127,32 +138,35 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 10
     extid:
-      objects:
-        - extid
-      privileged: true
-      batchSize: 1000
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-extid
+        object_types:
+          - extid
+        batch_size: 1000
       # Full replay
       # requestedCpu: 400m
       requestedMemory: 200Mi
-      #Follow up consumption
+      # Follow up consumption
       requestedCpu: 50m
       autoScaling:
         maxReplicaCount: 5
     metadata:
-      objects:
-        - metadata_authority
-        - metadata_fetcher
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-metadata
+        object_types:
+          - metadata_authority
+          - metadata_fetcher
       # follow up consumption
       requestedCpu: 50m
       requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     raw-extrinsic-metadata:
-      objects:
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-raw-extrinsic-metadata
+        object_types:
         - raw_extrinsic_metadata
-      privileged: true
-      batchSize: 250
+        batch_size: 250
       # Full replay
       requestedCpu: 400m
       requestedMemory: 200Mi
@@ -161,48 +175,53 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin:
-      objects:
-        - origin
-      privileged: true
-      batchSize: 1000
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-origin
+        object_types:
+          - origin
+        batch_size: 1000
       # Full replay
       # requestedCpu: 400m
       requestedMemory: 200Mi
-      #Follow up consumption
+      # Follow up consumption
       requestedCpu: 50m
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
-      objects:
-        - origin_visit
-      privileged: true
-      batchSize: 1000
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-origin-visit
+        object_types:
+          - origin_visit
+        batch_size: 1000
       # Full replay
       requestedCpu: 400m
       requestedMemory: 400Mi
-      #Follow up consumption
+      # Follow up consumption
       # requestedCpu: 100m
       # requestedMemory: 100Mi
       autoScaling:
         maxReplicaCount: 5
     origin-visit-status:
-      objects:
-        - origin_visit_status
-      privileged: true
-      batchSize: 1000
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-origin-visit-status
+        object_types:
+          - origin_visit_status
+        batch_size: 1000
       # Full replay
       requestedCpu: 500m
       requestedMemory: 300Mi
-      #Follow up consumption
+      # Follow up consumption
       # requestedCpu: 55m
       # requestedMemory: 200Mi
       autoScaling:
         maxReplicaCount: 5
     release:
-      objects:
-        - release
-      privileged: true
-      batchSize: 1000
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-release
+        object_types:
+          - release
+        privileged: true
+        batch_size: 1000
       # Full replay
       # requestedCpu: 600m
       requestedMemory: 300Mi
@@ -211,10 +230,12 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     revision:
-      objects:
-        - revision
-      batchSize: 1000
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-revision
+        object_types:
+          - revision
+        privileged: true
+        batch_size: 1000
       # Full replay
       # requestedCpu: 750m
       # requestedMemory: 750Mi
@@ -224,10 +245,11 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
-      objects:
-        - skipped_content
-      privileged: true
-      batchSize: 100
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-skipped-content
+        object_types:
+          - skipped_content
+        batch_size: 100
       # Full replay
       # requestedCpu: 300m
       requestedMemory: 400Mi
@@ -236,9 +258,10 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     snapshot:
-      objects:
-        - snapshot
-      privileged: true
+      journalClientOverrides:
+        group_id: swh-cassandra-prod-cassandra-replayer-snapshot
+        object_types:
+          - snapshot
       batchSize: 250
       # Full replay
       # requestedCpu: 400m
