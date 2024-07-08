@@ -42,7 +42,7 @@ fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
   realm_name: SwhMinikube
 
-postgresqlStorageConfiguration:
+postgresqlRWStorageConfiguration:
   cls: postgresql
   host: archive-rw
   port: 5432
@@ -167,9 +167,6 @@ remoteROStorageConfiguration:
   cls: remote
   url: http://storage-ro-archive-postgresql:5002
 
-remoteStorageConfigurationForVault:
-  storageConfigurationRef: remoteROStorageConfiguration
-
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
@@ -182,11 +179,14 @@ djangoDepositConfiguration:
       secretKeyRef: deposit-django-secrets
       secretKeyName: deposit-django-secret-key
 
-remoteStorageConfigurationForReplayer:
+rpcROStorageConfiguration:
+  storageConfigurationRef: remoteROStorageConfiguration
+
+rpcRWStorageConfiguration:
   storageConfigurationRef: remoteRWStorageConfiguration
 
 postgresqlStorageConfigurationPipeline:
-  storageConfigurationRef: postgresqlStorageConfiguration
+  storageConfigurationRef: postgresqlRWStorageConfiguration
 
 readWriteInternalKafkaBrokers:
   - kafka-cluster-kafka-brokers:9092
@@ -195,29 +195,46 @@ readOnlyInternalKafkaBrokers:
   - kafka-cluster-kafka-brokers:9092
 
 schedulerJournalClientConfiguration:
-  brokersConfigurationRef: kafkaBrokers
-  group_id: swh.scheduler.journal-client
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-scheduler-journal-client
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
   sasl.username: swh-minikube
   sasl.password: ${BROKER_USER_PASSWORD}
   secrets:
     BROKER_USER_PASSWORD:
-      secretKeyRef: kafka-user-secrets-test
+      secretKeyRef: swh-minikube
       secretKeyName: password
 
 journalCheckerClientConfiguration:
   cls: kafka
-  brokersConfigurationRef: kafkaBrokers
-  group_id: swh-minikube-journalchecker
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-minikube-journal-checker
   prefix: swh.journal.objects
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-minikube
+  sasl.password: ${BROKER_USER_PASSWORD}
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-minikube
+      secretKeyName: password
 
 webhookJournalClientConfiguration:
-  brokersConfigurationRef: kafkaBrokers
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
   group_id: swh-minikube-webhooks
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: swh-minikube
+  sasl.password: ${BROKER_USER_PASSWORD}
+  secrets:
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-minikube
+      secretKeyName: password
 
 searchJournalClientConfiguration:
-  brokersConfigurationRef: kafkaBrokers
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  clientId: swh-search-journal-client
   group_id: swh-minikube-search
   prefix: swh.journal.objects
   sasl.mechanism: SCRAM-SHA-512
@@ -226,7 +243,7 @@ searchJournalClientConfiguration:
   sasl.password: ${BROKER_USER_PASSWORD}
   secrets:
     BROKER_USER_PASSWORD:
-      secretKeyRef: kafka-user-secrets-test
+      secretKeyRef: swh-minikube
       secretKeyName: password
 
 depositApiConfiguration:
@@ -251,6 +268,7 @@ storageJournalWriterConfiguration:
 # rwStoragePostgresqlWithJournalConfiguration:
 #   storageConfigurationRef: postgresqlRWStorageConfiguration
 #   journalWriterConfigurationRef: storageJournalWriterConfiguration
+
 
 cassandraSeeds:
   - cassandra-cluster-dc1-service
@@ -281,8 +299,8 @@ rwStorageCassandraWithJournalConfiguration:
   # objstorageConfigurationRef: noopObjstorageConfiguration
 
 roStoragePostgresqlConfiguration:
-  storageConfigurationRef: postgresqlStorageConfiguration
-  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  # journalWriterConfigurationRef: storageJournalWriterConfiguration
   # objstorageConfigurationRef: noopObjstorageConfiguration
 
 storage:
@@ -579,14 +597,14 @@ toolbox:
   enabled: true
   configs:
     storage:
-      storageDbConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlRWStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: celeryConfiguration
     scrubber-storage:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
-      storageDbConfigurationRef: postgresqlStorageConfiguration
+      storageDbConfigurationRef: postgresqlRWStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     indexer-storage:
@@ -685,7 +703,7 @@ scheduler:
 
 loader_metadata:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.test.journal_client
   prefix: swh.test.journal.objects
@@ -698,7 +716,7 @@ loader_metadata:
 
 checker_deposit:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcROStorageConfiguration
   celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: depositApiConfiguration
 
@@ -706,7 +724,7 @@ cookers:
   enabled: false
   sentry:
     enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcROStorageConfiguration
   celeryConfigurationRef: celeryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
   deployments:
@@ -716,7 +734,7 @@ cookers:
 
 indexers:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
@@ -744,7 +762,7 @@ graphql:
   enabled: false
   deployments:
     fake:
-      storageConfigurationRef: remoteStorageConfigurationForReplayer
+      storageConfigurationRef: rpcROStorageConfiguration
       searchConfigurationRef: fakeRemoteSearchConfiguration
       debug: no
       introspection: no
@@ -763,7 +781,7 @@ graphql:
 
 listers:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: celeryConfiguration
   deployments:
@@ -786,7 +804,7 @@ listers:
 
 loaders:
   enabled: false
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: rpcRWStorageConfiguration
   celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: depositApiConfiguration
   deployments:
@@ -794,8 +812,6 @@ loaders:
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
-      requestedMemory: 50Mi
-      requestedCpu: 50m
       replicas: 2
     pypi:
       requestedMemory: 256Mi
@@ -806,9 +822,6 @@ loaders:
       replicas: 1
     add-forge-now:
       image: swh_loader_git_image
-      requestedMemory: 512Mi
-      requestedCpu: 500m
-      limitedMemory: 2Gi
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
@@ -821,9 +834,6 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     save-code-now:
-      requestedMemory: 512Mi
-      requestedCpu: 200m
-      limitedMemory: 1Gi
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
@@ -878,7 +888,7 @@ vault:
 
   logLevel: INFO
   vaultConfigurationRef: postgresqlVaultConfiguration
-  storageConfigurationRef: remoteStorageConfigurationForVault
+  storageConfigurationRef: rpcROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
 
@@ -928,7 +938,7 @@ vault:
           - 192.168.101.0/24
 
 indexerJournalWriterConfiguration:
-  brokersConfigurationRef: kafkaBrokers
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
   cls: kafka
   anonymize: true
   client_id: swh.indexer-storage.journal_writer.storage
@@ -1033,18 +1043,18 @@ search:
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
-        group_id: swh.search.journal_client-v0.11
+        group_id: swh-search-journal-client
         prefix: swh.journal.objects
         object_types:
         - origin
         - origin_visit_status
 
-      indexed:
-        group_id: swh.search.journal_client.indexed-v0.11
-        prefix: swh.journal.indexed
-        object_types:
-          - origin_intrinsic_metadata
-          - origin_extrinsic_metadata
+      # indexed:
+      #   group_id: swh-search-journal-client-indexed
+      #   prefix: swh.journal.indexed
+      #   object_types:
+      #     - origin_intrinsic_metadata
+      #     - origin_extrinsic_metadata
 
 scrubber:
   enabled: false
