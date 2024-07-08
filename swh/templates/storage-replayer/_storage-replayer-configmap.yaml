@@ -1,4 +1,7 @@
 {{ define "swh.storage_replayer.configmap" }}
+{{- $user := .Values.storage_replayer.journalBrokers.user -}}
+{{- $prefixGroupId := required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName -}}
+{{- $suffixGroupId := print "replayer-" .deployment -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -16,12 +19,16 @@ data:
       {{- range $broker := .Values.storage_replayer.journalBrokers.hosts }}
         - {{ $broker }}
       {{- end }}
-      sasl.username: {{ .Values.storage_replayer.journalBrokers.user }}
+      {{- if $user }}  # Optional authentication
+      sasl.username: {{ $user }}
       sasl.password: ${BROKER_USER_PASSWORD}
       security.protocol: sasl_ssl
       sasl.mechanism: SCRAM-SHA-512
-      # The prefix must match the username
-      group_id: {{ .Values.storage_replayer.journalBrokers.user }}-{{ required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName }}-replayer-{{ .deployment }}
+      # The (group id) prefix must match the username
+      group_id: {{ $user }}-{{ $prefixGroupId }}-{{ $suffixGroupId }}
+      {{- else }}
+      group_id: {{ $prefixGroupId }}-{{ $suffixGroupId }}
+      {{- end }}
       batch_size: {{ get .deployment_config "batchSize" | default "200" }}
       message.max.bytes: {{ .Values.storage_replayer.maxMessagesBytes }}
       privileged: {{ get .deployment_config "privileged" | default "false" }}

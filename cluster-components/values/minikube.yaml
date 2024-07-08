@@ -192,41 +192,66 @@ kafka:
           config:
             retention.ms: 7200000
             segment.bytes: 1073741824
-        swh.journal.objects.content:
-          partitions: 1
-          replicas: 1
-        swh.journal.object.directory:
-          partitions: 1
-          replicas: 1
+        swh.journal.object.origin_visit: {}
+        swh.journal.object.origin_visit_status: {}
+        swh.journal.object.snapshot: {}
+        swh.journal.objects.release: {}
+        swh.journal.object.revision: {}
+        swh.journal.object.directory: {}
+        swh.journal.objects.content: {}
+        swh.journal.objects.skipped_content: {}
+        swh.journal.object.extid: {}
+        swh.journal.object.metadata_authority: {}
+        swh.journal.object.metadata_fetcher: {}
+        swh.journal.object.raw_extrinsic_metadata: {}
 
-      users:
-        swh-minikube:
-          secret:
-            ref: kafka-user-secrets-swh-minikube
-            key: BROKER_USER_PASSWORD
-          resources:
-            - topics:
-                - swh.journal.objects.origin
-                - swh.journal.objects.content
-                - swh.journal.objects.directory
-              groups:
-                - swh-minikube-postgresql-replayer-origin
-                - swh-minikube-postgresql-replayer-content
-                - swh-minikube-postgresql-replayer-directory
-              operations:
-                - Create
-                - Describe
-                - Read
-                - Write
-            - topics:
-                - swh.journal.objects.origin-visit-status
-              groups:
-                - swh-scheduler-journal-client
-              operations:
-                - Create
-                - Describe
-                - Read
-                - Write
+      # users:
+      #   swh-minikube:
+      #     secret:
+      #       ref: kafka-user-secrets-swh-minikube
+      #       key: BROKER_USER_PASSWORD
+      #     resources:
+      #       - topics:
+      #           - swh.journal.objects.origin
+      #           - swh.journal.objects.origin_visit
+      #           - swh.journal.objects.origin_visit_status
+      #           - swh.journal.objects.snapshot
+      #           - swh.journal.objects.release
+      #           - swh.journal.objects_privileged.release
+      #           - swh.journal.objects.revision
+      #           - swh.journal.objects_privileged.revision
+      #           - swh.journal.objects.directory
+      #           - swh.journal.objects.content
+      #           - swh.journal.objects.skipped_content
+      #           - swh.journal.objects.extid
+      #           - swh.journal.objects.metadata_authority
+      #           - swh.journal.objects.metadata_fetcher
+      #           - swh.journal.objects.raw_extrinsic_metadata
+      #         groups:
+      #           - postgresql-replayer-origin
+      #           - swh-minikube-postgresql-replayer-origin
+      #           - swh-minikube-postgresql-replayer-content
+      #           - swh-minikube-postgresql-replayer-directory
+      #           - swh-storage-journal-writer
+      #           - swh-minikube-swh-search-journal-client
+      #           - swh-minikube-webhooks
+      #           - swh-minikube-journal-checker
+      #           - swh-minikube-scheduler-journal-client
+      #           - swh-minikube-swh-search-journal-client-indexed
+      #         operations:
+      #           - Create
+      #           - Describe
+      #           - Read
+      #           - Write
+      #       - topics:
+      #           - swh.journal.objects.origin_visit_status
+      #         groups:
+      #           - swh-scheduler-journal-client
+      #         operations:
+      #           - Create
+      #           - Describe
+      #           - Read
+      #           - Write
 
 cassandra:
   enabled: false

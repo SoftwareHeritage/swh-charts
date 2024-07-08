@@ -188,11 +188,11 @@ remoteStorageConfigurationForReplayer:
 postgresqlStorageConfigurationPipeline:
   storageConfigurationRef: postgresqlStorageConfiguration
 
-kafkaBrokers:
-  - kafka-cluster-kafka-brokers.kafka-system
+readWriteInternalKafkaBrokers:
+  - kafka-cluster-kafka-brokers:9092
 
-# internalSecuredKafkaBrokers:
-#   - kafka-cluster-kafka-brokers.kafka-system:9093
+readOnlyInternalKafkaBrokers:
+  - kafka-cluster-kafka-brokers:9092
 
 schedulerJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
@@ -242,14 +242,14 @@ depositApiConfiguration:
       secretKeyName: password
 
 storageJournalWriterConfiguration:
-  brokersConfigurationRef: kafkaBrokers
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
   prefix: swh.journal.objects
-  clientId: swh.storage.journal_writer.${HOSTNAME}
+  clientId: swh-storage-journal-writer
   producerConfig:
     message.max.bytes: 1000000000
 
 # rwStoragePostgresqlWithJournalConfiguration:
-#   storageConfigurationRef: postgresqlStorageConfiguration
+#   storageConfigurationRef: postgresqlRWStorageConfiguration
 #   journalWriterConfigurationRef: storageJournalWriterConfiguration
 
 cassandraSeeds:
@@ -309,18 +309,11 @@ storage_replayer:
   sentry:
     enabled: false
   journalBrokers:
-    user: swh-minikube
     hosts:
-      - kafka-cluster-kafka-brokers.kafka-system:9093
-      # - kafka-cluster-pool-a-0.kafka-system:9093
-      # - kafka-cluster-pool-b-1.kafka-system:9093
+      - kafka-cluster-kafka-brokers
     groupIdName: postgresql
-    secrets:
-      BROKER_USER_PASSWORD:
-        secretKeyRef: swh-minikube
-        secretKeyName: password
 
-  storageConfigurationRef: remoteStorageConfigurationForReplayer
+  storageConfigurationRef: postgresqlStorageConfigurationPipeline
   checkDbVersion: false
   deployments:
     origin:

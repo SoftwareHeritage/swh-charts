@@ -6,6 +6,9 @@
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{ if get $deployment_config "autoScaling" }}
 {{- $autoscalingConfig := get $deployment_config "autoScaling" -}}
+{{- $user := .Values.storage_replayer.journalBrokers.user -}}
+{{- $prefixGroupId := required "groupIdName not specified" .Values.storage_replayer.journalBrokers.groupIdName -}}
+{{- $suffixGroupId := print "replayer-" $deployment -}}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -21,8 +24,12 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: {{ join "," $.Values.storage_replayer.journalBrokers.hosts }}
-      consumerGroup: {{ $.Values.storage_replayer.journalBrokers.user }}-{{ required "groupIdName not specified" $.Values.storage_replayer.journalBrokers.groupIdName }}-replayer-{{ $deployment }}
+      bootstrapServers: {{ join "," $.Values.storageReplayer.journalBrokers.hosts }}
+      {{- if $user }}
+      consumerGroup: {{ $user }}-{{ $prefixGroupId }}-{{ $suffixGroupId }}
+      {{- else }}
+      consumerGroup: {{ $prefixGroupId }}-{{ $suffixGroupId }}
+      {{- end }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
     authenticationRef:

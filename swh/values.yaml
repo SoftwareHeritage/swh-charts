@@ -427,12 +427,14 @@ storage_replayer:
   priorityClassName: background-workload
   maxMessagesBytes: "524288000"
   journalBrokers:
-    # The name of the secret containing the BROKER_USER_PASSWORD value
+    # (optional) The user name when topic reading with authentication is required
+    # user: myuser
+    # (optional) The name of the secret containing the BROKER_USER_PASSWORD value (
+    # required when associated with the user key)
     # secretName: storage-replayer-broker-secret
-    hosts:
-    - broker1
-    - broker2
-    user: myuser
+    # hosts:
+    # - broker1
+    # - broker2
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageReplayerConfiguration
