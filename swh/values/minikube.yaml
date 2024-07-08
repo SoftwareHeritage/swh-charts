@@ -796,7 +796,7 @@ loaders:
         - swh.loader.git.tasks.UpdateGitRepository
       requestedMemory: 50Mi
       requestedCpu: 50m
-      replicas: 1
+      replicas: 2
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
