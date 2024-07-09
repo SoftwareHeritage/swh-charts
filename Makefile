@@ -18,6 +18,13 @@ MINIKUBE_CONTEXT=$(LOCAL_CLUSTER_CONTEXT)
 
 CC_LOCAL_OVERRIDE=local-cluster-cc.override.yaml
 SWH_LOCAL_OVERRIDE=local-cluster-swh.override.yaml
+CCF_LOCAL_OVERRIDE=local-cluster-ccf.override.yaml
+
+ifeq (,$(wildcard $(CCF_LOCAL_OVERRIDE)))
+  CCF_VALUES_OVERRIDE := --debug
+else
+  CCF_VALUES_OVERRIDE := --values $(CCF_LOCAL_OVERRIDE)
+endif
 
 ifeq (,$(wildcard $(CC_LOCAL_OVERRIDE)))
   CC_VALUES_OVERRIDE := --debug
@@ -199,6 +206,13 @@ cc-template-admin:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/admin-rke2.yaml \
+      --debug
+
+ccf-template:
+	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/local-cluster.yaml \
+      $(CCF_VALUES_OVERRIDE) \
       --debug
 
 ccf-template-admin-rke2:
