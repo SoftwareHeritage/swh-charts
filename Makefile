@@ -36,6 +36,8 @@ ifndef VERBOSE
 .SILENT:
 endif
 
+-include Makefile.local
+
 local-cluster-create:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) create
 
