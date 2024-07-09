@@ -198,19 +198,11 @@ schedulerJournalClientConfiguration:
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
   group_id: swh-scheduler-journal-client
 
-journalCheckerClientConfiguration:
+scrubberJournalCheckerClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
   group_id: swh-minikube-journal-checker
   prefix: swh.journal.objects
-  sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
-  sasl.username: swh-minikube
-  sasl.password: ${BROKER_USER_PASSWORD}
-  secrets:
-    BROKER_USER_PASSWORD:
-      secretKeyRef: swh-minikube
-      secretKeyName: password
 
 webhookJournalClientConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
@@ -1083,7 +1075,10 @@ scrubber:
 
   journalChecker:
     enabled: true
-    journalClientConfigurationRef: journalCheckerClientConfiguration
+    journalClientConfigurationRef: scrubberJournalCheckerClientConfiguration
+    # (optional) Required only for the configuration of the journal checker
+    # (in the scrubber backend)
+    storageConfigurationRef: postgresqlStorageConfigurationPipeline
     deployments:
       release:
         configName: journal-checker-release
@@ -1122,7 +1117,7 @@ scrubber:
   objstorageChecker:
     enabled: false
     storageConfigurationRef: postgresqlStorageConfigurationPipeline
-    journalClientConfigurationRef: journalCheckerClientConfiguration
+    journalClientConfigurationRef: scrubberJournalCheckerClientConfiguration
     deployments:
       storage:
         objstorageConfigurationRef: remoteStorageReadOnlyObjstorageConfiguration

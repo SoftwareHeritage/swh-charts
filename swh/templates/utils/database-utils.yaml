@@ -77,8 +77,9 @@ data:
     [ "${CHECK_HASHES}" = "false" ] && extra_cmd="${extra_cmd} --no-check-hashes"
     [ "${CHECK_REFERENCES}" = "false" ] && extra_cmd="${extra_cmd} --no-check-references"
 
-    # Check whether the configuration already exists (the subcommand script is not
-    # idempotent)
+    # Check whether the configuration already exists (the subcommand script is
+    # not idempotent). Note that this requires a storage configuration entry
+    # key in the SWH_CONFIG_FILENAME
     config_exists=$(swh scrubber check list | grep $NAME | awk '{print substr($2,1,length($2)-1)}')
 
     if [ "${config_exists}" = "${NAME}" ]; then

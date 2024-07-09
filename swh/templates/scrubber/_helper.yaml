@@ -27,6 +27,7 @@
 {{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef -}}
 {{- $journalClientConfiguration := required (print "journalClientConfigurationRef " $journalClientConfigurationRef " not found in scrubber.journalChecker configuration") (get .Values $journalClientConfigurationRef) -}}
 {{- $journalClientOverrides := get .deployment_config "journalClientOverrides" | default (dict) -}}
+{{- $storageConfigurationRef := .deployment_config.storageConfigurationRef | default .Values.scrubber.journalChecker.storageConfigurationRef -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -42,6 +43,10 @@ data:
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
                                       "overrides" $journalClientOverrides
                                       "Values" .Values) | nindent 4 }}
+    {{- if $storageConfigurationRef }}
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $storageConfigurationRef
+                                                 "Values" .Values) | nindent 4 }}
+    {{- end }}
 {{ end }}
 
 {{ define "swh.scrubber.storageChecker.configmap" }}
