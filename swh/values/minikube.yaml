@@ -197,14 +197,6 @@ readOnlyInternalKafkaBrokers:
 schedulerJournalClientConfiguration:
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
   group_id: swh-scheduler-journal-client
-  sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
-  sasl.username: swh-minikube
-  sasl.password: ${BROKER_USER_PASSWORD}
-  secrets:
-    BROKER_USER_PASSWORD:
-      secretKeyRef: swh-minikube
-      secretKeyName: password
 
 journalCheckerClientConfiguration:
   cls: kafka
