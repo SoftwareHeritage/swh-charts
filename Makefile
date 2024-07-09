@@ -42,6 +42,9 @@ local-cluster-create:
 local-cluster-install-deps:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) install-deps
 
+local-cluster-restart:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) restart
+
 local-cluster-cleanup-deps:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) cleanup-deps
 

@@ -36,6 +36,9 @@ case "$2" in
     create)
         bin/local-cluster-create.sh $CLUSTER_CONTEXT
         ;;
+    restart)
+        bin/local-cluster-restart.sh $CLUSTER_CONTEXT
+        ;;
     install-deps|install)
         bin/local-cluster-install-deps.sh $CLUSTER_CONTEXT
         ;;
