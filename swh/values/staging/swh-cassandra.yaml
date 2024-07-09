@@ -450,6 +450,8 @@ storageReplayerJournalClientConfiguration:
   sasl.password: ${BROKER_USER_PASSWORD}
   prefix: swh.journal.objects
   message.max.bytes: "524288000"
+  # Both to write some data to privileged topic and use the error_reporter config
+  privileged: true
   secrets:
     BROKER_USER:
       secretKeyRef: swh-archive-broker-secret
@@ -579,7 +581,6 @@ storageReplayer:
         object_types:
           - release
         batch_size: 1000
-        privileged: true
       # Full replay
       requestedCpu: 600m
       requestedMemory: 300Mi
@@ -593,7 +594,6 @@ storageReplayer:
         object_types:
           - revision
         batch_size: 1000
-        privileged: true
       # Full replay
       requestedCpu: 750m
       requestedMemory: 750Mi
@@ -608,7 +608,6 @@ storageReplayer:
         object_types:
           - skipped_content
         batch_size: 100
-        privileged: true
       # Full replay
       requestedCpu: 300m
       requestedMemory: 400Mi
@@ -622,7 +621,6 @@ storageReplayer:
         object_types:
           - snapshot
         batch_size: 250
-        privileged: true
       # Full replay
       requestedCpu: 400m
       requestedMemory: 250Mi
