@@ -839,7 +839,7 @@ loaders:
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
-      replicas: 2
+      replicas: 1
     pypi:
       requestedMemory: 256Mi
       requestedCpu: 200m
