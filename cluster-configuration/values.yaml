@@ -91,3 +91,8 @@ cassandra:
   enabled: false
   namespace: k8ssandra-operator
   version: 1.17.0
+
+elasticsearch:
+  enabled: false
+  namespace: elastic-system
+  version: 2.13.0

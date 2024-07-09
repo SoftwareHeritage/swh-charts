@@ -47,3 +47,11 @@ cassandra:
   #   --set global.clusterScoped=true
   enabled: true
 
+eck-operator:
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add elastic https://helm.elastic.co
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install eck-operator \
+  #   elastic/eck-operator \
+  #   --namespace elastic-system --create-namespace
+  enabled: true
+

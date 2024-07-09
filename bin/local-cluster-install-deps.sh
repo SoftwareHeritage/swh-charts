@@ -33,3 +33,7 @@ $HELM upgrade --install k8ssandra-operator \
      k8ssandra/k8ssandra-operator \
      -n k8ssandra-operator --create-namespace \
      --set global.clusterScoped=true
+
+$HELM upgrade --install eck-operator \
+     elastic/eck-operator \
+     -n elastic-system --create-namespace
