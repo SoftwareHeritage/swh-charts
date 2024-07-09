@@ -366,3 +366,19 @@ cassandra:
     #     - name: dc1
     #       replicas: 3
 
+elasticsearch:
+  enabled: false
+  namespace: swh
+  # Our actual version
+  # ii  elasticsearch 7.15.2 amd64 Distributed RESTful search engine
+  # Can be overriden per deployment
+  version: 7.15.2
+  # most recent as of today
+  # version: 8.14.2
+  # Can be overriden per deployment
+  # nodeName: node
+  deployments:
+    # cluster-name and configuration
+    # search:
+    #   replicas: 1
+

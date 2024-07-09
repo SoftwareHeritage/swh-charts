@@ -270,3 +270,13 @@ cassandra:
         - name: dc1
           replicas: 3
 
+elasticsearch:
+  enabled: false
+  deployments:
+    search:
+      replicas: 1
+      # version: 8.14.2
+      nodeName: node
+    # quickstart:
+    #   replicas: 1
+
