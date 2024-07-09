@@ -1,5 +1,5 @@
-{{ if .Values.checker_deposit.enabled -}}
-{{- $configuration := .Values.checker_deposit -}}
+{{ if .Values.checkerDeposit.enabled -}}
+{{- $configuration := .Values.checkerDeposit -}}
 {{ if and (or (not (hasKey $configuration "enabled"))
               (get $configuration "enabled"))
           (hasKey $configuration "autoScaling") }}

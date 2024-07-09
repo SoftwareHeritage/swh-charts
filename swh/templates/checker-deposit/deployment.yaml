@@ -1,4 +1,4 @@
-{{- $deployment_config := .Values.checker_deposit -}}
+{{- $deployment_config := .Values.checkerDeposit -}}
 {{ if $deployment_config.enabled -}}
 {{- $configurationChecksum := include (print $.Template.BasePath "/checker-deposit/configmap.yaml") . -}}
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
@@ -27,18 +27,18 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
-      {{- if $.Values.checker_deposit.affinity }}
+      {{- if $.Values.checkerDeposit.affinity }}
       affinity:
-        {{ toYaml $.Values.checker_deposit.affinity | nindent 8 }}
+        {{ toYaml $.Values.checkerDeposit.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled $.Values.checker_deposit.priorityClassName }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.checker_deposit.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $.Values.checkerDeposit.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.checkerDeposit.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.checker_deposit
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.checkerDeposit
                                                                       "Values" .Values) | nindent 10 }}
           command:
             - /entrypoint.sh
@@ -94,7 +94,7 @@ spec:
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
         {{ end }}
-        {{- if and .Values.sentry.enabled .Values.checker_deposit.sentry.enabled }}
+        {{- if and .Values.sentry.enabled .Values.checkerDeposit.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE

@@ -719,7 +719,7 @@ loaderMetadata:
     hosts:
       - kafka-cluster-kafka-brokers:9092
 
-checker_deposit:
+checkerDeposit:
   enabled: false
   storageConfigurationRef: rpcROStorageConfiguration
   celeryConfigurationRef: celeryConfiguration

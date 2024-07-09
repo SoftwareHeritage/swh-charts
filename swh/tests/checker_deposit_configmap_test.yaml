@@ -1,4 +1,4 @@
-suite: test checker_deposit configmap deployment
+suite: test checkerDeposit configmap deployment
 templates:
   - checker-deposit/configmap.yaml
 tests:

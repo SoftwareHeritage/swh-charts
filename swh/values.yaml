@@ -559,7 +559,7 @@ cookers:
   autoScaling:
     queueThreshold: 1
 
-checker_deposit:
+checkerDeposit:
   enabled: false
   priorityClassName: frontend-rpc-workload
   # mandatory

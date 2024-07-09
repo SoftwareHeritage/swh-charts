@@ -1663,7 +1663,7 @@ indexers:
       autoScaling:
         maxReplicaCount: 6
 
-checker_deposit:
+checkerDeposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration

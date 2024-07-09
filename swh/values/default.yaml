@@ -28,7 +28,7 @@ memcached:
             values:
             - "true"
 
-checker_deposit:
+checkerDeposit:
   sentry:
     enabled: true
   affinity:

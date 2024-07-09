@@ -16,7 +16,7 @@ myDepositConfiguration:
   user: fakeuser
   pass: fakepass
 
-checker_deposit:
+checkerDeposit:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
   celeryConfigurationRef: myCeleryConfiguration

@@ -489,7 +489,7 @@ listers:
 indexers:
   enabled: false
 
-checker_deposit:
+checkerDeposit:
   enabled: false
 
 search:

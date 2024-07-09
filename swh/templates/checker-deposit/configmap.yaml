@@ -1,5 +1,5 @@
-{{ if .Values.checker_deposit.enabled -}}
-{{- $deployment_config := .Values.checker_deposit -}}
+{{ if .Values.checkerDeposit.enabled -}}
+{{- $deployment_config := .Values.checkerDeposit -}}
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
 {{ $log_level := get $deployment_config "logLevel" | default "INFO" | quote }}
 ---
@@ -12,10 +12,10 @@ data:
   config.yml.template: |
     extraction_dir: "/tmp/swh.checker.deposit/"
 
-    {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.checker_deposit.storageConfigurationRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" $.Values.checkerDeposit.storageConfigurationRef
                                                  "Values" $.Values) | nindent 4 }}
 
-    {{- include "celery.configuration" (dict "configurationRef" .Values.checker_deposit.celeryConfigurationRef
+    {{- include "celery.configuration" (dict "configurationRef" .Values.checkerDeposit.celeryConfigurationRef
                                              "Values" .Values) | nindent 4 }}
       task_acks_late: true
       task_modules:
@@ -23,7 +23,7 @@ data:
       task_queues:
       - swh.deposit.loader.tasks.ChecksDepositTsk
 
-    {{- include "deposit.configuration" (dict "configurationRef" .Values.checker_deposit.depositConfigurationRef
+    {{- include "deposit.configuration" (dict "configurationRef" .Values.checkerDeposit.depositConfigurationRef
                                               "Values" .Values) | nindent 4 }}
   init-container-entrypoint.sh: |
     #!/bin/bash

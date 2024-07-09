@@ -501,7 +501,7 @@ listers:
       autoScaling:
         maxReplicaCount: 2
 
-checker_deposit:
+checkerDeposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
