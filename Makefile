@@ -53,19 +53,19 @@ local-cluster-delete:
 
 swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
-	  $(IMAGE) swh
+      $(IMAGE) swh
 
 swh-test-with-snapshot:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
-	  $(IMAGE) $(ACTIVATE_SNAPSHOT) swh
+      $(IMAGE) $(ACTIVATE_SNAPSHOT) swh
 
 ss-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
-	  $(IMAGE) software-stories
+      $(IMAGE) software-stories
 
 ss-test-with-snapshot:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \
-	  $(IMAGE) $(ACTIVATE_SNAPSHOT) software-stories
+      $(IMAGE) $(ACTIVATE_SNAPSHOT) software-stories
 
 swh-helm-diff:
 	./swh/helm-diff.sh
@@ -81,19 +81,21 @@ ss-helm-diff:
 
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
-swh-minikube:
+swh-minikube: swh-local
+swh-local:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh ; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/minikube.yaml \
       $(SWH_VALUES_OVERRIDE) \
       -n swh --debug
 
-swh-uninstall:
+swh-uninstall: swh-local-uninstall
+swh-local-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace swh
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace swh
 
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
@@ -143,12 +145,13 @@ swh-template-production-cassandra:
       --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
-cc-minikube:
+cc-minikube: cc-local
+cc-local:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/minikube.yaml \
@@ -158,7 +161,7 @@ cc-minikube:
 cc-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
 
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
@@ -237,7 +240,8 @@ ccf-template-test-staging-rke2:
       --values $(CCF_CHART)/values/test-staging-rke2.yaml \
       --debug
 
-ss-minikube:
+ss-minikube: ss-local
+ss-local:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/minikube.yaml \
