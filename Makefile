@@ -16,8 +16,8 @@ LOCAL_CLUSTER_CONTEXT=minikube
 # (deprecated) Retro-compatible name
 MINIKUBE_CONTEXT=$(LOCAL_CLUSTER_CONTEXT)
 
-CC_LOCAL_OVERRIDE=minikube-cc.override.yaml
-SWH_LOCAL_OVERRIDE=minikube-swh.override.yaml
+CC_LOCAL_OVERRIDE=local-cluster-cc.override.yaml
+SWH_LOCAL_OVERRIDE=local-cluster-swh.override.yaml
 
 ifeq (,$(wildcard $(CC_LOCAL_OVERRIDE)))
   CC_VALUES_OVERRIDE := --debug
@@ -81,18 +81,18 @@ ss-helm-diff:
 
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
-swh-minikube: swh-local
-swh-local:
+swh-minikube: swh-local-cluster
+swh-local-cluster:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh ; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
     helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
-      --values $(SWH_CHART)/values/minikube.yaml \
+      --values $(SWH_CHART)/values/local-cluster.yaml \
       $(SWH_VALUES_OVERRIDE) \
       -n swh --debug
 
-swh-uninstall: swh-local-uninstall
-swh-local-uninstall:
+swh-uninstall: swh-local-cluster-uninstall
+swh-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace swh
@@ -100,7 +100,7 @@ swh-local-uninstall:
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
-      --values $(SWH_CHART)/values/minikube.yaml \
+      --values $(SWH_CHART)/values/local-cluster.yaml \
       $(SWH_VALUES_OVERRIDE) \
       -n swh --create-namespace --debug
 
@@ -145,8 +145,8 @@ swh-template-production-cassandra:
       --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
-cc-minikube: cc-local
-cc-local:
+cc-minikube: cc-local-cluster
+cc-local-cluster:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
@@ -154,11 +154,12 @@ cc-local:
     helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
-      --values $(CC_CHART)/values/minikube.yaml \
+      --values $(CC_CHART)/values/local-cluster.yaml \
       $(CC_VALUES_OVERRIDE) \
       --namespace cluster-components --create-namespace --debug
 
-cc-uninstall:
+cc-uninstall: cc-local-cluster-uninstall
+cc-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
@@ -166,7 +167,7 @@ cc-uninstall:
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
-      --values $(CC_CHART)/values/minikube.yaml \
+      --values $(CC_CHART)/values/local-cluster.yaml \
       $(CC_VALUES_OVERRIDE) \
       --namespace cluster-components --create-namespace --debug
 
@@ -240,20 +241,21 @@ ccf-template-test-staging-rke2:
       --values $(CCF_CHART)/values/test-staging-rke2.yaml \
       --debug
 
-ss-minikube: ss-local
-ss-local:
+ss-minikube: ss-local-cluster
+ss-local-cluster:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
-      --values $(SS_CHART)/values/minikube.yaml \
+      --values $(SS_CHART)/values/local-cluster.yaml \
       -n software-stories --create-namespace --debug
 
-ss-uninstall:
+ss-uninstall: ss-local-cluster-uninstall
+ss-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SS_CHART) -n software-stories
 
 ss-template:
 	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
-      --values $(SS_CHART)/values/minikube.yaml \
+      --values $(SS_CHART)/values/local-cluster.yaml \
       -n software-stories --create-namespace --debug
 
 ss-template-staging:

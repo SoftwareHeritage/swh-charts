@@ -1,5 +1,5 @@
 __snapshot__
 /swh/Chart.lock
 charts
-minikube-*.override.yaml
+local-cluster-*.override.yaml
 
