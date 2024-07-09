@@ -82,7 +82,7 @@ postgresqlIndexerStorageConfiguration:
   cls: postgresql
   host: indexer-storage-rw
   port: 5432
-  db: swh-indexer-storage
+  db: swh-indexer
   user: ${POSTGRESQL_IDX_USERNAME}
   pass: ${POSTGRESQL_IDX_PASSWORD}
   secrets:
@@ -737,31 +737,46 @@ cookers:
       queues:
         - swh.vault.cooking_tasks.SWHCookingTask
 
+indexerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-minikube-indexer-journal-client
+  prefix: swh.journal.indexed
+
 indexers:
   enabled: false
+  sentry:
+    enabled: false
   storageConfigurationRef: rpcROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: fakeRemoteObjstorageConfiguration
-  sentry:
-    enabled: false
-  journalBrokers:
-    hosts:
-      - journal2.internal.staging.swh.network:9094
-    user: swh-archive-stg
+  journalClientConfigurationRef: indexerJournalClientConfiguration
   deployments:
     origin-intrinsic:
       indexer_type: origin_intrinsic_metadata
-      consumerGroup: swh.test.indexer.journal_client.origin_intrinsic_metadata
-      prefix: swh.test.journal.objects
-      batch_size: 10
+      journalClientOverrides:
+        batch_size: 10
+        group_id: swh-minikube-indexer-journal-client-origin-intrinsic-metadata
+        prefix: swh.journal.objects
       extraConfig:
         tools:
           name: swh-metadata-detector
           version: 0.0.2
           configuration: {}
-      requestedMemory: 50Mi
-      requestedCpu: 50m
+      replicas: 1
+    # extrinsic:
+    #   indexer_type: extrinsic_metadata
+    #   journalClientOverrides:
+    #     group_id: swh-minikube-indexer-journal-client-extrinsic-metadata
+    #     prefix: swh.journal.objects
+    #     batch_size: 200
+    #   extraConfig:
+    #     tools:
+    #       name: swh-metadata-detector
+    #       version: 0.0.2
+    #       configuration: {}
+    #   replicas: 1
 
 graphql:
   enabled: false
@@ -946,8 +961,8 @@ indexerJournalWriterConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
   cls: kafka
   anonymize: true
-  client_id: swh.indexer-storage.journal_writer.storage
-  prefix: swh.journal.objects
+  client_id: swh-indexer-storage-journal-writer-storage
+  prefix: swh.journal.indexed
   producer_config:
     message.max.bytes: 1000000000
 
@@ -960,7 +975,7 @@ indexerStorage:
         # When true, initalize the backend, leave it empty to do nothing
         initialize:
           adminSecret: indexer-storage-superuser
-          database: swh-indexer-storage
+          database: swh-indexer
         # When true, check db & code versions and do not start if they diverge
         check: true
         # When true, migrate or initialize db model
@@ -971,14 +986,6 @@ indexerStorage:
       requestedMemory: 512Mi
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
-      hosts:
-        - indexer-storage-read-write.i.s.s.n
-      ingress:
-        enabled: true
-        endpoints:
-          default:
-            paths:
-              - path: /
       gunicorn:
         threads: 1
         workers: 2
@@ -987,14 +994,6 @@ indexerStorage:
       checkDbVersion: false
       replicas: 1
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
-      hosts:
-        - indexer-storage-read-only.i.s.s.n
-      ingress:
-        enabled: true
-        endpoints:
-          default:
-            paths:
-              - path: /
       gunicorn:
         threads: 1
         workers: 2
