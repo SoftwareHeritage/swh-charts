@@ -425,7 +425,7 @@ loaders:
       requestedCpu: 100m
       limitedMemory: 25Gi
 
-loader_metadata:
+loaderMetadata:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration

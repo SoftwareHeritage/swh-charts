@@ -15,7 +15,7 @@ mySchedulerConfiguration:
   host: scheduler.test.org
   port: 8005
 
-loader_metadata:
+loaderMetadata:
   enabled: true
   storageConfigurationRef: myStorageConfiguration
   schedulerConfigurationRef: mySchedulerConfiguration

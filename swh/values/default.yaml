@@ -71,7 +71,7 @@ cookers:
             values:
             - "true"
 
-loader_metadata:
+loaderMetadata:
   dnsConfigurationRef: dnsConfiguration
   affinity:
     nodeAffinity:

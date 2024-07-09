@@ -1,4 +1,4 @@
-suite: test loader_metadata keda-scaling
+suite: test loaderMetadata keda-scaling
 tests:
   - it: Loader metadata keda scaling deployment should be deployed
     templates:
@@ -16,7 +16,7 @@ tests:
         cls: remote
         host: scheduler.test.org
         port: 8005
-      loader_metadata:
+      loaderMetadata:
         enabled: true
         logLevel: DEBUG
         requestedMemory: "256Mi"

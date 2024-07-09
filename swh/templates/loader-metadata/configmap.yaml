@@ -1,6 +1,6 @@
-{{ if .Values.loader_metadata.enabled -}}
-{{- $journalUser := .Values.loader_metadata.journalBrokers.user -}}
-{{- $consumerGroup := .Values.loader_metadata.consumerGroup -}}
+{{ if .Values.loaderMetadata.enabled -}}
+{{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
+{{- $consumerGroup := .Values.loaderMetadata.consumerGroup -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -9,22 +9,22 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.loader_metadata.storageConfigurationRef
+    {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.loaderMetadata.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 
-    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.loader_metadata.schedulerConfigurationRef
+    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.loaderMetadata.schedulerConfigurationRef
                                                    "Values" .Values) | nindent 4 }}
 
     journal:
-      brokers: {{ toYaml .Values.loader_metadata.journalBrokers.hosts | nindent 8 }}
+      brokers: {{ toYaml .Values.loaderMetadata.journalBrokers.hosts | nindent 8 }}
       group_id: {{ $journalUser }}-{{ $consumerGroup }}
-      prefix: {{ .Values.loader_metadata.prefix }}
+      prefix: {{ .Values.loaderMetadata.prefix }}
       sasl.mechanism: SCRAM-SHA-512
       security.protocol: SASL_SSL
       sasl.username: {{ $journalUser }}
       sasl.password: ${BROKER_USER_PASSWORD}
       on_eof: restart
-    reload_after_days: {{ .Values.loader_metadata.reload_after_days | default 120 }}
+    reload_after_days: {{ .Values.loaderMetadata.reload_after_days | default 120 }}
     metadata_fetcher_credentials:
 
   init-container-entrypoint.sh: |

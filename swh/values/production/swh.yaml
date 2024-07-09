@@ -805,7 +805,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_svn_image
 
-loader_metadata:
+loaderMetadata:
   enabled: true
   storageConfigurationRef: remoteRpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration

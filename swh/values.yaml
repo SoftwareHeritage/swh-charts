@@ -491,7 +491,7 @@ storageReplayer:
     #     batch_size: 250
     #     privileged: true
 
-loader_metadata:
+loaderMetadata:
   enabled: false
   priorityClassName: normal-workload
   sentrySwhPackage: swh.loader.metadata

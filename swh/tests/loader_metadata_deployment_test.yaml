@@ -1,4 +1,4 @@
-suite: test loader_metadata deployment
+suite: test loaderMetadata deployment
 templates:
   - loader-metadata/configmap.yaml
   - loader-metadata/configmap-utils.yaml
@@ -75,7 +75,7 @@ tests:
         port: 8005
 
       # specific values
-      loader_metadata:
+      loaderMetadata:
         enabled: true
         logLevel: DEBUG
         storageConfigurationRef: storageConfiguration

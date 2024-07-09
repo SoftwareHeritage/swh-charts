@@ -1,4 +1,4 @@
-{{ if .Values.loader_metadata.enabled -}}
+{{ if .Values.loaderMetadata.enabled -}}
 ---
 apiVersion: v1
 kind: ConfigMap

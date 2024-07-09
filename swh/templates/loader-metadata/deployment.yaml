@@ -1,4 +1,4 @@
-{{ if .Values.loader_metadata.enabled -}}
+{{ if .Values.loaderMetadata.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/loader-metadata/configmap.yaml") . -}}
 ---
 apiVersion: apps/v1
@@ -25,17 +25,17 @@ spec:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum | sha256sum }}
     spec:
-      {{- if .Values.loader_metadata.affinity }}
+      {{- if .Values.loaderMetadata.affinity }}
       affinity:
-        {{ toYaml .Values.loader_metadata.affinity | nindent 8 }}
+        {{ toYaml .Values.loaderMetadata.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled $.Values.loader_metadata.priorityClassName }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.loader_metadata.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $.Values.loaderMetadata.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.loaderMetadata.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: 3600
-      {{- if .Values.loader_metadata.dnsConfigurationRef }}
+      {{- if .Values.loaderMetadata.dnsConfigurationRef }}
       {{- include "swh.dns.configuration"  (dict "Values" $.Values
-                                            "configurationRef" .Values.loader_metadata.dnsConfigurationRef) | indent 6 }}
+                                            "configurationRef" .Values.loaderMetadata.dnsConfigurationRef) | indent 6 }}
       {{- end }}
       initContainers:
         - name: prepare-configuration
@@ -45,7 +45,7 @@ spec:
           - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.loader_metadata.journalBrokers.secretName }}
+                name: {{ .Values.loaderMetadata.journalBrokers.secretName }}
                 key: BROKER_USER_PASSWORD
                 optional: true
           command:
@@ -70,15 +70,15 @@ spec:
           - /opt/swh/entrypoint.sh
         resources:
           requests:
-            memory: {{ .Values.loader_metadata.requestedMemory | default "512Mi" }}
-            cpu: {{ .Values.loader_metadata.requestedCpu | default "500m" }}
-          {{- if or .Values.loader_metadata.limitedMemory .Values.loader_metadata.limitedCpu }}
+            memory: {{ .Values.loaderMetadata.requestedMemory | default "512Mi" }}
+            cpu: {{ .Values.loaderMetadata.requestedCpu | default "500m" }}
+          {{- if or .Values.loaderMetadata.limitedMemory .Values.loaderMetadata.limitedCpu }}
           limits:
-            {{- if .Values.loader_metadata.limitedMemory }}
-            memory: {{ .Values.loader_metadata.limitedMemory }}
+            {{- if .Values.loaderMetadata.limitedMemory }}
+            memory: {{ .Values.loaderMetadata.limitedMemory }}
             {{- end }}
-            {{- if .Values.loader_metadata.limitedCpu }}
-            cpu: {{ .Values.loader_metadata.limitedCpu }}
+            {{- if .Values.loaderMetadata.limitedCpu }}
+            cpu: {{ .Values.loaderMetadata.limitedCpu }}
             {{- end }}
           {{ end }}
         lifecycle:
@@ -93,13 +93,13 @@ spec:
         - name: STATSD_TAGS
           value: deployment:loader-metadata
         - name: SWH_LOG_LEVEL
-          value: {{ .Values.loader_metadata.logLevel | default "INFO" | quote }}
+          value: {{ .Values.loaderMetadata.logLevel | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ .Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
-          value: {{ .Values.loader_metadata.sentrySwhPackage }}
+          value: {{ .Values.loaderMetadata.sentrySwhPackage }}
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:

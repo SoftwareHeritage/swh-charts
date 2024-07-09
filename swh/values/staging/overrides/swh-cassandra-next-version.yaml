@@ -242,7 +242,7 @@ loaders:
         maxReplicaCount: 1
         stopWhenNoActivity: false
 
-loader_metadata:
+loaderMetadata:
   terminationGracePeriodSeconds: 60
   autoScaling:
     queueThreshold: 1

@@ -728,7 +728,7 @@ scheduler:
       enabled: true
       logLevel: INFO
 
-loader_metadata:
+loaderMetadata:
   enabled: false
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration

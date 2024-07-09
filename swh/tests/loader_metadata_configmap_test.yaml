@@ -1,10 +1,10 @@
-suite: test loader_metadata configmap deployment
+suite: test loaderMetadata configmap deployment
 templates:
   - loader-metadata/configmap.yaml
 tests:
   - it: loader-metadata configmap should be deployed when activated
     # set:
-    #   loader_metadata.enabled: true
+    #   loaderMetadata.enabled: true
     values:
       - values/loader-metadata.yaml
     asserts:
