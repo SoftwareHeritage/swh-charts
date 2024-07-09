@@ -204,7 +204,15 @@ kafka:
         swh.journal.objects.metadata_authority: {}
         swh.journal.objects.metadata_fetcher: {}
         swh.journal.objects.raw_extrinsic_metadata: {}
-
+        swh.journal.indexed.content_ctags: {}
+        swh.journal.indexed.content_fossology_license: {}
+        swh.journal.indexed.content_language: {}
+        swh.journal.indexed.content_metadata: {}
+        swh.journal.indexed.content_mimetype: {}
+        swh.journal.indexed.directory_intrinsic_metadata: {}
+        swh.journal.indexed.origin_extrinsic_metadata: {}
+        swh.journal.indexed.origin_intrinsic_metadata: {}
+        swh.journal.indexed.revision_intrinsic_metadata: {}
       # users:
       #   swh-minikube:
       #     secret:
