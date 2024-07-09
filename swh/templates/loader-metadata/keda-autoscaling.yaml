@@ -1,7 +1,12 @@
-{{ if and .Values.loaderMetadata.enabled .Values.loaderMetadata.autoScaling.enabled -}}
-{{- $autoscalingConfig := $.Values.loaderMetadata.autoScaling -}}
+{{- if and (or (not (hasKey .Values.loaderMetadata "enabled")) (get .Values.loaderMetadata "enabled"))
+           (hasKey .Values.loaderMetadata "autoScaling") -}}
+
+{{- $autoscalingConfig := .Values.loaderMetadata.autoScaling -}}
 {{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
 {{- $consumerGroup := .Values.loaderMetadata.consumerGroup -}}
+{{- if $journalUser }}
+{{- $consumerGroup = print $journalUser "-" $consumerGroup -}}
+{{- end }}
 ---
 # FIXME: Look into autoscaling from prometheus depending on api authentication
 # token use metrics. See: https://keda.sh/docs/2.9/scalers/prometheus/
@@ -22,9 +27,11 @@ spec:
   - type: kafka
     metadata:
       bootstrapServers: {{ join "," .Values.loaderMetadata.journalBrokers.hosts }}
-      consumerGroup: {{ $journalUser }}-{{ $consumerGroup }}
+      consumerGroup: {{ $consumerGroup }}
       lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
       offsetResetPolicy: earliest
+    {{- if $journalUser }}
     authenticationRef:
       name: keda-loader-metadata-trigger-authentication
+    {{- end }}
 {{- end -}}

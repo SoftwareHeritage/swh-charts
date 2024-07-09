@@ -511,8 +511,8 @@ loaderMetadata:
   #   hosts:
   #     - ...
   #   user: ...
-  autoScaling:
-    enabled: true
+  # autoScaling:
+  #   enabled: true
   #   poolInterval: 120
   #   lagThreashold: 1000
   #   minReplicaCount: 1

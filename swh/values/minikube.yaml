@@ -732,14 +732,12 @@ loaderMetadata:
   enabled: false
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  consumerGroup: loader_metadata.test.journal_client
-  prefix: swh.test.journal.objects
+  consumerGroup: swh-loader-metadata-journal-client
+  prefix: swh.journal.objects
+  replicas: 1
   journalBrokers:
     hosts:
-      - journal2.internal.s.s.n:4909
-    secretName: swh-archive-broker-secret
-    user: swh-test-archive-stg
-  replicas: 1
+      - kafka-cluster-kafka-brokers:9092
 
 checker_deposit:
   enabled: false

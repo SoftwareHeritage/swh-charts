@@ -1,5 +1,7 @@
 {{ if .Values.loaderMetadata.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/loader-metadata/configmap.yaml") . -}}
+{{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
+{{- $secretName := .Values.loaderMetadata.journalBrokers.secretName -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -42,12 +44,14 @@ spec:
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
           env:
+          {{- if and $journalUser $secretName }}
           - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ .Values.loaderMetadata.journalBrokers.secretName }}
+                name: {{ $secretName }}
                 key: BROKER_USER_PASSWORD
                 optional: true
+          {{- end }}
           command:
             - /entrypoint.sh
           volumeMounts:
