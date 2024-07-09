@@ -34,10 +34,6 @@ remoteStorageMetadataConfiguration:
   cls: remote
   url: http://storage-rw-archive-cassandra:5002
 
-remoteSchedulerConfiguration:
-  cls: remote
-  url: http://scheduler-rpc:5008
-
 fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
   realm_name: SwhMinikube
