@@ -12,7 +12,7 @@ CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
 # For sandboxed environment
-LOCAL_CLUSTER_CONTEXT=minikube
+LOCAL_CLUSTER_CONTEXT=kind-local-cluster
 # (deprecated) Retro-compatible name
 MINIKUBE_CONTEXT=$(LOCAL_CLUSTER_CONTEXT)
 
