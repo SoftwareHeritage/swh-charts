@@ -596,6 +596,7 @@ Generate the configuration for search
 {{- $configuration := deepCopy (get .Values .configurationRef) -}}
 {{- $elasticsearchInstances := get .Values (get $configuration "elasticsearchInstancesRef") -}}
 {{- $_ := unset $configuration "elasticsearchInstancesRef" -}}
+{{- $_ := unset $configuration "secrets" -}}
 {{ .serviceType }}:
   {{ toYaml $configuration | nindent 2 }}
   hosts:
