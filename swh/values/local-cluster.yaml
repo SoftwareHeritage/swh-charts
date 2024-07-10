@@ -951,7 +951,7 @@ indexerStorage:
         workers: 2
 
 elasticsearchHosts:
-  - host: elastic:${SEARCH_PASSWORD}@search-es-http
+  - host: search-es-http
     port: 9200
 
 elasticsearchConfiguration:
@@ -962,10 +962,6 @@ elasticsearchConfiguration:
       index: origin-v0.11
       read_alias: origin-read
       write_alias: origin-write
-  secrets:
-    SEARCH_PASSWORD:
-      secretKeyRef: search-es-elastic-user
-      secretKeyName: elastic
 
 search:
   enabled: false
