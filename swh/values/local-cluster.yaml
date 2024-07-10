@@ -10,9 +10,9 @@ remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler-rpc:5008
 
-fakeRemoteSearchConfiguration:
+remoteSearchConfiguration:
   cls: remote
-  url: http://fake-search.i.s.s.n:5010
+  url: http://search-rpc:5010
 
 remoteVaultConfiguration:
   cls: remote
@@ -206,17 +206,8 @@ webhookJournalClientConfiguration:
 
 searchJournalClientConfiguration:
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
-  clientId: swh-search-journal-client
   group_id: swh-minikube-search
   prefix: swh.journal.objects
-  sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
-  sasl.username: swh-minikube
-  sasl.password: ${BROKER_USER_PASSWORD}
-  secrets:
-    BROKER_USER_PASSWORD:
-      secretKeyRef: swh-minikube
-      secretKeyName: password
 
 depositApiConfiguration:
   host: deposit-rpc
@@ -392,7 +383,7 @@ web:
       hosts:
         - web-minikube
       storageConfigurationRef: remoteROStorageConfiguration
-      searchConfigurationRef: fakeRemoteSearchConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       countersConfigurationRef: fakeRemoteCountersConfiguration
@@ -775,7 +766,7 @@ graphql:
   deployments:
     fake:
       storageConfigurationRef: rpcROStorageConfiguration
-      searchConfigurationRef: fakeRemoteSearchConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
       debug: no
       introspection: no
       replicas: 1
@@ -959,67 +950,60 @@ indexerStorage:
         threads: 1
         workers: 2
 
-defaultElasticsearchHosts:
-  - host: search-esnode0.i.s.s.n
+elasticsearchHosts:
+  - host: elastic:${SEARCH_PASSWORD}@search-es-http
     port: 9200
 
-defaultElasticsearchConfiguration:
-  elasticsearchInstancesRef: defaultElasticsearchHosts
+elasticsearchConfiguration:
+  elasticsearchInstancesRef: elasticsearchHosts
   cls: elasticsearch
   indexes:
     origin:
       index: origin-v0.11
       read_alias: origin-read
       write_alias: origin-write
+  secrets:
+    SEARCH_PASSWORD:
+      secretKeyRef: search-es-elastic-user
+      secretKeyName: elastic
 
 search:
   enabled: false
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
-    secretKeyRef: swh-search-sentry-secret
-    secretKeyName: sentry-dsn
-  elasticsearchConfigurationRef: defaultElasticsearchConfiguration
+  elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
-  replicas: 2
-  gunicorn:
-    threads: 5
-    workers: 2
-    timeout: 60
   replicas: 1
+  gunicorn:
+    threads: 4
+    workers: 1
+    timeout: 60
   # RPC services may have different profiles than the rest so they need their specific
   # setup
   requestedMemory: 512Mi
   requestedCpu: 500m
-  hosts:
-    - mysearch.minikube.domain
-  ingress:
-    enabled: true
-    # Optional: the ingress classname to use
-    # className: nginx
-    # mandatory if ingress is enabled
-    # the hostname on which the storage must be reachable
-    whitelistSourceRangeRef: internalNetworkRanges
   journalClients:
-    enabled: false
+    enabled: true
     priorityClassName: normal-workload
-    searchConfigurationRef: fakeRemoteSearchConfiguration
+    searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteROStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
-        group_id: swh-search-journal-client
-        prefix: swh.journal.objects
-        object_types:
-        - origin
-        - origin_visit_status
+        journalClientOverrides:
+          group_id: swh-search-journal-client-origins
+          object_types:
+            - origin
+            - origin_visit_status
 
-      # indexed:
-      #   group_id: swh-search-journal-client-indexed
-      #   prefix: swh.journal.indexed
-      #   object_types:
-      #     - origin_intrinsic_metadata
-      #     - origin_extrinsic_metadata
+      # metadata:
+      #   journalClientOverrides:
+      #     group_id: swh-search-journal-client-metadata
+      #     prefix: swh.journal.indexed
+      #     object_types:
+      #       - origin_intrinsic_metadata
+      #       - origin_extrinsic_metadata
 
 scrubber:
   enabled: false
