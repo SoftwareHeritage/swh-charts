@@ -274,7 +274,7 @@ elasticsearch:
   enabled: false
   deployments:
     search:
-      replicas: 1
+      replicas: 3
       # For test environment (local-cluster, next-version) only
       disableSecurity: true
       disableTLS: true
