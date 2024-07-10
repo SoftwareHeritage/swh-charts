@@ -275,7 +275,8 @@ elasticsearch:
   deployments:
     search:
       replicas: 1
-      # For test only
+      # For test environment (local-cluster, next-version) only
+      disableSecurity: true
       disableTLS: true
       # version: 8.14.2
       nodeName: node
