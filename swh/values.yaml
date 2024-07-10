@@ -1091,13 +1091,13 @@ scheduler:
         weight: 100
       git:
       - policy: origins_without_last_update
-        weight: 85
+        weight: 5
         tablesample: 0.1
       - policy: never_visited_oldest_update_first
-        weight: 10
+        weight: 80
         tablesample: 0.1
       - policy: already_visited_order_by_lag
-        weight: 5
+        weight: 15
         tablesample: 0.1
   rpc:
     enabled: false
