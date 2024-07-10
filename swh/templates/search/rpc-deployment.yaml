@@ -1,4 +1,9 @@
 {{ if .Values.search.enabled -}}
+{{- $checksumConfig := include "swh.search.configuration"
+  (dict "serviceType" "search"
+        "configurationRef" .Values.search.elasticsearchConfigurationRef
+        "Values" .Values) | sha256sum -}}
+{{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +29,8 @@ spec:
       labels:
         app: search-rpc
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/search/rpc-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ $checksumConfig }}
+        checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       {{- if .Values.search.affinity }}
       affinity:

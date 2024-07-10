@@ -1,12 +1,12 @@
 {{ if and .Values.search.enabled .Values.search.journalClients.enabled -}}
+{{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- range $journal_client_type, $journal_client_config := .Values.search.journalClients.deployments -}}
 {{- if or (not (hasKey $journal_client_config "enabled")) (get $journal_client_config "enabled") -}}
-{{- $configurationChecksum := include "swh.journal.client.configmap"
+{{- $configChecksum := include "swh.journal.client.configmap"
   (dict "journal_client_type" $journal_client_type
         "configuration" $.Values.search.journalClients
         "journal_client_config" $journal_client_config
-        "Values" $.Values) -}}
-
+        "Values" $.Values) | sha256sum -}}
 {{- $log_level := $journal_client_config.logLevel | default "INFO" -}}
 {{- $journal_client_name := print "search-journal-client-" $journal_client_type -}}
 ---
@@ -31,7 +31,8 @@ spec:
       labels:
         app: {{ $journal_client_name }}
       annotations:
-        checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config: {{ $configChecksum }}
+        checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       {{- if $.Values.search.journalClients.affinity }}
       affinity:
