@@ -4,6 +4,8 @@
         "configurationRef" .Values.search.elasticsearchConfigurationRef
         "Values" .Values) | sha256sum -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
+{{- $initializeSearchBackend := and .Values.search.backend .Values.search.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,6 +33,7 @@ spec:
       annotations:
         checksum/config: {{ $checksumConfig }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
+        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
     spec:
       {{- if .Values.search.affinity }}
       affinity:
@@ -55,6 +58,12 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
+        {{- if $initializeSearchBackend }}
+        {{ include "swh.initializeSearchBackend"
+          (dict "Values" $.Values
+                "imagePrefixName" "swh_search_image"
+                "module" "search") | nindent 8 }}
+        {{- end }}
       containers:
         - name: search-rpc
           resources:
@@ -139,5 +148,9 @@ spec:
       - name: config-utils
         configMap:
           name: config-utils
+          defaultMode: 0555
+      - name: database-utils
+        configMap:
+          name: database-utils
           defaultMode: 0555
 {{- end -}}

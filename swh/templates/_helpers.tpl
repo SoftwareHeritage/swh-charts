@@ -451,6 +451,25 @@ Generate the configuration for a journal writer
     mountPath: /entrypoints
 {{- end -}}
 
+{{/* Generate the initialize search backend init container if needed */}}
+{{- define "swh.initializeSearchBackend" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "initialize-search-backend" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/initialize-search-backend.sh
+  env:
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: database-utils
+    mountPath: /entrypoints
+{{- end -}}
+
+
 {{/* Generate the initialize backend container configuration if needed */}}
 {{- define "swh.migrateBackend" -}}
 {{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |

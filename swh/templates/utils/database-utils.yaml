@@ -5,6 +5,13 @@ metadata:
   name: database-utils
   namespace: {{ $.Values.namespace }}
 data:
+  initialize-search-backend.sh: |
+    #!/usr/bin/env bash
+
+    set -eux
+
+    # This is not able to use the environment variable SWH_CONFIG_FILENAME yet
+    swh search -C $SWH_CONFIG_FILENAME initialize
   register-task-types.sh: |
     #!/usr/bin/env bash
 

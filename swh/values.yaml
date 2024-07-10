@@ -1211,6 +1211,8 @@ search:
     enabled: false
     secretKeyRef: swh-search-sentry-secret
     secretKeyName: sentry-dsn
+  backend:
+    initialize: false
   elasticsearchConfigurationRef: defaultElasticsearchConfiguration
   # logLevel: INFO
   # replicas: 2

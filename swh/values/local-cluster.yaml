@@ -966,8 +966,9 @@ elasticsearchConfiguration:
 search:
   enabled: false
   priorityClassName: frontend-rpc
-  sentry:
-    enabled: false
+  backend:
+    initialize: true
+
   elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
   replicas: 1
