@@ -283,3 +283,9 @@ elasticsearch:
     # quickstart:
     #   replicas: 1
 
+redis:
+  enabled: false
+  namespace: swh
+  deployments:
+    counters:
+      replicas: 3
