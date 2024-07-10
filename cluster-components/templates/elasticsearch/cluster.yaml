@@ -2,6 +2,7 @@
 {{- range $clusterName, $clusterConfig := .Values.elasticsearch.deployments }}
 {{- $nodeName := $clusterConfig.nodeName | default $.Values.elasticsearch.nodeName | default "default" -}}
 {{- $version := $clusterConfig.version | default $.Values.elasticsearch.version -}}
+{{- $disableTLS := $clusterConfig.disableTLS | default $.Values.elasticsearch.disableTLS | default false -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -31,5 +32,11 @@ spec:
       # use is unsupported]
       # xpack.security.enabled: false
       # xpack.security.http.ssl.enabled: true
+  {{- if $disableTLS }}
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+  {{ end }}
 {{ end }}
 {{ end }}

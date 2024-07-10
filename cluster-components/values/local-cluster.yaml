@@ -275,6 +275,8 @@ elasticsearch:
   deployments:
     search:
       replicas: 1
+      # For test only
+      disableTLS: true
       # version: 8.14.2
       nodeName: node
     # quickstart:
