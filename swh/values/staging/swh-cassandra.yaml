@@ -457,7 +457,7 @@ storageReplayerJournalClientConfiguration:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER
     BROKER_USER_PASSWORD:
-      secretKeyRef: swh-cassandra-broker-secret
+      secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
 
 storageReplayer:
