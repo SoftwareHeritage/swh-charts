@@ -395,7 +395,7 @@ web:
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       ingress:
-        enabled: false
+        enabled: true
         # tlsEnabled: true
         # extraAnnotations:
         #   nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
@@ -404,12 +404,12 @@ web:
         #   nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
         #   nginx.ingress.kubernetes.io/proxy-body-size: "4G"
         # whitelistSourceRangeRef: internalNetworkRanges
-        # endpoints:
-        #   default:
-        #     paths:
-        #       - path: /
-        #       - path: /static
-        #         port: 80
+        endpoints:
+          default:
+            paths:
+              - path: /
+              - path: /static
+                port: 80
         #   authenticated:
         #     paths:
         #       - path: /api/1/provenance/
@@ -427,8 +427,6 @@ web:
         configurationRef: fakeSyncmailmapsConfiguration
       sentry:
         enabled: false
-        secretKeyRef: sentry-secrets
-        secretKeyName: web-sentry-dsn
       extraConfig:
         debug: false
         search_config:
