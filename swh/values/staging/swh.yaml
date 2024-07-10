@@ -22,11 +22,14 @@ scrubberJournalClientConfiguration:
   on_eof: restart
   sasl.mechanism: SCRAM-SHA-512
   security.protocol: SASL_SSL
-  sasl.username: swh-archive-stg
+  sasl.username: ${BROKER_USER}
   sasl.password: ${BROKER_USER_PASSWORD}
   prefix: swh.journal.objects
   message.max.bytes: 524288000
   secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
