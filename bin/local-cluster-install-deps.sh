@@ -37,3 +37,8 @@ $HELM upgrade --install k8ssandra-operator \
 $HELM upgrade --install eck-operator \
      elastic/eck-operator \
      -n elastic-system --create-namespace
+
+$HELM upgrade --install redis-operator \
+     ot-helm/redis-operator \
+     -n ot-operators --create-namespace \
+     --version 0.15.10

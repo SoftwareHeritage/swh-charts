@@ -1,0 +1,26 @@
+{{ if .Values.redis.enabled -}}
+{{- $appName := print .Values.clusterName "-redis-operator" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: redis-operator
+    repoURL: https://ot-container-kit.github.io/helm-charts/
+    targetRevision: {{ .Values.redis.version }}
+    helm:
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ $appName }}
+
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.redis.namespace | default "ot-operators" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+{{ end }}

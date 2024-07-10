@@ -55,3 +55,10 @@ eck-operator:
   #   --namespace elastic-system --create-namespace
   enabled: true
 
+redis:
+  # To match the enabled flag to true, use the following cli:
+  # helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
+  # helm --kube-context $CLUSTER_CONTEXT upgrade --install redis-operator \
+  #   ot-helm/redis-operator \
+  #   --namespace ot-operators --create-namespace
+  enabled: true
