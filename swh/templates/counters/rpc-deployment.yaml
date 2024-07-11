@@ -69,6 +69,7 @@ spec:
         {{- end }}
       containers:
         - name: counters-rpc
+          {{- if $.Values.counters.refreshCountersCache.historyFiles }}
           # Workaround until we have a way to define distributed volumes
           # This initializes the history cache file
           lifecycle:
@@ -80,6 +81,7 @@ spec:
                   - {{ $historyFile }}
                   {{- end }}
                   - localhost:{{ .Values.counters.port }}
+          {{- end }}
           resources:
             requests:
               memory: {{ .Values.counters.rpc.requestedMemory | default "512Mi" }}
