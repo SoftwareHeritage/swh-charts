@@ -1166,7 +1166,7 @@ objstorage:
 
 localRedis:
   cls: redis
-  host: redis-counters-leader:6379
+  host: redis-counters:6379
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
