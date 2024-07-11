@@ -1,7 +1,7 @@
-environment: minikube
+environment: local-cluster
 sentry:
   enabled: false
-  environment: minikube
+  environment: local-cluster
 
 statsd_exporter:
   enabled: false
@@ -36,7 +36,7 @@ remoteStorageMetadataConfiguration:
 
 fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
-  realm_name: SwhMinikube
+  realm_name: SwhLocalCluster
 
 postgresqlRWStorageConfiguration:
   cls: postgresql
@@ -197,16 +197,16 @@ schedulerJournalClientConfiguration:
 scrubberJournalCheckerClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
-  group_id: swh-minikube-journal-checker
+  group_id: swh-scrubber-journal-checker
   prefix: swh.journal.objects
 
 webhookJournalClientConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
-  group_id: swh-minikube-webhooks
+  group_id: swh-webhooks
 
 searchJournalClientConfiguration:
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
-  group_id: swh-minikube-search
+  group_id: swh-search
   prefix: swh.journal.objects
 
 depositApiConfiguration:
@@ -288,7 +288,7 @@ storage:
 storageReplayerJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
-  group_id: swh-minikube-journal-checker
+  group_id: swh-journal-checker
   prefix: swh.journal.objects
   message.max.bytes: "524288000"
   privileged: false
@@ -370,7 +370,7 @@ webThrottling:
 web:
   enabled: false
   deployments:
-    minikube:
+    local-archive:
       enabled: true
       migrations:
         enabled: true
@@ -381,7 +381,7 @@ web:
       #   maxReplicaCount: 1
       #   cpuPercentageUsage: 50
       hosts:
-        - web-minikube
+        - web-local-archive
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -477,7 +477,7 @@ webhooksConfiguration:
 
 webhookRegisterEndpointConfiguration:
   # specifically for the register event type endpoint in webhooks
-  url: https://web-minikube/save/origin/visit/webhook/
+  url: https://web-local-archive/save/origin/visit/webhook/
   webhookSecret:
     key: svix-server-secrets
     name: webhook-secret
@@ -501,13 +501,13 @@ webhooks:
       backend:
         registerEventTypes: true
         registerEndpoints:
-          url: https://web-minikube/save/origin/visit/webhook/
+          url: https://web-local-archive/save/origin/visit/webhook/
           webhookToken:
             name: svix-server-secrets
             key: webhooks-secret
       journalClientOverrides:
         auto_offset_reset: latest
-        group_id: swh-minikube-webhooks
+        group_id: swh-webhooks
         object_types:
           - origin_visit_status
 
@@ -642,7 +642,7 @@ scheduler:
     #   maxReplicaCount: 20
     #   cpuPercentageUsage: 150
     # hosts:
-    #   - myscheduler.minikube.domain
+    #   - myscheduler.domain
     ingress:
       enabled: false
       # Default allowed ip ranges that can be extended per ingress definitions paths
@@ -721,7 +721,7 @@ cookers:
 indexerJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
-  group_id: swh-minikube-indexer-journal-client
+  group_id: swh-indexer-journal-client
   prefix: swh.journal.indexed
 
 indexers:
@@ -738,7 +738,7 @@ indexers:
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         batch_size: 10
-        group_id: swh-minikube-indexer-journal-client-origin-intrinsic-metadata
+        group_id: swh-indexer-journal-client-origin-intrinsic-metadata
         prefix: swh.journal.objects
       extraConfig:
         tools:
@@ -749,7 +749,7 @@ indexers:
     # extrinsic:
     #   indexer_type: extrinsic_metadata
     #   journalClientOverrides:
-    #     group_id: swh-minikube-indexer-journal-client-extrinsic-metadata
+    #     group_id: swh-indexer-journal-client-extrinsic-metadata
     #     prefix: swh.journal.objects
     #     batch_size: 200
     #   extraConfig:
@@ -1162,7 +1162,7 @@ objstorage:
 #   live_data_start: 0
 #   interval: 12h
 #   labels:
-#     environment: minikube
+#     environment: local-cluster
 
 localRedis:
   cls: redis
