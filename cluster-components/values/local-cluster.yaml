@@ -268,13 +268,13 @@ cassandra:
     cassandra-cluster:
       datacenters:
         - name: dc1
-          replicas: 3
+          replicas: 1
 
 elasticsearch:
   enabled: false
   deployments:
     search:
-      replicas: 3
+      replicas: 1
       # For test environment (local-cluster, next-version) only
       disableSecurity: true
       disableTLS: true
@@ -287,5 +287,4 @@ redis:
   enabled: false
   namespace: swh
   deployments:
-    counters:
-      replicas: 3
+    counters: {}
