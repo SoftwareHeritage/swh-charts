@@ -762,7 +762,7 @@ indexers:
 graphql:
   enabled: false
   deployments:
-    fake:
+    archive:
       storageConfigurationRef: rpcROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       debug: no
@@ -772,13 +772,19 @@ graphql:
         threads: 1
         workers: 2
         timeout: 100
+      hosts:
+        - web-local-archive
       ingress:
-        enabled: false
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+        endpoints:
+          default:
+            paths:
+              - path: /graphql/
       auth:
         enabled: false
       maxRawContentSize: 10000
-      requestedMemory: 50Mi
-      requestedCpu: 50m
 
 listers:
   enabled: false
