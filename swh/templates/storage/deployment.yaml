@@ -1,5 +1,5 @@
 {{ if .Values.storage.enabled -}}
-{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $storage_type, $storage_config := .Values.storage.deployments }}
 {{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
@@ -35,7 +35,7 @@ spec:
         checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
                                                                   "configuration" $storage_config
                                                                   "Values" $.Values) | sha256sum }}
-        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
+        checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       {{- $nodeSelector := $storage_config.nodeSelector | default $.Values.storage.nodeSelector | default dict -}}
@@ -177,9 +177,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
       - name: config-utils
         configMap:

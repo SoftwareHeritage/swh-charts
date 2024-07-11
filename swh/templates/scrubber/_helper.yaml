@@ -124,6 +124,6 @@ data:
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}

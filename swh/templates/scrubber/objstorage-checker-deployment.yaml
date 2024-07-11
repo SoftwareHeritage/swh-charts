@@ -158,9 +158,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
       - name: config-utils
         configMap:

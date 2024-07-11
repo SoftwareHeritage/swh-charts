@@ -1,5 +1,5 @@
 {{ if .Values.indexerStorage.enabled -}}
-{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
 {{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
 {{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
 {{- $serviceType := ( print "indexer-storage-" $storage_type ) -}}
@@ -36,7 +36,7 @@ spec:
         app: {{ $serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
-        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
+        checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
     spec:
       {{- if $.Values.indexerStorage.affinity }}
       affinity:
@@ -163,9 +163,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
       - name: config-utils
         configMap:

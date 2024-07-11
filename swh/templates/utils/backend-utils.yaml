@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: database-utils
+  name: backend-utils
   namespace: {{ $.Values.namespace }}
 data:
   initialize-search-backend.sh: |

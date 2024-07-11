@@ -4,7 +4,7 @@
         "configurationRef" .Values.search.elasticsearchConfigurationRef
         "Values" .Values) | sha256sum -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $initializeSearchBackend := and .Values.search.backend .Values.search.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
@@ -33,7 +33,7 @@ spec:
       annotations:
         checksum/config: {{ $checksumConfig }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
-        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
+        checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
     spec:
       {{- if .Values.search.affinity }}
       affinity:
@@ -149,8 +149,8 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
 {{- end -}}

@@ -274,7 +274,7 @@ Generate the configuration for a journal writer
   - name: configuration
     mountPath: /etc/swh
     readOnly: true
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
     readOnly: true
     {{- end -}}
@@ -413,7 +413,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -447,7 +447,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -465,7 +465,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -488,7 +488,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -508,7 +508,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -528,7 +528,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 
@@ -559,7 +559,7 @@ Generate the configuration for a journal writer
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
-  - name: database-utils
+  - name: backend-utils
     mountPath: /entrypoints
 {{- end -}}
 

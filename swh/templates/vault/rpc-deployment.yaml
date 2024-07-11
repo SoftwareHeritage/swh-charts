@@ -153,8 +153,8 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
 {{- end -}}

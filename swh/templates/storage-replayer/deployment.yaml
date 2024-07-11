@@ -1,5 +1,5 @@
 {{ if .Values.storageReplayer.enabled -}}
-{{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . -}}
+{{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . -}}
 {{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $configurationToChecksum := include "swh.storageReplayer.configmap"
@@ -111,7 +111,7 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-          - name: database-utils
+          - name: backend-utils
             mountPath: /entrypoints
       volumes:
       - name: configuration
@@ -122,9 +122,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
 {{ end }}
 {{ end }}

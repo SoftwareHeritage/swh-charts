@@ -1,5 +1,5 @@
 {{ if .Values.storage_backfiller.enabled -}}
-{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/database-utils.yaml") . | sha256sum  -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- range $deployment, $deployment_config := .Values.storage_backfiller.deployments -}}
 {{- if (get $deployment_config "enabled") -}}
@@ -33,7 +33,7 @@ spec:
         checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
                                                                   "configuration" $deployment_config
                                                                   "Values" $.Values) | sha256sum }}
-        checksum/database-utils: {{ $databaseUtilsPathChecksum }}
+        checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       restartPolicy: Never
@@ -132,9 +132,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: database-utils
+      - name: backend-utils
         configMap:
-          name: database-utils
+          name: backend-utils
           defaultMode: 0555
       - name: config-utils
         configMap:
