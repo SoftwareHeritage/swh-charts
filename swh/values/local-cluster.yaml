@@ -18,9 +18,9 @@ remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc:5005
 
-fakeRemoteCountersConfiguration:
+remoteCountersConfiguration:
   cls: remote
-  url: http://fake-counters.i.s.s.n:5011
+  url: http://counters-rpc:5011
 
 remoteIndexerStorageConfiguration:
   cls: remote
@@ -386,7 +386,7 @@ web:
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
-      countersConfigurationRef: fakeRemoteCountersConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
       databaseConfigurationRef: postgresqlWebConfiguration
       djangoConfigurationRef: djangoWebConfiguration
       depositConfigurationRef: depositApiConfiguration
@@ -433,7 +433,7 @@ web:
           metadata_backend: swh-indexer-storage
         content_display_max_size: 5242880
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
-        history_counters_url: http://counters0.i.s.s.n:5011/counters_history/history.json
+        history_counters_url: http://counters-rpc:5011/counters_history/history.json
         add_forge_now:
           email_address: add-forge-now@webapp.s.s.n
         swh_extra_django_apps:
@@ -1155,66 +1155,53 @@ objstorage:
             paths:
               - path: /
 
-fakeHistoryConfiguration:
-  cls: prometheus
-  prometheus_host: thanos.i.a.s.n
-  prometheus_port: 19191
-  live_data_start: 0
-  interval: 12h
-  labels:
-    environment: staging
+# historyConfiguration:
+#   cls: prometheus
+#   prometheus_host: thanos.i.a.s.n
+#   prometheus_port: 19191
+#   live_data_start: 0
+#   interval: 12h
+#   labels:
+#     environment: minikube
 
-fakeLocalRedis:
+localRedis:
   cls: redis
-  host: localhost:6379
+  host: redis-counters-leader:6379
+
+countersJournalClientConfiguration:
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-counters-journal-client
+  prefix: swh.journal.objects
+  object_types:
+  - content
+  - directory
+  - origin
+  - origin_visit
+  - origin_visit_status
+  - release
+  - revision
+  - skipped_content
+  - snapshot
+  message.max.bytes: 524288000
 
 counters:
   enabled: false
+  journalClient:
+    enabled: true
+    countersConfigurationRef: remoteCountersConfiguration
+    journalConfigurationRef: countersJournalClientConfiguration
   refreshCountersCache:
     enabled: false
     cron: "0 */1 * * *"
     concurrencyPolicy: Forbid
-    countersConfigurationRef: fakeRemoteCountersConfiguration
-    historyFiles:
-      - history.json
-      - '""'
+    countersConfigurationRef: remoteCountersConfiguration
+    historyFiles: []
   rpc:
-    enabled: false
-    fetchStaticHistory: true
+    enabled: true
     cacheBaseDirectory: /tmp/counters
-    countersConfigurationRef: fakeLocalRedis
-    historyConfigurationRef: fakeHistoryConfiguration
-    requestedMemory: 20Mi
-    limitedMemory: 40Mi
-    requestedCpu: 10m
-    limitedCpu: 20m
+    countersConfigurationRef: localRedis
+    # historyConfigurationRef: historyConfiguration
     replicas: 1
-    gunicorn:
-      threads: 1
-      workers: 1
-      timeout: 10
-    # autoScaling:
-    #   minReplicaCount: 4
-    #   maxReplicaCount: 20
-    #   cpuPercentageUsage: 150
-    hosts:
-      - mycounters.minikube.domain
-    ingress:
-      enabled: false
-      # Default allowed ip ranges that can be extended per ingress definitions paths
-      whitelistSourceRangeRef: internalNetworkRanges
-      endpoints:
-        default:
-          paths:
-            - path: /
-  journalClient:
-    enabled: false
-    countersConfigurationRef: fakeRemoteCountersConfiguration
-    journalConfigurationRef: schedulerJournalClientConfiguration
-    requestedMemory: 15Mi
-    limitedMemory: 30Mi
-    requestedCpu: 50m
-    limitedCpu: 100m
 
 alter:
   enabled: false
