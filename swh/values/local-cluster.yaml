@@ -26,10 +26,6 @@ remoteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-write:5007
 
-rpcROObjstorageConfiguration:
-  cls: remote
-  url: http://objstorage-read-only:5003
-
 rpcRWObjstorageConfiguration:
   cls: remote
   url: http://objstorage-read-write:5003
@@ -267,7 +263,7 @@ rwStorageCassandraWithJournalConfiguration:
 
 roStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
-  objstorageConfigurationRef: rpcROObjstorageConfiguration
+  objstorageConfigurationRef: rpcRWObjstorageConfiguration
 
 storage:
   enabled: false
@@ -734,7 +730,7 @@ indexers:
   storageConfigurationRef: rpcROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  objstorageConfigurationRef: rpcROObjstorageConfiguration
+  objstorageConfigurationRef: rpcRWObjstorageConfiguration
   journalClientConfigurationRef: indexerJournalClientConfiguration
   deployments:
     origin-intrinsic:
@@ -885,7 +881,7 @@ vault:
   logLevel: INFO
   vaultConfigurationRef: postgresqlVaultConfiguration
   storageConfigurationRef: rpcROStorageConfiguration
-  objstorageConfigurationRef: rpcROObjstorageConfiguration
+  objstorageConfigurationRef: rpcRWObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
 
   # The scheduler instance to use for rpc must be a postgresql instance
@@ -1052,7 +1048,7 @@ scrubber:
     journalClientConfigurationRef: scrubberJournalCheckerClientConfiguration
     deployments:
       storage:
-        objstorageConfigurationRef: rpcROObjstorageConfiguration
+        objstorageConfigurationRef: rpcRWObjstorageConfiguration
         configName: objstorage-checker-content
         backend:
           check: false
@@ -1090,25 +1086,21 @@ objstorage:
         pathslicing-rw:
           mountPath: /srv/swh/objects
           volumeDefinition:
-            hostPath:
-              path: /srv/swh/objects
-              type: DirectoryOrCreate  # Use Directory for production/staging
+            ephemeral:
+              volumeClaimTemplate:
+                metadata:
+                  labels:
+                    type: persistent-volume
+                spec:
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+                  storageClassName: standard
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
-      objstorageConfigurationRef: pathslicingObjstorageConfiguration
-
-    read-only:
-      enabled: true
-      replicas: 1
-      extraVolumes:
-        pathslicing-ro:
-          mountPath: /srv/swh/objects
-          readOnly: true
-          volumeDefinition:
-            hostPath:
-              path: /srv/swh/objects
-              type: DirectoryOrCreate
       objstorageConfigurationRef: pathslicingObjstorageConfiguration
 
 # historyConfiguration:
