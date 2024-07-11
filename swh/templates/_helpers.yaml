@@ -1,5 +1,3 @@
-# -*- yaml -*-
-
 {{/*
 Create a connstring out of a configuration reference.
 */}}
