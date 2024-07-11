@@ -17,3 +17,5 @@ $HELM uninstall -n kafka-system kafka-operator
 $HELM uninstall -n cert-manager cert-manager
 
 $HELM uninstall -n k8ssandra-operator k8ssandra-operator
+
+$HELM uninstall -n ot-operators redis-operator
