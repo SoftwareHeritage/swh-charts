@@ -1602,10 +1602,15 @@ webhooks:
 counters:
   enabled: false
   port: 5011
+  logLevel: INFO
   sentry:
-    enabled: true
+    enabled: false
     secretKeyRef: common-secrets
     secretKeyName: counters-sentry-dsn
+  journalClient:
+    enabled: false
+    # countersConfigurationRef: remoteCountersConfiguration
+    # journalConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
     enabled: false
     cron: "0 */4 * * *"
@@ -1616,10 +1621,13 @@ counters:
       - static_history.json
   rpc:
     enabled: false
+    # Enable metrics scraping or not
+    scrapeMetrics: false
+    # (For older services) Enable fetching historical data
     fetchStaticHistory: false
-    cacheBaseDirectory: /srv/softwareheritage/counters
+    # Where to store the on-disk counter representation
+    # cacheBaseDirectory: /srv/softwareheritage/counters
     priorityClassName: frontend-rpc
-    logLevel: INFO
     # The scheduler instance to use for rpc must be a postgresql instance
     # countersConfigurationRef: countersConfiguration
     # historyConfigurationRef: historyCountersConfiguration
@@ -1668,10 +1676,6 @@ counters:
       #     # Extra allowed ip range for the paths above
       #     extraWhitelistSourceRange:
       #       - yyy.yyy.yyy.yyy/24
-  journalClient:
-    enabled: false
-    # countersConfigurationRef: remoteCountersConfiguration
-    # journalConfigurationRef: journalClientCountersConfiguration
 
 objstorageReplayer:
   enabled: false

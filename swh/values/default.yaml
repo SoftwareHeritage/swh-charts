@@ -305,6 +305,8 @@ statsd_exporter:
   enabled: true
 
 counters:
+  sentry:
+    enabled: true
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
