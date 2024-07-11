@@ -146,7 +146,8 @@ cloudnativePg:
       ensure: present
       comment: Guest
       login: true
-      superuser: false
+      connectionLimit: -1
+      inherit: true
       passwordSecret:
         name: swh-postgresql-guest-secret
   # Exists as many cluster as we want
