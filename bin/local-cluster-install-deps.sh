@@ -39,7 +39,7 @@ $HELM upgrade --install kafka-operator \
 $HELM upgrade --install cert-manager \
      jetstack/cert-manager \
      --namespace cert-manager --create-namespace \
-     --set installCRDs=true
+     --set crds.enabled=true
 
 $HELM upgrade --install k8ssandra-operator \
      k8ssandra/k8ssandra-operator \
