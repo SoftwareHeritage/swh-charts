@@ -1,4 +1,4 @@
-{{- if and .Values.counters.enabled .Values.counters.refreshCountersCache.enabled -}}
+{{- if and .Values.counters.enabled -}}
 {{- $configuration := get .Values .Values.counters.refreshCountersCache.countersConfigurationRef -}}
 {{- $host := get $configuration "url" }}
 ---
