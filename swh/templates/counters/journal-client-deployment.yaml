@@ -1,6 +1,5 @@
 {{ if and .Values.counters.enabled .Values.counters.journalClient.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/counters/journal-client-configmap.yaml") . -}}
-{{- $log_level := .Values.counters.journalClient.logLevel }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -65,12 +64,7 @@ spec:
           command:
           - /opt/swh/entrypoint.sh
           args:
-          # - shell
-          # - sleep
-          # - infinity
           - swh
-          - --log-level
-          - {{ $log_level | default "INFO" }}
           - counters
           - --config-file
           - /etc/swh/config.yml
@@ -85,7 +79,7 @@ spec:
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: SWH_LOG_LEVEL
-              value: {{ $log_level | default "INFO" }}
+              value: {{ .Values.counters.journalClient.logLevel | default $.Values.counters.logLevel | default "INFO" }}
           {{- if .Values.counters.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}

@@ -133,7 +133,7 @@ spec:
             - name: STATSD_TAGS
               value: deployment:counters-rpc
             - name: SWH_LOG_LEVEL
-              value: {{ .Values.counters.rpc.logLevel | default "INFO" }}
+              value: {{ .Values.counters.rpc.logLevel | default .Values.counters.logLevel | default "INFO" }}
           {{- if .Values.counters.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
