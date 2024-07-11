@@ -395,6 +395,7 @@ web:
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       ingress:
         enabled: true
+        className: nginx
         # tlsEnabled: true
         # extraAnnotations:
         #   nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
