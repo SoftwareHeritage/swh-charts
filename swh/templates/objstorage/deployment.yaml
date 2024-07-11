@@ -3,6 +3,7 @@
 {{ range $objstorage_type, $objstorage_config := .Values.objstorage.deployments }}
 {{- if or (not (hasKey $objstorage_config "enabled")) (get $objstorage_config "enabled") -}}
 {{- $serviceType := ( print "objstorage-" $objstorage_type ) -}}
+{{- $securityContext := $objstorage_config.securityContext | default $.Values.objstorage.securityContext -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -33,6 +34,10 @@ spec:
                                                                      "Values" $.Values) | sha256sum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
+      {{- if $securityContext }}
+      securityContext:
+        {{- toYaml $securityContext | nindent 8 }}
+      {{- end }}
       {{- $nodeSelector := $objstorage_config.nodeSelector | default $.Values.objstorage.nodeSelector | default dict -}}
       {{- if $nodeSelector }}
       nodeSelector:
