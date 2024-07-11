@@ -10,8 +10,8 @@ data:
 
     set -eux
 
-    # This is not able to use the environment variable SWH_CONFIG_FILENAME yet
-    swh search -C $SWH_CONFIG_FILENAME initialize
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    swh search initialize
   register-task-types.sh: |
     #!/usr/bin/env bash
 
