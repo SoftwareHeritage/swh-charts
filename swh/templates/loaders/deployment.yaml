@@ -157,7 +157,7 @@ spec:
         {{ end }}
       volumes:
       - name: localstorage
-{{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | indent 8 }}
+        {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | nindent 8 }}
       - name: configuration
         emptyDir: {}
       - name: configuration-template
