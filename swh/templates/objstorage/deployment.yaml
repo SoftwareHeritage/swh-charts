@@ -159,9 +159,9 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{ range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
+      {{- range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
       - name: {{ $volume_name }}
-        {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
+        {{- toYaml $volume_config.volumeDefinition | nindent 8 }}
       {{ end }}
 {{ end }}
 {{ end -}}
