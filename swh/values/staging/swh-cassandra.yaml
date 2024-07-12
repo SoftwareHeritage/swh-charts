@@ -934,13 +934,6 @@ toolbox:
       webDbConfigurationRef: postgresqlWebConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
-  bulkLoad:
-    schedulerConfigurationRef: scheduler
-    jobs:
-      mbed:
-        originListUrl: https://gitlab.softwareheritage.org/-/project/80/uploads/44f84f66479d3365ae5e8a40f1ffb709/mbed-test.lst
-        taskType: load-hg
-        maxTasks: 10
 
 scrubber:
   enabled: true
