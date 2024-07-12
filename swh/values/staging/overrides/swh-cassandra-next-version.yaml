@@ -460,6 +460,7 @@ scrubber:
 
 toolbox:
   enabled: true
+  bulkLoad: null
 
 objstorage:
   enabled: false

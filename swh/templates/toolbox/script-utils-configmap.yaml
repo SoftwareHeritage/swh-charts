@@ -7,6 +7,24 @@ metadata:
   name: toolbox-script-utils
   namespace: {{ $namespace }}
 data:
+  bulk_load.sh: |
+    #!/bin/bash
+
+    set -eux
+
+    echo "Downloading origins list from ${ORIGINS_URL} to ${ORIGINS}"
+    wget $ORIGINS_URL -O $ORIGINS
+
+    echo "Number of origins to schedule: $(wc -l $ORIGINS)"
+
+    echo "Sending origin list to rabbitmq ..."
+
+    cat $ORIGINS | swh scheduler origin \
+      send-origins-from-file-to-celery $TASK_TYPE --threshold=$MAX_TASKS \
+      --queue-name-prefix oneshot
+
+    echo "Done"
+
   register-task-types.sh: |
     #!/bin/bash
 
