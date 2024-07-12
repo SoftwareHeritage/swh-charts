@@ -28,17 +28,17 @@ spec:
       {{ end }}
       initContainers:
         - name: prepare-configuration-scheduler
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $job_config.swhUtilsImageVersion | default $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
-          - /bin/bash
-          args:
-          - -c
-          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config-scheduler.yml
+          - /entrypoints/prepare-configuration.sh
           env: {{ include "swh.secrets.envFromDeploymentConfig"
                   (dict "deploymentConfig" $schedulerConfig
                         "Values" $.Values) | nindent 10 }}
           volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
@@ -62,7 +62,7 @@ spec:
             {{- end }}
           env:
           - name: SWH_CONFIG_FILENAME
-            value: /etc/swh/config-scheduler.yml
+            value: /etc/swh/config.yml
           - name: ORIGINS
             value: {{ $job }}.lst
           - name: ORIGINS_URL
@@ -96,8 +96,6 @@ spec:
         configMap:
           name: toolbox-script-utils
           defaultMode: 0555
-
-
 {{ end }}
 {{- end }}
 
