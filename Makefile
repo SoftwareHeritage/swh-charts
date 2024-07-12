@@ -12,7 +12,12 @@ CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
 # For sandboxed environment
+LOCAL_CLUSTER_ENVIRONMENT=kind
 LOCAL_CLUSTER_CONTEXT=kind-local-cluster
+# You can chose to use minikube
+# LOCAL_CLUSTER_ENVIRONMENT=minikube
+# LOCAL_CLUSTER_CONTEXT=$(LOCAL_CLUSTER_ENVIRONMENT)
+
 # (deprecated) Retro-compatible name
 MINIKUBE_CONTEXT=$(LOCAL_CLUSTER_CONTEXT)
 
@@ -46,7 +51,7 @@ endif
 -include Makefile.local
 
 local-cluster-create:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) create
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) create $(LOCAL_CLUSTER_ENVIRONMENT)
 
 local-cluster-install-deps:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) install-deps
