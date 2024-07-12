@@ -612,6 +612,7 @@ toolbox:
       #   originListUrl: https://gitlab.softwareheritage.org/....
       #   taskType: load-git
       #   maxTasks: 10
+      #   queuePrefix: oneshot
 
 scheduler:
   enabled: false

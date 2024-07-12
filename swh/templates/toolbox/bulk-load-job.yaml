@@ -2,7 +2,8 @@
 {{ $schedulerConfigRef := required "toolbox.bulkLoad.schedulerConfigurationRef is mandatory" .Values.toolbox.bulkLoad.schedulerConfigurationRef }}
 {{ $schedulerConfig := required (print $schedulerConfigRef "not found in toolbox configs") (get .Values.toolbox.configs $schedulerConfigRef) }}
 {{- range $job, $job_config := .Values.toolbox.bulkLoad.jobs -}}
-{{- $name := ( print "bulk-load-" $job ) }}
+{{- $queuePrefix := required (print "queuePrefix is mandatory for bulk load job " $job) $job_config.queuePrefix -}}
+{{- $name := ( print "bulk-load-" $queuePrefix "-" $job ) }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -69,6 +70,8 @@ spec:
             value: {{ required (print "bulkLoad origins list url (originListUrl) is mandatory for " $job) $job_config.originListUrl }}
           - name: TASK_TYPE
             value: {{ required (print "bulkLoad taskType is mandatory for " $job) $job_config.taskType }}
+          - name: QUEUE_PREFIX
+            value: {{ $queuePrefix }}
           - name: MAX_TASKS
             value: {{ $job_config.maxTasks | default 1000 | quote }}
           command:

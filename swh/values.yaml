@@ -965,6 +965,8 @@ toolbox:
   #     originListUrl: https://gitlab.softwareheritage.org/-/project/80/uploads/b93c918fb0b11fd397db8f10b4eb65e9/mbed_hg_repos_sorted.txt
   #     taskType: load-hg
   #     maxTasks: 10
+  #     # The queue prefix to use. Must match one the queue configured in a loader
+  #     queuePrefix: oneshot
 
 externalServices:
   enabled: false

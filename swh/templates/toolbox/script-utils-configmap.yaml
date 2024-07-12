@@ -21,7 +21,7 @@ data:
 
     cat $ORIGINS | swh scheduler origin \
       send-origins-from-file-to-celery $TASK_TYPE --threshold=$MAX_TASKS \
-      --queue-name-prefix oneshot
+      --queue-name-prefix $QUEUE_PREFIX
 
     echo "Done"
 
