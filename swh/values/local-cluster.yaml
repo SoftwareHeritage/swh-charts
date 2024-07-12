@@ -601,6 +601,17 @@ toolbox:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+  bulkLoad:
+    # The name of the scheduler configuration entry in the toolbox configs
+    schedulerConfigurationRef: scheduler
+    # priorityClass
+    # swhUtilsImageVersion
+    # swhToolboxImageVersion
+    jobs:
+      # myforge:
+      #   originListUrl: https://gitlab.softwareheritage.org/....
+      #   taskType: load-git
+      #   maxTasks: 10
 
 scheduler:
   enabled: false
