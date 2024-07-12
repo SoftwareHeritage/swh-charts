@@ -2,8 +2,7 @@
 
 # This scripts installs the necessary dependencies for the charts to work
 
-CLUSTER_CONTEXT=${1-kind-local-cluster}
-
+CLUSTER_CONTEXT=${1-kind-local-cluster-2}
 HELM="helm --kube-context $CLUSTER_CONTEXT"
 
 # Install the helm repo dependencies
@@ -15,6 +14,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo add elastic https://helm.elastic.co
 helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add kedacore https://kedacore.github.io/charts
 helm repo update
 
 # cluster-components declare some dependencies we need to locally build
@@ -60,3 +60,7 @@ $HELM upgrade --install redis-operator \
      ot-helm/redis-operator \
      -n ot-operators --create-namespace \
      --version 0.15.10
+
+$HELM upgrade --install keda \
+      kedacore/keda \
+     -n keda --create-namespace
