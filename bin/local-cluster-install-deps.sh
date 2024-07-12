@@ -14,7 +14,13 @@ helm repo add k8ssandra https://helm.k8ssandra.io/stable
 helm repo add jetstack https://charts.jetstack.io
 helm repo add elastic https://helm.elastic.co
 helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
+
+# cluster-components declare some dependencies we need to locally build
+pushd cluster-components
+helm dependency build
+popd
 
 # Now actually installs the various operator dependencies
 
