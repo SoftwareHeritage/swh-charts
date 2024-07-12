@@ -952,6 +952,19 @@ toolbox:
   #     journalClientConfigurationRef: journalClientConfiguration
   #   vault:
   #     vaulDbtConfigurationRef: postgresqlVaultConfiguration
+  # bulkLoad:
+  # # (Madatory) The name of the scheduler configuration entry in the toolbox configs
+  # schedulerConfigurationRef: scheduler
+  # # priorityClass: ...
+  # # (Optional) Force the image versions if the job is still running during and an upgrade of
+  # # the images must be deployed
+  # # swhUtilsImageVersion:
+  # # swhToolboxImageVersion
+  # jobs:
+  #   mbed:
+  #     originListUrl: https://gitlab.softwareheritage.org/-/project/80/uploads/b93c918fb0b11fd397db8f10b4eb65e9/mbed_hg_repos_sorted.txt
+  #     taskType: load-hg
+  #     maxTasks: 10
 
 externalServices:
   enabled: false
