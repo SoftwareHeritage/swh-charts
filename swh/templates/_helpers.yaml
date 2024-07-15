@@ -3,15 +3,15 @@ Create a connstring out of a configuration reference.
 */}}
 {{- define "swh.connstring" -}}
 {{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.tpl:swh.connstring: The <host> property is mandatory in " .configurationRef)
+{{- $host := required (print "_helpers.yaml:swh.connstring: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
-{{- $port := required (print "_helpers.tpl:swh.connstring: The <port> property is mandatory in " .configurationRef)
+{{- $port := required (print "_helpers.yaml:swh.connstring: The <port> property is mandatory in " .configurationRef)
                     (get $configuration "port") -}}
-{{- $user := required (print "_helpers.tpl:swh.connstring: The <user> property is mandatory in " .configurationRef)
+{{- $user := required (print "_helpers.yaml:swh.connstring: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $password := required (print "_helpers.tpl:swh.connstring: The <pass> property is mandatory in " .configurationRef)
+{{- $password := required (print "_helpers.yaml:swh.connstring: The <pass> property is mandatory in " .configurationRef)
                     (get $configuration "pass") -}}
-{{- $db := required (print "_helpers.tpl:swh.connstring: The <db> property is mandatory in " .configurationRef)
+{{- $db := required (print "_helpers.yaml:swh.connstring: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}
 host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
 {{- end -}}
@@ -22,11 +22,11 @@ Create a global storage configuration based on configuration section aggregation
 {{- define "swh.storageConfiguration" -}}
 {{- $storageConfiguration := get .Values .configurationRef -}}
 {{- if not $storageConfiguration -}}
-  {{- fail (print "_helpers.tpl: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration") -}}
+  {{- fail (print "_helpers.yaml: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration") -}}
 {{- end -}}
 {{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}
 {{- if not $storageServiceConfigurationRef -}}
-  {{- fail (print "_helpers.tpl: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef) -}}
+  {{- fail (print "_helpers.yaml: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef) -}}
 {{- end -}}
 {{- $storageServiceConfiguration := get .Values $storageServiceConfigurationRef -}}
 {{- $storageType := get $storageServiceConfiguration "cls" -}}
@@ -41,7 +41,7 @@ Create a global storage configuration based on configuration section aggregation
 {{- else if eq $storageType "memory" -}}
   {{- $storageConfig = mustMergeOverwrite $storageConfig (dict "cls" "memory") -}}
 {{- else -}}
-  {{- fail (print "_helpers.tpl:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
+  {{- fail (print "_helpers.yaml:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
 {{- end -}}
 
 {{- $objstorageConfigurationRef :=  get $storageConfiguration "objstorageConfigurationRef" -}}
@@ -75,17 +75,17 @@ Create a global storage configuration based on configuration section aggregation
 {{/* Parse a storage pipeline steps definition out of the .pipelineStepsRef key */}}
 {{- define "swh.storage.parsePipelineSteps" -}}
 {{- if not (hasKey .Values .pipelineStepsRef) -}}
-  {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: No pipeline steps configuraton found:" .pipelineStepsRef) -}}
+  {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: No pipeline steps configuraton found:" .pipelineStepsRef) -}}
 {{- end -}}
 {{- $Values := .Values -}}
 {{- $pipelineSteps := (list) -}}
 {{- range $pipelineStep := get $Values .pipelineStepsRef -}}
   {{- if not (hasKey $pipelineStep "cls") -}}
-    {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
+    {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
   {{- end -}}
   {{- if (or (eq $pipelineStep.cls "masking") (eq $pipelineStep.cls "blocking")) -}}
     {{- if not (hasKey $pipelineStep "postgresqlConfigurationRef") -}}
-      {{- fail (print "_helpers.tpl:swh.storage.parsePipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
+      {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
     {{- end -}}
     {{- $cls := $pipelineStep.cls -}}
     {{- $keyDb := print $cls "_db" -}}
@@ -114,7 +114,7 @@ Create a global scheduler configuration based on scheduler section aggregation
 */}}
 {{- define "swh.schedulerConfiguration" -}}
 {{- $schedulerConfiguration := get .Values .configurationRef -}}
-{{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.tpl:swh.schedulerConfiguration: key <" .configurationRef "> is mandatory in global dict .Values")}}{{- end -}}
+{{- if not $schedulerConfiguration -}}{{ fail (print "_helpers.yaml:swh.schedulerConfiguration: key <" .configurationRef "> is mandatory in global dict .Values")}}{{- end -}}
 {{- $schedulerType := get $schedulerConfiguration "cls" -}}
 {{- if eq $schedulerType "remote" -}}
 {{ include "swh.service.fromYaml" (dict "service" "scheduler"
@@ -125,7 +125,7 @@ Create a global scheduler configuration based on scheduler section aggregation
                                   "Values" .Values
                                   "configurationRef" .configurationRef ) }}
 {{- else -}}
-{{- fail (print "_helpers.tpl:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
+{{- fail (print "_helpers.yaml:swh.schedulerConfiguration: Scheduler <" $schedulerType "> not implemented") -}}
 {{- end -}}
 {{- end -}}
 
@@ -135,13 +135,13 @@ configuration keys.
 */}}
 {{- define "celery.configuration" -}}
 {{- $celeryConfiguration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.tpl:celery.configuration: The <host> property is mandatory in " $celeryConfiguration)
+{{- $host := required (print "_helpers.yaml:celery.configuration: The <host> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "host") -}}
-{{- $port := required (print "_helpers.tpl:celery.configuration: The <port> property is mandatory in " $celeryConfiguration)
+{{- $port := required (print "_helpers.yaml:celery.configuration: The <port> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "port") -}}
-{{- $user := required (print "_helpers.tpl:celery.configuration: The <user> property is mandatory in " $celeryConfiguration)
+{{- $user := required (print "_helpers.yaml:celery.configuration: The <user> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "user") -}}
-{{- $pass := required (print "_helpers.tpl:celery.configuration: The <pass> property is mandatory in " $celeryConfiguration)
+{{- $pass := required (print "_helpers.yaml:celery.configuration: The <pass> property is mandatory in " $celeryConfiguration)
                     (get $celeryConfiguration "pass") -}}
 celery:
   task_broker: amqp://{{ $user }}:{{ $pass }}@{{ $host }}:{{ $port }}/%2f
@@ -152,11 +152,11 @@ Generate the deposit configuration for checkers & loaders.
 */}}
 {{- define "deposit.configuration" -}}
 {{- $depositConfiguration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.tpl:deposit.configuration: The <host> property is mandatory in " $depositConfiguration)
+{{- $host := required (print "_helpers.yaml:deposit.configuration: The <host> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "host") -}}
-{{- $user := required (print "_helpers.tpl:deposit.configuration: The <user> property is mandatory in " $depositConfiguration)
+{{- $user := required (print "_helpers.yaml:deposit.configuration: The <user> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "user") -}}
-{{- $pass := required (print "_helpers.tpl:deposit.configuration: The <pass> property is mandatory in " $depositConfiguration)
+{{- $pass := required (print "_helpers.yaml:deposit.configuration: The <pass> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "pass") -}}
 {{- $scheme := get $depositConfiguration "scheme" | default "https" -}}
 deposit:
@@ -183,15 +183,15 @@ deposit:
 
 {{- define "django.postgresql" -}}
 {{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.tpl:django.postgresql: The <host> property is mandatory in " .configurationRef)
+{{- $host := required (print "_helpers.yaml:django.postgresql: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
-{{- $port := required (print "_helpers.tpl:django.postgresql: The <port> property is mandatory in " .configurationRef)
+{{- $port := required (print "_helpers.yaml:django.postgresql: The <port> property is mandatory in " .configurationRef)
                     (get $configuration "port") -}}
-{{- $db := required (print "_helpers.tpl:django.postgresql: The <db> property is mandatory in " .configurationRef)
+{{- $db := required (print "_helpers.yaml:django.postgresql: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}
-{{- $user := required (print "_helpers.tpl:django.postgresql: The <user> property is mandatory in " .configurationRef)
+{{- $user := required (print "_helpers.yaml:django.postgresql: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $password := required (print "_helpers.tpl:django.postgresql: The <password> property is mandatory in " .configurationRef)
+{{- $password := required (print "_helpers.yaml:django.postgresql: The <password> property is mandatory in " .configurationRef)
                     (get $configuration "pass") }}
   host: {{ $host }}
   port: {{ $port }}
@@ -285,7 +285,7 @@ Generate the configuration for a journal writer
   {{/* Check that the secret is not clashing */}}
   {{- $collected := get $.collectedSecrets $secretName -}}
   {{- if (and $collected (not (deepEqual $collected $secretsConfig))) -}}
-    {{- fail (print "_helpers.tpl:swh.secrets.mergeDicts: "
+    {{- fail (print "_helpers.yaml:swh.secrets.mergeDicts: "
                   "Duplicate secret <" $secretName ">, with incompatible values <"
                   $collected "> and <" $secretsConfig "> at path " $.path) -}}
   {{- end -}}
@@ -297,10 +297,10 @@ Generate the configuration for a journal writer
 {{- define "swh.secrets.dictFromDeploymentConfig" -}}
 {{/* Check mandatory keys */}}
 {{- if (not (hasKey . "deploymentConfig")) -}}
-  {{- fail "_helpers.tpl:swh.secrets.dictFromDeploymentConfig missing deploymentConfig" -}}
+  {{- fail "_helpers.yaml:swh.secrets.dictFromDeploymentConfig missing deploymentConfig" -}}
 {{- end -}}
 {{- if (not (hasKey . "Values")) -}}
-  {{- fail "_helpers.tpl:swh.secrets.dictFromDeploymentConfig missing Values" -}}
+  {{- fail "_helpers.yaml:swh.secrets.dictFromDeploymentConfig missing Values" -}}
 {{- end -}}
 {{/* To access .Values from nested ranges */}}
 {{- $Values := .Values -}}
@@ -327,7 +327,7 @@ Generate the configuration for a journal writer
   {{- else if (and (ne "secretKeyRef" $key) (hasSuffix "Ref" $key) (kindIs "string" $value)) -}}
     {{/* This is an indirect config, we need to pull it from $Values then recurse */}}
     {{- $referencedConfig := get $Values $value | required (print
-          "_helpers.tpl:swh.secrets.dictFromDeploymentConfig: "
+          "_helpers.yaml:swh.secrets.dictFromDeploymentConfig: "
           "missing definition for <" $value "> referenced as a <" $key "> ") -}}
     {{/* recurse into the referencedConfig */}}
     {{- if (kindIs "map" $referencedConfig) -}}

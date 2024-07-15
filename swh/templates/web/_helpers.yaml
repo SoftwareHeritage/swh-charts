@@ -30,11 +30,11 @@ the checkers & loaders's equivalent).
 */}}
 {{- define "deposit.configuration.api.private" -}}
 {{- $depositConfiguration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.tpl:deposit.configuration.api.private: The <host> property is mandatory in " $depositConfiguration)
+{{- $host := required (print "_helpers.yaml:deposit.configuration.api.private: The <host> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "host") -}}
-{{- $user := required (print "_helpers.tpl:deposit.configuration.api.private: The <user> property is mandatory in " $depositConfiguration)
+{{- $user := required (print "_helpers.yaml:deposit.configuration.api.private: The <user> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "user") -}}
-{{- $pass := required (print "_helpers.tpl:deposit.configuration.api.private: The <pass> property is mandatory in " $depositConfiguration)
+{{- $pass := required (print "_helpers.yaml:deposit.configuration.api.private: The <pass> property is mandatory in " $depositConfiguration)
                     (get $depositConfiguration "pass") -}}
 deposit:
   private_api_url: https://{{ $host }}/1/private/
@@ -54,13 +54,13 @@ Generate the ~/.pg_service.conf
 */}}
 {{- define "swh.web.pgService" -}}
 {{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "web._helpers.tpl:swh.web.pgService: The <host> property is mandatory in " .configurationRef)
+{{- $host := required (print "web._helpers.yaml:swh.web.pgService: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
-{{- $port := required (print "web._helpers.tpl:swh.web.pgService: The <port> property is mandatory in " .configurationRef)
+{{- $port := required (print "web._helpers.yaml:swh.web.pgService: The <port> property is mandatory in " .configurationRef)
                     (get $configuration "port") -}}
-{{- $user := required (print "web._helpers.tpl:swh.web.pgService: The <user> property is mandatory in " .configurationRef)
+{{- $user := required (print "web._helpers.yaml:swh.web.pgService: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $db := required (print "web._helpers.tpl:swh.web.pgService: The <db> property is mandatory in " .configurationRef)
+{{- $db := required (print "web._helpers.yaml:swh.web.pgService: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}
 [{{ .serviceType }}]
 dbname={{ $db }}
@@ -74,15 +74,15 @@ Generate the ~/.pgpass
 */}}
 {{- define "swh.web.pgpass" -}}
 {{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "web._helpers.tpl:swh.web.pgpass: The <host> property is mandatory in " .configurationRef)
+{{- $host := required (print "web._helpers.yaml:swh.web.pgpass: The <host> property is mandatory in " .configurationRef)
                     (get $configuration "host") -}}
-{{- $port := required (print "web._helpers.tpl:swh.web.pgpass: The <port> property is mandatory in " .configurationRef)
+{{- $port := required (print "web._helpers.yaml:swh.web.pgpass: The <port> property is mandatory in " .configurationRef)
                     (get $configuration "port") -}}
-{{- $db := required (print "web._helpers.tpl:swh.web.pgpass: The <db> property is mandatory in " .configurationRef)
+{{- $db := required (print "web._helpers.yaml:swh.web.pgpass: The <db> property is mandatory in " .configurationRef)
                     (get $configuration "db") -}}
-{{- $user := required (print "web._helpers.tpl:swh.web.pgpass: The <user> property is mandatory in " .configurationRef)
+{{- $user := required (print "web._helpers.yaml:swh.web.pgpass: The <user> property is mandatory in " .configurationRef)
                     (get $configuration "user") -}}
-{{- $password := required (print "web._helpers.tpl:swh.web.pgpass: The <pass> property is mandatory in " .configurationRef)
+{{- $password := required (print "web._helpers.yaml:swh.web.pgpass: The <pass> property is mandatory in " .configurationRef)
                     (get $configuration "pass") -}}
 {{ $host }}:{{ $port }}:{{ $db }}:{{ $user }}:{{ $password }}
 {{ end }}

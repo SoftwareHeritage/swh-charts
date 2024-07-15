@@ -1,7 +1,7 @@
 {{ if .Values.otlpCollector.enabled }}
 # Retrieve the content of the collector.yaml and pass it to the "helm" > "values" key
 # config with the proper indentation spaces
-{{- $collector_config_tpl := include (print $.Template.BasePath "/otlp-collector/_collector.tpl") . }}
+{{- $collector_config_tpl := include (print $.Template.BasePath "/otlp-collector/_collector.yaml") . }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
