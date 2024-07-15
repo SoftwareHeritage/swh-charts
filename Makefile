@@ -62,6 +62,12 @@ local-cluster-restart:
 local-cluster-cleanup-deps:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) cleanup-deps
 
+local-cluster-pause:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) pause $(LOCAL_CLUSTER_ENVIRONMENT)
+
+local-cluster-unpause:
+	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) unpause $(LOCAL_CLUSTER_ENVIRONMENT)
+
 local-cluster-delete:
 	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) delete
 

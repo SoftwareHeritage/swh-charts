@@ -14,7 +14,7 @@ This installs the required dependencies so we can install the various swh charts
 
 help: This help message
 CLUSTER: the cluster context (e.g. kind-local-cluster, swh-1, swh-2, ...)
-ACTION: create|install-deps|cleanup-deps|delete
+ACTION: create|install-deps|cleanup-deps|pause|unpause|delete
 
 "
 }
@@ -42,12 +42,17 @@ case "$2" in
     install-deps|install)
         bin/local-cluster-install-deps.sh $CLUSTER_CONTEXT
         ;;
-
-    cleanup-deps|cleanup)
+    uninstall-deps|uninstall|cleanup|remove-deps|uninstall-deps)
         bin/local-cluster-cleanup-deps.sh $CLUSTER_CONTEXT
         ;;
     delete)
         bin/local-cluster-delete.sh $CLUSTER_CONTEXT
+        ;;
+    pause)
+        bin/local-cluster-pause.sh $CLUSTER_CONTEXT
+        ;;
+    unpause)
+        bin/local-cluster-unpause.sh $CLUSTER_CONTEXT
         ;;
     *)
         echo "Unknown action <$1>: do nothing"
