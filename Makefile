@@ -96,6 +96,7 @@ ss-helm-diff:
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 swh-minikube: swh-local-cluster
+local-cluster-swh: swh-local-cluster
 swh-local-cluster:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh ; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
@@ -106,6 +107,7 @@ swh-local-cluster:
       -n swh --debug
 
 swh-uninstall: swh-local-cluster-uninstall
+local-cluster-uninstall-swh: swh-local-cluster-uninstall
 swh-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
@@ -160,6 +162,7 @@ swh-template-production-cassandra:
       -n swh --create-namespace --debug
 
 cc-minikube: cc-local-cluster
+local-cluster-cc: cc-local-cluster
 cc-local-cluster:
 	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
@@ -173,6 +176,7 @@ cc-local-cluster:
       --namespace cluster-components --create-namespace --debug
 
 cc-uninstall: cc-local-cluster-uninstall
+local-cluster-uninstall-cc: cc-local-cluster-uninstall
 cc-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
     kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
@@ -270,6 +274,7 @@ ss-local-cluster:
       -n software-stories --create-namespace --debug
 
 ss-uninstall: ss-local-cluster-uninstall
+local-cluster-uninstall-ss: ss-local-cluster-uninstall
 ss-local-cluster-uninstall:
 	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SS_CHART) -n software-stories
 
