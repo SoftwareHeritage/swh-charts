@@ -11,6 +11,8 @@ CC_CHART=cluster-components
 CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
+SECRET_FILES='$(SWH_CHART)/fake-secrets'
+
 # For sandboxed environment
 LOCAL_CLUSTER_ENVIRONMENT=kind
 LOCAL_CLUSTER_CONTEXT=kind-local-cluster
@@ -101,12 +103,19 @@ ss-helm-diff:
 
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
+local-cluster-swh-prepare:
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace swh 2>&1 >/dev/null || \
+      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh
+
+local-cluster-swh-prepare-secrets:
+	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+        --namespace swh apply -f -
+
 swh-minikube: swh-local-cluster
 local-cluster-swh: swh-local-cluster
-swh-local-cluster:
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh ; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+swh-local-cluster: local-cluster-swh-prepare local-cluster-swh-prepare-secrets
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART) \
+      --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/local-cluster.yaml \
       $(SWH_VALUES_OVERRIDE) \
@@ -167,14 +176,18 @@ swh-template-production-cassandra:
       --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
+local-cluster-cc-prepare:
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace cluster-components 2>&1 >/dev/null || \
+      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components
+
+local-cluster-cc-prepare-secrets:
+	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+        --namespace cluster-components apply -f -
+
 cc-minikube: cc-local-cluster
 local-cluster-cc: cc-local-cluster
-cc-local-cluster:
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh apply -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
+cc-local-cluster: local-cluster-cc-prepare local-cluster-swh-prepare local-cluster-cc-prepare-secrets local-cluster-swh-prepare-secrets
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/local-cluster.yaml \
