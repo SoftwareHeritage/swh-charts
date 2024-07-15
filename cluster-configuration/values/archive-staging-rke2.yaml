@@ -50,3 +50,6 @@ cloudnativePg:
 
 rabbitmq:
   enabled: true
+
+cassandra:
+  enabled: true
