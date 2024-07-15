@@ -23,4 +23,7 @@ case "$KUBE_LOCAL_ENVIRONMENT" in
 
         kind get nodes --name $CLUSTER_CONTEXT | xargs docker unpause
         ;;
+    *)
+        echo "Unknown local-environment <$KUBE_LOCAL_ENVIRONMENT>, do nothing";
+
 esac

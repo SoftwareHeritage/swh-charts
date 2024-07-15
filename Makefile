@@ -51,25 +51,25 @@ endif
 -include Makefile.local
 
 local-cluster-create:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) create $(LOCAL_CLUSTER_ENVIRONMENT)
+	bin/local-cluster.sh create $(LOCAL_CLUSTER_CONTEXT) $(LOCAL_CLUSTER_ENVIRONMENT)
 
 local-cluster-install-deps:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) install-deps
+	bin/local-cluster.sh install-deps $(LOCAL_CLUSTER_CONTEXT)
 
 local-cluster-restart:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) restart
+	bin/local-cluster.sh restart $(LOCAL_CLUSTER_CONTEXT)
 
 local-cluster-cleanup-deps:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) cleanup-deps
+	bin/local-cluster.sh cleanup-deps $(LOCAL_CLUSTER_CONTEXT)
 
 local-cluster-pause:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) pause $(LOCAL_CLUSTER_ENVIRONMENT)
+	bin/local-cluster.sh pause $(LOCAL_CLUSTER_CONTEXT) $(LOCAL_CLUSTER_ENVIRONMENT)
 
 local-cluster-unpause:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) unpause $(LOCAL_CLUSTER_ENVIRONMENT)
+	bin/local-cluster.sh unpause $(LOCAL_CLUSTER_CONTEXT) $(LOCAL_CLUSTER_ENVIRONMENT)
 
 local-cluster-delete:
-	bin/local-cluster.sh $(LOCAL_CLUSTER_CONTEXT) delete
+	bin/local-cluster.sh delete $(LOCAL_CLUSTER_CONTEXT)
 
 swh-test:
 	docker run -ti --user $(UID) --rm -v $(PWD):/apps \

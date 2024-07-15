@@ -24,17 +24,17 @@ case "$1" in
         usage && exit 0
         ;;
     *)
+        ACTION=$1
+        shift
         ;;
 esac
 
 CLUSTER_CONTEXT=${1-kind-local-cluster}
+KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
-case "$2" in
-    -h|--help|help)
-        usage && exit 0
-        ;;
+case "$ACTION" in
     create)
-        bin/local-cluster-create.sh $CLUSTER_CONTEXT
+        bin/local-cluster-create.sh $CLUSTER_CONTEXT $KUBE_LOCAL_ENVIRONMENT
         ;;
     restart)
         bin/local-cluster-restart.sh $CLUSTER_CONTEXT
@@ -49,10 +49,10 @@ case "$2" in
         bin/local-cluster-delete.sh $CLUSTER_CONTEXT
         ;;
     pause)
-        bin/local-cluster-pause.sh $CLUSTER_CONTEXT
+        bin/local-cluster-pause.sh $CLUSTER_CONTEXT $KUBE_LOCAL_ENVIRONMENT
         ;;
     unpause)
-        bin/local-cluster-unpause.sh $CLUSTER_CONTEXT
+        bin/local-cluster-unpause.sh $CLUSTER_CONTEXT $KUBE_LOCAL_ENVIRONMENT
         ;;
     *)
         echo "Unknown action <$1>: do nothing"
