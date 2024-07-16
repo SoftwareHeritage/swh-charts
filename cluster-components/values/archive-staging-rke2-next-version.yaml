@@ -1,0 +1,88 @@
+clusterName: archive-staging-rke2
+
+clusterPgStagingDb1:
+  name: cluster-pg-staging-db1
+  password:
+    name: cluster-staging-db1-postgres-user-credential
+    key: password
+  connectionParameters:
+    # Use the correct IP or host name for the source database
+    host: db1.internal.staging.swh.network
+    user: postgres
+    port: "5433"
+
+cloudnativePg:
+  enabled: true
+  namespace: swh-cassandra-next-version
+  # Specific postgresql setup (can be overridden per instance)
+  externalClusterRef: clusterPgStagingDb1
+  postgresql:
+    parameters:
+      # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
+      max_worker_processes: "60"
+      # max_connections: "400"
+      # shared_buffers: "32GB" # min 128kB
+      # log_timezone: 'Etc/UTC'
+      # timezone: 'Etc/UTC'
+      # lc_messages: 'C.UTF-8' # locale for system error message strings
+      # lc_monetary: 'C.UTF-8' # locale for monetary formatting
+      # lc_numeric: 'C.UTF-8' # locale for number formatting
+      # lc_time: 'C.UTF-8' # locale for time formatting
+    pg_hba:
+    - host all all all md5
+  roles:
+    - name: guest
+      ensure: present
+      comment: Guest
+      login: true
+      connectionLimit: -1
+      inherit: true
+      passwordSecret:
+        name: swh-postgresql-guest-secret
+  # Exists as many cluster as we want
+  deployments:
+    next-version-swh:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-secret
+        databases:
+          - swh
+    next-version-dbs:
+      enabled: true
+      testing: true
+      instances: 1
+      pooler:
+        enabled: true
+        type: rw
+        default_pool_size: "10"
+        max_client_conn: "1000"
+      # Managed dbs
+      initdb:
+        type: monolith
+        databases:
+        - swh-blocking
+        - swh-deposit
+        - swh-masking
+        - swh-vault
+        - swh-web
+        - swh-scheduler
+        source: cluster-pg-staging-db1
+
+rabbitmq:
+  enabled: true
+  replicas: 1
+  deployments:
+    scheduler:
+      enabled: true
+      namespace: swh-cassandra-next-version
+
+cassandra:
+  enabled: true
+  namespace: swh
+  deployments:
+    cassandra-cluster:
+      datacenters:
+        - name: next-version
+          replicas: 1
+
