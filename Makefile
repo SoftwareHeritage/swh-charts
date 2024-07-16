@@ -222,6 +222,13 @@ cc-template-staging:
       --values $(CC_CHART)/values/archive-staging-rke2.yaml \
       --debug
 
+cc-template-staging-next-version:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
+      --values $(CC_CHART)/values/archive-staging-rke2-next-version.yaml \
+      --debug
+
 cc-template-production:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
