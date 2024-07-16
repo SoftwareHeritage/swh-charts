@@ -1,5 +1,11 @@
 {{ if .Values.cassandra.enabled -}}
-{{- $appName := print .Values.clusterName "-cass-op" -}}
+{{- $mapClusterName := (dict
+    "archive-staging-rke2"    "stg"
+    "archive-production-rke2" "prd"
+    "admin-rke2"              "adm"
+    "test-staging-rke2" "test-stg") -}}
+{{- $shortClusterName := dig .Values.clusterName .Values.clusterName $mapClusterName -}}
+{{- $appName := print $shortClusterName "-cassop" -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -26,4 +32,6 @@ spec:
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}
+    # syncOptions:
+    # - ServerSideApply=true
 {{ end }}
