@@ -71,6 +71,7 @@ cloudnativePg:
 
 rabbitmq:
   enabled: true
+  namespace: swh-cassandra-next-version
   replicas: 1
   deployments:
     scheduler:
@@ -79,7 +80,7 @@ rabbitmq:
 
 cassandra:
   enabled: true
-  namespace: swh
+  namespace: swh-cassandra-next-version
   deployments:
     cassandra-cluster:
       datacenters:
