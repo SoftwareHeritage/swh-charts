@@ -2,6 +2,23 @@ environment: production
 clusterName: archive-production-rke2
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-75xcg59s
 
+defaultNamespaces:
+  namespaces:
+    - swh-cassandra
+    - keda
+    - cassandra
+    - swh
+    - metallb
+    - ingress-nginx
+    - local-path-provisioner
+    - cert-manager
+    - software-stories
+    - redis
+    - opentelemetry
+    - svix-server
+    - rabbitmq
+    - rook-ceph
+
 clusterConfiguration:
   selfHeal: true
 
