@@ -2,6 +2,27 @@ environment: staging
 clusterName: archive-staging-rke2
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-9n5h9nrf
 
+defaultNamespaces:
+  namespaces:
+    - keda
+    - swh
+    - swh-cassandra
+    - swh-cassandra-next-version
+    - cattle-monitoring-system
+    - local-path-provisioner
+    - metallb
+    - cert-manager
+    - ingress-nginx
+    - software-stories
+    - redis
+    - cassandra
+    - opentelemetry
+    - svix-server
+    - rabbitmq
+    - rook-ceph
+    - cnpg-system
+    - k8ssandra-operator
+
 clusterConfiguration:
   selfHeal: true
 
