@@ -1,5 +1,5 @@
 {{ if .Values.cassandra.enabled -}}
-{{- $appName := print .Values.clusterName "-cassandra-operator" -}}
+{{- $appName := print .Values.clusterName "-cass-op" -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
