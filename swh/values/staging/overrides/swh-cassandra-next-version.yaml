@@ -1,7 +1,7 @@
 namespace: swh-cassandra-next-version
 
 postgresqlWebConfiguration:
-  host: next-version-dbs-rw
+  host: next-version-dbs-rw.swh-cassandra-next-version
   port: 5432
   db: swh-web
   user: swh-web
@@ -12,7 +12,7 @@ postgresqlWebConfiguration:
       secretKeyName: postgres-swh-web-password
 
 postgresqlVaultConfiguration:
-  host: next-version-dbs-rw
+  host: next-version-dbs-rw.swh-cassandra-next-version
   port: 5432
   db: swh-vault
   user: swh-vault
@@ -23,7 +23,7 @@ postgresqlVaultConfiguration:
       secretKeyName: postgres-swh-vault-password
 
 postgresqlSchedulerConfiguration:
-  host: next-version-dbs-rw
+  host: next-version-dbs-rw.swh-cassandra-next-version
   port: 5432
   db: swh-scheduler
   user: swh-scheduler
