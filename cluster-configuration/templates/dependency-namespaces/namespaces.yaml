@@ -1,0 +1,9 @@
+{{- if .Values.dependencyNamespaces.enabled }}
+{{- range $namespace := .Values.dependencyNamespaces.namespaces }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+{{- end }}
+{{- end }}

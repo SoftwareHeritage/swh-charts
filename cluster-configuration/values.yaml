@@ -10,7 +10,7 @@ defaultProject: default
 defaultPrune: false
 defaultSelfHeal: false
 
-defaultNamespaces:
+dependencyNamespaces:
   enabled: true
   namespaces: []
 

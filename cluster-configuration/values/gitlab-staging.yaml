@@ -1,7 +1,7 @@
 clusterName: gitlab-staging
 clusterUrl: https://192.168.200.13
 
-defaultNamespaces:
+dependencyNamespaces:
   namespaces:
     - gitlab-system
     - cert-manager

@@ -1,7 +1,7 @@
 clusterName: rancher
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/local
 
-defaultNamespaces:
+dependencyNamespaces:
   namespaces:
     - cert-manager
     - monitoring

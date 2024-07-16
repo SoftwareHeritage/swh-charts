@@ -1,7 +1,7 @@
 clusterName: gitlab-production
 clusterUrl: https://192.168.200.4
 
-defaultNamespaces:
+dependencyNamespaces:
   namespaces:
     - gitlab-system
     - cert-manager
