@@ -23,6 +23,7 @@ dependencyNamespaces:
     - cnpg-system
     - k8ssandra-operator
     - kafka-system
+    - reaper
 
 clusterConfiguration:
   selfHeal: true
