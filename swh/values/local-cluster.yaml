@@ -1170,5 +1170,77 @@ counters:
     # historyConfigurationRef: historyConfiguration
     replicas: 1
 
+fakeAlterGraphConfiguration:
+  url: http://graph.i.s.o:5009/graph
+  timeout: null
+
+noopObjstorageConfiguration:
+  cls: noop
+
+emptyStoragePipelineSteps: []
+
+cassandraRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+postgresqlRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  pipelineStepsRef: emptyStoragePipelineSteps
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
 alter:
   enabled: false
+  directoryOutput: /srv/recovery-bundles
+  deployment:
+    volume:
+      name: alter-recovery-bundle-volumes
+      mountPath: /srv/recovery-bundles
+      volumeDefinition:
+        persistentVolumeClaim:
+          claimName: alter-recovery-bundles-pvc
+    volumeClaim:
+      storageClassName: standard
+      name: alter-recovery-bundles-pvc
+      size: 1Gi
+  inventoryStorageConfigurationRef: rpcROStorageConfiguration
+  graphConfigurationRef: fakeAlterGraphConfiguration
+  restorationStorageConfigurationRef: rpcRWStorageConfiguration
+  removalSearches:
+    search:
+      searchConfigurationRef: remoteSearchConfiguration
+  removalStorages:
+    cassandra:
+      storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+    postgresql:
+      storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+  removalObjstorages:
+    rpc-rw:
+      objstorageConfigurationRef: rpcRWObjstorageConfiguration
+  removalJournals:
+    journal:
+      journalWriterConfigurationRef: storageJournalWriterConfiguration
+
+  recoveryBundlesConfiguration:
+    # XXX: these come from the swh.alter tests
+    #
+    # ALI_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1VREXCYE5WNMUD0WSCF7F6CH3FGQ9P6PGD25QHY7QX8PGDN87P37QQD3L2G"
+    # )
+    # BOB_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1UPJU3AF4M0NPLSLGVDWJU38F3MDE3JJM48E8NST8V3YKU077HEVSQVPZC2"
+    # )
+    # CAMILLE_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1NPLST9VXL6E9DEHCVVPUTGH60ZRJFLPZ5HDM93MJW993CGFQ49PQU90RVL"
+    # )
+    # DLIQUE_SECRET_KEY = (
+    #     "AGE-SECRET-KEY-1NPT3PFA7N03DFQY9GN764T4TJCZSLP36YV4S98FLYN0YGX2539GSSFUT4F"
+    # )
+
+    secret_sharing:
+      minimum_required_groups: 1
+      groups:
+        sysadmins:
+          minimum_required_shares: 1
+          recipient_keys:
+            Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
+            Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
