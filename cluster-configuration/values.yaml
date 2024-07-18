@@ -11,7 +11,7 @@ defaultPrune: false
 defaultSelfHeal: false
 
 dependencyNamespaces:
-  enabled: true
+  enabled: false
   namespaces: []
 
 clusterConfiguration:
