@@ -1,4 +1,5 @@
 {{ if .Values.cassandra.enabled -}}
+{{- $storageConfig := .Values.cassandra.storageConfig -}}
 {{- range $clusterName, $clusterConfig := .Values.cassandra.deployments -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
@@ -13,20 +14,16 @@ spec:
       cassandraYaml:
         enable_scripted_user_defined_functions: true
         enable_user_defined_functions: true
+    {{- if $storageConfig }}
+    storageConfig:
+    {{- toYaml $storageConfig | nindent 6 }}
+    {{ end }}
+
     datacenters:
     {{- range $dataCenterConfig := $clusterConfig.datacenters }}
       - metadata:
           name: {{ $dataCenterConfig.name }}
         size: {{ $dataCenterConfig.replicas }}
-        storageConfig:
-          cassandraDataVolumeClaimSpec:
-            storageClassName: standard
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 5Gi
-
           jvmOptions:
             heapSize: 512M
         # stargate:

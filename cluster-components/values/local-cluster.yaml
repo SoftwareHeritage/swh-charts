@@ -265,6 +265,14 @@ kafka:
 cassandra:
   enabled: false
   namespace: swh
+  storageConfig:
+    cassandraDataVolumeClaimSpec:
+      storageClassName: standard
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
   deployments:
     cassandra-cluster:
       datacenters:
