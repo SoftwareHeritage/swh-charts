@@ -1,6 +1,8 @@
 {{- if .Values.alter.enabled -}}
 
 {{- if .Values.alter.deployment.volumeClaim -}}
+{{- $volumeMode := .Values.alter.deployment.volumeClaim.volumeMode -}}
+{{- $accessModes := .Values.alter.deployment.volumeClaim.accessModes -}}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -9,9 +11,13 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   storageClassName: {{ .Values.alter.deployment.volumeClaim.storageClassName }}
+  {{- if $accessModes }}
   accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
+    {{- toYaml $accessModes | nindent 4 }}
+  {{- end }}
+  {{- if $volumeMode }}
+  volumeMode: {{ $volumeMode }}
+  {{- end }}
   resources:
     requests:
       storage: {{ .Values.alter.deployment.volumeClaim.size | default "20Gi" }}

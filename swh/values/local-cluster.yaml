@@ -1201,6 +1201,8 @@ alter:
     volumeClaim:
       storageClassName: standard
       name: alter-recovery-bundles-pvc
+      accessModes:
+        - ReadWriteOnce
       size: 1Gi
   inventoryStorageConfigurationRef: rpcROStorageConfiguration
   graphConfigurationRef: fakeAlterGraphConfiguration

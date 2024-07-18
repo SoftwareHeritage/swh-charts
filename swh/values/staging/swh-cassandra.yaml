@@ -1976,6 +1976,9 @@ alter:
           claimName: alter-recovery-bundles-pvc
     volumeClaim:
       storageClassName: cephfs
+      accessModes:
+        - ReadWriteMany
+      volumeMode: Filesystem
       name: alter-recovery-bundles-pvc
       size: 30Gi
 
