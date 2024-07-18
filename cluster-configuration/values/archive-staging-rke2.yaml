@@ -22,6 +22,7 @@ dependencyNamespaces:
     - rook-ceph
     - cnpg-system
     - k8ssandra-operator
+    - kafka-system
 
 clusterConfiguration:
   selfHeal: true
