@@ -18,7 +18,6 @@ dependencyNamespaces:
     - svix-server
     - rabbitmq
     - rook-ceph
-    - reaper
 
 clusterConfiguration:
   selfHeal: true
