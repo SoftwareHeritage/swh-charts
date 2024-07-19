@@ -1,11 +1,6 @@
 clusterName: rancher
 clusterUrl: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/local
 
-dependencyNamespaces:
-  namespaces:
-    - cert-manager
-    - monitoring
-
 ingressNginx:
   enabled: true
   defaultClass: true

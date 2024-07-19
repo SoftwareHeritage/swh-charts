@@ -1,13 +1,6 @@
 clusterName: gitlab-production
 clusterUrl: https://192.168.200.4
 
-dependencyNamespaces:
-  namespaces:
-    - gitlab-system
-    - cert-manager
-    - monitoring
-    - ingress-nginx
-
 ingressNginx:
   # Needed to internally expose thanos
   enabled: true

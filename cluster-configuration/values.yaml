@@ -10,10 +10,6 @@ defaultProject: default
 defaultPrune: false
 defaultSelfHeal: false
 
-dependencyNamespaces:
-  enabled: false
-  namespaces: []
-
 clusterConfiguration:
   prune: false
   selfHeal: false
