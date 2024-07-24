@@ -369,7 +369,7 @@ roObjstorageBestEffort:
     url: http://winery-read-only.internal.cea.swh.network
     timeout:
       - 0.5  # Connect
-      - 10   # Read
+      - 2    # Read
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -396,7 +396,7 @@ roObjstorageHighParallelism:
     url: http://winery-read-only.internal.cea.swh.network
     timeout:
       - 0.5  # Connect
-      - 10   # Read
+      - 2    # Read
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -491,7 +491,7 @@ multiplexerForLocalStoragesConfiguration:
     url: http://winery-read-only.internal.cea.swh.network
     timeout:
       - 0.5  # Connect
-      - 10   # Read
+      - 2    # Read
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress
