@@ -330,10 +330,10 @@ storageReplayer:
 storage:
   deployments:
     # Deactivate those instance in swh-cassandra-next-version namespace
-    cassandra:
+    cassandra:  # Instance name from the swh-cassandra.yaml file
       enabled: false
     # Deactivate those instance in swh-cassandra-next-version namespace
-    cassandra-read-only:
+    cassandra-read-only:  # Instance name from the swh-cassandra.yaml file
       enabled: false
     # To the benefit of a storage postgresql instance
     rw-postgresql:
