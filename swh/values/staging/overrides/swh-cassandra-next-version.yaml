@@ -61,7 +61,7 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
-storageRWConfiguration:
+rwStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
@@ -78,7 +78,7 @@ remoteROStorageConfiguration:
 
 remoteStorageConfiguration:
   cls: remote
-  url: http://storage-postgresql-read-write:5002
+  url: http://storage-rw-postgresql:5002
 
 remoteVaultConfiguration:
   cls: remote
@@ -336,9 +336,9 @@ storage:
     cassandra-read-only:
       enabled: false
     # To the benefit of a storage postgresql instance
-    postgresql-read-write:
+    rw-postgresql:
       enabled: true
-      storageConfigurationRef: storageRWConfiguration
+      storageConfigurationRef: rwStoragePostgresqlConfiguration
       backend:
         initialize:
           adminSecret: next-version-swh-superuser
