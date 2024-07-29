@@ -327,6 +327,41 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
 
+cassandraSeeds:
+  - cassandra-cluster-next-version-service
+
+cassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: true
+  consistencyLevel: LOCAL_QUORUM
+  specificOptions:
+    directory_entries_insert_algo: batch
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: ${CASSANDRA_USERNAME}
+    password: ${CASSANDRA_PASSWORD}
+  secrets:
+    CASSANDRA_USERNAME:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: username
+    CASSANDRA_PASSWORD:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: password
+
+noopObjstorageConfiguration:
+  cls: noop
+
+rwStorageCassandraNoJournalConfiguration:
+  storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+# rwStorageCassandraWithJournalConfiguration:
+#   storageConfigurationRef: cassandraStorage
+#   journalWriterConfigurationRef: storageJournalWriterConfiguration
+#   objstorageConfigurationRef: noopObjstorageConfiguration
+
 storage:
   deployments:
     # Deactivate those instance in swh-cassandra-next-version namespace
@@ -335,6 +370,10 @@ storage:
     # Deactivate those instance in swh-cassandra-next-version namespace
     cassandra-read-only:  # Instance name from the swh-cassandra.yaml file
       enabled: false
+    rw-cassandra:
+      # No journal just yet
+      storageConfigurationRef: rwStorageCassandraNoJournalConfiguration
+
     # To the benefit of a storage postgresql instance
     rw-postgresql:
       enabled: true
