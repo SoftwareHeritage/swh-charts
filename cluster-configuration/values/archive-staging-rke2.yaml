@@ -56,3 +56,6 @@ cassandra:
 
 kafka:
   enabled: true
+
+eck-operator:
+  enabled: true
