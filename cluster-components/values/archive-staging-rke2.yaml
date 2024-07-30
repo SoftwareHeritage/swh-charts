@@ -208,7 +208,7 @@ cassandra:
           replicas: 1
 
 kafka:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   replicas: 1
   replicationFactor: 1
