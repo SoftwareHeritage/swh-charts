@@ -80,5 +80,19 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
+    - alert: Ingress_Errors_In_{{ .environment | title }}
+      annotations:
+        description: Ingress {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.ingress {{"}}"}}
+          has {{"{{"}} $value {{"}}"}}% errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
+          The host is {{"{{"}} $labels.host {{"}}"}}.
+        summary: Ingress {{"{{"}} $labels.ingress {{"}}"}} has more than {{ .ingress.errorRate }}% errors.
+      expr: |-
+          sum(irate(nginx_ingress_controller_requests{status=~"[45].."}[{{ .period.smallDelay }}])) by (ingress)
+          /
+          sum(irate(nginx_ingress_controller_requests[{{ .period.tinyDelay }}])) by (ingress) * 100 > {{ .ingress.errorRate }}
+      for: {{ .period.smallDelay }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
 {{- end }}
 {{- end }}

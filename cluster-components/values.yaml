@@ -154,6 +154,8 @@ alerting:
     aggregatedPeriod: 1h
     threshold: 10
   runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks"
+  ingress:
+    errorRate: 25
 
 scrapeExternalMetrics:
   enabled: false
