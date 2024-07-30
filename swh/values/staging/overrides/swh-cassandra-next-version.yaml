@@ -254,8 +254,22 @@ loaderMetadata:
     # TODO: Support this option
     # stopWhenNoActivity: false
 
+cassandraRWNoObjstorageStorageConfig:
+  storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+storageReplayerJournalClientConfig:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  # Both to write some data to privileged topic and use the error_reporter config
+  privileged: true
+
 storageReplayer:
-  enabled: false
+  enabled: true
+  storageConfigurationRef: cassandraRWNoObjstorageStorageConfig
+  journalClientConfigurationRef: storageReplayerJournalClientConfig
   # Force the deployment of one pod of each type to at least
   # ensure they start (not enough but it's a first step)
   deployments:
@@ -359,6 +373,9 @@ noopObjstorageConfiguration:
   cls: noop
 
 readWriteInternalKafkaBrokers:
+  - kafka-cluster-kafka-brokers:9092
+
+internalSecuredKafkaBrokers:
   - kafka-cluster-kafka-brokers:9092
 
 storageJournalWriterConfiguration:
