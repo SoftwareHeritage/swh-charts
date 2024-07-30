@@ -644,7 +644,9 @@ search:
     enabled: false
   elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
-  replicas: 1
+  autoScaling:
+    minReplicaCount: 1
+    maxReplicaCount: 1
   gunicorn:
     threads: 4
     workers: 1
