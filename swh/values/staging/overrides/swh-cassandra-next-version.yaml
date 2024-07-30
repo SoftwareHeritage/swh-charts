@@ -640,7 +640,8 @@ search:
   enabled: true
   backend:
     initialize: true
-
+  ingress:
+    enabled: false
   elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
   replicas: 1
