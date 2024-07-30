@@ -368,10 +368,69 @@ storageJournalWriterConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
 
+pathslicingObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/swh/objects"
+  slicing: 0:1/1:5
+  client_max_size: 1073741824
+  allow_delete: true
+
+objstorage:
+  enabled: true
+  priorityClassName: frontend-rpc
+  # For mounting the volume with the right permission
+  # docker image has the `swh` uid set at 1005
+  securityContext:
+    fsGroup: 1005
+  deployments:
+    # Each key will be an objstorage instance to be deployed
+    # The mandatory objstorageConfigurationRef key should target a dict
+    # with the specific objstorage configuration
+
+    # Deactivate instances from swh/values/staging/swh-cassandra.yaml
+    db1-read-write:
+      enabled: false
+    storage1-read-only:
+      enabled: false
+    db1-read-only:
+      enabled: false
+    multiplexer-read-only:
+      enabled: false
+    multiplexer-read-write:
+      enabled: false
+    # Activate dedicated instance for write workload
+    rw-pathslicing:
+      enabled: true
+      replicas: 1
+      extraVolumes:
+        pathslicing-rw:
+          mountPath: /srv/swh/objects
+          volumeDefinition:
+            ephemeral:
+              volumeClaimTemplate:
+                metadata:
+                  labels:
+                    type: persistent-volume
+                spec:
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 10Gi
+                  storageClassName: local-persistent
+
+      # mandatory
+      # check readWriteStorageConfiguration example to configure your storage
+      objstorageConfigurationRef: pathslicingObjstorageConfiguration
+
+rpcRWObjstoragePathslicingConfiguration:
+  cls: remote
+  url: http://objstorage-rw-pathslicing:5003
+
 rwStorageCassandraWithJournalConfiguration:
   storageConfigurationRef: cassandraStorage
   journalWriterConfigurationRef: storageJournalWriterConfiguration
-  objstorageConfigurationRef: noopObjstorageConfiguration
+  objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
 
 storage:
   deployments:
@@ -510,9 +569,6 @@ scrubber:
 toolbox:
   enabled: true
   bulkLoad: null
-
-objstorage:
-  enabled: false
 
 webhooks:
   enabled: false
