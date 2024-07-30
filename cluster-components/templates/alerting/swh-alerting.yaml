@@ -69,5 +69,16 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
+    - alert: KEDA_Scaled_Object_Errors_In_{{ .environment | title }}
+      annotations:
+        description: Scaled object {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.scaledObject {{"}}"}}
+          have encountered {{"{{"}} $value {{"}}"}} errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
+        summary: KEDA scaled object {{"{{"}} $labels.scaledObject {{"}}"}} in error.
+      expr: |-
+          sum by(scaledObject) (rate(keda_scaled_object_errors_total{exported_namespace!="swh-cassandra-next-version"}[{{ .period.smallDelay }}])) > 0
+      for: {{ .period.smallDelay }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
 {{- end }}
 {{- end }}
