@@ -666,13 +666,8 @@ search:
             - origin
             - origin_visit_status
 
-      # metadata:
-      #   journalClientOverrides:
-      #     group_id: swh-search-journal-client-metadata
-      #     prefix: swh.journal.indexed
-      #     object_types:
-      #       - origin_intrinsic_metadata
-      #       - origin_extrinsic_metadata
+      indexed:
+        enabled: false
 
 indexers:
   enabled: false
