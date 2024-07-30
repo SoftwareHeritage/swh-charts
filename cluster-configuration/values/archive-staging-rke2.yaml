@@ -57,5 +57,5 @@ cassandra:
 kafka:
   enabled: true
 
-eck-operator:
+elasticsearch:
   enabled: true
