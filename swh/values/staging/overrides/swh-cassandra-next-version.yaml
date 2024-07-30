@@ -653,7 +653,7 @@ search:
   requestedMemory: 512Mi
   requestedCpu: 500m
   journalClients:
-    enabled: true
+    enabled: false
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteROStorageConfiguration
