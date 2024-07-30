@@ -217,30 +217,36 @@ kafka:
     kafka-cluster:
       zookeeper:
         storage:
-          type: persistent-claim
-          size: 1Gi
-          deleteClaim: true
-          class: local-path
+          type: ephemeral
+          sizeLimit: 10Gi
+          # type: persistent-claim
+          # size: 1Gi
+          # deleteClaim: true
+          # class: local-path
       pools:
         pool-a:
           storage:
             type: jbod
             volumes:
               - id: 0
-                type: persistent-claim
-                size: 1Gi
-                deleteClaim: true
-                class: local-path
+                type: ephemeral
+                sizeLimit: 10Gi
+                # type: persistent-claim
+                # size: 10Gi
+                # deleteClaim: true
+                # class: local-path
 
         pool-b:
           storage:
             type: jbod
             volumes:
               - id: 0
-                type: persistent-claim
-                size: 1Gi
-                deleteClaim: true
-                class: local-path
+                type: ephemeral
+                sizeLimit: 10Gi
+                # type: persistent-claim
+                # deleteClaim: true
+                # size: 10Gi
+                # class: local-path
 
       topics:
         swh.journal.objects.origin: {}
