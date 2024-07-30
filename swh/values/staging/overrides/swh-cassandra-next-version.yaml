@@ -614,13 +614,70 @@ listers:
         extensions_to_ignore:
           - rock
 
+elasticsearchHosts:
+  - host: search-es-http
+    port: 9200
+
+elasticsearchConfiguration:
+  elasticsearchInstancesRef: elasticsearchHosts
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.11
+      read_alias: origin-read
+      write_alias: origin-write
+
+remoteSearchConfiguration:
+  cls: remote
+  url: http://search-rpc:5010
+
+searchJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-search
+  prefix: swh.journal.objects
+
+search:
+  enabled: true
+  backend:
+    initialize: true
+
+  elasticsearchConfigurationRef: elasticsearchConfiguration
+  logLevel: INFO
+  replicas: 1
+  gunicorn:
+    threads: 4
+    workers: 1
+    timeout: 60
+  # RPC services may have different profiles than the rest so they need their specific
+  # setup
+  requestedMemory: 512Mi
+  requestedCpu: 500m
+  journalClients:
+    enabled: true
+    priorityClassName: normal-workload
+    searchConfigurationRef: remoteSearchConfiguration
+    storageConfigurationRef: remoteROStorageConfiguration
+    journalConfigurationRef: searchJournalClientConfiguration
+    deployments:
+      objects:
+        journalClientOverrides:
+          group_id: swh-search-journal-client-origins
+          object_types:
+            - origin
+            - origin_visit_status
+
+      # metadata:
+      #   journalClientOverrides:
+      #     group_id: swh-search-journal-client-metadata
+      #     prefix: swh.journal.indexed
+      #     object_types:
+      #       - origin_intrinsic_metadata
+      #       - origin_extrinsic_metadata
+
 indexers:
   enabled: false
 
 checkerDeposit:
-  enabled: false
-
-search:
   enabled: false
 
 indexerStorage:
