@@ -270,6 +270,8 @@ storageReplayer:
   enabled: true
   storageConfigurationRef: cassandraRWNoObjstorageStorageConfig
   journalClientConfigurationRef: storageReplayerJournalClientConfig
+  error_reporter:
+    enabled: false
   # Force the deployment of one pod of each type to at least
   # ensure they start (not enough but it's a first step)
   deployments:

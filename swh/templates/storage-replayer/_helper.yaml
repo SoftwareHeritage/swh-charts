@@ -2,6 +2,8 @@
 {{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef | default $.Values.storageReplayer.journalClientConfigurationRef -}}
 {{- $journalClientConfiguration := required (print "journalClientConfigurationRef <" $journalClientConfigurationRef "> not found in storageReplayer <" .deployment_name ">  configuration") (get .Values $journalClientConfigurationRef) -}}
 {{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default dict) -}}
+{{- $errorReporterConfig := .Values.storageReplayer.error_reporter -}}
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -18,10 +20,12 @@ data:
                           "configurationRef" $journalClientConfigurationRef
                           "overrides" $journalClientOverrides
                           "Values" .Values) | nindent 4 }}
-    {{- if .Values.storageReplayer.error_reporter }}
+    {{- if and $errorReporterConfig (or (not (hasKey $errorReporterConfig "enabled"))
+                                        (get $errorReporterConfig "enabled")) -}}
+    {{ $_ := unset $errorReporterConfig "enabled" }}
     replayer:
       error_reporter:
-      {{- range $option, $value := .Values.storageReplayer.error_reporter }}
+      {{- range $option, $value := $errorReporterConfig }}
         {{ $option }}: {{ $value }}
       {{- end }}
     {{- end }}
