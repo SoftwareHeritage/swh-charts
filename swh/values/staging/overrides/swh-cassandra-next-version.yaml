@@ -672,9 +672,6 @@ search:
       indexed:
         enabled: false
 
-indexers:
-  enabled: false
-
 checkerDeposit:
   enabled: false
 
@@ -727,6 +724,54 @@ indexerStorage:
       gunicorn:
         threads: 1
         workers: 2
+
+remoteIndexerStorageConfiguration:
+  cls: remote
+  url: http://indexer-storage-rw:5007
+
+indexerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
+  group_id: swh-indexer-journal-client
+  prefix: swh.journal.indexed
+
+indexers:
+  enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+  objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
+  journalClientConfigurationRef: indexerJournalClientConfiguration
+  deployments:
+    origin-intrinsic:
+      indexer_type: origin_intrinsic_metadata
+      journalClientOverrides:
+        group_id: swh-indexer-journal-client-origin-intrinsic-metadata
+        batch_size: 200
+      requestedCpu: 50m
+      requestedMemory: 100Mi
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 1
+    extrinsic:
+      indexer_type: extrinsic_metadata
+      journalClientOverrides:
+        group_id: swh-indexer-journal-client-extrinsic-metadata
+        prefix: swh.journal.objects
+        batch_size: 200
+      requestedCpu: 50m
+      requestedMemory: 100Mi
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 1
 
 cassandraChecks:
   enabled: false
