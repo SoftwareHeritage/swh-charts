@@ -265,3 +265,17 @@ kafka:
         swh.journal.indexed.origin_extrinsic_metadata: {}
         swh.journal.indexed.origin_intrinsic_metadata: {}
         swh.journal.indexed.revision_intrinsic_metadata: {}
+
+elasticsearch:
+  enabled: true
+  namespace: swh-cassandra-next-version
+  deployments:
+    search:
+      replicas: 1
+      # For test environment (local-cluster, next-version) only
+      disableSecurity: true
+      disableTLS: true
+      # version: 8.14.2
+      nodeName: node
+    # quickstart:
+    #   replicas: 1
