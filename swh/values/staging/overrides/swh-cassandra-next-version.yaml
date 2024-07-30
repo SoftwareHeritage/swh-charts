@@ -678,8 +678,55 @@ indexers:
 checkerDeposit:
   enabled: false
 
+postgresqlIndexerStorageConfiguration:
+  cls: postgresql
+  host: next-version-swh-indexer-rw
+  port: 5432
+  db: swh-indexer
+  user: ${POSTGRESQL_IDX_USERNAME}
+  pass: ${POSTGRESQL_IDX_PASSWORD}
+  secrets:
+    POSTGRESQL_IDX_USERNAME:
+      secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+      secretKeyName: username
+    POSTGRESQL_IDX_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+      secretKeyName: password
+
+indexerJournalWriterConfiguration:
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
+  cls: kafka
+  anonymize: true
+  client_id: swh-indexer-storage-journal-writer-storage
+  prefix: swh.journal.indexed
+  producer_config:
+    message.max.bytes: 1000000000
+
 indexerStorage:
-  enabled: false
+  enabled: true
+  deployments:
+    # Deactivate the indexer-storage from swh/values/swh-cassandra.yaml
+    rpc:
+      enabled: false
+    rw:
+      backend:
+        # When true, initalize the backend, leave it empty to do nothing
+        initialize:
+          adminSecret: next-version-swh-indexer-superuser
+          database: swh-indexer
+        # When true, check db & code versions and do not start if they diverge
+        check: true
+        # When true, migrate or initialize db model
+        migrate: true
+
+      replicas: 1
+      requestedCpu: 500m
+      requestedMemory: 512Mi
+      indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
+      journalWriterConfigurationRef: indexerJournalWriterConfiguration
+      gunicorn:
+        threads: 1
+        workers: 2
 
 cassandraChecks:
   enabled: false
