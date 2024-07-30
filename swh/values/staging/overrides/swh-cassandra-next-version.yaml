@@ -354,14 +354,20 @@ cassandraStorage:
 noopObjstorageConfiguration:
   cls: noop
 
-rwStorageCassandraNoJournalConfiguration:
-  storageConfigurationRef: cassandraStorage
-  objstorageConfigurationRef: noopObjstorageConfiguration
+readWriteInternalKafkaBrokers:
+  - kafka-cluster-kafka-brokers:9092
 
-# rwStorageCassandraWithJournalConfiguration:
-#   storageConfigurationRef: cassandraStorage
-#   journalWriterConfigurationRef: storageJournalWriterConfiguration
-#   objstorageConfigurationRef: noopObjstorageConfiguration
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
+  prefix: swh.journal.objects
+  clientId: swh-storage-journal-writer
+  producerConfig:
+    message.max.bytes: 1000000000
+
+rwStorageCassandraWithJournalConfiguration:
+  storageConfigurationRef: cassandraStorage
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 storage:
   deployments:
@@ -371,11 +377,10 @@ storage:
     # Deactivate those instance in swh-cassandra-next-version namespace
     cassandra-read-only:  # Instance name from the swh-cassandra.yaml file
       enabled: false
+    # main storage to let the loaders write
     rw-cassandra:
-      # No journal just yet
-      storageConfigurationRef: rwStorageCassandraNoJournalConfiguration
-
-    # To the benefit of a storage postgresql instance
+      storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
+    # a storage postgresql instance to replay data
     rw-postgresql:
       enabled: true
       storageConfigurationRef: rwStoragePostgresqlConfiguration
