@@ -269,6 +269,20 @@ kafka:
 elasticsearch:
   enabled: true
   namespace: swh-cassandra-next-version
+  # Common volume claim templates to deal with storage information
+  # Can be overriden per instance
+  volumeClaimTemplates:
+  - metadata:
+      # Do not change this name unless you set up a volume mount for the
+      # data path.
+      name: elasticsearch-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: local-path
   deployments:
     search:
       replicas: 1

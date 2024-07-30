@@ -4,6 +4,7 @@
 {{- $version := $clusterConfig.version | default $.Values.elasticsearch.version -}}
 {{- $disableTLS := $clusterConfig.disableTLS | default $.Values.elasticsearch.disableTLS | default false -}}
 {{- $disableSecurity := $clusterConfig.disableSecurity | default $.Values.elasticsearch.disableSecurity | default false -}}
+{{- $volumeClaimTemplates := $clusterConfig.volumeClaimTemplates | default $.Values.elasticsearch.volumeClaimTemplates -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -22,6 +23,10 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: -Xms1g -Xmx1g
+    {{ if $volumeClaimTemplates }}
+    volumeClaimTemplates:
+      {{- toYaml $volumeClaimTemplates | nindent 4 }}
+    {{- end }}
     config:
       node.store.allow_mmap: false
       {{- if $disableSecurity }}
