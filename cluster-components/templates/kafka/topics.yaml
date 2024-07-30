@@ -10,7 +10,7 @@ metadata:
   labels:
     strimzi.io/cluster: {{ $clusterName }}
 spec:
-  name: {{ $topicName }}
+  topicName: {{ $topicName }}
   partitions: {{ get $topicConfig "partitions" | default 1 }}
   replicas: {{ get $topicConfig "replicas" | default 1 }}
   {{- if $topicConfig.config }}
