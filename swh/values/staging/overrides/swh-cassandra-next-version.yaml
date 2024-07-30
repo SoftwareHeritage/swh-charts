@@ -61,24 +61,28 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
+remotePostgresqlStorageConfiguration:
+  cls: remote
+  url: http://storage-rw-postgresql:5002
+
+remoteCassandraStorageConfiguration:
+  cls: remote
+  url: http://storage-rw-cassandra:5002
+
+remoteRWStorageWithPipelineConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: remoteCassandraStorageConfiguration
+
 rwStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
-
-rpcRWStorageConfiguration:
-  pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: remoteStorageConfiguration
 
 retryStoragePipelineSteps:
   - cls: retry
 
 remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: remoteStorageConfiguration
-
-remoteStorageConfiguration:
-  cls: remote
-  url: http://storage-rw-postgresql:5002
+  storageConfigurationRef: remotePostgresqlStorageConfiguration
 
 remoteVaultConfiguration:
   cls: remote
@@ -127,7 +131,7 @@ counters:
 
 loaders:
   terminationGracePeriodSeconds: 60
-  storageConfigurationRef: rpcRWStorageConfiguration
+  storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
   celeryConfigurationRef: celeryConfiguration
   deployments:
     # Force the deployment of one pod of each type to at least
