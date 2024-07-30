@@ -179,6 +179,21 @@ cloudnativePg:
         - swh-web
         - swh-scheduler
         source: cluster-pg-staging-db1
+    next-version-swh-indexer:
+      enabled: true
+      testing: true
+      instances: 1
+      pooler:
+        enabled: true
+        type: rw
+        default_pool_size: "10"
+        max_client_conn: "1000"
+      # Managed dbs
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+        databases:
+        - swh-indexer
 
 rabbitmq:
   enabled: true
