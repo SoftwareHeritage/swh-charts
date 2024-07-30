@@ -568,6 +568,9 @@ scrubber:
 
 toolbox:
   enabled: true
+  configs:
+    storage:
+      storageDbConfigurationRef: postgresqlRWStorageConfiguration
   bulkLoad: null
 
 webhooks:
