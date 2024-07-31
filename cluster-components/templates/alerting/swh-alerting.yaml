@@ -83,7 +83,7 @@ spec:
     - alert: Ingress_Errors_In_{{ .environment | title }}
       annotations:
         description: Ingress {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.ingress {{"}}"}}
-          has {{"{{"}} $value {{"}}"}}% errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
+          has {{"{{"}} $value | printf "%.2f" {{"}}"}}% errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
         summary: Ingress {{"{{"}} $labels.ingress {{"}}"}} has more than {{ .ingress.errorRate }}% errors.
       expr: |-
           sum(irate(nginx_ingress_controller_requests{status=~"[45].."}[{{ .period.smallDelay }}])) by (ingress)
