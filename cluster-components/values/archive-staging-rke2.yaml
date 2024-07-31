@@ -310,7 +310,7 @@ elasticsearch:
     #   replicas: 1
 
 redis:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   deployments:
     counters:
