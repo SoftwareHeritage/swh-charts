@@ -308,3 +308,17 @@ elasticsearch:
       nodeName: node
     # quickstart:
     #   replicas: 1
+
+redis:
+  enabled: true
+  namespace: swh-cassandra-next-version
+  deployments:
+    counters:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: local-persistent
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
