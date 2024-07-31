@@ -402,6 +402,9 @@ redis:
   enabled: false
   # Namespace where to make run the instance (can be overridden per instance)
   namespace: redis
+  # Node selection query (can be overridden per instance)
+  # nodeSelector:
+  #   kubernetes.io/hostname: minikube
   # deployments:
   #   counters:
   #     replicas: 3
