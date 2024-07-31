@@ -1,6 +1,7 @@
 {{- if .Values.redis.enabled -}}
 {{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
+{{- $volumeClaimTemplate := $deploymentConfig.volumeClaimTemplate | default $.Values.redis.volumeClaimTemplate -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
@@ -51,14 +52,11 @@ spec:
     #     secretKeyRef:
     #       name: mysecret
     #       key: username
+  {{ if $volumeClaimTemplate }}
   storage:
     volumeClaimTemplate:
-      spec:
-        # storageClassName: standard
-        accessModes: ["ReadWriteOnce"]
-        resources:
-          requests:
-            storage: 1Gi
+      {{- toYaml $volumeClaimTemplate | nindent 6 }}
+  {{- end }}
   # nodeSelector:
   #   kubernetes.io/hostname: minikube
   # priorityClassName:

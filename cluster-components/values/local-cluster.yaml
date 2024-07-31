@@ -296,4 +296,11 @@ redis:
   enabled: false
   namespace: swh
   deployments:
-    counters: {}
+    counters:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
