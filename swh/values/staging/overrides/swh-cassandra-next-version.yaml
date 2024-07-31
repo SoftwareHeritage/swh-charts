@@ -286,8 +286,9 @@ loaderMetadata:
     # TODO: Support this option
     # stopWhenNoActivity: false
 
-cassandraRWNoObjstorageStorageConfig:
-  storageConfigurationRef: cassandraStorage
+directPostgresqlReplayerStorageConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
 storageReplayerJournalClientConfig:
@@ -300,7 +301,7 @@ storageReplayerJournalClientConfig:
 
 storageReplayer:
   enabled: true
-  storageConfigurationRef: cassandraRWNoObjstorageStorageConfig
+  storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
   journalClientConfigurationRef: storageReplayerJournalClientConfig
   error_reporter:
     enabled: false
