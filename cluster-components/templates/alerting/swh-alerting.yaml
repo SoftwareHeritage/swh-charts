@@ -84,7 +84,6 @@ spec:
       annotations:
         description: Ingress {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.ingress {{"}}"}}
           has {{"{{"}} $value {{"}}"}}% errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
-          The host is {{"{{"}} $labels.host {{"}}"}}.
         summary: Ingress {{"{{"}} $labels.ingress {{"}}"}} has more than {{ .ingress.errorRate }}% errors.
       expr: |-
           sum(irate(nginx_ingress_controller_requests{status=~"[45].."}[{{ .period.smallDelay }}])) by (ingress)
