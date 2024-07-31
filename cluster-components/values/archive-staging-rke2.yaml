@@ -209,7 +209,7 @@ cassandra:
   namespace: swh-cassandra-next-version
   storageConfig:
     cassandraDataVolumeClaimSpec:
-      storageClassName: local-path
+      storageClassName: local-persistent
       accessModes:
         - ReadWriteOnce
       resources:
@@ -235,7 +235,7 @@ kafka:
           type: persistent-claim
           size: 1Gi
           deleteClaim: true
-          class: local-path
+          class: local-persistent
       pools:
         pool-a:
           storage:
@@ -245,7 +245,7 @@ kafka:
                 type: persistent-claim
                 size: 1Gi
                 deleteClaim: true
-                class: local-path
+                class: local-persistent
 
         pool-b:
           storage:
@@ -255,7 +255,7 @@ kafka:
                 type: persistent-claim
                 size: 1Gi
                 deleteClaim: true
-                class: local-path
+                class: local-persistent
 
       topics:
         swh.journal.objects.origin: {}
@@ -297,7 +297,7 @@ elasticsearch:
       resources:
         requests:
           storage: 5Gi
-      storageClassName: local-path
+      storageClassName: local-persistent
   deployments:
     search:
       replicas: 1
