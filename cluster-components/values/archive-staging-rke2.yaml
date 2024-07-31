@@ -123,7 +123,7 @@ clusterPgStagingDb1:
     port: "5433"
 
 cloudnativePg:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   # Specific postgresql setup (can be overridden per instance)
   externalClusterRef: clusterPgStagingDb1
@@ -196,7 +196,7 @@ cloudnativePg:
         - swh-indexer
 
 rabbitmq:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   replicas: 1
   deployments:
@@ -205,7 +205,7 @@ rabbitmq:
       namespace: swh-cassandra-next-version
 
 cassandra:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   storageConfig:
     cassandraDataVolumeClaimSpec:
@@ -223,7 +223,7 @@ cassandra:
           replicas: 1
 
 kafka:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   replicas: 1
   replicationFactor: 1
@@ -282,7 +282,7 @@ kafka:
         swh.journal.indexed.revision_intrinsic_metadata: {}
 
 elasticsearch:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   # Common volume claim templates to deal with storage information
   # Can be overriden per instance
