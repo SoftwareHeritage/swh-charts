@@ -400,7 +400,8 @@ elasticsearch:
 
 redis:
   enabled: false
-  # namespace: swh
+  # Namespace where to make run the instance (can be overridden per instance)
+  namespace: redis
   # deployments:
   #   counters:
   #     replicas: 3

@@ -311,9 +311,9 @@ elasticsearch:
 
 redis:
   enabled: true
-  namespace: swh-cassandra-next-version
   deployments:
     counters:
+      namespace: swh-cassandra-next-version
       volumeClaimTemplate:
         spec:
           storageClassName: local-persistent

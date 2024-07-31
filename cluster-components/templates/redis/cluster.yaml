@@ -2,12 +2,13 @@
 {{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
 {{- $volumeClaimTemplate := $deploymentConfig.volumeClaimTemplate | default $.Values.redis.volumeClaimTemplate -}}
+{{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
 metadata:
   name: redis-{{ $deploymentName }}
-  namespace: {{ $.Values.redis.namespace }}
+  namespace: {{ $ns }}
 spec:
   podSecurityContext:
     runAsUser: 1000
