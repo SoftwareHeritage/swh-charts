@@ -550,6 +550,10 @@ podPriority:
     background-workload:
       value: -10900
 
+schedulerJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-scheduler-journal-client
+
 scheduler:
   enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -572,7 +576,8 @@ scheduler:
   updateMetrics:
     enabled: false
   journalClient:
-    enabled: false
+    enabled: true
+    journalConfigurationRef: schedulerJournalClientConfiguration
   extraServices:
     runner:
       enabled: true
