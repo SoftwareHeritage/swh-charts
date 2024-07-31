@@ -3,7 +3,7 @@ directPostgresqlReplayerStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
-## Direct postgresql connection without any filter or objstorage
+# Direct postgresql connection without any filter or objstorage
 scrubberROStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
 
