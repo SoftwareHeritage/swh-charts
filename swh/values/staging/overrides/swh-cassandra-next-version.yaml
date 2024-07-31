@@ -108,7 +108,7 @@ vault:
 
 remoteCountersConfiguration:
   cls: remote
-  url: http://counters-rpc-ingress-next-version
+  url: http://counters-rpc:5011
 
 externalServices:
   enabled: true
@@ -120,14 +120,46 @@ externalServices:
       internalName: counters-rpc-ingress-next-version
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
+countersJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-counters-journal-client
+  prefix: swh.journal.objects
+  object_types:
+  - content
+  - directory
+  - origin
+  - origin_visit
+  - origin_visit_status
+  - release
+  - revision
+  - skipped_content
+  - snapshot
+  message.max.bytes: 524288000
+
+localRedis:
+  cls: redis
+  host: redis-counters:6379
+
 counters:
+  enabled: true
+  journalClient:
+    enabled: true
+    countersConfigurationRef: remoteCountersConfiguration
+    journalConfigurationRef: countersJournalClientConfiguration
+  refreshCountersCache:
+    enabled: false
+    cron: "0 */1 * * *"
+    concurrencyPolicy: Forbid
+    countersConfigurationRef: remoteCountersConfiguration
+    historyFiles: []
   rpc:
+    enabled: true
+    cacheBaseDirectory: /tmp/counters
+    countersConfigurationRef: localRedis
+    # historyConfigurationRef: historyConfiguration
     replicas: 1
-    autoScaling:
-      minReplicaCount: 1
-      maxReplicaCount: 1
-    hosts:
-      - counters-rpc-ingress-next-version
+    ingress:
+      enabled: false
 
 loaders:
   terminationGracePeriodSeconds: 60
@@ -473,9 +505,20 @@ storage:
         check: false
         migrate: false
 
+webhooksConfiguration: {}
+
 web:
   deployments:
     cassandra:
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      storageConfigurationRef: remotePostgresqlStorageConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+
       metricsScrapingEnabled: false
       migrations:
         enabled: false
@@ -484,7 +527,7 @@ web:
         minReplicaCount: 1
         maxReplicaCount: 1
       extraConfig:
-        history_counters_url: http://counters-rpc-ingress-next-version/counters_history/history.json#
+        history_counters_url: http://counters-rpc:5011/counters_history/history.json#
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network
       refreshSavecodenowStatus:
