@@ -818,7 +818,6 @@ indexerJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readWriteInternalKafkaBrokers
   group_id: swh-indexer-journal-client
-  prefix: swh.journal.indexed
 
 indexers:
   enabled: true
@@ -833,6 +832,7 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-journal-client-origin-intrinsic-metadata
         batch_size: 200
+        prefix: swh.journal.objects
       requestedCpu: 50m
       requestedMemory: 100Mi
       extraConfig:
