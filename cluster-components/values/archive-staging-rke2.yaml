@@ -325,8 +325,6 @@ redis:
     svix2:
       enabled: true
       namespace: svix-server
-      labels:
-        app: redis-svix
       priorityClassName: swh-storages
       serviceMonitor:
          enabled: true

@@ -402,6 +402,8 @@ redis:
   enabled: false
   # Namespace (overridable per instance)
   namespace: redis
+  # [optional] extra labels
+  labels: {}
   # [optional] Node selection query (overridable per instance)
   # nodeSelector:
   #   kubernetes.io/hostname: minikube
