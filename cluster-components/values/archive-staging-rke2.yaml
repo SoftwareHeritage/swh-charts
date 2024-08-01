@@ -316,7 +316,7 @@ redis:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: swh-counters
+          - key: swh/counters
             operator: In
             values:
             - "true"
