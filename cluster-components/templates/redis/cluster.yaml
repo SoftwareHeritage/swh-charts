@@ -6,6 +6,7 @@
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
 {{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
+{{- $priorityClassName := $deploymentConfig.priorityClassName | default $.Values.redis.priorityClassName -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
@@ -20,6 +21,9 @@ spec:
   podSecurityContext:
     runAsUser: 1000
     fsGroup: 1000
+  {{- if $priorityClassName }}
+  priorityClassName: {{ $priorityClassName }}
+  {{- end }}
   kubernetesConfig:
     image: quay.io/opstree/redis:v7.0.12
     imagePullPolicy: IfNotPresent
@@ -73,7 +77,6 @@ spec:
   affinity:
     {{- toYaml $affinity | nindent 4 }}
   {{- end }}
-  # priorityClassName:
   # Affinity:
   # Tolerations: []
 {{ end }}
