@@ -5,12 +5,17 @@
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
 {{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
+{{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
 metadata:
   name: redis-{{ $deploymentName }}
   namespace: {{ $ns }}
+  {{- if $labels }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+  {{- end }}
 spec:
   podSecurityContext:
     runAsUser: 1000
