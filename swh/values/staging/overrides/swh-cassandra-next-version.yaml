@@ -86,7 +86,7 @@ remoteROStorageConfiguration:
 
 remoteVaultConfiguration:
   cls: remote
-  url: http://vault-rpc-ingress-next-version
+  url: http://vault-rpc:5005
 
 remoteSchedulerConfiguration:
   cls: remote
@@ -103,8 +103,8 @@ vault:
     check: true
     # migrate db?
     migrate: false
-  hosts:
-    - vault-rpc-ingress-next-version
+  ingress:
+    enabled: false
 
 remoteCountersConfiguration:
   cls: remote
