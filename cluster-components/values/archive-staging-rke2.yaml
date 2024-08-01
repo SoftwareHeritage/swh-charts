@@ -323,7 +323,7 @@ redis:
             requests:
               storage: 5Gi
     svix2:
-      enabled: false
+      enabled: true
       namespace: svix-server
       labels:
         app: redis-svix
