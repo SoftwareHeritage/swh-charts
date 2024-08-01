@@ -48,7 +48,7 @@ celeryConfiguration:
 
 postgresqlRWStorageConfiguration:
   cls: postgresql
-  host: next-version-swh-rw
+  host: next-version-swh-rw.swh-cassandra-next-version
   port: '5432'
   db: swh
   user: ${POSTGRESQL_USERNAME}
@@ -63,7 +63,7 @@ postgresqlRWStorageConfiguration:
 
 postgresqlROStorageConfiguration:
   cls: postgresql
-  host: next-version-swh-ro
+  host: next-version-swh-ro.swh-cassandra-next-version
   port: '5432'
   db: swh
   user: ${POSTGRESQL_USERNAME}
@@ -762,7 +762,7 @@ checkerDeposit:
 
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
-  host: next-version-swh-indexer-rw
+  host: next-version-swh-indexer-rw.swh-cassandra-next-version
   port: 5432
   db: swh-indexer
   user: ${POSTGRESQL_IDX_USERNAME}
