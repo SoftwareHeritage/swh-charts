@@ -61,9 +61,28 @@ postgresqlRWStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
-remotePostgresqlStorageConfiguration:
+postgresqlROStorageConfiguration:
+  cls: postgresql
+  host: next-version-swh-ro
+  port: '5432'
+  db: swh
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
+
+remoteRWPostgresqlStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql:5002
+
+remoteROPostgresqlStorageConfiguration:
+  cls: remote
+  url: http://storage-ro-postgresql:5002
 
 remoteCassandraStorageConfiguration:
   cls: remote
@@ -77,12 +96,16 @@ rwStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
+roStoragePostgresqlConfiguration:
+  storageConfigurationRef: postgresqlROStorageConfiguration
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
 retryStoragePipelineSteps:
   - cls: retry
 
 remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: remotePostgresqlStorageConfiguration
+  storageConfigurationRef: remoteROPostgresqlStorageConfiguration
 
 remoteVaultConfiguration:
   cls: remote
@@ -505,6 +528,12 @@ storage:
           database: swh
         check: false
         migrate: false
+    ro-postgresql:
+      enabled: true
+      storageConfigurationRef: roStoragePostgresqlConfiguration
+      backend:
+        check: false
+        migrate: false
 
 webhooksConfiguration: {}
 
@@ -517,7 +546,7 @@ web:
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
-      storageConfigurationRef: remotePostgresqlStorageConfiguration
+      storageConfigurationRef: remoteROPostgresqlStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
 
       metricsScrapingEnabled: false
@@ -707,7 +736,7 @@ search:
     enabled: true
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
-    storageConfigurationRef: remotePostgresqlStorageConfiguration
+    storageConfigurationRef: remoteROPostgresqlStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
