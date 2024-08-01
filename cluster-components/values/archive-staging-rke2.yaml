@@ -323,7 +323,7 @@ redis:
             requests:
               storage: 5Gi
     svix2:
-      enabled: true
+      enabled: false
       namespace: svix-server
       priorityClassName: swh-storages
       serviceMonitor:
