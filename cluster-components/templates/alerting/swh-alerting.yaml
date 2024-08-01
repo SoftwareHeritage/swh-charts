@@ -72,7 +72,7 @@ spec:
     - alert: KEDA_Scaled_Object_Errors_In_{{ .environment | title }}
       annotations:
         description: Scaled object {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.scaledObject {{"}}"}}
-          have encountered {{"{{"}} $value {{"}}"}} errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
+          have encountered {{"{{"}} printf "%.0f" $value {{"}}"}} errors within the last {{ trimSuffix "m" .period.smallDelay }} minutes.
         summary: KEDA scaled object {{"{{"}} $labels.scaledObject {{"}}"}} in error.
       expr: |-
           sum by(scaledObject) (delta(keda_scaled_object_errors_total{exported_namespace!="swh-cassandra-next-version"}[{{ .period.smallDelay }}])) > 0
