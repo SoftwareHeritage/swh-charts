@@ -420,6 +420,32 @@ redis:
   # [optional] Activate service monitor (overridable per instance)
   serviceMonitor:
     enabled: false
+  # [optional] Activate redis exporter (overridable per instance)
+  redisExporter:
+    enabled: false
+    image: quay.io/opstree/redis-exporter
+    tag: "v1.44.0"
+    imagePullPolicy: IfNotPresent
+    resources: {}
+      # requests:
+      #   cpu: 100m
+      #   memory: 128Mi
+      # limits:
+      #   cpu: 100m
+      #   memory: 128Mi
+    env: []
+    # - name: REDIS_EXPORTER_INCL_SYSTEM_METRICS
+    #   value: "true"
+    # - name: UI_PROPERTIES_FILE_NAME
+    #   valueFrom:
+    #     configMapKeyRef:
+    #       name: game-demo
+    #       key: ui_properties_file_name
+    # - name: SECRET_USERNAME
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: mysecret
+    #       key: username
   # Actual instance deployment
   # deployments:
   #   counters:
