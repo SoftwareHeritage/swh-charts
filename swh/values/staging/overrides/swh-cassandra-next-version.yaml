@@ -63,17 +63,17 @@ postgresqlRWStorageConfiguration:
 
 postgresqlROStorageConfiguration:
   cls: postgresql
-  host: next-version-swh-ro.swh-cassandra-next-version
+  host: next-version-swh-r.swh-cassandra-next-version
   port: '5432'
   db: swh
   user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_USERNAME:
-      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
 remoteRWPostgresqlStorageConfiguration:
