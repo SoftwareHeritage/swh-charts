@@ -28,18 +28,6 @@ spec:
   kubernetesConfig:
     image: quay.io/opstree/redis:v7.0.12
     imagePullPolicy: IfNotPresent
-    # resources:
-    #   requests:
-    #     cpu: 101m
-    #     memory: 128Mi
-    #   limits:
-    #     cpu: 101m
-    #     memory: 128Mi
-    # # redisSecret:
-    # #   name: redis-secret
-    # #   key: password
-    # # imagePullSecrets:
-    # #   - name: regcred
   {{- if $redisExporter.enabled }}
   redisExporter:
     enabled: {{ $redisExporter.enabled }}
@@ -65,7 +53,6 @@ spec:
   affinity:
     {{- toYaml $affinity | nindent 4 }}
   {{- end }}
-  # Affinity:
   # Tolerations: []
 {{ end }}
 {{ end }}
