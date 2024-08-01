@@ -322,3 +322,33 @@ redis:
           resources:
             requests:
               storage: 5Gi
+    svix2:
+      enabled: false
+      labels:
+        app: redis-svix
+      priorityClassName: swh-storages
+      serviceMonitor:
+         enabled: true
+         namespace: svix-server
+      redisExporter:
+        enabled: true
+      affinity:
+       nodeAffinity:
+         requiredDuringSchedulingIgnoredDuringExecution:
+           nodeSelectorTerms:
+           - matchExpressions:
+             - key: svix-server
+               operator: In
+               values:
+               - "true"
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ceph-rbd
+          accessModes:
+            - ReadWriteOnce
+      extraConfig:
+        enabled: true
+        data: |
+          save 60 500
+          appendonly yes
+          appendfsync everysec
