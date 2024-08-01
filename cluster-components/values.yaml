@@ -400,11 +400,27 @@ elasticsearch:
 
 redis:
   enabled: false
-  # Namespace where to make run the instance (can be overridden per instance)
+  # Namespace (overridable per instance)
   namespace: redis
-  # Node selection query (can be overridden per instance)
+  # [optional] Node selection query (overridable per instance)
   # nodeSelector:
   #   kubernetes.io/hostname: minikube
+  # [optional] Affinity (overridable per instance)
+  # affinity:
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: svix-server
+  #          operator: In
+  #          values:
+  #          - "true"
+  # [optional] Priority class to use (overridable per instance)
+  # priorityClassName: swh-storages
+  # [optional] Activate service monitor (overridable per instance)
+  serviceMonitor:
+    enabled: false
+  # Actual instance deployment
   # deployments:
   #   counters:
   #     replicas: 3
