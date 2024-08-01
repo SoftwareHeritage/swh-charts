@@ -143,6 +143,7 @@ svix:
 alerting:
   enabled: false
   period:
+    microDelay: 2m
     tinyDelay: 5m
     smallDelay: 15m
   cassandra:
@@ -153,6 +154,8 @@ alerting:
   runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks"
   ingress:
     errorRate: 25
+    slowDownRate: 90
+    slowDownPeriod: 10000
 
 scrapeExternalMetrics:
   enabled: false

@@ -93,5 +93,20 @@ spec:
       labels:
         severity: warning
         namespace: cattle-monitoring-system
+    - alert: Ingress_Slow_Down_In_{{ .environment | title }}
+      annotations:
+        description: Ingress {{"{{"}} $labels.exported_namespace {{"}}"}}/{{"{{"}} $labels.ingress {{"}}"}}
+          requests with {{ div .ingress.slowDownPeriod 1000 }}s duration or more are {{ .ingress.slowDownRate }}% of
+          total requests within the last {{ trimSuffix "m" .period.microDelay }} minutes.
+        summary: {{ .ingress.slowDownRate }}% of requests have {{ div .ingress.slowDownPeriod 1000 }}s duration or more.
+      expr: |-
+        sum((delta(nginx_ingress_controller_request_duration_seconds_count[{{ .period.microDelay }}]) > {{ .ingress.slowDownPeriod }})) by (ingress, exported_namespace)
+        /
+        sum((delta(nginx_ingress_controller_request_duration_seconds_count[{{ .period.microDelay }}]))) by (ingress, exported_namespace)
+        * 100 > {{ .ingress.slowDownRate }}
+      for: {{ .period.tinyDelay }}
+      labels:
+        severity: warning
+        namespace: cattle-monitoring-system
 {{- end }}
 {{- end }}
