@@ -62,9 +62,6 @@ svix:
   requestedCpu: 100m
   namespace: svix-server
   redis:
-    # When false, the redis is not deployed through the chart but through the
-    # k8s-cluster-config repository configuration
-    managedByChart: false
     dsn: redis-svix.svix-server
   postgresDsn: db1.internal.staging.swh.network
 

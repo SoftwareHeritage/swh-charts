@@ -132,9 +132,6 @@ svix:
     requestedCpu: 100m
     persistentVolume: false
   redis:
-    # If false, the redis is not deployed through the chart but through
-    # the k8s-cluster-config repository configuration
-    managedByChart: false
     requestedMemory: 100Mi
     requestedCpu: 100m
     persistentVolume: false

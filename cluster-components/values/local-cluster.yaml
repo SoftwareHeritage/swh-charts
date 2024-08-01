@@ -50,10 +50,8 @@ svix:
     persistentVolume: false
   redis:
     enabled: true
-    # When true, redis instance is deployed through the chart
-    managedByChart: false
     persistentVolume: false
-    dsn: redis
+    dsn: redis-svix.cluster-components
 
 dockerCache:
   enabled: false
