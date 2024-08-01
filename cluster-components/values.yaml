@@ -446,6 +446,13 @@ redis:
     #     secretKeyRef:
     #       name: mysecret
     #       key: username
+    # [optional] Add extra redis configuration (overridable per instance)
+  extraConfig:
+    enabled: false
+  #   data: |
+  #     save 60 500
+  #     appendonly yes
+  #     appendfsync everysec
   # Actual instance deployment
   # deployments:
   #   counters:

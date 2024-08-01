@@ -8,6 +8,7 @@
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $priorityClassName := $deploymentConfig.priorityClassName | default $.Values.redis.priorityClassName -}}
 {{- $redisExporter := mustMerge $.Values.redis.redisExporter ($deploymentConfig.redisExporter | default dict) -}}
+{{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
@@ -53,6 +54,9 @@ spec:
   affinity:
     {{- toYaml $affinity | nindent 4 }}
   {{- end }}
-  # Tolerations: []
+  {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) }}
+  redisConfig:
+    additionalRedisConfig: redis-{{ $deploymentName }}-ext-config
+  {{ end }}
 {{ end }}
 {{ end }}
