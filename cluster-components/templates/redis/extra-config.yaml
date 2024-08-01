@@ -4,11 +4,13 @@
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
 {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) -}}
+{{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: redis-{{ $deploymentName }}-ext-config
+  namespace: {{ $ns }}
   {{- if $labels }}
   labels:
     {{- toYaml $labels | nindent 4 }}

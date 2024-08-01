@@ -4,12 +4,13 @@
 {{- $serviceMonitor := $deploymentConfig.serviceMonitor | default $.Values.redis.serviceMonitor -}}
 {{- if or (not (hasKey $serviceMonitor "enabled")) (get $serviceMonitor "enabled") -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
-{{- $namespace := $serviceMonitor.namespace | default $deploymentConfig.namespace | default $.Values.redis.namespace -}}
+{{- $ns := $serviceMonitor.namespace | default $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: redis-{{ $deploymentName }}-prometheus-monitoring
+  namespace: {{ $ns }}
   {{- if $labels }}
   labels:
     {{- toYaml $labels | nindent 4 }}
@@ -26,7 +27,7 @@ spec:
     scrapeTimeout: {{ $serviceMonitor.scrapeTimeout | default "10s" }}
   namespaceSelector:
     matchNames:
-    - {{ $namespace }}
+    - {{ $ns }}
 {{- end }}
 {{ end }}
 {{ end }}
