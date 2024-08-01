@@ -88,7 +88,7 @@ spec:
       expr: |-
           sum(rate(nginx_ingress_controller_requests{status=~"[45].."}[{{ .period.smallDelay }}])) by (ingress)
           /
-          sum(rate(nginx_ingress_controller_requests[{{ .period.tinyDelay }}])) by (ingress) * 100 > {{ .ingress.errorRate }}
+          sum(rate(nginx_ingress_controller_requests[{{ .period.smallDelay }}])) by (ingress) * 100 > {{ .ingress.errorRate }}
       for: {{ .period.smallDelay }}
       labels:
         severity: warning
