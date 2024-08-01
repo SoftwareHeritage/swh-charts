@@ -1,0 +1,33 @@
+{{- if .Values.redis.enabled -}}
+{{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $serviceMonitor := $deploymentConfig.serviceMonitor | default $.Values.redis.serviceMonitor -}}
+{{- if or (not (hasKey $serviceMonitor "enabled")) (get $serviceMonitor "enabled") -}}
+{{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
+{{- $namespace := $serviceMonitor.namespace | default $deploymentConfig.namespace | default $.Values.redis.namespace -}}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-{{ $deploymentName }}-prometheus-monitoring
+  {{- if $labels }}
+  labels:
+    {{- toYaml $labels | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app: redis-{{ $deploymentName }}
+      redis_setup_type: standalone
+      role: standalone
+  endpoints:
+  - port: redis-exporter
+    interval: {{ $serviceMonitor.interval | default "30s" }}
+    scrapeTimeout: {{ $serviceMonitor.scrapeTimeout | default "10s" }}
+  namespaceSelector:
+    matchNames:
+    - {{ $namespace }}
+{{- end }}
+{{ end }}
+{{ end }}
+{{ end }}
