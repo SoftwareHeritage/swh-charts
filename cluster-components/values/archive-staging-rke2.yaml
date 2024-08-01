@@ -324,12 +324,12 @@ redis:
               storage: 5Gi
     svix2:
       enabled: false
+      namespace: svix-server
       labels:
         app: redis-svix
       priorityClassName: swh-storages
       serviceMonitor:
          enabled: true
-         namespace: svix-server
       redisExporter:
         enabled: true
       affinity:
