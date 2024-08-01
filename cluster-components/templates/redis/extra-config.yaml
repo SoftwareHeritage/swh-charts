@@ -1,5 +1,6 @@
 {{- if .Values.redis.enabled -}}
 {{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
 {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) -}}
@@ -15,6 +16,7 @@ metadata:
 data:
   redis-additional.conf: |
     {{- $extraConfig.data | nindent 4 }}
+{{ end }}
 {{- end }}
 {{- end }}
 {{ end }}

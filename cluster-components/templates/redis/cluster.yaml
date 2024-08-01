@@ -1,5 +1,6 @@
 {{- if .Values.redis.enabled -}}
 {{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
 {{- $volumeClaimTemplate := $deploymentConfig.volumeClaimTemplate | default $.Values.redis.volumeClaimTemplate -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
@@ -58,5 +59,6 @@ spec:
   redisConfig:
     additionalRedisConfig: redis-{{ $deploymentName }}-ext-config
   {{ end }}
+{{ end }}
 {{ end }}
 {{ end }}
