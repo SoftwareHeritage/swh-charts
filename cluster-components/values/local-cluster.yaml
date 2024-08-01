@@ -51,7 +51,7 @@ svix:
   redis:
     enabled: true
     # When true, redis instance is deployed through the chart
-    managedByChart: true
+    managedByChart: false
     persistentVolume: false
     dsn: redis
 
@@ -302,5 +302,24 @@ redis:
           storageClassName: standard
           accessModes:
             - ReadWriteOnce
+    svix:
+      enabled: true
+      namespace: cluster-components
+      serviceMonitor:
+         enabled: false
+      redisExporter:
+        enabled: true
+      volumeClaimTemplate:
+        spec:
+          storageClassName: standard
+          accessModes:
+            - ReadWriteOnce
           resources:
             requests:
+              storage: 1Gi
+      extraConfig:
+        enabled: true
+        data: |
+          save 60 500
+          appendonly yes
+          appendfsync everysec
