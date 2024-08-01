@@ -311,11 +311,18 @@ elasticsearch:
 
 redis:
   enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh-counters
+            operator: In
+            values:
+            - "true"
   deployments:
     counters:
       namespace: swh-cassandra-next-version
-      nodeSelector:
-        kubernetes.io/hostname: rancher-node-staging-rke2-worker1
       volumeClaimTemplate:
         spec:
           storageClassName: local-persistent

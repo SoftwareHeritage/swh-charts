@@ -4,6 +4,7 @@
 {{- $volumeClaimTemplate := $deploymentConfig.volumeClaimTemplate | default $.Values.redis.volumeClaimTemplate -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
+{{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
@@ -62,6 +63,10 @@ spec:
   {{ if $nodeSelector }}
   nodeSelector:
     {{- toYaml $nodeSelector | nindent 4 }}
+  {{- end }}
+  {{ if $affinity }}
+  affinity:
+    {{- toYaml $affinity | nindent 4 }}
   {{- end }}
   # priorityClassName:
   # Affinity:
