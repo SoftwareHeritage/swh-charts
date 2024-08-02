@@ -345,7 +345,7 @@ redis:
               - ReadWriteOnce
             resources:
               requests:
-              storage: 1Gi
+                storage: 1Gi
       extraConfig:
         enabled: true
         data: |
