@@ -61,5 +61,5 @@ elasticsearch:
   enabled: true
 
 redis:
-  enabled: true
+  enabled: false
   namespace: redis
