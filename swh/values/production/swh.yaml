@@ -1420,7 +1420,7 @@ web:
       requestedCpu: 350m
       requestedMemory: 6Gi
       refreshSavecodenowStatus:
-        enabled: false
+        enabled: true
         concurrencyPolicy: Forbid
         priorityClassName: frontend-rpc-workload
         cron: "*/2 * * * *"
@@ -1984,7 +1984,7 @@ counters:
             - 192.168.101.0/24
 
 webhooks:
-  enabled: true
+  enabled: false
   svixConfigurationRef: svixConfiguration
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
