@@ -1408,16 +1408,16 @@ web:
   deployments:
     # Main instance to serve archive.softwareheritage.org
     archive:
-      replicas: 4
       gunicorn:
         workers: 4
         threads: 2
         timeout: 3600
-      # autoScaling:
-      #   minReplicaCount: 2
-      #   maxReplicaCount: 4
-      #   cpuPercentageUsage: 100
-      requestedCpu: 350m
+      # replicas: 4
+      autoScaling:
+        minReplicaCount: 6
+        maxReplicaCount: 8
+        cpuPercentageUsage: 100
+      requestedCpu: 500m
       requestedMemory: 6Gi
       refreshSavecodenowStatus:
         enabled: true
