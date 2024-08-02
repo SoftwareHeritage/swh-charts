@@ -370,7 +370,8 @@ redis:
             resources:
               requests:
                 storage: 1Gi
-    postgresql:
+    postgresql-replayer:
+      appName: redis-postgresql
       namespace: redis
       serviceMonitor:
         enabled: true
