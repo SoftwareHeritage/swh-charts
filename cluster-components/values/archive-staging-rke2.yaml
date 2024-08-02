@@ -370,4 +370,21 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+    postgresql:
+      namespace: redis
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-staging-rke2-worker1
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
 
