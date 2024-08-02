@@ -15,7 +15,7 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if $web_config.replicas -}}
+  {{ if and $web_config.replicas (not $web_config.autoScaling) -}}
   replicas: {{ $web_config.replicas }}
   {{ end -}}
   selector:
