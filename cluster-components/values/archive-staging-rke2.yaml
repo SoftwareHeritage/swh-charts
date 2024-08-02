@@ -352,3 +352,18 @@ redis:
           save 60 500
           appendonly yes
           appendfsync everysec
+    redis:
+      appName: redis
+      namespace: redis
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-staging-rke2-worker1
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes: ["ReadWriteOnce"]
+
