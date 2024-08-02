@@ -2,7 +2,7 @@
 {{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
-{{- $volumeClaimTemplate := $deploymentConfig.volumeClaimTemplate | default $.Values.redis.volumeClaimTemplate -}}
+{{- $storage := $deploymentConfig.storage | default $.Values.redis.storage -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
 {{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
@@ -43,10 +43,9 @@ spec:
     env: {{ toYaml $redisExporter.env | nindent 6 }}
     {{- end }}
   {{- end }}
-  {{- if $volumeClaimTemplate }}
+  {{- if $storage }}
   storage:
-    volumeClaimTemplate:
-      {{- toYaml $volumeClaimTemplate | nindent 6 }}
+    {{- toYaml $storage | nindent 4 }}
   {{- end }}
   {{- if $nodeSelector }}
   nodeSelector:

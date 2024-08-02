@@ -311,14 +311,15 @@ redis:
   deployments:
     counters:
       namespace: swh-cassandra-next-version
-      volumeClaimTemplate:
-        spec:
-          storageClassName: local-persistent
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 5Gi
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
     svix:
       enabled: true
       namespace: svix-server
@@ -336,11 +337,12 @@ redis:
                operator: In
                values:
                - "true"
-      volumeClaimTemplate:
-        spec:
-          storageClassName: ceph-rbd
-          accessModes:
-            - ReadWriteOnce
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: ceph-rbd
+            accessModes:
+              - ReadWriteOnce
       extraConfig:
         enabled: true
         data: |

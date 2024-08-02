@@ -295,11 +295,12 @@ redis:
   namespace: swh
   deployments:
     counters:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: standard
-          accessModes:
-            - ReadWriteOnce
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: standard
+            accessModes:
+              - ReadWriteOnce
     svix:
       enabled: true
       namespace: cluster-components
@@ -307,14 +308,15 @@ redis:
          enabled: false
       redisExporter:
         enabled: true
-      volumeClaimTemplate:
-        spec:
-          storageClassName: standard
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 1Gi
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: standard
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
       extraConfig:
         enabled: true
         data: |
