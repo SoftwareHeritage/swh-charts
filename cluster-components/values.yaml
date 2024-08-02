@@ -454,5 +454,9 @@ redis:
   #     appendfsync everysec
   # Actual instance deployment
   # deployments:
+  #   # name of the deployment, appName will be called redis-counters (unless
+  #   # appName is specified)
   #   counters:
+  #     # [optional] Application name override (e.g. to call it "redis" for example)
+  #     # appName: redis
   #     replicas: 3

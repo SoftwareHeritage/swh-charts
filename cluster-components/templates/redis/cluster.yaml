@@ -1,6 +1,7 @@
 {{- if .Values.redis.enabled -}}
-{{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
+{{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
 {{- $storage := $deploymentConfig.storage | default $.Values.redis.storage -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
@@ -14,10 +15,10 @@
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: Redis
 metadata:
-  name: redis-{{ $deploymentName }}
+  name: {{ $appName }}
   namespace: {{ $ns }}
   labels:
-    app: redis-{{ $deploymentName }}
+    app: {{ $appName }}
   {{- if $labels }}
     {{- toYaml $labels | nindent 4 }}
   {{- end }}
@@ -57,7 +58,7 @@ spec:
   {{- end }}
   {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) }}
   redisConfig:
-    additionalRedisConfig: redis-{{ $deploymentName }}-ext-config
+    additionalRedisConfig: {{ $appName }}-ext-config
   {{ end }}
 {{ end }}
 {{ end }}

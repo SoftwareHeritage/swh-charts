@@ -1,18 +1,19 @@
 {{- if .Values.redis.enabled -}}
-{{- range $deploymentName, $deploymentConfig := .Values.redis.deployments -}}
+{{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
 {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) -}}
+{{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: redis-{{ $deploymentName }}-ext-config
+  name: {{ $appName }}-ext-config
   namespace: {{ $ns }}
   labels:
-    app: redis-{{ $deploymentName }}
+    app: {{ $appName }}
   {{- if $labels }}
     {{- toYaml $labels | nindent 4 }}
   {{- end }}
