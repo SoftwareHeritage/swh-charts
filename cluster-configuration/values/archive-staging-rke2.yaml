@@ -61,4 +61,4 @@ elasticsearch:
   enabled: true
 
 redis:
-  enabled: false
+  enabled: true
