@@ -510,6 +510,34 @@ Generate the configuration for a journal writer
     mountPath: /entrypoints
 {{- end -}}
 
+{{/* Register listing task in scheduler backend through a container if needed */}}
+{{- define "swh.registerListingTask" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+{{- $forgeType := get .config "forgeType" |
+    required (print "<forgeType> is mandatory in values.yaml") -}}
+{{- $forgeUrl := get .config "forgeUrl" |
+    required (print "<forgeUrl> is mandatory in values.yaml") -}}
+- name: {{ .containerName | default "register-listing-task" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/register-listing-task.sh
+  env:
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  - name: SWH_FORGE_TYPE
+    value: {{ $forgeType }}
+  - name: SWH_FORGE_URL
+    value: {{ $forgeUrl }}
+  - name: SWH_LOG_LEVEL
+    value: INFO
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: backend-utils
+    mountPath: /entrypoints
+{{- end -}}
+
 {{/* Register webhook event types in svix backend if needed */}}
 {{- define "swh.registerWebhookEventTypes" -}}
 {{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |

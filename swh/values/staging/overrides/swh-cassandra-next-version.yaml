@@ -667,6 +667,11 @@ scheduler:
       migrate: false
       # register task types?
       register: true
+      # For test or sandboxed environment
+      registerListingTask:
+        forgeType: list-gitlab-incremental
+        forgeUrl: https://gitlab.softwareheritage.org/api/v4
+
     ingress:
       enabled: false
   updateMetrics:

@@ -19,6 +19,21 @@ data:
 
     # Uses internally the environment variable SWH_CONFIG_FILENAME
     swh scheduler task-type register
+  register-listing-task.sh: |
+    #!/usr/bin/env bash
+
+    # For test or sandboxed environment only
+    # This passes along a forge type and url to schedule for listing at
+    # startup
+
+    set -eux
+
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    ( swh scheduler task list \
+      --task-type $SWH_FORGE_TYPE --policy=oneshot 2>&1 | grep $SWH_FORGE_URL ) \
+      || swh scheduler task add $SWH_FORGE_TYPE \
+           url=$SWH_FORGE_URL \
+             --policy=oneshot
   register-webhook-event-types.sh: |
     #!/usr/bin/env bash
 

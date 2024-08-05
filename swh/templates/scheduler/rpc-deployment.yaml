@@ -3,6 +3,7 @@
 {{- $migrateBackend := $.Values.scheduler.rpc.backend.migrate | default false -}}
 {{- $initializeBackendConfig := $.Values.scheduler.rpc.backend.initialize | default false -}}
 {{- $registerTaskTypes := $.Values.scheduler.rpc.backend.register | default false -}}
+{{- $registerListingTask := $.Values.scheduler.rpc.backend.registerListingTask | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,6 +73,11 @@ spec:
         {{- if $registerTaskTypes }}
         {{ include "swh.registerTaskTypes" (dict "imagePrefixName" "swh_toolbox_image"
                                                  "Values" $.Values) | nindent 8 }}
+        {{- end }}
+        {{- if $registerListingTask }}
+        {{ include "swh.registerListingTask" (dict "imagePrefixName" "swh_toolbox_image"
+                                                   "config" $registerListingTask
+                                                   "Values" $.Values) | nindent 8 }}
         {{- end }}
       containers:
         - name: scheduler-rpc
