@@ -910,7 +910,10 @@ deposit:
     - deposit-next-version.internal.staging.swh.network
 
 checkerDeposit:
-  enabled: false
+  enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
+  depositConfigurationRef: depositConfiguration
 
 alter:
   enabled: false
