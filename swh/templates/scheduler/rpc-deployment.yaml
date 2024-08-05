@@ -4,6 +4,7 @@
 {{- $initializeBackendConfig := $.Values.scheduler.rpc.backend.initialize | default false -}}
 {{- $registerTaskTypes := $.Values.scheduler.rpc.backend.register | default false -}}
 {{- $registerListingTask := $.Values.scheduler.rpc.backend.registerListingTask | default false -}}
+{{- $logLevel := .Values.scheduler.rpc.logLevel | default .Values.scheduler.logLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -132,7 +133,7 @@ spec:
             - name: STATSD_TAGS
               value: deployment:scheduler-rpc
             - name: SWH_LOG_LEVEL
-              value: {{ .Values.scheduler.rpc.logLevel | default "INFO" }}
+              value: {{ $logLevel }}
           {{- if .Values.scheduler.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}

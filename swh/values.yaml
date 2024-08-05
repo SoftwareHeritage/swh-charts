@@ -1053,6 +1053,7 @@ scheduler:
   enabled: false
   port: 5008
   priorityClassName: frontend-rpc-workload
+  logLevel: INFO
   sentry:
     enabled: false
     secretKeyRef: scheduler-sentry-secrets
@@ -1077,7 +1078,6 @@ scheduler:
   # celeryConfigurationRef: guestCeleryConfiguration
   recurrent:
     enabled: false
-    logLevel: INFO
     schedulerPolicies:
       default:
       - policy: already_visited_order_by_lag
@@ -1118,7 +1118,6 @@ scheduler:
     enabled: false
     port: 5008
     priorityClassName: frontend-rpc
-    logLevel: INFO
     backend:
       # When true, initalize the backend, leave it empty to do nothing
       # initialize:
@@ -1187,12 +1186,10 @@ scheduler:
   extraServices:
     runner:
       enabled: false
-      logLevel: INFO
       period: 10
     runner-priority:
       # Use dashed (-) name to avoid issues when naming (kube) service
       enabled: false
-      logLevel: INFO
       period: 10
       extraConfig:
         - load-bzr
@@ -1203,7 +1200,6 @@ scheduler:
         - load-hg
     listener:
       enabled: false
-      logLevel: INFO
 
 # defaultElasticsearchHosts:
 #   - host: search-esnode0.internal.staging.swh.network

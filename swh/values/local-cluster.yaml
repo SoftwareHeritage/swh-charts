@@ -684,7 +684,6 @@ scheduler:
 
   updateMetrics:
     enabled: false
-    logLevel: INFO
     # Execute at each minute
     cron: "0/10 * * * *"
   journalClient:
@@ -693,17 +692,14 @@ scheduler:
   extraServices:
     runner:
       enabled: true
-      logLevel: INFO
       period: 100
     runner-priority:
       enabled: true
-      logLevel: INFO
       period: 100
       extraConfig:
         - load-git
     listener:
       enabled: true
-      logLevel: INFO
 
 loaderMetadata:
   enabled: false

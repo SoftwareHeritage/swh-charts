@@ -10,7 +10,7 @@
 {{- range $service_type, $deployment_config := .Values.scheduler.extraServices -}}
 {{- $deployment_config = include "swh.scheduler.deploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | fromYaml -}}
 {{- $service_name := ( print "scheduler-" $service_type ) -}}
-{{- $log_level := get $deployment_config "logLevel" -}}
+{{- $logLevel := get $deployment_config "logLevel" | default $.Values.scheduler.logLevel -}}
 
 {{- $enabled := get $deployment_config "enabled" -}}
 {{- if $enabled -}}
@@ -89,7 +89,7 @@ spec:
           # - infinity
           - swh
           - --log-level
-          - {{ $log_level | default "INFO" | quote }}
+          - {{ $logLevel | quote }}
           - scheduler
           - --config-file
           - /etc/swh/config.yml
@@ -130,7 +130,7 @@ spec:
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: SWH_LOG_LEVEL
-              value: {{ $log_level | default "INFO" | quote }}
+              value: {{ $logLevel | quote }}
           {{- if ( get $sentry "enabled" ) }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}

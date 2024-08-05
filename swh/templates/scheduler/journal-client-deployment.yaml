@@ -1,7 +1,7 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.journalClient.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/scheduler/journal-client-configmap.yaml") . -}}
 {{- $deployment_config := include "swh.scheduler.deploymentConfig" (dict "Values" .Values "deploymentConfig" .Values.scheduler.journalClient) | fromYaml -}}
-{{- $log_level := .Values.scheduler.journalClient.logLevel }}
+{{- $logLevel := .Values.scheduler.journalClient.logLevel | default .Values.scheduler.logLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,7 +72,7 @@ spec:
           # - infinity
           - swh
           - --log-level
-          - {{ $log_level | default "INFO" }}
+          - {{ $logLevel }}
           - scheduler
           - --config-file
           - /etc/swh/config.yml
@@ -87,7 +87,7 @@ spec:
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: SWH_LOG_LEVEL
-              value: {{ $log_level | default "INFO" }}
+              value: {{ $logLevel }}
           {{- if .Values.scheduler.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}

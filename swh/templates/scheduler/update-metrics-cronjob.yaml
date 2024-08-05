@@ -1,6 +1,7 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.updateMetrics.enabled -}}
 {{- $deployment_config := include "swh.scheduler.deploymentConfig" (dict "Values" .Values "deploymentConfig" .Values.scheduler.updateMetrics) | fromYaml -}}
-{{- $log_level := .Values.scheduler.updateMetrics.logLevel -}}
+{{- $logLevel := .Values.scheduler.updateMetrics.logLevel | default .Values.scheduler.logLevel -}}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -62,7 +63,7 @@ spec:
               # - infinity
               - swh
               - --log-level
-              - {{ $log_level | default "INFO" }}
+              - {{ $logLevel }}
               - scheduler
               - --config-file
               - /etc/swh/config.yml
@@ -78,7 +79,7 @@ spec:
                 - name: SWH_CONFIG_FILENAME
                   value: /etc/swh/config.yml
                 - name: SWH_LOG_LEVEL
-                  value: {{ $log_level | default "INFO" }}
+                  value: {{ $logLevel }}
               {{- if .Values.scheduler.sentry.enabled }}
                 - name: SWH_SENTRY_ENVIRONMENT
                   value: {{ .Values.sentry.environment }}
