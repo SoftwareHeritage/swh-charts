@@ -91,6 +91,18 @@ postgresqlDepositConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
+depositConfiguration:
+  host: deposit-next-version.internal.staging.swh.network
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password
+
 remoteRWPostgresqlStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql:5002
@@ -270,6 +282,14 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 1
         stopWhenNoActivity: false
+      depositConfigurationRef: depositConfiguration
+      extraConfig:
+        deposit:
+          url: "http://deposit-next-version.internal.staging.swh.network/1/private"
+          auth:
+            username: "${DEPOSIT_USERNAME}"
+            password: "${DEPOSIT_PASSWORD}"
+        default_filename: archive.tar
     golang:
       autoScaling:
         queueThreshold: 1
