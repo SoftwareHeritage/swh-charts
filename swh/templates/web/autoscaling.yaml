@@ -5,7 +5,7 @@
 {{- include "swh.autoscale" (dict "Values"        $.Values
                                   "serviceType"   ( print "web-" $web_type )
                                   "configuration" $web_config) -}}
-{{- end -}}
+{{- end }}
 {{ end -}}
 {{- end -}}
 

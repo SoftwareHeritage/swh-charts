@@ -740,6 +740,75 @@ web:
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
             authentication: swh-cassandra/web-auth-secrets
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteReadOnlyStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      depositConfigurationRef: depositConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      inboundEmailConfigurationRef: inboundEmailConfiguration
+
+      extraConfig:
+        keycloak:
+          server_url: https://auth.softwareheritage.org/auth/
+          realm_name: SoftwareHeritageStaging
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
+        search_config:
+          metadata_backend: swh-search
+        inbound_email:
+          shared_key: ${INBOUND_EMAIL_SHARED_KEY}
+        content_display_max_size: 5242880
+        history_counters_url: http://counters-rpc-ingress/counters_history/history.json
+        swh_extra_django_apps:
+        - swh.web.add_forge_now
+        - swh.web.archive_coverage
+        - swh.web.badges
+        - swh.web.banners
+        - swh.web.deposit
+        - swh.web.inbound_email
+        - swh.web.jslicenses
+        - swh.web.mailmap
+        - swh.web.metrics
+        - swh.web.save_code_now
+        - swh.web.save_origin_webhooks
+        - swh.web.vault
+        matomo: {}
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
+
+    webhooks:
+      requestedCpu: 100m
+      requestedMemory: 512Mi
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 4  # 4 to test the autoscaling in extreme scenarios
+        cpuPercentageUsage: 75
+      hosts:
+        - webapp.staging.swh.network
+        - webapp-cassandra.internal.staging.swh.network
+      ingress:
+        enabled: true
+        secretName: swh-web-crt
+        extraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/ingress.class: nginx
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        tlsEnabled: true
+        endpoints:
           webhooks:
             extraAnnotations:
               nginx.ingress.kubernetes.io/limit-connections: "3"
