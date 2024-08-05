@@ -76,6 +76,21 @@ postgresqlROStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-secret
       secretKeyName: password
 
+postgresqlDepositConfiguration:
+  cls: postgresql
+  host: next-version-dbs-rw.swh-cassandra-next-version
+  port: '5432'
+  db: swh-deposit
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyName: username
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyName: password
+
 remoteRWPostgresqlStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql:5002
@@ -850,8 +865,29 @@ graphql:
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network
 
+azureDepositConfiguration:
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestgnxvs;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: deposit-contents
+  content_type: application/octet-stream
+  content_encoding: ""
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-deposit-azure-secret
+      secretKeyName: azure-swh-deposit-key
+
 deposit:
-  enabled: false
+  enabled: true
+  databaseConfigurationRef: postgresqlDepositConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  # In prod this storage is read-only
+  storageConfigurationRef: remoteROPostgresqlStorageConfiguration
+  # XXX: but this one is read-write?
+  storageMetadataConfigurationRef: remoteCassandraStorageConfiguration
+  djangoConfigurationRef: djangoDepositConfiguration
+  blobstorageConfigurationRef: azureDepositConfiguration
+  keycloakConfigurationRef: keycloakConfiguration
+  hosts:
+    - deposit-next-version.internal.staging.swh.network
 
 checkerDeposit:
   enabled: false
