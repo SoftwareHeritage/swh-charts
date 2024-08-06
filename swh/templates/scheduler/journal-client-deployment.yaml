@@ -67,9 +67,6 @@ spec:
           command:
           - /opt/swh/entrypoint.sh
           args:
-          # - shell
-          # - sleep
-          # - infinity
           - swh
           - scheduler
           - --config-file
