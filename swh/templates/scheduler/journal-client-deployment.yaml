@@ -71,8 +71,6 @@ spec:
           # - sleep
           # - infinity
           - swh
-          - --log-level
-          - {{ $logLevel }}
           - scheduler
           - --config-file
           - /etc/swh/config.yml
