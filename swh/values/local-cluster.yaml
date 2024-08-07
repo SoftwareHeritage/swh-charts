@@ -1104,6 +1104,10 @@ objstorage:
   # docker image has the swh uid at that 1005 value
   securityContext:
     fsGroup: 1005
+  gunicorn:
+    workers: 2
+    threads: 2
+    timeout: 60
   deployments:
     # Each key will be an objstorage instance to be deployed
     # The mandatory objstorageConfigurationRef key should target a dict
