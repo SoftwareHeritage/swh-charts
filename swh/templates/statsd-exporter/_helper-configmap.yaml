@@ -63,4 +63,27 @@ data:
             - 0.9
             - 0.95
             - 1.
+      - match: "*.gunicorn.log.*"
+        name: "gunicorn_log"
+        labels:
+          deployment: "$1"
+          level: "$2"
+      - match: "*.gunicorn.request.status.*"
+        help: "gunicorn response code"
+        name: "gunicorn_response_code"
+        labels:
+          deployment: "$1"
+          status: "$2"
+      - match: "*.gunicorn.requests"
+        name: "gunicorn_requests"
+        labels:
+          deployment: "$1"
+      - match: "*.gunicorn.workers"
+        name: "gunicorn_workers"
+        labels:
+          deployment: "$1"
+      - match: "*.gunicorn.request.duration"
+        name: "gunicorn_request_duration"
+        labels:
+          deployment: "$1"
 {{- end -}}
