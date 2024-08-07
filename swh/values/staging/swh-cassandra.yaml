@@ -1006,7 +1006,7 @@ toolbox:
   bulkLoad:
     schedulerConfigurationRef: scheduler
     jobs:
-      jobName:
+      funtoo:
         originListUrl: https://gitlab.softwareheritage.org/-/project/474/uploads/5eea463ee190e585245a74d6f6eaf920/staging_code_funtoo_org_repos_sorted.txt
         taskType: load-git
         maxTasks: 5
