@@ -4,6 +4,8 @@
 {{- if or (not (hasKey $objstorage_config "enabled")) (get $objstorage_config "enabled") -}}
 {{- $serviceType := ( print "objstorage-" $objstorage_type ) -}}
 {{- $securityContext := $objstorage_config.securityContext | default $.Values.objstorage.securityContext -}}
+{{ $gunicornConfig := $objstorage_config.gunicorn | default $.Values.objstorage.gunicorn | default
+  (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -106,13 +108,13 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if $objstorage_config.gunicorn -}}
-            - name: THREADS
-              value: {{ $objstorage_config.gunicorn.threads | default 5 | quote }}
+            {{ if $gunicornConfig -}}
             - name: WORKERS
-              value: {{ $objstorage_config.gunicorn.workers | default 2 | quote }}
+              value: {{ $gunicornConfig.workers | quote }}
+            - name: THREADS
+              value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
-              value: {{ $objstorage_config.gunicorn.timeout | default 60 | quote }}
+              value: {{ $gunicornConfig.timeout | quote }}
             {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
