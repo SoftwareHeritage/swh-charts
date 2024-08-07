@@ -1,4 +1,6 @@
 {{ if .Values.statsd_exporter.enabled -}}
+{{- $configurationChecksum :=
+  include "statsd.exporter.configmap" (dict "Values" .Values) | sha256sum -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -12,10 +14,17 @@ spec:
   selector:
     matchLabels:
       app: prometheus-statsd-exporter
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
   template:
     metadata:
       labels:
         app: prometheus-statsd-exporter
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        checksum/config: {{ $configurationChecksum }}
     spec:
       {{- if and $.Values.podPriority.enabled $.Values.statsd_exporter.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.statsd_exporter.priorityClassName }}
