@@ -1,6 +1,7 @@
 {{ if .Values.statsd_exporter.enabled -}}
 {{- $configurationChecksum :=
   include "statsd.exporter.configmap" (dict "Values" .Values) | sha256sum -}}
+{{- $logLevel := .Values.statsd_exporter.logLevel | default "info" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -35,6 +36,9 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
           - "--statsd.mapping-config=/etc/prometheus/statsd-mapping.yml"
+          {{ if ne $logLevel "info" }}
+          - "--log.level={{ $logLevel }}"
+          {{ end }}
         ports:
         - containerPort: 9125
         volumeMounts:
