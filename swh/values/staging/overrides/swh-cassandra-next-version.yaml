@@ -621,6 +621,18 @@ web:
               # vpn network
               - 192.168.101.0/24
 
+    webhooks:
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      storageConfigurationRef: remoteROPostgresqlStorageConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+
+      enabled: false
+
 podPriority:
   # This test environment should not impact the real staging environment
   # so we need to use lower priorities than the 'normal' versions
