@@ -11,6 +11,7 @@ CC_CHART=cluster-components
 CCF_CHART=cluster-configuration
 SS_CHART=software-stories
 
+DIFF_COMMAND=auto
 SECRET_FILES='$(SWH_CHART)/fake-secrets'
 
 # For sandboxed environment
@@ -90,16 +91,16 @@ ss-test-with-snapshot:
       $(IMAGE) $(ACTIVATE_SNAPSHOT) software-stories
 
 swh-helm-diff:
-	./swh/helm-diff.sh
+	./swh/helm-diff.sh production $(DIFF_COMMAND)
 
 ccf-helm-diff:
-	./helm-diff.sh cluster-configuration
+	./helm-diff.sh $(CCF_CHART) $(DIFF_COMMAND)
 
 cc-helm-diff:
-	./helm-diff.sh cluster-components
+	./helm-diff.sh $(CC_CHART) $(DIFF_COMMAND)
 
 ss-helm-diff:
-	./helm-diff.sh software-stories
+	./helm-diff.sh $(SS_CHART) $(DIFF_COMMAND)
 
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 

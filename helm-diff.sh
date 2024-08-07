@@ -14,6 +14,42 @@ MAIN_BRANCH=production
 APP=${1-swh}
 BRANCH="$(git symbolic-ref --quiet HEAD | sed 's|refs/heads/||')"
 
+DIFF_COMMAND_TO_USE=${2-auto}
+LEGACY_DIFF_COMMAND="diff -U${CONTEXT_SIZE}"
+DIFF_COMMAND=""
+
+case $DIFF_COMMAND_TO_USE in
+    dyff)
+        if command -v dyff >/dev/null; then
+            if [ -n "$DYFF_OPTS" ]; then
+                DYFF_OPTS="-s -c on"
+            fi
+            DIFF_COMMAND="dyff between ${DYFF_OPTS}"
+            USE_DYFF=true
+        fi
+    ;;
+    diff)
+        DIFF_COMMAND="${LEGACY_DIFF_COMMAND}"
+        USE_DYFF=false
+    ;;
+    autodetect|auto|*)
+        # do nothing, legacy behavior to auto-detect diff command
+        ;;
+esac
+
+if [ -z "$DIFF_COMMAND" ]; then
+    if command -v dyff >/dev/null; then
+        if [ -n "$DYFF_OPTS" ]; then
+            DYFF_OPTS="-s -c on"
+        fi
+        DIFF_COMMAND="dyff between ${DYFF_OPTS}"
+        USE_DYFF=true
+    else
+        DIFF_COMMAND="${LEGACY_DIFF_COMMAND}"
+        USE_DYFF=false
+    fi
+fi
+
 TMPDIR=$(mktemp -d /tmp/swh-chart.$APP.XXXXXXXX)
 function cleanup {
     rm -rf $TMPDIR
@@ -45,19 +81,6 @@ for f in $files; do
     output="$TMPDIR/$(basename $f).after"
     $HELM_CMD $f > $output
 done
-
-LEGACY_DIFF_COMMAND="diff -U${CONTEXT_SIZE}"
-
-if command -v dyff >/dev/null; then
-  if [ -n "$DYFF_OPTS" ]; then
-    DYFF_OPTS="-s -c on"
-  fi
-  DIFF_COMMAND="dyff between ${DYFF_OPTS}"
-  USE_DYFF=true
-else
-  DIFF_COMMAND="${LEGACY_DIFF_COMMAND}"
-  USE_DYFF=false
-fi
 
 for f in $files; do
     output="$TMPDIR/$(basename $f)"
