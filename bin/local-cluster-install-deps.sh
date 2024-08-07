@@ -63,4 +63,4 @@ $HELM upgrade --install redis-operator \
 
 $HELM upgrade --install keda \
       kedacore/keda \
-     -n keda --create-namespace
+      -n keda --create-namespace
