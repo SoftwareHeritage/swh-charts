@@ -203,6 +203,8 @@ Create a keda prometheus autoscaler for gunicorn
 
 */}}
 {{- define "swh.keda.gunicornAutoscaler" -}}
+{{- $serverAddress := required (print "Prometheus address <prometheus.address> not found")
+  .Values.prometheus.address -}}
 {{- $environment := .Values.environment -}}
 {{- $autoScalingConfig := .configuration.autoScaling | default .configuration -}}
 {{- $rateInterval := $autoScalingConfig.rateInterval | default "2m" -}}
@@ -226,7 +228,7 @@ spec:
   triggers:
   - type: prometheus
     metadata:
-      serverAddress: http://{{ .Values.prometheus.host | default "kube-prometheus-stack-prometheus" }}:{{ .Values.prometheus.port | default "9090" }}
+      serverAddress: {{ $serverAddress }}
       metricName: gunicorn_requests
       threshold: {{ $autoScalingConfig.threshold | default 1 | quote }}
       {{- if eq $environment "local-cluster" }} # hack, no environment in metrics locally

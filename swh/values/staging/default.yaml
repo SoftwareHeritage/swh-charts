@@ -6,6 +6,9 @@ sentry:
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage-statsd-test
 swh_objstorage_image_version: '20240807.3'
 
+prometheus:
+  address: https://k8s-archive-staging-rke2-thanos.internal.staging.swh.network
+
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16

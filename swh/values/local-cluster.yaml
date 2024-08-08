@@ -8,8 +8,7 @@ swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps
 swh_objstorage_image_version: '20240807.3'
 
 prometheus:
-  host: prometheus-operated.cattle-monitoring-system
-  port: 9090
+  address: http://prometheus-operated.cattle-monitoring-system:9090
 
 statsd_exporter:
   enabled: false
