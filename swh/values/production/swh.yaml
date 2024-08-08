@@ -1457,20 +1457,6 @@ web:
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
             authentication: swh/web-auth-secrets
-          webhooks:
-            extraAnnotations:
-              # The number of connections to allow is estimated to ~1.5x the number
-              # of webhook journal client for the scn endpoint
-              # Another estimated could be around 1 connection per ~15 origin_visits_status/s
-              nginx.ingress.kubernetes.io/limit-connections: "10"
-            tlsEnabled: true
-            paths:
-              - path: /save/origin/visit/webhook
-            extraWhitelistSourceRange:
-              - 192.168.100.0/24
-              # temporary access due to the absence of TLS termination on internal ingresses
-              # svix-server endpoints requires TLS connections
-              - 128.93.166.2/32
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -1569,6 +1555,90 @@ web:
       extraConfig:
         search_config:
           metadata_backend: swh-search
+        content_display_max_size: 5242880
+        history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
+        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+        swh_extra_django_apps:
+          - swh.web.add_forge_now
+          - swh.web.archive_coverage
+          - swh.web.badges
+          - swh.web.banners
+          - swh.web.deposit
+          - swh.web.inbound_email
+          - swh.web.jslicenses
+          - swh.web.mailmap
+          - swh.web.metrics
+          - swh.web.save_code_now
+          - swh.web.save_origin_webhooks
+          - swh.web.vault
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
+        matomo:
+          url: https://piwik.inria.fr/
+          site_id: 59
+    # webhooks instance to serve svix requests
+    webhooks:
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
+      # replicas: 4
+      autoScaling:
+        minReplicaCount: 4
+        maxReplicaCount: 8
+        cpuPercentageUsage: 100
+      requestedCpu: 500m
+      requestedMemory: 6Gi
+      hosts:
+        - archive.softwareheritage.org
+        - archive.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        secretName: swh-web-archive-crt
+        extraAnnotations:
+          kubernetes.io/ingress.class: nginx
+        tlsExtraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        endpoints:
+          webhooks:
+            extraAnnotations:
+              # The number of connections to allow is estimated to ~1.5x the number
+              # of webhook journal client for the scn endpoint
+              # Another estimated could be around 1 connection per ~15 origin_visits_status/s
+              nginx.ingress.kubernetes.io/limit-connections: "10"
+            tlsEnabled: true
+            paths:
+              - path: /save/origin/visit/webhook
+            extraWhitelistSourceRange:
+              - 192.168.100.0/24
+              # moma access due to the absence of TLS termination on internal ingresses
+              # svix-server endpoints requires TLS connections
+              - 128.93.166.2/32
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+      depositConfigurationRef: depositConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      inboundEmailConfigurationRef: inboundEmailConfiguration
+
+      extraConfig:
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
+        search_config:
+          metadata_backend: swh-search
+        inbound_email:
+          shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
         history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
