@@ -7,6 +7,10 @@ sentry:
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage-statsd-test
 swh_objstorage_image_version: '20240807.3'
 
+prometheus:
+  host: prometheus-operated.cattle-monitoring-system
+  port: 9090
+
 statsd_exporter:
   enabled: false
 
@@ -1112,6 +1116,10 @@ objstorage:
     workers: 2
     threads: 2
     timeout: 60
+  autoScaling:
+    type: keda
+    minReplicaCount: 2
+    maxReplicaCount: 3
   deployments:
     # Each key will be an objstorage instance to be deployed
     # The mandatory objstorageConfigurationRef key should target a dict

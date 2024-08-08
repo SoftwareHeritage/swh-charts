@@ -2,6 +2,7 @@
 Create a kind HorizontalPodAutoscaler for service .serviceType
 */}}
 {{- define "swh.autoscale" -}}
+{{- $autoScalingConfig := .configuration.autoScaling | default .configuration -}}
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -15,16 +16,16 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .serviceType }}
-  minReplicas: {{ .configuration.autoScaling.minReplicaCount | default 2 }}
-  maxReplicas: {{ .configuration.autoScaling.maxReplicaCount | default 10 }}
+  minReplicas: {{ $autoScalingConfig.minReplicaCount | default 2 }}
+  maxReplicas: {{ $autoScalingConfig.maxReplicaCount | default 10 }}
   metrics:
-  {{- if .configuration.autoScaling.cpuPercentageUsage }}
+  {{- if $autoScalingConfig.cpuPercentageUsage }}
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ .configuration.autoScaling.cpuPercentageUsage }}
+        averageUtilization: {{ $autoScalingConfig.cpuPercentageUsage }}
   {{- end -}}
 {{- end -}}
 
@@ -196,3 +197,41 @@ spec:
                                      # list" section hostFromEnv: RABBITMQ_HOST%
     {{- end }}
 {{ end }}
+
+{{/*
+Create a keda prometheus autoscaler for gunicorn
+
+*/}}
+{{- define "swh.keda.gunicornAutoscaler" -}}
+{{- $environment := .Values.environment -}}
+{{- $autoScalingConfig := .configuration.autoScaling | default .configuration -}}
+{{- $rateInterval := $autoScalingConfig.rateInterval | default "2m" -}}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .serviceType }}-gunicorn-scaled-object
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .serviceType }}
+spec:
+  cooldownPeriod: {{ $autoScalingConfig.cooldownPeriod | default 200 }}
+  minReplicaCount: {{ $autoScalingConfig.minReplicaCount | default 2 }}
+  maxReplicaCount: {{ $autoScalingConfig.maxReplicaCount | default 10 }}
+  pollingInterval: {{ $autoScalingConfig.pollingInterval | default 15 }}
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .serviceType }}
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://{{ .Values.prometheus.host | default "kube-prometheus-stack-prometheus" }}:{{ .Values.prometheus.port | default "9090" }}
+      metricName: gunicorn_requests
+      threshold: {{ $autoScalingConfig.threshold | default 1 | quote }}
+      {{- if eq $environment "local-cluster" }} # hack, no environment in metrics locally
+      query: sum(rate(gunicorn_requests{namespace={{ .Values.namespace | quote }},deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
+      {{ else }}
+      query: sum(rate(gunicorn_requests{environment={{ $environment | quote }},namespace={{ .Values.namespace | quote }},deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
+      {{ end }}
+{{- end -}}

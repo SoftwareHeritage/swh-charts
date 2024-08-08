@@ -1,10 +1,15 @@
 {{ if .Values.objstorage.enabled -}}
 {{ range $objstorage_type, $deployment_config := .Values.objstorage.deployments }}
-{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
-           (hasKey $deployment_config "autoScaling") -}}
-{{- include "swh.autoscale" (dict "serviceType"   ( print "objstorage-" $objstorage_type )
-                                  "configuration" $deployment_config
-                                  "Values"        $.Values) -}}
-{{- end -}}
-{{ end -}}
+{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled")) -}}
+{{- $autoScaling := get $deployment_config "autoScaling" | default $.Values.objstorage.autoScaling -}}
+{{- if $autoScaling -}}
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn
+  (dict "serviceType"   ( print "objstorage-" $objstorage_type )
+        "configuration" $autoScaling
+        "Values"        $.Values) -}}
+{{ end }}
+{{ end }}
+{{ end }}
 {{- end -}}
