@@ -1118,8 +1118,12 @@ objstorage:
     timeout: 60
   autoScaling:
     type: keda
-    minReplicaCount: 2
-    maxReplicaCount: 3
+    minReplicaCount: 1
+    maxReplicaCount: 2
+    pollingInterval: 15
+    cooldownPeriod: 200
+    threshold: 1
+    rateInterval: 2m
   deployments:
     # Each key will be an objstorage instance to be deployed
     # The mandatory objstorageConfigurationRef key should target a dict
