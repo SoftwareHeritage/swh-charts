@@ -478,12 +478,18 @@ storageJournalWriterConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
 
-pathslicingObjstorageConfiguration:
+pathslicingRWObjstorageConfiguration:
   cls: pathslicing
   root: "/srv/swh/objects"
   slicing: 0:1/1:5
   client_max_size: 1073741824
   allow_delete: true
+
+pathslicingROObjstorageConfiguration:
+  cls: pathslicing
+  root: "/srv/swh/objects"
+  slicing: 0:1/1:5
+  client_max_size: 1073741824
 
 objstorage:
   enabled: true
@@ -512,6 +518,8 @@ objstorage:
     rw-pathslicing:
       enabled: true
       replicas: 1
+      nodeSelector:
+        kubernetes.io/hostname: db1
       extraVolumes:
         pathslicing-rw:
           mountPath: /srv/swh/objects
@@ -531,11 +539,43 @@ objstorage:
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
-      objstorageConfigurationRef: pathslicingObjstorageConfiguration
+      objstorageConfigurationRef: pathslicingRWObjstorageConfiguration
+
+    # Activate dedicated instance for read workload
+    ro-pathslicing:
+      enabled: true
+      replicas: 1
+      nodeSelector:
+        kubernetes.io/hostname: db1
+      extraVolumes:
+        pathslicing-ro:
+          mountPath: /srv/swh/objects
+          readOnly: true
+          volumeDefinition:
+            ephemeral:
+              volumeClaimTemplate:
+                metadata:
+                  labels:
+                    type: persistent-volume
+                spec:
+                  accessModes:
+                  - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 10Gi
+                  storageClassName: local-persistent
+
+      # mandatory
+      # check readWriteStorageConfiguration example to configure your storage
+      objstorageConfigurationRef: pathslicingROObjstorageConfiguration
 
 rpcRWObjstoragePathslicingConfiguration:
   cls: remote
   url: http://objstorage-rw-pathslicing:5003
+
+rpcROObjstoragePathslicingConfiguration:
+  cls: remote
+  url: http://objstorage-ro-pathslicing:5003
 
 rwStorageCassandraWithJournalConfiguration:
   storageConfigurationRef: cassandraStorage
@@ -861,7 +901,7 @@ indexers:
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-  objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
+  objstorageConfigurationRef: rpcROObjstoragePathslicingConfiguration
   journalClientConfigurationRef: indexerJournalClientConfiguration
   deployments:
     origin-intrinsic:
