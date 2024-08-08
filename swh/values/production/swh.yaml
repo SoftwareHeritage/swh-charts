@@ -950,14 +950,6 @@ toolbox:
       webhooksConfigurationRef: svixConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
-  bulkLoad:
-    schedulerConfigurationRef: scheduler
-    jobs:
-      funtoo:
-        originListUrl: https://gitlab.softwareheritage.org/-/project/474/uploads/9c44ded80ab95b46f9b379f4fedf700a/code_funtoo_org_repos_sorted.txt
-        taskType: load-git
-        maxTasks: 250
-        queuePrefix: oneshot
 
 indexerStorage:
   enabled: true
