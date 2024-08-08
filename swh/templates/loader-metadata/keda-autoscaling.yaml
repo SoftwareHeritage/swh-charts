@@ -20,7 +20,7 @@ metadata:
 spec:
   scaleTargetRef:
     name: loader-metadata
-  pollingInterval: {{ get $autoscalingConfig "poolInterval" | default 120 }}
+  pollingInterval: {{ get $autoscalingConfig "pollingInterval" | default 120 }}
   minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
   maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
   triggers:

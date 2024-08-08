@@ -40,7 +40,7 @@ indexers:
       consumerGroup: test.swh.idx.content_mimetype
       prefix: swh.journal.objects
       autoScaling:
-        poolInterval: 10
+        pollingInterval: 10
         minReplicaCount: 10
         maxReplicaCount: 50
         lagThreshold: 200
@@ -58,7 +58,7 @@ indexers:
       consumerGroup: test.swh.idx.content_fossology
       prefix: swh.journal.objects
       autoScaling:
-        poolInterval: 20
+        pollingInterval: 20
         minReplicaCount: 20
         maxReplicaCount: 100
         lagThreshold: 250

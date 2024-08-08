@@ -479,7 +479,7 @@ storageReplayer:
     #     batch_size: 250
     #     privileged: true
     #   autoScaling:
-    #     poolInterval: 120
+    #     pollingInterval: 120
     #     lagThreshold: 1000
     #     minReplicaCount: 1
     #     maxReplicaCount: 10
@@ -513,7 +513,7 @@ loaderMetadata:
   #   user: ...
   # autoScaling:
   #   enabled: true
-  #   poolInterval: 120
+  #   pollingInterval: 120
   #   lagThreashold: 1000
   #   minReplicaCount: 1
   #   maxReplicaCount: 10
@@ -590,7 +590,7 @@ indexers:
   #    # if sasl is activated on the connection, the kafka username must
   #    # be configured in a secret to allow the keda autoscaling to work
   #    autoScaling:
-  #      poolInterval: 120
+  #      pollingInterval: 120
   #      lagThreashold: 1000
   #      minReplicaCount: 1
   #      maxReplicaCount: 5
@@ -1576,7 +1576,7 @@ webhooks:
     #     key: webhook-secret
 
   # autoScaling:
-  #   poolInterval: 120
+  #   pollingInterval: 120
   #   lagThreashold: 1000
   #   minReplicaCount: 1
   #   maxReplicaCount: 5
@@ -1710,7 +1710,7 @@ objstorageReplayer:
   #    # if sasl is activated on the connection, the kafka username must
   #    # be configured in a secret to allow the keda autoscaling to work
   #    autoScaling:
-  #      poolInterval: 120
+  #      pollingInterval: 120
   #      lagThreashold: 1000
   #      minReplicaCount: 1
   #      maxReplicaCount: 5
