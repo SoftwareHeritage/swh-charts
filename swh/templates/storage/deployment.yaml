@@ -138,6 +138,8 @@ spec:
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:{{ $serviceType }}
+            - name: STATSD_SERVICE_TYPE
+              value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $storage_config.logLevel | default $.Values.storage.logLevel | quote }}
           {{- if $.Values.storage.sentry.enabled }}
