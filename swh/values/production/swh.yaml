@@ -1414,8 +1414,8 @@ web:
         timeout: 3600
       # replicas: 4
       autoScaling:
-        minReplicaCount: 6
-        maxReplicaCount: 8
+        minReplicaCount: 8
+        maxReplicaCount: 10
         cpuPercentageUsage: 100
       requestedCpu: 500m
       requestedMemory: 6Gi
