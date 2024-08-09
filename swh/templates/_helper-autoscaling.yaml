@@ -217,10 +217,10 @@ metadata:
   labels:
     app: {{ .serviceType }}
 spec:
-  cooldownPeriod: {{ $autoScalingConfig.cooldownPeriod | default 200 }}
-  minReplicaCount: {{ $autoScalingConfig.minReplicaCount | default 2 }}
-  maxReplicaCount: {{ $autoScalingConfig.maxReplicaCount | default 10 }}
-  pollingInterval: {{ $autoScalingConfig.pollingInterval | default 15 }}
+  cooldownPeriod: {{ $autoScalingConfig.cooldownPeriod | default 300 }}
+  pollingInterval: {{ $autoScalingConfig.pollingInterval | default 30 }}
+  minReplicaCount: {{ $autoScalingConfig.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ $autoScalingConfig.maxReplicaCount | default 4 }}
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
