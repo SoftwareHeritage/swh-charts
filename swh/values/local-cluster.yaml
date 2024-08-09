@@ -6,6 +6,9 @@ sentry:
 prometheus:
   address: http://prometheus-operated.cattle-monitoring-system:9090
 
+swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage-statsd-test
+swh_storage_image_version: '20240809.1'
+
 statsd_exporter:
   enabled: false
 
@@ -274,6 +277,10 @@ roStoragePostgresqlConfiguration:
 
 storage:
   enabled: false
+  autoScaling:
+    type: keda
+    minReplicaCount: 1
+    maxReplicaCount: 2
   deployments:
     rw-archive-cassandra:
       storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
