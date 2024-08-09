@@ -1,11 +1,12 @@
 {{- if .Values.storage.enabled }}
 {{- range $storage_type, $deployment_config := .Values.storage.deployments }}
-{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled"))
-           (hasKey $deployment_config "autoScaling") }}
+{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled")) }}
+{{- $autoScaling := get $deployment_config "autoScaling" | default $.Values.storage.autoScaling -}}
+{{- if $autoScaling }}
 {{ include "swh.autoscale" (dict "serviceType"   ( print "storage-" $storage_type )
-                                 "configuration" $deployment_config
+                                 "configuration" $autoScaling
                                  "Values"        $.Values) }}
-
+{{ end }}
 {{- end }}
 {{- end }}
 {{- end }}
