@@ -2,9 +2,6 @@ environment: staging
 sentry:
   environment: staging
 
-swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage-statsd-test
-swh_storage_image_version: '20240809.1'
-
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16
