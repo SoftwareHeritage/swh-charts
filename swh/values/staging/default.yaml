@@ -2,13 +2,6 @@ environment: staging
 sentry:
   environment: staging
 
-# For test purposes on statsd
-swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage-statsd-test
-swh_objstorage_image_version: '20240807.3'
-
-prometheus:
-  address: http://thanos.internal.admin.swh.network:19191
-
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16

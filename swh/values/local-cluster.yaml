@@ -3,10 +3,6 @@ sentry:
   enabled: false
   environment: local-cluster
 
-# For test purposes on statsd
-swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage-statsd-test
-swh_objstorage_image_version: '20240807.3'
-
 prometheus:
   address: http://prometheus-operated.cattle-monitoring-system:9090
 

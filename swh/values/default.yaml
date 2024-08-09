@@ -1,5 +1,8 @@
 namespace: swh
 
+prometheus:
+  address: http://thanos.internal.admin.swh.network:19191
+
 sentry:
   enabled: true
 
