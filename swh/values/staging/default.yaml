@@ -7,7 +7,7 @@ swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps
 swh_objstorage_image_version: '20240807.3'
 
 prometheus:
-  address: https://k8s-archive-staging-rke2-thanos.internal.staging.swh.network
+  address: http://thanos.internal.admin.swh.network:19191
 
 clusterNetworkRanges:
   # cluster internal range ip
