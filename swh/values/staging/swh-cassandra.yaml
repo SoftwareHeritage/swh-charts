@@ -1255,11 +1255,15 @@ objstorage:
       enabled: true
       nodeSelector:
         kubernetes.io/hostname: db1
-      replicas: 2
       gunicorn:
         workers: 4
         threads: 2
         timeout: 60
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        threshold: 150
       extraVolumes:
         staging-pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
