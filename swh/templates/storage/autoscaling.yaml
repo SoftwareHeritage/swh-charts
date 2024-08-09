@@ -3,9 +3,12 @@
 {{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled")) }}
 {{- $autoScaling := get $deployment_config "autoScaling" | default $.Values.storage.autoScaling -}}
 {{- if $autoScaling }}
-{{ include "swh.autoscale" (dict "serviceType"   ( print "storage-" $storage_type )
-                                 "configuration" $autoScaling
-                                 "Values"        $.Values) }}
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn
+  (dict "serviceType"   ( print "storage-" $storage_type )
+        "configuration" $autoScaling
+        "Values"        $.Values) }}
 {{ end }}
 {{- end }}
 {{- end }}
