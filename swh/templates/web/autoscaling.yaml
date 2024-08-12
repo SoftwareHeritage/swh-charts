@@ -3,9 +3,11 @@
 {{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled")) -}}
 {{- $autoScalingConfig := get $web_config "autoScaling" | default $.Values.objstorage.autoScaling -}}
 {{- if $autoScalingConfig -}}
-{{- include "swh.autoscale" (dict "Values"        $.Values
-                                  "serviceType"   ( print "web-" $web_type )
-                                  "configuration" $autoScalingConfig) -}}
+{{- $autoScalingType := get $autoScalingConfig "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn (dict "serviceType"   ( print "web-" $web_type )
+                                "configuration" $autoScalingConfig
+                                "Values"        $.Values) -}}
 {{ end }}
 {{- end }}
 {{ end -}}
