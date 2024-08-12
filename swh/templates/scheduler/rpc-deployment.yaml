@@ -5,14 +5,15 @@
 {{- $registerTaskTypes := $.Values.scheduler.rpc.backend.register | default false -}}
 {{- $registerListingTask := $.Values.scheduler.rpc.backend.registerListingTask | default false -}}
 {{- $logLevel := .Values.scheduler.rpc.logLevel | default .Values.scheduler.logLevel -}}
+{{- $serviceType := "scheduler-rpc" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace }}
-  name: scheduler-rpc
+  name: {{ $serviceType }}
   labels:
-    app: scheduler-rpc
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
   {{ if .Values.scheduler.rpc.replicas -}}
@@ -20,7 +21,7 @@ spec:
   {{ end -}}
   selector:
     matchLabels:
-      app: scheduler-rpc
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -28,7 +29,7 @@ spec:
   template:
     metadata:
       labels:
-        app: scheduler-rpc
+        app: {{ $serviceType }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/scheduler/rpc-configmap.yaml") . | sha256sum }}
     spec:
@@ -81,7 +82,7 @@ spec:
                                                    "Values" $.Values) | nindent 8 }}
         {{- end }}
       containers:
-        - name: scheduler-rpc
+        - name: {{ $serviceType }}
           resources:
             requests:
               memory: {{ .Values.scheduler.rpc.requestedMemory | default "512Mi" }}
@@ -131,7 +132,7 @@ spec:
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:scheduler-rpc
+              value: deployment:{{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $logLevel }}
           {{- if .Values.scheduler.sentry.enabled }}
