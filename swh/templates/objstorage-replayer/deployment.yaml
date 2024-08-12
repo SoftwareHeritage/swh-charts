@@ -77,9 +77,6 @@ spec:
         args:
           - -c
           - /opt/swh/entrypoint.sh
-          {{- if $extraCliLogLevel }}
-          {{- toYaml $extraCliLogLevel | nindent 10 }}
-          {{ end }}
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -95,6 +92,10 @@ spec:
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
+          {{- if $extraCliLogLevel }}
+        - name: SWH_EXTRA_CLI_OPTIONS
+          value: {{ $extraCliLogLevel | quote }}
+          {{ end }}
         {{- if and $.Values.sentry.enabled $.Values.objstorageReplayer.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
