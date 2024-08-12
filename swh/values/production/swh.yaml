@@ -1412,7 +1412,6 @@ web:
         workers: 4
         threads: 2
         timeout: 3600
-      # replicas: 4
       autoScaling:
         minReplicaCount: 8
         maxReplicaCount: 10
