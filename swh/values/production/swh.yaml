@@ -1821,7 +1821,7 @@ objstorageReplayer:
     - azure.core.pipeline.policies.http_logging_policy:WARNING
   deployments:
     winery:
-      enabled: true
+      enabled: false
       destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 16
@@ -1836,7 +1836,7 @@ objstorageReplayer:
         port: 6379
         db: 1
     s3:
-      enabled: true
+      enabled: false
       destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
       replicas: null  # handled by keda autoscaling
