@@ -133,6 +133,8 @@ spec:
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:{{ $serviceType }}
+            - name: STATSD_SERVICE_TYPE
+              value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ .Values.counters.rpc.logLevel | default .Values.counters.logLevel | default "INFO" }}
           {{- if .Values.counters.sentry.enabled }}
