@@ -2,14 +2,15 @@
 {{- $checkBackendVersion := $.Values.vault.backend.check | default false -}}
 {{- $migrateBackend := $.Values.vault.backend.migrate | default false -}}
 {{- $initializeBackendConfig := $.Values.vault.backend.initialize | default false -}}
+{{- $serviceType := "vault-rpc" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: vault-rpc
+  name: {{ $serviceType }}
   labels:
-    app: vault-rpc
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
   {{ if .Values.vault.replicas -}}
@@ -17,7 +18,7 @@ spec:
   {{ end -}}
   selector:
     matchLabels:
-      app: vault-rpc
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,7 +26,7 @@ spec:
   template:
     metadata:
       labels:
-        app: vault-rpc
+        app: {{ $serviceType }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/vault/rpc-configmap.yaml") . | sha256sum }}
     spec:
@@ -69,7 +70,7 @@ spec:
                                               "module" "vault") | nindent 8 }}
         {{- end }}
       containers:
-        - name: vault-rpc
+        - name: {{ $serviceType }}
           resources:
             requests:
               memory: {{ .Values.vault.requestedMemory | default "512Mi" }}
@@ -119,7 +120,7 @@ spec:
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:vault-rpc
+              value: deployment:{{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ .Values.vault.logLevel | default "INFO" }}
           {{- if .Values.vault.sentry.enabled }}
@@ -145,7 +146,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: vault-rpc-configuration-template
+          name: {{ $serviceType }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
