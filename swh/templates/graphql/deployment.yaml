@@ -72,14 +72,14 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           env:
+          - name: PORT
+            value: {{ $.Values.graphql.port | quote }}
           - name: STATSD_HOST
             value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
           - name: STATSD_PORT
             value: {{ $.Values.statsdPort | default "9125" | quote }}
           - name: STATSD_TAGS
             value: deployment:{{ $serviceType }}
-          - name: PORT
-            value: "5013"
           - name: SWH_LOG_LEVEL
             value: {{ $graphql_config.logLevel | default $.Values.graphql.logLevel | quote }}
           {{ if $graphql_config.gunicorn -}}
