@@ -1697,6 +1697,11 @@ objstorageReplayer:
   #   enabled: false
   #   secretKeyRef: my-secret
   #   secretKeyName: my-key
+  # [optional] Add extra cli log level (can be overridden per instance)
+  extraCliLogLevel: []
+  # For example:
+  # - --log-level
+  # - azure.core.pipeline.policies.http_logging_policy:WARNING
   # deployments:
   #  other-objstorage:
   #    journalClientOverrides:

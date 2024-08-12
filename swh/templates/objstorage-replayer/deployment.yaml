@@ -3,6 +3,7 @@
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $deployment_config := include "swh.objstorageReplayer.deploymentConfig" (dict "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
+{{- $extraCliLogLevel := $deployment_config.extraCliLogLevel | default $.Values.objstorageReplayer.extraCliLogLevel }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,6 +72,14 @@ spec:
           {{ end }}
         image: {{ $.Values.swh_objstorage_replayer_image }}:{{ $.Values.swh_objstorage_replayer_image_version }}
         imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+        args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          {{- if $extraCliLogLevel }}
+          {{- toYaml $extraCliLogLevel | nindent 10 }}
+          {{ end }}
         env:
         - name: STATSD_HOST
           value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}

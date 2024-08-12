@@ -207,6 +207,12 @@ scrubberJournalCheckerClientConfiguration:
   group_id: swh-scrubber-journal-checker
   prefix: swh.journal.objects
 
+objstorageJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-objstorage-replayer-journal-checker
+  prefix: swh.journal.objects
+
 webhookJournalClientConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
   group_id: swh-webhooks
@@ -1303,3 +1309,21 @@ alter:
           recipient_keys:
             Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
+
+objstorageReplayer:
+  enabled: false
+  journalClientConfigurationRef: objstorageJournalClientConfiguration
+  extraCliLogLevel:
+    - --log-level
+    - azure.core.pipeline.policies.http_logging_policy:WARNING
+  deployments:
+    test:
+      enabled: true
+      destinationObjstorageConfigurationRef: noopObjstorageConfiguration
+      sourceObjstorageConfigurationRef: rpcROObjstorageConfiguration
+      replicas: 1
+      fetchConcurrency: 10
+      checkDestination: "true"
+      journalClientOverrides:
+        auto_offset_reset: earliest
+        batch_size: 10

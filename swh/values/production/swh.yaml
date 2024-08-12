@@ -1816,6 +1816,9 @@ deposit:
 objstorageReplayer:
   enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
+  extraCliLogLevel:
+    - --log-level
+    - azure.core.pipeline.policies.http_logging_policy:WARNING
   deployments:
     winery:
       enabled: true
