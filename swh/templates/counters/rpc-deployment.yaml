@@ -1,14 +1,15 @@
 {{ if and .Values.counters.enabled .Values.counters.rpc.enabled -}}
 {{- $configmapChecksum := include (print $.Template.BasePath "/counters/rpc-configmap.yaml") . | sha256sum }}
 {{- $scriptUtilsChecksum := include (print $.Template.BasePath "/counters/script-utils.yaml") . | sha256sum }}
+{{- $serviceType := "counters-rpc" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace }}
-  name: counters-rpc
+  name: {{ $serviceType }}
   labels:
-    app: counters-rpc
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
   {{ if .Values.counters.rpc.replicas -}}
@@ -16,7 +17,7 @@ spec:
   {{ end -}}
   selector:
     matchLabels:
-      app: counters-rpc
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -24,7 +25,7 @@ spec:
   template:
     metadata:
       labels:
-        app: counters-rpc
+        app: {{ $serviceType }}
       annotations:
         checksum/configmap: {{ $configmapChecksum }}
         checksum/script-utils: {{ $scriptUtilsChecksum }}
@@ -68,7 +69,7 @@ spec:
             mountPath: {{ .Values.counters.rpc.cacheBaseDirectory }}
         {{- end }}
       containers:
-        - name: counters-rpc
+        - name: {{ $serviceType }}
           {{- if $.Values.counters.refreshCountersCache.historyFiles }}
           # Workaround until we have a way to define distributed volumes
           # This initializes the history cache file
@@ -131,7 +132,7 @@ spec:
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:counters-rpc
+              value: deployment:{{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ .Values.counters.rpc.logLevel | default .Values.counters.logLevel | default "INFO" }}
           {{- if .Values.counters.sentry.enabled }}
@@ -164,7 +165,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: counters-rpc-configuration-template
+          name: {{ $serviceType }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
