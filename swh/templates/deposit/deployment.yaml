@@ -1,12 +1,13 @@
 {{ if .Values.deposit.enabled -}}
+{{- $serviceType := "deposit" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace }}
-  name: deposit
+  name: {{ $serviceType }}
   labels:
-    app: deposit
+    app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
   {{ if .Values.deposit.replicas -}}
@@ -14,7 +15,7 @@ spec:
   {{ end -}}
   selector:
     matchLabels:
-      app: deposit
+      app: {{ $serviceType }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -22,7 +23,7 @@ spec:
   template:
     metadata:
       labels:
-        app: deposit
+        app: {{ $serviceType }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/deposit/configmap.yaml") . | sha256sum }}
     spec:
@@ -85,7 +86,7 @@ spec:
               mountPath: /etc/swh
         {{ end }}
       containers:
-        - name: deposit
+        - name: {{ $serviceType }}
           resources:
             requests:
               memory: {{ .Values.deposit.requestedMemory | default "512Mi" }}
@@ -103,11 +104,11 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.deposit.port }}
-              name: deposit-app
+              name: {{ $serviceType }}-app
           readinessProbe:
             httpGet:
               path: /
-              port: deposit-app
+              port: {{ $serviceType }}-app
               httpHeaders:
                 - name: Host
                   value: {{ first .Values.deposit.hosts }}
@@ -117,7 +118,7 @@ spec:
             timeoutSeconds: 30
           livenessProbe:
             tcpSocket:
-              port: deposit-app
+              port: {{ $serviceType }}-app
             initialDelaySeconds: 3
             periodSeconds: 10
             timeoutSeconds: 30
@@ -140,7 +141,7 @@ spec:
             - name: STATSD_PORT
               value: {{ .Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:deposit-app
+              value: deployment:{{ $serviceType }}-app
             - name: SWH_LOG_LEVEL
               value: {{ .Values.deposit.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
@@ -200,7 +201,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-         name: deposit-configuration-template
+         name: {{ $serviceType }}-configuration-template
          items:
          - key: "config.yml.template"
            path: "config.yml.template"
