@@ -1413,9 +1413,10 @@ web:
         threads: 2
         timeout: 3600
       autoScaling:
+        type: keda
         minReplicaCount: 8
         maxReplicaCount: 10
-        cpuPercentageUsage: 100
+        threshold: 6
       requestedCpu: 500m
       requestedMemory: 6Gi
       refreshSavecodenowStatus:
