@@ -1,7 +1,7 @@
 {{- if .Values.cloudnativePg.enabled -}}
-{{- $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
+{{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" | default
       (get $.Values.cloudnativePg "barmanObjectStoreRef") -}}
 {{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
