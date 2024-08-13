@@ -191,6 +191,19 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
         databases:
         - swh-indexer
+    swh-web:
+      enabled: true
+      namespace: swh-cassandra
+      pooler:
+        enabled: true
+        type: rw
+        default_pool_size: "10"
+        max_client_conn: "1000"
+      initdb:
+        type: monolith
+        databases:
+        - swh-web
+        source: cluster-pg-staging-db1
 
 rabbitmq:
   enabled: true
