@@ -192,7 +192,7 @@ cloudnativePg:
         databases:
         - swh-indexer
     swh-web:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra
       pooler:
         enabled: true
@@ -200,7 +200,8 @@ cloudnativePg:
         default_pool_size: "10"
         max_client_conn: "1000"
       initdb:
-        type: monolith
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-web-secret
         databases:
         - swh-web
         source: cluster-pg-staging-db1
