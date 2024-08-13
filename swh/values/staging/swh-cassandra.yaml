@@ -707,9 +707,9 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 2
+        minReplicaCount: 1
         maxReplicaCount: 6
-        threshold: 2
+        threshold: 2.3
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
