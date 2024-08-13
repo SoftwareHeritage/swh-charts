@@ -2055,7 +2055,7 @@ counters:
             - 192.168.101.0/24
 
 webhooks:
-  enabled: false
+  enabled: true
   svixConfigurationRef: svixConfiguration
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
