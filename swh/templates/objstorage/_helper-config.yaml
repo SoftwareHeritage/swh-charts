@@ -1,0 +1,36 @@
+{{/*
+   * Create an objstorage configmap for service .serviceType
+   */}}
+{{ define "swh.objstorage.configmap" }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.objstorageConfiguration" (dict "configurationRef" .configuration.objstorageConfigurationRef
+                                                   "Values" .Values) | nindent 4 }}
+    {{- if .configuration.extraRpcConfiguration -}}
+    {{- .configuration.extraRpcConfiguration | toYaml | nindent 4 }}
+    {{- end -}}
+{{- end -}}
+
+{{/*
+   * Create an objstorage gunicorn logging json config file for service .serviceType
+   */}}
+{{ define "swh.objstorage.gunicorn.logging" }}
+{{- $defaultConfiguration := .configuration.defaultLoggingConfig | default .Values.objstorage.defaultLoggingConfig | default .Values.defaultLoggingConfig -}}
+{{- $overrideConfiguration := .configuration.rpcGunicornLoggingConfig | default .Values.objstorage.rpcGunicornLoggingConfig | default .Values.rpcGunicornLoggingConfig -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-logging
+data:
+  logging-gunicorn.json: |
+    {{- toPrettyJson ( mustMergeOverwrite (deepCopy $defaultConfiguration) (deepCopy $overrideConfiguration) ) | nindent 4 }}
+{{- end }}
+

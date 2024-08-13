@@ -31,9 +31,14 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include "swh.objstorage.configmap" (dict "serviceType" $serviceType
-                                                                     "configuration" $objstorage_config
-                                                                     "Values" $.Values) | sha256sum }}
+        checksum/config: {{ include "swh.objstorage.configmap"
+                             (dict "serviceType" $serviceType
+                                   "configuration" $objstorage_config
+                                   "Values" $.Values) | sha256sum }}
+        checksum/config-logging: {{ include "swh.objstorage.gunicorn.logging"
+                                     (dict "serviceType" $serviceType
+                                           "configuration" $objstorage_config
+                                           "Values" $.Values) | sha256sum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
       {{- if $securityContext }}
@@ -126,6 +131,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $objstorage_config.logLevel | default $.Values.objstorage.logLevel | default "INFO" | quote }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.objstorage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
@@ -145,6 +152,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
           {{- range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
           - name: {{ $volume_name }}
             mountPath: {{ $volume_config.mountPath }}
@@ -159,6 +168,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: config-utils
         configMap:
           name: config-utils

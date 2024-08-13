@@ -4,6 +4,12 @@ environment: production
 sentry:
   environment: production
 
+# Default logging config dictionary
+defaultLoggingConfig: {}
+
+# Default rpc logging configuration which will be merge with the previous ones
+rpcGunicornLoggingConfig: {}
+
 # List of kafka brokers
 # used by storage to store the object inserted in the database
 # and by the journal clients to follow the storage activiiy
