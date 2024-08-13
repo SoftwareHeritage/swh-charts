@@ -706,9 +706,10 @@ web:
         threads: 2
         timeout: 3600
       autoScaling:
+        type: keda
         minReplicaCount: 2
-        maxReplicaCount: 4  # 4 to test the autoscaling in extreme scenarios
-        cpuPercentageUsage: 75
+        maxReplicaCount: 6
+        threshold: 2
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
