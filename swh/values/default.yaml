@@ -1,7 +1,7 @@
 namespace: swh
 
 prometheus:
-  address: http://thanos.internal.admin.swh.network:19191
+  address: http://prometheus-operated.cattle-monitoring-system:9090
 
 sentry:
   enabled: true

@@ -231,9 +231,6 @@ spec:
       serverAddress: {{ $serverAddress }}
       metricName: gunicorn_requests
       threshold: {{ $autoScalingConfig.threshold | default 1 | quote }}
-      {{- if eq $environment "local-cluster" }} # hack, no environment in metrics locally
+      # There is no environment when using the cluster's prometheus instance
       query: sum(rate(gunicorn_requests{namespace={{ .Values.namespace | quote }},deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
-      {{ else }}
-      query: sum(rate(gunicorn_requests{environment={{ $environment | quote }},namespace={{ .Values.namespace | quote }},deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
-      {{ end }}
 {{- end -}}
