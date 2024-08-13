@@ -636,10 +636,11 @@ web:
       metricsScrapingEnabled: false
       migrations:
         enabled: false
-      replicas: 1
       autoScaling:
+        type: keda
         minReplicaCount: 1
-        maxReplicaCount: 1
+        maxReplicaCount: 2
+        threshold: 0.1
       extraConfig:
         history_counters_url: http://counters-rpc:5011/counters_history/history.json#
       hosts:
