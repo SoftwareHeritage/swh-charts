@@ -146,15 +146,18 @@ postgresqlVaultConfiguration:
       secretKeyName: postgres-swh-vault-password
 
 postgresqlWebConfiguration:
-  host: db1.internal.staging.swh.network
+  host: swh-web-rw.swh-cassandra
   port: 5432
   db: swh-web
-  user: swh-web
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-web-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-web-secrets
-      secretKeyName: postgres-swh-web-password
+      secretKeyRef: swh-postgresql-swh-web-secret
+      secretKeyName: password
 
 postgresqlDepositConfiguration:
   host: db1.internal.staging.swh.network
