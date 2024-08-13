@@ -33,7 +33,6 @@ rpcGunicornLoggingConfig:
   disable_existing_loggers: true
   filters:
     throttle_accesslog:
-      (): swh.objstorage.backends.winery.gunicorn.ThrottledAccessLog
       interval: 60
       status_codes: [200, 400]
   loggers:

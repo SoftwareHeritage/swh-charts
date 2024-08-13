@@ -9,6 +9,46 @@ prometheus:
 statsd_exporter:
   enabled: false
 
+defaultLoggingConfig:
+  version: 1
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: default
+      level: INFO
+      stream: ext://sys.stdout
+  formatters:
+    default:
+      class: pythonjsonlogger.jsonlogger.JsonFormatter
+      # This format is only used to pull the variables that are stuck in the json dicts
+      format: "[%(asctime)s: %(levelname)s/%(processName)s-%(process)d %(threadName)s(%(pathname)s:%(lineno)s:%(funcName)s)]%(name)s %(message)s"
+  loggers:
+    swh:
+      level: INFO
+    swh.core.statsd:
+      level: INFO
+  root:
+    handlers:
+      - console
+    level: INFO
+
+rpcGunicornLoggingConfig:
+  disable_existing_loggers: true
+  filters:
+    throttle_accesslog:
+      interval: 60
+      status_codes: [200, 400]
+  loggers:
+    gunicorn:
+      level: INFO
+    gunicorn.error:
+      level: INFO
+    gunicorn.access:
+      level: INFO
+      filters: [throttle_accesslog]
+      handlers:
+        - console
+
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler-rpc:5008
