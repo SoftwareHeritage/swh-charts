@@ -1,5 +1,6 @@
 {{ if .Values.deposit.enabled -}}
 {{- $serviceType := "deposit" -}}
+{{- $configChecksum := include (print $.Template.BasePath "/deposit/configmap.yaml") . | sha256sum }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -25,7 +26,7 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/deposit/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ $configChecksum }}
     spec:
       {{- if .Values.deposit.affinity }}
       affinity:
@@ -148,6 +149,8 @@ spec:
               value: {{ .Values.deposit.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
             {{- if .Values.deposit.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -165,7 +168,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-            readOnly: true
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
           - name: localstorage
             mountPath: /tmp
         - name: nginx
@@ -207,4 +211,10 @@ spec:
          items:
          - key: "config.yml.template"
            path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
 {{ end }}
