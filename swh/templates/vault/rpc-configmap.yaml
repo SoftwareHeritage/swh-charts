@@ -1,10 +1,11 @@
 {{ if .Values.vault.enabled -}}
+{{- $serviceType := "vault-rpc" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Values.namespace }}
-  name: vault-rpc-configuration-template
+  name: {{ $serviceType }}-configuration-template
 data:
   config.yml.template: |
     {{- include "swh.postgresql" (dict "serviceType" "vault"
@@ -23,5 +24,11 @@ data:
     {{- if .Values.vault.extraConfig -}}
     {{ toYaml .Values.vault.extraConfig | nindent 4 }}
     {{- end }}
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" $serviceType
+        "defaultLoggingConfig" .Values.vault.defaultLoggingConfig
+        "rpcGunicornLoggingConfig" .Values.vault.rpcGunicornLoggingConfig
+        "Values" .Values) }}
 
 {{- end -}}
