@@ -1409,8 +1409,8 @@ web:
     # Main instance to serve archive.softwareheritage.org
     archive:
       gunicorn:
-        workers: 4
-        threads: 2
+        workers: 8
+        threads: 1
         timeout: 3600
       autoScaling:
         type: keda
