@@ -1,13 +1,21 @@
 {{ if .Values.search.enabled -}}
+{{- $serviceType := "search-rpc" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Values.namespace }}
-  name: search-rpc-configuration-template
+  name: {{ $serviceType }}-configuration-template
 data:
   config.yml.template: |
     {{- include "swh.search.configuration" (dict "serviceType" "search"
                                                  "configurationRef" .Values.search.elasticsearchConfigurationRef
-                                                 "Values" .Values) | nindent 4 -}}
+                                                 "Values" .Values) | nindent 4 }}
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" $serviceType
+        "defaultLoggingConfig" .Values.search.defaultLoggingConfig
+        "rpcGunicornLoggingConfig" .Values.search.rpcGunicornLoggingConfig
+        "Values" .Values) }}
+
 {{- end -}}

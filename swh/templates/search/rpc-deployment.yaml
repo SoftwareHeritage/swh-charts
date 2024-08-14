@@ -1,8 +1,5 @@
 {{ if .Values.search.enabled -}}
-{{- $checksumConfig := include "swh.search.configuration"
-  (dict "serviceType" "search"
-        "configurationRef" .Values.search.elasticsearchConfigurationRef
-        "Values" .Values) | sha256sum -}}
+{{- $configChecksum := include (print $.Template.BasePath "/search/rpc-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $initializeSearchBackend := and .Values.search.backend .Values.search.backend.initialize | default false -}}
@@ -32,7 +29,7 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ $checksumConfig }}
+        checksum/config: {{ $configChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
     spec:
@@ -121,6 +118,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ .Values.search.logLevel | default "INFO" }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if .Values.search.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -139,6 +138,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
       volumes:
       - name: configuration
         emptyDir: {}
@@ -148,6 +149,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: config-utils
         configMap:
           name: config-utils
