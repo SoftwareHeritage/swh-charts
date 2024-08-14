@@ -1414,7 +1414,7 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 4
+        minReplicaCount: 8
         maxReplicaCount: 10
         threshold: 10
       requestedCpu: 500m
