@@ -13,6 +13,7 @@ data:
     {{- include "swh.storageConfiguration" (dict "configurationRef" .configuration.storageConfigurationRef
                                                  "Values" .Values) | nindent 4 }}
 {{- end -}}
+
 {{ define "swh.backfiller.configmap" }}
 ---
 apiVersion: v1
@@ -27,3 +28,17 @@ data:
     {{- include "swh.journalWriterConfiguration" (dict "configurationRef" .configuration.journalConfigurationRef
                                                        "Values" .Values) | nindent 4 }}
 {{- end -}}
+
+{{/*
+   * Create a storage gunicorn logging json config file for service .serviceType
+   */}}
+{{ define "swh.storage.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.storage.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.storage.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
+{{- end }}
+

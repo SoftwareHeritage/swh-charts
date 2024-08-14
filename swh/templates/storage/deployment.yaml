@@ -4,6 +4,11 @@
 {{ range $storage_type, $storage_config := .Values.storage.deployments }}
 {{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
 {{- $serviceType := ( print "storage-" $storage_type ) -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $storage_config
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.storage.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.storage.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $checkBackendVersion := (and $storage_config.backend $storage_config.backend.check) | default $.Values.storage.backend.check | default false -}}
 {{- $migrateBackend := (and $storage_config.backend $storage_config.backend.migrate) | default $.Values.storage.backend.migrate | default false -}}
 {{- $initializeBackendConfig := (and $storage_config.backend $storage_config.backend.initialize) | default $.Values.storage.backend.initialize | default false -}}
@@ -32,9 +37,8 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
-                                                                  "configuration" $storage_config
-                                                                  "Values" $.Values) | sha256sum }}
+        checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
@@ -142,6 +146,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $storage_config.logLevel | default $.Values.storage.logLevel | quote }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.storage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
@@ -161,6 +167,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
           {{- range $volume_name, $volume_config := $storage_config.extraVolumes }}
           - name: {{ $volume_name }}
             mountPath: {{ $volume_config.mountPath }}
@@ -179,6 +187,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: backend-utils
         configMap:
           name: backend-utils
