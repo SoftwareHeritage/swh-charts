@@ -1,9 +1,9 @@
 {{ if .Values.graphql.enabled -}}
-{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
-{{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
-{{- $serviceType := ( print "graphql-" $graphql_name ) -}}
+{{ range $graphqlName, $graphqlConfig := .Values.graphql.deployments }}
+{{- if or (not (hasKey $graphqlConfig "enabled")) (get $graphqlConfig "enabled") -}}
+{{- $serviceType := ( print "graphql-" $graphqlName ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
-                            "configuration" $graphql_config
+                            "configuration" $graphqlConfig
                             "Values" $.Values -}}
 {{- $configChecksum := include "swh.graphql.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.graphql.gunicorn.logging" $configArgsDict | sha256sum -}}
@@ -17,7 +17,7 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ $graphql_config.replicas | default 1 }}
+  replicas: {{ $graphqlConfig.replicas | default 1 }}
   selector:
     matchLabels:
       app: {{ $serviceType }}
@@ -38,8 +38,8 @@ spec:
       affinity:
         {{- toYaml $.Values.graphql.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled (or $.Values.graphql.priorityClassName $graphql_config.priorityClassName) }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $graphql_config.priorityClassName | default $.Values.graphql.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled (or $.Values.graphql.priorityClassName $graphqlConfig.priorityClassName) }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $graphqlConfig.priorityClassName | default $.Values.graphql.priorityClassName }}
       {{ end }}
       containers:
         - name: {{ $serviceType }}
@@ -47,19 +47,19 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              memory: {{ $graphql_config.requestedMemory | default "150Mi" }}
-              cpu: {{ $graphql_config.requestedCpu | default "50m" }}
-          {{- if or $graphql_config.limitedMemory $graphql_config.limitedCpu }}
+              memory: {{ $graphqlConfig.requestedMemory | default "150Mi" }}
+              cpu: {{ $graphqlConfig.requestedCpu | default "50m" }}
+          {{- if or $graphqlConfig.limitedMemory $graphqlConfig.limitedCpu }}
             limits:
-            {{- if $graphql_config.limitedMemory }}
-              memory: {{ $graphql_config.limitedMemory }}
+            {{- if $graphqlConfig.limitedMemory }}
+              memory: {{ $graphqlConfig.limitedMemory }}
             {{- end }}
-            {{- if $graphql_config.limitedCpu }}
-              cpu: {{ $graphql_config.limitedCpu }}
+            {{- if $graphqlConfig.limitedCpu }}
+              cpu: {{ $graphqlConfig.limitedCpu }}
             {{- end }}
           {{ end }}
           ports:
-            - containerPort: {{ $graphql_config.port }}
+            - containerPort: {{ $graphqlConfig.port }}
               name: rpc
           startupProbe:
             httpGet:
@@ -84,16 +84,16 @@ spec:
           - name: STATSD_SERVICE_TYPE
             value: {{ $serviceType }}
           - name: SWH_LOG_LEVEL
-            value: {{ $graphql_config.logLevel | default $.Values.graphql.logLevel | quote }}
+            value: {{ $graphqlConfig.logLevel | default $.Values.graphql.logLevel | quote }}
           - name: SWH_LOG_CONFIG_JSON
             value: /etc/swh/logging/logging-gunicorn.json
-          {{ if $graphql_config.gunicorn -}}
+          {{ if $graphqlConfig.gunicorn -}}
           - name: THREADS
-            value: {{ $graphql_config.gunicorn.threads | default 5 | quote }}
+            value: {{ $graphqlConfig.gunicorn.threads | default 5 | quote }}
           - name: WORKERS
-            value: {{ $graphql_config.gunicorn.workers | default 2 | quote }}
+            value: {{ $graphqlConfig.gunicorn.workers | default 2 | quote }}
           - name: TIMEOUT
-            value: {{ $graphql_config.gunicorn.timeout | default 60 | quote }}
+            value: {{ $graphqlConfig.gunicorn.timeout | default 60 | quote }}
           {{ end -}}
           {{ if $.Values.graphql.sentry.enabled -}}
           - name: SWH_SENTRY_ENVIRONMENT
