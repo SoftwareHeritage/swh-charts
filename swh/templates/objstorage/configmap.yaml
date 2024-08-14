@@ -1,14 +1,11 @@
 {{ if .Values.objstorage.enabled -}}
 {{ range $objstorageType, $deploymentConfig := .Values.objstorage.deployments }}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
-{{ include "swh.objstorage.configmap"
-  (dict "serviceType" (print "objstorage-" $objstorageType)
-        "configuration" $deploymentConfig
-        "Values" $.Values) }}
-{{ include "swh.objstorage.gunicorn.logging"
-  (dict "serviceType" (print "objstorage-" $objstorageType)
-        "configuration" $deploymentConfig
-        "Values" $.Values) }}
+{{- $argsDict := dict "serviceType" (print "objstorage-" $objstorageType)
+                      "configuration" $deploymentConfig
+                      "Values" $.Values -}}
+{{ include "swh.objstorage.configmap" $argsDict }}
+{{ include "swh.objstorage.gunicorn.logging" $argsDict }}
 {{- end -}}
 {{ end -}}
 {{- end -}}
