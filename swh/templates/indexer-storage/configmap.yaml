@@ -1,8 +1,8 @@
 {{ if .Values.indexerStorage.enabled -}}
-{{ range $storage_type, $storage_config := .Values.indexerStorage.deployments }}
-{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
-{{ include "swh.indexer.storage.configmap" (dict "serviceType" ( print "indexer-storage-" $storage_type )
-                                                 "configuration" $storage_config
+{{ range $storageType, $storageConfig := .Values.indexerStorage.deployments }}
+{{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
+{{ include "swh.indexer.storage.configmap" (dict "serviceType" ( print "indexer-storage-" $storageType )
+                                                 "configuration" $storageConfig
                                                  "Values" $.Values) }}
 {{- end -}}
 {{ end -}}
