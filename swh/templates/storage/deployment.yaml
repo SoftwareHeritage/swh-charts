@@ -1,17 +1,17 @@
 {{ if .Values.storage.enabled -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{ range $storage_type, $storage_config := .Values.storage.deployments }}
-{{- if or (not (hasKey $storage_config "enabled")) (get $storage_config "enabled") -}}
-{{- $serviceType := ( print "storage-" $storage_type ) -}}
+{{ range $storageType, $storageConfig := .Values.storage.deployments }}
+{{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
+{{- $serviceType := ( print "storage-" $storageType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
-                            "configuration" $storage_config
+                            "configuration" $storageConfig
                             "Values" $.Values -}}
 {{- $configChecksum := include "swh.storage.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.storage.gunicorn.logging" $configArgsDict | sha256sum -}}
-{{- $checkBackendVersion := (and $storage_config.backend $storage_config.backend.check) | default $.Values.storage.backend.check | default false -}}
-{{- $migrateBackend := (and $storage_config.backend $storage_config.backend.migrate) | default $.Values.storage.backend.migrate | default false -}}
-{{- $initializeBackendConfig := (and $storage_config.backend $storage_config.backend.initialize) | default $.Values.storage.backend.initialize | default false -}}
+{{- $checkBackendVersion := (and $storageConfig.backend $storageConfig.backend.check) | default $.Values.storage.backend.check | default false -}}
+{{- $migrateBackend := (and $storageConfig.backend $storageConfig.backend.migrate) | default $.Values.storage.backend.migrate | default false -}}
+{{- $initializeBackendConfig := (and $storageConfig.backend $storageConfig.backend.initialize) | default $.Values.storage.backend.initialize | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -22,8 +22,8 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if $storage_config.replicas -}}
-  replicas: {{ $storage_config.replicas }}
+  {{ if $storageConfig.replicas -}}
+  replicas: {{ $storageConfig.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -42,12 +42,12 @@ spec:
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
-      {{- $nodeSelector := $storage_config.nodeSelector | default $.Values.storage.nodeSelector | default dict -}}
+      {{- $nodeSelector := $storageConfig.nodeSelector | default $.Values.storage.nodeSelector | default dict -}}
       {{- if $nodeSelector }}
       nodeSelector:
         {{- toYaml $nodeSelector | nindent 8 }}
       {{- end }}
-      {{- $affinity := $storage_config.affinity | default $.Values.storage.affinity | default dict -}}
+      {{- $affinity := $storageConfig.affinity | default $.Values.storage.affinity | default dict -}}
       {{- if $affinity }}
       affinity:
         {{- toYaml $affinity | nindent 8 }}
@@ -62,7 +62,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "Values" $.Values "deploymentConfig" $storage_config) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "Values" $.Values "deploymentConfig" $storageConfig) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
@@ -72,7 +72,7 @@ spec:
             mountPath: /entrypoints
             readOnly: true
         {{ include "swh.storage.cassandra.initKeyspaceContainer" (dict "Values" $.Values
-                                                                       "configurationRef" $storage_config.storageConfigurationRef
+                                                                       "configurationRef" $storageConfig.storageConfigurationRef
                                                                        "imagePrefixName" "swh_storage_image") | nindent 8 }}
         {{- if $initializeBackendConfig }}
         {{ include "swh.initializeBackend" (dict "Values" $.Values
@@ -94,21 +94,21 @@ spec:
         - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ $storage_config.requestedMemory | default "512Mi" }}
-              cpu: {{ $storage_config.requestedCpu | default "500m" }}
-            {{- if or $storage_config.limitedMemory $storage_config.limitedCpu }}
+              memory: {{ $storageConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $storageConfig.requestedCpu | default "500m" }}
+            {{- if or $storageConfig.limitedMemory $storageConfig.limitedCpu }}
             limits:
-              {{- if $storage_config.limitedMemory }}
-              memory: {{ $storage_config.limitedMemory }}
+              {{- if $storageConfig.limitedMemory }}
+              memory: {{ $storageConfig.limitedMemory }}
               {{- end }}
-              {{- if $storage_config.limitedCpu }}
-              cpu: {{ $storage_config.limitedCpu }}
+              {{- if $storageConfig.limitedCpu }}
+              cpu: {{ $storageConfig.limitedCpu }}
               {{- end }}
             {{- end }}
           image: {{ $.Values.swh_storage_image }}:{{ $.Values.swh_storage_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ $storage_config.port | default $.Values.storage.port }}
+            - containerPort: {{ $storageConfig.port | default $.Values.storage.port }}
               name: rpc
           readinessProbe:
             httpGet:
@@ -128,13 +128,13 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if $storage_config.gunicorn -}}
+            {{ if $storageConfig.gunicorn -}}
             - name: THREADS
-              value: {{ $storage_config.gunicorn.threads | default 5 | quote }}
+              value: {{ $storageConfig.gunicorn.threads | default 5 | quote }}
             - name: WORKERS
-              value: {{ $storage_config.gunicorn.workers | default 2 | quote }}
+              value: {{ $storageConfig.gunicorn.workers | default 2 | quote }}
             - name: TIMEOUT
-              value: {{ $storage_config.gunicorn.timeout | default 60 | quote }}
+              value: {{ $storageConfig.gunicorn.timeout | default 60 | quote }}
             {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -145,7 +145,7 @@ spec:
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ $storage_config.logLevel | default $.Values.storage.logLevel | quote }}
+              value: {{ $storageConfig.logLevel | default $.Values.storage.logLevel | quote }}
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.storage.sentry.enabled }}
@@ -169,14 +169,14 @@ spec:
             mountPath: /etc/swh
           - name: configuration-logging
             mountPath: /etc/swh/logging
-          {{- range $volume_name, $volume_config := $storage_config.extraVolumes }}
-          - name: {{ $volume_name }}
-            mountPath: {{ $volume_config.mountPath }}
-            readOnly: {{ $volume_config.readOnly | default "false" }}
+          {{- range $volumeName, $volumeConfig := $storageConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
           {{- end }}
-        {{- if $storage_config.dnsConfigurationRef }}
+        {{- if $storageConfig.dnsConfigurationRef }}
         {{- include "swh.dns.configuration"  (dict "Values" $.Values
-                                              "configurationRef" $storage_config.dnsConfigurationRef) | indent 6 }}
+                                              "configurationRef" $storageConfig.dnsConfigurationRef) | indent 6 }}
         {{- end }}
       volumes:
       - name: configuration
@@ -201,9 +201,9 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{ range $volume_name, $volume_config := $storage_config.extraVolumes }}
-      - name: {{ $volume_name }}
-        {{ toYaml $volume_config.volumeDefinition | nindent 8 }}
+      {{ range $volumeName, $volumeConfig := $storageConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{ toYaml $volumeConfig.volumeDefinition | nindent 8 }}
       {{ end }}
 
 {{ end }}

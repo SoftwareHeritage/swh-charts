@@ -1,8 +1,8 @@
 {{ if .Values.storage.enabled -}}
-{{ range $storage_type, $deployment_config := .Values.storage.deployments }}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
-{{- $argsDict := dict "serviceType" (print "storage-" $storage_type)
-                      "configuration" $deployment_config
+{{ range $storageType, $deploymentConfig := .Values.storage.deployments }}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $argsDict := dict "serviceType" (print "storage-" $storageType)
+                      "configuration" $deploymentConfig
                       "Values" $.Values -}}
 {{ include "swh.storage.configmap" $argsDict }}
 {{ include "swh.storage.gunicorn.logging" $argsDict }}
