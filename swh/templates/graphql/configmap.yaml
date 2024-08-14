@@ -1,9 +1,11 @@
 {{ if .Values.graphql.enabled -}}
-{{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
-{{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
-{{ include "swh.graphql.configmap" (dict "serviceType" (print "graphql-" $graphql_name)
-                                         "configuration" $graphql_config
-                                         "Values" $.Values) }}
+{{ range $graphqlName, $graphqlConfig := .Values.graphql.deployments }}
+{{- if or (not (hasKey $graphqlConfig "enabled")) (get $graphqlConfig "enabled") -}}
+{{- $argsDict := dict "serviceType" (print "graphql-" $graphqlName)
+                      "configuration" $graphqlConfig
+                      "Values" $.Values -}}
+{{ include "swh.graphql.configmap" $argsDict }}
+{{ include "swh.graphql.gunicorn.logging" $argsDict }}
 {{- end -}}
 {{ end -}}
 {{- end -}}

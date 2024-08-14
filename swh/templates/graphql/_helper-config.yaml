@@ -46,3 +46,17 @@ data:
     {{- end }}
 
 {{- end -}}
+
+{{/*
+   * Create an objstorage gunicorn logging json config file for service .serviceType
+   */}}
+{{ define "swh.graphql.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.graphql.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.graphql.rpcGunicornLoggingConfig -}}
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
+{{ end }}
+

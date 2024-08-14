@@ -2,11 +2,11 @@
 {{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
 {{- if or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled") -}}
 {{- $serviceType := ( print "graphql-" $graphql_name ) -}}
-{{- $configmapChecksum := include "swh.graphql.configmap"
-  (dict "serviceType" $graphql_name
-        "configuration" $graphql_config
-        "Values" $.Values) | sha256sum -}}
-
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $graphql_config
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.graphql.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.graphql.gunicorn.logging" $configArgsDict | sha256sum -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,7 +31,8 @@ spec:
         app: {{ $serviceType }}
       annotations:
         # Force a rollout upgrade if the configuration changes
-        checksum/config: {{ $configmapChecksum }}
+        checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
     spec:
       {{- if $.Values.graphql.affinity }}
       affinity:
@@ -84,6 +85,8 @@ spec:
             value: {{ $serviceType }}
           - name: SWH_LOG_LEVEL
             value: {{ $graphql_config.logLevel | default $.Values.graphql.logLevel | quote }}
+          - name: SWH_LOG_CONFIG_JSON
+            value: /etc/swh/logging/logging-gunicorn.json
           {{ if $graphql_config.gunicorn -}}
           - name: THREADS
             value: {{ $graphql_config.gunicorn.threads | default 5 | quote }}
@@ -111,11 +114,19 @@ spec:
               mountPath: /etc/swh/config.yml
               subPath: config.yml
               readOnly: true
+            - name: configuration-logging
+              mountPath: /etc/swh/logging
       volumes:
         - name: config
           configMap:
             name: {{ $serviceType }}-configuration-template
             defaultMode: 0444
+        - name: configuration-logging
+          configMap:
+            name: {{ $serviceType }}-configuration-logging
+            items:
+            - key: "logging-gunicorn.json"
+              path: "logging-gunicorn.json"
 {{ end }}
 {{ end -}}
 {{- end -}}
