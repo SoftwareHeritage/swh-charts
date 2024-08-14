@@ -1,11 +1,12 @@
 {{ if and .Values.counters.enabled .Values.counters.rpc.enabled  -}}
+{{- $serviceType := "counters-rpc" -}}
 {{- with .Values.counters.rpc }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: counters-rpc-configuration-template
+  name: {{ $serviceType }}-configuration-template
 data:
   config.yml.template: |
     {{- include "swh.service.fromYaml"
@@ -20,6 +21,12 @@ data:
             "Values" $.Values) | nindent 4 }}
       cache_base_directory: {{ .cacheBaseDirectory }}
     {{- end }}
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" $serviceType
+        "defaultLoggingConfig" .defaultLoggingConfig
+        "rpcGunicornLoggingConfig" .rpcGunicornLoggingConfig
+        "Values" $.Values) }}
 
 {{- end -}}
 {{- end -}}

@@ -137,6 +137,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ .Values.counters.rpc.logLevel | default .Values.counters.logLevel | default "INFO" }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if .Values.counters.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -155,6 +157,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
           - name: staticdata
             mountPath: {{ .Values.counters.rpc.cacheBaseDirectory }}
           - name: script-utils
@@ -171,6 +175,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: config-utils
         configMap:
           name: config-utils
