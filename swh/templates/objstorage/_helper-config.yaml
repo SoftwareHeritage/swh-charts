@@ -21,16 +21,12 @@ data:
    * Create an objstorage gunicorn logging json config file for service .serviceType
    */}}
 {{ define "swh.objstorage.gunicorn.logging" }}
-{{- $defaultConfiguration := .configuration.defaultLoggingConfig | default .Values.objstorage.defaultLoggingConfig | default .Values.defaultLoggingConfig -}}
-{{- $overrideConfiguration := .configuration.rpcGunicornLoggingConfig | default .Values.objstorage.rpcGunicornLoggingConfig | default .Values.rpcGunicornLoggingConfig -}}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: {{ .Values.namespace }}
-  name: {{ .serviceType }}-configuration-logging
-data:
-  logging-gunicorn.json: |
-    {{- toPrettyJson ( mustMergeOverwrite (deepCopy $defaultConfiguration) (deepCopy $overrideConfiguration) ) | nindent 4 }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.objstorage.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.objstorage.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
 {{- end }}
 

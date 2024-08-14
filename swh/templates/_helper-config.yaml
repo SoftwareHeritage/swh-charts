@@ -16,3 +16,23 @@
                                          "configurationRef" $configurationRef
                                          "Values" .Values) }}
 {{- end -}}
+
+{{/*
+   * Create a gunicorn logging json config file for service .serviceType
+   * When the configuration is empty, this fallbacks to use the default
+   * .Values.defaultLoggingConfig and .Values.rpcGunicornLoggingConfig.
+   */}}
+{{ define "swh.gunicorn.logging" }}
+{{- $defaultConfiguration := .defaultLoggingConfig | default .Values.defaultLoggingConfig -}}
+{{- $overrideConfiguration := .rpcGunicornLoggingConfig | default .Values.rpcGunicornLoggingConfig -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-logging
+data:
+  logging-gunicorn.json: |
+    {{- toPrettyJson ( mustMergeOverwrite (deepCopy $defaultConfiguration) (deepCopy $overrideConfiguration) ) | nindent 4 }}
+{{- end }}
+
