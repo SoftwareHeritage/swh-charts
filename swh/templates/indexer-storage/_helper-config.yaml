@@ -19,3 +19,18 @@ data:
                                                     "Values" .Values) | nindent 6 -}}
     {{- end }}
 {{- end -}}
+
+{{/*
+   * Create an indexer-storage gunicorn logging json config file for service
+   * .serviceType
+   */}}
+{{ define "swh.indexer.storage.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.indexerStorage.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.indexerStorage.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
+{{- end }}
+

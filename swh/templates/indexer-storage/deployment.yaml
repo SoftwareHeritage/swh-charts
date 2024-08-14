@@ -3,10 +3,11 @@
 {{ range $storageType, $storageConfig := .Values.indexerStorage.deployments }}
 {{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
 {{- $serviceType := ( print "indexer-storage-" $storageType ) -}}
-{{- $configChecksum := include "swh.indexer.storage.configmap"
-  (dict "serviceType" $serviceType
-        "configuration" $storageConfig
-        "Values" $.Values) | sha256sum -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $storageConfig
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.indexer.storage.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.indexer.storage.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $checkBackendVersion := (and $storageConfig.backend $storageConfig.backend.check) | default $.Values.indexerStorage.backend.check | default false -}}
 {{- $migrateBackend := (and $storageConfig.backend $storageConfig.backend.migrate) | default $.Values.indexerStorage.backend.migrate | default false -}}
 {{- $initializeBackendConfig := (and $storageConfig.backend $storageConfig.backend.initialize) | default $.Values.indexerStorage.backend.initialize | default false -}}
@@ -36,6 +37,7 @@ spec:
         app: {{ $serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
     spec:
       {{- if $.Values.indexerStorage.affinity }}
@@ -137,6 +139,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $storageConfig.logLevel | default $.Values.indexerStorage.logLevel | quote }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.indexerStorage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
@@ -156,6 +160,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
       volumes:
       - name: configuration
         emptyDir: {}
@@ -165,6 +171,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: backend-utils
         configMap:
           name: backend-utils
