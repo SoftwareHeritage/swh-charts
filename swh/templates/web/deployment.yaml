@@ -118,7 +118,7 @@ spec:
               name: webapp
           readinessProbe:
             httpGet:
-              path: /
+              path: /api/1
               port: webapp
               httpHeaders:
                 - name: Host
