@@ -1,9 +1,9 @@
 {{ if .Values.web.enabled -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{ range $web_type, $web_config := .Values.web.deployments }}
-{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
-{{- $serviceType := ( print "web-" $web_type ) -}}
-{{- $do_migrations := or (and $web_config.migrations $web_config.migrations.enabled)
+{{ range $webType, $webConfig := .Values.web.deployments }}
+{{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
+{{- $serviceType := ( print "web-" $webType ) -}}
+{{- $do_migrations := or (and $webConfig.migrations $webConfig.migrations.enabled)
                          (and $.Values.web.migrations $.Values.web.migrations.enabled) -}}
 ---
 apiVersion: apps/v1
@@ -15,8 +15,8 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if and $web_config.replicas (not $web_config.autoScaling) -}}
-  replicas: {{ $web_config.replicas }}
+  {{ if and $webConfig.replicas (not $webConfig.autoScaling) -}}
+  replicas: {{ $webConfig.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -31,7 +31,7 @@ spec:
         app: {{ $serviceType }}
       annotations:
         checksum/config: {{ include "swh.web.configmap" (dict "serviceType" $serviceType
-                                                              "configuration" $web_config
+                                                              "configuration" $webConfig
                                                               "Values" $.Values) | sha256sum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
@@ -59,7 +59,7 @@ spec:
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: false
             {{- end -}}
-            {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $web_config
+            {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $webConfig
                                                                     "Values" $.Values) | nindent 12 }}
           volumeMounts:
             - name: configuration
@@ -100,21 +100,21 @@ spec:
         - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ $web_config.requestedMemory | default "512Mi" }}
-              cpu: {{ $web_config.requestedCpu | default "500m" }}
-          {{- if or $web_config.limitedMemory $web_config.limitedCpu }}
+              memory: {{ $webConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $webConfig.requestedCpu | default "500m" }}
+          {{- if or $webConfig.limitedMemory $webConfig.limitedCpu }}
             limits:
-            {{- if $web_config.limitedMemory }}
-              memory: {{ $web_config.limitedMemory }}
+            {{- if $webConfig.limitedMemory }}
+              memory: {{ $webConfig.limitedMemory }}
             {{- end }}
-            {{- if $web_config.limitedCpu }}
-              cpu: {{ $web_config.limitedCpu }}
+            {{- if $webConfig.limitedCpu }}
+              cpu: {{ $webConfig.limitedCpu }}
             {{- end }}
           {{ end }}
           image: {{ $.Values.swh_web_image }}:{{ $.Values.swh_web_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ $web_config.port | default $.Values.web.port }}
+            - containerPort: {{ $webConfig.port | default $.Values.web.port }}
               name: webapp
           readinessProbe:
             httpGet:
@@ -122,7 +122,7 @@ spec:
               port: webapp
               httpHeaders:
                 - name: Host
-                  value: {{ first $web_config.hosts }}
+                  value: {{ first $webConfig.hosts }}
             initialDelaySeconds: 5
             failureThreshold: 30
             periodSeconds: 10
@@ -140,11 +140,11 @@ spec:
             - /opt/swh/entrypoint.sh
           env:
             - name: WORKERS
-              value: {{ dig "gunicorn" "workers" 2 $web_config | quote }}
+              value: {{ dig "gunicorn" "workers" 2 $webConfig | quote }}
             - name: THREADS
-              value: {{ dig "gunicorn" "threads" 2 $web_config | quote }}
+              value: {{ dig "gunicorn" "threads" 2 $webConfig | quote }}
             - name: TIMEOUT
-              value: {{ dig "gunicorn" "timeout" 3600 $web_config | quote }}
+              value: {{ dig "gunicorn" "timeout" 3600 $webConfig | quote }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
@@ -154,7 +154,7 @@ spec:
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ $web_config.logLevel | default $.Values.web.logLevel | quote }}
+              value: {{ $webConfig.logLevel | default $.Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             {{- if $.Values.web.sentry.enabled }}
@@ -180,8 +180,8 @@ spec:
         - name: nginx
           resources:
             requests:
-              memory: {{ $web_config.nginxRequestedMemory | default "50Mi" }}
-              cpu: {{ $web_config.nginxRequestedCpu | default "10m" }}
+              memory: {{ $webConfig.nginxRequestedMemory | default "50Mi" }}
+              cpu: {{ $webConfig.nginxRequestedCpu | default "10m" }}
           image: nginx:bullseye
           imagePullPolicy: IfNotPresent
           ports:

@@ -1,8 +1,8 @@
 {{ if .Values.web.enabled -}}
-{{ range $web_type, $web_config := .Values.web.deployments }}
-{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
-{{ include "swh.web.configmap" (dict "serviceType" (print "web-" $web_type)
-                                     "configuration" $web_config
+{{ range $webType, $webConfig := .Values.web.deployments }}
+{{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
+{{ include "swh.web.configmap" (dict "serviceType" (print "web-" $webType)
+                                     "configuration" $webConfig
                                      "Values" $.Values) }}
 {{- end -}}
 {{ end -}}
