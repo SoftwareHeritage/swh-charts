@@ -1,4 +1,5 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled -}}
+{{- $configChecksum := include (print $.Template.BasePath "/scheduler/rpc-configmap.yaml") . | sha256sum -}}
 {{- $checkBackendVersion := $.Values.scheduler.rpc.backend.check | default false -}}
 {{- $migrateBackend := $.Values.scheduler.rpc.backend.migrate | default false -}}
 {{- $initializeBackendConfig := $.Values.scheduler.rpc.backend.initialize | default false -}}
@@ -31,7 +32,7 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/scheduler/rpc-configmap.yaml") . | sha256sum }}
+        checksum/config: {{ $configChecksum }}
     spec:
       {{- if .Values.scheduler.affinity }}
       affinity:
@@ -137,6 +138,8 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $logLevel }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
           {{- if .Values.scheduler.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ .Values.sentry.environment }}
@@ -155,6 +158,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
       volumes:
       - name: configuration
         emptyDir: {}
@@ -164,6 +169,12 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: backend-utils
         configMap:
           name: backend-utils

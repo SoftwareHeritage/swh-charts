@@ -1,14 +1,21 @@
-{{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled  -}}
+{{ if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled -}}
+{{- $serviceType := "scheduler-rpc" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ .Values.namespace }}
-  name: scheduler-rpc-configuration-template
+  name: {{ $serviceType }}-configuration-template
 data:
   config.yml.template: |
 {{ include "swh.postgresql" (dict "serviceType" "scheduler"
                                   "Values" .Values
                                   "configurationRef" .Values.scheduler.rpc.schedulerConfigurationRef ) | indent 4 }}
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" $serviceType
+        "defaultLoggingConfig" .Values.scheduler.rpc.defaultLoggingConfig
+        "rpcGunicornLoggingConfig" .Values.scheduler.rpc.rpcGunicornLoggingConfig
+        "Values" $.Values) }}
 
 {{- end -}}
