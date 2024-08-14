@@ -2,7 +2,12 @@
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $webType, $webConfig := .Values.web.deployments }}
 {{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
-{{- $serviceType := ( print "web-" $webType ) -}}
+{{- $serviceType := print "web-" $webType -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $webConfig
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.web.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.web.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $do_migrations := or (and $webConfig.migrations $webConfig.migrations.enabled)
                          (and $.Values.web.migrations $.Values.web.migrations.enabled) -}}
 ---
@@ -30,9 +35,8 @@ spec:
       labels:
         app: {{ $serviceType }}
       annotations:
-        checksum/config: {{ include "swh.web.configmap" (dict "serviceType" $serviceType
-                                                              "configuration" $webConfig
-                                                              "Values" $.Values) | sha256sum }}
+        checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       {{- if $.Values.web.affinity }}
@@ -157,6 +161,8 @@ spec:
               value: {{ $webConfig.logLevel | default $.Values.web.logLevel | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
             {{- if $.Values.web.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
@@ -176,7 +182,8 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-            readOnly: true
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
         - name: nginx
           resources:
             requests:
@@ -212,6 +219,12 @@ spec:
          items:
          - key: "config.yml.template"
            path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
       - name: static
         emptyDir: {}
       - name: config-utils

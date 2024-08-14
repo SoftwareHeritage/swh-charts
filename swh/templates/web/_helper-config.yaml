@@ -101,3 +101,17 @@ data:
     {{- end }}
 
 {{- end -}}
+
+{{/*
+   * Create a web gunicorn logging json config file for service .serviceType
+   */}}
+{{ define "swh.web.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.web.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.web.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
+{{- end }}
+
