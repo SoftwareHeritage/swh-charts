@@ -1,15 +1,15 @@
 {{ if .Values.objstorage.enabled -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{ range $objstorage_type, $objstorage_config := .Values.objstorage.deployments }}
-{{- if or (not (hasKey $objstorage_config "enabled")) (get $objstorage_config "enabled") -}}
-{{- $serviceType := ( print "objstorage-" $objstorage_type ) -}}
+{{ range $objstorageType, $objstorageConfig := .Values.objstorage.deployments }}
+{{- if or (not (hasKey $objstorageConfig "enabled")) (get $objstorageConfig "enabled") -}}
+{{- $serviceType := ( print "objstorage-" $objstorageType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
-                            "configuration" $objstorage_config
+                            "configuration" $objstorageConfig
                             "Values" $.Values -}}
 {{- $configChecksum := include "swh.objstorage.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.objstorage.gunicorn.logging" $configArgsDict | sha256sum -}}
-{{- $securityContext := $objstorage_config.securityContext | default $.Values.objstorage.securityContext -}}
-{{ $gunicornConfig := $objstorage_config.gunicorn | default $.Values.objstorage.gunicorn | default
+{{- $securityContext := $objstorageConfig.securityContext | default $.Values.objstorage.securityContext -}}
+{{ $gunicornConfig := $objstorageConfig.gunicorn | default $.Values.objstorage.gunicorn | default
   (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
 ---
 apiVersion: apps/v1
@@ -21,8 +21,8 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if $objstorage_config.replicas -}}
-  replicas: {{ $objstorage_config.replicas }}
+  {{ if $objstorageConfig.replicas -}}
+  replicas: {{ $objstorageConfig.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -44,12 +44,12 @@ spec:
       securityContext:
         {{- toYaml $securityContext | nindent 8 }}
       {{- end }}
-      {{- $nodeSelector := $objstorage_config.nodeSelector | default $.Values.objstorage.nodeSelector | default dict -}}
+      {{- $nodeSelector := $objstorageConfig.nodeSelector | default $.Values.objstorage.nodeSelector | default dict -}}
       {{- if $nodeSelector }}
       nodeSelector:
         {{- toYaml $nodeSelector | nindent 8 }}
       {{- end }}
-      {{- $affinity := $objstorage_config.affinity | default $.Values.objstorage.affinity | default dict -}}
+      {{- $affinity := $objstorageConfig.affinity | default $.Values.objstorage.affinity | default dict -}}
       {{- if $affinity }}
       affinity:
         {{- toYaml $affinity | nindent 8 }}
@@ -64,7 +64,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $objstorage_config
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $objstorageConfig
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
@@ -78,21 +78,21 @@ spec:
         - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ $objstorage_config.requestedMemory | default "512Mi" }}
-              cpu: {{ $objstorage_config.requestedCpu | default "500m" }}
-            {{- if or $objstorage_config.limitedMemory $objstorage_config.limitedCpu }}
+              memory: {{ $objstorageConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $objstorageConfig.requestedCpu | default "500m" }}
+            {{- if or $objstorageConfig.limitedMemory $objstorageConfig.limitedCpu }}
             limits:
-              {{- if $objstorage_config.limitedMemory }}
-              memory: {{ $objstorage_config.limitedMemory }}
+              {{- if $objstorageConfig.limitedMemory }}
+              memory: {{ $objstorageConfig.limitedMemory }}
               {{- end }}
-              {{- if $objstorage_config.limitedCpu }}
-              cpu: {{ $objstorage_config.limitedCpu }}
+              {{- if $objstorageConfig.limitedCpu }}
+              cpu: {{ $objstorageConfig.limitedCpu }}
               {{- end }}
             {{- end }}
           image: {{ $.Values.swh_objstorage_image }}:{{ $.Values.swh_objstorage_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ $objstorage_config.port | default $.Values.objstorage.port }}
+            - containerPort: {{ $objstorageConfig.port | default $.Values.objstorage.port }}
               name: rpc
           readinessProbe:
             httpGet:
@@ -129,7 +129,7 @@ spec:
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ $objstorage_config.logLevel | default $.Values.objstorage.logLevel | default "INFO" | quote }}
+              value: {{ $objstorageConfig.logLevel | default $.Values.objstorage.logLevel | default "INFO" | quote }}
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.objstorage.sentry.enabled }}
@@ -153,10 +153,10 @@ spec:
             mountPath: /etc/swh
           - name: configuration-logging
             mountPath: /etc/swh/logging
-          {{- range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
-          - name: {{ $volume_name }}
-            mountPath: {{ $volume_config.mountPath }}
-            readOnly: {{ $volume_config.readOnly | default "false" }}
+          {{- range $volumeName, $volumeConfig := $objstorageConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
           {{ end }}
       volumes:
       - name: configuration
@@ -177,9 +177,9 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{- range $volume_name, $volume_config := $objstorage_config.extraVolumes }}
-      - name: {{ $volume_name }}
-        {{- toYaml $volume_config.volumeDefinition | nindent 8 }}
+      {{- range $volumeName, $volumeConfig := $objstorageConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
       {{ end }}
 {{ end }}
 {{ end -}}
