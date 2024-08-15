@@ -5,6 +5,46 @@ metadata:
   name: backend-utils
   namespace: {{ $.Values.namespace }}
 data:
+  initialize-graph-backend.sh: |
+    #!/usr/bin/env bash
+
+    set -eux
+
+    # Ensure the dataset location if present is not empty
+    rmdir ${DATASET_LOCATION} 2>/dev/null || echo ""
+
+    # Uses internally the environment variable SWH_CONFIG_FILENAME
+    [ -d ${DATASET_LOCATION} ] && \
+        echo "Dataset <${DATASET_NAME}> already present. Skip." && \
+        exit 0
+
+    case "${DATASET_NAME}" in
+        test|example)
+            # For test (or example) dataset sample, clone the source repository of
+            # swh.graph and use the example dataset within
+            git clone \
+              --depth 1 \
+              https://gitlab.softwareheritage.org/swh/devel/swh-graph.git/ \
+              /tmp/swh-graph
+            # Create empty dataset location destination for copy to be ok
+            mkdir -p ${DATASET_LOCATION} && rmdir ${DATASET_LOCATION}
+            # Actual copy of the test dataset
+            cp -r /tmp/swh-graph/swh/graph/example_dataset/compressed \
+                  ${DATASET_LOCATION}
+        ;;
+        *)
+            # Otherwise, retrieve the dataset locally
+            swh graph download \
+              --name ${DATASET_NAME} \
+              ${DATASET_LOCATION}
+
+            # Unconditionally reindex graph dataset (for those anterior to
+            # 2024). This should not be necessary for most recent graph
+            # datasets
+            swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+        ;;
+    esac
+
   initialize-search-backend.sh: |
     #!/usr/bin/env bash
 

@@ -1014,3 +1014,63 @@ provenance:
         - hosts:
           - provenance-next-version.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
+
+# Rpc Rust graph configuration
+grpcRustGraphConfiguration:
+  cls: local_rust
+  grpc_server:
+    port: 50091
+
+graphExamplePathConfiguration: /srv/graph/test/compressed
+
+graph:
+  enabled: true
+  graphPathConfigurationRef: graphPathConfiguration
+  deployments:
+    # Exposed rpc used by clients
+    # rpc graph with sample dataset (cloned out of swh.graph)
+    rpc-example:
+      type: rpc
+      port: 5009
+      graphName: example
+      graphConfigurationRef: grpcRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
+      backend:
+        initialize:
+          dataset: test
+      hosts:
+        - graph-cassandra.internal.staging.swh.network
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      extraVolumes:
+        graph-example:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-rpc-example-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: standard
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            volumeMode: Filesystem
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - rancher-node-staging-rke2-metal01
+

@@ -10,6 +10,8 @@ swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/sw
 swh_deposit_checkers_image_version: '20240924.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
 swh_deposit_image_version: '20240924.1'
+swh_graph_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graph
+swh_graph_image_version: '20240830.1'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20240925.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer

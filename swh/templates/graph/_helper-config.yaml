@@ -1,0 +1,20 @@
+{{/*
+   * Create a graph rpc or grpc configmap for service .serviceType
+   */}}
+{{ define "swh.graph.configmap" }}
+{{- $configurationRef := required (print "Required <configurationRef> entry") .configuration.graphConfigurationRef }}
+{{- $configuration := get .Values $configurationRef -}}
+{{- $type := .configuration.type -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.service.fromYaml"
+      (dict "service" "graph"
+            "configurationRef" $configurationRef
+            "Values" .Values) | nindent 4}}
+{{ end }}

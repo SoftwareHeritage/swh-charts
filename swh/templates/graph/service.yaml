@@ -1,0 +1,12 @@
+{{ if .Values.graph.enabled -}}
+{{ range $graphType, $graphConfig := .Values.graph.deployments }}
+{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- if not (hasKey $graphConfig "port") }}
+{{- $graphConfig := set $graphConfig "port" $.Values.graph.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "graph-" $graphType )
+                                "configuration" $graphConfig
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

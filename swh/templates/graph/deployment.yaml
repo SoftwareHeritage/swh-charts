@@ -1,0 +1,192 @@
+{{ if .Values.graph.enabled -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{- $backendUtilsChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
+{{ range $graphType, $graphConfig := .Values.graph.deployments }}
+{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- $serviceType := ( print "graph-" $graphType ) -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $graphConfig
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.graph.configmap" $configArgsDict | sha256sum -}}
+{{- $securityContext := $graphConfig.securityContext | default $.Values.graph.securityContext -}}
+{{- $type := $graphConfig.type -}}
+{{- $port := $graphConfig.port | default (ternary $.Values.graph.rpcPort $.Values.graph.grpcPort (eq $type "rpc")) -}}
+{{- $initializeBackendConfig := and $graphConfig.backend $graphConfig.backend.initialize | default false -}}
+{{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
+{{- $graphPath := get $.Values $graphPathRef -}}
+{{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $graphConfig.replicas -}}
+  replicas: {{ $graphConfig.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+        checksum/config-utils: {{ $configUtilsChecksum }}
+        checksum/backend-utils: {{ $backendUtilsChecksum }}
+    spec:
+      {{- if $securityContext }}
+      securityContext:
+        {{- toYaml $securityContext | nindent 8 }}
+      {{- end }}
+      {{- $nodeSelector := $graphConfig.nodeSelector | default $.Values.graph.nodeSelector | default dict -}}
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- $affinity := $graphConfig.affinity | default $.Values.graph.affinity | default dict -}}
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+
+      {{- if and $.Values.podPriority.enabled $.Values.graph.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.graph.priorityClassName }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $graphConfig
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeGraphBackend" (dict "Values" $.Values
+                                                      "imagePrefixName" "swh_graph_image"
+                                                      "graphName" $graphName
+                                                      "graphPath" $graphPath
+                                                      "config" $initializeBackendConfig
+                                                      "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ $serviceType }}
+          resources:
+            requests:
+              memory: {{ $graphConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $graphConfig.requestedCpu | default "500m" }}
+            {{- if or $graphConfig.limitedMemory $graphConfig.limitedCpu }}
+            limits:
+              {{- if $graphConfig.limitedMemory }}
+              memory: {{ $graphConfig.limitedMemory }}
+              {{- end }}
+              {{- if $graphConfig.limitedCpu }}
+              cpu: {{ $graphConfig.limitedCpu }}
+              {{- end }}
+            {{- end }}
+          image: {{ $.Values.swh_graph_image }}:{{ $.Values.swh_graph_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $port }}
+              name: {{ $type }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ $type }}
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: {{ $type }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            - name: GRAPH_TYPE
+              value: {{ $type }}
+            - name: PORT
+              value: {{ $port | quote }}
+            - name: GRAPH_PATH
+              value: {{ $graphPath }}/{{ $graphName }}
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $serviceType }}
+            - name: STATSD_SERVICE_TYPE
+              value: {{ $serviceType }}
+            - name: SWH_LOG_LEVEL
+              value: {{ $graphConfig.logLevel | default $.Values.graph.logLevel | default "INFO" | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+          {{- if $.Values.graph.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.graph
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.graph.sentry.secretKeyRef }}
+                  key: {{ $.Values.graph.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
+          {{ end }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+      - name: backend-utils
+        configMap:
+          name: backend-utils
+          defaultMode: 0555
+      {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+      {{ end }}
+{{ end }}
+{{ end -}}
+{{- end -}}

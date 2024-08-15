@@ -466,3 +466,16 @@ provenance:
             operator: In
             values:
             - "true"
+
+graph:
+  sentry:
+    enabled: true
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/graph"
+            operator: In
+            values:
+            - "true"

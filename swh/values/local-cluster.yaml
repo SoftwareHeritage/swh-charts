@@ -3,6 +3,11 @@ sentry:
   enabled: false
   environment: local-cluster
 
+clusterNetworkRanges:
+  # cluster internal range ip
+  - 10.42.0.0/16
+  - 10.43.0.0/16
+
 prometheus:
   address: http://prometheus-operated.cattle-monitoring-system:9090
 
@@ -1425,10 +1430,6 @@ objstorageReplayer:
         auto_offset_reset: earliest
         batch_size: 10
 
-fakeGraphConfiguration:
-  cls: graph
-  url: graph.i.s.o:50091
-
 provenance:
   enabled: false
   deployments:
@@ -1440,3 +1441,99 @@ provenance:
       #   workers: 4
       #   threads: 1
       #   timeout: 60
+
+fakeGraphConfiguration:
+  cls: graph
+  url: graph.i.s.o:50091
+
+# Rpc Rust graph configuration
+grpcRustGraphConfiguration:
+  cls: local_rust
+  grpc_server:
+    port: 50091
+
+graphExamplePathConfiguration: /srv/graph/test/compressed
+
+graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
+
+graph:
+  enabled: false
+  # Test dataset uses the "example" name
+  deployments:
+    # rpc graph with sample dataset (cloned out of swh.graph)
+    rpc-example:
+      type: rpc
+      port: 5009
+      graphName: example
+      graphConfigurationRef: grpcRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
+      backend:
+        initialize:
+          dataset: test
+      # hosts:
+      #   - graph.local
+      # ingress:
+      #   enabled: true
+      #   whitelistSourceRangeRef: clusterNetworkRanges
+      #   extraAnnotations:
+      #     nginx.ingress.kubernetes.io/proxy-body-size: 4G
+      #     nginx.ingress.kubernetes.io/proxy-buffering: "on"
+      #     nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      #   endpoints:
+      #     default:
+      #       paths:
+      #         - path: /
+      extraVolumes:
+        graph-example:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-rpc-example-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: standard
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            volumeMode: Filesystem
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - local-cluster-worker2
+    # Instance to run the graph with the dataset python3k
+    rpc-python3k:
+      enabled: true
+      type: rpc
+      port: 5009
+      graphConfigurationRef: grpcRustGraphConfiguration
+      graphPathConfigurationRef: graphPython3kPathConfiguration
+      backend:
+        initialize:
+          dataset: 2021-03-23-popular-3k-python
+      extraVolumes:
+        graph-python3k:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-rpc-python3k-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: standard
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            volumeMode: Filesystem
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - local-cluster-worker3

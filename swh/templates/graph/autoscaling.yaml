@@ -1,0 +1,15 @@
+{{ if .Values.graph.enabled -}}
+{{ range $graphType, $graphConfig := .Values.graph.deployments }}
+{{- if and (or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled")) -}}
+{{- $autoScaling := get $graphConfig "autoScaling" | default $.Values.graph.autoScaling -}}
+{{- if $autoScaling -}}
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn
+  (dict "serviceType"   ( print "graph-" $graphType )
+        "configuration" $autoScaling
+        "Values"        $.Values) -}}
+{{ end }}
+{{ end }}
+{{ end }}
+{{- end -}}

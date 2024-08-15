@@ -1,0 +1,15 @@
+{{/*
+   * Define an helper function to declare persistentVolumeClaim
+   */}}
+{{- define "swh.persistentVolumeClaim" -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .serviceType }}-pvc
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .serviceType }}
+spec:
+  {{- toYaml .volumeConfig.persistentVolumeClaimDefinition | nindent 2 }}
+{{ end }}

@@ -1,0 +1,14 @@
+{{ if .Values.graph.enabled -}}
+{{ range $graphType, $graphConfig := .Values.graph.deployments }}
+{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
+{{- if $volumeConfig.persistentVolumeClaimDefinition -}}
+{{- include "swh.persistentVolumeClaim"
+  (dict "serviceType"  ( print "graph-" $graphType )
+        "volumeConfig" $volumeConfig
+        "Values"       $.Values) -}}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
