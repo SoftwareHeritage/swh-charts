@@ -205,6 +205,20 @@ cloudnativePg:
         databases:
         - swh-web
         source: cluster-pg-staging-db1
+    swh-deposit:
+      enabled: true
+      namespace: swh-cassandra
+      pooler:
+        enabled: true
+        type: rw
+        default_pool_size: "10"
+        max_client_conn: "1000"
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-deposit-secret
+        databases:
+        - swh-deposit
+        source: cluster-pg-staging-db1
 
 rabbitmq:
   enabled: true
