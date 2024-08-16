@@ -160,15 +160,18 @@ postgresqlWebConfiguration:
       secretKeyName: password
 
 postgresqlDepositConfiguration:
-  host: db1.internal.staging.swh.network
+  host: swh-deposit-rw.swh-cassandra
   port: 5432
   db: swh-deposit
-  user: swh-deposit
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-deposit-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-deposit-secrets
-      secretKeyName: postgres-swh-deposit-password
+      secretKeyRef: swh-postgresql-swh-deposit-secret
+      secretKeyName: password
 
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
