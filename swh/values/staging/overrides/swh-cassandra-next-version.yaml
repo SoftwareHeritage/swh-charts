@@ -655,7 +655,19 @@ web:
           default:
             paths:
               - path: /
-              - path: /static
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+          static:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/use-regex: "true"
+              nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+            paths:
+              - path: /()(robots.txt)$
+                pathType: ImplementationSpecific
+                port: 80
+              - path: /static(/|$)(.*)
+                pathType: ImplementationSpecific
                 port: 80
             extraWhitelistSourceRange:
               # vpn network

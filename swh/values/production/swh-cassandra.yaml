@@ -359,12 +359,23 @@ web:
           default:
             paths:
               - path: /
-              - path: /static
+            extraWhitelistSourceRange:
+              - 192.168.50.0/24 # for blackbox monitoring
+              - 192.168.101.0/24 # vpn network
+          static:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/use-regex: "true"
+              nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+            paths:
+              - path: /()(robots.txt)$
+                pathType: ImplementationSpecific
+                port: 80
+              - path: /static(/|$)(.*)
+                pathType: ImplementationSpecific
                 port: 80
             extraWhitelistSourceRange:
               - 192.168.50.0/24 # for blackbox monitoring
               - 192.168.101.0/24 # vpn network
-
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
