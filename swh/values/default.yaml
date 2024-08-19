@@ -41,7 +41,7 @@ rpcGunicornLoggingConfig:
     gunicorn.error:
       level: INFO
     gunicorn.access:
-      level: INFO
+      level: WARN
       filters: [throttle_accesslog]
       handlers:
         - console

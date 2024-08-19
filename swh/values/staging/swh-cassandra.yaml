@@ -637,6 +637,7 @@ storageJournalWriterConfiguration:
 
 storage:
   enabled: true
+  logLevel: WARN
   deployments:
     cassandra:
       autoScaling:
@@ -694,7 +695,7 @@ storage:
 
 web:
   enabled: true
-  logLevel: INFO
+  logLevel: WARN
   deployments:
     cassandra:
       # Usual consumption with visits webhook is 200m cpu (/2 replicas)
@@ -1132,6 +1133,7 @@ deposit:
 
 objstorage:
   enabled: true
+  logLevel: WARN
   port: 5003
   priorityClassName: frontend-rpc
   deployments:

@@ -1325,6 +1325,7 @@ storageJournalWriterConfiguration:
 
 storage:
   enabled: true
+  logLevel: WARN
   deployments:
     postgresql-azure-readonly:
       autoScaling:
@@ -1404,7 +1405,7 @@ djangoWebConfiguration:
 
 web:
   enabled: true
-  logLevel: INFO
+  logLevel: WARN
   deployments:
     # Main instance to serve archive.softwareheritage.org
     archive:
@@ -1664,6 +1665,7 @@ web:
 
 objstorage:
   enabled: true
+  logLevel: WARN
   port: 5003
   priorityClassName: frontend-rpc
   deployments:
