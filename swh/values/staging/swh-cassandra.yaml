@@ -799,14 +799,13 @@ web:
     webhooks:
       requestedCpu: 100m
       requestedMemory: 512Mi
+      # The ingress accepts only 3 concurrent requests so the number of workers
+      # can be configured accordingly with a margin for monitoring probes
       gunicorn:
-        workers: 4
+        workers: 2
         threads: 2
         timeout: 3600
-      autoScaling:
-        minReplicaCount: 2
-        maxReplicaCount: 4  # 4 to test the autoscaling in extreme scenarios
-        cpuPercentageUsage: 75
+      replicas: 2
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
@@ -822,6 +821,10 @@ web:
         endpoints:
           webhooks:
             extraAnnotations:
+              # The number of connections to allow is estimated to ~1.5x the number
+              # of webhook journal client for the scn endpoint
+              # Another estimated could be around 1 connection per ~15 origin_visits_status/s
+              # Adapt the replicas and workers if this values is changed
               nginx.ingress.kubernetes.io/limit-connections: "3"
             paths:
               - path: /save/origin/visit/webhook
