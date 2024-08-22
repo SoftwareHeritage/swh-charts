@@ -1593,17 +1593,15 @@ web:
           site_id: 59
     # webhooks instance to serve svix requests
     webhooks:
+      # The ingress accept only 10 concurrent requests so the number of workers
+      # can be configured accordingly with a margin for monitoring probes
       gunicorn:
         workers: 4
-        threads: 2
-        timeout: 3600
-      # replicas: 4
-      autoScaling:
-        minReplicaCount: 4
-        maxReplicaCount: 8
-        cpuPercentageUsage: 100
-      requestedCpu: 500m
-      requestedMemory: 6Gi
+        threads: 3
+        timeout: 60
+      replicas: 2
+      requestedCpu: 200m
+      requestedMemory: 7Gi
       hosts:
         - archive.softwareheritage.org
         - archive.internal.softwareheritage.org
@@ -1622,6 +1620,7 @@ web:
               # The number of connections to allow is estimated to ~1.5x the number
               # of webhook journal client for the scn endpoint
               # Another estimated could be around 1 connection per ~15 origin_visits_status/s
+              # Adapt the replicas and workers if this values is changed
               nginx.ingress.kubernetes.io/limit-connections: "10"
             tlsEnabled: true
             paths:
