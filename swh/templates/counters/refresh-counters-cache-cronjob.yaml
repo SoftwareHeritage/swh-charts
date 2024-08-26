@@ -4,6 +4,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
+  namespace: {{ $.Values.namespace }}
   name: counters-refresh-counters-cache-cronjob
 spec:
   # By default, every 4h
@@ -92,7 +93,7 @@ spec:
               items:
               - key: "refresh-counters-cache.sh"
                 path: "refresh-counters-cache.sh"
-          restartPolicy: OnFailure
+          restartPolicy: Never
 
 {{- end -}}
 {{- end -}}

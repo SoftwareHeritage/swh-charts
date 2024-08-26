@@ -34,14 +34,13 @@ data:
     }
     EOF
 
-    # This waits for the rpc to be up
-    while true; do
-        sleep 1
-        set +e
-        curl -f -v -XPOST -H 'Content-Type: application/json' $host/refresh_history -d @"${tmp_file}"
-        [[ $? -ne 0 ]] || break
-        set -e
-    done
+    echo Wait 60s for the ${host} rpc service
+    retry -t 6 -d 10 -- curl -f -s ${host}
+    echo "${host} is up"
+
+    echo "Refreshing the counters history"
+    curl -f -v -XPOST -H 'Content-Type: application/json' $host/refresh_history -d @"${tmp_file}"
+    echo "Done"
 
   fetch-static-history.sh: |
     #!/bin/bash
