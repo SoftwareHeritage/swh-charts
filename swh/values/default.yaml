@@ -36,6 +36,8 @@ rpcGunicornLoggingConfig:
       interval: 60
       status_codes: [200, 400]
   loggers:
+    azure: # Don't log each call to azure in the objstorage/storage
+      level: WARN
     gunicorn:
       level: INFO
     gunicorn.error:
