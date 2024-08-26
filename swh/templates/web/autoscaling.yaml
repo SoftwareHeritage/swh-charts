@@ -1,7 +1,7 @@
 {{- if and .Values.web.enabled -}}
 {{ range $web_type, $web_config := .Values.web.deployments }}
 {{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled")) -}}
-{{- $autoScalingConfig := get $web_config "autoScaling" | default $.Values.objstorage.autoScaling -}}
+{{- $autoScalingConfig := get $web_config "autoScaling" | default $.Values.web.autoScaling -}}
 {{- if $autoScalingConfig -}}
 {{- $autoScalingType := get $autoScalingConfig "type" | default "horizontal" -}}
 {{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
