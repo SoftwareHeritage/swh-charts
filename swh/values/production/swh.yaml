@@ -1593,7 +1593,7 @@ web:
           site_id: 59
     # webhooks instance to serve svix requests
     webhooks:
-      # The ingress accept only 10 concurrent requests so the number of workers
+      # The ingress accepts only 10 concurrent requests so the number of workers
       # can be configured accordingly with a margin for monitoring probes
       gunicorn:
         workers: 4
