@@ -125,6 +125,20 @@ fakeSyncmailmapsConfiguration:
       secretKeyRef: swhmailmap-postgresql-secret
       secretKeyName: postgres-swhmailmap-password
 
+postgresqlSyncMaskinProxyMailmapsConfiguration:
+  host: maskingproxy-rw
+  port: 5432
+  db: swhmaskingproxy
+  user: ${PGUSER}
+  pass: ${PGPASSWORD}
+  secrets:
+    PGUSER:
+      secretKeyRef: swh-maskingproxy-postgresql-secret
+      secretKeyName: username
+    PGPASSWORD:
+      secretKeyRef: swh-maskingproxy-postgresql-secret
+      secretKeyName: password
+
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
   host: indexer-storage-rw
@@ -441,6 +455,16 @@ web:
           concurrencyPolicy: Forbid
           configurationRef: fakeSyncmailmapsConfiguration
           pgService: true
+        syncMaskingMailmaps:
+          enabled: false
+          command:
+            - "sync_masking_mailmaps"
+            - "--perform"
+            - "service=syncmaskingmailmaps"
+          cron: "0 */1  * * *"
+          concurrencyPolicy: Forbid
+          configurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+          pgService: true
         refreshSCNStatus:
           enabled: false
           cron: "* 5 * * *"
@@ -676,13 +700,19 @@ toolbox:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+    masking:
+      moduleName: storage.proxies.masking
+      moduleConfigKey: masking_admin
+      maskingAdminConfigurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+      # needed for the `swh storage` cli to work...
+      storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
   bulkLoad:
     # The name of the scheduler configuration entry in the toolbox configs
     schedulerConfigurationRef: scheduler
     # priorityClass
     # swhUtilsImageVersion
     # swhToolboxImageVersion
-    jobs:
+    jobs: {}
       # myforge:
       #   originListUrl: https://gitlab.softwareheritage.org/....
       #   taskType: load-git
