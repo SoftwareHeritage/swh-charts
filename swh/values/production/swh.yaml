@@ -2048,7 +2048,7 @@ counters:
     gunicorn:
       workers: 2
       threads: 1
-      timeout: 10
+      timeout: 30
     # autoScaling:
     #   minReplicaCount: 2
     #   maxReplicaCount: 4
