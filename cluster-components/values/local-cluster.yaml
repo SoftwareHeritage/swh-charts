@@ -101,6 +101,13 @@ cloudnativePg:
         secretKeyRef: swh-swh-postgresql-secret
         databases:
           - swh
+    maskingproxy:
+      enabled: true
+      initdb:
+        type: microservice
+        secretKeyRef: swh-maskingproxy-postgresql-secret
+        databases:
+          - swhmaskingproxy
     scheduler:
       enabled: true
       initdb:
