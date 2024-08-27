@@ -714,12 +714,25 @@ web:
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
-      syncMailmaps:
-        enabled: true
-        concurrencyPolicy: Forbid
-        configurationRef: postgresqlSyncmailmapsConfiguration
-        priorityClassName: frontend-rpc-workload
-        cron: "15 * * * *"
+      cronJobs:
+        refreshSCNStatus:
+          enabled: false
+          cron: "* 5 * * *"
+          concurrencyPolicy: Forbid
+          priorityClassName: frontend-rpc-workload
+          command:
+            - "refresh_savecodenow_statuses"
+        syncMailmaps:
+          enabled: true
+          command:
+            - "sync_mailmaps"
+            - "--perform"
+            - "service=syncmailmaps"
+          cron: "0 */1 * * *"
+          concurrencyPolicy: Forbid
+          priorityClassName: frontend-rpc-workload
+          configurationRef: postgresqlSyncmailmapsConfiguration
+          pgService: true
       ingress:
         enabled: true
         secretName: swh-web-crt

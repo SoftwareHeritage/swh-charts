@@ -645,10 +645,13 @@ web:
         history_counters_url: http://counters-rpc:5011/counters_history/history.json#
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network
-      refreshSavecodenowStatus:
-        enabled: false
-      syncMailmaps:
-        enabled: false
+      cronJobs:
+        refreshSCNStatus:
+          enabled: false
+        syncMailmaps:
+          enabled: false
+        syncMaskingMailmaps:
+          enabled: false
       ingress:
         whitelistSourceRangeRef: stagingNetworkRanges
         endpoints:

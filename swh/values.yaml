@@ -835,24 +835,42 @@ web:
       #   minReplicaCount: 2
       #   maxReplicaCount: 10
       #   cpuPercentageUsage: 50
-      refreshSavecodenowStatus:
-        enabled: false
-        priorityClassName: frontend-rpc-workload
-        logLevel: INFO
-        # concurrencyPolicy: Forbid
-        # Every 2 minute
-        cron: "*/2 * * * *"
-      syncMailmaps:
-        enabled: false
-        priorityClassName: frontend-rpc-workload
-        logLevel: INFO
-        # concurrencyPolicy: Forbid
-        # At minute 15 every hour
-        cron: "15 * * * *"
-     # gunicorn:
-     #   threads: 5
-     #   workers: 2
-     #   timeout: 60
+      # cronJobs:
+      #   refreshSCNStatus:
+      #     enabled: false
+      #     command:
+      #       - "refresh_savecodenow_statuses"
+      #     priorityClassName: frontend-rpc-workload
+      #     logLevel: INFO
+      #     # concurrencyPolicy: Forbid
+      #     # Every 2 minute
+      #     cron: "*/2 * * * *"
+      #   syncMailmaps:
+      #     enabled: false
+      #     command:
+      #       - "sync_mailmaps"
+      #       - "--perform"
+      #       - "service=syncmailmaps"
+      #     cron: "0 */1 * * *"
+      #     concurrencyPolicy: Forbid
+      #     configurationRef: postgresqlSyncmailmapsConfiguration
+      #     pgService: true
+      #     # priorityClassName: frontend-rpc-workload
+      #   syncMaskingMailmaps:
+      #     enabled: false
+      #     command:
+      #       - "sync_masking_mailmaps"
+      #       - "--perform"
+      #       - "service=syncmaskingmailmaps"
+      #     cron: "0 */1  * * *"
+      #     concurrencyPolicy: Forbid
+      #     configurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+      #     pgService: true
+      #     # priorityClassName: frontend-rpc-workload
+      # gunicorn:
+      #   threads: 5
+      #   workers: 2
+      #   timeout: 60
       # host: webapp
       ingress:
         enabled: false

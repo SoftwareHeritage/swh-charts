@@ -1,0 +1,17 @@
+{{ if .Values.web.enabled -}}
+{{ range $webType, $webConfig := .Values.web.deployments }}
+{{- if and (or (not (hasKey $webConfig "enabled"))
+               (get $webConfig "enabled")) -}}
+{{- range $cronJobType, $cronJobConfig := $webConfig.cronJobs -}}
+{{- if $cronJobConfig.enabled -}}
+{{- include "swh.web.cronjob" (dict "Values"           $.Values
+                                    "serviceType"      (print "web-" $webType "-" (lower $cronJobType) )
+                                    "configuration"    $cronJobConfig
+                                    "webConfiguration" $webConfig
+                                    "webType"          $webType
+                                    "command"          $cronJobConfig.command) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

@@ -430,6 +430,23 @@ web:
       enabled: true
       migrations:
         enabled: true
+      cronJobs:
+        syncMailmaps:
+          enabled: false
+          command:
+            - "sync_mailmaps"
+            - "--perform"
+            - "service=syncmailmaps"
+          cron: "0 */1 * * *"
+          concurrencyPolicy: Forbid
+          configurationRef: fakeSyncmailmapsConfiguration
+          pgService: true
+        refreshSCNStatus:
+          enabled: false
+          cron: "* 5 * * *"
+          concurrencyPolicy: Forbid
+          command:
+            - "refresh_savecodenow_statuses"
       metricsScrapingEnabled: false
       replicas: 1
       # autoScaling:
@@ -483,14 +500,6 @@ web:
         #       - path: /api/1/content/[^/]+/symbol/
         #     # auth-file with authentication
         #     authentication: basic-auth
-      # (either this cron of the webhookConfigurationRef entry key)
-      # refreshSavecodenowStatus:
-      #   enabled: false
-      #   cron: "* 5 * * *"
-      syncMailmaps:
-        enabled: false
-        cron: "30 * * * *"
-        configurationRef: fakeSyncmailmapsConfiguration
       sentry:
         enabled: false
       extraConfig:

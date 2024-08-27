@@ -1,0 +1,22 @@
+{{ if .Values.web.enabled -}}
+{{- range $webType, $webConfig := .Values.web.deployments -}}
+{{- if and (or (not (hasKey $webConfig "enabled"))
+               (get $webConfig "enabled")) -}}
+{{- range $cronJobType, $cronJobConfig := $webConfig.cronJobs -}}
+{{- if and $cronJobConfig.enabled $cronJobConfig.pgService }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-{{ $webType }}-{{ $cronJobType | lower }}-config-template
+  namespace: {{ $.Values.namespace }}
+data:
+  pg-service-conf: |
+    {{- include "swh.web.pgService" (dict "serviceType" (lower $cronJobType)
+                                          "configurationRef" $cronJobConfig.configurationRef
+                                          "Values" $.Values) | nindent 4 }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end }}

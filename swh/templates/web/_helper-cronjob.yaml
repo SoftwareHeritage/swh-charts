@@ -4,6 +4,7 @@
 {{- define "swh.web.cronjob" -}}
 {{- with .configuration -}}
 {{- $log_level := .logLevel -}}
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -26,15 +27,18 @@ spec:
           priorityClassName: {{ $.Values.namespace }}-{{ .priorityClassName }}
           {{ end }}
           initContainers:
-            {{- if $.pgService }}
+            {{- if .pgService }}
             - name: prepare-pgservice-configuration
-              image: debian:bullseye
+              image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
               imagePullPolicy: IfNotPresent
               command:
               - /bin/bash
               args:
               - -c
-              - eval "cp /etc/swh/config/pg_service.conf /etc/swh/.pg_service.conf"
+              - eval "cat /etc/swh/config/pg_service.conf | envsubst > /etc/swh/.pg_service.conf"
+              env:
+                {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.webConfiguration
+                                                                        "Values" $.Values) | nindent 16 }}
               volumeMounts:
               - name: configuration
                 mountPath: /etc/swh
@@ -86,6 +90,7 @@ spec:
               command:
               - /opt/swh/entrypoint.sh
               args:
+              - django-admin
               {{- range $cmd := $.command }}
               - {{ $cmd }}
               {{- end }}
@@ -115,7 +120,7 @@ spec:
                 - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
                   value: "true"
               {{- end }}
-              {{- if $.pgService }}
+              {{- if .pgService }}
                 - name: PGSERVICEFILE
                   value: /etc/swh/.pg_service.conf
                 {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.configuration "Values" $.Values) | nindent 16 }}
@@ -137,10 +142,10 @@ spec:
               items:
               - key: "config.yml.template"
                 path: "config.yml.template"
-          {{- if $.pgService }}
+          {{- if .pgService }}
           - name: pgservice-configuration-template
             configMap:
-              name: pgservice-{{ $.webType }}-configuration-template
+              name: {{ lower $.serviceType }}-config-template
               items:
               - key: "pg-service-conf"
                 path: "pg_service.conf"

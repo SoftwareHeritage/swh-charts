@@ -1424,17 +1424,25 @@ web:
         threshold: 10
       requestedCpu: 500m
       requestedMemory: 6Gi
-      refreshSavecodenowStatus:
-        enabled: false
-        concurrencyPolicy: Forbid
-        priorityClassName: frontend-rpc-workload
-        cron: "*/2 * * * *"
-      syncMailmaps:
-        enabled: true
-        concurrencyPolicy: Forbid
-        configurationRef: postgresqlSyncmailmapsConfiguration
-        priorityClassName: frontend-rpc-workload
-        cron: "15 * * * *"
+      cronJobs:
+        refreshSCNStatus:
+          enabled: false
+          cron: "*/2 * * * *"
+          command:
+            - "refresh_savecodenow_statuses"
+          concurrencyPolicy: Forbid
+          priorityClassName: frontend-rpc-workload
+        syncMailmaps:
+          enabled: true
+          cron: "15 * * * *"
+          command:
+            - "sync_mailmaps"
+            - "--perform"
+            - "service=syncmailmaps"
+          concurrencyPolicy: Forbid
+          configurationRef: postgresqlSyncmailmapsConfiguration
+          priorityClassName: frontend-rpc-workload
+          pgService: true
       hosts:
         - archive.softwareheritage.org
         - base.softwareheritage.org
@@ -1520,10 +1528,6 @@ web:
       metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 1Gi
-      refreshSavecodenowStatus:
-        enabled: false
-      syncMailmaps:
-        enabled: false
       replicas: 2
       # autoScaling:
       #   minReplicaCount: 2
