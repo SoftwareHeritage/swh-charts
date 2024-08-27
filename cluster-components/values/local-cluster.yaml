@@ -77,6 +77,7 @@ cloudnativePg:
   enabled: false
   namespace: swh
   testing: true
+  enableMonitoring: false
   storage:
     storageClass: standard
     size: 1Gi
