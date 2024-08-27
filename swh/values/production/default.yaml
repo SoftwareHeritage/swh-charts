@@ -63,6 +63,8 @@ cassandraSeeds:
   - cassandra09.internal.softwareheritage.org
   - cassandra10.internal.softwareheritage.org
   - cassandra11.internal.softwareheritage.org
+  - cassandra12.internal.softwareheritage.org
+  - cassandra13.internal.softwareheritage.org
 
 cassandraStorage:
   cls: cassandra
