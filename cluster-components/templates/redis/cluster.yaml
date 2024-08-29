@@ -8,6 +8,7 @@
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
 {{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
+{{- $redisSecret := $deploymentConfig.redisSecret | default dict -}}
 {{- $priorityClassName := $deploymentConfig.priorityClassName | default $.Values.redis.priorityClassName -}}
 {{- $redisExporter := mustMerge $.Values.redis.redisExporter ($deploymentConfig.redisExporter | default dict) -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
@@ -32,6 +33,9 @@ spec:
   kubernetesConfig:
     image: quay.io/opstree/redis:v7.0.12
     imagePullPolicy: IfNotPresent
+    {{- if $redisSecret }}
+    redisSecret: {{ toYaml $redisSecret | nindent 6 }}
+    {{- end }}
   {{- if $redisExporter.enabled }}
   redisExporter:
     enabled: {{ $redisExporter.enabled }}
