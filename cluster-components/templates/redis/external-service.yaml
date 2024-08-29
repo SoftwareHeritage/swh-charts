@@ -1,0 +1,31 @@
+{{- if .Values.redis.enabled -}}
+{{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $externalService := $deploymentConfig.externalService | default $.Values.redis.externalService -}}
+{{- if $externalService -}}
+{{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
+{{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
+{{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $appName }}-external
+  namespace: {{ $ns }}
+  labels:
+    app: {{ $appName }}
+  {{- if $labels }}
+    {{- toYaml $labels | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ $externalService.serviceType | default "LoadBalancer" }}
+  selector:
+    app: {{ $appName }}
+  ports:
+    - name: redis-client
+      port: {{ $externalService.port | default "6379" }}
+      targetPort: redis-client
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
