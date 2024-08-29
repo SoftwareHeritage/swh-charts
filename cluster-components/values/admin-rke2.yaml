@@ -74,8 +74,6 @@ redis:
       externalService:
         enabled: true
         serviceType: LoadBalancer
-        annotations:
-          metallb.universe.tf/allow-shared-ip: internalIP
       redisSecret:
         name: redis-secret
         key: password
