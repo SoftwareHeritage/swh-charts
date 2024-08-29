@@ -1347,7 +1347,7 @@ web:
       inboundEmailConfigurationRef: inboundEmailConfiguration
       provenanceConfigurationRef: provenanceConfiguration
       djangoAppsRef: webDjangoApps
-
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
@@ -1412,6 +1412,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       djangoAppsRef: webDjangoApps
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         search_config:
           metadata_backend: swh-search
@@ -1977,7 +1978,6 @@ storage_backfiller:
       prefix: swh:1:ori
       requestedCpu: 450m
       requestedMemory: 1200Mi
-
 
 alterGraphConfiguration:
   url: http://graph.internal.softwareheritage.org:5009/graph

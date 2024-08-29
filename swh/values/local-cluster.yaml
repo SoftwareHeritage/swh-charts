@@ -514,6 +514,7 @@ web:
       giveConfigurationRef: giveConfiguration
       webhooksConfigurationRef: webhooksConfiguration
       djangoAppsRef: webDjangoApps
+      graphConfigurationRef: graphConfiguration
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       provenanceConfigurationRef: provenanceConfiguration
@@ -846,6 +847,7 @@ cookers:
   storageConfigurationRef: rpcROStorageConfiguration
   celeryConfigurationRef: celeryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
+  # graphConfigurationRef: graphConfiguration
   deployments:
     simple:
       queues:
@@ -1337,9 +1339,8 @@ counters:
     # historyConfigurationRef: historyConfiguration
     replicas: 1
 
-fakeAlterGraphConfiguration:
-  url: http://graph.i.s.o:5009/graph
-  timeout: null
+graphConfiguration:
+  url: http://graph-rpc-python3k:5009/graph
 
 noopObjstorageConfiguration:
   cls: noop
@@ -1372,7 +1373,7 @@ alter:
         - ReadWriteOnce
       size: 1Gi
   inventoryStorageConfigurationRef: rpcROStorageConfiguration
-  graphConfigurationRef: fakeAlterGraphConfiguration
+  graphConfigurationRef: graphConfiguration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
   removalSearches:
     search:

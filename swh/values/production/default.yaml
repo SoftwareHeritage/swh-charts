@@ -28,6 +28,13 @@ keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/
   realm_name: SoftwareHeritage
 
+webGraphConfiguration:
+  url: http://graph.internal.softwareheritage.org:5009/graph
+  max_edges:
+    staff: 0
+    user: 100000
+    anonymous: 1000
+
 memcached:
   enabled: true
   memory: 1024
