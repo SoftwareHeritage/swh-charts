@@ -125,7 +125,7 @@ fakeSyncmailmapsConfiguration:
       secretKeyRef: swhmailmap-postgresql-secret
       secretKeyName: postgres-swhmailmap-password
 
-postgresqlSyncMaskinProxyMailmapsConfiguration:
+postgresqlSyncMaskingProxyMailmapsConfiguration:
   host: maskingproxy-rw
   port: 5432
   db: swhmaskingproxy
@@ -463,7 +463,7 @@ web:
             - "service=syncmaskingmailmaps"
           cron: "0 */1  * * *"
           concurrencyPolicy: Forbid
-          configurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+          configurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
           pgService: true
         refreshSCNStatus:
           enabled: false
@@ -703,7 +703,7 @@ toolbox:
     masking:
       moduleName: storage.proxies.masking
       moduleConfigKey: masking_admin
-      maskingAdminConfigurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+      maskingAdminConfigurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
       # needed for the `swh storage` cli to work...
       storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
   bulkLoad:

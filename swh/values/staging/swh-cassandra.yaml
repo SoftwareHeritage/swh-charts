@@ -733,6 +733,17 @@ web:
           priorityClassName: frontend-rpc-workload
           configurationRef: postgresqlSyncmailmapsConfiguration
           pgService: true
+        syncMaskingMailmaps:
+          enabled: true
+          command:
+            - "sync_masking_mailmaps"
+            - "--perform"
+            - "service=syncmaskingmailmaps"
+          cron: "0 */1  * * *"
+          concurrencyPolicy: Forbid
+          configurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
+          pgService: true
+          priorityClassName: frontend-rpc-workload
       ingress:
         enabled: true
         secretName: swh-web-crt

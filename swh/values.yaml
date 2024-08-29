@@ -864,7 +864,7 @@ web:
       #       - "service=syncmaskingmailmaps"
       #     cron: "0 */1  * * *"
       #     concurrencyPolicy: Forbid
-      #     configurationRef: postgresqlSyncMaskinProxyMailmapsConfiguration
+      #     configurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
       #     pgService: true
       #     # priorityClassName: frontend-rpc-workload
       # gunicorn:
