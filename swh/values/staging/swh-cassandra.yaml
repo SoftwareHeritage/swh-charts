@@ -1470,7 +1470,7 @@ counters:
     gunicorn:
       threads: 1
       workers: 1
-      timeout: 10
+      timeout: 30
     replicas: 1
     # autoScaling:
     #   minReplicaCount: 2
