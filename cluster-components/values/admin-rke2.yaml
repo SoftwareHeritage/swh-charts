@@ -18,6 +18,9 @@ metallb:
     - ip: 192.168.50.139/32
       serviceAllocation:
         namespace: ingress-nginx
+    - ip: 192.168.50.138/32
+      serviceAllocation:
+        namespace: sccache
 
 blackboxExporter:
   enabled: true
