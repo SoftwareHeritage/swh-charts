@@ -53,3 +53,34 @@ dockerCache:
     ghcr.io:
       enabled: true
       storageRequest: 10Gi
+
+redis:
+  enabled: true
+  deployments:
+    sccache:
+      redisExporter:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+      externalService:
+        enabled: true
+        serviceType: LoadBalancer
+      redisSecret:
+        name: redis-secret
+        key: password
+      namespace: sccache
+      extraConfig:
+        enabled: true
+        data: |
+          # Disable data persistence
+          save ""
+          appendonly no
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
