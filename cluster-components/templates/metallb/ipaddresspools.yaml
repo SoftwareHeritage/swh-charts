@@ -5,6 +5,8 @@
     .Values.clusterName -}}
 {{- $ipAddressPoolName := print $cluster_name "-metallb-pool" -}}
 {{- $l2AdvertisementName := "l2-advertisement" -}}
+{{- $myAddressPoolName := $ipAddressPoolName -}}
+{{- $myAdvertisementName := $l2AdvertisementName -}}
 {{- $ipAddressPools :=
   required
     (print "IP address pools configuration key <.Values.metallb.ipAddressPools> required")
@@ -19,21 +21,21 @@
     $ipAddressPool.suffixName -}}
 {{- $myAddressPoolName = print $ipAddressPoolName "-" $suffixName -}}
 {{- $myAdvertisementName = print $l2AdvertisementName "-" $suffixName -}}
-{{ end }}
+{{- end -}}
 ---
 apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
-  name: {{ $myAdvertisementName }}
+  name: {{ $myAdvertisementName | quote }}
   namespace: metallb
 spec:
   ipAddressPools:
-  - {{ $myAddressPoolName }}
+  - {{ $myAddressPoolName | quote }}
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
-  name: {{ $myAddressPoolName }}
+  name: {{ $myAddressPoolName | quote }}
   namespace: metallb
 spec:
   addresses:
