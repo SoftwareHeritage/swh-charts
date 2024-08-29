@@ -723,7 +723,7 @@ web:
           command:
             - "refresh_savecodenow_statuses"
         syncMailmaps:
-          enabled: true
+          enabled: false
           command:
             - "sync_mailmaps"
             - "--perform"
