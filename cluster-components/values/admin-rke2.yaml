@@ -18,11 +18,13 @@ metallb:
     - suffixName: nginx
       ip: 192.168.50.139/32
       serviceAllocation:
-        namespace: ingress-nginx
+        namespaces:
+          - ingress-nginx
     - suffixName: sccache
       ip: 192.168.50.138/32
       serviceAllocation:
-        namespace: sccache
+        namespaces:
+          - sccache
 
 blackboxExporter:
   enabled: true
