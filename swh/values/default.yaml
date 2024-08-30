@@ -6,6 +6,10 @@ prometheus:
 sentry:
   enabled: true
 
+graphGrpcConfiguration:
+  cls: graph
+  url: graph.internal.softwareheritage.org:50091
+
 defaultLoggingConfig:
   version: 1
   handlers:
