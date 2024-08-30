@@ -274,6 +274,7 @@ webDjangoApps:
   - swh.web.save_code_now
   - swh.web.save_origin_webhooks
   - swh.web.vault
+  - swh.web.provenance
 
 remoteSearchConfiguration:
   cls: remote
