@@ -1506,6 +1506,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
+      djangoAppsRef: webDjangoApps
 
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
@@ -1516,19 +1517,6 @@ web:
         content_display_max_size: 5242880
         history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
-        swh_extra_django_apps:
-          - swh.web.add_forge_now
-          - swh.web.archive_coverage
-          - swh.web.badges
-          - swh.web.banners
-          - swh.web.deposit
-          - swh.web.inbound_email
-          - swh.web.jslicenses
-          - swh.web.mailmap
-          - swh.web.metrics
-          - swh.web.save_code_now
-          - swh.web.save_origin_webhooks
-          - swh.web.vault
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
@@ -1582,25 +1570,13 @@ web:
       addForgeNowConfigurationRef: addForgeNowConfiguration
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
+      djangoAppsRef: webDjangoApps
       extraConfig:
         search_config:
           metadata_backend: swh-search
         content_display_max_size: 5242880
         history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
-        swh_extra_django_apps:
-          - swh.web.add_forge_now
-          - swh.web.archive_coverage
-          - swh.web.badges
-          - swh.web.banners
-          - swh.web.deposit
-          - swh.web.inbound_email
-          - swh.web.jslicenses
-          - swh.web.mailmap
-          - swh.web.metrics
-          - swh.web.save_code_now
-          - swh.web.save_origin_webhooks
-          - swh.web.vault
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
@@ -1661,6 +1637,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
+      djangoAppsRef: webDjangoApps
 
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
@@ -1671,19 +1648,6 @@ web:
         content_display_max_size: 5242880
         history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
-        swh_extra_django_apps:
-          - swh.web.add_forge_now
-          - swh.web.archive_coverage
-          - swh.web.badges
-          - swh.web.banners
-          - swh.web.deposit
-          - swh.web.inbound_email
-          - swh.web.jslicenses
-          - swh.web.mailmap
-          - swh.web.metrics
-          - swh.web.save_code_now
-          - swh.web.save_origin_webhooks
-          - swh.web.vault
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}

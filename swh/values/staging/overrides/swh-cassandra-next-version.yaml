@@ -687,15 +687,6 @@ web:
               - 192.168.101.0/24
 
     webhooks:
-      databaseConfigurationRef: postgresqlWebConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
-      schedulerConfigurationRef: remoteSchedulerConfiguration
-      vaultConfigurationRef: remoteVaultConfiguration
-      indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
-      countersConfigurationRef: remoteCountersConfiguration
-      storageConfigurationRef: remoteROPostgresqlStorageConfiguration
-      webhooksConfigurationRef: webhooksConfiguration
-
       enabled: false
 
 podPriority:

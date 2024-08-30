@@ -86,7 +86,7 @@ data:
     {{- if .configuration.databaseConfigurationRef }}
     production_db:
     {{- include "django.postgresql" (dict "configurationRef" .configuration.databaseConfigurationRef
-                                          "Values" .Values) | nindent 4 -}}
+                                          "Values" .Values) | nindent 4 }}
     {{ end }}
     {{- if $.Values.web.sentry.enabled }}
     client_config:
@@ -101,6 +101,11 @@ data:
                                              "configurationRef" .configuration.keycloakConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{ end }}
+    {{- if .configuration.djangoAppsRef }}
+    {{- $djangoApps := get .Values .configuration.djangoAppsRef -}}
+    swh_extra_django_apps:
+      {{- toYaml $djangoApps | nindent 4 }}
+    {{- end }}
     {{- if .configuration.extraConfig -}}
     {{ toYaml .configuration.extraConfig | nindent 4 }}
     {{- end }}

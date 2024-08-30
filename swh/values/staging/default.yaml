@@ -260,6 +260,21 @@ djangoDepositConfiguration:
       secretKeyRef: swh-deposit-django-secret
       secretKeyName: deposit-django-secret-key
 
+# List of django apps the webapp must declare
+webDjangoApps:
+  - swh.web.add_forge_now
+  - swh.web.archive_coverage
+  - swh.web.badges
+  - swh.web.banners
+  - swh.web.deposit
+  - swh.web.inbound_email
+  - swh.web.jslicenses
+  - swh.web.mailmap
+  - swh.web.metrics
+  - swh.web.save_code_now
+  - swh.web.save_origin_webhooks
+  - swh.web.vault
+
 remoteSearchConfiguration:
   cls: remote
   url: http://search-rpc-ingress

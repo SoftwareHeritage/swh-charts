@@ -441,6 +441,20 @@ provenanceConfiguration:
   cls: remote
   url: http://provenance-test:5014
 
+webDjangoApps:
+  - swh.web.add_forge_now
+  - swh.web.archive_coverage
+  - swh.web.badges
+  - swh.web.banners
+  - swh.web.deposit
+  - swh.web.inbound_email
+  - swh.web.jslicenses
+  - swh.web.mailmap
+  - swh.web.metrics
+  - swh.web.save_code_now
+  - swh.web.save_origin_webhooks
+  - swh.web.vault
+
 web:
   enabled: false
   deployments:
@@ -493,6 +507,7 @@ web:
       depositConfigurationRef: depositApiConfiguration
       giveConfigurationRef: giveConfiguration
       webhooksConfigurationRef: webhooksConfiguration
+      djangoAppsRef: webDjangoApps
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       provenanceConfigurationRef: provenanceConfiguration
@@ -540,19 +555,6 @@ web:
         history_counters_url: http://counters-rpc:5011/counters_history/history.json
         add_forge_now:
           email_address: add-forge-now@webapp.s.s.n
-        swh_extra_django_apps:
-        - swh.web.add_forge_now
-        - swh.web.archive_coverage
-        - swh.web.badges
-        - swh.web.banners
-        - swh.web.deposit
-        - swh.web.inbound_email
-        - swh.web.jslicenses
-        - swh.web.mailmap
-        - swh.web.metrics
-        - swh.web.save_code_now
-        - swh.web.save_origin_webhooks
-        - swh.web.vault
         matomo: {}
         deposit:
           private_api_url: "http://deposit-rpc/1/private/"
