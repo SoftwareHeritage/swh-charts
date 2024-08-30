@@ -1,0 +1,11 @@
+{{ if .Values.provenance.enabled -}}
+{{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $argsDict := dict "serviceType" (print "provenance-" $provenanceType)
+                      "configuration" $deploymentConfig
+                      "Values" $.Values -}}
+{{ include "swh.provenance.configmap" $argsDict }}
+{{ include "swh.provenance.gunicorn.logging" $argsDict }}
+{{- end -}}
+{{ end -}}
+{{- end -}}

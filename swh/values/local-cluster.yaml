@@ -1413,3 +1413,19 @@ objstorageReplayer:
       journalClientOverrides:
         auto_offset_reset: earliest
         batch_size: 10
+
+fakeGraphConfiguration:
+  cls: graph
+  url: graph.i.s.o:50091
+
+provenance:
+  enabled: false
+  deployments:
+    test:
+      enabled: true
+      graphConfigurationRef: fakeGraphConfiguration
+      replicas: 1
+      # gunicorn:
+      #   workers: 4
+      #   threads: 1
+      #   timeout: 60

@@ -1,0 +1,15 @@
+{{ if .Values.provenance.enabled -}}
+{{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
+{{- if and (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled")) -}}
+{{- $autoScaling := get $deploymentConfig "autoScaling" | default $.Values.provenance.autoScaling -}}
+{{- if $autoScaling -}}
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn
+  (dict "serviceType"   ( print "provenance-" $provenanceType )
+        "configuration" $autoScaling
+        "Values"        $.Values) -}}
+{{ end }}
+{{ end }}
+{{ end }}
+{{- end -}}

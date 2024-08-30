@@ -1848,3 +1848,26 @@ storage_backfiller:
   #     prefix: swh:1:cnt
   #     requestedCpu: 450m
   #     requestedMemory: 1200Mi
+
+# graphConfiguration:
+#   graph:
+#     url: http://<graph-service-url>
+
+provenance:
+  enabled: false
+  # Default service port (overridable per instance)
+  port: 5014
+  priorityClassName: frontend-rpc
+  sentry:
+    enabled: false
+    secretKeyRef: common-secrets
+    secretKeyName: provenance-sentry-dsn
+  deployments: {}
+    # instance:
+    #   enabled: false
+    #   # port: 5014
+    #   graphConfigurationRef: graphConfiguration
+    #   hosts: []
+    #   ingress:
+    #     enabled: true
+    #     endpoints: []

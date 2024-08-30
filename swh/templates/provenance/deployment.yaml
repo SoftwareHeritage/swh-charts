@@ -1,0 +1,186 @@
+{{ if .Values.provenance.enabled -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{ range $provenanceType, $provenanceConfig := .Values.provenance.deployments }}
+{{- if or (not (hasKey $provenanceConfig "enabled")) (get $provenanceConfig "enabled") -}}
+{{- $serviceType := ( print "provenance-" $provenanceType ) -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $provenanceConfig
+                            "Values" $.Values -}}
+{{- $configChecksum := include "swh.provenance.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.provenance.gunicorn.logging" $configArgsDict | sha256sum -}}
+{{- $securityContext := $provenanceConfig.securityContext | default $.Values.provenance.securityContext -}}
+{{ $gunicornConfig := $provenanceConfig.gunicorn | default $.Values.provenance.gunicorn | default
+  (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $provenanceConfig.replicas -}}
+  replicas: {{ $provenanceConfig.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
+        checksum/config-utils: {{ $configUtilsChecksum }}
+    spec:
+      {{- if $securityContext }}
+      securityContext:
+        {{- toYaml $securityContext | nindent 8 }}
+      {{- end }}
+      {{- $nodeSelector := $provenanceConfig.nodeSelector | default $.Values.provenance.nodeSelector | default dict -}}
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- $affinity := $provenanceConfig.affinity | default $.Values.provenance.affinity | default dict -}}
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+
+      {{- if and $.Values.podPriority.enabled $.Values.provenance.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.provenance.priorityClassName }}
+      {{- end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $provenanceConfig
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      containers:
+        - name: {{ $serviceType }}
+          resources:
+            requests:
+              memory: {{ $provenanceConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $provenanceConfig.requestedCpu | default "500m" }}
+            {{- if or $provenanceConfig.limitedMemory $provenanceConfig.limitedCpu }}
+            limits:
+              {{- if $provenanceConfig.limitedMemory }}
+              memory: {{ $provenanceConfig.limitedMemory }}
+              {{- end }}
+              {{- if $provenanceConfig.limitedCpu }}
+              cpu: {{ $provenanceConfig.limitedCpu }}
+              {{- end }}
+            {{- end }}
+          image: {{ $.Values.swh_provenance_image }}:{{ $.Values.swh_provenance_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $provenanceConfig.port | default $.Values.provenance.port }}
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            {{ if $gunicornConfig -}}
+            - name: WORKERS
+              value: {{ $gunicornConfig.workers | quote }}
+            - name: THREADS
+              value: {{ $gunicornConfig.threads | quote }}
+            - name: TIMEOUT
+              value: {{ $gunicornConfig.timeout | quote }}
+            {{ end -}}
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:{{ $serviceType }}
+            - name: STATSD_SERVICE_TYPE
+              value: {{ $serviceType }}
+            - name: SWH_LOG_LEVEL
+              value: {{ $provenanceConfig.logLevel | default $.Values.provenance.logLevel | default "INFO" | quote }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
+          {{- if $.Values.provenance.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.provenance
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.provenance.sentry.secretKeyRef }}
+                  key: {{ $.Values.provenance.sentry.secretKeyName }}
+                  # 'name' secret should exist & include key
+                  # if the setting doesn't exist, sentry pushes will be disabled
+                  optional: true
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
+          {{- range $volumeName, $volumeConfig := $provenanceConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
+          {{ end }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+      {{- range $volumeName, $volumeConfig := $provenanceConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+      {{ end }}
+{{ end }}
+{{ end -}}
+{{- end -}}

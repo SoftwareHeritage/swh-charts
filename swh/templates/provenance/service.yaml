@@ -1,0 +1,12 @@
+{{ if .Values.provenance.enabled -}}
+{{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if not (hasKey $deploymentConfig "port") }}
+{{- $deploymentConfig := set $deploymentConfig "port" $.Values.provenance.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "provenance-" $provenanceType )
+                                "configuration" $deploymentConfig
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}

@@ -1,0 +1,32 @@
+{{/*
+   * Create a provenance configmap for service .serviceType
+   */}}
+{{ define "swh.provenance.configmap" }}
+{{- $graphConfigurationRef := required (print "<.configuration.graphConfigurationRef> key is mandatory" ) .configuration.graphConfigurationRef -}}
+{{- $graphConfiguration := get .Values $graphConfigurationRef -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Values.namespace }}
+  name: {{ .serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    provenance:
+      {{- toYaml $graphConfiguration | nindent 6 -}}
+{{- end -}}
+
+{{/*
+   * Create a provenance gunicorn logging json config file for service
+   * .serviceType
+   */}}
+{{ define "swh.provenance.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.provenance.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.provenance.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values" .Values) -}}
+{{- end }}
+
