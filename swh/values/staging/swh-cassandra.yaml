@@ -693,6 +693,10 @@ storage:
         threads: 4
         workers: 8
 
+provenanceConfiguration:
+  cls: remote
+  url: http://provenance-rpc:5014
+
 web:
   enabled: true
   logLevel: WARN
@@ -791,6 +795,7 @@ web:
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
+      provenanceConfigurationRef: provenanceConfiguration
 
       extraConfig:
         keycloak:
@@ -2119,3 +2124,13 @@ alter:
           recipient_keys:
             Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
+
+provenance:
+  enabled: true
+  deployments:
+    rpc:
+      graphConfigurationRef: graphGrpcConfiguration
+      gunicorn:
+        workers: 4
+        threads: 1
+      replicas: 2
