@@ -330,6 +330,10 @@ rpcGunicornLoggingConfig: {}
 #   server_url: https://my.keycloak.instance/auth/
 #   realm_name: myrealm
 
+# provenanceConfiguration:
+#   cls: remote
+#   url: http://<provenance-service-url>
+
 # countersConfiguration:
 #   cls: redis
 #   host: localhost:6379
@@ -918,6 +922,7 @@ web:
       # giveConfigurationRef: giveConfiguration
       # throttlingConfigurationRef: throttlingConfiguration
       # keycloakConfigurationRef: keycloakConfiguration
+      # provenanceConfigurationRef: provenanceConfiguration
       # extraConfig:
       #   debug: false
       #   history_counters_url: http://elastichost.swh.org:5011/counters_history/history.json

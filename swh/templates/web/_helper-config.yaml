@@ -33,6 +33,11 @@ data:
                                                "configurationRef" .configuration.searchConfigurationRef
                                                "Values" .Values) | nindent 4 }}
     {{- end -}}
+    {{- if .configuration.provenanceConfigurationRef }}
+      {{- include "swh.service.fromYaml" (dict "service" "provenance"
+                                               "configurationRef" .configuration.provenanceConfigurationRef
+                                               "Values" .Values) | nindent 4 }}
+    {{- end -}}
     {{- if .configuration.schedulerConfigurationRef }}
       {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                                "configurationRef" .configuration.schedulerConfigurationRef

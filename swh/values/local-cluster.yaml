@@ -437,6 +437,10 @@ webThrottling:
       limiter_rate:
         default: 120/h
 
+provenanceConfiguration:
+  cls: remote
+  url: http://provenance-test:5014
+
 web:
   enabled: false
   deployments:
@@ -491,6 +495,7 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
+      provenanceConfigurationRef: provenanceConfiguration
       ingress:
         enabled: true
         className: nginx
