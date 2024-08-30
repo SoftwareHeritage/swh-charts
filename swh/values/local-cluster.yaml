@@ -713,6 +713,9 @@ toolbox:
       maskingAdminConfigurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
       # needed for the `swh storage` cli to work...
       storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+    web:
+      webDbConfigurationRef: postgresqlWebConfiguration
+
   bulkLoad:
     # The name of the scheduler configuration entry in the toolbox configs
     schedulerConfigurationRef: scheduler
