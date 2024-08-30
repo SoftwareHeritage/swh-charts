@@ -1890,6 +1890,9 @@ graph:
   # graphPathConfigurationRef: graphPathConfiguration
   priorityClassName: frontend-rpc
   logLevel: INFO
+  # [optional] Graph image version to use. By default, use the one declared in
+  # /values-swh-application-version.yaml. This can be overridden per instance
+  # imageVersion: 20240830.1
   sentry:
     enabled: false
     # name of the secret containing the $secretKeyName value
@@ -1909,14 +1912,25 @@ graph:
   # Whether to do extra actions on the backend used by the graph
   # Can be overridden per instance
   deployments:
-    # # Add as many instances as possible (with various size)
+    # Add as many instances as possible (with various size)
     # rpc-minimal:
     #   type: rpc
     #   # port: 5009
+    #   # Whether to trigger the dataset retrieval and the volume configuration
+    #   preparationJobs: false
+    #   # Whether to start the rpc service (once the dataset was prepared and
+    #   # the volumes configured)
+    #   startService: true
+    #   # Whether to clean up the storage volumes (once the rpc got stopped)
+    #   cleanup: false
     #   # loglevel can be overriden per instance
     #   # logLevel: WARN
     #   # Don't configure the replicas if autoscaling is configured and vice-versa
     #   # replicas: 1
+    #   dataset:
+    #     downloadMethod: s3  # `swh graph download` method, rsync, scp...
+    #     name: 2021-03-23-popular-3k-python
+    #     # url: ""
     #   requestedCpu: 50m
     #   requestedMemory: 100Mi
     #   # autoScaling:
@@ -1943,13 +1957,3 @@ graph:
     #       default:
     #         paths:
     #           - path: /
-
-    # grpc-minimal:
-    #   type: grpc
-    #   # port: 50091
-    #   backend:
-    #     # When true, initalize the graph, leave it empty to do nothing
-    #     # This is especially useful for test environments
-    #     initialize:
-    #       dataset: test-sample
-

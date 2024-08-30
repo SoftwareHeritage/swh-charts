@@ -1,0 +1,91 @@
+{{ if .Values.graph.enabled -}}
+{{ range $graphType, $graphConfig := .Values.graph.deployments }}
+{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- $serviceType := print "graph-" $graphType -}}
+{{- $configArgsDict := dict "serviceType" $serviceType
+                            "configuration" $graphConfig
+                            "Values" $.Values -}}
+{{- $initializeGraphDataset := and $graphConfig.fetchDataset $graphConfig.dataset | default false -}}
+{{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
+{{- $graphPath := get $.Values $graphPathRef -}}
+{{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
+{{- $jobName := print $serviceType "-job-fetch-dataset" -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ $jobName }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+    spec:
+      restartPolicy: Never
+      {{- $affinity := $graphConfig.affinity | default $.Values.graph.affinity | default dict -}}
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+      {{- $nodeSelector := $graphConfig.nodeSelector | default $.Values.graph.nodeSelector | default dict -}}
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $.Values.graph.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.graph.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+            (dict "deploymentConfig" $graphConfig
+                  "Values" $.Values ) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      containers:
+        {{- if $initializeGraphDataset }}
+        {{ include "swh.initializeGraphDataset" (dict "Values" $.Values
+                                                      "imagePrefixName" "swh_graph_image"
+                                                      "graphName" $graphName
+                                                      "graphPath" $graphPath
+                                                      "config" $graphConfig.dataset
+                                                      "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- end }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: backend-utils
+        configMap:
+          name: backend-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+      {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+      {{ end }}
+{{ end }}
+{{ end }}
+{{- end }}

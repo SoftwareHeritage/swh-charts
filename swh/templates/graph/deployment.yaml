@@ -11,10 +11,10 @@
 {{- $securityContext := $graphConfig.securityContext | default $.Values.graph.securityContext -}}
 {{- $type := $graphConfig.type -}}
 {{- $port := $graphConfig.port | default (ternary $.Values.graph.rpcPort $.Values.graph.grpcPort (eq $type "rpc")) -}}
-{{- $initializeBackendConfig := and $graphConfig.backend $graphConfig.backend.initialize | default false -}}
 {{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
 {{- $graphPath := get $.Values $graphPathRef -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
+{{- $graphImageVersion := get $graphConfig "imageVersion" | default $.Values.graph.imageVersion | default $.Values.swh_graph_image_version -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -78,14 +78,25 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{- if $initializeBackendConfig }}
-        {{ include "swh.initializeGraphBackend" (dict "Values" $.Values
-                                                      "imagePrefixName" "swh_graph_image"
-                                                      "graphName" $graphName
-                                                      "graphPath" $graphPath
-                                                      "config" $initializeBackendConfig
-                                                      "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
-        {{- end }}
+        - name: wait-for-dataset
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/wait-for-dataset.sh
+          env:
+            - name: DATASET_LOCATION
+              value: {{ $graphPath }}
+            - name: PERIOD
+              value: "3"
+          volumeMounts:
+          - name: backend-utils
+            mountPath: /entrypoints
+            readOnly: true
+          {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
+          {{ end }}
       containers:
         - name: {{ $serviceType }}
           resources:
@@ -101,7 +112,7 @@ spec:
               cpu: {{ $graphConfig.limitedCpu }}
               {{- end }}
             {{- end }}
-          image: {{ $.Values.swh_graph_image }}:{{ $.Values.swh_graph_image_version }}
+          image: {{ $.Values.swh_graph_image }}:{{ $graphImageVersion }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ $port }}

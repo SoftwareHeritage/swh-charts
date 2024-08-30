@@ -1458,7 +1458,7 @@ graphExamplePathConfiguration: /srv/graph/test/compressed
 graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
 
 graph:
-  enabled: false
+  enabled: true
   # Test dataset uses the "example" name
   deployments:
     # rpc graph with sample dataset (cloned out of swh.graph)
@@ -1468,9 +1468,16 @@ graph:
       graphName: example
       graphConfigurationRef: grpcRustGraphConfiguration
       graphPathConfigurationRef: graphExamplePathConfiguration
-      backend:
-        initialize:
-          dataset: test
+      # Whether to configure the volume automatically. We may want to disable
+      # this for the production workload as it is a complex one
+      # (this is off for local-cluster)
+      prepareVolumes: false
+      # Whether to fetch the dataset
+      fetchDataset: true
+      dataset:
+        downloadMethod: git
+        name: test
+        # url: ""
       # hosts:
       #   - graph.local
       # ingress:
@@ -1484,6 +1491,8 @@ graph:
       #     default:
       #       paths:
       #         - path: /
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker2
       extraVolumes:
         graph-example:
           mountPath: /srv/graph
@@ -1511,11 +1520,25 @@ graph:
       enabled: true
       type: rpc
       port: 5009
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker3
+      # Whether to configure the volume automatically. We may want to disable
+      # this for the production workload as it is a complex one
+      # (this is off for local-cluster)
+      # Whether to fetch the dataset
+      fetchDataset: true
+      dataset:
+        downloadMethod: s3
+        name: 2021-03-23-popular-3k-python
+      # Whether to start the rpc service (once the dataset was prepared and
+      # the volumes configured)
+      startService: true
+      # Whether to clean up the storage volumes (once the rpc got stopped,
+      # `startService` to false)
+      cleanup: false
       graphConfigurationRef: grpcRustGraphConfiguration
       graphPathConfigurationRef: graphPython3kPathConfiguration
-      backend:
-        initialize:
-          dataset: 2021-03-23-popular-3k-python
+      prepareVolumes: false
       extraVolumes:
         graph-python3k:
           mountPath: /srv/graph

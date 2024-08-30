@@ -5,16 +5,23 @@ metadata:
   name: backend-utils
   namespace: {{ $.Values.namespace }}
 data:
-  initialize-graph-backend.sh: |
+  wait-for-dataset.sh: |
     #!/usr/bin/env bash
 
-    set -eux
+    WITNESS_FILE="${DATASET_LOCATION}/xxx-graph-is-initialized-xxx"
 
-    # Ensure the dataset location if present is not empty
-    rmdir ${DATASET_LOCATION} 2>/dev/null || echo ""
+    while [ ! -f ${WITNESS_FILE} ]; do
+        echo "${WITNESS_FILE} not present, wait for it to start the graph..."
+        sleep $PERIOD
+    done
+
+  fetch-graph-dataset.sh: |
+    #!/usr/bin/env bash
+
+    WITNESS_FILE=${DATASET_LOCATION}/xxx-graph-is-initialized-xxx
 
     # Uses internally the environment variable SWH_CONFIG_FILENAME
-    [ -d ${DATASET_LOCATION} ] && \
+    [ -f ${WITNESS_FILE} ] && \
         echo "Dataset <${DATASET_NAME}> already present. Skip." && \
         exit 0
 
@@ -31,9 +38,12 @@ data:
             # Actual copy of the test dataset
             cp -r /tmp/swh-graph/swh/graph/example_dataset/compressed \
                   ${DATASET_LOCATION}
+
+            # Make explicit the graph is ready
+            touch ${WITNESS_FILE}
         ;;
         *)
-            # Otherwise, retrieve the dataset locally
+            # Otherwise, download the dataset locally
             swh graph download \
               --name ${DATASET_NAME} \
               ${DATASET_LOCATION}
@@ -42,6 +52,9 @@ data:
             # 2024). This should not be necessary for most recent graph
             # datasets
             swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+
+            # Make explicit the graph is ready
+            touch ${WITNESS_FILE}
         ;;
     esac
 
