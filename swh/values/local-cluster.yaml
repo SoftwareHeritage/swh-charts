@@ -1458,7 +1458,7 @@ graphExamplePathConfiguration: /srv/graph/test/compressed
 graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
 
 graph:
-  enabled: true
+  enabled: false
   # Test dataset uses the "example" name
   deployments:
     # rpc graph with sample dataset (cloned out of swh.graph)
