@@ -1002,6 +1002,6 @@ cassandraChecks:
 provenance:
   enabled: true
   deployments:
-    rpc:
+    graph-granet:
       graphConfigurationRef: graphGrpcConfiguration
       replicas: 1

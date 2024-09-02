@@ -2,10 +2,25 @@
 {{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") }}
 {{- if and (hasKey $deploymentConfig "ingress") $deploymentConfig.ingress.enabled -}}
-{{- include "swh.ingress" (dict "serviceType"   ( print "provenance-" $provenanceType )
+{{- $provenanceType := ( print "provenance-" $provenanceType ) -}}
+{{- include "swh.ingress" (dict "serviceType"   $provenanceType
                                 "configuration" $deploymentConfig
                                 "Values"        $.Values) -}}
 {{- end -}}
+{{- if $deploymentConfig.extraIngresses -}}
+{{ $extraNameLabelCtr := 0 }}
+{{ range $extraIngressConfig := $deploymentConfig.extraIngresses }}
+{{ $extraNameLabelCtr = add $extraNameLabelCtr 1 }}
+{{- $mergedIngressConfig :=
+  mustMergeOverwrite (omit $deploymentConfig "extraIngresses" "ingress")
+                     (dict "ingress" (mustMergeOverwrite $deploymentConfig.ingress $extraIngressConfig)) -}}
+{{- include "swh.ingress" (dict "serviceType"    $provenanceType
+                                "configuration"  $mergedIngressConfig
+                                "extraNameLabel" ( print "extra-" $extraNameLabelCtr )
+                                "Values"         $.Values) -}}
+{{- end -}}
+{{- end -}}
+
 {{ end -}}
 {{- end -}}
 {{- end -}}

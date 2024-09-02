@@ -695,7 +695,7 @@ storage:
 
 provenanceConfiguration:
   cls: remote
-  url: http://provenance-rpc:5014
+  url: http://webapp-provenance-ingress
 
 web:
   enabled: true
@@ -2128,9 +2128,26 @@ alter:
 provenance:
   enabled: true
   deployments:
-    rpc:
+    graph-granet:
       graphConfigurationRef: graphGrpcConfiguration
+      replicas: 2
       gunicorn:
         workers: 4
         threads: 1
-      replicas: 2
+      hosts:
+        - webapp-provenance-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      extraIngresses:
+        - hosts:
+          - provenance-ingress.internal.staging.swh.network
+          whitelistSourceRangeRef: stagingNetworkRanges

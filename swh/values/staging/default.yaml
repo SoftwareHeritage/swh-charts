@@ -541,6 +541,9 @@ externalServices:
     counters:
       internalName: counters-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    provenance:
+      internalName: webapp-provenance-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:
