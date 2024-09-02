@@ -106,6 +106,18 @@ postgresqlSyncmailmapsConfiguration:
       secretKeyRef: swh-postgresql-syncmailmap-secret
       secretKeyName: postgres-syncmailmap-password
 
+postgresqlSyncMaskingProxyMailmapsConfiguration:
+  cls: postgresql
+  host: postgresql-masking-rw.internal.softwareheritage.org
+  port: '5432'
+  db: swh-masking
+  user: swhmailmap
+  pass: ${PGPASSWORD}
+  secrets:
+    PGPASSWORD:
+      secretKeyRef: swh-postgresql-syncmailmap-secret
+      secretKeyName: postgres-syncmailmap-password
+
 postgresqlWebConfiguration:
   host: postgresql-web-rw.internal.softwareheritage.org
   port: 5432
@@ -1432,15 +1444,15 @@ web:
             - "refresh_savecodenow_statuses"
           concurrencyPolicy: Forbid
           priorityClassName: frontend-rpc-workload
-        syncMailmaps:
+        syncMaskingMailmaps:
           enabled: true
-          cron: "15 * * * *"
           command:
-            - "sync_mailmaps"
+            - "sync_masking_mailmaps"
             - "--perform"
-            - "service=syncmailmaps"
+            - "service=syncmaskingmailmaps"
+          cron: "15 *  * * *"
           concurrencyPolicy: Forbid
-          configurationRef: postgresqlSyncmailmapsConfiguration
+          configurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
           priorityClassName: frontend-rpc-workload
           pgService: true
       hosts:
