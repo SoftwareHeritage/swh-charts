@@ -51,7 +51,9 @@ data:
             # Unconditionally reindex graph dataset (for those anterior to
             # 2024). This should not be necessary for most recent graph
             # datasets
-            swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+            # 02/09/2024: It's apparently no longer required since the s3
+            # datasets (retrieved here) were reindexed.
+            # swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
 
             # Make explicit the graph is ready
             touch ${WITNESS_FILE}
