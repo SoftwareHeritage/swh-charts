@@ -1463,6 +1463,7 @@ graph:
   deployments:
     # rpc graph with sample dataset (cloned out of swh.graph)
     rpc-example:
+      enabled: true
       type: rpc
       port: 5009
       graphName: example
@@ -1478,6 +1479,9 @@ graph:
         downloadMethod: git
         name: test
         # url: ""
+      # Whether to start the rpc service (once the dataset was prepared and
+      # the volumes configured)
+      startService: false
       # hosts:
       #   - graph.local
       # ingress:
@@ -1517,7 +1521,7 @@ graph:
                     - local-cluster-worker2
     # Instance to run the graph with the dataset python3k
     rpc-python3k:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       nodeSelector:

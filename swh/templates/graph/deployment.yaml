@@ -2,7 +2,8 @@
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- $backendUtilsChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
 {{ range $graphType, $graphConfig := .Values.graph.deployments }}
-{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- if and (or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled"))
+           (or (not (hasKey $graphConfig "startService")) (get $graphConfig "startService")) -}}
 {{- $serviceType := ( print "graph-" $graphType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $graphConfig
