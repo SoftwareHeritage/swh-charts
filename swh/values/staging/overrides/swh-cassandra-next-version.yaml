@@ -1001,3 +1001,7 @@ provenance:
     graph-granet:
       graphConfigurationRef: graphGrpcConfiguration
       replicas: 1
+      extraIngresses:
+        - hosts:
+          - provenance-ingress-next-version.internal.staging.swh.network
+          whitelistSourceRangeRef: stagingNetworkRanges
