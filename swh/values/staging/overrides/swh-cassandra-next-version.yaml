@@ -621,10 +621,6 @@ storage:
 
 webhooksConfiguration: {}
 
-provenanceConfiguration:
-  cls: remote
-  url: http://provenance-rpc:5014
-
 web:
   deployments:
     cassandra:
