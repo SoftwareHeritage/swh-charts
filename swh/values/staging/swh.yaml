@@ -407,6 +407,8 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       directory-hashes:
+        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
+        enabled: false
         configName: storage-hashes-directory
         object: directory
         replicas: 1
