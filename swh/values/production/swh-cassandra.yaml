@@ -273,6 +273,10 @@ storageReplayer:
 
 storage:
   enabled: true
+  gunicorn:
+    workers: 2
+    threads: 4
+    timeout: 3600
   deployments:
     # public facing instance (behind authentication)
     cassandra-readonly:

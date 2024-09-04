@@ -12,6 +12,9 @@
 {{- $checkBackendVersion := (and $storageConfig.backend $storageConfig.backend.check) | default $.Values.storage.backend.check | default false -}}
 {{- $migrateBackend := (and $storageConfig.backend $storageConfig.backend.migrate) | default $.Values.storage.backend.migrate | default false -}}
 {{- $initializeBackendConfig := (and $storageConfig.backend $storageConfig.backend.initialize) | default $.Values.storage.backend.initialize | default false -}}
+{{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                 (dict "configuration" $storageConfig.gunicorn
+                                       "defaultConfiguration" $.Values.storage.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -128,14 +131,12 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if $storageConfig.gunicorn -}}
-            - name: THREADS
-              value: {{ $storageConfig.gunicorn.threads | default 5 | quote }}
             - name: WORKERS
-              value: {{ $storageConfig.gunicorn.workers | default 2 | quote }}
+              value: {{ $gunicornConfig.workers | quote }}
+            - name: THREADS
+              value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
-              value: {{ $storageConfig.gunicorn.timeout | default 60 | quote }}
-            {{ end -}}
+              value: {{ $gunicornConfig.timeout | quote }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
