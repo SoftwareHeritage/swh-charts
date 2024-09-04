@@ -392,9 +392,6 @@ web:
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
       extraConfig:
-        keycloak:
-          server_url: https://auth.softwareheritage.org/auth/
-          realm_name: SoftwareHeritage
         search_config:
           metadata_backend: swh-search
         inbound_email:

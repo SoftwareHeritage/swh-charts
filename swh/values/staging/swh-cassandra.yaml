@@ -798,9 +798,6 @@ web:
       provenanceConfigurationRef: provenanceConfiguration
 
       extraConfig:
-        keycloak:
-          server_url: https://auth.softwareheritage.org/auth/
-          realm_name: SoftwareHeritageStaging
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
           metadata_backend: swh-search
@@ -866,9 +863,6 @@ web:
       djangoAppsRef: webDjangoApps
 
       extraConfig:
-        keycloak:
-          server_url: https://auth.softwareheritage.org/auth/
-          realm_name: SoftwareHeritageStaging
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
           metadata_backend: swh-search
