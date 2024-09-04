@@ -18,8 +18,9 @@ data:
       - {{ $host }}
       {{- end }}
       - ${POD_IP}
-    {{- if and .Values.environment (eq .Values.environment "production") }}
-    production_server_names:
+    {{- if and .Values.environment (or (eq .Values.environment "production")
+                                       (eq .Values.environment "staging")) }}
+    {{ .Values.environment }}_server_names:
       {{- range $host := $hosts }}
       - {{ $host }}
       {{- end }}
