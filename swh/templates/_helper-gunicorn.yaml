@@ -1,0 +1,9 @@
+{{/*
+   * Create default gunicorn configuration.
+   *
+*/}}
+{{- define "swh.gunicorn.config" -}}
+{{ $internalDefaultGunicornConfig := (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
+{{ $gunicornConfig := .configuration | default .defaultConfiguration -}}
+{{ mustMergeOverwrite $internalDefaultGunicornConfig $gunicornConfig | toYaml -}}
+{{- end -}}

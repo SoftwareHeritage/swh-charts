@@ -9,8 +9,9 @@
 {{- $configChecksum := include "swh.provenance.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.provenance.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $securityContext := $provenanceConfig.securityContext | default $.Values.provenance.securityContext -}}
-{{ $gunicornConfig := $provenanceConfig.gunicorn | default $.Values.provenance.gunicorn | default
-  (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
+{{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                 (dict "configuration" $provenanceConfig.gunicorn
+                                       "defaultConfiguration" $.Values.provenance.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

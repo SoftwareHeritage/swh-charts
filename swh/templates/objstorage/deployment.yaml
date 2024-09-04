@@ -9,8 +9,9 @@
 {{- $configChecksum := include "swh.objstorage.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.objstorage.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $securityContext := $objstorageConfig.securityContext | default $.Values.objstorage.securityContext -}}
-{{ $gunicornConfig := $objstorageConfig.gunicorn | default $.Values.objstorage.gunicorn | default
-  (dict "workers" 2 "threads" 5 "timeout" 60 ) -}}
+{{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                 (dict "configuration" $objstorageConfig.gunicorn
+                                       "defaultConfiguration" $.Values.objstorage.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
