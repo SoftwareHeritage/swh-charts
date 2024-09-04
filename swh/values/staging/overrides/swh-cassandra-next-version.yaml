@@ -172,6 +172,9 @@ externalServices:
     counters:
       internalName: counters-rpc-ingress-next-version
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    provenance:
+      internalName: webapp-provenance-ingress-next-version
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -621,6 +624,10 @@ storage:
 
 webhooksConfiguration: {}
 
+provenanceConfiguration:
+  cls: remote
+  url: http://webapp-provenance-ingress-next-version
+
 web:
   deployments:
     cassandra:
@@ -1001,6 +1008,8 @@ provenance:
     graph-granet:
       graphConfigurationRef: graphGrpcConfiguration
       replicas: 1
+      hosts:
+        - webapp-provenance-ingress-next-version
       extraIngresses:
         - hosts:
           - provenance-ingress-next-version.internal.staging.swh.network
