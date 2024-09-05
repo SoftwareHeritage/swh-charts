@@ -1418,6 +1418,9 @@ djangoWebConfiguration:
       secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key-fallback-2
 
+provenanceConfiguration:
+  cls: remote
+  url: http://webapp-provenance-ingress
 
 web:
   enabled: true
@@ -1486,7 +1489,6 @@ web:
                 port: 80
           authenticated:
             paths:
-              - path: /api/1/provenance/
               - path: /api/1/entity/
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
@@ -1506,6 +1508,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
+      provenanceConfigurationRef: provenanceConfiguration
       djangoAppsRef: webDjangoApps
 
       extraConfig:
@@ -2226,3 +2229,37 @@ alter:
           recipient_keys:
             Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
+
+provenance:
+  enabled: true
+  deployments:
+    graph-granet:
+      graphConfigurationRef: graphGrpcConfiguration
+      replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 1
+      hosts:
+        - webapp-provenance-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      extraIngresses:
+        - hosts:
+          - provenance.internal.softwareheritage.org
+          whitelistSourceRangeRef: internalNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+              extraWhitelistSourceRange:
+                - 192.168.50.0/24 # for blackbox monitoring
+                - 192.168.101.0/24 # vpn network
