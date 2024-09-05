@@ -2140,10 +2140,14 @@ provenance:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              - 192.168.50.0/24 # for blackbox monitoring
-              - 192.168.101.0/24 # vpn network
       extraIngresses:
         - hosts:
           - provenance.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+              extraWhitelistSourceRange:
+                - 192.168.50.0/24 # for blackbox monitoring
+                - 192.168.101.0/24 # vpn network
