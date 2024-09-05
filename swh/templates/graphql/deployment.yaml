@@ -7,6 +7,8 @@
                             "Values" $.Values -}}
 {{- $configChecksum := include "swh.graphql.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.graphql.gunicorn.logging" $configArgsDict | sha256sum -}}
+{{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                  (dict "configuration" $graphqlConfig.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,14 +89,12 @@ spec:
             value: {{ $graphqlConfig.logLevel | default $.Values.graphql.logLevel | quote }}
           - name: SWH_LOG_CONFIG_JSON
             value: /etc/swh/logging/logging-gunicorn.json
-          {{ if $graphqlConfig.gunicorn -}}
-          - name: THREADS
-            value: {{ $graphqlConfig.gunicorn.threads | default 5 | quote }}
           - name: WORKERS
-            value: {{ $graphqlConfig.gunicorn.workers | default 2 | quote }}
+            value: {{ $gunicornConfig.workers | quote }}
+          - name: THREADS
+            value: {{ $gunicornConfig.threads | quote }}
           - name: TIMEOUT
-            value: {{ $graphqlConfig.gunicorn.timeout | default 60 | quote }}
-          {{ end -}}
+            value: {{ $gunicornConfig.timeout | quote }}
           {{ if $.Values.graphql.sentry.enabled -}}
           - name: SWH_SENTRY_ENVIRONMENT
             value: {{ $.Values.sentry.environment }}
