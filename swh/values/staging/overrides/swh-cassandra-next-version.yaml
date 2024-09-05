@@ -1012,5 +1012,5 @@ provenance:
         - webapp-provenance-ingress-next-version
       extraIngresses:
         - hosts:
-          - provenance-ingress-next-version.internal.staging.swh.network
+          - provenance-next-version.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges

@@ -2143,5 +2143,5 @@ provenance:
               - path: /
       extraIngresses:
         - hosts:
-          - provenance-ingress.internal.staging.swh.network
+          - provenance.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
