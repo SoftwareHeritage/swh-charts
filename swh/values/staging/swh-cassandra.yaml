@@ -774,7 +774,6 @@ web:
                 port: 80
           authenticated:
             paths:
-              - path: /api/1/provenance/
               - path: /api/1/entity/
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
