@@ -347,6 +347,8 @@ web:
         minReplicaCount: 2
         maxReplicaCount: 4
         cpuPercentageUsage: 50
+      gunicorn:
+        timeout: 3600
       hosts:
         - webapp-cassandra.internal.softwareheritage.org
       ingress:

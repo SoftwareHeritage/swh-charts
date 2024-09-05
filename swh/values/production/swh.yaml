@@ -1533,6 +1533,8 @@ web:
       #   minReplicaCount: 2
       #   maxReplicaCount: 4
       #   cpuPercentageUsage: 100
+      gunicorn:
+        timeout: 3600
       hosts:
         - webapp1.internal.softwareheritage.org
       ingress:

@@ -10,6 +10,8 @@
 {{- $configLoggingChecksum := include "swh.web.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $do_migrations := or (and $webConfig.migrations $webConfig.migrations.enabled)
                          (and $.Values.web.migrations $.Values.web.migrations.enabled) -}}
+{{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                  (dict "configuration" $webConfig.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -144,11 +146,11 @@ spec:
             - /opt/swh/entrypoint.sh
           env:
             - name: WORKERS
-              value: {{ dig "gunicorn" "workers" 2 $webConfig | quote }}
+              value: {{ $gunicornConfig.workers | quote }}
             - name: THREADS
-              value: {{ dig "gunicorn" "threads" 2 $webConfig | quote }}
+              value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
-              value: {{ dig "gunicorn" "timeout" 3600 $webConfig | quote }}
+              value: {{ $gunicornConfig.timeout | quote }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
