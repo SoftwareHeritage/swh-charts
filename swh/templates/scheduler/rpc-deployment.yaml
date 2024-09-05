@@ -7,6 +7,8 @@
 {{- $registerListingTask := $.Values.scheduler.rpc.backend.registerListingTask | default false -}}
 {{- $logLevel := .Values.scheduler.rpc.logLevel | default .Values.scheduler.logLevel -}}
 {{- $serviceType := "scheduler-rpc" -}}
+{{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                  (dict "configuration" .Values.scheduler.rpc.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -120,14 +122,12 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if .Values.scheduler.rpc.gunicorn -}}
             - name: THREADS
-              value: {{ .Values.scheduler.rpc.gunicorn.threads | default 5 | quote }}
+              value: {{ $gunicornConfig.threads | quote }}
             - name: WORKERS
-              value: {{ .Values.scheduler.rpc.gunicorn.workers | default 2 | quote }}
+              value: {{ $gunicornConfig.workers | quote }}
             - name: TIMEOUT
-              value: {{ .Values.scheduler.rpc.gunicorn.timeout | default 60 | quote }}
-            {{ end -}}
+              value: {{ $gunicornConfig.timeout | quote }}
             - name: STATSD_HOST
               value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
