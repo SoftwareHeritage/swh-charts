@@ -113,14 +113,12 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if $gunicornConfig -}}
             - name: WORKERS
               value: {{ $gunicornConfig.workers | quote }}
             - name: THREADS
               value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
               value: {{ $gunicornConfig.timeout | quote }}
-            {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
