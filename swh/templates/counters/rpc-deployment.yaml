@@ -2,6 +2,8 @@
 {{- $configmapChecksum := include (print $.Template.BasePath "/counters/rpc-configmap.yaml") . | sha256sum }}
 {{- $scriptUtilsChecksum := include (print $.Template.BasePath "/counters/script-utils.yaml") . | sha256sum }}
 {{- $serviceType := "counters-rpc" -}}
+{{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                  (dict "configuration" .Values.counters.rpc.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -119,14 +121,12 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if .Values.counters.rpc.gunicorn -}}
-            - name: THREADS
-              value: {{ .Values.counters.rpc.gunicorn.threads | default 5 | quote }}
             - name: WORKERS
-              value: {{ .Values.counters.rpc.gunicorn.workers | default 2 | quote }}
+              value: {{ $gunicornConfig.workers | quote }}
+            - name: THREADS
+              value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
-              value: {{ .Values.counters.rpc.gunicorn.timeout | default 60 | quote }}
-            {{ end -}}
+              value: {{ $gunicornConfig.timeout | quote }}
             - name: STATSD_HOST
               value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
