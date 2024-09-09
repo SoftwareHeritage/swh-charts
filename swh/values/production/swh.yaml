@@ -1788,10 +1788,10 @@ objstorage:
         client_max_size: 1073741824
       extraVolumes:
         pathslicing:
-          mountPath: /srv/softwareheritage/objects
+          mountPath: /srv/softwareheritage/objects-xfs
           volumeDefinition:
             hostPath:
-              path: /srv/softwareheritage/objects
+              path: /srv/softwareheritage/objects-xfs
               type: Directory
       # Deploy only this specific objstorage instance on banco
       nodeSelector:

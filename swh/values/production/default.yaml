@@ -480,8 +480,8 @@ pathslicingSaamZfsObjstorageConfiguration:
 
 pathslicingBancoXfsObjstorageConfiguration:
   cls: pathslicing
-  root: "/srv/softwareheritage/objects"
-  slicing: 0:2/2:4/4:6
+  root: "/srv/softwareheritage/objects-xfs"
+  slicing: 0:1/0:2/2:4/4:6
   compression: gzip
   allow_delete: true
 
