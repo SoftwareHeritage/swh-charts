@@ -1921,8 +1921,6 @@ graph:
     #   # Whether to start the rpc service (once the dataset was prepared and
     #   # the volumes configured)
     #   startService: true
-    #   # Whether to clean up the storage volumes (once the rpc got stopped)
-    #   cleanup: false
     #   # loglevel can be overriden per instance
     #   # logLevel: WARN
     #   # Don't configure the replicas if autoscaling is configured and vice-versa
