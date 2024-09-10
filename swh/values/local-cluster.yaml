@@ -1480,7 +1480,7 @@ graph:
         name: test
         # url: ""
       # Whether to start the rpc service (once the dataset was prepared and
-      # the volumes configured)
+      startService: true
       # hosts:
       #   - graph.local
       # ingress:
@@ -1494,7 +1494,6 @@ graph:
       #     default:
       #       paths:
       #         - path: /
-      startService: true
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker2
       extraVolumes:
@@ -1530,6 +1529,7 @@ graph:
       # Whether to configure the volume automatically. We may want to disable
       # this for the production workload as it is a complex one
       # (this is off for local-cluster)
+      prepareVolumes: false
       # Whether to fetch the dataset
       fetchDataset: true
       dataset:
@@ -1540,7 +1540,6 @@ graph:
       startService: true
       graphConfigurationRef: grpcRustGraphConfiguration
       graphPathConfigurationRef: graphPython3kPathConfiguration
-      prepareVolumes: false
       extraVolumes:
         graph-python3k:
           mountPath: /srv/graph
