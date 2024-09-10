@@ -64,3 +64,43 @@ $HELM upgrade --install redis-operator \
 $HELM upgrade --install keda \
       kedacore/keda \
       -n keda --create-namespace
+
+git clone https://github.com/rancher/local-path-provisioner.git \
+    --depth 1 \
+    /tmp/local-path-provisioner
+pushd /tmp/local-path-provisioner
+
+CONFIG_FILE=/tmp/local-path-provisioner/local-path-values.yaml
+cat<<EOF >$CONFIG_FILE
+workerThreads: 8
+nodePathMap:
+  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    paths:
+      - /tmp/k8s-ephemeral-storage
+EOF
+$HELM install ./deploy/chart/local-path-provisioner \
+      --name-template local-path \
+      --namespace local-path-storage \
+      -f $CONFIG_FILE
+
+CONFIG_FILE2=/tmp/local-path-provisioner/local-persistent-values.yaml
+cat<<EOF >$CONFIG_FILE2
+configmap:
+  name: local-persistent-provisioner
+nameOverride: local-persistent-provisioner
+nodePathMap:
+  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    paths:
+      - /srv/kubernetes/volumes/
+storageClass:
+  create: true
+  defaultClass: false
+  name: local-persistent
+  reclaimPolicy: Retain
+EOF
+
+$HELM install ./deploy/chart/local-path-provisioner \
+      --name-template local-persistent \
+      --namespace local-path-storage \
+      -f $CONFIG_FILE2
+popd

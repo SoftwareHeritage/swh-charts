@@ -1481,7 +1481,6 @@ graph:
         # url: ""
       # Whether to start the rpc service (once the dataset was prepared and
       # the volumes configured)
-      startService: false
       # hosts:
       #   - graph.local
       # ingress:
@@ -1495,6 +1494,7 @@ graph:
       #     default:
       #       paths:
       #         - path: /
+      startService: true
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker2
       extraVolumes:
@@ -1504,13 +1504,13 @@ graph:
             persistentVolumeClaim:
               claimName: graph-rpc-example-pvc
           persistentVolumeClaimDefinition:
-            storageClassName: standard
+            storageClassName: local-path
+            volumeMode: Filesystem
             accessModes:
             - ReadWriteOnce
             resources:
               requests:
                 storage: 1Gi
-            volumeMode: Filesystem
             nodeAffinity:
               required:
                 nodeSelectorTerms:
@@ -1519,9 +1519,10 @@ graph:
                     operator: In
                     values:
                     - local-cluster-worker2
+
     # Instance to run the graph with the dataset python3k
     rpc-python3k:
-      enabled: false
+      enabled: true
       type: rpc
       port: 5009
       nodeSelector:
@@ -1550,13 +1551,13 @@ graph:
             persistentVolumeClaim:
               claimName: graph-rpc-python3k-pvc
           persistentVolumeClaimDefinition:
-            storageClassName: standard
+            storageClassName: local-persistent
+            volumeMode: Filesystem
             accessModes:
             - ReadWriteOnce
             resources:
               requests:
                 storage: 1Gi
-            volumeMode: Filesystem
             nodeAffinity:
               required:
                 nodeSelectorTerms:
