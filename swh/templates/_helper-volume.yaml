@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .serviceType }}-pvc
+  name: {{ .volumeName }}-pvc
   namespace: {{ .Values.namespace }}
   labels:
     app: {{ .serviceType }}

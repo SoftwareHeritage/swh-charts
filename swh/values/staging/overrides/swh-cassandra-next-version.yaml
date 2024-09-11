@@ -1027,19 +1027,20 @@ graph:
   enabled: true
   graphPathConfigurationRef: graphPathConfiguration
   deployments:
-    # Exposed rpc used by clients
-    # rpc graph with sample dataset (cloned out of swh.graph)
+    # rpc graph with test dataset
     rpc-example:
       type: rpc
       port: 5009
       graphName: example
       graphConfigurationRef: grpcRustGraphConfiguration
       graphPathConfigurationRef: graphExamplePathConfiguration
-      backend:
-        initialize:
-          dataset: test
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
+      dataset:
+        downloadMethod: git
+        name: test
       hosts:
-        - graph-cassandra.internal.staging.swh.network
+        - graph-next-version.internal.staging.swh.network
       ingress:
         enabled: true
         whitelistSourceRangeRef: clusterNetworkRanges
@@ -1052,13 +1053,37 @@ graph:
             paths:
               - path: /
       extraVolumes:
-        graph-example:
+        # persistent volume (where the full dataset files are stored)
+        swh-graph-dataset-example-date:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-dataset-example-date-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-persistent
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - rancher-node-staging-rke2-metal01
+        # in-memory volume (where the *.graph files and links to the files in persistent
+        # volume are)
+        swh-graph-inmemory-date:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
               claimName: graph-rpc-example-pvc
           persistentVolumeClaimDefinition:
-            storageClassName: standard
+            storageClassName: local-path
             accessModes:
             - ReadWriteOnce
             resources:

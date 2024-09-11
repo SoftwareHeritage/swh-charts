@@ -5,6 +5,40 @@ metadata:
   name: backend-utils
   namespace: {{ $.Values.namespace }}
 data:
+  graph-prepare-memory-volume.sh: |
+    #!/usr/bin/env bash
+
+    set -e
+    set -x
+
+    WITNESS_FILE="${DATASET_DESTINATION}/xxx-graph-is-initialized-xxx"
+
+    [ -f ${WITNESS_FILE} ] && echo "Graph ready, do nothing." && exit 0
+
+    # Create empty dataset location destination for copy to be ok
+    mkdir -p ${DATASET_DESTINATION}
+
+    graph_stats=${GRAPH_NAME}.stats
+    # Symlink all files from dataset source to the destination (including the *.graph &
+    # witness file)
+    [ -L "${DATASET_DESTINATION}/${graph_stats}" ] || \
+      ( ln -sf ${DATASET_SOURCE}/* ${DATASET_DESTINATION}/ && rm ${WITNESS_FILE} )
+
+    graph_name=${GRAPH_NAME}.graph
+    # Except for the hard-copy of the *.graph file
+    if [ -L "${DATASET_DESTINATION}/${graph_name}" ] || ! [ -f ${DATASET_DESTINATION}/${graph_name} ]; then
+      cp -v --remove-destination ${DATASET_SOURCE}/${graph_name} ${DATASET_DESTINATION}/;
+    fi
+
+    graph_transposed_name=${GRAPH_NAME}-transposed.graph
+    if [ -L ${DATASET_DESTINATION}/${graph_transposed_name} ] || ! [ -f ${DATASET_DESTINATION}/${graph_transposed_name} ]; then
+      cp -v --remove-destination ${DATASET_SOURCE}/${graph_transposed_name} ${DATASET_DESTINATION}/;
+    fi
+
+    # Make explicit the graph is ready (drop the link on witness file from previous
+    # instruction)
+    touch ${WITNESS_FILE}
+
   wait-for-dataset.sh: |
     #!/usr/bin/env bash
 

@@ -1,0 +1,51 @@
+{{/* Prepare the memory volume with necessary files and symlinks
+   *
+   * This requires the persistent volume from which copying & symlinking the files to be
+   * mounted.
+   */}}
+{{- define "swh.graph.prepareMemoryVolume" -}}
+- name: graph-prepare-memory-volume
+  image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+  imagePullPolicy: IfNotPresent
+  command:
+  - /entrypoints/graph-prepare-memory-volume.sh
+  env:
+    - name: GRAPH_NAME
+      value: {{ .graphName }}
+    - name: DATASET_SOURCE
+      value: {{ .pathDatasetSource }}
+    - name: DATASET_DESTINATION
+      value: {{ .pathDatasetDestination }}
+  volumeMounts:
+  - name: backend-utils
+    mountPath: /entrypoints
+    readOnly: true
+  {{- range $volumeName, $volumeConfig := .extraVolumes }}
+  - name: {{ $volumeName }}
+    mountPath: {{ $volumeConfig.mountPath }}
+    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+{{ end }}
+{{- end -}}
+
+{{/* init-container to wait for dataset presence. */}}
+{{- define "swh.graph.waitForDataset" -}}
+- name: wait-for-dataset
+  image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+  imagePullPolicy: IfNotPresent
+  command:
+  - /entrypoints/wait-for-dataset.sh
+  env:
+    - name: DATASET_LOCATION
+      value: {{ .graphPath }}
+    - name: PERIOD
+      value: {{ .period | default "3" | quote }}
+  volumeMounts:
+  - name: backend-utils
+    mountPath: /entrypoints
+    readOnly: true
+  {{- range $volumeName, $volumeConfig := .extraVolumes }}
+  - name: {{ $volumeName }}
+    mountPath: {{ $volumeConfig.mountPath }}
+    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+  {{ end }}
+{{- end -}}

@@ -1454,26 +1454,22 @@ grpcRustGraphConfiguration:
     port: 50091
 
 graphExamplePathConfiguration: /srv/graph/test/compressed
-
+graphDatasetExampleSourcePathConfiguration: /srv/dataset/test/compressed
 graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
 
 graph:
   enabled: false
   # Test dataset uses the "example" name
   deployments:
-    # rpc graph with sample dataset (cloned out of swh.graph)
+    # basic rpc graph with sample dataset (cloned out of swh.graph)
+    # only 1 volume with all dataset files
     rpc-example:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       graphName: example
       graphConfigurationRef: grpcRustGraphConfiguration
       graphPathConfigurationRef: graphExamplePathConfiguration
-      # Whether to configure volumes with *.graph files & symlinks, this means:
-      # - 1 in-memory (tmpfs) volume (where we copy 2 *.graph files and symlink files
-      #   from the other volume)
-      # - 1 fs volume (containing the huge files we symlink from the previous volume)
-      prepareInMemoryVolumes: false
       # Whether to fetch or install the dataset through a job
       dataset:
         downloadMethod: git
@@ -1501,7 +1497,7 @@ graph:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-rpc-example-pvc
+              claimName: graph-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             volumeMode: Filesystem
@@ -1520,8 +1516,9 @@ graph:
                     - local-cluster-worker2
 
     # Instance to run the graph with the dataset python3k
+    # Only 1 volume with all dataset files
     rpc-python3k:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       nodeSelector:
@@ -1530,11 +1527,6 @@ graph:
       dataset:
         downloadMethod: s3
         name: 2021-03-23-popular-3k-python
-      # Whether to configure volumes with *.graph files & symlinks, this means:
-      # - 1 in-memory (tmpfs) volume (where we copy 2 *.graph files and symlink files
-      #   from the other volume)
-      # - 1 fs volume (containing the huge files we symlink from the previous volume)
-      prepareInMemoryVolumes: false
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
       graphConfigurationRef: grpcRustGraphConfiguration
@@ -1544,7 +1536,7 @@ graph:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-rpc-python3k-pvc
+              claimName: graph-python3k-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1561,3 +1553,88 @@ graph:
                     operator: In
                     values:
                     - local-cluster-worker3
+
+    # basic rpc graph with sample dataset (cloned out of swh.graph). This uses 2
+    # volumes; 1 memory (*.graph copied & symlinks) with 1 persistent volume (with all
+    # dataset files)
+    rpc-full-example:
+      enabled: true
+      type: rpc
+      port: 5009
+      graphName: example
+      graphConfigurationRef: grpcRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
+      # (optional) Default to not being set. When set, this will prepare the memory
+      # volume with the copy of the *.graph files & symlinks to the other dataset files
+      # (from the persistent volume). When not set or false, this means the volume used
+      # is expected to hold all necessary dataset for the graph to run successfully
+      # (e.g. when the small to medium dataset is retrieved from s3)
+      prepareMemoryVolume:
+        graphSourcePathRef: graphDatasetExampleSourcePathConfiguration
+      # Whether to fetch or install the dataset through a job
+      dataset:
+        downloadMethod: git
+        name: test
+        # url: ""
+      # Whether to start the rpc service (this expects the graph dataset to be ready)
+      startService: true
+      hosts:
+        - graph.local
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker
+      extraVolumes:
+        # persistent volume
+        swh-graph-dataset-example-date:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-dataset-example-date-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-persistent
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - local-cluster-worker
+        # in-memory volumes
+        swh-graph-inmemory-date:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-inmemory-date-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-path
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            nodeAffinity:
+              required:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                    - local-cluster-worker

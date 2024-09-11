@@ -1878,6 +1878,7 @@ provenance:
 #     url: http://<graph-service-url>
 
 # graphPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
+# graphDatasetExampleSourcePathConfiguration: /srv/dataset/2021-03-23-popular-3k-python/compressed
 
 graph:
   enabled: false
@@ -1916,11 +1917,13 @@ graph:
     # rpc-minimal:
     #   type: rpc
     #   # port: 5009
-    #   # Whether to configure volumes with *.graph files & symlinks, this means:
-    #   # - 1 in-memory (tmpfs) volume (where we copy 2 *.graph files and symlink files
-    #   #   from the other volume)
-    #   # - 1 fs volume (containing the huge files we symlink from the previous volume)
-    #   prepareInMemoryVolumes: false
+    #   # (optional) Default to not being set. When set, this will prepare the memory
+    #   # volume with the copy of the *.graph files & symlinks to the other dataset files
+    #   # (from the persistent volume). When not set or false, this means the volume used
+    #   # is expected to hold all necessary dataset for the graph to run successfully
+    #   # (e.g. when the small to medium dataset is retrieved from s3)
+    #   prepareMemoryVolume:
+    #     sourcePathRef: graphDatasetExampleSourcePathConfiguration
     #   # Whether to start the rpc service (this expects the graph dataset to be ready)
     #   startService: true
     #   # loglevel can be overriden per instance

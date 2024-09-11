@@ -10,6 +10,13 @@
 {{- $graphPath := get $.Values $graphPathRef -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
 {{- $jobName := print $serviceType "-job-fetch-dataset" -}}
+{{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" -}}
+{{- $graphSourcePath := "" -}}
+{{- if $prepareMemoryVolume }}
+{{- $graphSourcePathRef := required (print "<prepareMemoryVolume.graphSourcePathRef> is required")
+                                    (get $prepareMemoryVolume "graphSourcePathRef") -}}
+{{- $graphSourcePath = get $.Values $graphSourcePathRef -}}
+{{- end }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -61,7 +68,7 @@ spec:
         {{ include "swh.initializeGraphDataset" (dict "Values" $.Values
                                                       "imagePrefixName" "swh_graph_image"
                                                       "graphName" $graphName
-                                                      "graphPath" $graphPath
+                                                      "graphPath" (ne $prepareMemoryVolume nil | ternary $graphSourcePath $graphPath)
                                                       "config" $graphConfig.dataset
                                                       "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{- end }}

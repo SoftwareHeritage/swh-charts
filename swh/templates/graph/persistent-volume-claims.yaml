@@ -4,7 +4,8 @@
 {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
 {{- if $volumeConfig.persistentVolumeClaimDefinition -}}
 {{- include "swh.persistentVolumeClaim"
-  (dict "serviceType"  ( print "graph-" $graphType )
+  (dict "volumeName"   $volumeName
+        "serviceType"  ( print "graph-" $graphType )
         "volumeConfig" $volumeConfig
         "Values"       $.Values) -}}
 {{ end }}

@@ -15,6 +15,13 @@
 {{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
 {{- $graphPath := get $.Values $graphPathRef -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
+{{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" -}}
+{{- $graphSourcePath := "" -}}
+{{- if $prepareMemoryVolume }}
+{{- $graphSourcePathRef := required (print "<prepareMemoryVolume.graphSourcePathRef> is required")
+                                    (get $prepareMemoryVolume "graphSourcePathRef") -}}
+{{- $graphSourcePath = get $.Values $graphSourcePathRef -}}
+{{- end }}
 {{- $graphImageVersion := get $graphConfig "imageVersion" | default $.Values.graph.imageVersion | default $.Values.swh_graph_image_version -}}
 ---
 apiVersion: apps/v1
@@ -79,25 +86,16 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        - name: wait-for-dataset
-          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
-          imagePullPolicy: IfNotPresent
-          command:
-          - /entrypoints/wait-for-dataset.sh
-          env:
-            - name: DATASET_LOCATION
-              value: {{ $graphPath }}
-            - name: PERIOD
-              value: "3"
-          volumeMounts:
-          - name: backend-utils
-            mountPath: /entrypoints
-            readOnly: true
-          {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
-          - name: {{ $volumeName }}
-            mountPath: {{ $volumeConfig.mountPath }}
-            readOnly: {{ $volumeConfig.readOnly | default "false" }}
-          {{ end }}
+        {{- if $prepareMemoryVolume }}
+        {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
+                                                         "graphName" $graphName
+                                                         "pathDatasetSource" $graphSourcePath
+                                                         "pathDatasetDestination" $graphPath
+                                                         "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- end }}
+        {{ include "swh.graph.waitForDataset" (dict "Values" $.Values
+                                                    "graphPath" $graphPath
+                                                    "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
       containers:
         - name: {{ $serviceType }}
           resources:
