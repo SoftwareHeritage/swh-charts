@@ -2122,7 +2122,7 @@ provenance:
   enabled: true
   deployments:
     graph-granet:
-      graphConfigurationRef: graphGrpcConfiguration
+      graphConfigurationRef: provenanceGraphGrpcConfiguration
       replicas: 2
       gunicorn:
         workers: 4

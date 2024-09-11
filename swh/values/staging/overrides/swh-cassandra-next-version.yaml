@@ -1006,7 +1006,7 @@ provenance:
   enabled: true
   deployments:
     graph-granet:
-      graphConfigurationRef: graphGrpcConfiguration
+      graphConfigurationRef: provenanceGraphGrpcConfiguration
       replicas: 1
       hosts:
         - webapp-provenance-ingress-next-version
