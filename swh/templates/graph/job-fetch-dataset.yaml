@@ -5,7 +5,7 @@
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $graphConfig
                             "Values" $.Values -}}
-{{- $initializeGraphDataset := and $graphConfig.fetchDataset $graphConfig.dataset | default false -}}
+{{- $initializeGraphDataset := $graphConfig.dataset | default false -}}
 {{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
 {{- $graphPath := get $.Values $graphPathRef -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
