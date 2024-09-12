@@ -117,9 +117,14 @@ spec:
             - containerPort: {{ $port }}
               name: {{ $type }}
           readinessProbe:
+          {{- if (eq $type "rpc") }}
             httpGet:
               path: /
               port: {{ $type }}
+          {{- else }}
+            tcpSocket:
+              port: {{ $type }}
+          {{- end }}
             initialDelaySeconds: 15
             failureThreshold: 30
             periodSeconds: 5

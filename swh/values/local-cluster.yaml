@@ -1453,6 +1453,10 @@ grpcRustGraphConfiguration:
   grpc_server:
     port: 50091
 
+plainGrpcGraphConfiguration:
+  graph:
+    max_ram: 1g
+
 graphExamplePathConfiguration: /srv/graph/test/compressed
 graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/test/compressed
 graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
@@ -1461,14 +1465,14 @@ graph:
   enabled: false
   # Test dataset uses the "example" name
   deployments:
-    # basic rpc graph with sample dataset (cloned out of swh.graph)
+    # basic grpc graph with sample dataset (cloned out of swh.graph)
     # only 1 volume with all dataset files
-    rpc-example:
+    grpc-example:
       enabled: true
-      type: rpc
-      port: 5009
+      type: grpc
+      port: 50091
       graphName: example
-      graphConfigurationRef: grpcRustGraphConfiguration
+      graphConfigurationRef: plainGrpcGraphConfiguration
       graphPathConfigurationRef: graphExamplePathConfiguration
       # Whether to fetch or install the dataset through a job
       dataset:
@@ -1514,6 +1518,19 @@ graph:
                     operator: In
                     values:
                     - local-cluster-worker2
+      hosts:
+        - graph-grpc.local
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
     # Instance to run the graph with the dataset python3k
     # Only 1 volume with all dataset files
@@ -1558,7 +1575,7 @@ graph:
     # volumes; 1 memory (*.graph copied & symlinks) with 1 persistent volume (with all
     # dataset files)
     rpc-full-example:
-      enabled: false
+      enabled: true
       type: rpc
       port: 5009
       graphName: example
@@ -1580,19 +1597,6 @@ graph:
         # url: ""
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
-      hosts:
-        - graph.local
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker
       extraVolumes:
@@ -1640,3 +1644,16 @@ graph:
                     operator: In
                     values:
                     - local-cluster-worker
+      hosts:
+        - graph-example.local
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
