@@ -1,3 +1,39 @@
+{{/* Generate the initialize graph backend container configuration if needed */}}
+{{- define "swh.graph.fetchDataset" -}}
+{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "fetch-graph-dataset" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  command:
+  - /entrypoints/graph-fetch-dataset.sh
+  env:
+  - name: SWH_CONFIG_FILENAME
+    value: /etc/swh/config.yml
+  - name: GRAPH_NAME
+    value: {{ .graphName }}
+  - name: DATASET_NAME
+    value: {{ .config.name }}
+  - name: DATASET_LOCATION
+    value: {{ .graphPath }}
+  - name: DATASET_URL
+    value: {{ .config.url | default "" }}
+  - name: DOWNLOAD_METHOD
+    value: {{ .config.downloadMethod }}
+  - name: WITNESS_FILE
+    value: {{ .graphPath }}/xxx-graph-is-initialized-xxx
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+  - name: backend-utils
+    mountPath: /entrypoints
+  {{- range $volumeName, $volumeConfig := .extraVolumes }}
+  - name: {{ $volumeName }}
+    mountPath: {{ $volumeConfig.mountPath }}
+    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+  {{ end }}
+{{- end -}}
+
+
 {{/* Prepare the memory volume with necessary files and symlinks
    *
    * This requires the persistent volume from which copying & symlinking the files to be
@@ -14,8 +50,10 @@
       value: {{ .graphName }}
     - name: DATASET_SOURCE
       value: {{ .pathDatasetSource }}
-    - name: DATASET_DESTINATION
+    - name: DATASET_LOCATION
       value: {{ .pathDatasetDestination }}
+    - name: WITNESS_FILE
+      value: {{ .pathDatasetDestination }}/xxx-graph-is-initialized-xxx
   volumeMounts:
   - name: backend-utils
     mountPath: /entrypoints
@@ -33,12 +71,14 @@
   image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
   imagePullPolicy: IfNotPresent
   command:
-  - /entrypoints/wait-for-dataset.sh
+  - /entrypoints/graph-wait-for-dataset.sh
   env:
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
     - name: PERIOD
       value: {{ .period | default "3" | quote }}
+    - name: WITNESS_FILE
+      value: {{ .graphPath }}/xxx-graph-is-initialized-xxx
   volumeMounts:
   - name: backend-utils
     mountPath: /entrypoints

@@ -5,7 +5,7 @@
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $graphConfig
                             "Values" $.Values -}}
-{{- $initializeGraphDataset := $graphConfig.dataset | default false -}}
+{{- $fetchGraphDataset := $graphConfig.dataset | default false -}}
 {{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
 {{- $graphPath := get $.Values $graphPathRef -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
@@ -64,13 +64,13 @@ spec:
             mountPath: /entrypoints
             readOnly: true
       containers:
-        {{- if $initializeGraphDataset }}
-        {{ include "swh.initializeGraphDataset" (dict "Values" $.Values
-                                                      "imagePrefixName" "swh_graph_image"
-                                                      "graphName" $graphName
-                                                      "graphPath" (ne $prepareMemoryVolume nil | ternary $graphSourcePath $graphPath)
-                                                      "config" $graphConfig.dataset
-                                                      "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- if $fetchGraphDataset }}
+        {{ include "swh.graph.fetchDataset" (dict "Values" $.Values
+                                                  "imagePrefixName" "swh_graph_image"
+                                                  "graphName" $graphName
+                                                  "graphPath" (ne $graphSourcePath "" | ternary $graphSourcePath $graphPath)
+                                                  "config" $graphConfig.dataset
+                                                  "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{- end }}
       volumes:
       - name: configuration

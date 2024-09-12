@@ -7,54 +7,70 @@ metadata:
 data:
   graph-prepare-memory-volume.sh: |
     #!/usr/bin/env bash
+    # Uses env variables WITNESS_FILE, DATASET_SOURCE, DATASET_LOCATION, GRAPH_NAME
 
-    set -e
-    set -x
+    set -eux
 
-    WITNESS_FILE="${DATASET_DESTINATION}/xxx-graph-is-initialized-xxx"
+    [ -z "${DATASET_LOCATION}" ] && \
+      echo "<DATASET_LOCATION> env variable must be set" && exit 1
+    [ -z "${DATASET_SOURCE}" ] && \
+      echo "<DATASET_SOURCE> env variable must be set" && exit 1
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${GRAPH_NAME}" ] && \
+      echo "<GRAPH_NAME> env variable must be set" && exit 1
 
     [ -f ${WITNESS_FILE} ] && echo "Graph ready, do nothing." && exit 0
 
     # Create empty dataset location destination for copy to be ok
-    mkdir -p ${DATASET_DESTINATION}
+    mkdir -p ${DATASET_LOCATION}
 
     graph_stats=${GRAPH_NAME}.stats
     # Symlink all files from dataset source to the destination (including the *.graph &
     # witness file)
-    [ -L "${DATASET_DESTINATION}/${graph_stats}" ] || \
-      ( ln -sf ${DATASET_SOURCE}/* ${DATASET_DESTINATION}/ && rm ${WITNESS_FILE} )
+    [ -L "${DATASET_LOCATION}/${graph_stats}" ] || \
+      ( ln -sf ${DATASET_SOURCE}/* ${DATASET_LOCATION}/ && rm ${WITNESS_FILE} )
 
     graph_name=${GRAPH_NAME}.graph
     # Except for the hard-copy of the *.graph file
-    if [ -L "${DATASET_DESTINATION}/${graph_name}" ] || ! [ -f ${DATASET_DESTINATION}/${graph_name} ]; then
-      cp -v --remove-destination ${DATASET_SOURCE}/${graph_name} ${DATASET_DESTINATION}/;
+    if [ -L "${DATASET_LOCATION}/${graph_name}" ] || ! [ -f ${DATASET_LOCATION}/${graph_name} ]; then
+      cp -v --remove-destination ${DATASET_SOURCE}/${graph_name} ${DATASET_LOCATION}/;
     fi
 
     graph_transposed_name=${GRAPH_NAME}-transposed.graph
-    if [ -L ${DATASET_DESTINATION}/${graph_transposed_name} ] || ! [ -f ${DATASET_DESTINATION}/${graph_transposed_name} ]; then
-      cp -v --remove-destination ${DATASET_SOURCE}/${graph_transposed_name} ${DATASET_DESTINATION}/;
+    if [ -L ${DATASET_LOCATION}/${graph_transposed_name} ] || ! [ -f ${DATASET_LOCATION}/${graph_transposed_name} ]; then
+      cp -v --remove-destination ${DATASET_SOURCE}/${graph_transposed_name} ${DATASET_LOCATION}/;
     fi
 
     # Make explicit the graph is ready (drop the link on witness file from previous
     # instruction)
     touch ${WITNESS_FILE}
 
-  wait-for-dataset.sh: |
+  graph-wait-for-dataset.sh: |
     #!/usr/bin/env bash
-
-    WITNESS_FILE="${DATASET_LOCATION}/xxx-graph-is-initialized-xxx"
+    # Uses env variables WITNESS_FILE
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
 
     while [ ! -f ${WITNESS_FILE} ]; do
         echo "${WITNESS_FILE} not present, wait for it to start the graph..."
         sleep $PERIOD
     done
 
-  fetch-graph-dataset.sh: |
+  graph-fetch-dataset.sh: |
     #!/usr/bin/env bash
+    # Uses env variables WITNESS_FILE, DATASET_LOCATION, DATASET_NAME, GRAPH_NAME
+    [ -z "${DATASET_LOCATION}" ] && \
+      echo "<DATASET_LOCATION> env variable must be set" && exit 1
+    [ -z "${DATASET_NAME}" ] && \
+      echo "<DATASET_NAME> env variable must be set" && exit 1
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${GRAPH_NAME}" ] && \
+      echo "<GRAPH_NAME> env variable must be set" && exit 1
 
-    WITNESS_FILE=${DATASET_LOCATION}/xxx-graph-is-initialized-xxx
+    set -eux
 
-    # Uses internally the environment variable SWH_CONFIG_FILENAME
     [ -f ${WITNESS_FILE} ] && \
         echo "Dataset <${DATASET_NAME}> already present. Skip." && \
         exit 0
