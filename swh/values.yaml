@@ -1878,7 +1878,7 @@ provenance:
 #     url: http://<graph-service-url>
 
 # graphPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
-# graphDatasetExampleSourcePathConfiguration: /srv/dataset/2021-03-23-popular-3k-python/compressed
+# graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/2021-03-23-popular-3k-python/compressed
 
 graph:
   enabled: false
@@ -1923,7 +1923,9 @@ graph:
     #   # is expected to hold all necessary dataset for the graph to run successfully
     #   # (e.g. when the small to medium dataset is retrieved from s3)
     #   prepareMemoryVolume:
-    #     sourcePathRef: graphDatasetExampleSourcePathConfiguration
+    #     # The persistent volume path of the full graph dataset we prepare the memory
+    #     # volume's graph files from
+    #     graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
     #   # Whether to start the rpc service (this expects the graph dataset to be ready)
     #   startService: true
     #   # loglevel can be overriden per instance

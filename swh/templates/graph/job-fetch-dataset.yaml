@@ -13,8 +13,8 @@
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" -}}
 {{- $graphSourcePath := "" -}}
 {{- if $prepareMemoryVolume }}
-{{- $graphSourcePathRef := required (print "<prepareMemoryVolume.graphSourcePathRef> is required")
-                                    (get $prepareMemoryVolume "graphSourcePathRef") -}}
+{{- $graphSourcePathRef := required (print "<prepareMemoryVolume.graphDatasetPathInPersistentVolumeRef> is required")
+                                    (get $prepareMemoryVolume "graphDatasetPathInPersistentVolumeRef") -}}
 {{- $graphSourcePath = get $.Values $graphSourcePathRef -}}
 {{- end }}
 ---

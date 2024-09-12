@@ -1454,7 +1454,7 @@ grpcRustGraphConfiguration:
     port: 50091
 
 graphExamplePathConfiguration: /srv/graph/test/compressed
-graphDatasetExampleSourcePathConfiguration: /srv/dataset/test/compressed
+graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/test/compressed
 graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
 
 graph:
@@ -1464,7 +1464,7 @@ graph:
     # basic rpc graph with sample dataset (cloned out of swh.graph)
     # only 1 volume with all dataset files
     rpc-example:
-      enabled: false
+      enabled: true
       type: rpc
       port: 5009
       graphName: example
@@ -1518,7 +1518,7 @@ graph:
     # Instance to run the graph with the dataset python3k
     # Only 1 volume with all dataset files
     rpc-python3k:
-      enabled: false
+      enabled: true
       type: rpc
       port: 5009
       nodeSelector:
@@ -1558,7 +1558,7 @@ graph:
     # volumes; 1 memory (*.graph copied & symlinks) with 1 persistent volume (with all
     # dataset files)
     rpc-full-example:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       graphName: example
@@ -1570,7 +1570,9 @@ graph:
       # is expected to hold all necessary dataset for the graph to run successfully
       # (e.g. when the small to medium dataset is retrieved from s3)
       prepareMemoryVolume:
-        graphSourcePathRef: graphDatasetExampleSourcePathConfiguration
+        # The persistent volume path of the full graph dataset we prepare the memory
+        # volume's graph files from
+        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       # Whether to fetch or install the dataset through a job
       dataset:
         downloadMethod: git
