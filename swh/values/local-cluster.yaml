@@ -1519,7 +1519,7 @@ graph:
                     values:
                     - local-cluster-worker2
       hosts:
-        - graph-grpc.local
+        - graph-grpc-example
       ingress:
         enabled: true
         whitelistSourceRangeRef: clusterNetworkRanges
@@ -1645,7 +1645,7 @@ graph:
                     values:
                     - local-cluster-worker
       hosts:
-        - graph-example.local
+        - graph-rpc-full-example
       ingress:
         enabled: true
         whitelistSourceRangeRef: clusterNetworkRanges

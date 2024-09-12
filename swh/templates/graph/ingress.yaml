@@ -2,6 +2,16 @@
 {{ range $graphType, $graphConfig := .Values.graph.deployments }}
 {{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") }}
 {{- if and (hasKey $graphConfig "ingress") $graphConfig.ingress.enabled -}}
+{{- $type := $graphConfig.type -}}
+{{- $port := $graphConfig.port | default (ternary $.Values.graph.rpcPort $.Values.graph.grpcPort (eq $type "rpc")) -}}
+{{- $annotations := $graphConfig.ingress.extraAnnotations | default dict }}
+{{- if (eq $type "grpc") }}
+{{- $annotations = mustMergeOverwrite $annotations
+                                      (dict "nginx.ingress.kubernetes.io/ssl-redirect" "true"
+                                            "nginx.ingress.kubernetes.io/backend-protocol" "GRPC") -}}
+{{- $_ := set $graphConfig.ingress "extraAnnotations" $annotations -}}
+{{- $_ := set $graphConfig.ingress "className" "nginx" -}}
+{{ end }}
 {{- include "swh.ingress" (dict "serviceType"   ( print "graph-" $graphType )
                                 "configuration" $graphConfig
                                 "Values"        $.Values) -}}

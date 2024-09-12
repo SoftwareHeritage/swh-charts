@@ -1,6 +1,6 @@
 {{/*
-Create a Kind service for .serviceType
-*/}}
+   * Create a Kind service for .serviceType
+   */}}
 {{- define "swh.service" -}}
 ---
 apiVersion: v1
@@ -17,7 +17,7 @@ spec:
   ports:
     - port: {{ .configuration.port }}
       targetPort: {{ .configuration.port }}
-      name: rpc
+      name: {{ .configuration.type | default "rpc" }}
     {{ if .configuration.extraPorts }}
     {{- range $label_port, $port := .configuration.extraPorts }}
     - port: {{ $port }}
