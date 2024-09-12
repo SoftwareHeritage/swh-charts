@@ -59,6 +59,6 @@ swh_vault_cookers_image_version: '20240910.2'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20240910.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20240911.2'
+swh_web_image_version: '20240912.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20240910.1'
