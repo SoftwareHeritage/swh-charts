@@ -414,6 +414,25 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 3Gi
       requestedCpu: 1000m
+    save-bulk:
+      image: swh_loader_savecodenow_image
+      queues:
+        - save-bulk:swh.loader.bzr.tasks.LoadBazaar
+        - save-bulk:swh.loader.cvs.tasks.LoadCvsRepository
+        - save-bulk:swh.loader.git.tasks.UpdateGitRepository
+        - save-bulk:swh.loader.git.tasks.LoadDiskGitRepository
+        - save-bulk:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save-bulk:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save-bulk:swh.loader.mercurial.tasks.LoadMercurial
+        - save-bulk:swh.loader.svn.tasks.LoadSvnRepository
+        - save-bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save-bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save-bulk:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 200Mi
+      requestedCpu: 50m
     svn:
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
