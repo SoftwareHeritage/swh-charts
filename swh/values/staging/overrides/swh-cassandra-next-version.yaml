@@ -1089,3 +1089,64 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    # grpc graph with test dataset
+    grpc-example:
+      type: grpc
+      port: 50091
+      graphName: example
+      graphConfigurationRef: grpcRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
+      dataset:
+        downloadMethod: git
+        name: test
+      prepareMemoryVolume:
+        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
+      extraVolumes:
+        # persistent volume (where the full dataset files are stored)
+        swh-graph-dataset-example-date:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-dataset-example-date-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-persistent
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+        # in-memory volume (where the *.graph files and links to the files in persistent
+        # volume are)
+        swh-graph-inmemory-date:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-inmemory-date-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-path
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+            volumeMode: Filesystem
+
+      hosts:
+        - graph-grpc-next-version.internal.staging.swh.network
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
