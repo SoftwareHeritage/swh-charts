@@ -329,6 +329,7 @@ toolbox:
             - "true"
 
 objstorage:
+  port: 5003
   sentry:
     enabled: true
   affinity:

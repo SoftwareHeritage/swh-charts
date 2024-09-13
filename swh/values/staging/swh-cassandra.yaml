@@ -1144,7 +1144,6 @@ deposit:
 objstorage:
   enabled: true
   logLevel: WARN
-  port: 5003
   priorityClassName: frontend-rpc
   deployments:
     # Each key will be an objstorage instance to be deployed

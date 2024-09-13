@@ -1662,7 +1662,6 @@ web:
 objstorage:
   enabled: true
   logLevel: WARN
-  port: 5003
   priorityClassName: frontend-rpc
   deployments:
     read-only:
