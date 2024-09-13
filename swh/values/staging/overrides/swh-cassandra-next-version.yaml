@@ -640,6 +640,7 @@ web:
       storageConfigurationRef: remoteROPostgresqlStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
+      graphConfigurationRef: graphConfiguration
 
       metricsScrapingEnabled: false
       migrations:
@@ -1002,6 +1003,17 @@ alter:
 cassandraChecks:
   enabled: false
 
+provenanceGraphGrpcConfiguration:
+  cls: known_swhid_filter
+  filter_licenses: false
+  provenance:
+    cls: graph
+    url: grpc-next-version.internal.staging.swh.network:50091
+    max_edges: 100000
+
+graphConfiguration:
+  url: http://graph-next-version.internal.staging.swh.network/graph
+
 provenance:
   enabled: true
   deployments:
@@ -1091,6 +1103,7 @@ graph:
               - 192.168.101.0/24
     # grpc graph with test dataset
     grpc-example:
+      enabled: true
       type: grpc
       port: 50091
       graphName: example
@@ -1105,11 +1118,11 @@ graph:
         graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       extraVolumes:
         # persistent volume (where the full dataset files are stored)
-        swh-graph-dataset-example-date:
+        swh-graph-grpc-dataset-example-date:
           mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-dataset-example-date-pvc
+              claimName: swh-graph-grpc-dataset-example-date-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1120,11 +1133,11 @@ graph:
                 storage: 1Gi
         # in-memory volume (where the *.graph files and links to the files in persistent
         # volume are)
-        swh-graph-inmemory-date:
+        swh-graph-grpc-inmemory-date:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-inmemory-date-pvc
+              claimName: swh-graph-grpc-inmemory-date-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             accessModes:
