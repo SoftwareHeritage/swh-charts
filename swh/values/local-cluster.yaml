@@ -1510,14 +1510,6 @@ graph:
             resources:
               requests:
                 storage: 1Gi
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - local-cluster-worker2
       hosts:
         - graph-grpc-example
       ingress:
@@ -1614,14 +1606,6 @@ graph:
             resources:
               requests:
                 storage: 1Gi
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - local-cluster-worker
         # in-memory volumes
         swh-graph-inmemory-date:
           mountPath: /srv/graph
@@ -1636,14 +1620,6 @@ graph:
             resources:
               requests:
                 storage: 1Gi
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - local-cluster-worker
       hosts:
         - graph-rpc-full-example
       ingress:

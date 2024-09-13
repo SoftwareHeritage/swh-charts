@@ -1057,14 +1057,6 @@ graph:
             resources:
               requests:
                 storage: 1Gi
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - rancher-node-staging-rke2-metal01
         # in-memory volume (where the *.graph files and links to the files in persistent
         # volume are)
         swh-graph-inmemory-date:
@@ -1080,14 +1072,6 @@ graph:
               requests:
                 storage: 1Gi
             volumeMode: Filesystem
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - rancher-node-staging-rke2-metal01
 
       hosts:
         - graph-next-version.internal.staging.swh.network
