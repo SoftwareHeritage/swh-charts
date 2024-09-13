@@ -68,7 +68,7 @@ postgresqlRWNoObjstorageStorageConfiguration:
   pipelineStepsRef: emptyStoragePipelineSteps
   objstorageConfigurationRef: noopObjstorageConfiguration
 
-readOnlyStorageConfiguration:
+readOnlyPostgresqlStorageConfiguration:
   pipelineStepsRef: maskingStoragePipelineSteps
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
@@ -1350,7 +1350,7 @@ storage:
         cpuPercentageUsage: 30
       requestedCpu: 500m
       requestedMemory: 1.5Gi
-      storageConfigurationRef: readOnlyStorageConfiguration
+      storageConfigurationRef: readOnlyPostgresqlStorageConfiguration
       hosts:
         - storage-azure-read-only-rpc-ingress
         - storage-postgresql-ro.internal.softwareheritage.org

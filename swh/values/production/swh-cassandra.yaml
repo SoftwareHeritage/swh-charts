@@ -271,6 +271,11 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
 
+readOnlyCassandraStorageConfiguration:
+  pipelineStepsRef: maskingStoragePipelineSteps
+  storageConfigurationRef: cassandraROStorage
+  objstorageConfigurationRef: roObjstorageBestEffortConfiguration
+
 storage:
   enabled: true
   gunicorn:
@@ -323,6 +328,35 @@ storage:
           default:
             paths:
               - path: /
+    cassandra-azure-readonly:
+      autoScaling:
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        cpuPercentageUsage: 30
+      requestedCpu: 500m
+      requestedMemory: 1.5Gi
+      storageConfigurationRef: readOnlyCassandraStorageConfiguration
+      hosts:
+        # TODO: Drop "-swh-cassandra" when decommissioning the swh one
+        - storage-azure-read-only-rpc-ingress-swh-cassandra
+        # TODO: Uncomment when decommissioning the swh one
+        # - storage-postgresql-ro.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+      gunicorn:
+        threads: 4
+        workers: 8
 
 postgresqlWebConfiguration:
   host: postgresql-web-rw.internal.softwareheritage.org
