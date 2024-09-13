@@ -1071,7 +1071,7 @@ graph:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-rpc-example-pvc
+              claimName: swh-graph-inmemory-date-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             accessModes:
