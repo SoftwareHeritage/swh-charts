@@ -969,6 +969,9 @@ indexerStorage:
   deployments:
     read-only:
       checkDbVersion: true
+      gunicorn:
+        workers: 4
+        threads: 2
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 4
@@ -992,9 +995,6 @@ indexerStorage:
           default:
             paths:
               - path: /
-      gunicorn:
-        threads: 2
-        workers: 4
     read-write:
       checkDbVersion: true
       autoScaling:
