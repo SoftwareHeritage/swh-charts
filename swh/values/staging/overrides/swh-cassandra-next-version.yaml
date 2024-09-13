@@ -1077,7 +1077,7 @@ graph:
         - graph-next-version.internal.staging.swh.network
       ingress:
         enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
+        whitelistSourceRangeRef: stagingNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1086,3 +1086,6 @@ graph:
           default:
             paths:
               - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
