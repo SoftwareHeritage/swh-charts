@@ -683,3 +683,50 @@ cassandraChecks:
         object_types:
         - raw_extrinsic_metadata
         batch_size: 1000
+
+objstorage:
+  enabled: true
+  logLevel: WARN
+  priorityClassName: frontend-rpc
+  deployments:
+    read-only:
+      enabled: true
+      gunicorn:
+        threads: 4
+        workers: 4
+        timeout: 60
+      replicas: 2
+      objstorageConfigurationRef: multiplexerForLocalStoragesConfiguration
+        # Deploy an ingress to access the objstorage
+      hosts:
+        - objstorage-read-only-rpc-ingress-swh-cassandra
+        # - objstorage.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        # mandatory if ingress is enabled
+        # the hostname on which the objstorage must be reachable
+        # Optional: the ingress classname to use
+        className: nginx
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+      # TODO: Reactivate when decommissioning the production/swh.yaml
+      # objstorage read-only
+      # extraIngresses:
+      #   # Allow access through the public reverse proxy (authenticated) for all IPs
+      #   - hosts:
+      #       - objstorage.softwareheritage.org
+      #     whitelistSourceRangeRef: null
+      #     endpoints:
+      #       default:
+      #         extraWhitelistSourceRange: []
+      #         authentication: swh-cassandra/ingress-objstorage-ro-auth-secrets
