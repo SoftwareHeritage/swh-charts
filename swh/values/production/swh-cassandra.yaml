@@ -73,7 +73,8 @@ localRpcROStorageService:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
-localRpcROStorageConfiguration:
+rpcROStorageCassandraWithRetryConfiguration:
+  pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: localRpcROStorageService
 
 remoteCassandraStorageConfiguration:
@@ -489,7 +490,11 @@ graphql:
   deployments:
     cassandra:
       replicas: 1
-      storageConfigurationRef: localRpcROStorageConfiguration
+      gunicorn:
+        threads: 4
+        workers: 2
+        timeout: 3600
+      storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
       hosts:
@@ -507,12 +512,36 @@ graphql:
               - 192.168.50.0/24
             paths:
               - path: /graphql/
-      gunicorn:
-        threads: 4
-        workers: 2
-        timeout: 3600
       auth:
         enabled: false
+        server: https://auth.softwareheritage.org/auth/
+        realm: SoftwareHeritage
+        client: swh-web
+        cacheUrl: memcached://memcached:11211
+      maxRawContentSize: 10000
+    # (future) Main instance to serve https://archive.softwaheritage.org/graphql/
+    archive:
+      gunicorn:
+        workers: 2
+        threads: 4
+        timeout: 3600
+      replicas: 2
+      storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      introspection: yes
+      hosts:
+        - archive.softwareheritage.org
+      ingress:
+        # TODO: Enable when decommissioning the swh one
+        enabled: false
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/rewrite-target: /
+        endpoints:
+          default:
+            paths:
+              - path: /graphql/
+      auth:
+        enabled: true
         server: https://auth.softwareheritage.org/auth/
         realm: SoftwareHeritage
         client: swh-web
