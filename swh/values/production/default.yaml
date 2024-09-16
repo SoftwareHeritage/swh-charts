@@ -508,16 +508,36 @@ rwObjstorageWineryAndAzure:
   - *winery-objstorage-conf-rw
   - *azure-storage-conf-rw
 
-rwStoragePipelineSteps:
+rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+  # record_reference is postgresql backend specific
   - cls: record_references
+
+storageJournalWriterConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  prefix: swh.journal.objects
+  clientId: swh.storage.journal_writer.${HOSTNAME}
+  producerConfig:
+    message.max.bytes: 1000000000
+  anonymize: true
 
 rwStoragePostgresqlWithWineryObjstorageConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageWineryAndAzure
-  pipelineStepsRef: rwStoragePipelineSteps
+  pipelineStepsRef: rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps
+  secrets: *azure-storage-secrets-rw
+
+rwStoragePipelineBlockingSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+
+rwStorageCassandraWithWineryObjstorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+  journalWriterConfigurationRef: storageJournalWriterConfiguration
+  objstorageConfigurationRef: rwObjstorageWineryAndAzure
+  pipelineStepsRef: rwStoragePipelineBlockingSteps
   secrets: *azure-storage-secrets-rw
 
 retryStoragePipelineSteps:

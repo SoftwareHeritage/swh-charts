@@ -1331,14 +1331,6 @@ scrubber:
   objstorageChecker:
     enabled: false
 
-storageJournalWriterConfiguration:
-  brokersConfigurationRef: kafkaBrokers
-  prefix: swh.journal.objects
-  clientId: swh.storage.journal_writer.${HOSTNAME}
-  producerConfig:
-    message.max.bytes: 1000000000
-  anonymize: true
-
 storage:
   enabled: true
   logLevel: WARN
