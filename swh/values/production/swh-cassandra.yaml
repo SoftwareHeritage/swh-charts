@@ -530,6 +530,9 @@ toolbox:
       moduleName: indexer
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    scheduler:
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: producerCeleryConfiguration
 
 scrubber:
   enabled: true
