@@ -1388,9 +1388,6 @@ objstorage:
               nginx.ingress.kubernetes.io/denylist-source-range: 0.0.0.0/0
               nginx.ingress.kubernetes.io/whitelist-source-range: null
 
-# TEMP: deploy new image only in staging to check
-swh_webhooks_image_version: '20240916.1'
-
 webhooks:
   enabled: true
   svixConfigurationRef: svixConfiguration
