@@ -1441,7 +1441,7 @@ web:
       requestedMemory: 6Gi
       cronJobs:
         refreshSCNStatus:
-          enabled: false
+          enabled: true
           cron: "*/2 * * * *"
           command:
             - "refresh_savecodenow_statuses"
