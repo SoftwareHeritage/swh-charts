@@ -569,6 +569,7 @@ remoteSearchConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
+  # TODO: Change to scheduler-rpc-ingress when cassandra migration is done
   url: http://scheduler.internal.softwareheritage.org
 
 remoteVaultConfiguration:
@@ -628,6 +629,18 @@ depositConfiguration:
     DEPOSIT_PASSWORD:
       secretKeyRef: deposit-secrets
       secretKeyName: password
+
+postgresqlSchedulerConfiguration:
+  cls: postgresql
+  host: postgresql-scheduler-rw.internal.softwareheritage.org
+  port: 5432
+  user: swhscheduler
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage-scheduler
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-scheduler-postgresql-common-secret
+      secretKeyName: postgres-swh-scheduler-password
 
 postgresqlROStorageConfiguration:
   cls: postgresql

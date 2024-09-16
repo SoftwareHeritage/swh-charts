@@ -1010,3 +1010,97 @@ indexerStorage:
       gunicorn:
         threads: 2
         workers: 4
+
+scheduler:
+  enabled: true
+  sentry:
+    enabled: true
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  celeryConfigurationRef: producerCeleryConfiguration
+  alerts:
+      # TODO: Enable when decommissioning the swh one
+    enabled: false
+    period: 15m
+    severity: warning
+    tooManyMessagesInQueue:
+      instances:  # We may have more than one rabbitmq per environment
+        saatchi:
+          threshold: 30000
+  recurrent:
+    # TODO: Enable when decommissioning the swh one
+    enabled: false
+  rpc:
+    enabled: true
+    # The scheduler instance to use for rpc must be a postgresql instance
+    schedulerConfigurationRef: postgresqlSchedulerConfiguration
+    replicas: 4
+    gunicorn:
+      threads: 4
+      workers: 8
+      timeout: 3600
+    hosts:
+      # Used by future add-forge-now runner0 vm
+      - scheduler.internal.softwareheritage.org
+      # TODO: Use this scheduler-rpc-ingress for the internal access to the scheduler
+      - scheduler-rpc-ingress
+    ingress:
+      # TODO: Enable when decommissioning the swh one
+      enabled: false
+      # TODO: Improve the authorization internal cluster ip range.
+      # Current internal range retrieved out of the `kubectl cluster-info dump`
+      # Default allowed ip ranges that can be extended per ingress definitions paths
+      whitelistSourceRangeRef: internalNetworkRanges
+      endpoints:
+        default:
+          paths:
+            - path: /
+          extraWhitelistSourceRange:
+          # add-forge-now runner0 in staging network
+            - 192.168.130.221/32
+        read-only:
+          paths:
+            - path: /scheduler_metrics/get
+              pathType: Exact
+            - path: /listers/get
+              pathType: Exact
+            - path: /lister/get
+              pathType: Exact
+            - path: /task_type/get
+              pathType: Exact
+            - path: /task_type/get_all
+              pathType: Exact
+          extraWhitelistSourceRange:
+            # vpn network
+            - 192.168.101.0/24
+            # add-forge-now runner0 in staging network
+            - 192.168.130.221/32
+  updateMetrics:
+    # TODO: Enable (if needed when svix-webhooks is off & when decommissioning the swh
+    # one)
+    enabled: false
+    concurrencyPolicy: Forbid
+    # At minute 27 past every 4th hour from 3 through 23
+    cron: "27 3-23/4 * * *"
+  journalClient:
+    # TODO: Enable when decommissioning the swh one
+    enabled: false
+    journalConfigurationRef: journalClientConfiguration
+  extraServices:
+    # TODO: Enable when decommissioning the swh one
+    enabled: false
+    runner:
+      logLevel: INFO
+      period: 10
+    runner-priority:
+      logLevel: INFO
+      period: 10
+      extraConfig:
+        - load-bzr
+        - load-cvs
+        - load-git
+        - load-svn
+        - load-archive-files
+        - load-hg
+    listener:
+      replicas: 4
+      logLevel: INFO
