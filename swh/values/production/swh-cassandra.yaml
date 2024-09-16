@@ -526,6 +526,10 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
+    indexer-storage:
+      moduleName: indexer
+      moduleConfigKey: indexer_storage
+      indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
 
 scrubber:
   enabled: true
