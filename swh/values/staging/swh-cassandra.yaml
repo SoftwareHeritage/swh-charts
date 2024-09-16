@@ -720,7 +720,7 @@ web:
         - webapp-cassandra.internal.staging.swh.network
       cronJobs:
         refreshSCNStatus:
-          enabled: true
+          enabled: false
           cron: "* 5 * * *"
           concurrencyPolicy: Forbid
           priorityClassName: frontend-rpc-workload
