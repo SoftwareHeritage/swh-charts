@@ -945,3 +945,30 @@ countersHistoryConfiguration:
   interval: 12h
   labels:
     environment: production
+
+postgresqlDepositConfiguration:
+  host: postgresql-deposit-rw.internal.softwareheritage.org
+  port: 5432
+  db: softwareheritage-deposit
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-deposit-secrets
+      secretKeyName: postgres-swh-deposit-password
+
+djangoDepositConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-deposit-django-secret
+      secretKeyName: deposit-django-secret-key
+
+azureDepositConfiguration:
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: deposit-tarballs
+  content_type: application/octet-stream
+  content_encoding: ""
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-deposit-azure-secret
+      secretKeyName: azure-swh-deposit-key
