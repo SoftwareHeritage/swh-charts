@@ -218,35 +218,6 @@ azureDepositConfiguration:
       secretKeyRef: swh-deposit-azure-secret
       secretKeyName: azure-swh-deposit-key
 
-journalClientCountersConfiguration:
-  brokersConfigurationRef: kafkaBrokers
-  group_id: swh.counters.journal_client
-  prefix: swh.journal.objects
-  object_types:
-  - content
-  - directory
-  - origin
-  - origin_visit
-  - origin_visit_status
-  - release
-  - revision
-  - skipped_content
-  - snapshot
-  message.max.bytes: 524288000
-
-countersRedis:
-  cls: redis
-  host: counters1.internal.softwareheritage.org:6379
-
-countersHistoryConfiguration:
-  cls: prometheus
-  prometheus_host: thanos.internal.admin.swh.network
-  prometheus_port: 19191
-  live_data_start: 1618415227
-  interval: 12h
-  labels:
-    environment: production
-
 graphql:
   enabled: true
   deployments:
