@@ -1937,8 +1937,8 @@ graph:
     #     downloadMethod: s3  # `swh graph download` method, rsync, scp...
     #     name: 2021-03-23-popular-3k-python
     #     # url: ""
-    #   requestedCpu: 50m
-    #   requestedMemory: 100Mi
+    #   requestedCpu: 100m
+    #   requestedMemory: 10Gi
     #   # autoScaling:
     #   #   minReplicaCount: 2
     #   #   maxReplicaCount: 10
