@@ -1327,3 +1327,37 @@ deposit:
     extraction_dir: "/tmp/swh-deposit/archive/"
     cache_uri: memcached:11211
 
+provenance:
+  enabled: true
+  deployments:
+    graph-granet:
+      graphConfigurationRef: provenanceGraphGrpcConfiguration
+      replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 1
+      hosts:
+        - webapp-provenance-ingress-swh-cassandra
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      # TODO: Uncomment when decommissioning the swh ns
+      #extraIngresses:
+      #  - hosts:
+      #    - provenance.internal.softwareheritage.org
+      #    whitelistSourceRangeRef: internalNetworkRanges
+      #    endpoints:
+      #      default:
+      #        paths:
+      #          - path: /
+      #        extraWhitelistSourceRange:
+      #          - 192.168.50.0/24 # for blackbox monitoring
+      #          - 192.168.101.0/24 # vpn network
