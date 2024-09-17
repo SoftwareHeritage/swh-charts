@@ -1235,7 +1235,8 @@ search:
 counters:
   enabled: true
   journalClient:
-    enabled: true
+    # TODO: enable when decommissioning the swh namespace
+    enabled: false
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
