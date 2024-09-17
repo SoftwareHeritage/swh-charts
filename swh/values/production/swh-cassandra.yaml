@@ -484,6 +484,79 @@ web:
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
+    # webhooks instance to serve svix requests
+    webhooks:
+      # The ingress accepts only 10 concurrent requests so the number of workers
+      # can be configured accordingly with a margin for monitoring probes
+      gunicorn:
+        workers: 4
+        threads: 3
+        timeout: 60
+      replicas: 2
+      requestedCpu: 200m
+      requestedMemory: 7Gi
+      hosts:
+        - webapp-cassandra.internal.softwareheritage.org
+        # TODO: Uncomment when decommissioning the swh ns
+        #- archive.softwareheritage.org
+        #- archive.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        secretName: swh-web-archive-crt
+        extraAnnotations:
+          kubernetes.io/ingress.class: nginx
+        tlsExtraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        endpoints:
+          webhooks:
+            extraAnnotations:
+              # The number of connections to allow is estimated to ~1.5x the number
+              # of webhook journal client for the scn endpoint
+              # Another estimated could be around 1 connection per ~15 origin_visits_status/s
+              # Adapt the replicas and workers if this values is changed
+              nginx.ingress.kubernetes.io/limit-connections: "10"
+            tlsEnabled: true
+            paths:
+              - path: /save/origin/visit/webhook
+            extraWhitelistSourceRange:
+              - 192.168.100.0/24
+              # moma access due to the absence of TLS termination on internal ingresses
+              # svix-server endpoints requires TLS connections
+              - 128.93.166.2/32
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+      depositConfigurationRef: depositConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      inboundEmailConfigurationRef: inboundEmailConfiguration
+      djangoAppsRef: webDjangoApps
+
+      extraConfig:
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
+        search_config:
+          metadata_backend: swh-search
+        inbound_email:
+          shared_key: ${INBOUND_EMAIL_SHARED_KEY}
+        content_display_max_size: 5242880
+        history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
+        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
+        matomo:
+          url: https://piwik.inria.fr/
+          site_id: 59
 
 graphql:
   enabled: true
