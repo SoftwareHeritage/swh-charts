@@ -73,6 +73,10 @@ localRpcROStorageService:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
+provenanceConfiguration:
+  cls: remote
+  url: http://webapp-provenance-ingress-swh-cassandra
+
 rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: localRpcROStorageService
@@ -415,6 +419,111 @@ web:
   enabled: true
   logLevel: INFO
   deployments:
+    # Main instance to serve archive.softwareheritage.org
+    archive:
+      gunicorn:
+        workers: 8
+        threads: 1
+        timeout: 3600
+      autoScaling:
+        type: keda
+        minReplicaCount: 8
+        maxReplicaCount: 10
+        threshold: 10
+      requestedCpu: 500m
+      requestedMemory: 6Gi
+      cronJobs:
+        refreshSCNStatus:
+          enabled: false
+          cron: "*/2 * * * *"
+          command:
+            - "refresh_savecodenow_statuses"
+          concurrencyPolicy: Forbid
+          priorityClassName: frontend-rpc-workload
+        syncMaskingMailmaps:
+        # TODO: Enable when decommissioning the swh ns
+          enabled: false
+          command:
+            - "sync_masking_mailmaps"
+            - "--perform"
+            - "service=syncmaskingmailmaps"
+          cron: "15 *  * * *"
+          concurrencyPolicy: Forbid
+          configurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
+          priorityClassName: frontend-rpc-workload
+          pgService: true
+      hosts:
+        - webapp-cassandra.internal.softwareheritage.org
+        # TODO: Uncomment when decommissioning the swh ns
+        #- archive.softwareheritage.org
+        #- base.softwareheritage.org
+        #- archive.internal.softwareheritage.org
+        #- archive-dynamic.internal.softwareheritage.org
+      ingress:
+        # TODO: Enable when decommissioning the swh ns
+        # cassandra deployment has to be disabled (same ingresses)
+        enabled: false
+        secretName: swh-web-archive-crt
+        extraAnnotations:
+          kubernetes.io/ingress.class: nginx
+        tlsExtraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        endpoints:
+          default:
+            paths:
+              - path: /
+          static:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/use-regex: "true"
+              nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+            paths:
+              - path: /()(robots.txt)$
+                pathType: ImplementationSpecific
+                port: 80
+              - path: /static(/|$)(.*)
+                pathType: ImplementationSpecific
+                port: 80
+          authenticated:
+            paths:
+              - path: /api/1/entity/
+              - path: /api/1/content/[^/]+/symbol/
+            # auth-file with authentication
+            authentication: swh-cassandra/web-auth-secrets
+      databaseConfigurationRef: postgresqlWebConfiguration
+      searchConfigurationRef: remoteSearchConfiguration
+      schedulerConfigurationRef: remoteSchedulerConfiguration
+      storageConfigurationRef: remoteStorageConfiguration
+      vaultConfigurationRef: remoteVaultConfiguration
+      indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
+      countersConfigurationRef: remoteCountersConfiguration
+      djangoConfigurationRef: djangoWebConfiguration
+      giveConfigurationRef: giveConfiguration
+      throttlingConfigurationRef: webThrottling
+      addForgeNowConfigurationRef: addForgeNowConfiguration
+      webhooksConfigurationRef: webhooksConfiguration
+      depositConfigurationRef: depositConfiguration
+      keycloakConfigurationRef: keycloakConfiguration
+      inboundEmailConfigurationRef: inboundEmailConfiguration
+      provenanceConfigurationRef: provenanceConfiguration
+      djangoAppsRef: webDjangoApps
+
+      extraConfig:
+        save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
+        search_config:
+          metadata_backend: swh-search
+        inbound_email:
+          shared_key: ${INBOUND_EMAIL_SHARED_KEY}
+        content_display_max_size: 5242880
+        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
+        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+        give:
+          public_key: ${GIVE_PUBLIC_KEY}
+          token: ${GIVE_PRIVATE_TOKEN}
+        matomo:
+          url: https://piwik.inria.fr/
+          site_id: 59
     cassandra:
       metricsScrapingEnabled: false
       requestedCpu: 500m
@@ -472,6 +581,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
+      provenanceConfigurationRef: provenanceConfiguration
       djangoAppsRef: webDjangoApps
       extraConfig:
         search_config:
@@ -479,7 +589,7 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
+        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
@@ -549,7 +659,7 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        history_counters_url: http://counters-rpc-ingress/counters_history/history.json#
+        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
