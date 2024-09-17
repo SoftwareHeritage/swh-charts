@@ -343,7 +343,7 @@ storage:
       hosts:
         # TODO: Drop "-swh-cassandra" when decommissioning the swh one
         - storage-azure-read-only-rpc-ingress-swh-cassandra
-        # TODO: Uncomment when decommissioning the swh one
+        # TODO: Uncomment (and rename -cassandra) when decommissioning the swh one
         # - storage-postgresql-ro.internal.softwareheritage.org
       ingress:
         enabled: true
