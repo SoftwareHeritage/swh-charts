@@ -886,3 +886,33 @@ webhooksConfiguration:
 
 ROStorageConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
+
+postgresqlVaultConfiguration:
+  cls: postgresql
+  host: postgresql-vault-rw.internal.softwareheritage.org
+  port: 5432
+  db: swh-vault
+  user: swh-vault
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-vault-postgresql-secret
+      secretKeyName: postgres-swh-vault-password
+
+remoteROStorageConfiguration:
+  pipelineStepsRef: retryStoragePipelineSteps
+  storageConfigurationRef: remoteStorageConfiguration
+
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage-azure-read-only-rpc-ingress
+
+azureCacheConfiguration:
+  cls: azure
+  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
+  container_name: contents-uncompressed
+  compression: none
+  secrets:
+    ACCOUNT_KEY:
+      secretKeyRef: swh-vault-azure-secret
+      secretKeyName: azure-swh-vault-key

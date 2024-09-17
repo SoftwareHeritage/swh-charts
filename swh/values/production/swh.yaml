@@ -10,16 +10,8 @@ remoteRpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: rpcRWStorageConfiguration
 
-remoteStorageConfiguration:
-  cls: remote
-  url: http://storage-azure-read-only-rpc-ingress
-
 vaultGraphConfiguration:
   url: http://graph.internal.softwareheritage.org:5009/graph
-
-remoteROStorageConfiguration:
-  pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: remoteStorageConfiguration
 
 remoteROCassandraIngressStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
@@ -84,16 +76,6 @@ postgresqlDepositConfiguration:
       secretKeyRef: swh-postgresql-deposit-secrets
       secretKeyName: postgres-swh-deposit-password
 
-azureCacheConfiguration:
-  cls: azure
-  connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
-  container_name: contents-uncompressed
-  compression: none
-  secrets:
-    ACCOUNT_KEY:
-      secretKeyRef: swh-vault-azure-secret
-      secretKeyName: azure-swh-vault-key
-
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
@@ -128,18 +110,6 @@ postgresqlWebConfiguration:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-postgresql-web-secrets
       secretKeyName: postgres-swh-web-password
-
-postgresqlVaultConfiguration:
-  cls: postgresql
-  host: postgresql-vault-rw.internal.softwareheritage.org
-  port: 5432
-  db: swh-vault
-  user: swh-vault
-  pass: ${POSTGRESQL_PASSWORD}
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-vault-postgresql-secret
-      secretKeyName: postgres-swh-vault-password
 
 authenticatedJournalClientConfiguration:
   cls: kafka
