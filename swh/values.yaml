@@ -1949,8 +1949,8 @@ graph:
     #   #   timeout: 60
     #   # mandatory
     #   # check defaultStorageConfiguration example to configure your storage
-    #   # storageConfigurationRef: defaultStorageConfiguration
-    #   # Deploy an ingress to access the storage
+    #   storageConfigurationRef: defaultStorageConfiguration
+    #   # Deploy an ingress to access swh graph
     #   ingress:
     #     enabled: false
     #     # Optional: the ingress classname to use
