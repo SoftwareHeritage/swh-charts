@@ -7,6 +7,8 @@
   command:
   - /entrypoints/graph-fetch-dataset.sh
   env:
+  - name: WITNESS_FILE
+    value: {{ .graphPath }}/.graph-is-initialized
   - name: SWH_CONFIG_FILENAME
     value: /etc/swh/config.yml
   - name: GRAPH_NAME
@@ -19,8 +21,6 @@
     value: {{ .config.url | default "" }}
   - name: DOWNLOAD_METHOD
     value: {{ .config.downloadMethod }}
-  - name: WITNESS_FILE
-    value: {{ .graphPath }}/xxx-graph-is-initialized-xxx
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
@@ -46,14 +46,14 @@
   command:
   - /entrypoints/graph-prepare-memory-volume.sh
   env:
+    - name: WITNESS_FILE
+      value: {{ .pathDatasetDestination }}/.graph-is-initialized
     - name: GRAPH_NAME
       value: {{ .graphName }}
     - name: DATASET_SOURCE
       value: {{ .pathDatasetSource }}
     - name: DATASET_LOCATION
       value: {{ .pathDatasetDestination }}
-    - name: WITNESS_FILE
-      value: {{ .pathDatasetDestination }}/xxx-graph-is-initialized-xxx
   volumeMounts:
   - name: backend-utils
     mountPath: /entrypoints
@@ -73,12 +73,12 @@
   command:
   - /entrypoints/graph-wait-for-dataset.sh
   env:
+    - name: WITNESS_FILE
+      value: {{ .graphPath }}/.graph-is-initialized
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
     - name: PERIOD
       value: {{ .period | default "3" | quote }}
-    - name: WITNESS_FILE
-      value: {{ .graphPath }}/xxx-graph-is-initialized-xxx
   volumeMounts:
   - name: backend-utils
     mountPath: /entrypoints
