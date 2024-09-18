@@ -1593,11 +1593,11 @@ graph:
         kubernetes.io/hostname: local-cluster-worker
       extraVolumes:
         # persistent volume
-        swh-graph-dataset-example-date:
+        swh-graph-dataset-example:
           mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-dataset-example-date-pvc
+              claimName: swh-graph-dataset-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1607,11 +1607,11 @@ graph:
               requests:
                 storage: 1Gi
         # in-memory volumes
-        swh-graph-inmemory-date:
+        swh-graph-inmemory:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-inmemory-date-pvc
+              claimName: swh-graph-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             volumeMode: Filesystem

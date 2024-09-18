@@ -1056,11 +1056,11 @@ graph:
         graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       extraVolumes:
         # persistent volume (where the full dataset files are stored)
-        swh-graph-dataset-example-date:
+        swh-graph-dataset-example:
           mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-dataset-example-date-pvc
+              claimName: swh-graph-dataset-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1075,7 +1075,7 @@ graph:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-inmemory-date-pvc
+              claimName: swh-graph-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             accessModes:
