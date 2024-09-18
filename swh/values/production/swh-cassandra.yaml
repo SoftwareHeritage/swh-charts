@@ -1240,7 +1240,7 @@ counters:
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
-    enabled: true
+    enabled: false
     cron: "0 */1 * * *"
     concurrencyPolicy: Forbid
     countersConfigurationRef: remoteCountersConfiguration
