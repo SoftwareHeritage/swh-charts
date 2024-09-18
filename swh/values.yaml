@@ -1930,7 +1930,7 @@ graph:
     #   startService: true
     #   # loglevel can be overriden per instance
     #   # logLevel: WARN
-    #   # Don't configure the replicas if autoscaling is configured and vice-versa
+    #   # Number of statically defined replicas
     #   # replicas: 1
     #   # Whether to fetch or install the dataset through a job
     #   dataset:
@@ -1939,10 +1939,6 @@ graph:
     #     # url: ""
     #   requestedCpu: 100m
     #   requestedMemory: 10Gi
-    #   # autoScaling:
-    #   #   minReplicaCount: 2
-    #   #   maxReplicaCount: 10
-    #   #   cpuPercentageUsage: 100
     #   # gunicorn:
     #   #   threads: 5
     #   #   workers: 2
