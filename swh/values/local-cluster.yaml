@@ -1447,9 +1447,15 @@ fakeGraphConfiguration:
   cls: graph
   url: graph.i.s.o:50091
 
-# Rpc Rust graph configuration
-grpcRustGraphConfiguration:
+# Rpc Rust graph configuration (spawns a rpc and a grpc)
+rpcLocalRustWithGrpcGraphConfiguration:
   cls: local_rust
+  grpc_server:
+    port: 50091
+
+grpcRemoteRustGraphConfiguration:
+  cls: remote
+  url: graph-grpc-example:50091
   grpc_server:
     port: 50091
 
@@ -1465,10 +1471,13 @@ graph:
   enabled: false
   # Test dataset uses the "example" name
   deployments:
-    # basic grpc graph with sample dataset (cloned out of swh.graph)
-    # only 1 volume with all dataset files
+    # basic grpc graph with sample dataset with sample dataset (cloned out of
+    # swh.graph). This uses 2 volumes; 1 memory (*.graph copied & symlinks) with 1
+    # persistent volume (with all dataset files)
     grpc-example:
       enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker2
       type: grpc
       port: 50091
       graphName: example
@@ -1479,29 +1488,38 @@ graph:
         downloadMethod: git
         name: test
         # url: ""
+      # (optional) Default to not being set. When set, this will prepare the memory
+      # volume with the copy of the *.graph files & symlinks to the other dataset files
+      # (from the persistent volume). When not set or false, this means the volume used
+      # is expected to hold all necessary dataset for the graph to run successfully
+      # (e.g. when the small to medium dataset is retrieved from s3)
+      prepareMemoryVolume:
+        # The persistent volume path of the full graph dataset we prepare the memory
+        # volume's graph files from
+        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
-      # hosts:
-      #   - graph.local
-      # ingress:
-      #   enabled: true
-      #   whitelistSourceRangeRef: clusterNetworkRanges
-      #   extraAnnotations:
-      #     nginx.ingress.kubernetes.io/proxy-body-size: 4G
-      #     nginx.ingress.kubernetes.io/proxy-buffering: "on"
-      #     nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-      #   endpoints:
-      #     default:
-      #       paths:
-      #         - path: /
-      nodeSelector:
-        kubernetes.io/hostname: local-cluster-worker2
       extraVolumes:
-        graph-example:
+        # persistent volume
+        grpc-example-dataset-example:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: grpc-example-dataset-example-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-persistent
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+        # in-memory volumes
+        graph-example-inmemory:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-example-pvc
+              claimName: graph-example-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             volumeMode: Filesystem
@@ -1524,21 +1542,47 @@ graph:
             paths:
               - path: /
 
+    # basic rpc graph which will hit the grpc-example grpc pod
+    rpc-full-example:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker
+      type: rpc
+      port: 5009
+      graphName: example
+      graphConfigurationRef: grpcRemoteRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
+      # Whether to start the rpc service (this expects the graph dataset to be ready)
+      startService: true
+      hosts:
+        - graph-rpc-full-example
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+
     # Instance to run the graph with the dataset python3k
     # Only 1 volume with all dataset files
     rpc-python3k:
       enabled: true
-      type: rpc
-      port: 5009
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker3
+      type: rpc
+      port: 5009
       # Whether to fetch or install the dataset through a job
       dataset:
         downloadMethod: s3
         name: 2021-03-23-popular-3k-python
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
-      graphConfigurationRef: grpcRustGraphConfiguration
+      graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
       graphPathConfigurationRef: graphPython3kPathConfiguration
       extraVolumes:
         graph-python3k:
@@ -1562,74 +1606,3 @@ graph:
                     operator: In
                     values:
                     - local-cluster-worker3
-
-    # basic rpc graph with sample dataset (cloned out of swh.graph). This uses 2
-    # volumes; 1 memory (*.graph copied & symlinks) with 1 persistent volume (with all
-    # dataset files)
-    rpc-full-example:
-      enabled: true
-      type: rpc
-      port: 5009
-      graphName: example
-      graphConfigurationRef: grpcRustGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
-      # (optional) Default to not being set. When set, this will prepare the memory
-      # volume with the copy of the *.graph files & symlinks to the other dataset files
-      # (from the persistent volume). When not set or false, this means the volume used
-      # is expected to hold all necessary dataset for the graph to run successfully
-      # (e.g. when the small to medium dataset is retrieved from s3)
-      prepareMemoryVolume:
-        # The persistent volume path of the full graph dataset we prepare the memory
-        # volume's graph files from
-        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
-      # Whether to fetch or install the dataset through a job
-      dataset:
-        downloadMethod: git
-        name: test
-        # url: ""
-      # Whether to start the rpc service (this expects the graph dataset to be ready)
-      startService: true
-      nodeSelector:
-        kubernetes.io/hostname: local-cluster-worker
-      extraVolumes:
-        # persistent volume
-        swh-graph-dataset-example:
-          mountPath: /srv/dataset
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-dataset-example-pvc
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-        # in-memory volumes
-        swh-graph-inmemory:
-          mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-inmemory-pvc
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-      hosts:
-        - graph-rpc-full-example
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
