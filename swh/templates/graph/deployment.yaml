@@ -93,9 +93,11 @@ spec:
                                                          "pathDatasetDestination" $graphPath
                                                          "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{- end }}
+        {{- if $graphConfig.dataset }}
         {{ include "swh.graph.waitForDataset" (dict "Values" $.Values
                                                     "graphPath" $graphPath
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{ end }}
       containers:
         - name: {{ $serviceType }}
           resources:
