@@ -71,6 +71,13 @@ spec:
                                                   "graphPath" (ne $graphSourcePath "" | ternary $graphSourcePath $graphPath)
                                                   "config" $graphConfig.dataset
                                                   "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- if $prepareMemoryVolume }}
+        {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
+                                                         "graphName" $graphName
+                                                         "pathDatasetSource" $graphSourcePath
+                                                         "pathDatasetDestination" $graphPath
+                                                         "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- end }}
       volumes:
       - name: configuration
         emptyDir: {}

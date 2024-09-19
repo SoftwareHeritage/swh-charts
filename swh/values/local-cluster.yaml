@@ -1568,8 +1568,7 @@ graph:
             paths:
               - path: /
 
-    # Instance to run the graph with the dataset python3k
-    # Only 1 volume with all dataset files
+    # Instance to run the graph with the dataset python3k (persistent & memory volumes)
     rpc-python3k:
       enabled: true
       nodeSelector:
@@ -1584,12 +1583,16 @@ graph:
       startService: true
       graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
       graphPathConfigurationRef: graphPython3kPathConfiguration
+      prepareMemoryVolume:
+        # The persistent volume path of the full graph dataset we prepare the memory
+        # volume's graph files from
+        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       extraVolumes:
-        graph-python3k:
-          mountPath: /srv/graph
+        graph-python3k-persistent:
+          mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-python3k-pvc
+              claimName: graph-python3k-persistent-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1598,11 +1601,17 @@ graph:
             resources:
               requests:
                 storage: 1Gi
-            nodeAffinity:
-              required:
-                nodeSelectorTerms:
-                - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                    - local-cluster-worker3
+        # in-memory volumes
+        graph-python3k-inmemory:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-python3k-inmemory-pvc
+          persistentVolumeClaimDefinition:
+            storageClassName: local-path
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi

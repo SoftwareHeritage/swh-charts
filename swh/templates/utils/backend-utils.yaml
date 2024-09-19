@@ -17,22 +17,30 @@ data:
       echo "<DATASET_SOURCE> env variable must be set" && exit 1
     [ -z "${WITNESS_FILE}" ] && \
       echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_SOURCE_FILE}" ] && \
+      echo "<WITNESS_SOURCE_FILE> env variable must be set" && exit 1
+    [ -z "${PERIOD}" ] && \
+      echo "<PERIOD> env variable must be set" && exit 1
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
 
     [ -f ${WITNESS_FILE} ] && echo "Graph ready, do nothing." && exit 0
 
+    while [ ! -f ${WITNESS_SOURCE_FILE} ]; do
+        echo "${WITNESS_SOURCE_FILE} not present, wait for it to prepare the graph dataset..."
+        sleep $PERIOD
+    done
+
     # Create empty dataset location destination for copy to be ok
     mkdir -p ${DATASET_LOCATION}
 
     graph_stats=${GRAPH_NAME}.stats
-    # Symlink all files from dataset source to the destination (including the *.graph &
-    # witness file)
+    # Symlink all files from dataset source to the destination (including the *.graph)
     [ -L "${DATASET_LOCATION}/${graph_stats}" ] || \
-      ( ln -sf ${DATASET_SOURCE}/* ${DATASET_LOCATION}/ && rm ${WITNESS_FILE} )
+      ln -sf ${DATASET_SOURCE}/* ${DATASET_LOCATION}/
 
     graph_name=${GRAPH_NAME}.graph
-    # Except for the hard-copy of the *.graph file
+    # We hard-copy the *.graph file
     if [ -L "${DATASET_LOCATION}/${graph_name}" ] || ! [ -f ${DATASET_LOCATION}/${graph_name} ]; then
       cp -v --remove-destination ${DATASET_SOURCE}/${graph_name} ${DATASET_LOCATION}/;
     fi
@@ -42,8 +50,7 @@ data:
       cp -v --remove-destination ${DATASET_SOURCE}/${graph_transposed_name} ${DATASET_LOCATION}/;
     fi
 
-    # Make explicit the graph is ready (drop the link on witness file from previous
-    # instruction)
+    # Finally, we make explicit the graph is ready
     touch ${WITNESS_FILE}
 
   graph-wait-for-dataset.sh: |

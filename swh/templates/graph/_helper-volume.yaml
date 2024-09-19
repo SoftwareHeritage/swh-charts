@@ -1,6 +1,6 @@
 {{/* Generate the initialize graph backend container configuration if needed */}}
 {{- define "swh.graph.volume.witnessfile" -}}
-- name: WITNESS_FILE
+- name: {{ .witness_file_env_variable_name | default "WITNESS_FILE" }}
   value: {{ .graphPath }}/.graph-is-initialized
 {{- end -}}
 
@@ -52,6 +52,10 @@
   - /entrypoints/graph-prepare-memory-volume.sh
   env:
     {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .pathDatasetDestination) | nindent 4 }}
+    {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_SOURCE_FILE"
+                                                     "graphPath" .pathDatasetSource) | nindent 4 }}
+    - name: PERIOD
+      value: {{ .period | default "3" | quote }}
     - name: GRAPH_NAME
       value: {{ .graphName }}
     - name: DATASET_SOURCE
