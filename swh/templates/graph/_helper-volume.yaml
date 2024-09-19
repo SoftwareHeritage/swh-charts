@@ -1,4 +1,10 @@
 {{/* Generate the initialize graph backend container configuration if needed */}}
+{{- define "swh.graph.volume.witnessfile" -}}
+- name: WITNESS_FILE
+  value: {{ .graphPath }}/.graph-is-initialized
+{{- end -}}
+
+{{/* Generate the initialize graph backend container configuration if needed */}}
 {{- define "swh.graph.fetchDataset" -}}
 {{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
         required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
@@ -7,8 +13,7 @@
   command:
   - /entrypoints/graph-fetch-dataset.sh
   env:
-  - name: WITNESS_FILE
-    value: {{ .graphPath }}/.graph-is-initialized
+  {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .graphPath) | nindent 2 }}
   - name: SWH_CONFIG_FILENAME
     value: /etc/swh/config.yml
   - name: GRAPH_NAME
@@ -46,8 +51,7 @@
   command:
   - /entrypoints/graph-prepare-memory-volume.sh
   env:
-    - name: WITNESS_FILE
-      value: {{ .pathDatasetDestination }}/.graph-is-initialized
+    {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .pathDatasetDestination) | nindent 4 }}
     - name: GRAPH_NAME
       value: {{ .graphName }}
     - name: DATASET_SOURCE
@@ -73,8 +77,7 @@
   command:
   - /entrypoints/graph-wait-for-dataset.sh
   env:
-    - name: WITNESS_FILE
-      value: {{ .graphPath }}/.graph-is-initialized
+    {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .graphPath) | nindent 4 }}
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
     - name: PERIOD
