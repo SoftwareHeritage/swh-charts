@@ -5,19 +5,14 @@
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $graphConfig
                             "Values" $.Values -}}
-{{- $fetchGraphDataset := $graphConfig.dataset | default false -}}
+{{- $datasetName := dig "dataset" "name" "graph" $graphConfig -}}
+{{- $fetchGraphDataset := dig "dataset" "fetch" false $graphConfig -}}
 {{- if $fetchGraphDataset }}
-{{- $graphPathRef := get $graphConfig "graphPathConfigurationRef" | default (get $.Values.graph "graphPathConfigurationRef") -}}
-{{- $graphPath := get $.Values $graphPathRef -}}
+{{- $graphPath := print "/srv/graph/" $datasetName "/compressed" -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
+{{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}
+{{- $graphSourcePath := $prepareMemoryVolume | ternary (print "/srv/dataset/" $datasetName "/compressed") "" -}}
 {{- $jobName := print $serviceType "-job-fetch-dataset" -}}
-{{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" -}}
-{{- $graphSourcePath := "" -}}
-{{- if $prepareMemoryVolume }}
-{{- $graphSourcePathRef := required (print "<prepareMemoryVolume.graphDatasetPathInPersistentVolumeRef> is required")
-                                    (get $prepareMemoryVolume "graphDatasetPathInPersistentVolumeRef") -}}
-{{- $graphSourcePath = get $.Values $graphSourcePathRef -}}
-{{- end }}
 ---
 apiVersion: batch/v1
 kind: Job

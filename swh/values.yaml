@@ -1873,12 +1873,10 @@ provenance:
     #     enabled: true
     #     endpoints: []
 
-# graphConfiguration:
-#   graph:
-#     url: http://<graph-service-url>
-
-# graphPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
-# graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/2021-03-23-popular-3k-python/compressed
+rpcLocalRustWithGrpcGraphConfiguration:
+  cls: local_rust
+  grpc_server:
+    port: 50091
 
 graph:
   enabled: false
@@ -1901,15 +1899,17 @@ graph:
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
     secretKeyName: storage-sentry-dsn
-  #  affinity:
-  #    nodeAffinity:
-  #      requiredDuringSchedulingIgnoredDuringExecution:
-  #        nodeSelectorTerms:
-  #        - matchExpressions:
-  #          - key: "swh/storage"
-  #            operator: In
-  #            values:
-  #            - "true"
+  # nodeSelector:
+  #   kubernetes.io/hostname: local-cluster-worker2
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: "swh/storage"
+  #           operator: In
+  #           values:
+  #           - "true"
   # Whether to do extra actions on the backend used by the graph
   # Can be overridden per instance
   deployments:
@@ -1917,26 +1917,28 @@ graph:
     # rpc-minimal:
     #   type: rpc
     #   # port: 5009
-    #   # (optional) Default to not being set. When set, this will prepare the memory
-    #   # volume with the copy of the *.graph files & symlinks to the other dataset files
-    #   # (from the persistent volume). When not set or false, this means the volume used
-    #   # is expected to hold all necessary dataset for the graph to run successfully
-    #   # (e.g. when the small to medium dataset is retrieved from s3)
-    #   prepareMemoryVolume:
-    #     # The persistent volume path of the full graph dataset we prepare the memory
-    #     # volume's graph files from
-    #     graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
+    #   # Configuration to run the graph service
+    #   graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
+    #   # Dataset information
+    #   dataset:
+    #     # Name of the dataset, default to graph
+    #     name: 2021-03-23-popular-3k-python
+    #     # Whether to fetch or install the dataset through a job
+    #     fetch: true
+    #     downloadMethod: s3  # `swh graph download` method, rsync, scp...
+    #     # url: ""
+    #   # (optional) When true, this will prepare the memory volume with the copy of the
+    #   # *.graph files & symlinks to the other dataset files (from the persistent
+    #   # volume). When false, this means the volume used is expected to hold all
+    #   # necessary dataset for the graph to run successfully (e.g. when the small to
+    #   # medium dataset is retrieved from s3)
+    #   prepareMemoryVolume: false
     #   # Whether to start the rpc service (this expects the graph dataset to be ready)
     #   startService: true
     #   # loglevel can be overriden per instance
     #   # logLevel: WARN
-    #   # Number of statically defined replicas
+    #   # Number of statically defined replicass
     #   # replicas: 1
-    #   # Whether to fetch or install the dataset through a job
-    #   dataset:
-    #     downloadMethod: s3  # `swh graph download` method, rsync, scp...
-    #     name: 2021-03-23-popular-3k-python
-    #     # url: ""
     #   requestedCpu: 100m
     #   requestedMemory: 10Gi
     #   # gunicorn:

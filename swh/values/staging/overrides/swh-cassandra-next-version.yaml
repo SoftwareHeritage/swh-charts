@@ -1039,12 +1039,8 @@ grpcRemoteRustGraphConfiguration:
   grpc_server:
     port: 50091
 
-graphExamplePathConfiguration: /srv/graph/test/compressed
-graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/test/compressed
-
 graph:
   enabled: true
-  graphPathConfigurationRef: graphPathConfiguration
   deployments:
     # grpc graph with test dataset
     grpc-example:
@@ -1055,12 +1051,10 @@ graph:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       graphName: example
       graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
       dataset:
-        downloadMethod: git
         name: test
-      prepareMemoryVolume:
-        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
+        downloadMethod: git
+      prepareMemoryVolume: true
       extraVolumes:
         # persistent volume (where the full dataset files are stored)
         swh-graph-grpc-dataset-example:
@@ -1117,7 +1111,6 @@ graph:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       graphName: example
       graphConfigurationRef: grpcRemoteRustGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
       hosts:
         - graph-next-version.internal.staging.swh.network
       ingress:

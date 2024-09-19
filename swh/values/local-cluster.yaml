@@ -1463,10 +1463,6 @@ plainGrpcGraphConfiguration:
   graph:
     max_ram: 1g
 
-graphExamplePathConfiguration: /srv/graph/test/compressed
-graphDatasetPathInPersistentVolumeConfiguration: /srv/dataset/test/compressed
-graphPython3kPathConfiguration: /srv/graph/2021-03-23-popular-3k-python/compressed
-
 graph:
   enabled: false
   # Test dataset uses the "example" name
@@ -1482,21 +1478,19 @@ graph:
       port: 50091
       graphName: example
       graphConfigurationRef: plainGrpcGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
       # Whether to fetch or install the dataset through a job
       dataset:
-        downloadMethod: git
+        fetch: true
         name: test
+        downloadMethod: git
         # url: ""
-      # (optional) Default to not being set. When set, this will prepare the memory
-      # volume with the copy of the *.graph files & symlinks to the other dataset files
-      # (from the persistent volume). When not set or false, this means the volume used
-      # is expected to hold all necessary dataset for the graph to run successfully
-      # (e.g. when the small to medium dataset is retrieved from s3)
-      prepareMemoryVolume:
-        # The persistent volume path of the full graph dataset we prepare the memory
-        # volume's graph files from
-        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
+
+      # (optional) When true, this will prepare the memory volume with the copy of the
+      # *.graph files & symlinks to the other dataset files (from the persistent
+      # volume). When false, this means the volume used is expected to hold all
+      # necessary dataset for the graph to run successfully (e.g. when the small to
+      # medium dataset is retrieved from s3)
+      prepareMemoryVolume: true
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
       extraVolumes:
@@ -1551,7 +1545,6 @@ graph:
       port: 5009
       graphName: example
       graphConfigurationRef: grpcRemoteRustGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
       hosts:
@@ -1577,16 +1570,13 @@ graph:
       port: 5009
       # Whether to fetch or install the dataset through a job
       dataset:
+        fetch: true
         downloadMethod: s3
         name: 2021-03-23-popular-3k-python
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
       graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
-      graphPathConfigurationRef: graphPython3kPathConfiguration
-      prepareMemoryVolume:
-        # The persistent volume path of the full graph dataset we prepare the memory
-        # volume's graph files from
-        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
+      prepareMemoryVolume: true
       extraVolumes:
         graph-python3k-persistent:
           mountPath: /srv/dataset
