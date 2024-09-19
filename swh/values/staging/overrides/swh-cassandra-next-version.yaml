@@ -1028,8 +1028,14 @@ provenance:
           whitelistSourceRangeRef: stagingNetworkRanges
 
 # Rpc Rust graph configuration
-grpcRustGraphConfiguration:
+rpcLocalRustWithGrpcGraphConfiguration:
   cls: local_rust
+  grpc_server:
+    port: 50091
+
+grpcRemoteRustGraphConfiguration:
+  cls: remote
+  url: graph-grpc-next-version.internal.staging.swh.network:50091
   grpc_server:
     port: 50091
 
@@ -1040,15 +1046,16 @@ graph:
   enabled: true
   graphPathConfigurationRef: graphPathConfiguration
   deployments:
-    # rpc graph with test dataset
-    rpc-example:
-      type: rpc
-      port: 5009
-      graphName: example
-      graphConfigurationRef: grpcRustGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
+    # grpc graph with test dataset
+    grpc-example:
+      enabled: true
+      type: grpc
+      port: 50091
       nodeSelector:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
+      graphName: example
+      graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
       dataset:
         downloadMethod: git
         name: test
@@ -1056,11 +1063,11 @@ graph:
         graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
       extraVolumes:
         # persistent volume (where the full dataset files are stored)
-        swh-graph-dataset-example:
+        swh-graph-grpc-dataset-example:
           mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-dataset-example-pvc
+              claimName: swh-graph-grpc-dataset-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1071,11 +1078,11 @@ graph:
                 storage: 1Gi
         # in-memory volume (where the *.graph files and links to the files in persistent
         # volume are)
-        swh-graph-inmemory-date:
+        swh-graph-grpc-inmemory:
           mountPath: /srv/graph
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: swh-graph-inmemory-pvc
+              claimName: swh-graph-grpc-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             accessModes:
@@ -1086,7 +1093,7 @@ graph:
             volumeMode: Filesystem
 
       hosts:
-        - graph-next-version.internal.staging.swh.network
+        - graph-grpc-next-version.internal.staging.swh.network
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
@@ -1101,54 +1108,18 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-    # grpc graph with test dataset
-    grpc-example:
+    # rpc graph which hit the grpc graph instance declared above ^
+    rpc-example:
       enabled: true
-      type: grpc
-      port: 50091
-      graphName: example
-      graphConfigurationRef: grpcRustGraphConfiguration
-      graphPathConfigurationRef: graphExamplePathConfiguration
+      type: rpc
+      port: 5009
       nodeSelector:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
-      dataset:
-        downloadMethod: git
-        name: test
-      prepareMemoryVolume:
-        graphDatasetPathInPersistentVolumeRef: graphDatasetPathInPersistentVolumeConfiguration
-      extraVolumes:
-        # persistent volume (where the full dataset files are stored)
-        swh-graph-grpc-dataset-example-date:
-          mountPath: /srv/dataset
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-grpc-dataset-example-date-pvc
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-        # in-memory volume (where the *.graph files and links to the files in persistent
-        # volume are)
-        swh-graph-grpc-inmemory-date:
-          mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-grpc-inmemory-date-pvc
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-            volumeMode: Filesystem
-
+      graphName: example
+      graphConfigurationRef: grpcRemoteRustGraphConfiguration
+      graphPathConfigurationRef: graphExamplePathConfiguration
       hosts:
-        - graph-grpc-next-version.internal.staging.swh.network
+        - graph-next-version.internal.staging.swh.network
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
