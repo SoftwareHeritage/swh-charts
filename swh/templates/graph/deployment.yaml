@@ -203,7 +203,8 @@ spec:
           defaultMode: 0555
       {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
       - name: {{ $volumeName }}
-        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+        persistentVolumeClaim:
+          claimName: {{ $volumeName }}-pvc
       {{ end }}
 {{ end }}
 {{ end -}}

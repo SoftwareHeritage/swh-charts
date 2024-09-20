@@ -1059,9 +1059,6 @@ graph:
         # persistent volume (where the full dataset files are stored)
         swh-graph-grpc-dataset-example:
           mountPath: /srv/dataset
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-grpc-dataset-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1074,9 +1071,6 @@ graph:
         # volume are)
         swh-graph-grpc-inmemory:
           mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: swh-graph-grpc-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             accessModes:

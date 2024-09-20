@@ -1497,9 +1497,6 @@ graph:
         # persistent volume
         grpc-example-dataset-example:
           mountPath: /srv/dataset
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: grpc-example-dataset-example-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1511,9 +1508,6 @@ graph:
         # in-memory volumes
         graph-example-inmemory:
           mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-example-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             volumeMode: Filesystem
@@ -1580,9 +1574,6 @@ graph:
       extraVolumes:
         graph-python3k-persistent:
           mountPath: /srv/dataset
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-python3k-persistent-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
             volumeMode: Filesystem
@@ -1594,9 +1585,6 @@ graph:
         # in-memory volumes
         graph-python3k-inmemory:
           mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-python3k-inmemory-pvc
           persistentVolumeClaimDefinition:
             storageClassName: local-path
             volumeMode: Filesystem
