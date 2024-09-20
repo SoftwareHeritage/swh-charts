@@ -1888,6 +1888,7 @@ graph:
   graphName: graph
   # graphPathConfigurationRef: graphPathConfiguration
   priorityClassName: frontend-rpc
+  # Default log level for all instances (can be overriden per instance)
   logLevel: INFO
   # [optional] Graph image version to use. By default, use the one declared in
   # /values-swh-application-version.yaml. This can be overridden per instance

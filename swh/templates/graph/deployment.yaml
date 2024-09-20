@@ -19,6 +19,7 @@
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}
 {{- $graphSourcePath := $prepareMemoryVolume | ternary (print "/srv/dataset/" $datasetName "/compressed") "" -}}
 {{- $graphImageVersion := get $graphConfig "imageVersion" | default $.Values.graph.imageVersion | default $.Values.swh_graph_image_version -}}
+{{- $logLevel := $graphConfig.logLevel | default $.Values.graph.logLevel | default "INFO" | upper -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -152,7 +153,11 @@ spec:
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ $graphConfig.logLevel | default $.Values.graph.logLevel | default "INFO" | quote }}
+              value: {{ $logLevel | quote }}
+            {{- if (eq (lower $logLevel) "debug") }}
+            - name: RUST_LOG
+              value: "debug"
+            {{ end }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
           {{- if $.Values.graph.sentry.enabled }}
