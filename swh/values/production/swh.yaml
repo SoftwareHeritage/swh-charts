@@ -1316,7 +1316,7 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 8
+        minReplicaCount: 10
         maxReplicaCount: 10
         threshold: 10
       requestedCpu: 500m
@@ -2117,7 +2117,7 @@ provenance:
       graphConfigurationRef: provenanceGraphGrpcConfiguration
       replicas: 2
       gunicorn:
-        workers: 4
+        workers: 8
         threads: 1
       hosts:
         - webapp-provenance-ingress
