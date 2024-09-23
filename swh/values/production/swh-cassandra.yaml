@@ -419,7 +419,7 @@ web:
   enabled: true
   logLevel: INFO
   deployments:
-    # Main instance to serve archive.softwareheritage.org
+    # Main (future) instance to serve archive.softwareheritage.org
     archive:
       gunicorn:
         workers: 8
@@ -430,6 +430,7 @@ web:
         minReplicaCount: 8
         maxReplicaCount: 10
         threshold: 10
+      # TODO: Activate when decommissioning the swh ns
       metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 6Gi
