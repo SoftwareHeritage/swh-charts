@@ -607,6 +607,8 @@ web:
         threads: 3
         timeout: 60
       replicas: 2
+      # TODO: Activate when decommissioning the swh ns
+      metricsScrapingEnabled: false
       requestedCpu: 200m
       requestedMemory: 7Gi
       hosts:
