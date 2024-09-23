@@ -463,7 +463,7 @@ web:
       ingress:
         # TODO: Enable when decommissioning the swh ns
         # cassandra deployment has to be disabled (same ingresses)
-        enabled: false
+        enabled: true
         secretName: swh-web-archive-crt
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
@@ -525,7 +525,9 @@ web:
         matomo:
           url: https://piwik.inria.fr/
           site_id: 59
+
     cassandra:
+      enabled: false
       metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 500Mi
