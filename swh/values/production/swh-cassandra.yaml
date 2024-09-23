@@ -81,10 +81,6 @@ rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: localRpcROStorageService
 
-remoteCassandraStorageConfiguration:
-  cls: remote
-  url: http://storage-cassandra-read-only-rpc-ingress
-
 storageReplayerJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -574,7 +570,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: remoteCassandraStorageConfiguration
+      storageConfigurationRef: localRpcROStorageService
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
