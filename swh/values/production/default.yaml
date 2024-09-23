@@ -825,47 +825,92 @@ externalServices:
     search:
       internalName: search-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    search-swh-cassandra:
+      internalName: search-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-azure-read-only:
       internalName: storage-azure-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-azure-read-only-swh-cassandra:
+      internalName: storage-azure-read-only-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-cassandra-read-only:
       internalName: storage-cassandra-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-cassandra-read-only-swh-cassandra:
+      internalName: storage-cassandra-read-only-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     indexer-storage-read-only:
       internalName: indexer-storage-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    indexer-storage-read-only-swh-cassandra:
+      internalName: indexer-storage-read-only-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     indexer-storage-read-write:
       internalName: indexer-storage-read-write-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    indexer-storage-read-write-swh-cassandra:
+      internalName: indexer-storage-read-write-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-read-only:
       internalName: objstorage-read-only-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-read-only-swh-cassandra:
+      internalName: objstorage-read-only-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     vault:
       internalName: vault-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    vault-swh-cassandra:
+      internalName: vault-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-saam-zfs:
       internalName: objstorage-ro-saam-zfs-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-ro-saam-zfs-swh-cassandra:
+      internalName: objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-delete-saam-zfs:
       internalName: objstorage-delete-saam-zfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-delete-saam-zfs-swh-cassandra:
+      internalName: objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-banco-xfs:
       internalName: objstorage-ro-banco-xfs-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-ro-banco-xfs-swh-cassandra:
+      internalName: objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-delete-banco-xfs:
       internalName: objstorage-delete-banco-xfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    objstorage-delete-banco-xfs-swh-cassandra:
+      internalName: objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-rw-postgresql:
+      internalName: storage-rw-postgresql-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-rw-postgresql-swh-cassandra:
       internalName: storage-rw-postgresql-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-rw-postgresql-saam:
       internalName: storage-rw-postgresql-saam-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-rw-postgresql-saam-swh-cassandra:
+      internalName: storage-rw-postgresql-saam-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     counters:
       internalName: counters-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    counters-swh-cassandra:
+      internalName: counters-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     provenance:
       internalName: webapp-provenance-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    provenance-swh-cassandra:
+      internalName: webapp-provenance-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 svixConfiguration:
