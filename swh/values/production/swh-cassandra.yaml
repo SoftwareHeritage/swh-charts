@@ -992,7 +992,7 @@ objstorage:
         # Deploy an ingress to access the objstorage
       hosts:
         - objstorage-read-only-rpc-ingress-swh-cassandra
-        # - objstorage.internal.softwareheritage.org
+        - objstorage.internal.softwareheritage.org
       ingress:
         enabled: true
         # mandatory if ingress is enabled
@@ -1011,17 +1011,16 @@ objstorage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-      # TODO: Reactivate when decommissioning the production/swh.yaml
       # objstorage read-only
-      # extraIngresses:
-      #   # Allow access through the public reverse proxy (authenticated) for all IPs
-      #   - hosts:
-      #       - objstorage.softwareheritage.org
-      #     whitelistSourceRangeRef: null
-      #     endpoints:
-      #       default:
-      #         extraWhitelistSourceRange: []
-      #         authentication: swh-cassandra/ingress-objstorage-ro-auth-secrets
+      extraIngresses:
+        # Allow access through the public reverse proxy (authenticated) for all IPs
+        - hosts:
+            - objstorage.softwareheritage.org
+          whitelistSourceRangeRef: null
+          endpoints:
+            default:
+              extraWhitelistSourceRange: []
+              authentication: swh-cassandra/ingress-objstorage-ro-auth-secrets
     ro-saam-zfs:
       enabled: true
       requestedCpu: 250m
