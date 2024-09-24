@@ -380,10 +380,10 @@ roObjstorageBestEffort:
     timeout: 120
   - cls: remote
     name: saam
-    url: http://objstorage-ro-saam-zfs-rpc-ingress
+    url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
   - cls: remote
     name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress
+    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
   - *azure-storage-conf-ro
 
 roObjstorageBestEffortConfiguration:
@@ -439,10 +439,10 @@ roObjstorageForWineryReplayer:
     timeout: 120
   - cls: remote
     name: saam
-    url: http://objstorage-ro-saam-zfs-rpc-ingress
+    url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
   - cls: remote
     name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress
+    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
   - *azure-storage-conf-ro
 
 roObjstorageForWineryReplayerConfiguration:
@@ -461,10 +461,10 @@ roObjstorageForS3Replayer:
       - 10   # Read
   - cls: remote
     name: saam
-    url: http://objstorage-ro-saam-zfs-rpc-ingress
+    url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
   - cls: remote
     name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress
+    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
   - *azure-storage-conf-ro
 
 roObjstorageForS3ReplayerConfiguration:
@@ -497,10 +497,10 @@ multiplexerForLocalStoragesConfiguration:
       - 10   # Read
   - cls: remote
     name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress
+    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
   - cls: remote
     name: saam
-    url: http://objstorage-ro-saam-zfs-rpc-ingress
+    url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
 
 rwObjstorageWineryAndAzure:
   cls: multiplexer
@@ -590,12 +590,12 @@ remoteCountersConfiguration:
 remoteBancoReadOnlyObjstorageConfiguration:
   cls: remote
   name: banco
-  url: http://objstorage-ro-banco-xfs-rpc-ingress
+  url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
 
 remoteSaamReadOnlyObjstorageConfiguration:
   cls: remote
   name: saam
-  url: http://objstorage-ro-saam-zfs-rpc-ingress
+  url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
 
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
