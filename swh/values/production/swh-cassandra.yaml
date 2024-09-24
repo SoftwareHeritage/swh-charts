@@ -341,10 +341,10 @@ storage:
       requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyCassandraStorageConfiguration
       hosts:
-        # TODO: Drop "-swh-cassandra" when decommissioning the swh one
         - storage-azure-read-only-rpc-ingress-swh-cassandra
-        # TODO: Uncomment (and rename -cassandra) when decommissioning the swh one
-        # - storage-postgresql-ro.internal.softwareheritage.org
+        # TODO: Uncomment when decommissioning the swh one
+        # (Add a CNAME in swh-site about this)
+        # - storage-cassandra-ro.internal.softwareheritage.org
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges

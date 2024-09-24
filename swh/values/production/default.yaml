@@ -408,10 +408,10 @@ roObjstorageHighParallelism:
   - *azure-storage-conf-ro
   - cls: remote
     name: saam
-    url: http://objstorage-ro-saam-zfs-rpc-ingress
+    url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
   - cls: remote
     name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress
+    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
 
 roObjstorageHighParallelismConfiguration:
   configurationRef: roObjstorageHighParallelism
@@ -582,7 +582,7 @@ remoteReadOnlyIndexerStorageConfiguration:
 
 remoteReadWriteIndexerStorageConfiguration:
   cls: remote
-  url: http://indexer-storage-read-write-rpc-ingress
+  url: http://indexer-storage-read-write-rpc-ingress-swh-cassandra
 
 remoteCountersConfiguration:
     cls: remote
@@ -950,7 +950,7 @@ remoteROStorageConfiguration:
 
 remoteStorageConfiguration:
   cls: remote
-  url: http://storage-azure-read-only-rpc-ingress
+  url: http://storage-azure-read-only-rpc-ingress-swh-cassandra
 
 azureCacheConfiguration:
   cls: azure
