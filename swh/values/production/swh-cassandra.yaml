@@ -1229,8 +1229,7 @@ scheduler:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
-      # TODO: Enable when decommissioning the swh one
-    enabled: false
+    enabled: true
     period: 15m
     severity: warning
     tooManyMessagesInQueue:
@@ -1238,8 +1237,7 @@ scheduler:
         saatchi:
           threshold: 30000
   recurrent:
-    # TODO: Enable when decommissioning the swh one
-    enabled: false
+    enabled: true
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
@@ -1284,23 +1282,20 @@ scheduler:
             # add-forge-now runner0 in staging network
             - 192.168.130.221/32
   updateMetrics:
-    # TODO: Enable (if needed when svix-webhooks is off & when decommissioning the swh
-    # one)
-    enabled: false
+    enabled: true
     concurrencyPolicy: Forbid
     # At minute 27 past every 4th hour from 3 through 23
     cron: "27 3-23/4 * * *"
   journalClient:
-    # TODO: Enable when decommissioning the swh one
-    enabled: false
+    enabled: true
     journalConfigurationRef: journalClientConfiguration
   extraServices:
-    # TODO: Enable when decommissioning the swh one
-    enabled: false
     runner:
+      enabled: true
       logLevel: INFO
       period: 10
     runner-priority:
+      enabled: true
       logLevel: INFO
       period: 10
       extraConfig:
@@ -1311,6 +1306,7 @@ scheduler:
         - load-archive-files
         - load-hg
     listener:
+      enabled: true
       replicas: 4
       logLevel: INFO
 

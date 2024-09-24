@@ -792,11 +792,9 @@ scheduler:
     journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
-      enabled: true
       logLevel: INFO
       period: 10
     runner-priority:
-      enabled: true
       logLevel: INFO
       period: 10
       extraConfig:
@@ -807,7 +805,6 @@ scheduler:
         - load-archive-files
         - load-hg
     listener:
-      enabled: true
       replicas: 4
       logLevel: INFO
 
