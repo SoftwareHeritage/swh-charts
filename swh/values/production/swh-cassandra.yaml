@@ -342,9 +342,7 @@ storage:
       storageConfigurationRef: readOnlyCassandraStorageConfiguration
       hosts:
         - storage-azure-read-only-rpc-ingress-swh-cassandra
-        # TODO: Uncomment when decommissioning the swh one
-        # (Add a CNAME in swh-site about this)
-        # - storage-cassandra-ro.internal.softwareheritage.org
+        - storage-cassandra-ro.internal.softwareheritage.org
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
