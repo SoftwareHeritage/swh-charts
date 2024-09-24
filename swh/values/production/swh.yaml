@@ -990,7 +990,7 @@ search:
   #   cpuPercentageUsage: 100
   hosts:
     - search-rpc-ingress
-    - search.internal.softwareheritage.org
+    # - search.internal.softwareheritage.org
   ingress:
     enabled: true
     # Optional: the ingress classname to use
