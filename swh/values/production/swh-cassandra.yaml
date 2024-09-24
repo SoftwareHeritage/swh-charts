@@ -1344,7 +1344,6 @@ vault:
   # setup
   requestedMemory: 512Mi
   requestedCpu: 500m
-  # TODO: Drop "-swh-cassandra" when decommissioning the swh one
   hosts:
     - vault-rpc-ingress-swh-cassandra
   ingress:

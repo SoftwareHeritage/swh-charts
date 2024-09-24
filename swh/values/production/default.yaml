@@ -574,7 +574,7 @@ remoteSchedulerConfiguration:
 
 remoteVaultConfiguration:
   cls: remote
-  url: http://vault-rpc-ingress
+  url: http://vault-rpc-ingress-swh-cassandra
 
 remoteReadOnlyIndexerStorageConfiguration:
   cls: remote
