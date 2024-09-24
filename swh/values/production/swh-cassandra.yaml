@@ -69,7 +69,7 @@ scrubberObjstorageJournalClientConfiguration:
 
 # (Not so) readonly (namespace local) storage
 # TODO: Use a true read-only storage
-localRpcROStorageService:
+rpcROStorageService:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
@@ -79,7 +79,7 @@ provenanceConfiguration:
 
 rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: localRpcROStorageService
+  storageConfigurationRef: rpcROStorageService
 
 storageReplayerJournalClientConfiguration:
   cls: kafka
@@ -570,7 +570,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: localRpcROStorageService
+      storageConfigurationRef: rpcROStorageService
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
