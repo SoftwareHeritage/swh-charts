@@ -1055,7 +1055,6 @@ objstorage:
                 - "true"
       # Deploy an ingress to access the objstorage
       hosts:
-        # TODO: Drop "-swh-cassandra" when decommissioning the swh one
         - objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
       ingress:
         enabled: true
@@ -1088,7 +1087,6 @@ objstorage:
               nginx.ingress.kubernetes.io/whitelist-source-range: null
       extraIngresses:
         - hosts:
-            # TODO: Drop "-swh-cassandra" when decommissioning the swh one
             - objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
           endpoints:
             deny-delete: null
@@ -1126,7 +1124,6 @@ objstorage:
                 - "true"
       # Deploy an ingress to access the objstorage
       hosts:
-        # TODO: Drop "-swh-cassandra" when decommissioning the swh one
         - objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
       ingress:
         enabled: true
@@ -1159,7 +1156,6 @@ objstorage:
               nginx.ingress.kubernetes.io/whitelist-source-range: null
       extraIngresses:
         - hosts:
-            # TODO: Drop "-swh-cassandra" when decommissioning the swh one
             - objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
           endpoints:
             deny-delete: null
@@ -1181,7 +1177,6 @@ indexerStorage:
       requestedMemory: 512Mi
       indexerStorageConfigurationRef: postgresqlReadOnlyIndexerStorageConfiguration
       hosts:
-        # TODO: Drop "-swh-cassandra" when decommissioning the swh one
         - indexer-storage-read-only-rpc-ingress-swh-cassandra
       ingress:
         enabled: true
@@ -1468,7 +1463,6 @@ deposit:
   migrationsEnabled: false
   replicas: 2
   hosts:
-    # TODO: Drop "-swh-cassandra" when decommissioning the swh one
     - deposit-rpc-ingress-swh-cassandra
     # TODO: Uncomment when decommissioning the swh one
     #- deposit.softwareheritage.org
