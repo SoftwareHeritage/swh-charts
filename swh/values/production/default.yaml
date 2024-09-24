@@ -1070,3 +1070,6 @@ authenticatedIndexerProd01JournalClientConfiguration:
 remoteROCassandraIngressStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
+
+vaultGraphConfiguration:
+  url: http://graph.internal.softwareheritage.org:5009/graph

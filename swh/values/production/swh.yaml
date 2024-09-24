@@ -6,9 +6,6 @@ remoteRpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: rpcRWStorageConfiguration
 
-vaultGraphConfiguration:
-  url: http://graph.internal.softwareheritage.org:5009/graph
-
 s3RWObjectstorageConfiguration: &s3-rw-configuration
   cls: s3
   compression: gzip
