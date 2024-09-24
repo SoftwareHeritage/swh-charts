@@ -456,8 +456,6 @@ web:
         #- archive.internal.softwareheritage.org
         #- archive-dynamic.internal.softwareheritage.org
       ingress:
-        # TODO: Enable when decommissioning the swh ns
-        # cassandra deployment has to be disabled (same ingresses)
         enabled: true
         secretName: swh-web-archive-crt
         extraAnnotations:
