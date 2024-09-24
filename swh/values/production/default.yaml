@@ -569,8 +569,7 @@ remoteSearchConfiguration:
 
 remoteSchedulerConfiguration:
   cls: remote
-  # TODO: Change to scheduler-rpc-ingress when cassandra migration is done
-  url: http://scheduler.internal.softwareheritage.org
+  url: http://scheduler-rpc-ingress-swh-cassandra
 
 remoteVaultConfiguration:
   cls: remote
