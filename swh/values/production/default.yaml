@@ -864,6 +864,12 @@ externalServices:
     vault-swh-cassandra:
       internalName: vault-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    scheduler:
+      internalName: scheduler-rpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    scheduler-swh-cassandra:
+      internalName: scheduler-rpc-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-saam-zfs:
       internalName: objstorage-ro-saam-zfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

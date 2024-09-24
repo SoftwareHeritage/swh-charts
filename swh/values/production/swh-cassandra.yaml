@@ -1262,11 +1262,9 @@ scheduler:
     hosts:
       # Used by future add-forge-now runner0 vm
       - scheduler.internal.softwareheritage.org
-      # TODO: Use this scheduler-rpc-ingress for the internal access to the scheduler
-      - scheduler-rpc-ingress
+      - scheduler-rpc-ingress-swh-cassandra
     ingress:
-      # TODO: Enable when decommissioning the swh one
-      enabled: false
+      enabled: true
       # TODO: Improve the authorization internal cluster ip range.
       # Current internal range retrieved out of the `kubectl cluster-info dump`
       # Default allowed ip ranges that can be extended per ingress definitions paths

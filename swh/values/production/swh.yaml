@@ -750,7 +750,8 @@ scheduler:
       workers: 8
       timeout: 3600
     hosts:
-      - scheduler.internal.softwareheritage.org
+      - scheduler-rpc-ingress
+      # - scheduler.internal.softwareheritage.org
     ingress:
       enabled: true
       # TODO: Improve the authorization internal cluster ip range.
