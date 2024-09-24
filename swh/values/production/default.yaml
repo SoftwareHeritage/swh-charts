@@ -565,7 +565,7 @@ remoteROCassandraRpcIngressStorageConfiguration:
 
 remoteSearchConfiguration:
   cls: remote
-  url: http://search-rpc-ingress
+  url: http://search-rpc-ingress-swh-cassandra
 
 remoteSchedulerConfiguration:
   cls: remote

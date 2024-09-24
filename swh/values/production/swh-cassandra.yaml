@@ -1381,7 +1381,6 @@ search:
   #   maxReplicaCount: 4
   #   cpuPercentageUsage: 100
   hosts:
-    # TODO: Drop "-swh-cassandra" when decommissioning the swh one
     - search-rpc-ingress-swh-cassandra
     # TODO: Uncomment when decommissioning the swh one
     #- search.internal.softwareheritage.org
