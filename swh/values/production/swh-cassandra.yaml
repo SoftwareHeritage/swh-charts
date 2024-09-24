@@ -1441,10 +1441,8 @@ counters:
     #   maxReplicaCount: 4
     #   cpuPercentageUsage: 100
     hosts:
-      # TODO: Drop "-swh-cassandra" when decommissioning the swh one
       - counters-rpc-ingress-swh-cassandra
-      # TODO: Uncomment when decommissioning the swh one
-      #- counters.internal.softwareheritage.org
+      - counters.internal.softwareheritage.org
     ingress:
       enabled: true
       # Default allowed ip ranges that can be extended per ingress definitions paths

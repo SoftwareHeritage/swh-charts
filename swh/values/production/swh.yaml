@@ -1921,7 +1921,7 @@ counters:
     #   cpuPercentageUsage: 100
     hosts:
       - counters-rpc-ingress
-      - counters.internal.softwareheritage.org
+      # - counters.internal.softwareheritage.org
     ingress:
       enabled: true
       # Default allowed ip ranges that can be extended per ingress definitions paths
