@@ -1006,8 +1006,9 @@ search:
 scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
-  storageConfigurationRef: remoteRpcRWStorageConfiguration
   priorityClassName: background-workload
+  objstorageChecker:
+    enabled: false
   journalChecker:
     enabled: true
     journalClientConfigurationRef: authenticatedJournalClientConfiguration
@@ -1174,8 +1175,6 @@ scrubber:
         object: snapshot
         requestedCpu: 150m
         requestedMemory: 128Mi
-  objstorageChecker:
-    enabled: false
 
 storage:
   enabled: true
