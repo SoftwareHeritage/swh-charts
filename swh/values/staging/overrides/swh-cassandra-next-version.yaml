@@ -1055,6 +1055,7 @@ graph:
         fetch: true
         name: test
         downloadMethod: git
+      startService: true
       prepareMemoryVolume: true
       extraVolumes:
         # persistent volume (where the full dataset files are stored)
@@ -1106,6 +1107,7 @@ graph:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       graphName: example
       graphConfigurationRef: grpcRemoteRustGraphConfiguration
+      startService: true
       hosts:
         - graph-next-version.internal.staging.swh.network
       ingress:
