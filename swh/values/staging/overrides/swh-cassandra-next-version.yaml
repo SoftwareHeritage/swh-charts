@@ -1052,6 +1052,7 @@ graph:
       graphName: example
       graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
       dataset:
+        fetch: true
         name: test
         downloadMethod: git
       prepareMemoryVolume: true
