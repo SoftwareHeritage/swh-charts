@@ -745,6 +745,8 @@ toolbox:
       storageConfigurationRef: scrubberROStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
 
 scrubber:
   enabled: true
