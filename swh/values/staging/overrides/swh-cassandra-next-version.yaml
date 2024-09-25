@@ -1036,9 +1036,9 @@ provenance:
 
 grpcRemoteRustGraphConfiguration:
   cls: remote
-  url: graph-grpc-next-version-ingress:50091
+  url: graph-grpc-example:50091
   grpc_server:
-    port: 50091
+    port: 50901
 
 plainGrpcGraphConfiguration:
   max_ram: 1g
