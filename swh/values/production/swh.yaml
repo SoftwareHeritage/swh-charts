@@ -1019,7 +1019,7 @@ search:
           - 192.168.101.0/24
 
   journalClients:
-    enabled: true
+    enabled: false
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteStorageConfiguration
