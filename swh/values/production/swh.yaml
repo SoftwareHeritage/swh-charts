@@ -875,7 +875,7 @@ indexerStorage:
         workers: 4
 
 indexers:
-  enabled: true
+  enabled: false
   priorityClassName: low-workload
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
