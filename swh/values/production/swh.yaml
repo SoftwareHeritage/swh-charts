@@ -853,14 +853,6 @@ toolbox:
       webhooksConfigurationRef: svixConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
-  bulkLoad:
-    schedulerConfigurationRef: scheduler
-    jobs:
-      opencores:
-        originListUrl: https://gitlab.softwareheritage.org/-/project/80/uploads/a4a8f1ca3c57dd2a994f982b9b4fa227/opencores.org-projects-opencores.org-ocsvn-all-svn-repos.txt
-        taskType: load-svn
-        maxTasks: 250
-        queuePrefix: oneshot
 
 indexerStorage:
   enabled: true
