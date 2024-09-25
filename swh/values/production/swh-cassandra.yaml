@@ -789,6 +789,49 @@ scrubber:
             checkHashes: true
             checkReferences: false
             nbPartitions: 65536
+  journalChecker:
+    enabled: true
+    journalClientConfigurationRef: authenticatedJournalClientConfiguration
+    deployments:
+      directory:
+        # Disabled until a fix or workaroud for swh/devel/swh-scrubber#4698
+        # is available
+        enabled: false
+        configName: journal-checker-directory
+        journalClientOverrides:
+          batch_size: 100
+          on_eof: restart
+        object: directory
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 200Mi
+      release:
+        configName: journal-checker-release
+        journalClientOverrides:
+          batch_size: 200
+          privileged: true
+          on_eof: restart
+        object: release
+        replicas: 1
+        requestedCpu: 1
+        requestedMemory: 200Mi
+      revision:
+        configName: journal-checker-revision
+        journalClientOverrides:
+          privileged: true
+          on_eof: restart
+        object: revision
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 250Mi
+      snapshot:
+        configName: journal-checker-snapshot
+        object: snapshot
+        journalClientOverrides:
+          on_eof: restart
+        replicas: 2
+        requestedCpu: 1
+        requestedMemory: 250Mi
   storageChecker:
     enabled: false
     storageConfigurationRef: scrubberROStorageConfiguration
