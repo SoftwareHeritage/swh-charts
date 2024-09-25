@@ -1,6 +1,6 @@
 {{/* Hydrate a scheduler (tool) deployment config from defaults*/}}
 {{- define "swh.scheduler.deploymentConfig" -}}
 {{- $defaults := (pick .Values.scheduler "schedulerConfigurationRef" "celeryConfigurationRef" "enabled") -}}
-{{- $merged := mustMerge .deploymentConfig $defaults -}}
+{{- $merged := mustMergeOverwrite $defaults .deploymentConfig -}}
 {{ $merged | toYaml }}
 {{- end -}}
