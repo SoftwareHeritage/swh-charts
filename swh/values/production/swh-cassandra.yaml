@@ -732,10 +732,6 @@ graphql:
 toolbox:
   enabled: true
   configs:
-    scrubber-storage:
-      moduleName: scrubber
-      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
-      storageConfigurationRef: scrubberROStorageConfiguration
     indexer-storage:
       moduleName: indexer
       moduleConfigKey: indexer_storage
@@ -743,6 +739,10 @@ toolbox:
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
+    scrubber-storage:
+      moduleName: scrubber
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      storageConfigurationRef: scrubberROStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
 
