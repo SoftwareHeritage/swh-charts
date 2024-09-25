@@ -1460,8 +1460,7 @@ grpcRemoteRustGraphConfiguration:
     port: 50091
 
 plainGrpcGraphConfiguration:
-  graph:
-    max_ram: 1g
+  max_ram: 1g
 
 graph:
   enabled: false

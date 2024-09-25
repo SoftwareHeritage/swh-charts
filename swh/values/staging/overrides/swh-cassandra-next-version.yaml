@@ -1027,17 +1027,21 @@ provenance:
           - provenance-next-version.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
 
-# Rpc Rust graph configuration
-rpcLocalRustWithGrpcGraphConfiguration:
-  cls: local_rust
-  grpc_server:
-    port: 50091
+# Rpc Rust graph configuration example (for a service rpc spawning an internal grpc
+# instance)
+# rpcLocalRustWithGrpcGraphConfiguration:
+#   cls: local_rust
+#   grpc_server:
+#     port: 50091
 
 grpcRemoteRustGraphConfiguration:
   cls: remote
   url: graph-grpc-next-version-ingress:50091
   grpc_server:
     port: 50091
+
+plainGrpcGraphConfiguration:
+  max_ram: 1g
 
 graph:
   enabled: true
@@ -1050,7 +1054,7 @@ graph:
       nodeSelector:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       graphName: example
-      graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
+      graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
         fetch: true
         name: test
