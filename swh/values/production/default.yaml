@@ -115,6 +115,10 @@ journalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.scheduler.journal_client
 
+searchJournalClientConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh.search.journal_client
+
 azureObjStorageRWConfiguration: &azure-storage-conf-rw
   cls: azure-prefixed
   name: azure

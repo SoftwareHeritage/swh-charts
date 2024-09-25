@@ -1398,6 +1398,32 @@ search:
           # vpn access
           - 192.168.101.0/24
 
+  journalClients:
+    enabled: true
+    priorityClassName: normal-workload
+    searchConfigurationRef: remoteSearchConfiguration
+    storageConfigurationRef: remoteStorageConfiguration
+    journalConfigurationRef: searchJournalClientConfiguration
+    deployments:
+      objects:
+        # requestedCpu: 10m
+        # requestedMemory: 50Mi
+        journalClientOverrides:
+          group_id: swh.search.journal_client-v0.11
+          prefix: swh.journal.objects
+          object_types:
+          - origin
+          - origin_visit_status
+      indexed:
+        # requestedCpu: 10m
+        # requestedMemory: 50Mi
+        journalClientOverrides:
+          group_id: swh.search.journal_client.indexed-v0.11
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
+
 counters:
   enabled: true
   journalClient:

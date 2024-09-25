@@ -1,7 +1,3 @@
-searchJournalClientConfiguration:
-  brokersConfigurationRef: kafkaBrokers
-  group_id: swh.search.journal_client
-
 rpcRWStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql-ingress
