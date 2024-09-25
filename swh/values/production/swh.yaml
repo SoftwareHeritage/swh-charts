@@ -1010,7 +1010,7 @@ scrubber:
   objstorageChecker:
     enabled: false
   journalChecker:
-    enabled: true
+    enabled: false
     journalClientConfigurationRef: authenticatedJournalClientConfiguration
     deployments:
       directory:
