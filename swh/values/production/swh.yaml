@@ -1890,11 +1890,11 @@ cookers:
 counters:
   enabled: true
   journalClient:
-    enabled: true
+    enabled: false
     countersConfigurationRef: remoteCountersConfiguration
     journalConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
-    enabled: true
+    enabled: false
     cron: "0 */1 * * *"
     concurrencyPolicy: Forbid
     countersConfigurationRef: remoteCountersConfiguration
