@@ -743,6 +743,8 @@ toolbox:
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
+    vault:
+      vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 scrubber:
   enabled: true
