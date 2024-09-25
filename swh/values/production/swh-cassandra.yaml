@@ -752,6 +752,43 @@ scrubber:
   enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
+  objstorageChecker:
+    enabled: true
+    storageConfigurationRef: scrubberROStorageConfiguration
+    journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
+    deployments:
+      banco:
+        objstorageConfigurationRef: remoteBancoReadOnlyObjstorageConfiguration
+        configName: objstorage-banco-content
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+        backend:
+          check: true
+          migrate: false
+          config:
+            name: objstorage-banco-content
+            objectType: content
+            backend: objstorage
+            checkHashes: true
+            checkReferences: false
+            nbPartitions: 65536
+      saam:
+        objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
+        configName: objstorage-saam-content
+        replicas: 4
+        requestedCpu: 400m
+        requestedMemory: 200Mi
+        backend:
+          check: true
+          migrate: false
+          config:
+            name: objstorage-saam-content
+            objectType: content
+            backend: objstorage
+            checkHashes: true
+            checkReferences: false
+            nbPartitions: 65536
   storageChecker:
     enabled: false
     storageConfigurationRef: scrubberROStorageConfiguration
@@ -813,43 +850,6 @@ scrubber:
         object: snapshot
         requestedCpu: 650m
         requestedMemory: 500Mi
-  objstorageChecker:
-    enabled: true
-    storageConfigurationRef: scrubberROStorageConfiguration
-    journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
-    deployments:
-      banco:
-        objstorageConfigurationRef: remoteBancoReadOnlyObjstorageConfiguration
-        configName: objstorage-banco-content
-        replicas: 4
-        requestedCpu: 400m
-        requestedMemory: 200Mi
-        backend:
-          check: true
-          migrate: false
-          config:
-            name: objstorage-banco-content
-            objectType: content
-            backend: objstorage
-            checkHashes: true
-            checkReferences: false
-            nbPartitions: 65536
-      saam:
-        objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
-        configName: objstorage-saam-content
-        replicas: 4
-        requestedCpu: 400m
-        requestedMemory: 200Mi
-        backend:
-          check: true
-          migrate: false
-          config:
-            name: objstorage-saam-content
-            objectType: content
-            backend: objstorage
-            checkHashes: true
-            checkReferences: false
-            nbPartitions: 65536
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
