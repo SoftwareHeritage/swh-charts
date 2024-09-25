@@ -743,6 +743,9 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
+    scrubber-journal:
+      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
+      journalClientConfigurationRef: authenticatedJournalClientConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     webhooks:
