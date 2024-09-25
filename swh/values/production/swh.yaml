@@ -1819,7 +1819,7 @@ vault:
           - path: /
 
 cookers:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
