@@ -1035,7 +1035,7 @@ rpcLocalRustWithGrpcGraphConfiguration:
 
 grpcRemoteRustGraphConfiguration:
   cls: remote
-  url: graph-grpc-next-version.internal.staging.swh.network:50091
+  url: graph-grpc-next-version-ingress:50091
   grpc_server:
     port: 50091
 
@@ -1084,6 +1084,7 @@ graph:
 
       hosts:
         - graph-grpc-next-version.internal.staging.swh.network
+        - graph-grpc-next-version-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
