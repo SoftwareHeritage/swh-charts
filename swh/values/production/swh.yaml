@@ -137,14 +137,14 @@ depositDynamicConfiguration:
 graphql:
   enabled: true
   deployments:
-    # Main instance to serve https://archive.softwaheritage.org/graphql/
+    # Main instance to serve https://webapp-postgresql.internal.softwaheritage.org/graphql/
     archive:
       replicas: 2
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
       hosts:
-        - archive.softwareheritage.org
+        - webapp-postgresql.internal.softwareheritage.org
       ingress:
         enabled: true
         extraAnnotations:
@@ -1261,7 +1261,7 @@ web:
   enabled: true
   logLevel: WARN
   deployments:
-    # Main instance to serve archive.softwareheritage.org
+    # Instance to serve webapp-postgresql.internal.softwareheritage.org
     archive:
       gunicorn:
         workers: 8
@@ -1272,6 +1272,7 @@ web:
         minReplicaCount: 10
         maxReplicaCount: 10
         threshold: 10
+      metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 6Gi
       cronJobs:
@@ -1283,7 +1284,7 @@ web:
           concurrencyPolicy: Forbid
           priorityClassName: frontend-rpc-workload
         syncMaskingMailmaps:
-          enabled: true
+          enabled: false
           command:
             - "sync_masking_mailmaps"
             - "--perform"
@@ -1294,10 +1295,7 @@ web:
           priorityClassName: frontend-rpc-workload
           pgService: true
       hosts:
-        - archive.softwareheritage.org
-        - base.softwareheritage.org
-        - archive.internal.softwareheritage.org
-        - archive-dynamic.internal.softwareheritage.org
+        - webapp-postgresql.internal.softwareheritage.org
       ingress:
         enabled: true
         secretName: swh-web-archive-crt

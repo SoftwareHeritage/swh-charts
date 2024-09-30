@@ -411,7 +411,7 @@ web:
   enabled: true
   logLevel: INFO
   deployments:
-    # Main (future) instance to serve archive.softwareheritage.org
+    # Main instance serving archive.softwareheritage.org
     archive:
       gunicorn:
         workers: 8
@@ -422,8 +422,7 @@ web:
         minReplicaCount: 8
         maxReplicaCount: 10
         threshold: 10
-      # TODO: Activate when decommissioning the swh ns
-      metricsScrapingEnabled: false
+      metricsScrapingEnabled: true
       requestedCpu: 500m
       requestedMemory: 6Gi
       cronJobs:
@@ -435,8 +434,7 @@ web:
           concurrencyPolicy: Forbid
           priorityClassName: frontend-rpc-workload
         syncMaskingMailmaps:
-        # TODO: Enable when decommissioning the swh ns
-          enabled: false
+          enabled: true
           command:
             - "sync_masking_mailmaps"
             - "--perform"
@@ -447,12 +445,10 @@ web:
           priorityClassName: frontend-rpc-workload
           pgService: true
       hosts:
-        - webapp-cassandra.internal.softwareheritage.org
-        # TODO: Uncomment when decommissioning the swh ns
-        #- archive.softwareheritage.org
-        #- base.softwareheritage.org
-        #- archive.internal.softwareheritage.org
-        #- archive-dynamic.internal.softwareheritage.org
+        - archive.softwareheritage.org
+        - base.softwareheritage.org
+        - archive.internal.softwareheritage.org
+        - archive-dynamic.internal.softwareheritage.org
       ingress:
         enabled: true
         secretName: swh-web-archive-crt
@@ -699,7 +695,7 @@ graphql:
         client: swh-web
         cacheUrl: memcached://memcached:11211
       maxRawContentSize: 10000
-    # (future) Main instance to serve https://archive.softwaheritage.org/graphql/
+    # Main instance to serve https://archive.softwaheritage.org/graphql/
     archive:
       gunicorn:
         workers: 2
@@ -712,8 +708,7 @@ graphql:
       hosts:
         - archive.softwareheritage.org
       ingress:
-        # TODO: Enable when decommissioning the swh one
-        enabled: false
+        enabled: true
         extraAnnotations:
           nginx.ingress.kubernetes.io/rewrite-target: /
         endpoints:
