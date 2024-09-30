@@ -18,6 +18,7 @@ metadata:
   labels:
     app: {{ $journal_client_name }}
 spec:
+  replicas: {{ $journal_client_config.replicas }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:

@@ -1404,7 +1404,7 @@ search:
   priorityClassName: frontend-rpc
   logLevel: INFO
   elasticsearchConfigurationRef: elasticsearchConfiguration
-  replicas: 2
+  replicas: 4
   gunicorn:
     workers: 2
     threads: 2
@@ -1457,6 +1457,7 @@ search:
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects:
+        replicas: 1
         # requestedCpu: 10m
         # requestedMemory: 50Mi
         journalClientOverrides:
@@ -1466,6 +1467,7 @@ search:
           - origin
           - origin_visit_status
       indexed:
+        replicas: 0
         # requestedCpu: 10m
         # requestedMemory: 50Mi
         journalClientOverrides:
