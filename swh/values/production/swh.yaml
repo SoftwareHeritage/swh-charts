@@ -1433,8 +1433,7 @@ web:
       requestedCpu: 200m
       requestedMemory: 7Gi
       hosts:
-        - archive.softwareheritage.org
-        - archive.internal.softwareheritage.org
+        - webapp-postgresql.internal.softwareheritage.org
       ingress:
         enabled: true
         secretName: swh-web-archive-crt
