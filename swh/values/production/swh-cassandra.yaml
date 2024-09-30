@@ -405,6 +405,8 @@ postgresqlWebConfiguration:
       secretKeyRef: swh-postgresql-web-secrets
       secretKeyName: postgres-swh-web-password
 
+historyCountersUrl: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
+
 web:
   enabled: true
   logLevel: INFO
@@ -488,6 +490,7 @@ web:
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
+      historyCountersUrlRef: historyCountersUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -506,7 +509,6 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
@@ -566,6 +568,7 @@ web:
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
+      historyCountersUrlRef: historyCountersUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -582,7 +585,6 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
@@ -637,6 +639,7 @@ web:
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
+      historyCountersUrlRef: historyCountersUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -654,7 +657,6 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        history_counters_url: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
         es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}

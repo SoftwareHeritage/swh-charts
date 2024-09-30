@@ -628,6 +628,8 @@ provenanceConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress-next-version
 
+historyCountersUrl: http://counters-rpc:5011/counters_history/history.json#
+
 web:
   deployments:
     cassandra:
@@ -637,6 +639,7 @@ web:
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
+      historyCountersUrlRef: historyCountersUrl
       storageConfigurationRef: remoteROPostgresqlStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
@@ -650,8 +653,6 @@ web:
         minReplicaCount: 1
         maxReplicaCount: 2
         threshold: 0.1
-      extraConfig:
-        history_counters_url: http://counters-rpc:5011/counters_history/history.json#
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network
       cronJobs:

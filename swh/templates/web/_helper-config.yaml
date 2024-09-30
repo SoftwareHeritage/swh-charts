@@ -73,6 +73,9 @@ data:
       {{- include "addforgenow.configuration" (dict "configurationRef" .configuration.addForgeNowConfigurationRef
                                                     "Values" .Values) | nindent 4 }}
     {{- end -}}
+    {{- if .configuration.historyCountersUrlRef }}
+    history_counters_url: {{ get .Values .configuration.historyCountersUrlRef }}
+    {{- end }}
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: "${DJANGO_SECRET_KEY}"
