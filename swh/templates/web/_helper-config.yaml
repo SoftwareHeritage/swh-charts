@@ -76,6 +76,9 @@ data:
     {{- if .configuration.historyCountersUrlRef }}
     history_counters_url: {{ get .Values .configuration.historyCountersUrlRef }}
     {{- end }}
+    {{- if .configuration.esWorkersIndexUrlRef }}
+    es_workers_index_url: {{ get .Values .configuration.esWorkersIndexUrlRef }}
+    {{- end }}
 {{/* TODO: Manage the webapp logging */}}
 {{/* log_dir: */}}
     secret_key: "${DJANGO_SECRET_KEY}"

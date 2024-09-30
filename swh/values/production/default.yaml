@@ -1081,7 +1081,8 @@ remoteROCassandraIngressStorageConfiguration:
 vaultGraphConfiguration:
   url: http://graph.internal.softwareheritage.org:5009/graph
 
-
 provenanceConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress-swh-cassandra
+
+esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*

@@ -1336,6 +1336,7 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
+      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -1354,7 +1355,6 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
@@ -1404,6 +1404,7 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
+      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -1416,7 +1417,6 @@ web:
         search_config:
           metadata_backend: swh-search
         content_display_max_size: 5242880
-        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
@@ -1470,6 +1470,7 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
+      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -1487,7 +1488,6 @@ web:
         inbound_email:
           shared_key: ${INBOUND_EMAIL_SHARED_KEY}
         content_display_max_size: 5242880
-        es_workers_index_url: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
