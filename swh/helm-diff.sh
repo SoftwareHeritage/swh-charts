@@ -1,4 +1,4 @@
-#!/usr/bin/env bash 
+#!/usr/bin/env bash
 
 set -e
 
@@ -95,21 +95,6 @@ for environment in "staging" "production"; do
     fi
   done
 done
-
-# Actually diff the result for each environment
-
-LEGACY_DIFF_COMMAND="diff -U${CONTEXT_SIZE}"
-
-if command -v dyff >/dev/null; then
-  if [ -n "$DYFF_OPTS" ]; then
-    DYFF_OPTS="-s -c on"
-  fi
-  DIFF_COMMAND="dyff between ${DYFF_OPTS}"
-  USE_DYFF=true
-else
-  DIFF_COMMAND="${LEGACY_DIFF_COMMAND}"
-  USE_DYFF=false
-fi
 
 for environment in "staging" "production"; do
   for namespace in "swh" "swh-cassandra" "swh-cassandra-next-version"; do
