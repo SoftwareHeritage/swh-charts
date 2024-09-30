@@ -595,8 +595,8 @@ remoteReadWriteIndexerStorageConfiguration:
   url: http://indexer-storage-read-write-rpc-ingress-swh-cassandra
 
 remoteCountersConfiguration:
-    cls: remote
-    url: http://counters-rpc-ingress-swh-cassandra
+  cls: remote
+  url: http://counters-rpc-ingress-swh-cassandra
 
 remoteBancoReadOnlyObjstorageConfiguration:
   cls: remote
