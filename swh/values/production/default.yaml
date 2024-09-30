@@ -1082,3 +1082,16 @@ provenanceConfiguration:
   url: http://webapp-provenance-ingress-swh-cassandra
 
 esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+
+depositDynamicConfiguration:
+  scheme: http
+  host: deposit-dynamic.internal.softwareheritage.org
+  user: ${DEPOSIT_USERNAME}
+  pass: ${DEPOSIT_PASSWORD}
+  secrets:
+    DEPOSIT_USERNAME:
+      secretKeyRef: deposit-secrets
+      secretKeyName: username
+    DEPOSIT_PASSWORD:
+      secretKeyRef: deposit-secrets
+      secretKeyName: password

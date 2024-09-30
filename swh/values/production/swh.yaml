@@ -125,19 +125,6 @@ scrubberROStoragePrimaryConfiguration:
 scrubberROStorageSecondaryConfiguration:
   storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
 
-depositDynamicConfiguration:
-  scheme: http
-  host: deposit-dynamic.internal.softwareheritage.org
-  user: ${DEPOSIT_USERNAME}
-  pass: ${DEPOSIT_PASSWORD}
-  secrets:
-    DEPOSIT_USERNAME:
-      secretKeyRef: deposit-secrets
-      secretKeyName: username
-    DEPOSIT_PASSWORD:
-      secretKeyRef: deposit-secrets
-      secretKeyName: password
-
 graphql:
   enabled: true
   deployments:
@@ -1680,7 +1667,7 @@ objstorage:
             deny-delete: null
 
 deposit:
-  enabled: true
+  enabled: false
   logLevel: INFO
   requestedCpu: 500m
   requestedMemory: 500Mi
@@ -1710,8 +1697,6 @@ deposit:
   keycloakConfigurationRef: keycloakConfiguration
   hosts:
     - deposit-rpc-ingress
-    - deposit.softwareheritage.org
-    - deposit-dynamic.internal.softwareheritage.org
   extraConfig:
     max_upload_size: 209715200
     extraction_dir: "/tmp/swh-deposit/archive/"

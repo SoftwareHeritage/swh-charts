@@ -1519,7 +1519,6 @@ counters:
             # vpn network
             - 192.168.101.0/24
 
-# TODO: this ingress is not yet defined
 rpcRWStorageCassandraConfiguration:
   cls: remote
   url: http://storage-rw-cassandra-ingress
@@ -1532,10 +1531,9 @@ deposit:
   migrationsEnabled: false
   replicas: 2
   hosts:
+    - deposit.softwareheritage.org
+    - deposit-dynamic.internal.softwareheritage.org
     - deposit-rpc-ingress-swh-cassandra
-    # TODO: Uncomment when decommissioning the swh one
-    #- deposit.softwareheritage.org
-    #- deposit-dynamic.internal.softwareheritage.org
   ingress:
     enabled: true
     extraAnnotations:
@@ -1836,3 +1834,18 @@ listers:
       - swh.lister.stagit.tasks.StagitListerTask
       autoScaling:
         maxReplicaCount: 2
+
+checkerDeposit:
+  enabled: true
+  storageConfigurationRef: remoteROStorageConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
+  depositConfigurationRef: depositDynamicConfiguration
+  autoScaling:
+    queueThreshold: 1
+    stopWhenNoActivity: false
+    minReplicaCount: 1
+    maxReplicaCount: 2
+  requestedMemory: 100Mi
+  requestedCpu: 100m
+  limitedMemory: 1Gi
+  limitedCpu: 1000m
