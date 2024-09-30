@@ -958,10 +958,6 @@ remoteROStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteStorageConfiguration
 
-remoteStorageConfiguration:
-  cls: remote
-  url: http://storage-azure-read-only-rpc-ingress-swh-cassandra
-
 azureCacheConfiguration:
   cls: azure
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhvaultstorage;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"

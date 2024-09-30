@@ -73,6 +73,10 @@ rpcROStorageService:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
 
+remoteStorageConfiguration:
+  cls: remote
+  url: http://storage-azure-read-only-rpc-ingress-swh-cassandra
+
 rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: rpcROStorageService
