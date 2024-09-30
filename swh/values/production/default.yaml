@@ -1080,3 +1080,8 @@ remoteROCassandraIngressStorageConfiguration:
 
 vaultGraphConfiguration:
   url: http://graph.internal.softwareheritage.org:5009/graph
+
+
+provenanceConfiguration:
+  cls: remote
+  url: http://webapp-provenance-ingress-swh-cassandra

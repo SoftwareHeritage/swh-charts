@@ -1255,10 +1255,6 @@ djangoWebConfiguration:
       secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key-fallback-2
 
-provenanceConfiguration:
-  cls: remote
-  url: http://webapp-provenance-ingress
-
 web:
   enabled: true
   logLevel: WARN
@@ -1560,7 +1556,7 @@ objstorage:
             hostPath:
               path: /srv/softwareheritage/objects
               type: Directory
-      # Deploy only on saam
+      # Deploy only on saamcounters-rpc-ingress-swh-cassandra,counters.internal.softwareheritage.org
       nodeSelector:
         kubernetes.io/hostname: saam
       # And add a specific affinity
