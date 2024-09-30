@@ -594,15 +594,12 @@ web:
         threads: 3
         timeout: 60
       replicas: 2
-      # TODO: Activate when decommissioning the swh ns
-      metricsScrapingEnabled: false
+      metricsScrapingEnabled: true
       requestedCpu: 200m
       requestedMemory: 7Gi
       hosts:
-        - webapp-cassandra.internal.softwareheritage.org
-        # TODO: Uncomment when decommissioning the swh ns
-        #- archive.softwareheritage.org
-        #- archive.internal.softwareheritage.org
+        - archive.softwareheritage.org
+        - archive.internal.softwareheritage.org
       ingress:
         enabled: true
         secretName: swh-web-archive-crt
