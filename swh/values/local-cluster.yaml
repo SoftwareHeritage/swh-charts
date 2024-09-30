@@ -1455,9 +1455,10 @@ rpcLocalRustWithGrpcGraphConfiguration:
 
 grpcRemoteRustGraphConfiguration:
   cls: remote
-  url: graph-grpc-example:50091
+  # url: graph-grpc-example-ingress.internal.staging.swh.network:80
+  url: graph-grpc-example-ingress
   grpc_server:
-    port: 50091
+    port: 80
 
 plainGrpcGraphConfiguration:
   max_ram: 1g
@@ -1516,10 +1517,9 @@ graph:
               requests:
                 storage: 1Gi
       hosts:
-        - graph-grpc-example
+        - graph-grpc-example-ingress
       ingress:
         enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1541,10 +1541,9 @@ graph:
       # Whether to start the rpc service (this expects the graph dataset to be ready)
       startService: true
       hosts:
-        - graph-rpc-full-example
+        - graph-rpc-full-example-ingress
       ingress:
         enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
