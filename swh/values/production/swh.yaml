@@ -350,7 +350,7 @@ listers:
         maxReplicaCount: 2
 
 checkerDeposit:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositDynamicConfiguration
@@ -671,7 +671,7 @@ loaderMetadata:
     maxReplicaCount: 6
 
 scheduler:
-  enabled: true
+  enabled: false
   sentry:
     enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -801,7 +801,7 @@ toolbox:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 indexerStorage:
-  enabled: true
+  enabled: false
   logLevel: INFO
   deployments:
     read-only:
@@ -919,7 +919,7 @@ indexers:
           configuration: {}
 
 search:
-  enabled: true
+  enabled: false
   priorityClassName: frontend-rpc
   logLevel: INFO
   elasticsearchConfigurationRef: elasticsearchConfiguration
@@ -1484,7 +1484,7 @@ web:
           site_id: 59
 
 objstorage:
-  enabled: true
+  enabled: false
   logLevel: WARN
   priorityClassName: frontend-rpc
   deployments:
@@ -1765,7 +1765,7 @@ objstorageReplayer:
                 selectPolicy: Min
 
 vault:
-  enabled: true
+  enabled: false
   priorityClassName: frontend-rpc
   logLevel: INFO
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -1827,7 +1827,7 @@ cookers:
         maxReplicaCount: 2
 
 counters:
-  enabled: true
+  enabled: false
   journalClient:
     enabled: false
     countersConfigurationRef: remoteCountersConfiguration
@@ -2050,7 +2050,7 @@ alter:
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
 
 provenance:
-  enabled: true
+  enabled: false
   deployments:
     graph-granet:
       graphConfigurationRef: provenanceGraphGrpcConfiguration
