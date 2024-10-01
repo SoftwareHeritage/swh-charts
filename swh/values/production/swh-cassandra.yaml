@@ -1865,7 +1865,7 @@ loaders:
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     add-forge-now:
-      enabled: false
+      enabled: true
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 500m
@@ -1884,7 +1884,7 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     add-forge-now-slow:
-      enabled: false
+      enabled: true
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 500m
@@ -1929,7 +1929,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     cran:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -1946,7 +1946,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 2
     debian:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -2011,7 +2011,7 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 500m
     git-large-repository:
-      enabled: false
+      enabled: true
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 800m
@@ -2059,7 +2059,7 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 500m
     maven:
-      enabled: false
+      enabled: true
       image: swh_loader_package_image
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
@@ -2077,7 +2077,7 @@ loaders:
       requestedMemory: 128Mi
       requestedCpu: 500m
     npm:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
