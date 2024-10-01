@@ -84,7 +84,7 @@ rpcROStorageCassandraWithRetryConfiguration:
 # Replayer kafka -> cassandra will be disabled once we migrate to cassandra
 # as the main backend.
 storageReplayer:
-  enabled: true
+  enabled: false
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   storageConfigurationRef: cassandraReplayerStorageConfiguration
   affinity:
