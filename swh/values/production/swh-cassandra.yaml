@@ -1903,7 +1903,7 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     archive:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -1920,7 +1920,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     content:
-      enabled: false
+      enabled: true
       requestedCpu: 350m
       requestedMemory: 150Mi
       queues:
@@ -2002,7 +2002,7 @@ loaders:
       sysctls:
         net.ipv4.tcp_dsack: 0
     git-checkout:
-      enabled: false
+      enabled: true
       image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
@@ -2050,7 +2050,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     hg-checkout:
-      enabled: false
+      enabled: true
       image: swh_loader_mercurial_image
       queues:
         - swh.loader.mercurial.tasks.LoadMercurialCheckout
@@ -2162,7 +2162,7 @@ loaders:
       requestedCpu: 100m
       limitedMemory: 25Gi
     svn-export:
-      enabled: false
+      enabled: true
       requestedMemory: 768Mi
       requestedCpu: 1000m
       limitedMemory: 1Gi
