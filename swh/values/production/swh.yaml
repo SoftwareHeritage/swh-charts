@@ -141,8 +141,8 @@ depositDynamicConfiguration:
 graphql:
   enabled: true
   deployments:
-    # Main instance to serve https://webapp-postgresql.internal.softwaheritage.org/graphql/
-    archive:
+    # Instance to serve https://webapp-postgresql.internal.softwaheritage.org/graphql/
+    postgresql:
       replicas: 2
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
@@ -1265,8 +1265,8 @@ web:
   enabled: true
   logLevel: WARN
   deployments:
-    # Instance to serve webapp-postgresql.internal.softwareheritage.org
-    archive:
+    # Instance to serve https://webapp-postgresql.internal.softwareheritage.org
+    postgresql:
       gunicorn:
         workers: 8
         threads: 1
