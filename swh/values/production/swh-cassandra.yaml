@@ -2101,7 +2101,7 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 32
     opam:
-      enabled: false
+      enabled: true
       image: swh_loader_package_image
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
