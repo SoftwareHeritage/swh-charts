@@ -2041,7 +2041,7 @@ loaders:
                 values:
                 - "true"
     golang:
-      enabled: false
+      enabled: true
       image: swh_loader_package_image
       requestedMemory: 256Mi
       requestedCpu: 200m
