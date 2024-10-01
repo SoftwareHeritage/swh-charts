@@ -346,7 +346,7 @@ storage:
     cassandra-winery:
       # TODO: Enable when writing services has been migrated and we also decommission
       # the equivalent one in the namespace swh
-      enabled: false
+      enabled: true
       requestedCpu: 1000m
       requestedMemory: 2Gi
       autoScaling:
@@ -360,8 +360,8 @@ storage:
       storageConfigurationRef: rwStorageCassandraWithWineryObjstorageConfiguration
       dnsConfigurationRef: dnsConfiguration
       hosts:
-        - storage-rw-cassandra-ingress
-        - storage-rw-cassandra-saam-ingress
+        - storage-rw-cassandra-ingress-swh-cassandra
+        - storage-rw-cassandra-saam-ingress-swh-cassandra
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -1504,7 +1504,7 @@ counters:
 
 rpcRWStorageCassandraConfiguration:
   cls: remote
-  url: http://storage-rw-cassandra-ingress
+  url: http://storage-rw-cassandra-ingress-swh-cassandra
 
 deposit:
   enabled: true
