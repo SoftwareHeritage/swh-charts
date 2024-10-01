@@ -365,7 +365,7 @@ checkerDeposit:
   limitedCpu: 1000m
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteRpcRWStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
@@ -654,7 +654,7 @@ loaders:
       image: swh_loader_svn_image
 
 loaderMetadata:
-  enabled: true
+  enabled: false
   storageConfigurationRef: remoteRpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
