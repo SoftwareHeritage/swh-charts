@@ -10,6 +10,11 @@ remoteRpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: rpcRWStorageConfiguration
 
+directPostgresqlReplayerStorageConfiguration:
+  pipelineStepsRef: storagePipelineStepsWithRecordReferences
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
 s3RWObjectstorageConfiguration: &s3-rw-configuration
   cls: s3
   compression: gzip
@@ -2083,3 +2088,177 @@ provenance:
       #         extraWhitelistSourceRange:
       #           - 192.168.50.0/24 # for blackbox monitoring
       #           - 192.168.101.0/24 # vpn network
+
+# Replayer kafka -> postgresql to keep in sync with the main cassandra backend
+storageReplayer:
+  enabled: true
+  journalClientConfigurationRef: storageReplayerJournalClientConfiguration
+  storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/replayer"
+            operator: In
+            values:
+            - "true"
+  # Make the replayers fail fast if any issue arise (at first)
+  # error_reporter:
+  #   host: redis-postgresql-replayers.redis  # /!\ this instance does not exist yet
+  #   port: 6379
+  #   db: 1
+  deployments:
+    content:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-content
+        object_types:
+          - content
+      requestedCpu: 425m
+      requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 64
+    directory:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-directory
+        object_types:
+          - directory
+        batch_size: 250
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 250Mi
+      # Follow up consumption
+      # requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 10
+    extid:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-extid
+        object_types:
+          - extid
+        batch_size: 1000
+      # Full replay
+      # requestedCpu: 400m
+      requestedMemory: 200Mi
+      # Follow up consumption
+      requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    metadata:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-metadata
+        object_types:
+          - metadata_authority
+          - metadata_fetcher
+      # follow up consumption
+      requestedCpu: 50m
+      requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 5
+    raw-extrinsic-metadata:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-raw-extrinsic-metadata
+        object_types:
+        - raw_extrinsic_metadata
+        batch_size: 250
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
+      # follow up consumption
+      # requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    origin:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-origin
+        object_types:
+          - origin
+        batch_size: 1000
+      # Full replay
+      # requestedCpu: 400m
+      requestedMemory: 200Mi
+      # Follow up consumption
+      requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    origin-visit:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-origin-visit
+        object_types:
+          - origin_visit
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 400Mi
+      # Follow up consumption
+      # requestedCpu: 100m
+      # requestedMemory: 100Mi
+      autoScaling:
+        maxReplicaCount: 5
+    origin-visit-status:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-origin-visit-status
+        object_types:
+          - origin_visit_status
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 300Mi
+      # Follow up consumption
+      # requestedCpu: 55m
+      # requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 5
+    release:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-release
+        object_types:
+          - release
+        batch_size: 1000
+      # Full replay
+      # requestedCpu: 600m
+      requestedMemory: 300Mi
+      # follow up consumption
+      requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    revision:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-revision
+        object_types:
+          - revision
+        batch_size: 1000
+      # Full replay
+      # requestedCpu: 750m
+      # requestedMemory: 750Mi
+      # follow up consumption
+      requestedCpu: 50m
+      requestedMemory: 400Mi
+      autoScaling:
+        maxReplicaCount: 5
+    skipped-content:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-skipped-content
+        object_types:
+          - skipped_content
+        batch_size: 100
+      # Full replay
+      # requestedCpu: 300m
+      requestedMemory: 400Mi
+      # follow up consumption
+      requestedCpu: 50m
+      autoScaling:
+        maxReplicaCount: 5
+    snapshot:
+      journalClientOverrides:
+        group_id: swh-prod-postgresql-replayer-snapshot
+        object_types:
+          - snapshot
+        batch_size: 250
+      # Full replay
+      # requestedCpu: 400m
+      requestedMemory: 250Mi
+      # follow up consumption
+      requestedCpu: 80m
+      autoScaling:
+        maxReplicaCount: 5

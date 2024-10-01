@@ -555,7 +555,8 @@ retryStoragePipelineSteps:
   - cls: retry
 
 storagePipelineSteps:
-  - cls: buffer
+  - &bufferStorage
+    cls: buffer
     min_batch_size:
       content: 1000
       content_bytes: 52428800
@@ -569,6 +570,12 @@ storagePipelineSteps:
       extid: 1000
   - cls: filter
   - cls: retry
+
+storagePipelineStepsWithRecordReferences:
+  - *bufferStorage
+  - cls: filter
+  - cls: retry
+  - cls: record_references
 
 remoteROCassandraRpcIngressStorageConfiguration:
   cls: remote
@@ -1095,3 +1102,24 @@ depositDynamicConfiguration:
     DEPOSIT_PASSWORD:
       secretKeyRef: deposit-secrets
       secretKeyName: password
+
+storageReplayerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  # Both to write some data to privileged topic and use the error_reporter config
+  privileged: true
+  # Start at the end of the topics (used at consumer group initialization time)
+  auto_offset_reset: latest
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-archive-broker-secret
+      secretKeyName: BROKER_USER_PASSWORD

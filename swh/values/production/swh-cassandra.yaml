@@ -81,25 +81,8 @@ rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: rpcROStorageService
 
-storageReplayerJournalClientConfiguration:
-  cls: kafka
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
-  sasl.username: ${BROKER_USER}
-  sasl.password: ${BROKER_USER_PASSWORD}
-  prefix: swh.journal.objects
-  message.max.bytes: "524288000"
-  # Both to write some data to privileged topic and use the error_reporter config
-  privileged: true
-  secrets:
-    BROKER_USER:
-      secretKeyRef: swh-archive-broker-secret
-      secretKeyName: BROKER_USER
-    BROKER_USER_PASSWORD:
-      secretKeyRef: swh-archive-broker-secret
-      secretKeyName: BROKER_USER_PASSWORD
-
+# Replayer kafka -> cassandra will be disabled once we migrate to cassandra
+# as the main backend.
 storageReplayer:
   enabled: true
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
