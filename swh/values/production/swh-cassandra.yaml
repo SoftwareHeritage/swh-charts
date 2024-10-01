@@ -246,7 +246,7 @@ storageReplayer:
         group_id: swh-cassandra-prod-cassandra-replayer-snapshot
         object_types:
           - snapshot
-      batchSize: 250
+        batch_size: 250
       # Full replay
       # requestedCpu: 400m
       requestedMemory: 250Mi
