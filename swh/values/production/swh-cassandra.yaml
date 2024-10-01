@@ -1986,14 +1986,14 @@ loaders:
         maxReplicaCount: 6
       image: swh_loader_package_image
     git:
-      enabled: false
+      enabled: true
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 16
         minReplicaCount: 1
         stopWhenNoActivity: false
         queueThreshold: 200
