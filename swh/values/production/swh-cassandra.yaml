@@ -2068,7 +2068,7 @@ loaders:
       requestedMemory: 600Mi
       requestedCpu: 500m
     mercurial:
-      enabled: false
+      enabled: true
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
