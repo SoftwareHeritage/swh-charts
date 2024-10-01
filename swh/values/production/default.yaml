@@ -854,6 +854,9 @@ externalServices:
     storage-cassandra-read-only:
       internalName: storage-cassandra-read-only-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    storage-cassandra-read-write-swh-cassandra:
+      internalName: storage-rw-cassandra-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-cassandra-read-only-swh-cassandra:
       internalName: storage-cassandra-read-only-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
