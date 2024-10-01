@@ -2110,7 +2110,7 @@ loaders:
       requestedMemory: 1Gi
       requestedCpu: 1000m
     pypi:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
