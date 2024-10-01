@@ -2162,6 +2162,7 @@ loaders:
       requestedCpu: 100m
       limitedMemory: 25Gi
     svn-export:
+      enabled: false
       requestedMemory: 768Mi
       requestedCpu: 1000m
       limitedMemory: 1Gi
