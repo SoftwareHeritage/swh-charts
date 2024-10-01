@@ -2151,7 +2151,7 @@ loaders:
         minReplicaCount: 16
         maxReplicaCount: 16
     svn:
-      enabled: false
+      enabled: true
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
