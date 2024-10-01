@@ -1977,7 +1977,7 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     directory:
-      enabled: false
+      enabled: true
       requestedMemory: 768Mi
       requestedCpu: 1000m
       queues:
