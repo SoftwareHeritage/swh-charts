@@ -1912,7 +1912,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     bzr:
-      enabled: false
+      enabled: true
       requestedMemory: 1Gi
       requestedCpu: 1000m
       queues:
