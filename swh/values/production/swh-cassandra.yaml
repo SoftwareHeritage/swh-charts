@@ -2086,7 +2086,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     oneshot:
-      enabled: false
+      enabled: true
       image: swh_loader_savecodenow_image
       requestedMemory: 768Mi
       requestedCpu: 200m
