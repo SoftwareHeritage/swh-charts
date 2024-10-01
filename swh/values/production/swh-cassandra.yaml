@@ -1506,6 +1506,10 @@ rpcRWStorageCassandraConfiguration:
   cls: remote
   url: http://storage-rw-cassandra-ingress-swh-cassandra
 
+rpcWriterWorkloadStorageCassandraConfiguration:
+  pipelineStepsRef: storagePipelineSteps
+  storageConfigurationRef: rpcRWStorageCassandraConfiguration
+
 deposit:
   enabled: true
   logLevel: INFO
@@ -1854,3 +1858,333 @@ webhooks:
         group_id: swh-archive-prod-webhooks
         object_types:
           - origin_visit_status
+
+loaders:
+  enabled: true
+  storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
+  deployments:
+    add-forge-now:
+      enabled: false
+      image: swh_loader_git_image
+      requestedMemory: 1Gi
+      requestedCpu: 500m
+      limitedMemory: 25Gi
+      queues:
+        - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
+      ackLate: true
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 8
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
+    add-forge-now-slow:
+      enabled: false
+      image: swh_loader_git_image
+      requestedMemory: 1Gi
+      requestedCpu: 500m
+      limitedMemory: 25Gi
+      queues:
+        - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
+      ackLate: true
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 4
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
+    archive:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.archive.tasks.LoadTarball
+      autoScaling:
+        maxReplicaCount: 4
+    bzr:
+      enabled: false
+      requestedMemory: 1Gi
+      requestedCpu: 1000m
+      queues:
+        - swh.loader.bzr.tasks.LoadBazaar
+      autoScaling:
+        maxReplicaCount: 4
+    content:
+      enabled: false
+      requestedCpu: 350m
+      requestedMemory: 150Mi
+      queues:
+        - swh.loader.core.tasks.LoadContent
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
+    cran:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.cran.tasks.LoadCRAN
+      autoScaling:
+        maxReplicaCount: 1
+    cvs:
+      enabled: false
+      requestedCpu: 1000m
+      requestedMemory: 2Gi
+      queues:
+        - swh.loader.cvs.tasks.LoadCvsRepository
+      autoScaling:
+        maxReplicaCount: 2
+    debian:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.debian.tasks.LoadDebian
+      autoScaling:
+        maxReplicaCount: 1
+    deposit:
+      enabled: false
+      priorityClassName: frontend-rpc-workload
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.deposit.tasks.LoadDeposit
+      autoScaling:
+        queueThreshold: 1
+        stopWhenNoActivity: false
+        minReplicaCount: 1
+        maxReplicaCount: 2
+      # only used for secrets
+      depositConfigurationRef: depositDynamicConfiguration
+      extraConfig:
+        deposit:
+          url: "http://deposit-dynamic.internal.softwareheritage.org/1/private"
+          auth:
+            username: "${DEPOSIT_USERNAME}"
+            password: "${DEPOSIT_PASSWORD}"
+        default_filename: archive.tar
+    directory:
+      enabled: false
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      queues:
+        - swh.loader.core.tasks.LoadTarballDirectory
+      autoScaling:
+        maxReplicaCount: 6
+      image: swh_loader_package_image
+    git:
+      enabled: false
+      priorityClassName: low-workload
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        maxReplicaCount: 64
+        minReplicaCount: 1
+        stopWhenNoActivity: false
+        queueThreshold: 200
+      requestedMemory: 768Mi
+      requestedCpu: 100m
+      sysctls:
+        net.ipv4.tcp_dsack: 0
+    git-checkout:
+      enabled: false
+      image: swh_loader_git_image
+      queues:
+        - swh.loader.git.tasks.LoadGitCheckout
+      autoScaling:
+        maxReplicaCount: 6
+      requestedMemory: 256Mi
+      requestedCpu: 500m
+    git-large-repository:
+      enabled: false
+      image: swh_loader_git_image
+      requestedMemory: 1Gi
+      requestedCpu: 800m
+      queues:
+        - large_repository:swh.loader.git.tasks.UpdateGitRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 12
+      extraConfig:
+        overrides:
+          swh.loader.git.loader.GitLoader:
+            # 10Gib
+            temp_file_cutoff: 10737418240
+            # 32Gib
+            pack_size_bytes: 34359738368
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "swh/loader"
+                operator: In
+                values:
+                - "true"
+              - key: "swh/large-scratch-fs"
+                operator: In
+                values:
+                - "true"
+    golang:
+      enabled: false
+      image: swh_loader_package_image
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      queues:
+        - swh.loader.package.golang.tasks.LoadGolang
+      autoScaling:
+        maxReplicaCount: 4
+    hg-checkout:
+      enabled: false
+      image: swh_loader_mercurial_image
+      queues:
+        - swh.loader.mercurial.tasks.LoadMercurialCheckout
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 768Mi
+      requestedCpu: 500m
+    maven:
+      enabled: false
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.maven.tasks.LoadMaven
+      autoScaling:
+        maxReplicaCount: 4
+      requestedMemory: 600Mi
+      requestedCpu: 500m
+    mercurial:
+      enabled: false
+      queues:
+        - swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - swh.loader.mercurial.tasks.LoadMercurial
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 128Mi
+      requestedCpu: 500m
+    npm:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.npm.tasks.LoadNpm
+      autoScaling:
+        maxReplicaCount: 4
+    oneshot:
+      enabled: false
+      image: swh_loader_savecodenow_image
+      requestedMemory: 768Mi
+      requestedCpu: 200m
+      limitedMemory: 25Gi
+      queues:
+        - oneshot:swh.loader.cvs.tasks.LoadCvsRepository
+        - oneshot:swh.loader.git.tasks.UpdateGitRepository
+        - oneshot:swh.loader.mercurial.tasks.LoadMercurial
+        - oneshot:swh.loader.svn.tasks.LoadSvnRepository
+        - oneshot:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 32
+    opam:
+      enabled: false
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.opam.tasks.LoadOpam
+      autoScaling:
+        maxReplicaCount: 4
+      requestedMemory: 1Gi
+      requestedCpu: 1000m
+    pypi:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pypi.tasks.LoadPyPI
+      autoScaling:
+        maxReplicaCount: 1
+    pubdev:
+      enabled: false
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        maxReplicaCount: 1
+    save-code-now:
+      enabled: false
+      requestedMemory: 2Gi
+      requestedCpu: 200m
+      limitedMemory: 25Gi
+      queues:
+        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      autoScaling:
+        stopWhenNoActivity: false
+        queueThreshold: 1
+        minReplicaCount: 16
+        maxReplicaCount: 16
+    svn:
+      enabled: false
+      queues:
+        - swh.loader.svn.tasks.LoadSvnRepository
+        - swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        maxReplicaCount: 4
+      requestedMemory: 6Gi
+      requestedCpu: 100m
+      limitedMemory: 25Gi
+    svn-export:
+      requestedMemory: 768Mi
+      requestedCpu: 1000m
+      limitedMemory: 1Gi
+      limitedCpu: 1500m
+      queues:
+        - swh.loader.svn.tasks.LoadSvnExport
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_svn_image
+
+loaderMetadata:
+  enabled: false
+  storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  consumerGroup: loader_metadata.journal_client
+  prefix: swh.journal.objects
+  journalBrokers:
+    secretName: swh-archive-broker-secret
+    hosts:
+      - kafka1.internal.softwareheritage.org:9094
+      - kafka2.internal.softwareheritage.org:9094
+      - kafka3.internal.softwareheritage.org:9094
+      - kafka4.internal.softwareheritage.org:9094
+    user: swh-archive-prod
+  autoScaling:
+    maxReplicaCount: 6
