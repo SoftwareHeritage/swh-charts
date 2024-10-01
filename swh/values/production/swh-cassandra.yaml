@@ -2128,7 +2128,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-code-now:
-      enabled: false
+      enabled: true
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 25Gi
