@@ -194,21 +194,6 @@ graphql:
         cacheUrl: memcached://memcached:11211
       maxRawContentSize: 10000
 
-checkerDeposit:
-  enabled: false
-  storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: consumerCeleryConfiguration
-  depositConfigurationRef: depositDynamicConfiguration
-  autoScaling:
-    queueThreshold: 1
-    stopWhenNoActivity: false
-    minReplicaCount: 1
-    maxReplicaCount: 2
-  requestedMemory: 100Mi
-  requestedCpu: 100m
-  limitedMemory: 1Gi
-  limitedCpu: 1000m
-
 loaders:
   enabled: false
   storageConfigurationRef: remoteRpcRWStorageConfiguration
