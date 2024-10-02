@@ -789,53 +789,6 @@ objstorageReplayer:
                   value: 4
                 selectPolicy: Min
 
-counters:
-  enabled: false
-  journalClient:
-    enabled: false
-    countersConfigurationRef: remoteCountersConfiguration
-    journalConfigurationRef: journalClientCountersConfiguration
-  refreshCountersCache:
-    enabled: false
-    cron: "0 */1 * * *"
-    concurrencyPolicy: Forbid
-    countersConfigurationRef: remoteCountersConfiguration
-    historyFiles:
-      # cache file
-      - history.json
-      # static counter history (from swh's inception)
-      - static_history.json
-  rpc:
-    enabled: true
-    fetchStaticHistory: true
-    scrapeMetrics: true
-    cacheBaseDirectory: /srv/softwareheritage/counters
-    countersConfigurationRef: countersRedis
-    historyConfigurationRef: countersHistoryConfiguration
-    replicas: 2
-    gunicorn:
-      workers: 2
-      threads: 1
-      timeout: 30
-    # autoScaling:
-    #   minReplicaCount: 2
-    #   maxReplicaCount: 4
-    #   cpuPercentageUsage: 100
-    hosts:
-      - counters-rpc-ingress
-      # - counters.internal.softwareheritage.org
-    ingress:
-      enabled: true
-      # Default allowed ip ranges that can be extended per ingress definitions paths
-      whitelistSourceRangeRef: internalNetworkRanges
-      endpoints:
-        default:
-          paths:
-            - path: /
-          extraWhitelistSourceRange:
-            # vpn network
-            - 192.168.101.0/24
-
 webhooks:
   enabled: false
   svixConfigurationRef: svixConfiguration
