@@ -116,6 +116,10 @@ graphql:
     # Instance to serve https://webapp-postgresql.internal.softwaheritage.org/graphql/
     postgresql:
       replicas: 2
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 3600
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
@@ -129,10 +133,6 @@ graphql:
           default:
             paths:
               - path: /graphql/
-      gunicorn:
-        threads: 4
-        workers: 2
-        timeout: 3600
       auth:
         enabled: true
         server: https://auth.softwareheritage.org/auth/
@@ -366,6 +366,9 @@ storage:
         minReplicaCount: 2
         maxReplicaCount: 10
         cpuPercentageUsage: 30
+      gunicorn:
+        workers: 8
+        threads: 4
       requestedCpu: 500m
       requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyPostgresqlStorageConfiguration
@@ -385,9 +388,6 @@ storage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-      gunicorn:
-        threads: 4
-        workers: 8
 
 djangoWebConfiguration:
   secrets:
@@ -412,8 +412,8 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 10
-        maxReplicaCount: 10
+        minReplicaCount: 2
+        maxReplicaCount: 4
         threshold: 10
       metricsScrapingEnabled: false
       requestedCpu: 500m
