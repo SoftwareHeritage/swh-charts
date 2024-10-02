@@ -1444,7 +1444,7 @@ search:
           - origin
           - origin_visit_status
       indexed:
-        replicas: 0
+        replicas: 1
         # requestedCpu: 10m
         # requestedMemory: 50Mi
         journalClientOverrides:
