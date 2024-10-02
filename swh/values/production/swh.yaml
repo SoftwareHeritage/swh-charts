@@ -789,28 +789,6 @@ objstorageReplayer:
                   value: 4
                 selectPolicy: Min
 
-webhooks:
-  enabled: false
-  svixConfigurationRef: svixConfiguration
-  journalClientConfigurationRef: journalClientConfiguration
-  priorityClassName: frontend-rpc-workload
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 5
-    lagThreshold: 2000
-  deployments:
-    origin-visit-status:
-      replicas: 0
-      dnsConfigurationRef: dnsConfiguration
-      requestedCpu: 100m
-      requestedMemory: 100Mi
-      logLevel: INFO httpx:WARNING
-      journalClientOverrides:
-        auto_offset_reset: latest
-        group_id: swh-archive-prod-webhooks
-        object_types:
-          - origin_visit_status
-
 storage_backfiller:
   enabled: false
   # pin version to avoid stopping jobs during new deployment
