@@ -2073,7 +2073,7 @@ loaders:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 4
       requestedMemory: 128Mi
       requestedCpu: 500m
     npm:
