@@ -1126,3 +1126,23 @@ storageReplayerJournalClientConfiguration:
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
+
+s3RWObjectstorageConfiguration: &s3-rw-configuration
+  cls: s3
+  compression: gzip
+  path_prefix: content
+  container_name: softwareheritage
+  key: ${S3_BUCKET_KEY}
+  secret: ${S3_BUCKET_SECRET}
+  timeout: 120
+  secrets:
+    S3_BUCKET_KEY:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-key
+    S3_BUCKET_SECRET:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-secret
+
+s3DeleteObjectstorageConfiguration:
+  <<: *s3-rw-configuration
+  allow_delete: true
