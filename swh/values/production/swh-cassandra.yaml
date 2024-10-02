@@ -2174,7 +2174,7 @@ loaders:
       image: swh_loader_svn_image
 
 loaderMetadata:
-  enabled: false
+  enabled: true
   storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
