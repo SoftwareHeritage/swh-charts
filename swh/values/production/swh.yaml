@@ -875,40 +875,6 @@ alter:
             Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
 
-provenance:
-  enabled: false
-  deployments:
-    graph-granet:
-      graphConfigurationRef: provenanceGraphGrpcConfiguration
-      replicas: 2
-      gunicorn:
-        workers: 8
-        threads: 1
-      hosts:
-        - webapp-provenance-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: clusterNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-      # extraIngresses:
-      #   - hosts:
-      #     - provenance.internal.softwareheritage.org
-      #     whitelistSourceRangeRef: internalNetworkRanges
-      #     endpoints:
-      #       default:
-      #         paths:
-      #           - path: /
-      #         extraWhitelistSourceRange:
-      #           - 192.168.50.0/24 # for blackbox monitoring
-      #           - 192.168.101.0/24 # vpn network
-
 # Replayer kafka -> postgresql to keep in sync with the main cassandra backend
 storageReplayer:
   enabled: true
