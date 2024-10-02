@@ -789,44 +789,6 @@ objstorageReplayer:
                   value: 4
                 selectPolicy: Min
 
-vault:
-  enabled: false
-  priorityClassName: frontend-rpc
-  logLevel: INFO
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  vaultConfigurationRef: postgresqlVaultConfiguration
-  storageConfigurationRef: remoteROStorageConfiguration
-  objstorageConfigurationRef: roObjstorageBestEffortConfiguration
-  cacheConfigurationRef: azureCacheConfiguration
-  replicas: 2
-  gunicorn:
-    threads: 5
-    workers: 4
-    timeout: 3600
-  # RPC services may have different profiles than the rest so they need their specific
-  # setup
-  requestedMemory: 512Mi
-  requestedCpu: 500m
-  hosts:
-    - vault-rpc-ingress
-  ingress:
-    enabled: true
-    # Optional: the ingress classname to use
-    # className: nginx
-    extraAnnotations:
-      kubernetes.io/ingress.class: nginx
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: clusterNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-
 cookers:
   enabled: false
   storageConfigurationRef: remoteROStorageConfiguration
