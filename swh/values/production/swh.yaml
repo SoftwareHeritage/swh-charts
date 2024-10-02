@@ -668,68 +668,6 @@ web:
           url: https://piwik.inria.fr/
           site_id: 59
 
-objstorageReplayer:
-  enabled: true
-  journalClientConfigurationRef: authenticatedJournalClientConfiguration
-  extraCliLogLevel: "--log-level azure.core.pipeline.policies.http_logging_policy:WARNING"
-  deployments:
-    winery:
-      enabled: true
-      destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
-      sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
-      replicas: 16
-      fetchConcurrency: 20
-      checkDestination: "true"
-      journalClientOverrides:
-        group_id: swh-archive-prod-winery-content-replayer-check
-        auto_offset_reset: earliest
-        batch_size: 1000
-      error_reporter:
-        host: redis-winery-replay.redis
-        port: 6379
-        db: 1
-    s3:
-      enabled: true
-      destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
-      sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
-      replicas: null  # handled by keda autoscaling
-      fetchConcurrency: 20
-      journalClientOverrides:
-        group_id: swh-archive-prod-s3-content-replayer
-        auto_offset_reset: earliest
-        batch_size: 1000
-      autoScaling:
-        minReplicaCount: 4
-        stopWhenNoActivity: false
-        maxReplicaCount: 32
-        advancedKedaConfig:
-          horizontalPodAutoscalerConfig:
-            behavior:
-              scaleDown:
-                # Only scale down every 300 seconds
-                stabilizationWindowSeconds: 300
-                # Remove at most 25% or 4 pods over a 300 second period
-                selectPolicy: Min
-                policies:
-                - periodSeconds: 300
-                  type: Percent
-                  value: 25
-                - periodSeconds: 300
-                  type: Pods
-                  value: 4
-              scaleUp:
-                # Only scale up every 300 seconds
-                stabilizationWindowSeconds: 300
-                # Add at most 25% of total, or 4 pods, over a 300 second period
-                policies:
-                - periodSeconds: 300
-                  type: Percent
-                  value: 25
-                - periodSeconds: 300
-                  type: Pods
-                  value: 4
-                selectPolicy: Min
-
 alterGraphConfiguration:
   url: http://graph.internal.softwareheritage.org:5009/graph
   timeout: null
