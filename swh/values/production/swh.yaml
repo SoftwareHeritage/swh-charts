@@ -441,45 +441,6 @@ storage:
       gunicorn:
         threads: 4
         workers: 8
-    # Main instance used by loaders to write
-    postgresql-winery:
-      enabled: false
-      requestedCpu: 1000m
-      requestedMemory: 2Gi
-      autoScaling:
-        minReplicaCount: 4
-        maxReplicaCount: 10
-        cpuPercentageUsage: 50
-      gunicorn:
-        workers: 16
-        threads: 1
-        timeout: 3600
-      storageConfigurationRef: rwStoragePostgresqlWithWineryObjstorageConfiguration
-      dnsConfigurationRef: dnsConfiguration
-      hosts:
-        - storage-rw-postgresql-ingress
-        - storage-rw-postgresql-saam-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: internalNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-        endpoints:
-          default:
-            paths:
-              - path: /
-      cronjobs:
-        create-object-reference-partitions:
-          enabled: true
-          storageConfigurationRef: rwStoragePostgresqlConfiguration
-          logLevel: INFO
-          cron: 5 0 * * mon
-          concurrencyPolicy: Forbid
 
 djangoWebConfiguration:
   secrets:
