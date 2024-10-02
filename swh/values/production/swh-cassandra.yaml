@@ -1993,7 +1993,7 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       autoScaling:
-        maxReplicaCount: 32
+        maxReplicaCount: 64
         minReplicaCount: 1
         stopWhenNoActivity: false
         queueThreshold: 200
