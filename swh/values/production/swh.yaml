@@ -194,23 +194,6 @@ graphql:
         cacheUrl: memcached://memcached:11211
       maxRawContentSize: 10000
 
-loaderMetadata:
-  enabled: false
-  storageConfigurationRef: remoteRpcRWStorageConfiguration
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  consumerGroup: loader_metadata.journal_client
-  prefix: swh.journal.objects
-  journalBrokers:
-    secretName: swh-archive-broker-secret
-    hosts:
-      - kafka1.internal.softwareheritage.org:9094
-      - kafka2.internal.softwareheritage.org:9094
-      - kafka3.internal.softwareheritage.org:9094
-      - kafka4.internal.softwareheritage.org:9094
-    user: swh-archive-prod
-  autoScaling:
-    maxReplicaCount: 6
-
 scheduler:
   enabled: false
   sentry:
