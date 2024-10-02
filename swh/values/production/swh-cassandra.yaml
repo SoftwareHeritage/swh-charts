@@ -2119,7 +2119,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     pubdev:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
