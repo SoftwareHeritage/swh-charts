@@ -789,30 +789,6 @@ objstorageReplayer:
                   value: 4
                 selectPolicy: Min
 
-cookers:
-  enabled: false
-  storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: consumerCeleryConfiguration
-  vaultConfigurationRef: remoteVaultConfiguration
-  graphConfigurationRef: vaultGraphConfiguration
-  objstorageConfigurationRef: roObjstorageHighParallelismConfiguration
-  deployments:
-    simple:
-      ackLate: true
-      queues:
-        - swh.vault.cooking_tasks.SWHCookingTask
-      autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 8
-    # According to current data, only the previous cooking task are running, hence the
-    # lower number of pods
-    batch:
-      queues:
-        - swh.vault.cooking_tasks.SWHBatchCookingTask
-      autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 2
-
 counters:
   enabled: false
   journalClient:
