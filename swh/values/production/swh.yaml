@@ -727,42 +727,6 @@ web:
           url: https://piwik.inria.fr/
           site_id: 59
 
-deposit:
-  enabled: false
-  logLevel: INFO
-  requestedCpu: 500m
-  requestedMemory: 500Mi
-  migrationsEnabled: false
-  replicas: 2
-  ingress:
-    enabled: true
-    extraAnnotations:
-      kubernetes.io/ingress.class: nginx
-    endpoints:
-      default:
-        paths:
-          - path: /
-          - path: /static
-            port: 80
-      authenticated:
-        paths:
-          - path: /1/private/
-        # auth-file with authentication
-        authentication: swh/deposit-auth-secrets
-  databaseConfigurationRef: postgresqlDepositConfiguration
-  schedulerConfigurationRef: remoteSchedulerConfiguration
-  storageConfigurationRef: remoteStorageConfiguration
-  storageMetadataConfigurationRef: rpcRWStorageConfiguration
-  djangoConfigurationRef: djangoDepositConfiguration
-  blobstorageConfigurationRef: azureDepositConfiguration
-  keycloakConfigurationRef: keycloakConfiguration
-  hosts:
-    - deposit-rpc-ingress
-  extraConfig:
-    max_upload_size: 209715200
-    extraction_dir: "/tmp/swh-deposit/archive/"
-    cache_uri: memcached:11211
-
 objstorageReplayer:
   enabled: true
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
