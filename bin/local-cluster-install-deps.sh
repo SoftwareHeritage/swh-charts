@@ -75,6 +75,9 @@ pushd /tmp/local-path-provisioner
 
 CONFIG_FILE=/tmp/local-path-provisioner/local-path-values.yaml
 cat<<EOF >$CONFIG_FILE
+configmap:
+  name: swh-local-path-provisioner
+nameOverride: swh-local-path-provisioner
 workerThreads: 8
 nodePathMap:
   - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
@@ -89,8 +92,8 @@ $HELM install ./deploy/chart/local-path-provisioner \
 CONFIG_FILE2=/tmp/local-path-provisioner/local-persistent-values.yaml
 cat<<EOF >$CONFIG_FILE2
 configmap:
-  name: local-persistent-provisioner
-nameOverride: local-persistent-provisioner
+  name: swh-local-persistent-provisioner
+nameOverride: swh-local-persistent-provisioner
 nodePathMap:
   - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
     paths:
