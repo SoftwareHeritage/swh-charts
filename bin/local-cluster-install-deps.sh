@@ -2,7 +2,10 @@
 
 # This scripts installs the necessary dependencies for the charts to work
 
-CLUSTER_CONTEXT=${1-kind-local-cluster-2}
+CLUSTER_CONTEXT=${1-kind-local-cluster}
+KUBE_LOCAL_ENVIRONMENT=${2-kind}
+
+KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
 HELM="helm --kube-context $CLUSTER_CONTEXT"
 
 # Install the helm repo dependencies
@@ -104,3 +107,17 @@ $HELM install ./deploy/chart/local-path-provisioner \
       --namespace local-path-storage \
       -f $CONFIG_FILE2
 popd
+
+if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
+    # Ingress specific setup for kind
+    # TODO: Inline the file deploy.yaml in this repository?
+    DEPLOY_FILE=https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+    $KUBECTL apply -f $DEPLOY_FILE
+
+    $KUBECTL wait \
+        --namespace ingress-nginx \
+        --for=condition=ready pod \
+        --selector=app.kubernetes.io/component=controller \
+        --timeout=90s
+
+fi
