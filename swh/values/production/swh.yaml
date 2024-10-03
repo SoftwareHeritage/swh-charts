@@ -113,7 +113,7 @@ scrubberROStorageSecondaryConfiguration:
 graphql:
   enabled: true
   deployments:
-    # Instance to serve https://webapp-postgresql.internal.softwaheritage.org/graphql/
+    # Instance to serve https://webapp-postgresql.internal.softwareheritage.org/graphql/
     postgresql:
       replicas: 2
       gunicorn:
@@ -443,9 +443,8 @@ web:
         enabled: true
         secretName: swh-web-archive-crt
         extraAnnotations:
-          kubernetes.io/ingress.class: nginx
-        tlsExtraAnnotations:
           cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/ingress.class: nginx
           kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
         endpoints:
