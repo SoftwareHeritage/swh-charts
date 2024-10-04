@@ -1463,6 +1463,16 @@ rpcWithRemoteGrpcGraphConfiguration:
 plainGrpcGraphConfiguration:
   max_ram: 1g
 
+externalServices:
+  enabled: true
+  services:
+    grpc-example:
+      internalName: graph-grpc-example-ingress
+      target: local-cluster-control-plane
+    rpc-full-example:
+      internalName: graph-rpc-full-example-ingress
+      target: local-cluster-control-plane
+
 graph:
   enabled: false
   # Test dataset uses the "example" name
