@@ -544,6 +544,12 @@ externalServices:
     provenance:
       internalName: webapp-provenance-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    grpc-python3k:
+      internalName: graph-grpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    rpc-python3k:
+      internalName: graph-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:
