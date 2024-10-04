@@ -1447,16 +1447,16 @@ fakeGraphConfiguration:
   cls: graph
   url: graph.i.s.o:50091
 
-# Rpc Rust graph configuration (spawns a rpc and a grpc)
+# Rpc Rust graph configuration (the rpc instance spawns a grpc instance too)
 rpcLocalRustWithGrpcGraphConfiguration:
   cls: local_rust
   grpc_server:
     port: 50091
 
-grpcRemoteRustGraphConfiguration:
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGrpcGraphConfiguration:
   cls: remote
-  # url: graph-grpc-example-ingress.internal.staging.swh.network:80
-  url: graph-grpc-example-ingress
+  url: graph-grpc-example-ingress:80
   grpc_server:
     port: 80
 
@@ -1537,8 +1537,7 @@ graph:
       type: rpc
       port: 5009
       graphName: example
-      graphConfigurationRef: grpcRemoteRustGraphConfiguration
-      # Whether to start the rpc service (this expects the graph dataset to be ready)
+      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
         - graph-rpc-full-example-ingress
