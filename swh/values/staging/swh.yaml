@@ -365,7 +365,7 @@ web:
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
-
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         search_config:
           metadata_backend: swh-search

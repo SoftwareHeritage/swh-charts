@@ -796,7 +796,7 @@ web:
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
       provenanceConfigurationRef: provenanceConfiguration
-
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
@@ -861,7 +861,7 @@ web:
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
-
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
@@ -921,6 +921,7 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
+  graphConfigurationRef: vaultGraphConfiguration
   # replicas: 2
   gunicorn:
     threads: 5
@@ -2036,9 +2037,19 @@ cassandraChecks:
         - raw_extrinsic_metadata
         batch_size: 1000
 
+provenanceGraphGrpcConfiguration:
+  cls: known_swhid_filter
+  filter_licenses: false
+  provenance:
+    cls: graph
+    url: graph-grpc-ingress:80
+    max_edges: 100000
+
+vaultGraphConfiguration:
+  url: http://graph-rpc-ingress/graph
+
 alterGraphConfiguration:
-  # XXX: this is the production graph, but alter needs a graph
-  url: http://graph.internal.softwareheritage.org:5009/graph
+  url: http://graph-rpc-ingress/graph
   timeout: null
 
 db1DeleteObjstorageConfiguration:
