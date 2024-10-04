@@ -649,8 +649,7 @@ web:
       storageConfigurationRef: remoteROPostgresqlStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
-      graphConfigurationRef: graphConfiguration
-
+      graphConfigurationRef: webGraphConfiguration
       metricsScrapingEnabled: false
       migrations:
         enabled: false
@@ -1015,11 +1014,11 @@ provenanceGraphGrpcConfiguration:
   filter_licenses: false
   provenance:
     cls: graph
-    url: grpc-next-version.internal.staging.swh.network:50091
+    url: graph-grpc-next-version-ingress:80
     max_edges: 100000
 
-graphConfiguration:
-  url: http://graph-next-version.internal.staging.swh.network/graph
+webGraphConfiguration:
+  url: http://graph-rpc-next-version-ingress/graph
 
 provenance:
   enabled: true
