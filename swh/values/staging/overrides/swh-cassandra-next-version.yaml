@@ -175,6 +175,12 @@ externalServices:
     provenance:
       internalName: webapp-provenance-ingress-next-version
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-grpc-next-version:
+      internalName: graph-grpc-next-version-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-rpc-next-version:
+      internalName: graph-rpc-next-version-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -1035,11 +1041,11 @@ provenance:
 #   grpc_server:
 #     port: 50091
 
-grpcRemoteRustGraphConfiguration:
+rpcWithRemoteGrpcGraphConfiguration:
   cls: remote
-  url: graph-grpc-example:50091
+  url: graph-grpc-next-version-ingress:80
   grpc_server:
-    port: 50901
+    port: 80
 
 plainGrpcGraphConfiguration:
   max_ram: 1g
@@ -1111,11 +1117,11 @@ graph:
       port: 5009
       nodeSelector:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
-      graphName: example
-      graphConfigurationRef: grpcRemoteRustGraphConfiguration
+      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
         - graph-next-version.internal.staging.swh.network
+        - graph-rpc-next-version-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
