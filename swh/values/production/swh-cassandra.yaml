@@ -1195,8 +1195,9 @@ indexerStorage:
     read-only:
       checkDbVersion: true
       gunicorn:
-        workers: 4
-        threads: 2
+        workers: 8
+        threads: 1
+        timeout: 60
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 4
@@ -1222,6 +1223,10 @@ indexerStorage:
               - path: /
     read-write:
       checkDbVersion: true
+      gunicorn:
+        workers: 8
+        threads: 1
+        timeout: 60
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 4
@@ -1246,9 +1251,6 @@ indexerStorage:
           default:
             paths:
               - path: /
-      gunicorn:
-        threads: 2
-        workers: 4
 
 scheduler:
   enabled: true
