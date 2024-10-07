@@ -1232,8 +1232,8 @@ indexerStorage:
       autoScaling:
         minReplicaCount: 2
         maxReplicaCount: 4
-        cpuPercentageUsage: 90
-      requestedCpu: 500m
+        cpuPercentageUsage: 100
+      requestedCpu: 100m
       requestedMemory: 512Mi
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
