@@ -1598,7 +1598,7 @@ indexers:
         prefix: swh.journal.objects
         batch_size: 200
       requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedMemory: 200Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
