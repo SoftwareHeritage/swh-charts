@@ -1018,7 +1018,11 @@ provenanceGraphGrpcConfiguration:
     max_edges: 100000
 
 webGraphConfiguration:
-  url: http://graph-rpc-next-version-ingress/graph
+  server_url: http://graph-rpc-next-version-ingress/graph/
+  max_edges:
+    staff: 0
+    user: 100000
+    anonymous: 1000
 
 provenance:
   enabled: true

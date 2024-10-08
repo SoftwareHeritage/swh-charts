@@ -29,7 +29,7 @@ keycloakConfiguration:
   realm_name: SoftwareHeritage
 
 webGraphConfiguration:
-  url: http://graph.internal.softwareheritage.org:5009/graph
+  server_url: http://graph.internal.softwareheritage.org:5009/graph/
   max_edges:
     staff: 0
     user: 100000

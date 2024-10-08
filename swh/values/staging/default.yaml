@@ -606,7 +606,7 @@ inboundEmailConfiguration:
 historyCountersUrl: http://counters-rpc-ingress/counters_history/history.json
 
 webGraphConfiguration:
-  url: http://graph-rpc-ingress/graph
+  server_url: http://graph-rpc-ingress/graph/
   max_edges:
     staff: 0
     user: 100000
