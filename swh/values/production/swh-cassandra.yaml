@@ -485,7 +485,7 @@ web:
       inboundEmailConfigurationRef: inboundEmailConfiguration
       provenanceConfigurationRef: provenanceConfiguration
       djangoAppsRef: webDjangoApps
-
+      graphConfigurationRef: webGraphConfiguration
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:
