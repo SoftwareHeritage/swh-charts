@@ -402,7 +402,7 @@ web:
     archive:
       gunicorn:
         workers: 8
-        threads: 1
+        threads: 2
         timeout: 3600
       autoScaling:
         type: keda
