@@ -2286,7 +2286,7 @@ graph:
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
         name: 2023-09-06
-      startService: false
+      startService: true
       prepareMemoryVolume: false
       extraVolumes:
         graph-20230906-persistent:
