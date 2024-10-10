@@ -120,6 +120,18 @@ data:
         ;;
     esac
 
+  graph-reindex-dataset.sh: |
+    #!/usr/bin/env bash
+    [ -z "${DATASET_LOCATION}" ] && \
+      echo "<DATASET_LOCATION> env variable must be set" && exit 1
+    [ -z "${GRAPH_NAME}" ] && \
+      echo "<GRAPH_NAME> env variable must be set" && exit 1
+
+    # For old datasets missing a .ef or in the wrong format, this fails with
+    # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
+    # reindex the dataset
+    swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+
   initialize-search-backend.sh: |
     #!/usr/bin/env bash
 

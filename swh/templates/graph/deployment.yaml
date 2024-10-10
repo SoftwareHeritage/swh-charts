@@ -20,6 +20,7 @@
 {{- $graphSourcePath := $prepareMemoryVolume | ternary (print "/srv/dataset/" $datasetName "/compressed") "" -}}
 {{- $graphImageVersion := get $graphConfig "imageVersion" | default $.Values.graph.imageVersion | default $.Values.swh_graph_image_version -}}
 {{- $logLevel := $graphConfig.logLevel | default $.Values.graph.logLevel | default "INFO" | upper -}}
+{{- $graphReindexDataset := dig "dataset" "reindex" false $graphConfig -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,6 +94,13 @@ spec:
         {{- if $fetchGraphDataset }}
         {{ include "swh.graph.waitForDataset" (dict "Values" $.Values
                                                     "graphPath" $graphPath
+                                                    "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{ end }}
+        {{- if $graphReindexDataset }}
+        {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
+                                                    "imagePrefixName" "swh_graph_image"
+                                                    "graphPath" $graphPath
+                                                    "graphName" $graphName
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{ end }}
       containers:

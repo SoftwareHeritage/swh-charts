@@ -1491,6 +1491,7 @@ graph:
       # Whether to fetch or install the dataset through a job
       dataset:
         fetch: true
+        reindex: true
         name: test
         downloadMethod: git
         # url: ""
