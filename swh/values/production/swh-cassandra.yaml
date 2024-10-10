@@ -2287,7 +2287,7 @@ graph:
       dataset:
         name: 2023-09-06
       startService: true
-      prepareMemoryVolume: false
+      prepareMemoryVolume: true
       extraVolumes:
         graph-20230906-persistent:
           mountPath: /srv/dataset
