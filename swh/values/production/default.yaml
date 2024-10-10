@@ -16,6 +16,10 @@ internalNetworkRanges:
   # Cluster internal ip
   - 10.42.0.0/16
   - 10.43.0.0/16
+  # "static" admin network range (for monitoring purpose)
+  - 192.168.50.0/24
+  # Allow pergamon icinga checks
+  - 192.168.100.29/32
 
 externalAuthorizedNetworkRanges:
   - 128.93.166.14
