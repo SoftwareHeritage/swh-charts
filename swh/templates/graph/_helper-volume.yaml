@@ -1,7 +1,7 @@
 {{/* Generate the initialize graph backend container configuration if needed */}}
 {{- define "swh.graph.volume.witnessfile" -}}
 - name: {{ .witness_file_env_variable_name | default "WITNESS_FILE" }}
-  value: {{ .graphPath }}/.graph-is-initialized
+  value: {{ .graphPath }}/{{ .filename | default ".graph-is-initialized" }}
 {{- end -}}
 
 {{/* Generate the initialize graph backend container configuration if needed */}}
@@ -54,6 +54,15 @@
     {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .pathDatasetDestination) | nindent 4 }}
     {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_SOURCE_FILE"
                                                      "graphPath" .pathDatasetSource) | nindent 4 }}
+    {{- $waitForReindex := .waitForReindex | default false -}}
+    {{ if $waitForReindex }}
+    {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_REINDEX_FILE"
+                                                     "graphPath" .pathDatasetSource
+                                                     "filename" ".graph-is-reindexed") | nindent 4 }}
+    {{ else }}
+    - name: WITNESS_REINDEX_FILE
+      value: ""
+    {{ end }}
     - name: PERIOD
       value: {{ .period | default "3" | quote }}
     - name: GRAPH_NAME
@@ -107,11 +116,17 @@
   command:
   - /entrypoints/graph-reindex-dataset.sh
   env:
-    {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .graphPath) | nindent 4 }}
+    {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_SOURCE_FILE"
+                                                     "graphPath" .graphPath) | nindent 4 }}
+    {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_REINDEX_FILE"
+                                                     "graphPath" .graphPath
+                                                     "filename" ".graph-is-reindexed") | nindent 4 }}
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
     - name: GRAPH_NAME
       value: {{ .graphName }}
+    - name: PERIOD
+      value: {{ .period | default "3" | quote }}
   volumeMounts:
   - name: backend-utils
     mountPath: /entrypoints

@@ -1573,6 +1573,7 @@ graph:
       # Whether to fetch or install the dataset through a job
       dataset:
         fetch: true
+        reindex: true
         downloadMethod: s3
         name: 2021-03-23-popular-3k-python
       # Whether to start the rpc service (this expects the graph dataset to be ready)

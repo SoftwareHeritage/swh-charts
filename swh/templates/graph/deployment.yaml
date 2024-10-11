@@ -85,22 +85,23 @@ spec:
             mountPath: /entrypoints
             readOnly: true
         {{- if $prepareMemoryVolume }}
+        {{- if $graphReindexDataset }}
+        {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
+                                                    "imagePrefixName" "swh_graph_image"
+                                                    "graphPath" $graphSourcePath
+                                                    "graphName" $graphName
+                                                    "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{ end }}
         {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
                                                          "graphName" $graphName
                                                          "pathDatasetSource" $graphSourcePath
                                                          "pathDatasetDestination" $graphPath
+                                                         "waitForReindex" $graphReindexDataset
                                                          "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{- end }}
         {{- if $fetchGraphDataset }}
         {{ include "swh.graph.waitForDataset" (dict "Values" $.Values
                                                     "graphPath" $graphPath
-                                                    "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
-        {{ end }}
-        {{- if $graphReindexDataset }}
-        {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
-                                                    "imagePrefixName" "swh_graph_image"
-                                                    "graphPath" $graphPath
-                                                    "graphName" $graphName
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{ end }}
       containers:

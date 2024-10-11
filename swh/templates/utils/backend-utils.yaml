@@ -26,10 +26,19 @@ data:
 
     [ -f ${WITNESS_FILE} ] && echo "Graph ready, do nothing." && exit 0
 
+    # Let's wait for the dataset installation
     while [ ! -f ${WITNESS_SOURCE_FILE} ]; do
-        echo "${WITNESS_SOURCE_FILE} not present, wait for it to prepare the graph dataset..."
+        echo "${WITNESS_SOURCE_FILE} missing, waiting graph dataset installation..."
         sleep $PERIOD
     done
+
+    # Let's wait for the reindexation to be done
+    if [ ! -z "${WITNESS_REINDEX_FILE}" ]; then
+        while [ ! -f ${WITNESS_REINDEX_FILE} ]; do
+            echo "${WITNESS_REINDEX_FILE} missing, waiting graph dataset reindexation..."
+            sleep $PERIOD
+        done
+    fi
 
     # Create empty dataset location destination for copy to be ok
     mkdir -p ${DATASET_LOCATION}
@@ -122,15 +131,32 @@ data:
 
   graph-reindex-dataset.sh: |
     #!/usr/bin/env bash
+    [ -z "${WITNESS_SOURCE_FILE}" ] && \
+      echo "<WITNESS_SOURCE_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_REINDEX_FILE}" ] && \
+      echo "<WITNESS_REINDEX_FILE> env variable must be set" && exit 1
+    [ -z "${PERIOD}" ] && \
+      echo "<PERIOD> env variable must be set" && exit 1
     [ -z "${DATASET_LOCATION}" ] && \
       echo "<DATASET_LOCATION> env variable must be set" && exit 1
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
 
+    [ -f ${WITNESS_REINDEX_FILE} ] && echo "Graph reindexed, do nothing." && exit 0
+
+    set -eux
+
+    # Let's wait for the dataset installation
+    while [ ! -f ${WITNESS_SOURCE_FILE} ]; do
+        echo "${WITNESS_SOURCE_FILE} missing, waiting graph dataset installation..."
+        sleep $PERIOD
+    done
+
     # For old datasets missing a .ef or in the wrong format, this fails with
     # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
     # reindex the dataset
-    swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+    swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME} && \
+      touch $WITNESS_REINDEX_FILE
 
   initialize-search-backend.sh: |
     #!/usr/bin/env bash
