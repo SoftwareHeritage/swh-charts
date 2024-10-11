@@ -2277,7 +2277,7 @@ graph:
   deployments:
     # grpc graph with test dataset
     grpc-20230906:
-      enabled: true
+      enabled: false
       type: grpc
       port: 50091
       nodeSelector:
@@ -2330,7 +2330,7 @@ graph:
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-2023-09-06:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
