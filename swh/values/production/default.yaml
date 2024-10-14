@@ -936,6 +936,12 @@ externalServices:
     provenance-swh-cassandra:
       internalName: webapp-provenance-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-grpc-20240331:
+      internalName: graph-grpc-20240331-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-rpc-20240331:
+      internalName: graph-rpc-20240331-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 svixConfiguration:
   svix:
