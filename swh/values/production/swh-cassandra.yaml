@@ -2265,7 +2265,7 @@ rpcLocalRustWithGrpcGraphConfiguration:
 # The rpc graph instance will communicate with another grpc instance
 rpcWithRemoteGrpcGraphConfiguration:
   cls: remote
-  url: graph-grpc-20230926-ingress:80
+  url: graph-grpc-20240331-ingress:80
   grpc_server:
     port: 80
 
@@ -2276,8 +2276,8 @@ graph:
   enabled: true
   deployments:
     # grpc graph with test dataset
-    grpc-20230906:
-      enabled: false
+    grpc-20240331:
+      enabled: true
       type: grpc
       port: 50091
       nodeSelector:
@@ -2285,12 +2285,12 @@ graph:
       requestedMemory: 500Gi
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
-        name: 2023-09-06
+        name: 2024-03-31
         reindex: true
       startService: true
       prepareMemoryVolume: true
       extraVolumes:
-        graph-20230906-persistent:
+        graph-20240331-persistent:
           mountPath: /srv/dataset
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
@@ -2301,7 +2301,7 @@ graph:
               requests:
                 storage: 1Gi
         # in-memory volumes
-        graph-20230906-inmemory:
+        graph-20240331-inmemory:
           mountPath: /srv/graph
           persistentVolumeClaimDefinition:
             storageClassName: local-path
@@ -2313,7 +2313,7 @@ graph:
                 storage: 1Gi
       hosts:
         - graph-grpc.internal.softwareheritage.org
-        - graph-grpc-20230906-ingress
+        - graph-grpc-20240331-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -2329,7 +2329,7 @@ graph:
               # vpn network
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
-    rpc-2023-09-06:
+    rpc-20240331:
       enabled: false
       type: rpc
       port: 5009
@@ -2337,7 +2337,7 @@ graph:
       startService: false
       hosts:
         - graph-rpc.internal.softwareheritage.org
-        - graph-rpc-20230906-ingress
+        - graph-rpc-20240331-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
