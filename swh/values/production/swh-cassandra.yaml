@@ -2282,7 +2282,7 @@ graph:
       port: 50091
       nodeSelector:
         kubernetes.io/hostname: rancher-node-metal05
-      requestedMemory: 500Gi
+      requestedMemory: 100Gi
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
         name: 2024-03-31
