@@ -1056,6 +1056,11 @@ plainGrpcGraphConfiguration:
 graph:
   enabled: true
   deployments:
+    # Deactivate the swh-cassandra's (g)rpc services
+    grpc-python3k:
+      enabled: false
+    rpc-python3k:
+      enabled: false
     # grpc graph with test dataset
     grpc-example:
       enabled: true
