@@ -2330,11 +2330,11 @@ graph:
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-20240331:
-      enabled: false
+      enabled: true
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
-      startService: false
+      startService: true
       hosts:
         - graph-rpc.internal.softwareheritage.org
         - graph-rpc-20240331-ingress
