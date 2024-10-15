@@ -122,7 +122,7 @@ data:
             # Elias-Fano pointer list .../graph.ef`, so we trigger a reindex step
             reindex_witness_file=${DATASET_LOCATION}/${GRAPH_NAME}.ef
             [ ! -f $reindex_witness_file ] && \
-              swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME}
+              swh graph reindex --ef ${DATASET_LOCATION}/${GRAPH_NAME}
 
             # Make explicit the graph is ready
             touch ${WITNESS_FILE}
@@ -155,7 +155,7 @@ data:
     # For old datasets missing a .ef or in the wrong format, this fails with
     # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
     # reindex the dataset
-    swh graph reindex ${DATASET_LOCATION}/${GRAPH_NAME} && \
+    swh graph reindex --ef ${DATASET_LOCATION}/${GRAPH_NAME} && \
       touch $WITNESS_REINDEX_FILE
 
   initialize-search-backend.sh: |
