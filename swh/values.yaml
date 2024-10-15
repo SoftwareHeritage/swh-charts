@@ -1916,6 +1916,7 @@ graph:
   deployments:
     # Add as many instances as possible (with various size)
     # rpc-minimal:
+    #   # type can be rpc (only rpc), grpc (only grpc), or rpc-grpc (both)
     #   type: rpc
     #   # port: 5009
     #   # Configuration to run the graph service

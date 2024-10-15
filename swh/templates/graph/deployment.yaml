@@ -147,12 +147,19 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            - name: GRAPH_TYPE
-              value: {{ $type }}
             - name: PORT
               value: {{ $port | quote }}
+            {{ if eq $type "rpc-grpc" }}
+            - name: GRAPH_TYPE
+              value: rpc
+            {{ else }}
+            - name: GRAPH_TYPE
+              value: {{ $type }}
+            {{ end }}
+            {{ if ne $type "rpc" }}
             - name: GRAPH_PATH
               value: {{ $graphPath }}/{{ $graphName }}
+            {{ end }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT

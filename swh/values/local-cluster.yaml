@@ -1568,7 +1568,7 @@ graph:
       enabled: true
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker3
-      type: rpc
+      type: rpc-grpc
       port: 5009
       # Whether to fetch or install the dataset through a job
       dataset:
