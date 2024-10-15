@@ -13,6 +13,7 @@
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}
 {{- $graphSourcePath := $prepareMemoryVolume | ternary (print "/srv/dataset/" $datasetName "/compressed") "" -}}
 {{- $jobName := print $serviceType "-job-fetch-dataset" -}}
+{{- $graphReindexDataset := dig "dataset" "reindex" false $graphConfig -}}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -66,11 +67,19 @@ spec:
                                                   "graphPath" (ne $graphSourcePath "" | ternary $graphSourcePath $graphPath)
                                                   "config" $graphConfig.dataset
                                                   "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{- if $graphReindexDataset }}
+        {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
+                                                    "imagePrefixName" "swh_graph_image"
+                                                    "graphPath" ($prepareMemoryVolume | ternary $graphSourcePath $graphPath)
+                                                    "graphName" $graphName
+                                                    "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{ end }}
         {{- if $prepareMemoryVolume }}
         {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
                                                          "graphName" $graphName
                                                          "pathDatasetSource" $graphSourcePath
                                                          "pathDatasetDestination" $graphPath
+                                                         "waitForReindex" $graphReindexDataset
                                                          "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{- end }}
       volumes:
