@@ -84,14 +84,14 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{- if $prepareMemoryVolume }}
         {{- if $graphReindexDataset }}
         {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
                                                     "imagePrefixName" "swh_graph_image"
-                                                    "graphPath" $graphSourcePath
+                                                    "graphPath" ($prepareMemoryVolume | ternary $graphSourcePath $graphPath)
                                                     "graphName" $graphName
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
         {{ end }}
+        {{- if $prepareMemoryVolume }}
         {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
                                                          "graphName" $graphName
                                                          "pathDatasetSource" $graphSourcePath
