@@ -1612,7 +1612,7 @@ graph:
       # Whether to fetch or install the dataset through a job
       dataset:
         fetch: true
-        # reindex: true
+        reindex: true
         downloadMethod: s3
         name: 2024-05-16-sux
       # Whether to start the rpc service (this expects the graph dataset to be ready)
