@@ -1603,7 +1603,7 @@ graph:
               requests:
                 storage: 1Gi
 
-    rpc-2024-05-16-sux:
+    rpc-20240516-sux:
       enabled: true
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker2
