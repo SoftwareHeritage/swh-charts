@@ -49,7 +49,7 @@ spec:
       {{- end }}
       {{- if and $.Values.podPriority.enabled $.Values.scheduler.priorityClassName }}
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.scheduler.priorityClassName }}
-      {{ end }}
+      {{- end }}
       initContainers:
         - name: prepare-configuration
           image: debian:bullseye
@@ -89,33 +89,25 @@ spec:
           - scheduler
           - --config-file
           - /etc/swh/config.yml
-
-          {{ if ( contains "runner" $service_type ) -}}
+          {{- if ( contains "runner" $service_type ) }}
           - start-runner
           - --period
           - {{ get $deployment_config "period" | default 10 | quote }}
-          {{ end -}}
-
-          {{ if ( eq "runner-priority" $service_type ) -}}
+          {{- end }}
+          {{- if ( eq "runner-priority" $service_type ) }}
           - --with-priority
           {{- $extraConfig := get $deployment_config "extraConfig" -}}
-
           {{- if $extraConfig }}
-
           {{- range $task_type := $extraConfig }}
-
           - --task-type
           - {{ $task_type }}
-
           {{- end -}}
-          {{ end }}
-          {{ end }}
-
-          {{ if ( eq "listener" $service_type ) -}}
+          {{- end }}
+          {{- end }}
+          {{- if ( eq "listener" $service_type ) }}
           # listener
           - start-listener
-          {{ end -}}
-
+          {{- end }}
           env:
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" | quote }}
