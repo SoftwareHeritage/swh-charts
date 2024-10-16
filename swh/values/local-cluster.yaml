@@ -3,6 +3,9 @@ sentry:
   enabled: false
   environment: local-cluster
 
+statsdExternalHost: localhost
+statsdPort: 8125
+
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16
@@ -1486,9 +1489,16 @@ rpcLocalRustWithGrpcGraphConfiguration:
     port: 50091
 
 # The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGrpcGraphConfiguration:
+rpcWithRemoteGrpcGraphExampleConfiguration:
   cls: remote
   url: graph-grpc-example-ingress:80
+  grpc_server:
+    port: 80
+
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGrpcGraphPopularConfiguration:
+  cls: remote
+  url: graph-grpc-popular-ingress:80
   grpc_server:
     port: 80
 
@@ -1507,9 +1517,16 @@ externalServices:
     web-local-archive-ingress:
       internalName: web-local-archive-ingress
       target: local-cluster-control-plane
+    grpc-popular:
+      internalName: graph-grpc-popular-ingress
+      target: local-cluster-control-plane
+    rpc-popular:
+      internalName: graph-rpc-popular-ingress
+      target: local-cluster-control-plane
 
 graph:
   enabled: false
+  imageVersion: "20241105.2"
   # Test dataset uses the "example" name
   deployments:
     # basic grpc graph with sample dataset with sample dataset (cloned out of
@@ -1583,7 +1600,7 @@ graph:
       type: rpc
       port: 5009
       graphName: example
-      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      graphConfigurationRef: rpcWithRemoteGrpcGraphExampleConfiguration
       startService: true
       hosts:
         - graph-rpc-full-example-ingress
@@ -1597,26 +1614,22 @@ graph:
           default:
             paths:
               - path: /
-
-    # Instance to run the graph with the dataset python3k (persistent & memory volumes)
-    rpc-python3k:
+    # Instance to run the graph with the dataset popular-4-shell (persistent & memory volumes)
+    grpc-popular-20240823:
       enabled: true
       nodeSelector:
-        kubernetes.io/hostname: local-cluster-worker3
-      type: rpc-grpc
-      port: 5009
-      # Whether to fetch or install the dataset through a job
+        kubernetes.io/hostname: local-cluster-worker
+      type: grpc
+      port: 50091
       dataset:
         fetch: true
-        reindex: true
         downloadMethod: s3
-        name: 2021-03-23-popular-3k-python
-      # Whether to start the rpc service (this expects the graph dataset to be ready)
+        name: 2024-08-23_popular-4-shell
+      prepareMemoryVolume: true
       startService: true
       graphConfigurationRef: rpcLocalRustWithGrpcGraphConfiguration
-      prepareMemoryVolume: true
       extraVolumes:
-        graph-python3k-persistent:
+        graph-popular-persistent:
           mountPath: /srv/dataset
           persistentVolumeClaimDefinition:
             storageClassName: local-persistent
@@ -1627,7 +1640,7 @@ graph:
               requests:
                 storage: 1Gi
         # in-memory volumes
-        graph-python3k-inmemory:
+        graph-popular-inmemory:
           mountPath: /srv/graph
           persistentVolumeClaimDefinition:
             storageClassName: local-path
@@ -1637,3 +1650,36 @@ graph:
             resources:
               requests:
                 storage: 1Gi
+      hosts:
+        - graph-grpc-popular-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+    # basic rpc graph which will hit the grpc-example grpc pod
+    rpc-popular-20240823:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: local-cluster-worker
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGrpcGraphPopularConfiguration
+      startService: true
+      hosts:
+        - graph-rpc-popular-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
