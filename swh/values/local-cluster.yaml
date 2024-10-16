@@ -460,6 +460,7 @@ webDjangoApps:
   - swh.web.save_origin_webhooks
   - swh.web.vault
   - swh.web.provenance
+  - swh.web.save_bulk
 
 web:
   enabled: false
@@ -813,6 +814,12 @@ scheduler:
     enabled: true
     journalConfigurationRef: schedulerJournalClientConfiguration
   extraServices:
+    origin-priority:
+      enabled: true
+      replicas: 1
+      logLevel: INFO
+      requestedMemory: 100Mi
+      requestedCpu: 10m
     runner:
       enabled: true
       period: 100
@@ -944,6 +951,11 @@ listers:
       - swh.lister.gitlab.tasks.RangeGitLabLister
       - swh.lister.gitlab.tasks.FullGitLabRelister
       replicas: 1
+    save-bulk:
+      queues:
+        - swh.lister.save_bulk.tasks.SaveBulkListerTask
+      autoScaling:
+        maxReplicaCount: 1
 
 loaders:
   enabled: false
@@ -992,6 +1004,25 @@ loaders:
       ackLate: true
       replicas: 2
 
+    save-bulk:
+      image: swh_loader_savecodenow_image
+      queues:
+        - save-bulk:swh.loader.bzr.tasks.LoadBazaar
+        - save-bulk:swh.loader.cvs.tasks.LoadCvsRepository
+        - save-bulk:swh.loader.git.tasks.UpdateGitRepository
+        - save-bulk:swh.loader.git.tasks.LoadDiskGitRepository
+        - save-bulk:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save-bulk:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save-bulk:swh.loader.mercurial.tasks.LoadMercurial
+        - save-bulk:swh.loader.svn.tasks.LoadSvnRepository
+        - save-bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save-bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save-bulk:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 200Mi
+      requestedCpu: 50m
 
 memcached:
   enabled: false
