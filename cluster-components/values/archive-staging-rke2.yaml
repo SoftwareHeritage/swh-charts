@@ -417,3 +417,20 @@ redis:
               requests:
                 storage: 1Gi
 
+mavenIndexExporter:
+  enabled: true
+  directoryOutput: /srv/www/maven_index_exporter
+  deployment:
+    volume:
+      name: maven-index-exporter-volumes
+      mountPath: /srv/www/maven_index_exporter
+      volumeDefinition:
+        persistentVolumeClaim:
+          claimName: maven-index-exporter-pvc
+    volumeClaim:
+      storageClassName: cephfs
+      accessModes:
+        - ReadWriteMany
+      volumeMode: Filesystem
+      name: maven-index-exporter-pvc
+      size: 10Gi

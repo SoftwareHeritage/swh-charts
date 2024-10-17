@@ -1,0 +1,25 @@
+{{- if .Values.mavenIndexExporter.enabled -}}
+
+{{- if .Values.mavenIndexExporter.deployment.volumeClaim -}}
+{{- $volumeMode := .Values.mavenIndexExporter.deployment.volumeClaim.volumeMode -}}
+{{- $accessModes := .Values.mavenIndexExporter.deployment.volumeClaim.accessModes -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.mavenIndexExporter.deployment.volumeClaim.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  storageClassName: {{ .Values.mavenIndexExporter.deployment.volumeClaim.storageClassName }}
+  {{- if $accessModes }}
+  accessModes:
+    {{- toYaml $accessModes | nindent 4 }}
+  {{- end }}
+  {{- if $volumeMode }}
+  volumeMode: {{ $volumeMode }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.mavenIndexExporter.deployment.volumeClaim.size | default "20Gi" }}
+{{ end }}
+{{ end }}
