@@ -151,6 +151,10 @@ spec:
               value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
               value: {{ $gunicornConfig.timeout | quote }}
+            {{- if $webConfig.swhDevMode }}
+            - name: SWH_DEV_MODE
+              value: "1"
+            {{- end }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
