@@ -468,6 +468,7 @@ web:
       enabled: true
       migrations:
         enabled: true
+      swhDevMode: true
       cronJobs:
         syncMailmaps:
           enabled: false
