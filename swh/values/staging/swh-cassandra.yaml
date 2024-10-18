@@ -1958,6 +1958,12 @@ scheduler:
       logLevel: INFO
       requestedMemory: 100Mi
       requestedCpu: 10m
+    runner-first-visits:
+      enabled: true
+      replicas: 1
+      logLevel: INFO
+      requestedMemory: 100Mi
+      requestedCpu: 10m
 
 journalClientCassandraChecksConfiguration:
   cls: kafka

@@ -89,7 +89,7 @@ spec:
           - scheduler
           - --config-file
           - /etc/swh/config.yml
-          {{- if ( contains "runner" $service_type ) }}
+          {{- if and (contains "runner" $service_type) (not (contains "first-visits" $service_type)) }}
           - start-runner
           - --period
           - {{ get $deployment_config "period" | default 10 | quote }}
@@ -107,6 +107,11 @@ spec:
           {{- if ( eq "listener" $service_type ) }}
           # listener
           - start-listener
+          {{- end }}
+          {{- if ( eq "runner-first-visits" $service_type ) }}
+          - start-runner-first-visits
+          - --period
+          - {{ get $deployment_config "period" | default 10 | quote }}
           {{- end }}
           env:
             - name: STATSD_HOST
