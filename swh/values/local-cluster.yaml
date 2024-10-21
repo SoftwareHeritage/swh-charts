@@ -502,8 +502,6 @@ web:
       #   minReplicaCount: 1
       #   maxReplicaCount: 1
       #   cpuPercentageUsage: 50
-      hosts:
-        - web-local-archive
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -519,6 +517,8 @@ web:
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
       provenanceConfigurationRef: provenanceConfiguration
+      hosts:
+        - web-local-archive-ingress
       ingress:
         enabled: true
         className: nginx
@@ -1472,6 +1472,9 @@ externalServices:
       target: local-cluster-control-plane
     rpc-full-example:
       internalName: graph-rpc-full-example-ingress
+      target: local-cluster-control-plane
+    web-local-archive-ingress:
+      internalName: web-local-archive-ingress
       target: local-cluster-control-plane
 
 graph:
