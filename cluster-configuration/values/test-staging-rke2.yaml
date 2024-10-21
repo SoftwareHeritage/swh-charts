@@ -43,3 +43,7 @@ cloudnativePg:
 
 rabbitmq:
   enabled: true
+
+redis:
+  enabled: true
+  namespace: redis
