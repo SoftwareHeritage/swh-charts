@@ -12,7 +12,9 @@
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}
 {{- $graphSourcePath := $prepareMemoryVolume | ternary (print "/srv/dataset/" $datasetName "/compressed") "" -}}
-{{- $jobName := print $serviceType "-job-fetch-dataset" -}}
+{{- $graphImageVersion := get $graphConfig "imageVersion" | default $.Values.graph.imageVersion | default $.Values.swh_graph_image_version -}}
+{{- $versionChecksum := print $graphImageVersion | sha256sum -}}
+{{- $jobName := print $serviceType "-job-fetch-dataset-" (substr 0 6 $versionChecksum) -}}
 {{- $graphReindexDataset := dig "dataset" "reindex" false $graphConfig -}}
 ---
 apiVersion: batch/v1
