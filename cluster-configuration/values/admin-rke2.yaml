@@ -24,3 +24,6 @@ certManager:
   webhookGandiEnabled: true
   useGandiDNS: true
 
+redis:
+  enabled: true
+  namespace: redis
