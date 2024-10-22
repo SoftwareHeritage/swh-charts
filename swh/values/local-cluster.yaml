@@ -814,12 +814,6 @@ scheduler:
     enabled: true
     journalConfigurationRef: schedulerJournalClientConfiguration
   extraServices:
-    origin-priority:
-      enabled: true
-      replicas: 1
-      logLevel: INFO
-      requestedMemory: 100Mi
-      requestedCpu: 10m
     runner:
       enabled: true
       period: 100
@@ -828,6 +822,12 @@ scheduler:
       period: 100
       extraConfig:
         - load-git
+    runner-first-visits:
+      enabled: true
+      replicas: 1
+      logLevel: INFO
+      requestedMemory: 100Mi
+      requestedCpu: 10m
     listener:
       enabled: true
 
