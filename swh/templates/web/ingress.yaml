@@ -2,8 +2,14 @@
 {{ range $web_type, $web_config := .Values.web.deployments }}
 {{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled"))
            (and (hasKey $web_config "ingress") $web_config.ingress.enabled) -}}
+{{- $ingressConfig := dict -}}
+{{- $ingressConfig = mustMergeOverwrite $ingressConfig $.Values.web.ingress -}}
+{{- $ingressConfig = mustMergeOverwrite $ingressConfig $web_config.ingress -}}
+{{- $mergedConfig := dict -}}
+{{- $mergedConfig = mustMergeOverwrite $mergedConfig $web_config -}}
+{{- $mergedConfig = mustMergeOverwrite $mergedConfig (dict "ingress" $ingressConfig) -}}
 {{- include "swh.ingress" (dict "serviceType"   ( print "web-" $web_type )
-                                "configuration" $web_config
+                                "configuration" $mergedConfig
                                 "Values"        $.Values) -}}
 {{- end -}}
 {{ end -}}
