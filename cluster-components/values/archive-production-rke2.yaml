@@ -98,3 +98,22 @@ svix:
   redis:
     dsn: redis-svix.svix-server
   postgresDsn: db.internal.softwareheritage.org
+
+redis:
+  enabled: true
+  deployments:
+    cassandra-replayers:
+      enabled: true
+      namespace: redis
+      priorityClassName: swh-storages
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-metal01
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes: ["ReadWriteOnce"]
