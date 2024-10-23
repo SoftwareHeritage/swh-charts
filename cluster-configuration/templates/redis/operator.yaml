@@ -21,8 +21,8 @@ spec:
     namespace: {{ .Values.redis.namespace | default "ot-operators" | quote }}
   syncPolicy:
     automated:
-      prune: {{ .Values.defaultPrune }}
-      selfHeal: {{ .Values.defaultSelfHeal }}
+      prune: {{ .Values.defaultPrune | default .Values.redis.prune }}
+      selfHeal: {{ .Values.defaultSelfHeal | default .Values.redis.selfHeal }}
     syncOptions:
     - ServerSideApply=true
 {{ end }}
