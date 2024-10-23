@@ -62,4 +62,3 @@ elasticsearch:
 
 redis:
   enabled: true
-  namespace: redis

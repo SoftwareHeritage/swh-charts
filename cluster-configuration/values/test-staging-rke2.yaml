@@ -46,4 +46,3 @@ rabbitmq:
 
 redis:
   enabled: true
-  namespace: redis-operator

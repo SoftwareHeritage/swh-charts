@@ -62,3 +62,4 @@ redis:
   #   ot-helm/redis-operator \
   #   --namespace ot-operators --create-namespace
   enabled: true
+  namespace: ot-operators

@@ -58,5 +58,4 @@ otlpCollector:
 
 redis:
   enabled: true
-  namespace: redis
   version: 0.14.3

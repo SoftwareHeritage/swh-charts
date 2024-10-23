@@ -99,8 +99,7 @@ elasticsearch:
 
 redis:
   enabled: false
-  # Documented default namespace
-  namespace: ot-operators
+  namespace: redis
   # Most recent version is stuck on docker image not yet being published
   # https://github.com/OT-CONTAINER-KIT/redis-operator/issues/979
   # https://github.com/OT-CONTAINER-KIT/redis-operator/issues/1020

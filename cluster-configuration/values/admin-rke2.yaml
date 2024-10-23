@@ -26,4 +26,3 @@ certManager:
 
 redis:
   enabled: true
-  namespace: redis
