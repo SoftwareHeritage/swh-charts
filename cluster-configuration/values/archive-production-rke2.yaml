@@ -56,3 +56,7 @@ otlpCollector:
     - http://esnode3.internal.softwareheritage.org:9200
     - http://esnode7.internal.softwareheritage.org:9200
 
+redis:
+  enabled: true
+  namespace: redis
+  version: 0.14.3
