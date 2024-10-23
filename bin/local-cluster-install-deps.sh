@@ -62,7 +62,7 @@ $HELM upgrade --install eck-operator \
 $HELM upgrade --install redis-operator \
      ot-helm/redis-operator \
      -n ot-operators --create-namespace \
-     --version 0.15.10
+     --version 0.18.3
 
 $HELM upgrade --install keda \
       kedacore/keda \
