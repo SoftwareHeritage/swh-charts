@@ -154,7 +154,7 @@ redis:
       redisExporter:
         enabled: true
       nodeSelector:
-        kubernetes.io/hostname: rancher-node-staging-rke2-worker1
+        kubernetes.io/hostname: rancher-node-test-rke2-worker2
       storage:
         volumeClaimTemplate:
           spec:
