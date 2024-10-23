@@ -121,3 +121,21 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+    winery-replay:
+      enabled: true
+      namespace: redis
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-metal03
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
