@@ -3,7 +3,7 @@
 {{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled"))
            (and (hasKey $web_config "ingress") $web_config.ingress.enabled) -}}
 {{- $ingressConfig := dict -}}
-{{- $ingressConfig = mustMergeOverwrite $ingressConfig $.Values.web.ingress -}}
+{{- $ingressConfig = mustMergeOverwrite $ingressConfig (or $.Values.web.ingress dict) -}}
 {{- $ingressConfig = mustMergeOverwrite $ingressConfig $web_config.ingress -}}
 {{- $mergedConfig := dict -}}
 {{- $mergedConfig = mustMergeOverwrite $mergedConfig $web_config -}}
