@@ -246,6 +246,9 @@ web:
             operator: In
             values:
             - "true"
+  ingress:
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: 100M
 
 deposit:
   migrations:
