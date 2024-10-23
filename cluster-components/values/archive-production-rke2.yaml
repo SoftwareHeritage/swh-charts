@@ -112,8 +112,12 @@ redis:
         enabled: true
       nodeSelector:
         kubernetes.io/hostname: rancher-node-metal01
-      storageSpec:
+      storage:
         volumeClaimTemplate:
           spec:
             storageClassName: local-persistent
-            accessModes: ["ReadWriteOnce"]
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
