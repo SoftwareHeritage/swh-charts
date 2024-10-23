@@ -32,12 +32,27 @@ keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/
   realm_name: SoftwareHeritage
 
+provenanceGraphGrpcConfiguration:
+  cls: known_swhid_filter
+  filter_licenses: false
+  provenance:
+    cls: graph
+    url: graph-grpc-20240331-ingress:80
+    max_edges: 100000
+
+vaultGraphConfiguration:
+  url: http://graph-rpc-20240331-ingress/graph
+
 webGraphConfiguration:
-  server_url: http://graph.internal.softwareheritage.org:5009/graph/
+  server_url: http://graph-rpc-20240331-ingress/graph/
   max_edges:
     staff: 0
     user: 100000
     anonymous: 1000
+
+alterGraphConfiguration:
+  url: http://graph-rpc-20240331-ingress/graph
+  timeout: null
 
 memcached:
   enabled: true
@@ -1093,9 +1108,6 @@ authenticatedIndexerProd01JournalClientConfiguration:
 remoteROCassandraIngressStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
-
-vaultGraphConfiguration:
-  url: http://graph.internal.softwareheritage.org:5009/graph
 
 provenanceConfiguration:
   cls: remote

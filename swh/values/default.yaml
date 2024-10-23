@@ -6,14 +6,6 @@ prometheus:
 sentry:
   enabled: true
 
-provenanceGraphGrpcConfiguration:
-  cls: known_swhid_filter
-  filter_licenses: false
-  provenance:
-    cls: graph
-    url: graph.internal.softwareheritage.org:50091
-    max_edges: 100000
-
 defaultLoggingConfig:
   version: 1
   handlers:
