@@ -157,7 +157,7 @@ redis:
         enabled: true
       redisExporter:
         enabled: true
-      externalConfig:
+      extraConfig:
         enabled: true
         data: |
           save 60 500
