@@ -62,3 +62,4 @@ elasticsearch:
 
 redis:
   enabled: true
+  version: 0.18.3
