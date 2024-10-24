@@ -940,7 +940,6 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-  graphConfigurationRef: vaultGraphConfiguration
   # replicas: 2
   gunicorn:
     threads: 5
@@ -976,6 +975,7 @@ cookers:
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
+  graphConfigurationRef: vaultGraphConfiguration
   threadPoolSize: 4
   deployments:
     simple:
