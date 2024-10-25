@@ -825,6 +825,9 @@ webThrottling:
     swh_raw_object:
       limiter_rate:
         default: 120/h
+    swh_api_metadata_citation:
+      limiter_rate:
+        default: 60/m
 
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers

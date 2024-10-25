@@ -490,6 +490,9 @@ webThrottling:
       limiter_rate:
         default: 120/h
         POST: 10/h
+    swh_api_metadata_citation:
+      limiter_rate:
+        default: 60/m
 
 externalServices:
   enabled: true
