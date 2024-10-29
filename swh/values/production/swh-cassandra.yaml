@@ -1587,7 +1587,7 @@ provenance:
                - 192.168.101.0/24 # vpn network
 
 indexers:
-  enabled: false
+  enabled: true
   priorityClassName: low-workload
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
