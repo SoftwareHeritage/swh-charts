@@ -71,10 +71,10 @@ primaryPostgresqlROStorageConfiguration:
   host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
   user: guest
-  pass: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_GUEST_PASSWORD}
   db: softwareheritage
   secrets:
-    POSTGRESQL_PASSWORD:
+    POSTGRESQL_GUEST_PASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
@@ -95,10 +95,10 @@ secondaryPostgresqlROStorageConfiguration:
   host: postgresql-storage-replica.internal.softwareheritage.org
   port: 5432
   user: guest
-  pass: ${POSTGRESQL_PASSWORD}
+  pass: ${POSTGRESQL_GUEST_PASSWORD}
   db: softwareheritage
   secrets:
-    POSTGRESQL_PASSWORD:
+    POSTGRESQL_GUEST_PASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
 
