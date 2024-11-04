@@ -1341,6 +1341,13 @@ scheduler:
       enabled: true
       replicas: 4
       logLevel: INFO
+    runner-first-visits:
+      enabled: true
+      replicas: 1
+      logLevel: INFO
+      period: 30
+      requestedMemory: 100Mi
+      requestedCpu: 10m
 
 vault:
   enabled: true
