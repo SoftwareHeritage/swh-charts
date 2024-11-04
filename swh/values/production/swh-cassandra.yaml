@@ -1814,6 +1814,11 @@ listers:
         - swh.lister.rpm.tasks.IncrementalRPMLister
       autoScaling:
         maxReplicaCount: 1
+    save-bulk:
+      queues:
+        - swh.lister.save_bulk.tasks.SaveBulkListerTask
+      autoScaling:
+        maxReplicaCount: 1
     sourceforge:
       queues:
       - swh.lister.sourceforge.tasks.FullSourceForgeLister
