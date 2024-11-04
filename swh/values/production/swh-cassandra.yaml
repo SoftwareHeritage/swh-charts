@@ -2136,6 +2136,25 @@ loaders:
         - swh.loader.package.pubdev.tasks.LoadPubDev
       autoScaling:
         maxReplicaCount: 1
+    save-bulk:
+      image: swh_loader_savecodenow_image
+      queues:
+        - save_bulk:swh.loader.bzr.tasks.LoadBazaar
+        - save_bulk:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_bulk:swh.loader.git.tasks.UpdateGitRepository
+        - save_bulk:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_bulk:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_bulk:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_bulk:swh.loader.mercurial.tasks.LoadMercurial
+        - save_bulk:swh.loader.svn.tasks.LoadSvnRepository
+        - save_bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_bulk:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 200Mi
+      requestedCpu: 50m
     save-code-now:
       enabled: true
       requestedMemory: 2Gi
