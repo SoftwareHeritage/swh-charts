@@ -24,6 +24,7 @@ data:
       {{- range $host := $hosts }}
       - {{ $host }}
       {{- end }}
+      - {{ .serviceType }}.{{ .Values.namespace }}
       - ${POD_IP}
     {{- end }}
     {{- include "swh.service.fromYaml" (dict "service" "storage"

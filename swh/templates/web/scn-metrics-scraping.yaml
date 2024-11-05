@@ -1,0 +1,33 @@
+{{ if .Values.web.enabled -}}
+{{ range $webType, $webConfig := .Values.web.deployments }}
+{{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
+{{- if and (hasKey $webConfig "scnMetricsScraping")
+           $webConfig.scnMetricsScraping.enabled -}}
+{{- $prometheusConfig := $.Values.prometheus | default dict -}}
+{{- $prometheusScrapingConfig := get $prometheusConfig "scrapingConfig" | default dict -}}
+{{- $scrapingConfig := $webConfig.scnMetricsScraping -}}
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: web-{{ $webType }}-scn-metrics
+  namespace: {{ $.Values.namespace }}
+  {{- if get $prometheusScrapingConfig "globalLabels" }}
+  labels:
+    {{- toYaml $prometheusScrapingConfig.globalLabels | nindent 4 }}
+  {{- end }}
+spec:
+  staticConfigs:
+    - labels:
+        job: web-{{ $webType }}-scn-metrics
+        namespace: {{ $.Values.namespace }}
+      targets:
+        -  web-{{ $webType }}.{{ $.Values.namespace }}:{{ $webConfig.port | default $.Values.web.port }} # target the service
+  metricsPath: /metrics/prometheus/
+  scrapeInterval: {{ $scrapingConfig.scrapeInterval | default "60s" }}
+  scrapeTimeout: {{ $scrapingConfig.scrapeTimeout | default "60s" }}
+  scheme: HTTP
+{{- end }}
+{{ end -}}
+{{- end -}}
+{{- end -}}

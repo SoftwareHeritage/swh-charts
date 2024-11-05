@@ -7,6 +7,19 @@ sentry:
 # Default logging config dictionary
 defaultLoggingConfig: {}
 
+# Default scraping additional label
+prometheus:
+  # Used access cluster metrics if autoscaling based on prometheus is used
+  # address: http://prometheus-operated.cattle-monitoring-system:9090
+
+  # Used to define custom scraping configuration
+  scrapingConfig: {}
+    # Adapt according to your prometheus configuration
+    # https://prometheus-operator.dev/docs/developer/scrapeconfig/#configure-prometheus-or-prometheusagent-to-select-scrapeconfigs
+    # globalLabels:
+    #   release: rancher-monitoring
+
+
 # Default rpc logging configuration which will be merge with the previous ones
 rpcGunicornLoggingConfig: {}
 
@@ -839,6 +852,10 @@ web:
       #   minReplicaCount: 2
       #   maxReplicaCount: 10
       #   cpuPercentageUsage: 50
+      # scnMetricsScraping:
+      #   enabled: false
+      #   scrapeInterval: 60s
+      #   scrapeTimeout: 60s
       # cronJobs:
       #   refreshSCNStatus:
       #     enabled: false
