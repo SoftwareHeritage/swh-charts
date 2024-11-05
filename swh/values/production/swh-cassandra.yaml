@@ -412,6 +412,10 @@ web:
       metricsScrapingEnabled: true
       requestedCpu: 500m
       requestedMemory: 6Gi
+      scnMetricsScraping:
+        enabled: true
+        scrapeInterval: 120s
+        scrapeTimeout: 120s
       cronJobs:
         refreshSCNStatus:
           enabled: false
@@ -502,7 +506,6 @@ web:
 
     cassandra:
       enabled: false
-      metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 500Mi
       autoScaling:

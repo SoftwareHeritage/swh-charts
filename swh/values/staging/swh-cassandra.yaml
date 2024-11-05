@@ -737,6 +737,10 @@ web:
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
+      scnMetricsScraping:
+        enabled: true
+        scrapingInterval: 60s
+        scrapingTimeout: 60s
       cronJobs:
         refreshSCNStatus:
           enabled: false

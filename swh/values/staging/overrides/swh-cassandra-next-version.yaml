@@ -650,7 +650,6 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
       graphConfigurationRef: webGraphConfiguration
-      metricsScrapingEnabled: false
       migrations:
         enabled: false
       autoScaling:

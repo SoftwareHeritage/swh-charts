@@ -429,7 +429,6 @@ web:
         minReplicaCount: 2
         maxReplicaCount: 4
         threshold: 10
-      metricsScrapingEnabled: false
       requestedCpu: 500m
       requestedMemory: 6Gi
       cronJobs:

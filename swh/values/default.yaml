@@ -2,6 +2,9 @@ namespace: swh
 
 prometheus:
   address: http://prometheus-operated.cattle-monitoring-system:9090
+  scrapingConfig:
+    globalLabels:
+      release: rancher-monitoring
 
 sentry:
   enabled: true
