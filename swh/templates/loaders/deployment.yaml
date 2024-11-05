@@ -91,6 +91,18 @@ spec:
             mountPath: /etc/credentials/sentry-settings
             readOnly: true
         {{- end }}
+        # If a pod is killed by the OOM killer and restarts, the ephemeral storage is not cleaned
+        # so leftovers from previous instances could remain
+        - name: cleanup-workdir
+          image: debian:bullseye
+          imagePullPolicy: IfNotPresent
+          command:
+            - "/bin/rm"
+            - "-f"
+            - "/tmp/*"
+          volumeMounts:
+            - name: localstorage
+              mountPath: /tmp
       containers:
       - name: loaders
         {{ if $local_container_image -}}
