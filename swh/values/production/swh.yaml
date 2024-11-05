@@ -640,7 +640,7 @@ storageReplayer:
       # Follow up consumption
       # requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 10
+        maxReplicaCount: 16
     extid:
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-extid
