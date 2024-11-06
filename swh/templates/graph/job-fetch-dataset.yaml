@@ -65,6 +65,7 @@ spec:
       containers:
         {{ include "swh.graph.fetchDataset" (dict "Values" $.Values
                                                   "imagePrefixName" "swh_graph_image"
+                                                  "imageVersion" $graphImageVersion
                                                   "graphName" $graphName
                                                   "graphPath" (ne $graphSourcePath "" | ternary $graphSourcePath $graphPath)
                                                   "config" $graphConfig.dataset
@@ -72,6 +73,7 @@ spec:
         {{- if $graphReindexDataset }}
         {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
                                                     "imagePrefixName" "swh_graph_image"
+                                                    "imageVersion" $graphImageVersion
                                                     "graphPath" ($prepareMemoryVolume | ternary $graphSourcePath $graphPath)
                                                     "graphName" $graphName
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}

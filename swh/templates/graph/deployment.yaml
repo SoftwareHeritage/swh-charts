@@ -87,6 +87,7 @@ spec:
         {{- if $graphReindexDataset }}
         {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
                                                     "imagePrefixName" "swh_graph_image"
+                                                    "imageVersion" $graphImageVersion
                                                     "graphPath" ($prepareMemoryVolume | ternary $graphSourcePath $graphPath)
                                                     "graphName" $graphName
                                                     "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
