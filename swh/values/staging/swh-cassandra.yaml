@@ -427,7 +427,7 @@ loaders:
         - save_bulk:swh.loader.svn.tasks.LoadSvnRepository
         - save_bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save_bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-        - save_bulk:swh.loader.package.archive.tasks.LoadTarball
+        - save_bulk:swh.loader.core.tasks.LoadTarballDirectory
       ackLate: true
       autoScaling:
         maxReplicaCount: 1

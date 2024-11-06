@@ -1017,7 +1017,7 @@ loaders:
         - save-bulk:swh.loader.svn.tasks.LoadSvnRepository
         - save-bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save-bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-        - save-bulk:swh.loader.package.archive.tasks.LoadTarball
+        - save_bulk:swh.loader.core.tasks.LoadTarballDirectory
       ackLate: true
       autoScaling:
         maxReplicaCount: 1
