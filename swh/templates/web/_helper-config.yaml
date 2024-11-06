@@ -17,6 +17,7 @@ data:
       {{- range $host := $hosts }}
       - {{ $host }}
       {{- end }}
+      - {{ .serviceType }}.{{ .Values.namespace }}
       - ${POD_IP}
     {{- if and .Values.environment (or (eq .Values.environment "production")
                                        (eq .Values.environment "staging")) }}
