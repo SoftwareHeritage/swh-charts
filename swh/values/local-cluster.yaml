@@ -1007,16 +1007,16 @@ loaders:
     save-bulk:
       image: swh_loader_savecodenow_image
       queues:
-        - save-bulk:swh.loader.bzr.tasks.LoadBazaar
-        - save-bulk:swh.loader.cvs.tasks.LoadCvsRepository
-        - save-bulk:swh.loader.git.tasks.UpdateGitRepository
-        - save-bulk:swh.loader.git.tasks.LoadDiskGitRepository
-        - save-bulk:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-        - save-bulk:swh.loader.mercurial.tasks.LoadArchiveMercurial
-        - save-bulk:swh.loader.mercurial.tasks.LoadMercurial
-        - save-bulk:swh.loader.svn.tasks.LoadSvnRepository
-        - save-bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
-        - save-bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_bulk:swh.loader.bzr.tasks.LoadBazaar
+        - save_bulk:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_bulk:swh.loader.git.tasks.UpdateGitRepository
+        - save_bulk:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_bulk:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_bulk:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_bulk:swh.loader.mercurial.tasks.LoadMercurial
+        - save_bulk:swh.loader.svn.tasks.LoadSvnRepository
+        - save_bulk:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_bulk:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_bulk:swh.loader.core.tasks.LoadTarballDirectory
       ackLate: true
       autoScaling:
