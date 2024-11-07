@@ -97,9 +97,18 @@ spec:
           image: debian:bullseye
           imagePullPolicy: IfNotPresent
           command:
+            - "/usr/bin/find"
+            - "/tmp/"
+            - "-depth"
+            - "-mindepth"
+            - "1"
+            - "-maxdepth"
+            - "1"
+            - "-exec"
             - "/bin/rm"
-            - "-f"
-            - "/tmp/*"
+            - "-Rfv"
+            - "{}"
+            - ";"
           volumeMounts:
             - name: localstorage
               mountPath: /tmp
