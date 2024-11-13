@@ -157,7 +157,13 @@ spec:
         {{ end }}
       volumes:
       - name: localstorage
+      {{- if and $deployment_config.tmpEmptyDir $deployment_config.limitedMemory }}
+        emptyDir:
+          medium: Memory
+          sizeLimit: {{ $deployment_config.limitedMemory }}
+      {{- else }}
         {{ toYaml ($.Values.tmpEphemeralStorage.claimTemplate | default $.Values.tmpEphemeralStorage.default) | nindent 8 }}
+      {{- end }}
       - name: configuration
         emptyDir: {}
       - name: configuration-template
