@@ -60,7 +60,7 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $loader_priority_class_name }}
       {{- else if and $.Values.podPriority.enabled $default_priority_class_name }}
       priorityClassName: {{ $.Values.namespace }}-{{ $default_priority_class_name }}
-      {{ end }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ $.Values.loaders.terminationGracePeriodSeconds | default 3600 }}
       {{- if $dnsConfigurationRef }}
       {{- include "swh.dns.configuration"  (dict "Values" $.Values
@@ -86,18 +86,18 @@ spec:
           - name: metadata-fetcher-credentials
             mountPath: /etc/credentials/metadata-fetcher
             readOnly: true
-        {{ if $enable_sentry }}
+        {{- if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
             readOnly: true
         {{- end }}
       containers:
       - name: loaders
-        {{ if $local_container_image -}}
+        {{- if $local_container_image }}
         image: {{ $local_container_image }}:{{ $local_container_image_version }}
-        {{ else if $container_image -}}
+        {{- else if $container_image }}
         image: {{ $container_image }}:{{ $container_image_version }}
-        {{ end }}
+        {{- end }}
         imagePullPolicy: IfNotPresent
         command:
           - /opt/swh/entrypoint.sh
@@ -131,11 +131,11 @@ spec:
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
-        {{ if $use_json_logger -}}
+        {{- if $use_json_logger }}
         - name: SWH_LOG_CONFIG
           value: /etc/swh/logging-configuration.yml
-        {{ end }}
-        {{ if $enable_sentry }}
+        {{- end }}
+        {{- if $enable_sentry }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
         - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
@@ -149,12 +149,12 @@ spec:
             mountPath: /etc/swh
           - name: localstorage
             mountPath: /tmp
-        {{ if $use_json_logger }}
+        {{- if $use_json_logger }}
           - name: configuration-template
             mountPath: /etc/swh/logging-configuration.yml
             subPath: "logging-configuration.yml"
             readOnly: true
-        {{ end }}
+        {{- end }}
       volumes:
       - name: localstorage
       {{- if and $deployment_config.tmpEmptyDir $deployment_config.limitedMemory }}
@@ -175,10 +175,10 @@ spec:
             path: "config.yml.template"
           - key: "init-container-entrypoint.sh"
             path: "init-container-entrypoint.sh"
-        {{ if $use_json_logger }}
+        {{- if $use_json_logger }}
           - key: "logging-configuration.yml"
             path: "logging-configuration.yml"
-        {{ end }}
+        {{- end }}
       - name: loader-utils
         configMap:
           name: loader-utils
@@ -190,7 +190,7 @@ spec:
         secret:
           secretName: metadata-fetcher-credentials
           optional: true
-      {{ if $enable_sentry }}
+      {{- if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
           secretName: sentry-settings-for-celery-tasks
