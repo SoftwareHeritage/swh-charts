@@ -153,6 +153,8 @@ loaders:
         maxReplicaCount: 3
       requestedMemory: 1Gi
       requestedCpu: 200m
+      limitedMemory: 2Gi
+      tmpEmptyDir: true
     add-forge-now-slow:
       image: swh_loader_git_image
       queues:
