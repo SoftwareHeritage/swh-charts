@@ -262,6 +262,11 @@ loaders:
         stopWhenNoActivity: false
       requestedMemory: 768Mi
       requestedCpu: 100m
+      limitedMemory: 20Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
     git-checkout:
       image: swh_loader_git_image
       queues:
