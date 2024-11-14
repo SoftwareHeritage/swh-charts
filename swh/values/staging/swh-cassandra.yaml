@@ -347,6 +347,11 @@ loaders:
       # and they are doing nothing most of the time
       requestedMemory: 200Mi
       requestedCpu: 50m
+      limitedMemory: 15Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
     maven:
       enabled: false
       image: swh_loader_package_image
