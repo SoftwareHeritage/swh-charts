@@ -208,6 +208,7 @@ Create a keda prometheus autoscaler for gunicorn
 {{- $environment := .Values.environment -}}
 {{- $autoScalingConfig := .configuration.autoScaling | default .configuration -}}
 {{- $rateInterval := $autoScalingConfig.rateInterval | default "2m" -}}
+{{- $factor := $autoScalingConfig.factor | default "1.25" -}}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
@@ -232,5 +233,16 @@ spec:
       metricName: gunicorn_requests
       threshold: {{ $autoScalingConfig.threshold | default 1 | quote }}
       # There is no environment when using the cluster's prometheus instance
-      query: sum(rate(gunicorn_requests{namespace={{ .Values.namespace | quote }},deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
+      #
+      # 1s of request time during 1s => 1 worker busy
+      # 10s of request time during 1s => 10 workers busy
+      # It's the closest we can get without the busy workers count
+      # the number of busy workers is divided by number of workers per pods and multiplied
+      # by a factor to have time to scale when the number of requests increase.
+      query: |
+        round(sum  by (namespace, deployment) (rate(gunicorn_request_duration_sum{namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
+        /
+        on(namespace,deployment) gunicorn_workers{namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}}
+        *
+        {{ $factor }})
 {{- end -}}
