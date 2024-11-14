@@ -275,6 +275,11 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 256Mi
       requestedCpu: 500m
+      limitedMemory: 8Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
     hg-checkout:
       enabled: false
       image: swh_loader_mercurial_image
