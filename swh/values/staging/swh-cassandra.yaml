@@ -227,6 +227,11 @@ loaders:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
         maxReplicaCount: 1
+      limitedMemory: 8Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
     content:
       enabled: false
       requestedCpu: 350m
