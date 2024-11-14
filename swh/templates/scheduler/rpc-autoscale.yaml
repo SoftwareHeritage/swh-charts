@@ -1,5 +1,9 @@
 {{- if and .Values.scheduler.enabled .Values.scheduler.rpc.enabled .Values.scheduler.rpc.autoScaling -}}
-{{- include "swh.autoscale" (dict "Values"        .Values
-                                  "serviceType"   "scheduler-rpc"
-                                  "configuration" .Values.scheduler.rpc) -}}
+{{- $autoScaling := .Values.scheduler.rpc.autoScaling  -}}
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn
+  (dict "serviceType"   "scheduler-rpc"
+        "configuration" $.Values.scheduler.rpc
+        "Values"        $.Values) -}}
 {{- end -}}
