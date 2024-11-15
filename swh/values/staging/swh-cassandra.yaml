@@ -404,6 +404,10 @@ loaders:
       requestedMemory: 768Mi
       requestedCpu: 200m
       limitedMemory: 25Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       queues:
         - oneshot:swh.loader.cvs.tasks.LoadCvsRepository
         - oneshot:swh.loader.git.tasks.UpdateGitRepository

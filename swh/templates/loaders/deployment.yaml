@@ -158,8 +158,8 @@ spec:
       volumes:
       - name: localstorage
         {{- toYaml ( (or
-          $deployment_config.tmpEphemeralStorage 
-          $.Values.tmpEphemeralStorage.claimTemplate  
+          $deployment_config.tmpEphemeralStorage
+          $.Values.tmpEphemeralStorage.claimTemplate
           $.Values.tmpEphemeralStorage.default
           ) ) | nindent 8 }}
       - name: configuration
