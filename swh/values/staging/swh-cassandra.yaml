@@ -482,6 +482,10 @@ loaders:
       requestedMemory: 6Gi
       requestedCpu: 100m
       limitedMemory: 25Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
 
 loaderMetadata:
   enabled: true
