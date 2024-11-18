@@ -2204,6 +2204,10 @@ loaders:
         maxReplicaCount: 4
       requestedMemory: 1Gi
       requestedCpu: 1000m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
     pypi:
       enabled: true
       requestedMemory: 256Mi
