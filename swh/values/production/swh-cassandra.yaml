@@ -2073,6 +2073,10 @@ loaders:
         maxReplicaCount: 6
       requestedMemory: 256Mi
       requestedCpu: 500m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
     git-large-repository:
       enabled: true
       image: swh_loader_git_image
