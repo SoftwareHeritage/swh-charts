@@ -2035,6 +2035,10 @@ loaders:
       enabled: true
       requestedMemory: 768Mi
       requestedCpu: 1000m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
