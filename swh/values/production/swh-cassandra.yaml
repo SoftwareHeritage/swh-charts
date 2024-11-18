@@ -2305,6 +2305,10 @@ loaders:
       requestedCpu: 1000m
       limitedMemory: 1Gi
       limitedCpu: 1500m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
       queues:
         - swh.loader.svn.tasks.LoadSvnExport
       autoScaling:
