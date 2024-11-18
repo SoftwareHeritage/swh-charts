@@ -2212,6 +2212,10 @@ loaders:
       enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.pypi.tasks.LoadPyPI
