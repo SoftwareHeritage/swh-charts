@@ -406,9 +406,11 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 8
+        minReplicaCount: 2
         maxReplicaCount: 10
-        threshold: 10
+        # more is better than less
+        # given the 2 threads, 1 should be enough, but more margin is better
+        factor: 1.5
       metricsScrapingEnabled: true
       requestedCpu: 500m
       requestedMemory: 6Gi

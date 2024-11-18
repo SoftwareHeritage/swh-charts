@@ -424,11 +424,7 @@ web:
         workers: 8
         threads: 1
         timeout: 3600
-      autoScaling:
-        type: keda
-        minReplicaCount: 2
-        maxReplicaCount: 4
-        threshold: 10
+      replicas: 1
       requestedCpu: 500m
       requestedMemory: 6Gi
       cronJobs:

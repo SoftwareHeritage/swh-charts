@@ -855,9 +855,9 @@ web:
         timeout: 3600
       autoScaling:
         type: keda
-        minReplicaCount: 1
+        minReplicaCount: 2
         maxReplicaCount: 6
-        threshold: 2.3
+        factor: 1
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
@@ -1301,7 +1301,11 @@ objstorage:
       enabled: true
       nodeSelector:
         kubernetes.io/hostname: db1
-      replicas: 2
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 3
+        factor: 1
       gunicorn:
         workers: 4
         threads: 2
@@ -1356,7 +1360,11 @@ objstorage:
       enabled: true
       nodeSelector:
         kubernetes.io/hostname: storage1
-      replicas: 2
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 3
+        factor: 1
       gunicorn:
         workers: 4
         threads: 2
@@ -1422,8 +1430,8 @@ objstorage:
       autoScaling:
         type: keda
         minReplicaCount: 2
-        maxReplicaCount: 4
-        threshold: 150
+        maxReplicaCount: 3
+        factor: 1
       extraVolumes:
         staging-pathslicing-ro:
           mountPath: /srv/softwareheritage/objects
@@ -1468,6 +1476,11 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 60
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        factor: 1
       objstorageConfigurationRef: multiplexerReadOnlyObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
@@ -1508,7 +1521,11 @@ objstorage:
     # read-write objstorage
     multiplexer-read-write:
       enabled: true
-      replicas: 2
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 4
+        factor: 1
       gunicorn:
         workers: 4
         threads: 2
