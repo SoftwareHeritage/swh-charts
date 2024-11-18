@@ -1912,6 +1912,10 @@ loaders:
       requestedMemory: 1Gi
       requestedCpu: 500m
       limitedMemory: 25Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       queues:
         - add_forge_now_slow:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
