@@ -36,6 +36,8 @@ ingressNginx:
     # Make NGINX forwards the X-Forwarded-* headers
     use-forwarded-headers: true
   replicaCount: 6
+  nodeSelector:
+    ingress-controller: true
 
 certManager:
   enabled: true
