@@ -1933,6 +1933,10 @@ loaders:
       enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.archive.tasks.LoadTarball
