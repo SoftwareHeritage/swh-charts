@@ -2010,6 +2010,10 @@ loaders:
       priorityClassName: frontend-rpc-workload
       requestedMemory: 256Mi
       requestedCpu: 200m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
