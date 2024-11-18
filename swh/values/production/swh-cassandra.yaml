@@ -2058,6 +2058,10 @@ loaders:
         queueThreshold: 200
       requestedMemory: 768Mi
       requestedCpu: 100m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       sysctls:
         net.ipv4.tcp_dsack: 0
     git-checkout:
