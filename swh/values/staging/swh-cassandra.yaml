@@ -472,6 +472,11 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 200Mi
       requestedCpu: 50m
+      limitedMemory: 15Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
     svn:
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
