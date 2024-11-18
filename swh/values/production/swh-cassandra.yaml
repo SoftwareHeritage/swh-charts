@@ -1946,6 +1946,10 @@ loaders:
       enabled: true
       requestedMemory: 1Gi
       requestedCpu: 1000m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 20Gi
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
