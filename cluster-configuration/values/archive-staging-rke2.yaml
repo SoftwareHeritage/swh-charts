@@ -26,7 +26,7 @@ ingressNginx:
     use-forwarded-headers: true
   replicaCount: 6
   nodeSelector:
-    ingress-controller: true
+    ingress-controller: "true"
 
 certManager:
   enabled: true
