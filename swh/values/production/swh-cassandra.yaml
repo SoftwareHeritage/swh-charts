@@ -2038,7 +2038,7 @@ loaders:
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
-          sizeLimit: 5Gi
+          sizeLimit: 15Gi
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
