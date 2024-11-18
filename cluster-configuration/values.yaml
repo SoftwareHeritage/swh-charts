@@ -38,6 +38,8 @@ ingressNginx:
   defaultClass: false
   watchIngressWithoutClass: false
   monitoringEnabled: true
+  # nodeSelector:
+  #   ingress-controller: "true"
   # ingressClassName: nginx
   # avoid to overlap with other deployed ingress-nginx ingress controllers
   # for example, gitlab deploys another ingress-nginx with this default name

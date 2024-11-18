@@ -56,6 +56,10 @@ spec:
             requests:
               cpu: {{ .Values.ingressNginx.requestedCpu | default "100m" }}
               memory: {{ .Values.ingressNginx.requestedMemory | default "90Mi" }}
+          {{- if .Values.ingressNginx.nodeSelector }}
+          nodeSelector:
+            {{- toYaml .Values.ingressNginx.nodeSelector | nindent 12 }}
+          {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.ingressNginx.namespace }}
