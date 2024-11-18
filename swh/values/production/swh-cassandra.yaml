@@ -2082,6 +2082,10 @@ loaders:
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 800m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 35Gi
       queues:
         - large_repository:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
