@@ -1958,6 +1958,10 @@ loaders:
       enabled: true
       requestedCpu: 350m
       requestedMemory: 150Mi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       queues:
         - swh.loader.core.tasks.LoadContent
       autoScaling:
