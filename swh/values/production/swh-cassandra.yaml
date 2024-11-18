@@ -1888,7 +1888,11 @@ loaders:
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 500m
-      limitedMemory: 25Gi
+      limitedMemory: 30Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       queues:
         - add_forge_now:swh.loader.git.tasks.UpdateGitRepository
       ackLate: true
