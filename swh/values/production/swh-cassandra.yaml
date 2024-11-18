@@ -2294,7 +2294,11 @@ loaders:
         maxReplicaCount: 4
       requestedMemory: 6Gi
       requestedCpu: 100m
-      limitedMemory: 25Gi
+      limitedMemory: 50Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
     svn-export:
       enabled: true
       requestedMemory: 768Mi
