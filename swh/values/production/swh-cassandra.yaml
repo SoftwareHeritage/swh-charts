@@ -2181,7 +2181,11 @@ loaders:
       image: swh_loader_savecodenow_image
       requestedMemory: 768Mi
       requestedCpu: 200m
-      limitedMemory: 25Gi
+      limitedMemory: 50Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 30Gi
       queues:
         - oneshot:swh.loader.cvs.tasks.LoadCvsRepository
         - oneshot:swh.loader.git.tasks.UpdateGitRepository
