@@ -2261,7 +2261,11 @@ loaders:
       enabled: true
       requestedMemory: 2Gi
       requestedCpu: 200m
-      limitedMemory: 25Gi
+      limitedMemory: 50Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
       queues:
         - save_code_now:swh.loader.bzr.tasks.LoadBazaar
         - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
