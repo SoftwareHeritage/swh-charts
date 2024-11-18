@@ -1984,6 +1984,10 @@ loaders:
       enabled: true
       requestedCpu: 1000m
       requestedMemory: 2Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
       queues:
         - swh.loader.cvs.tasks.LoadCvsRepository
       autoScaling:
