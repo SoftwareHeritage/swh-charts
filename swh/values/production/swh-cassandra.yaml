@@ -2159,6 +2159,10 @@ loaders:
         maxReplicaCount: 4
       requestedMemory: 128Mi
       requestedCpu: 500m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
     npm:
       enabled: true
       requestedMemory: 256Mi
