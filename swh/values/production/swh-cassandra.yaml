@@ -2253,6 +2253,10 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 200Mi
       requestedCpu: 50m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 30Gi
     save-code-now:
       enabled: true
       requestedMemory: 2Gi
