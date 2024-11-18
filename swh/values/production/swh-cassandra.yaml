@@ -2116,6 +2116,10 @@ loaders:
       image: swh_loader_package_image
       requestedMemory: 256Mi
       requestedCpu: 200m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
       queues:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
