@@ -2146,6 +2146,10 @@ loaders:
         maxReplicaCount: 4
       requestedMemory: 600Mi
       requestedCpu: 500m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
     mercurial:
       enabled: true
       queues:
