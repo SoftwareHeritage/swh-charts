@@ -316,10 +316,15 @@ storage:
               - path: /
     cassandra-azure-readonly:
       enabled: true
+      gunicorn:
+        workers: 8
+        threads: 4
       autoScaling:
+        type: keda
         minReplicaCount: 2
         maxReplicaCount: 10
-        cpuPercentageUsage: 30
+        # add margin to avoid any error if there is a peak of requests
+        factor: 1.5
       requestedCpu: 500m
       requestedMemory: 1.5Gi
       storageConfigurationRef: readOnlyCassandraStorageConfiguration
@@ -339,9 +344,6 @@ storage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-      gunicorn:
-        threads: 4
-        workers: 8
     # Future main instance used by the writing workload (loaders)
     cassandra-winery:
       # TODO: Enable when writing services has been migrated and we also decommission
