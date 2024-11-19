@@ -2303,7 +2303,7 @@ loaders:
       enabled: true
       requestedMemory: 768Mi
       requestedCpu: 1000m
-      limitedMemory: 1Gi
+      limitedMemory: 11Gi
       limitedCpu: 1500m
       tmpEphemeralStorage:
         emptyDir:
