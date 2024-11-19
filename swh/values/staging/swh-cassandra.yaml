@@ -175,6 +175,10 @@ loaders:
           sizeLimit: 5Gi
     arch:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.arch.tasks.LoadArch
@@ -182,6 +186,10 @@ loaders:
         maxReplicaCount: 1
     aur:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.aur.tasks.LoadAur
@@ -189,6 +197,10 @@ loaders:
         maxReplicaCount: 1
     archive:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -198,6 +210,10 @@ loaders:
         maxReplicaCount: 1
     bioconductor:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.bioconductor.tasks.LoadBioconductor
@@ -205,6 +221,10 @@ loaders:
         maxReplicaCount: 1
     bzr:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       queues:
@@ -213,6 +233,10 @@ loaders:
         maxReplicaCount: 1
     cran:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -234,6 +258,10 @@ loaders:
           sizeLimit: 5Gi
     content:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedCpu: 350m
       requestedMemory: 150Mi
       queues:
@@ -243,6 +271,10 @@ loaders:
       image: swh_loader_package_image
     directory:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 768Mi
       requestedCpu: 1000m
       queues:
@@ -282,6 +314,10 @@ loaders:
           sizeLimit: 5Gi
     hg-checkout:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_mercurial_image
       queues:
         - swh.loader.mercurial.tasks.LoadMercurialCheckout
@@ -291,6 +327,10 @@ loaders:
       requestedCpu: 500m
     svn-export:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 768Mi
       requestedCpu: 1000m
       limitedMemory: 1Gi
@@ -302,6 +342,10 @@ loaders:
       image: swh_loader_svn_image
     debian:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -337,6 +381,10 @@ loaders:
         default_filename: archive.tar
     golang:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -374,6 +422,10 @@ loaders:
           sizeLimit: 10Gi
     maven:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
@@ -383,6 +435,10 @@ loaders:
       requestedCpu: 500m
     mercurial:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
@@ -392,6 +448,10 @@ loaders:
       requestedCpu: 500m
     npm:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -419,6 +479,10 @@ loaders:
         maxReplicaCount: 10
     opam:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
@@ -428,6 +492,10 @@ loaders:
       requestedCpu: 1300m
     pypi:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       requestedMemory: 256Mi
       requestedCpu: 200m
       image: swh_loader_package_image
@@ -437,6 +505,10 @@ loaders:
         maxReplicaCount: 1
     pubdev:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
@@ -446,6 +518,10 @@ loaders:
       requestedCpu: 800m
     rpm:
       enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
       image: swh_loader_package_image
       queues:
         - swh.loader.package.rpm.tasks.LoadRpm
