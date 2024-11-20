@@ -333,6 +333,9 @@ elasticsearch:
       nodeName: node
     # quickstart:
     #   replicas: 1
+    search:
+      namespace: swh-cassandra
+      replicas: 3
 
 redis:
   enabled: true
