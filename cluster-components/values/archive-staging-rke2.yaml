@@ -308,7 +308,6 @@ kafka:
 
 elasticsearch:
   enabled: true
-  namespace: swh-cassandra-next-version
   # Common volume claim templates to deal with storage information
   # Can be overriden per instance
   volumeClaimTemplates:
@@ -324,7 +323,8 @@ elasticsearch:
           storage: 5Gi
       storageClassName: local-persistent
   deployments:
-    search:
+    search-next-version:
+      namespace: swh-cassandra-next-version
       replicas: 1
       # For test environment (local-cluster, next-version) only
       disableSecurity: true

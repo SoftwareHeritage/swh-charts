@@ -792,7 +792,7 @@ listers:
           - rock
 
 elasticsearchHosts:
-  - host: search-es-http
+  - host: search-next-version-es-http
     port: 9200
 
 elasticsearchConfiguration:
