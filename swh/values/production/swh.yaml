@@ -596,7 +596,7 @@ alter:
 
 # Replayer kafka -> postgresql to keep in sync with the main cassandra backend
 storageReplayer:
-  enabled: true
+  enabled: false
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
   affinity:
