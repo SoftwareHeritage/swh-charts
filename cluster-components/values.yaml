@@ -372,21 +372,20 @@ elasticsearch:
   enabled: false
   # Where to deploy instance (can be overridden per instance)
   namespace: swh
-  # Our actual version
+  # Elasticsearch version. This is the actual version used in our stack
   # ii  elasticsearch 7.15.2 amd64 Distributed RESTful search engine
   # Can be overriden per deployment
   version: 7.15.2
-  # most recent as of today
+  # Most recent as of today
   # version: 8.14.2
-  # Can be overridden per instance
-  # No authentication
+  # No authentication. Default to false if unspecified (can be overridden per instance)
   # disableSecurity: true
-  # Over http
+  # Http communication. DEfault to https if unspecified (can be overridden per instance)
   # disableTLS: true
-  # Can be overriden per deployment
+  # Default to 'default' if unspecified (can be overriden per instance)
   # nodeName: node
-  # Common volume claim templates to deal with storage information
-  # Can be overriden per instance
+  # Common volume claim template to deal with storage information (can be overriden per
+  # instance)
   # volumeClaimTemplates:
   # - metadata:
   #     # Do not change this name unless you set up a volume mount for the
@@ -400,7 +399,7 @@ elasticsearch:
   #         storage: 5Gi
   #     storageClassName: local-path
   deployments:
-    # cluster-name and configuration
+    # cluster-name and its configuration
     # search:
     #   replicas: 1
 
