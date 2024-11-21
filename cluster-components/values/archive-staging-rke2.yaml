@@ -308,6 +308,11 @@ kafka:
 
 elasticsearch:
   enabled: true
+  # Can be overridden per instance
+  # No authentication
+  disableSecurity: true
+  # Over http
+  disableTLS: true
   # Common volume claim templates to deal with storage information
   # Can be overriden per instance
   volumeClaimTemplates:
@@ -326,9 +331,6 @@ elasticsearch:
     search-next-version:
       namespace: swh-cassandra-next-version
       replicas: 1
-      # For test environment (local-cluster, next-version) only
-      disableSecurity: true
-      disableTLS: true
       # version: 8.14.2
       nodeName: node
     # quickstart:

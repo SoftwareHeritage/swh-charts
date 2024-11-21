@@ -377,6 +377,11 @@ elasticsearch:
   version: 7.15.2
   # most recent as of today
   # version: 8.14.2
+  # Can be overridden per instance
+  # No authentication
+  # disableSecurity: true
+  # Over http
+  # disableTLS: true
   # Can be overriden per deployment
   # nodeName: node
   # Common volume claim templates to deal with storage information
