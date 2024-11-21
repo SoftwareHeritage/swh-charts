@@ -1,13 +1,13 @@
 {{/*
-Generate the configuration map for search journal client
-*/}}
+   * Generate the configuration map for search journal client instance
+   */}}
 {{ define "swh.journal.client.configmap" }}
-{{ $journalClientOverrides := get .journal_client_config "journalClientOverrides" | default dict }}
+{{ $journalClientOverrides := get .journalClientConfig "journalClientOverrides" | default dict }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: search-journal-client-{{ .journal_client_type }}-configuration-template
+  name: search-journal-client-{{ .journalClientType }}-configuration-template
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |

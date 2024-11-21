@@ -1,28 +1,28 @@
 {{ if and .Values.search.enabled .Values.search.journalClients.enabled -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{- range $journal_client_type, $journal_client_config := .Values.search.journalClients.deployments -}}
-{{- if or (not (hasKey $journal_client_config "enabled")) (get $journal_client_config "enabled") -}}
+{{- range $journalClientType, $journalClientConfig := .Values.search.journalClients.deployments -}}
+{{- if or (not (hasKey $journalClientConfig "enabled")) (get $journalClientConfig "enabled") -}}
 {{- $configChecksum := include "swh.journal.client.configmap"
-  (dict "journal_client_type" $journal_client_type
-        "configuration" $.Values.search.journalClients
-        "journal_client_config" $journal_client_config
-        "Values" $.Values) | sha256sum -}}
-{{- $log_level := $journal_client_config.logLevel | default "INFO" -}}
-{{- $journal_client_name := print "search-journal-client-" $journal_client_type -}}
+  (dict "journalClientType"   $journalClientType
+        "configuration"       $.Values.search.journalClients
+        "journalClientConfig" $journalClientConfig
+        "Values"              $.Values) | sha256sum -}}
+{{- $log_level := $journalClientConfig.logLevel | default "INFO" -}}
+{{- $journalClientName := print "search-journal-client-" $journalClientType -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: {{ $journal_client_name }}
+  name: {{ $journalClientName }}
   labels:
-    app: {{ $journal_client_name }}
+    app: {{ $journalClientName }}
 spec:
-  replicas: {{ $journal_client_config.replicas }}
+  replicas: {{ $journalClientConfig.replicas }}
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: {{ $journal_client_name }}
+      app: {{ $journalClientName }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -30,7 +30,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ $journal_client_name }}
+        app: {{ $journalClientName }}
       annotations:
         checksum/config: {{ $configChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
@@ -59,18 +59,18 @@ spec:
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
       containers:
-        - name: {{ $journal_client_name }}
+        - name: {{ $journalClientName }}
           resources:
             requests:
-              memory: {{ $journal_client_config.requestedMemory | default "512Mi" }}
-              cpu: {{ $journal_client_config.requestedCpu | default "500m" }}
-          {{- if or $journal_client_config.limitedMemory $journal_client_config.limitedCpu }}
+              memory: {{ $journalClientConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $journalClientConfig.requestedCpu | default "500m" }}
+          {{- if or $journalClientConfig.limitedMemory $journalClientConfig.limitedCpu }}
             limits:
-            {{- if $journal_client_config.limitedMemory }}
-              memory: {{ $journal_client_config.limitedMemory }}
+            {{- if $journalClientConfig.limitedMemory }}
+              memory: {{ $journalClientConfig.limitedMemory }}
             {{- end }}
-            {{- if $journal_client_config.limitedCpu }}
-              cpu: {{ $journal_client_config.limitedCpu }}
+            {{- if $journalClientConfig.limitedCpu }}
+              cpu: {{ $journalClientConfig.limitedCpu }}
             {{- end }}
           {{ end }}
           image: {{ $.Values.swh_search_image }}:{{ $.Values.swh_search_image_version }}
@@ -91,7 +91,7 @@ spec:
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:{{ $journal_client_name }}
+              value: deployment:{{ $journalClientName }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: SWH_LOG_LEVEL
@@ -120,7 +120,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: search-journal-client-{{ $journal_client_type }}-configuration-template
+          name: search-journal-client-{{ $journalClientType }}-configuration-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"

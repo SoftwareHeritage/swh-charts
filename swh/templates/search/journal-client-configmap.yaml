@@ -1,12 +1,12 @@
 {{- if and .Values.search.enabled .Values.search.journalClients.enabled -}}
-{{- range $journal_client_type, $journal_client_config := .Values.search.journalClients.deployments -}}
-{{- if or (not (hasKey $journal_client_config "enabled"))
-          (get $journal_client_config "enabled") -}}
+{{- range $journalClientType, $journalClientConfig := .Values.search.journalClients.deployments -}}
+{{- if or (not (hasKey $journalClientConfig "enabled"))
+          (get $journalClientConfig "enabled") -}}
 {{ include "swh.journal.client.configmap"
-  (dict "journal_client_type"   $journal_client_type
-        "configuration"         $.Values.search.journalClients
-        "journal_client_config" $journal_client_config
-        "Values"                $.Values) }}
+  (dict "journalClientType"   $journalClientType
+        "configuration"       $.Values.search.journalClients
+        "journalClientConfig" $journalClientConfig
+        "Values"              $.Values) }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
