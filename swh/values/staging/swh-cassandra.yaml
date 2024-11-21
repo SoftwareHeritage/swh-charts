@@ -1945,6 +1945,10 @@ elasticsearchInKubeConfiguration:
       read_alias: origin-read
       write_alias: origin-write
 
+remoteSearchTestConfiguration:
+  cls: remote
+  url: http://search-in-kube-rpc-ingress
+
 search:
   enabled: true
   logLevel: INFO
@@ -2059,7 +2063,16 @@ search:
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
-
+      objects-test:
+        requestedCpu: 10m
+        requestedMemory: 50Mi
+        searchConfigurationRef: remoteSearchTestConfiguration
+        journalClientOverrides:
+          group_id: swh.search.journal-client-test-v0.11
+          prefix: swh.journal.objects
+          object_types:
+          - origin
+          - origin_visit_status
 
 scheduler:
   enabled: true

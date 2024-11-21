@@ -861,6 +861,9 @@ search:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
 
+      objects-test:
+        enabled: false
+
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
   host: next-version-swh-indexer-rw.swh-cassandra-next-version
