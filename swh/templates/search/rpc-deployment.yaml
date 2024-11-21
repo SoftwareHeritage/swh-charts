@@ -1,11 +1,20 @@
-{{ if .Values.search.enabled -}}
-{{- $configChecksum := include (print $.Template.BasePath "/search/rpc-configmap.yaml") . | sha256sum -}}
+{{ if and .Values.search.enabled .Values.search.rpc.enabled -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
-{{- $initializeSearchBackend := and .Values.search.backend .Values.search.backend.initialize | default false -}}
-{{- $serviceType := "search-rpc" -}}
+{{- range $deploymentName, $deploymentConfig := .Values.search.rpc.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $serviceType := print $deploymentName "-rpc" -}}
+{{- $configArgsDict := dict "serviceType"   $serviceType
+                            "configuration" $deploymentConfig
+                            "Values"        $.Values -}}
+{{- $configChecksum := include "swh.search.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.search.gunicorn.logging" $configArgsDict | sha256sum -}}
+{{- $config := omit (deepCopy $deploymentConfig) "deployments" |
+                 mustMergeOverwrite (omit (deepCopy $.Values.search.rpc) "deployments") -}}
+{{- $initializeSearchBackend := and $config.backend $config.backend.initialize | default false -}}
+{{- $affinity := $config.affinity -}}
 {{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
-                                  (dict "configuration" .Values.search.gunicorn)) -}}
+                                  (dict "configuration" $config.gunicorn)) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -16,8 +25,8 @@ metadata:
     app: {{ $serviceType }}
 spec:
   revisionHistoryLimit: 2
-  {{ if .Values.search.replicas -}}
-  replicas: {{ .Values.search.replicas }}
+  {{ if $config.replicas -}}
+  replicas: {{ $config.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -32,15 +41,16 @@ spec:
         app: {{ $serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
     spec:
-      {{- if .Values.search.affinity }}
+      {{- if $config.affinity }}
       affinity:
-        {{- toYaml .Values.search.affinity | nindent 8 }}
+        {{- toYaml $config.affinity | nindent 8 }}
       {{- end }}
-      {{- if and .Values.podPriority.enabled .Values.search.priorityClassName }}
-      priorityClassName: {{ .Values.namespace }}-{{ .Values.search.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $config.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $config.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration
@@ -48,7 +58,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.search
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: config-utils
@@ -68,21 +78,21 @@ spec:
         - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ .Values.search.requestedMemory | default "512Mi" }}
-              cpu: {{ .Values.search.requestedCpu | default "500m" }}
-          {{- if or .Values.search.limitedMemory .Values.search.limitedCpu }}
+              memory: {{ $config.requestedMemory | default "512Mi" }}
+              cpu: {{ $config.requestedCpu | default "500m" }}
+          {{- if or $config.limitedMemory $.Values.search.limitedCpu }}
             limits:
-            {{- if .Values.search.limitedMemory }}
-              memory: {{ .Values.search.limitedMemory }}
+            {{- if $config.limitedMemory }}
+              memory: {{ $config.limitedMemory }}
             {{- end }}
-            {{- if .Values.search.limitedCpu }}
-              cpu: {{ .Values.search.limitedCpu }}
+            {{- if $config.limitedCpu }}
+              cpu: {{ $config.limitedCpu }}
             {{- end }}
         {{- end }}
-          image: {{ .Values.swh_search_image }}:{{ .Values.swh_search_image_version }}
+          image: {{ $.Values.swh_search_image }}:{{ $.Values.swh_search_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ .Values.search.port }}
+            - containerPort: {{ $config.port }}
               name: rpc
           readinessProbe:
             httpGet:
@@ -109,27 +119,27 @@ spec:
             - name: TIMEOUT
               value: {{ $gunicornConfig.timeout | quote }}
             - name: STATSD_HOST
-              value: {{ .Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
-              value: {{ .Values.statsdPort | default "9125" | quote }}
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:{{ $serviceType }}
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ .Values.search.logLevel | default "INFO" }}
+              value: {{ $config.logLevel | default $.Values.search.logLevel | default "INFO" }}
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
-          {{- if .Values.search.sentry.enabled }}
+          {{- if $.Values.search.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
-              value: {{ .Values.sentry.environment }}
+              value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
               value: swh.search
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.search.sentry.secretKeyRef }}
-                  key: {{ .Values.search.sentry.secretKeyName }}
+                  name: {{ $.Values.search.sentry.secretKeyRef }}
+                  key: {{ $.Values.search.sentry.secretKeyName }}
                   # if the setting doesn't exist, sentry issue pushes will be disabled
                   optional: false
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
@@ -163,4 +173,6 @@ spec:
         configMap:
           name: backend-utils
           defaultMode: 0555
+{{- end -}}
+{{- end -}}
 {{- end -}}

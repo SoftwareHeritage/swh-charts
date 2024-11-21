@@ -1,0 +1,65 @@
+{{/*
+   * Create a search configmap for service .serviceType
+   */}}
+{{ define "swh.search.configmap" }}
+{{- $config := deepCopy .configuration | mergeOverwrite .Values.search.rpc -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .serviceType }}-configuration-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.search.configuration" (dict "serviceType"      "search"
+                                                 "configurationRef" $config.elasticsearchConfigurationRef
+                                                 "Values"           $.Values) | nindent 4 }}
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType" .serviceType
+        "defaultLoggingConfig" $.Values.search.rpc.defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $.Values.search.rpc.rpcGunicornLoggingConfig
+        "Values" $.Values) }}
+{{- end -}}
+
+
+{{/*
+   * Generate the configuration map for search journal client instance
+   */}}
+{{ define "swh.journal.client.configmap" }}
+{{- $journalClientOverrides := get .journalClientConfig "journalClientOverrides" | default dict -}}
+{{- $config := deepCopy .configuration | mergeOverwrite .journalClientConfig -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: search-journal-client-{{ .journalClientType }}-configuration-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.service.fromYaml" (dict "service" "search"
+                                             "configurationRef" $config.searchConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.service.fromYaml" (dict "service" "storage"
+                                             "configurationRef" $config.storageConfigurationRef
+                                             "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $config.journalConfigurationRef
+                                                       "overrides" $journalClientOverrides
+                                                       "Values" .Values) | nindent 4 }}
+
+{{ end }}
+
+
+{{/*
+   * Create a search gunicorn logging json config file for service .serviceType
+   */}}
+{{ define "swh.search.gunicorn.logging" }}
+{{- $defaultLoggingConfig := .configuration.defaultLoggingConfig | default .Values.search.rpc.defaultLoggingConfig -}}
+{{- $rpcGunicornLoggingConfig := .configuration.rpcGunicornLoggingConfig | default .Values.search.rpc.rpcGunicornLoggingConfig -}}
+{{- include "swh.gunicorn.logging"
+  (dict "serviceType"              .serviceType
+        "defaultLoggingConfig"     $defaultLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcGunicornLoggingConfig
+        "Values"                   .Values) -}}
+{{- end }}
+

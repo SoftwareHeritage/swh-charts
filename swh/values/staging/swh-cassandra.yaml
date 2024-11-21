@@ -1933,54 +1933,59 @@ checkerDeposit:
 
 search:
   enabled: true
-  priorityClassName: frontend-rpc
   logLevel: INFO
-  elasticsearchConfigurationRef: elasticsearchConfiguration
-  # replicas: 2
-  gunicorn:
-    threads: 5
-    workers: 4
-    timeout: 3600
   # RPC services may have different profiles than the rest so they need their specific
   # setup
-  requestedCpu: 100m
-  requestedMemory: 300Mi
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 4
-    cpuPercentageUsage: 75
-  hosts:
-    - search-rpc-ingress
-    - search.internal.staging.swh.network
-  ingress:
+  rpc:
     enabled: true
-    # Optional: the ingress classname to use
-    # className: nginx
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: stagingNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-      read-only:
-        paths:
-          - path: /
-            pathType: Exact
-          - path: /origin/search
-            pathType: Exact
-          - path: /origin/get
-            pathType: Exact
-          - path: /visit_types_count
-            pathType: Exact
-        extraWhitelistSourceRange:
-          # vpn network
-          - 192.168.101.0/24
+    priorityClassName: frontend-rpc
+    elasticsearchConfigurationRef: elasticsearchConfiguration
+    # replicas: 2
+    gunicorn:
+      threads: 5
+      workers: 4
+      timeout: 3600
+    requestedCpu: 100m
+    requestedMemory: 300Mi
+    autoScaling:
+      minReplicaCount: 2
+      maxReplicaCount: 4
+      cpuPercentageUsage: 75
+    deployments:
+      # instance-name (will be suffixed by -rpc)
+      search:
+        hosts:
+          - search-rpc-ingress
+          - search.internal.staging.swh.network
+        ingress:
+          enabled: true
+          # Optional: the ingress classname to use
+          # className: nginx
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+          # Default allowed ip ranges that can be extended per ingress definitions paths
+          whitelistSourceRangeRef: stagingNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+            read-only:
+              paths:
+                - path: /
+                  pathType: Exact
+                - path: /origin/search
+                  pathType: Exact
+                - path: /origin/get
+                  pathType: Exact
+                - path: /visit_types_count
+                  pathType: Exact
+              extraWhitelistSourceRange:
+                # vpn network
+                - 192.168.101.0/24
   journalClients:
     enabled: true
     priorityClassName: normal-workload

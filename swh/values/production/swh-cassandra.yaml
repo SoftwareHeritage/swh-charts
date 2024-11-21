@@ -1396,53 +1396,58 @@ vault:
 
 search:
   enabled: true
-  priorityClassName: frontend-rpc
   logLevel: INFO
-  elasticsearchConfigurationRef: elasticsearchConfiguration
-  replicas: 4
-  gunicorn:
-    workers: 2
-    threads: 2
-    timeout: 3600
-  requestedCpu: 250m
-  requestedMemory: 512Mi
-  # autoScaling:
-  #   minReplicaCount: 2
-  #   maxReplicaCount: 4
-  #   cpuPercentageUsage: 100
-  hosts:
-    - search-rpc-ingress-swh-cassandra
-    - search.internal.softwareheritage.org
-  ingress:
+  rpc:
     enabled: true
-    # Optional: the ingress classname to use
-    # className: nginx
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-    # Default allowed ip ranges that can be extended per ingress definitions paths
-    whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
-      read-only:
-        paths:
-          - path: /
-            pathType: Exact
-          - path: /origin/search
-            pathType: Exact
-          - path: /origin/get
-            pathType: Exact
-          - path: /visit_types_count
-            pathType: Exact
-          - path: /origin-read/
-        extraWhitelistSourceRange:
-          # vpn access
-          - 192.168.101.0/24
+    priorityClassName: frontend-rpc
+    elasticsearchConfigurationRef: elasticsearchConfiguration
+    replicas: 4
+    gunicorn:
+      workers: 2
+      threads: 2
+      timeout: 3600
+    requestedCpu: 250m
+    requestedMemory: 512Mi
+    # autoScaling:
+    #   minReplicaCount: 2
+    #   maxReplicaCount: 4
+    #   cpuPercentageUsage: 100
+    deployments:
+      # instance-name (will be suffixed by -rpc)
+      search:
+        hosts:
+          - search-rpc-ingress-swh-cassandra
+          - search.internal.softwareheritage.org
+        ingress:
+          enabled: true
+          # Optional: the ingress classname to use
+          # className: nginx
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+          # Default allowed ip ranges that can be extended per ingress definitions paths
+          whitelistSourceRangeRef: internalNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+            read-only:
+              paths:
+                - path: /
+                  pathType: Exact
+                - path: /origin/search
+                  pathType: Exact
+                - path: /origin/get
+                  pathType: Exact
+                - path: /visit_types_count
+                  pathType: Exact
+                - path: /origin-read/
+              extraWhitelistSourceRange:
+                # vpn access
+                - 192.168.101.0/24
 
   journalClients:
     enabled: true

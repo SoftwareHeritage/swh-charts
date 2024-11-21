@@ -1,5 +1,11 @@
-{{ if .Values.search.enabled -}}
-{{- include "swh.service" (dict "Values"        .Values
-                                "serviceType"   "search-rpc"
-                                "configuration" .Values.search) -}}
+{{ if and .Values.search.enabled .Values.search.rpc.enabled -}}
+{{- range $deploymentName, $deploymentConfig := .Values.search.rpc.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $config := deepCopy $deploymentConfig | mergeOverwrite $.Values.search.rpc -}}
+{{- $serviceType := print $deploymentName "-rpc" -}}
+{{- include "swh.service" (dict "Values"        $.Values
+                                "serviceType"   $serviceType
+                                "configuration" $config) -}}
 {{ end }}
+{{ end }}
+{{- end -}}

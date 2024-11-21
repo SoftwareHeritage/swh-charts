@@ -1133,21 +1133,26 @@ elasticsearchConfiguration:
 
 search:
   enabled: false
-  priorityClassName: frontend-rpc
-  backend:
-    initialize: true
-
-  elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
-  replicas: 1
-  gunicorn:
-    threads: 4
-    workers: 1
-    timeout: 60
-  # RPC services may have different profiles than the rest so they need their specific
-  # setup
-  requestedMemory: 512Mi
-  requestedCpu: 500m
+  rpc:
+    enabled: true
+    priorityClassName: frontend-rpc
+    elasticsearchConfigurationRef: elasticsearchConfiguration
+    replicas: 1
+    gunicorn:
+      threads: 4
+      workers: 1
+      timeout: 60
+    # RPC services may have different profiles than the rest so they need their specific
+    # setup
+    requestedMemory: 512Mi
+    requestedCpu: 500m
+    deployments:
+      # instance-name (will be suffixed by -rpc)
+      search:
+        backend:
+          initialize: true
+
   journalClients:
     enabled: true
     priorityClassName: normal-workload

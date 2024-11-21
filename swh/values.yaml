@@ -1271,48 +1271,65 @@ scheduler:
 
 search:
   enabled: false
-  port: 5010
-  priorityClassName: frontend-rpc
+  logLevel: INFO
   sentry:
     enabled: false
     secretKeyRef: swh-search-sentry-secret
     secretKeyName: sentry-dsn
-  backend:
-    initialize: false
-  elasticsearchConfigurationRef: defaultElasticsearchConfiguration
-  # logLevel: INFO
-  # replicas: 2
-  # gunicorn:
-  #   threads: 5
-  #   workers: 2
-  #   timeout: 60
-  # RPC services may have different profiles than the rest so they need their specific
-  # setup
-  # requestedMemory: 512Mi
-  # requestedCpu: 500m
-  # autoScaling:
-  #   minReplicaCount: 2
-  #   maxReplicaCount: 10
-  #   cpuPercentageUsage: 100
-  ingress:
-    enabled: false
-    # Optional: the ingress classname to use
-    # className: nginx
-    # mandatory if ingress is enabled
-    # the hostname on which the rpc must be reachable
-    # host: mysearch.localdomain
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-      # Default allowed ip ranges that can be extended per ingress definitions paths
-      # whitelistSourceRangeRef: internalNetworkRanges
-    endpoints:
-      default:
-        paths:
-          - path: /
+  rpc:
+    port: 5010
+    priorityClassName: frontend-rpc
+    elasticsearchConfigurationRef: defaultElasticsearchConfiguration
+    # replicas: 2
+    # gunicorn:
+    #   threads: 5
+    #   workers: 2
+    #   timeout: 60
+    # # RPC services may have different profiles than the rest so they need their specific
+    # # setup
+    # requestedMemory: 512Mi
+    # requestedCpu: 500m
+    # autoScaling:
+    #   minReplicaCount: 2
+    #   maxReplicaCount: 10
+    #   cpuPercentageUsage: 100
+    # affinity:
+    #   nodeAffinity:
+    #     requiredDuringSchedulingIgnoredDuringExecution:
+    #       nodeSelectorTerms:
+    #       - matchExpressions:
+    #         - key: swh/rpc
+    #           operator: In
+    #           values:
+    #           - "true"
+    # Whether to intialize the backend (can be overridden per instance)
+    backend:
+      initialize: false
+    deployments:
+      # instance-name (will be suffixed by -rpc)
+      search:
+        # backend:
+        #   initialize: false
+        hosts: []
+        ingress:
+          enabled: false
+          # Optional: the ingress classname to use
+          # className: nginx
+          # mandatory if ingress is enabled
+          # the hostname on which the rpc must be reachable
+          # host: mysearch.localdomain
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+            # Default allowed ip ranges that can be extended per ingress definitions paths
+            # whitelistSourceRangeRef: internalNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
   journalClients:
     enabled: false
     # priorityClassName: normal-workload

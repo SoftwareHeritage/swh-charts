@@ -1,5 +1,13 @@
-{{- if and .Values.search.enabled .Values.search.autoScaling -}}
-{{- include "swh.autoscale" (dict "Values"        .Values
-                                  "serviceType"   "search-rpc"
-                                  "configuration" .Values.search) -}}
+{{ if and .Values.search.enabled .Values.search.rpc.enabled -}}
+{{- range $deploymentName, $deploymentConfig := .Values.search.rpc.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $config := deepCopy $deploymentConfig | mergeOverwrite $.Values.search.rpc -}}
+{{- if $config.autoScaling -}}
+{{- $serviceType := print $deploymentName "-rpc" -}}
+{{- include "swh.autoscale" (dict "Values"        $.Values
+                                  "serviceType"   $serviceType
+                                  "configuration" $config) -}}
+{{ end }}
+{{ end }}
+{{ end }}
 {{- end -}}

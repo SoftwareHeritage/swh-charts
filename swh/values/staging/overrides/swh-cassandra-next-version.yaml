@@ -814,23 +814,26 @@ searchJournalClientConfiguration:
 
 search:
   enabled: true
-  backend:
-    initialize: true
-  ingress:
-    enabled: false
-  elasticsearchConfigurationRef: elasticsearchConfiguration
   logLevel: INFO
-  autoScaling:
-    minReplicaCount: 1
-    maxReplicaCount: 1
-  gunicorn:
-    threads: 4
-    workers: 1
-    timeout: 60
-  # RPC services may have different profiles than the rest so they need their specific
-  # setup
-  requestedMemory: 512Mi
-  requestedCpu: 500m
+  rpc:
+    enabled: true
+    elasticsearchConfigurationRef: elasticsearchConfiguration
+    autoScaling:
+      minReplicaCount: 1
+      maxReplicaCount: 1
+    gunicorn:
+      threads: 4
+      workers: 1
+      timeout: 60
+    requestedMemory: 512Mi
+    requestedCpu: 500m
+    deployments:
+      search:
+        backend:
+          initialize: true
+        ingress:
+          enabled: false
+
   journalClients:
     enabled: true
     priorityClassName: normal-workload
