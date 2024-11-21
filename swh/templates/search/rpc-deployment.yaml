@@ -173,6 +173,6 @@ spec:
         configMap:
           name: backend-utils
           defaultMode: 0555
-{{- end -}}
+{{ end -}}
 {{- end -}}
 {{- end -}}

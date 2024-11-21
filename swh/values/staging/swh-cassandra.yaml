@@ -1931,6 +1931,20 @@ checkerDeposit:
   limitedMemory: 1Gi
   limitedCpu: 1000m
 
+# Elasticsearch running in kube
+elasticsearchInKubeInstances:
+  - host: search-es-http
+    port: 9200
+
+elasticsearchInKubeConfiguration:
+  elasticsearchInstancesRef: elasticsearchInKubeInstances
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.11
+      read_alias: origin-read
+      write_alias: origin-write
+
 search:
   enabled: true
   logLevel: INFO
@@ -1939,7 +1953,6 @@ search:
   rpc:
     enabled: true
     priorityClassName: frontend-rpc
-    elasticsearchConfigurationRef: elasticsearchConfiguration
     # replicas: 2
     gunicorn:
       threads: 5
@@ -1954,6 +1967,7 @@ search:
     deployments:
       # instance-name (will be suffixed by -rpc)
       search:
+        elasticsearchConfigurationRef: elasticsearchConfiguration
         hosts:
           - search-rpc-ingress
           - search.internal.staging.swh.network
@@ -1986,6 +2000,38 @@ search:
               extraWhitelistSourceRange:
                 # vpn network
                 - 192.168.101.0/24
+      search-in-kube:
+        elasticsearchConfigurationRef: elasticsearchInKubeConfiguration
+        hosts:
+          - search-in-kube-rpc-ingress
+        ingress:
+          enabled: true
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+          # Default allowed ip ranges that can be extended per ingress definitions paths
+          whitelistSourceRangeRef: stagingNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+            read-only:
+              paths:
+                - path: /
+                  pathType: Exact
+                - path: /origin/search
+                  pathType: Exact
+                - path: /origin/get
+                  pathType: Exact
+                - path: /visit_types_count
+                  pathType: Exact
+              extraWhitelistSourceRange:
+                # vpn network
+                - 192.168.101.0/24
+
   journalClients:
     enabled: true
     priorityClassName: normal-workload

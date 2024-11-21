@@ -7,6 +7,6 @@
                             "Values"        $.Values -}}
 {{ include "swh.search.configmap" $configArgsDict }}
 {{ include "swh.search.gunicorn.logging" $configArgsDict }}
-{{- end -}}
+{{ end -}}
 {{ end -}}
 {{- end -}}
