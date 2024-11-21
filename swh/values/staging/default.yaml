@@ -554,7 +554,9 @@ externalServices:
     rpc-python3k:
       internalName: graph-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-
+    search-in-kube:
+      internaName: search-in-kube-rpc-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 vault:
   hosts:
     - vault-rpc-ingress
