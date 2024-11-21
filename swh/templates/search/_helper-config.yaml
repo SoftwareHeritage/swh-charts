@@ -14,12 +14,6 @@ data:
     {{- include "swh.search.configuration" (dict "serviceType"      "search"
                                                  "configurationRef" $config.elasticsearchConfigurationRef
                                                  "Values"           $.Values) | nindent 4 }}
-
-{{ include "swh.gunicorn.logging"
-  (dict "serviceType" .serviceType
-        "defaultLoggingConfig" $.Values.search.rpc.defaultLoggingConfig
-        "rpcGunicornLoggingConfig" $.Values.search.rpc.rpcGunicornLoggingConfig
-        "Values" $.Values) }}
 {{- end -}}
 
 
