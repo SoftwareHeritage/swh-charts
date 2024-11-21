@@ -4,8 +4,7 @@
           (get $journalClientConfig "enabled") -}}
 {{ include "swh.journal.client.configmap"
   (dict "journalClientType"   $journalClientType
-        "configuration"       $.Values.search.journalClients
-        "journalClientConfig" $journalClientConfig
+        "configuration"       $journalClientConfig
         "Values"              $.Values) }}
 {{- end -}}
 {{- end -}}

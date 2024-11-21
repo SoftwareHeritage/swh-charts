@@ -27,8 +27,8 @@ data:
    * Generate the configuration map for search journal client instance
    */}}
 {{ define "swh.journal.client.configmap" }}
-{{- $journalClientOverrides := get .journalClientConfig "journalClientOverrides" | default dict -}}
-{{- $config := deepCopy .configuration | mergeOverwrite .journalClientConfig -}}
+{{- $journalClientOverrides := get .configuration "journalClientOverrides" | default dict -}}
+{{- $config := deepCopy .configuration | mustMergeOverwrite (deepCopy .Values.search.journalClients) -}}
 ---
 apiVersion: v1
 kind: ConfigMap

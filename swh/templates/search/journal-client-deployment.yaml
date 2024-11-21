@@ -3,10 +3,9 @@
 {{- range $journalClientType, $journalClientConfig := .Values.search.journalClients.deployments -}}
 {{- if or (not (hasKey $journalClientConfig "enabled")) (get $journalClientConfig "enabled") -}}
 {{- $configChecksum := include "swh.journal.client.configmap"
-  (dict "journalClientType"   $journalClientType
-        "configuration"       $.Values.search.journalClients
-        "journalClientConfig" $journalClientConfig
-        "Values"              $.Values) | sha256sum -}}
+  (dict "journalClientType" $journalClientType
+        "configuration"     $journalClientConfig
+        "Values"            $.Values) | sha256sum -}}
 {{- $log_level := $journalClientConfig.logLevel | default "INFO" -}}
 {{- $journalClientName := print "search-journal-client-" $journalClientType -}}
 ---
