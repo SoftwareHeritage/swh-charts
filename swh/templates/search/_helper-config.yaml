@@ -2,7 +2,7 @@
    * Create a search configmap for service .serviceType
    */}}
 {{ define "swh.search.configmap" }}
-{{- $config := deepCopy .configuration | mergeOverwrite .Values.search.rpc -}}
+{{- $config := deepCopy .configuration | mustMergeOverwrite (deepCopy .Values.search.rpc) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
