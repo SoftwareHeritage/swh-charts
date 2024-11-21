@@ -2002,6 +2002,8 @@ search:
                 - 192.168.101.0/24
       search-in-kube:
         elasticsearchConfigurationRef: elasticsearchInKubeConfiguration
+        backend:
+          initialize: true
         hosts:
           - search-in-kube-rpc-ingress
         ingress:
