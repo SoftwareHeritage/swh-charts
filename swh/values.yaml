@@ -1316,11 +1316,14 @@ search:
   journalClients:
     enabled: false
     # priorityClassName: normal-workload
+    # search rpc configuration (can be overridden per instance)
     # searchConfigurationRef: searchConfiguration
+    # storage rpc configuration (can be overridden per instance)
     # storageConfigurationRef: remoteStorageConfiguration
+    # journal rpc configuration (can be overridden per instance)
+    # journalConfigurationRef: journalObjectConfiguration
     # deployments:
     #   objects:
-    #     journalConfigurationRef: journalObjectConfiguration
     #     # requestedCpu: 100m
     #     # requestedMemory: 500Mi
     #     # journalClientOverrides:

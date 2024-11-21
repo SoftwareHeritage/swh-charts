@@ -2,7 +2,8 @@
    * Generate the configuration map for search journal client instance
    */}}
 {{ define "swh.journal.client.configmap" }}
-{{ $journalClientOverrides := get .journalClientConfig "journalClientOverrides" | default dict }}
+{{- $journalClientOverrides := get .journalClientConfig "journalClientOverrides" | default dict -}}
+{{- $config := deepCopy .configuration | mergeOverwrite .journalClientConfig -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,12 +13,12 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.service.fromYaml" (dict "service" "search"
-                                             "configurationRef" .configuration.searchConfigurationRef
+                                             "configurationRef" $config.searchConfigurationRef
                                              "Values" .Values) | nindent 4 }}
     {{- include "swh.service.fromYaml" (dict "service" "storage"
-                                             "configurationRef" .configuration.storageConfigurationRef
+                                             "configurationRef" $config.storageConfigurationRef
                                              "Values" .Values) | nindent 4 }}
-    {{- include "swh.journalClientConfiguration" (dict "configurationRef" .configuration.journalConfigurationRef
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $config.journalConfigurationRef
                                                        "overrides" $journalClientOverrides
                                                        "Values" .Values) | nindent 4 }}
 
