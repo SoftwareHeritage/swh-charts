@@ -1,13 +1,13 @@
 {{- if and .Values.externalServices.enabled .Values.externalServices.services }}
-{{- range $service, $service_config := .Values.externalServices.services }}
+{{- range $service, $serviceConfig := .Values.externalServices.services }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ get $service_config "internalName" }}
+  name: {{ get $serviceConfig "internalName" }}
   namespace: {{ $.Values.namespace }}
 spec:
   type: ExternalName
-  externalName: {{ get $service_config "target" }}
+  externalName: {{ get $serviceConfig "target" }}
 {{ end }}
 {{ end }}
