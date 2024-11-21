@@ -370,6 +370,7 @@ cassandra:
 
 elasticsearch:
   enabled: false
+  # Where to deploy instance (can be overridden per instance)
   namespace: swh
   # Our actual version
   # ii  elasticsearch 7.15.2 amd64 Distributed RESTful search engine
