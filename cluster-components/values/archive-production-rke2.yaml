@@ -172,4 +172,22 @@ redis:
             resources:
               requests:
                 storage: 1Gi
-
+    postgresql-replayer:
+      enabled: true
+      namespace: redis
+      priorityClassName: swh-storages
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-metal01
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
