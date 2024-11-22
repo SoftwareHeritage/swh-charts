@@ -636,10 +636,6 @@ storageReplayer:
   #   host: redis-postgresql-replayers.redis  # /!\ this instance does not exist yet
   #   port: 6379
   #   db: 1
-  error_reporter:
-    host: redis-postgresql-replayer.redis
-    port: 6379
-    db: 1
   deployments:
     content:
       journalClientOverrides:
