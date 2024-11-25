@@ -60,6 +60,7 @@ rpcGunicornLoggingConfig:
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler-rpc:5008
+  enable_requests_retry: true
 
 remoteSearchConfiguration:
   cls: remote
@@ -68,26 +69,32 @@ remoteSearchConfiguration:
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc:5005
+  enable_requests_retry: true
 
 remoteCountersConfiguration:
   cls: remote
   url: http://counters-rpc:5011
+  enable_requests_retry: true
 
 remoteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-write:5007
+  enable_requests_retry: true
 
 rpcRWObjstorageConfiguration:
   cls: remote
   url: http://objstorage-read-write:5003
+  enable_requests_retry: true
 
 rpcROObjstorageConfiguration:
   cls: remote
   url: http://objstorage-read-only:5003
+  enable_requests_retry: true
 
 remoteStorageMetadataConfiguration:
   cls: remote
   url: http://storage-rw-archive-cassandra:5002
+  enable_requests_retry: true
 
 fakeKeycloakConfiguration:
   server_url: https://auth.s.o/auth/
@@ -227,10 +234,12 @@ readOnlyStoragePipelineSteps:
 remoteRWStorageConfiguration:
   cls: remote
   url: http://storage-rw-archive-cassandra:5002
+  enable_requests_retry: true
 
 remoteROStorageConfiguration:
   cls: remote
   url: http://storage-ro-archive-postgresql:5002
+  enable_requests_retry: true
 
 djangoWebConfiguration:
   secrets:
@@ -448,6 +457,7 @@ webThrottling:
 provenanceConfiguration:
   cls: remote
   url: http://provenance-test:5014
+  enable_requests_retry: true
 
 webDjangoApps:
   - swh.web.add_forge_now
