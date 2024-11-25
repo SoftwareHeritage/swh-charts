@@ -3,14 +3,17 @@ namespace: swh-cassandra
 remoteCassandraStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-write-ingress
+  enable_requests_retry: true
 
 localRpcRWStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-write-ingress
+  enable_requests_retry: true
 
 remoteReadOnlyStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-only-ingress
+  enable_requests_retry: true
 
 rpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
@@ -839,6 +842,8 @@ storage:
 provenanceConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress
+  enable_requests_retry: true
+
 
 web:
   enabled: true
@@ -1948,6 +1953,7 @@ elasticsearchInKubeConfiguration:
 remoteSearchTestConfiguration:
   cls: remote
   url: http://search-in-kube-rpc-ingress
+  enable_requests_retry: true
 
 search:
   enabled: true
@@ -2298,10 +2304,12 @@ alterGraphConfiguration:
 db1DeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-db1-delete-rpc-ingress
+  enable_requests_retry: true
 
 storage1DeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-storage1-delete-rpc-ingress
+  enable_requests_retry: true
 
 alter:
   enabled: true

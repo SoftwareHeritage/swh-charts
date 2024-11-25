@@ -36,11 +36,14 @@ remoteStorage1ReadOnlyObjstorageConfiguration:
   cls: remote
   name: storage1
   url: http://objstorage-storage1-ro-rpc-ingress
+  enable_requests_retry: true
+
 
 remoteDb1ReadOnlyObjstorageConfiguration:
   cls: remote
   name: db1
   url: http://objstorage-db1-ro-rpc-ingress
+  enable_requests_retry: true
 
 multiplexerReadOnlyObjstorageConfiguration:
   cls: multiplexer
@@ -49,9 +52,11 @@ multiplexerReadOnlyObjstorageConfiguration:
   - cls: remote
     name: storage1
     url: http://objstorage-storage1-ro-rpc-ingress
+    enable_requests_retry: true
   - cls: remote
     name: db1
     url: http://objstorage-db1-ro-rpc-ingress
+    enable_requests_retry: true
 
 multiplexerReadWriteObjstorageConfiguration:
   cls: multiplexer
@@ -59,11 +64,13 @@ multiplexerReadWriteObjstorageConfiguration:
   - cls: remote
     name: db1
     url: http://objstorage-db1-rw-rpc-ingress
+    enable_requests_retry: true
   - cls: read-only
     name: storage1
     storage:
       cls: remote
       url: http://objstorage-storage1-ro-rpc-ingress
+      enable_requests_retry: true
 
 storagePipelineSteps:
   - &bufferStorage
@@ -102,10 +109,12 @@ readWriteStorageBackendPipelineSteps:
 remoteReadWriteStorageConfiguration:
   cls: remote
   url: http://storage-postgresql-read-write-rpc-ingress
+  enable_requests_retry: true
 
 remoteReadOnlyStorageConfiguration:
   cls: remote
   url: http://storage-postgresql-read-only-rpc-ingress
+  enable_requests_retry: true
 
 remoteROStorageConfiguration:
   pipelineStepsRef: readOnlyStoragePipelineSteps
@@ -120,6 +129,7 @@ remoteROObjstorageConfiguration:
   storage:
     cls: remote
     url: http://objstorage-read-only-rpc-ingress
+    enable_requests_retry: true
 
 primaryPostgresqlRWStorageConfiguration:
   cls: postgresql
@@ -280,30 +290,38 @@ webDjangoApps:
 remoteSearchConfiguration:
   cls: remote
   url: http://search-rpc-ingress
+  enable_requests_retry: true
 
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress
+  enable_requests_retry: true
 
 remoteIndexerStorageConfiguration:
-    cls: remote
-    url: http://indexer-storage-rpc-ingress
+  cls: remote
+  url: http://indexer-storage-rpc-ingress
+  enable_requests_retry: true
 
 remoteCountersConfiguration:
-    cls: remote
-    url: http://counters-rpc-ingress
+  cls: remote
+  url: http://counters-rpc-ingress
+  enable_requests_retry: true
 
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler.internal.staging.swh.network
+  # already activated by default (inlined in code)
+  # enable_requests_retry: true
 
 remoteReadWriteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-multiplexer-read-write-rpc-ingress
+  enable_requests_retry: true
 
 remoteReadOnlyObjstorageConfiguration:
   cls: remote
   url: http://objstorage-read-only-rpc-ingress
+  enable_requests_retry: true
 
 azureDepositConfiguration:
   connection_string: "DefaultEndpointsProtocol=https;AccountName=swhdepositstoragestaging;AccountKey=${ACCOUNT_KEY};EndpointSuffix=core.windows.net"
