@@ -231,7 +231,6 @@ rabbitmq:
 
 cassandra:
   enabled: true
-  namespace: swh-cassandra-next-version
   storageConfig:
     cassandraDataVolumeClaimSpec:
       storageClassName: local-persistent
@@ -243,6 +242,7 @@ cassandra:
 
   deployments:
     cassandra-cluster:
+      namespace: swh-cassandra-next-version
       datacenters:
         - name: next-version
           replicas: 1

@@ -362,11 +362,13 @@ cassandra:
   enabled: false
   # cassandra version to be deployed (can be overriden per instance)
   version: 4.0.8
+  # Namespace where to run the cassandra cluster
   namespace: cassandra-system
   deployments:
     # cluster-name and configuration
     # cassandra-cluster:
     #   version: 4.0.8
+    #   namespace: cassandra
     #   datacenters:
     #     - name: dc1
     #       replicas: 3

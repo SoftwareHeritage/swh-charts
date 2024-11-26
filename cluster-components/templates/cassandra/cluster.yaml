@@ -6,7 +6,7 @@ apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
 metadata:
   name: {{ $clusterName }}
-  namespace: {{ $.Values.cassandra.namespace }}
+  namespace: {{ $clusterConfig.namespace | default $.Values.cassandra.namespace }}
 spec:
   cassandra:
     serverVersion: {{ $clusterConfig.version | default $.Values.cassandra.version }}
