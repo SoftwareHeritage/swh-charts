@@ -367,6 +367,8 @@ cassandra:
   #   heapSize: 8G
   # Namespace where to run the cassandra cluster
   namespace: cassandra-system
+  # Add annotations (can be overridden per instance)
+  # annotations: {}
   deployments:
     # cluster-name and configuration
     # cassandra-cluster:

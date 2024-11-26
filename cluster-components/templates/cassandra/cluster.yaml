@@ -2,12 +2,17 @@
 {{- range $clusterName, $clusterConfig := .Values.cassandra.deployments -}}
 {{- $storageConfig := $clusterConfig.storageConfig | default $.Values.cassandra.storageConfig -}}
 {{- $jvmOptions := $clusterConfig.jvmOptions | default $.Values.cassandra.jvmOptions -}}
+{{- $annotations := $clusterConfig.annotations | default $.Values.cassandra.annotations | default dict -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
 metadata:
   name: {{ $clusterName }}
   namespace: {{ $clusterConfig.namespace | default $.Values.cassandra.namespace }}
+  {{- if $annotations }}
+  annotations:
+    {{- toYaml $annotations | nindent 4 }}
+  {{- end }}
 spec:
   cassandra:
     serverVersion: {{ $clusterConfig.version | default $.Values.cassandra.version }}
