@@ -9,7 +9,7 @@ metadata:
   namespace: {{ $.Values.cassandra.namespace }}
 spec:
   cassandra:
-    serverVersion: {{ $.Values.cassandra.version }}
+    serverVersion: {{ $clusterConfig.version | default $.Values.cassandra.version }}
     config:
       cassandraYaml:
         enable_scripted_user_defined_functions: true
