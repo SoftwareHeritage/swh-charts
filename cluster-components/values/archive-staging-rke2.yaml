@@ -231,6 +231,7 @@ rabbitmq:
 
 cassandra:
   enabled: true
+  version: 4.0.1
   namespace: swh-cassandra-next-version
   storageConfig:
     cassandraDataVolumeClaimSpec:
