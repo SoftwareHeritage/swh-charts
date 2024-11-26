@@ -243,6 +243,9 @@ cassandra:
   deployments:
     cassandra-cluster:
       namespace: swh-cassandra-next-version
+      annotations:
+        # To trigger a restart at upgrade time
+        k8ssandra.io/autoupdate-spec: "always"
       jvmOptions:
         heapSize: 8G
       datacenters:
