@@ -245,7 +245,7 @@ cassandra:
       namespace: swh-cassandra-next-version
       datacenters:
         - name: next-version
-          replicas: 1
+          replicas: 3
 
 kafka:
   enabled: true
