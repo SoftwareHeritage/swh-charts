@@ -243,6 +243,8 @@ cassandra:
   deployments:
     cassandra-cluster:
       namespace: swh-cassandra-next-version
+      jvmOptions:
+        heapSize: 512M
       datacenters:
         - name: next-version
           replicas: 3

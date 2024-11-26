@@ -1,6 +1,7 @@
 {{ if .Values.cassandra.enabled -}}
 {{- $storageConfig := .Values.cassandra.storageConfig -}}
 {{- range $clusterName, $clusterConfig := .Values.cassandra.deployments -}}
+{{- $jvmOptions := $clusterConfig.jvmOptions | default $.Values.cassandra.jvmOptions -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
@@ -14,8 +15,10 @@ spec:
       cassandraYaml:
         enable_scripted_user_defined_functions: true
         enable_user_defined_functions: true
+      {{- if $jvmOptions }}
       jvmOptions:
-        heapSize: 512M
+        {{- toYaml $jvmOptions | nindent 8 }}
+      {{- end }}
     {{- if $storageConfig }}
     storageConfig:
     {{- toYaml $storageConfig | nindent 6 }}
