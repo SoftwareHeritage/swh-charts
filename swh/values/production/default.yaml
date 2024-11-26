@@ -466,7 +466,7 @@ roObjstorageForWineryReplayer:
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
     compression: gzip
-    timeout: 120
+    timeout: 20
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
