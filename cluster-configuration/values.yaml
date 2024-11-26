@@ -92,7 +92,7 @@ kafka:
 cassandra:
   enabled: false
   namespace: k8ssandra-operator
-  version: 1.17.0
+  version: 1.18.0
 
 elasticsearch:
   enabled: false
