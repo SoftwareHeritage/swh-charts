@@ -361,7 +361,7 @@ kafka:
 cassandra:
   enabled: false
   # cassandra version to be deployed (can be overriden per instance)
-  version: 4.0.1
+  version: 4.0.8
   namespace: cassandra-system
   deployments:
     # cluster-name and configuration
