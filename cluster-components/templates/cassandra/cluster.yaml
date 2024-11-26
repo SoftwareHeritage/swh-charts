@@ -1,6 +1,6 @@
 {{ if .Values.cassandra.enabled -}}
-{{- $storageConfig := .Values.cassandra.storageConfig -}}
 {{- range $clusterName, $clusterConfig := .Values.cassandra.deployments -}}
+{{- $storageConfig := $clusterConfig.storageConfig | default $.Values.cassandra.storageConfig -}}
 {{- $jvmOptions := $clusterConfig.jvmOptions | default $.Values.cassandra.jvmOptions -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
