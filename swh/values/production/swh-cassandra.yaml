@@ -2366,7 +2366,7 @@ objstorageReplayer:
       destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
       replicas: null  # handled by keda autoscaling
-      fetchConcurrency: 1
+      fetchConcurrency: 4
       journalClientOverrides:
         group_id: swh-archive-prod-s3-content-replayer
         auto_offset_reset: earliest
