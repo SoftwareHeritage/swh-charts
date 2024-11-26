@@ -247,7 +247,7 @@ cassandra:
         # To trigger a restart at upgrade time
         k8ssandra.io/autoupdate-spec: "always"
       jvmOptions:
-        heapSize: 8G
+        heapSize: 1G
       datacenters:
         - name: next-version
           replicas: 3
