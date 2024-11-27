@@ -105,6 +105,7 @@ readOnlyStorageBackendPipelineSteps:
 readWriteStorageBackendPipelineSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+  - cls: record_references
 
 remoteReadWriteStorageConfiguration:
   cls: remote
