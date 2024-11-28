@@ -114,7 +114,7 @@ scrapeClusterMetrics:
     cassandra-next-version:
       name: cassandra-next-version
       namespace: swh-cassandra-next-version
-      port: 9000
+      # metricsEndpointPortName: metrics
       matchLabels:
         app.kubernetes.io/instance: cassandra-cassandra-cluster
         app.kubernetes.io/name: cassandra

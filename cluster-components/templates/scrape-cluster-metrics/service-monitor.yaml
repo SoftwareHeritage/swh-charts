@@ -2,7 +2,7 @@
 # This defines the service-monitor to monitor the service which scrapes internal metrics
 # This may redefine some metrics, see the relabeling configuration dict key if provided
 {{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
-{{- $metricsName := get $deploymentConfig "metricsName" | default (print $deploymentName "-metrics") -}}
+{{- $metricsEndpointPortName := get $deploymentConfig "metricsEndpointPortName" | default "metrics" -}}
 {{- $port := $deploymentConfig.port }}
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -21,7 +21,7 @@ spec:
   namespaceSelector:
     any: true
   endpoints:
-    - port: {{ $metricsName }}
+    - port: {{ $metricsEndpointPortName }}
       interval: {{ $deploymentConfig.interval | default $.Values.scrapeClusterMetrics.interval }}
       honorLabels: true
       {{- if $deploymentConfig.relabelings }}

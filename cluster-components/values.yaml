@@ -164,6 +164,9 @@ scrapeClusterMetrics:
   deployments:
     # internal-cassandra:
     #   interval: 60s
+    #   # Name of the port used to exposed metrics (e.g. metrics, jmx-metrics, ...).
+    #   # Default to "metrics".
+    #   # metricsEndpointPortName: metrics
 
 # For external (to the k8s cluster) metrics to integrate into thanos
 scrapeExternalMetrics:
