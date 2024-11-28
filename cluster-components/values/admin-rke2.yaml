@@ -84,6 +84,8 @@ redis:
           # Disable data persistence
           save ""
           appendonly no
+          maxmemory 10gb
+          maxmemory-policy allkeys-lru
       storage:
         volumeClaimTemplate:
           spec:
