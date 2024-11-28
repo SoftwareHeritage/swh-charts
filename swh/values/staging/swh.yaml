@@ -1,5 +1,5 @@
 directPostgresqlReplayerStorageConfiguration:
-  pipelineStepsRef: storagePipelineStepsWithRecordReferences
+  pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
@@ -37,7 +37,6 @@ scrubberJournalClientConfiguration:
 rwStoragePipelineSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
-  - cls: record_references
 
 emptyStoragePipelineSteps: []
 
@@ -503,13 +502,6 @@ storage:
       gunicorn:
         threads: 4
         workers: 8
-      cronjobs:
-        create-object-reference-partitions:
-          enabled: true
-          storageConfigurationRef: rwStoragePostgresqlConfiguration
-          logLevel: INFO
-          cron: 5 0 * * mon
-          concurrencyPolicy: Forbid
 
     postgresql-read-only:
       autoScaling:
