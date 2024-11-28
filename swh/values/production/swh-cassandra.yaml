@@ -1837,7 +1837,7 @@ listers:
       queues:
         - swh.lister.save_bulk.tasks.SaveBulkListerTask
       autoScaling:
-        maxReplicaCount: 4
+        maxReplicaCount: 1
     sourceforge:
       queues:
       - swh.lister.sourceforge.tasks.FullSourceForgeLister
@@ -2259,7 +2259,7 @@ loaders:
         - save_bulk:swh.loader.core.tasks.LoadTarballDirectory
       ackLate: true
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 4
       requestedMemory: 200Mi
       requestedCpu: 50m
       tmpEphemeralStorage:
