@@ -96,7 +96,7 @@ cassandraStorage:
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: false
+  initKeyspace: true
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
     directory_entries_insert_algo: batch
