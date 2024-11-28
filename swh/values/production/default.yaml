@@ -562,6 +562,7 @@ rwStoragePostgresqlWithWineryObjstorageConfiguration:
 rwStoragePipelineBlockingSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+  - cls: record_references
 
 rwStorageCassandraWithWineryObjstorageConfiguration:
   storageConfigurationRef: cassandraStorage
