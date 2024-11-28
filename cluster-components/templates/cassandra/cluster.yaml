@@ -16,6 +16,11 @@ metadata:
 spec:
   cassandra:
     serverVersion: {{ $clusterConfig.version | default $.Values.cassandra.version }}
+    # Deactivate mcac metrics (irrelevant in k8s context)
+    # https://docs.k8ssandra.io/tasks/monitor/metrics-endpoints/
+    telemetry:
+      mcac:
+        enabled: false
     config:
       cassandraYaml:
         enable_scripted_user_defined_functions: true
