@@ -27,14 +27,8 @@ storageReplayerPipelineSteps:
   - cls: filter
   - cls: retry
 
-storageReplayerPipelineStepsWithRecordReferences:
-  - *bufferStorage
-  - cls: filter
-  - cls: retry
-  - cls: record_references
-
 directPostgresqlReplayerStorageConfiguration:
-  pipelineStepsRef: storageReplayerPipelineStepsWithRecordReferences
+  pipelineStepsRef: storageReplayerPipelineSteps
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
@@ -411,13 +405,6 @@ storage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-      cronjobs:
-        create-object-reference-partitions:
-          enabled: true
-          storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
-          logLevel: INFO
-          cron: 5 0 * * mon
-          concurrencyPolicy: Forbid
 
 djangoWebConfiguration:
   secrets:
