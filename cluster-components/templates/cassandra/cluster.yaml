@@ -3,6 +3,7 @@
 {{- $storageConfig := $clusterConfig.storageConfig | default $.Values.cassandra.storageConfig -}}
 {{- $jvmOptions := $clusterConfig.jvmOptions | default $.Values.cassandra.jvmOptions -}}
 {{- $annotations := $clusterConfig.annotations | default $.Values.cassandra.annotations | default dict -}}
+{{- $reaper := $clusterConfig.reaper | default $.Values.cassandra.reaper | default (dict "enabled" false) -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
@@ -14,6 +15,11 @@ metadata:
     {{- toYaml $annotations | nindent 4 }}
   {{- end }}
 spec:
+  {{- if $reaper.enabled }}
+  reaper:
+    httpManagement:
+      enabled: true
+  {{- end }}
   cassandra:
     serverVersion: {{ $clusterConfig.version | default $.Values.cassandra.version }}
     # Deactivate mcac metrics (irrelevant in k8s context)

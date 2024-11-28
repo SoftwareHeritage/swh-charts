@@ -264,6 +264,8 @@ cassandra:
       datacenters:
         - name: next-version
           replicas: 3
+      reaper:
+        enabled: true
 
 kafka:
   enabled: true

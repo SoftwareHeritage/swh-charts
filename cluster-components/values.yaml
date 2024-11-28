@@ -379,6 +379,9 @@ cassandra:
   #   heapSize: 8G
   # Namespace where to run the cassandra cluster
   namespace: cassandra-system
+  # Enable reaper for all cluster instances (can be overridden per instance)
+  reaper:
+    enabled: false
   # Add annotations (can be overridden per instance)
   # annotations: {}
   deployments:
