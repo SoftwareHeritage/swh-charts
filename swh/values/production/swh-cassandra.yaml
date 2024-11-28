@@ -344,10 +344,7 @@ storage:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
-    # Future main instance used by the writing workload (loaders)
     cassandra-winery:
-      # TODO: Enable when writing services has been migrated and we also decommission
-      # the equivalent one in the namespace swh
       enabled: true
       requestedCpu: 1000m
       requestedMemory: 2Gi
@@ -380,8 +377,11 @@ storage:
               - path: /
       cronjobs:
         create-object-reference-partitions:
-          # Job only relevant for postgresql backends
-          enabled: false
+          enabled: true
+          storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+          logLevel: INFO
+          cron: 5 0 * * mon
+          concurrencyPolicy: Forbid
 
 postgresqlWebConfiguration:
   host: postgresql-web-rw.internal.softwareheritage.org
