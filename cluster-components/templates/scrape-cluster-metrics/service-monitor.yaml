@@ -1,0 +1,32 @@
+{{- if .Values.scrapeClusterMetrics.enabled -}}
+# This defines the service-monitor to monitor the service which scrapes internal metrics
+# This may redefine some metrics, see the relabeling configuration dict key if provided
+{{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
+{{- $metricsName := get $deploymentConfig "metricsName" | default (print $deploymentName "-metrics") -}}
+{{- $port := $deploymentConfig.port }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  namespace: {{ $deploymentConfig.namespace }}
+  name: {{ $deploymentName }}-internal-servers-sm
+  labels:
+    app: {{ $deploymentName }}
+spec:
+  selector:
+    {{- if $deploymentConfig.matchLabels }}
+    matchLabels:
+      {{- toYaml $deploymentConfig.matchLabels | nindent 6 }}
+    {{- end }}
+  namespaceSelector:
+    any: true
+  endpoints:
+    - port: {{ $metricsName }}
+      interval: {{ $deploymentConfig.interval | default $.Values.scrapeClusterMetrics.interval }}
+      honorLabels: true
+      {{- if $deploymentConfig.relabelings }}
+      relabelings:
+        {{- toYaml $deploymentConfig.relabelings | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

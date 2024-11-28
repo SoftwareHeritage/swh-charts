@@ -157,6 +157,15 @@ alerting:
     slowDownRate: 90
     slowDownPeriod: 10000
 
+# For internal (to the k8s cluster) metrics to integrate into thanos
+scrapeClusterMetrics:
+  enabled: false
+  interval: 30s
+  deployments:
+    # internal-cassandra:
+    #   interval: 60s
+
+# For external (to the k8s cluster) metrics to integrate into thanos
 scrapeExternalMetrics:
   enabled: false
   interval: 30s

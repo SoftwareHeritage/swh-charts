@@ -108,6 +108,19 @@ scrapeExternalMetrics:
           replacement: "scheduler0.internal.staging.swh.network$1"
           action: replace
 
+scrapeClusterMetrics:
+  enabled: true
+  deployments:
+    cassandra-next-version:
+      name: cassandra-next-version
+      namespace: swh-cassandra-next-version
+      port: 9000
+      matchLabels:
+        app.kubernetes.io/instance: cassandra-cassandra-cluster
+        app.kubernetes.io/name: cassandra
+      ips:
+        - cassandra-cluster-next-version-service
+
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
   password:
