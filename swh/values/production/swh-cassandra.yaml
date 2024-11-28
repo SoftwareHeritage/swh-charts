@@ -1837,7 +1837,7 @@ listers:
       queues:
         - swh.lister.save_bulk.tasks.SaveBulkListerTask
       autoScaling:
-        maxReplicaCount: 1
+        maxReplicaCount: 4
     sourceforge:
       queues:
       - swh.lister.sourceforge.tasks.FullSourceForgeLister
