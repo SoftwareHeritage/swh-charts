@@ -32,7 +32,7 @@ spec:
             {{- end }}
             {{- if .Values.ingressNginx.serviceAnnotations }}
             annotations:
-              {{ .Values.ingressNginx.serviceAnnotations | toYaml | nindent 14 }}
+              {{- .Values.ingressNginx.serviceAnnotations | toYaml | nindent 14 }}
             {{- end }}
           ingressClassResource:
             name: {{ .Values.ingressNginx.ingressClassName | default "nginx" | quote }}
@@ -42,7 +42,7 @@ spec:
             {{- end }}
             {{- if .Values.ingressNginx.controllerAnnotations }}
             annotations:
-              {{ .Values.ingressNginx.controllerAnnotations | toYaml | nindent 14 }}
+              {{- .Values.ingressNginx.controllerAnnotations | toYaml | nindent 14 }}
             {{- end }}
           {{- if .Values.ingressNginx.monitoringEnabled }}
           metrics:
