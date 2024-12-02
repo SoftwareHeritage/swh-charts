@@ -40,9 +40,9 @@ spec:
             {{- if .Values.ingressNginx.controllerName }}
             controllerValue: {{ .Values.ingressNginx.controllerName | quote }}
             {{- end }}
-            {{- if .Values.ingressNginx.controllerAnnotations }}
+            {{- if .Values.ingressNginx.controllerIngressClassAnnotations }}
             annotations:
-              {{- .Values.ingressNginx.controllerAnnotations | toYaml | nindent 14 }}
+              {{- .Values.ingressNginx.controllerIngressClassAnnotations | toYaml | nindent 14 }}
             {{- end }}
           {{- if .Values.ingressNginx.monitoringEnabled }}
           metrics:
