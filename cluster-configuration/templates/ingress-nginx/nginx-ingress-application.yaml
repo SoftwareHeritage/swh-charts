@@ -25,6 +25,10 @@ spec:
           {{- if .Values.ingressNginx.allowSnippetAnnotations }}
           allowSnippetAnnotations: {{ .Values.ingressNginx.allowSnippetAnnotations }}
           {{- end }}
+          {{- if .Values.ingressNginx.controllerPodAnnotations }}
+          podAnnotations:
+            {{- .Values.ingressNginx.controllerPodAnnotations | toYaml | nindent 12 }}
+          {{- end }}
           service:
             externalTrafficPolicy: Local
             {{- if .Values.ingressNginx.loadBalancerIP }}
