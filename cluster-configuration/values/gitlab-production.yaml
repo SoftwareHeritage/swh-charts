@@ -6,7 +6,7 @@ ingressNginx:
   enabled: true
   applicationNameOverride: gitlab-production-ingress-nginx
   defaultClass: false
-  annotations:
+  serviceAnnotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
     # for kubernetes 1.24+ on azure
     service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"

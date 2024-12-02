@@ -5,7 +5,7 @@ ingressNginx:
   # Needed to internally expose thanos
   enabled: true
   defaultClass: false
-  annotations:
+  serviceAnnotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
     # for kubernetes 1.24+ on azure
     service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"

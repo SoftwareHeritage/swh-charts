@@ -30,15 +30,19 @@ spec:
             {{- if .Values.ingressNginx.loadBalancerIP }}
             loadBalancerIP: {{ .Values.ingressNginx.loadBalancerIP}}
             {{- end }}
-            {{- if .Values.ingressNginx.annotations }}
+            {{- if .Values.ingressNginx.serviceAnnotations }}
             annotations:
-              {{ .Values.ingressNginx.annotations | toYaml | nindent 14 }}
+              {{ .Values.ingressNginx.serviceAnnotations | toYaml | nindent 14 }}
             {{- end }}
           ingressClassResource:
             name: {{ .Values.ingressNginx.ingressClassName | default "nginx" | quote }}
             default: {{ .Values.ingressNginx.defaultClass }}
             {{- if .Values.ingressNginx.controllerName }}
             controllerValue: {{ .Values.ingressNginx.controllerName | quote }}
+            {{- end }}
+            {{- if .Values.ingressNginx.controllerAnnotations }}
+            annotations:
+              {{ .Values.ingressNginx.controllerAnnotations | toYaml | nindent 14 }}
             {{- end }}
           {{- if .Values.ingressNginx.monitoringEnabled }}
           metrics:
