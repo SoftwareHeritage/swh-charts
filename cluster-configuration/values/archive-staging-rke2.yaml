@@ -18,7 +18,7 @@ ingressNginx:
     # To be able to share the same ip for several services
     # https://metallb.org/usage/#ip-address-sharing
     metallb.universe.tf/allow-shared-ip: clusterIP
-  controllerIngressClassAnnotations:
+  controllerConfigAnnotations:
     nginx.ingress.kubernetes.io/proxy-body-size: 4M
   requestedCpu: 50m
   requestedMemory: 200Mi

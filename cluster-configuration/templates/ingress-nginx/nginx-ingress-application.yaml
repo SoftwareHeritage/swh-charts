@@ -34,6 +34,10 @@ spec:
             annotations:
               {{- .Values.ingressNginx.serviceAnnotations | toYaml | nindent 14 }}
             {{- end }}
+          {{- if .Values.ingressNginx.controllerConfigAnnotations }}
+          configAnnotations:
+            {{- .Values.ingressNginx.controllerConfigAnnotations | toYaml | nindent 12 }}
+          {{- end }}
           ingressClassResource:
             name: {{ .Values.ingressNginx.ingressClassName | default "nginx" | quote }}
             default: {{ .Values.ingressNginx.defaultClass }}
