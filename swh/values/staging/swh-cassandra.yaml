@@ -96,10 +96,6 @@ postgresqlRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
-postgresqlRWReadOnlyObjstorageStorageConfiguration:
-  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
-  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
-
 cassandraRWStorageConfiguration:
   pipelineStepsRef: readWriteStorageBackendPipelineSteps
   storageConfigurationRef: cassandraStorage
@@ -108,6 +104,11 @@ cassandraRWStorageConfiguration:
 
 cassandraROStorageConfiguration:
   pipelineStepsRef: readOnlyStorageBackendPipelineSteps
+  storageConfigurationRef: cassandraROStorage
+  # XXX: migrate to inlined multiplexed config (to save a round trip through the ingress)?
+  objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
+
+cassandraROStorageNoMaskingConfiguration:
   storageConfigurationRef: cassandraROStorage
   # XXX: migrate to inlined multiplexed config (to save a round trip through the ingress)?
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
@@ -2347,7 +2348,7 @@ alter:
       name: alter-recovery-bundles-pvc
       size: 30Gi
 
-  inventoryStorageConfigurationRef: postgresqlRWReadOnlyObjstorageStorageConfiguration
+  inventoryStorageConfigurationRef: cassandraROStorageNoMaskingConfiguration
   graphConfigurationRef: alterGraphConfiguration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
   removalSearches:
