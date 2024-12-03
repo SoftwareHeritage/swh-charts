@@ -70,7 +70,7 @@ spec:
             cpu: {{ get $deployment_config "limitedCpu" }}
             {{- end }}
           {{ end }}
-        image: {{ $.Values.swh_objstorage_replayer_image }}:{{ $.Values.swh_objstorage_replayer_image_version }}
+        image: {{ $.Values.swh_objstorage_replayer_image }}:{{ coalesce (get $deployment_config "imageVersion") $.Values.swh_objstorage_replayer_image_version }}
         imagePullPolicy: IfNotPresent
         command:
           - /bin/bash
