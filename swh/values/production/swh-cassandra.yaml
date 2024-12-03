@@ -2308,6 +2308,34 @@ loaders:
         emptyDir:
           medium: Memory
           sizeLimit: 25Gi
+    svn-large-repository:
+      enabled: true
+      image: swh_loader_svn_image
+      requestedMemory: 50Gi
+      requestedCpu: 1
+      tmpEphemeralStorage:
+        emptyDir: # don't work in memory for this big repositories
+          sizeLimit: 100Gi
+      queues:
+        - large_repository:swh.loader.svn.tasks.LoadSvnRepository
+        - large_repository:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - large_repository:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      autoScaling:
+        queueThreshold: 1
+        maxReplicaCount: 1
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "swh/loader"
+                operator: In
+                values:
+                - "true"
+              - key: "swh/large-scratch-fs"
+                operator: In
+                values:
+                - "true"
     svn-export:
       enabled: true
       requestedMemory: 768Mi
