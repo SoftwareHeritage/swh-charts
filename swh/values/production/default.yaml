@@ -103,9 +103,9 @@ cassandraStorage:
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
     username: swh-rw
-    password: ${CASSANDRA_PASSWORD}
+    password: ${CASSANDRA_RW_PASSWORD}
   secrets:
-    CASSANDRA_PASSWORD:
+    CASSANDRA_RW_PASSWORD:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-rw-password
 

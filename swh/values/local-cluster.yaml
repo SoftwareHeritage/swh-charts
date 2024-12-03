@@ -330,13 +330,13 @@ cassandraStorage:
     directory_entries_insert_algo: batch
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
-    username: ${CASSANDRA_USERNAME}
-    password: ${CASSANDRA_PASSWORD}
+    username: ${CASSANDRA_RW_USERNAME}
+    password: ${CASSANDRA_RW_PASSWORD}
   secrets:
-    CASSANDRA_USERNAME:
+    CASSANDRA_RW_USERNAME:
       secretKeyRef: cassandra-cluster-superuser
       secretKeyName: username
-    CASSANDRA_PASSWORD:
+    CASSANDRA_RW_PASSWORD:
       secretKeyRef: cassandra-cluster-superuser
       secretKeyName: password
 

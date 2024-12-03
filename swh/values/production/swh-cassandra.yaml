@@ -9,9 +9,9 @@ cassandraROStorage:
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
     username: swh-ro
-    password: ${CASSANDRA_PASSWORD}
+    password: ${CASSANDRA_RO_PASSWORD}
   secrets:
-    CASSANDRA_PASSWORD:
+    CASSANDRA_RO_PASSWORD:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
@@ -24,13 +24,13 @@ cassandraChecksROStorage:
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
     username: swh-ro
-    password: ${CASSANDRA_PASSWORD}
+    password: ${CASSANDRA_RO_PASSWORD}
   specificOptions:
     directory_entries_insert_algo: batch
     objstorage:
       cls: noop
   secrets:
-    CASSANDRA_PASSWORD:
+    CASSANDRA_RO_PASSWORD:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
