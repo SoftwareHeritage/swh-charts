@@ -2320,6 +2320,7 @@ loaders:
         - large_repository:swh.loader.svn.tasks.LoadSvnRepository
         - large_repository:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - large_repository:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+      ackLate: true # Avoid the autoscaling to kill the last repository loadings
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
