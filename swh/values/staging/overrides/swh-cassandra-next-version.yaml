@@ -993,6 +993,7 @@ azureDepositConfiguration:
 
 deposit:
   enabled: true
+  migrationsEnabled: true
   databaseConfigurationRef: postgresqlDepositConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   # In prod this storage is read-only
