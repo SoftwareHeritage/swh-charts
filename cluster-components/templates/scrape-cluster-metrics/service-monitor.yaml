@@ -4,6 +4,8 @@
 {{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
 {{- $metricsEndpointPortName := get $deploymentConfig "metricsEndpointPortName" | default "metrics" -}}
 {{- $port := $deploymentConfig.port }}
+{{- $path := $deploymentConfig.path | default "" }}
+{{- $scheme := $deploymentConfig.scheme | default "" }}
 ---
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -22,6 +24,12 @@ spec:
     any: true
   endpoints:
     - port: {{ $metricsEndpointPortName }}
+      {{- if $path }}
+      path: {{ $path }}
+      {{- end }}
+      {{- if $scheme }}
+      scheme: {{ $scheme }}
+      {{- end }}
       interval: {{ $deploymentConfig.interval | default $.Values.scrapeClusterMetrics.interval }}
       honorLabels: true
       {{- if $deploymentConfig.relabelings }}

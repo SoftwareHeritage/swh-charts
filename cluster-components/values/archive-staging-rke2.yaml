@@ -120,6 +120,14 @@ scrapeClusterMetrics:
         app.kubernetes.io/name: cassandra
       ips:
         - cassandra-cluster-next-version-service
+    elasticsearch-next-version:
+      namespace: swh-cassandra-next-version
+      metricsEndpointPortName: http
+      path: "/_prometheus/metrics"
+      scheme: http
+      matchLabels:
+        common.k8s.elastic.co/type: elasticsearch
+        elasticsearch.k8s.elastic.co/cluster-name: search-next-version
 
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
