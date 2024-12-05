@@ -2030,7 +2030,7 @@ loaders:
         queueThreshold: 1
         stopWhenNoActivity: false
         minReplicaCount: 1
-        maxReplicaCount: 4
+        maxReplicaCount: 8
       # only used for secrets
       depositConfigurationRef: depositDynamicConfiguration
       extraConfig:
