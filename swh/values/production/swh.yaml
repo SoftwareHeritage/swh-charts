@@ -32,28 +32,9 @@ directPostgresqlReplayerStorageConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
 
-postgresqlRWStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-rw.internal.softwareheritage.org
-  port: 5432
-  user: swhstorage
-  pass: ${POSTGRESQL_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
-
-emptyStoragePipelineSteps: []
-
 rwStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   pipelineStepsRef: emptyStoragePipelineSteps
-
-postgresqlRWNoObjstorageStorageConfiguration:
-  storageConfigurationRef: postgresqlRWStorageConfiguration
-  pipelineStepsRef: emptyStoragePipelineSteps
-  objstorageConfigurationRef: noopObjstorageConfiguration
 
 readOnlyPostgresqlStorageConfiguration:
   pipelineStepsRef: maskingStoragePipelineSteps
@@ -521,88 +502,6 @@ web:
         matomo:
           url: https://piwik.inria.fr/
           site_id: 59
-
-saamZfsDeleteObjstorageConfiguration:
-  cls: remote
-  url: http://objstorage-delete-saam-zfs-rpc-ingress
-
-bancoXfsDeleteObjstorageConfiguration:
-  cls: remote
-  url: http://objstorage-delete-banco-xfs-rpc-ingress
-
-alter:
-  enabled: true
-  directoryOutput: /srv/recovery-bundles
-  deployment:
-    volume:
-      name: alter-recovery-bundle-volumes
-      mountPath: /srv/recovery-bundles
-      volumeDefinition:
-        persistentVolumeClaim:
-          claimName: alter-recovery-bundles-pvc
-    volumeClaim:
-      storageClassName: cephfs
-      accessModes:
-        - ReadWriteMany
-      volumeMode: Filesystem
-      name: alter-recovery-bundles-pvc
-      size: 30Gi
-
-  inventoryStorageConfigurationRef: remoteROStorageConfiguration
-  graphConfigurationRef: alterGraphConfiguration
-  restorationStorageConfigurationRef: remoteRpcRWStorageConfiguration
-  removalSearches:
-    search:
-      searchConfigurationRef: remoteSearchConfiguration
-  removalStorages:
-    cassandra:
-      storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
-    postgresql:
-      storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
-  removalObjstorages:
-    saam-zfs:
-      objstorageConfigurationRef: saamZfsDeleteObjstorageConfiguration
-    banco-xfs:
-      objstorageConfigurationRef: bancoXfsDeleteObjstorageConfiguration
-    azure:
-      objstorageConfigurationRef: azureDeleteObjstorageConfiguration
-    s3:
-      objstorageConfigurationRef: s3DeleteObjectstorageConfiguration
-    winery:
-      objstorageConfigurationRef: wineryObjstorageRWConfiguration
-  removalJournals:
-    journal:
-      journalWriterConfigurationRef: storageJournalWriterConfiguration
-
-  recoveryBundlesConfiguration:
-    # XXX: these come from the swh.alter tests
-    #
-    # ALI_SECRET_KEY = (
-    #     "AGE-SECRET-KEY-1VREXCYE5WNMUD0WSCF7F6CH3FGQ9P6PGD25QHY7QX8PGDN87P37QQD3L2G"
-    # )
-    # BOB_SECRET_KEY = (
-    #     "AGE-SECRET-KEY-1UPJU3AF4M0NPLSLGVDWJU38F3MDE3JJM48E8NST8V3YKU077HEVSQVPZC2"
-    # )
-    # CAMILLE_SECRET_KEY = (
-    #     "AGE-SECRET-KEY-1NPLST9VXL6E9DEHCVVPUTGH60ZRJFLPZ5HDM93MJW993CGFQ49PQU90RVL"
-    # )
-    # DLIQUE_SECRET_KEY = (
-    #     "AGE-SECRET-KEY-1NPT3PFA7N03DFQY9GN764T4TJCZSLP36YV4S98FLYN0YGX2539GSSFUT4F"
-    # )
-
-    secret_sharing:
-      minimum_required_groups: 2
-      groups:
-        legal:
-          minimum_required_shares: 1
-          recipient_keys:
-            Ali: age123hpq9m25xsmx7caqvyv8k3fxaqastc3evyq9q7myur7l9ukj4dsnp7a5v
-            Bob: age1mrhte5tlpzpz57gg85nzcefqc5pm5usmakqpuurxux7ry2rmhdgs7r9u68
-        sysadmins:
-          minimum_required_shares: 1
-          recipient_keys:
-            Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
-            Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
 
 # Replayer kafka -> postgresql to keep in sync with the main cassandra backend
 storageReplayer:

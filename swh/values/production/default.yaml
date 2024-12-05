@@ -551,12 +551,29 @@ storageJournalWriterConfiguration:
     message.max.bytes: 1000000000
   anonymize: true
 
+postgresqlRWStorageConfiguration:
+  cls: postgresql
+  host: postgresql-storage-rw.internal.softwareheritage.org
+  port: 5432
+  user: swhstorage
+  pass: ${POSTGRESQL_PASSWORD}
+  db: softwareheritage
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-storage-postgresql-common-secret
+      secretKeyName: postgres-swh-storage-password
+
 rwStoragePostgresqlWithWineryObjstorageConfiguration:
-  storageConfigurationRef: postgresqlRWStorageConfiguration
+  storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageWineryAndAzure
   pipelineStepsRef: rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps
   secrets: *azure-storage-secrets-rw
+
+postgresqlRWNoObjstorageStorageConfiguration:
+  storageConfigurationRef: postgresqlRWStorageConfiguration
+  pipelineStepsRef: emptyStoragePipelineSteps
+  objstorageConfigurationRef: noopObjstorageConfiguration
 
 rwStoragePipelineBlockingSteps:
   - cls: blocking
@@ -596,6 +613,8 @@ storagePipelineStepsWithRecordReferences:
   - cls: retry
   - cls: record_references
 
+emptyStoragePipelineSteps: []
+
 remoteROCassandraRpcIngressStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
@@ -633,6 +652,14 @@ remoteSaamReadOnlyObjstorageConfiguration:
   cls: remote
   name: saam
   url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+
+saamZfsDeleteObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-delete-saam-zfs-rpc-ingress
+
+bancoXfsDeleteObjstorageConfiguration:
+  cls: remote
+  url: http://objstorage-delete-banco-xfs-rpc-ingress
 
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
