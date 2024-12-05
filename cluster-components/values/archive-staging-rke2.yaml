@@ -118,8 +118,6 @@ scrapeClusterMetrics:
       matchLabels:
         app.kubernetes.io/instance: cassandra-cassandra-cluster
         app.kubernetes.io/name: cassandra
-      ips:
-        - cassandra-cluster-next-version-service
     elasticsearch-next-version:
       namespace: swh-cassandra-next-version
       metricsEndpointPortName: http
