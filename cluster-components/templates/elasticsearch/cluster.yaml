@@ -3,9 +3,12 @@
 {{- $namespace := $clusterConfig.namespace | default $.Values.elasticsearch.namespace }}
 {{- $nodeName := $clusterConfig.nodeName | default $.Values.elasticsearch.nodeName | default "default" -}}
 {{- $version := $clusterConfig.version | default $.Values.elasticsearch.version -}}
+{{- $metricsPluginVersion := print $version ".0" -}}
+{{- $metricsPluginUrl := print "https://github.com/vvanholl/elasticsearch-prometheus-exporter/releases/download/" $metricsPluginVersion "/prometheus-exporter-" $metricsPluginVersion ".zip" -}}
 {{- $disableTLS := $clusterConfig.disableTLS | default $.Values.elasticsearch.disableTLS | default false -}}
 {{- $disableSecurity := $clusterConfig.disableSecurity | default $.Values.elasticsearch.disableSecurity | default false -}}
 {{- $volumeClaimTemplates := $clusterConfig.volumeClaimTemplates | default $.Values.elasticsearch.volumeClaimTemplates -}}
+{{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.elasticsearch.metricsEnabled -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -19,6 +22,15 @@ spec:
     count: {{ $clusterConfig.replicas | default 1 }}
     podTemplate:
       spec:
+        {{- if $metricsEnabled }}
+        initContainers:
+        - name: install-plugins
+          command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin install -b repository-s3 {{ $metricsPluginUrl }}
+        {{- end }}
         containers:
         - name: elasticsearch
           env:
