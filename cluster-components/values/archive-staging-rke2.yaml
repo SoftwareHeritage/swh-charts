@@ -357,7 +357,7 @@ elasticsearch:
     search-next-version:
       namespace: swh-cassandra-next-version
       metricsEnabled: true
-      replicas: 1
+      replicas: 3
       # version: 8.14.2
       nodeName: node
     # quickstart:
