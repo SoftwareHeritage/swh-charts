@@ -126,6 +126,14 @@ scrapeClusterMetrics:
       matchLabels:
         common.k8s.elastic.co/type: elasticsearch
         elasticsearch.k8s.elastic.co/cluster-name: search-next-version
+    elasticsearch:
+      namespace: swh-cassandra
+      metricsEndpointPortName: http
+      path: "/_prometheus/metrics"
+      scheme: http
+      matchLabels:
+        common.k8s.elastic.co/type: elasticsearch
+        elasticsearch.k8s.elastic.co/cluster-name: search
 
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
@@ -365,6 +373,7 @@ elasticsearch:
     search:
       namespace: swh-cassandra
       replicas: 3
+      metricsEnabled: true
 
 redis:
   enabled: true
