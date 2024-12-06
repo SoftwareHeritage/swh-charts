@@ -4,6 +4,13 @@
 {{- $deployment_config := include "swh.objstorageReplayer.deploymentConfig" (dict "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $extraCliLogLevel := $deployment_config.extraCliLogLevel | default $.Values.objstorageReplayer.extraCliLogLevel }}
+{{- $extraCliOptionsList := (list $extraCliLogLevel) }}
+{{- $stallReportFilename := "/tmp/objstorage-replayer-stall-report" -}}
+{{- $restartOnStallSeconds := $deployment_config.restartOnStallSeconds | default $.Values.objstorageReplayer.restartOnStallSeconds -}}
+{{- if $restartOnStallSeconds -}}
+{{- $extraCliOptionsList = mustAppend $extraCliOptionsList (printf "--stall-report-filename=%s" $stallReportFilename) -}}
+{{- end -}}
+{{- $extraCliOptions := join " " $extraCliOptionsList -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -92,10 +99,10 @@ spec:
           value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
-          {{- if $extraCliLogLevel }}
+        {{- if $extraCliOptions }}
         - name: SWH_EXTRA_CLI_OPTIONS
-          value: {{ $extraCliLogLevel | quote }}
-          {{ end }}
+          value: {{ $extraCliOptions | quote }}
+        {{ end }}
         {{- if and $.Values.sentry.enabled $.Values.objstorageReplayer.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ $.Values.sentry.environment }}
@@ -112,6 +119,16 @@ spec:
         volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+        {{- if $restartOnStallSeconds }}
+        livenessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - {{ printf "! [ -f \"%s\" ] || [ \"$(cat \\\"%s\\\")\" -lt %.0f ]" $stallReportFilename $stallReportFilename $restartOnStallSeconds | quote }}
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        {{ end }}
       volumes:
       - name: configuration
         emptyDir: {}

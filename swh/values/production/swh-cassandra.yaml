@@ -2377,12 +2377,13 @@ objstorageReplayer:
   deployments:
     winery:
       enabled: true
-      imageVersion: "20241205.1"
+      imageVersion: "20241206.1"
       destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 32
       fetchConcurrency: 1
       checkDestination: "true"
+      restartOnStallSeconds: 300
       journalClientOverrides:
         group_id: swh-archive-prod-winery-content-replayer-check
         auto_offset_reset: earliest
