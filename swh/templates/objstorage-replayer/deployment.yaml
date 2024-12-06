@@ -125,7 +125,7 @@ spec:
             command:
               - bash
               - "-c"
-              - {{ printf "! [ -f \"%s\" ] || [ \"$(cat \\\"%s\\\")\" -lt %.0f ]" $stallReportFilename $stallReportFilename $restartOnStallSeconds | quote }}
+              - {{ printf "! [ -f \"%s\" ] || [ \"$(cat \"%s\")\" -lt %.0f ]" $stallReportFilename $stallReportFilename $restartOnStallSeconds | quote }}
           initialDelaySeconds: 60
           periodSeconds: 10
         {{ end }}
