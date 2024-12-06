@@ -10,8 +10,23 @@
 
 {{- define "swh.objstorageReplayer.configmap" -}}
 {{- $journalClientConfigurationRef := .deployment_config.journalClientConfigurationRef -}}
-{{- $journalClientConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in objstorageReplayer (" .deployment_name ")  configuration") (get .Values $journalClientConfigurationRef) -}}
 {{- $journalClientOverrides := deepCopy (get .deployment_config "journalClientOverrides" | default (dict)) -}}
+{{- $journalClientConfiguration := include "swh.journalClientConfiguration"
+                                           (dict "serviceType" "journal_client"
+                                                 "configurationRef" $journalClientConfigurationRef
+                                                 "overrides" $journalClientOverrides
+                                                 "Values" .Values) | fromYaml }}
+
+{{- if .deployment_config.staticConsumerGroup -}}
+{{/* Set default values for session.timeout.ms and heartbeat.interval.ms */}}
+{{- $journalClientConfiguration = (dict
+    "journal_client" (mustMergeOverwrite
+                       (dict
+                         "session.timeout.ms" 300000
+                         "heartbeat.interval.ms" 30000)
+                       $journalClientConfiguration.journal_client))
+-}}
+{{- end -}}
 {{- $sourceObjstorageConfigurationRef := .deployment_config.sourceObjstorageConfigurationRef | required (print "objstorage-replayer/_helper.yaml: deployment '" .deployment_name "' must declare a 'sourceObjstorageConfigurationRef' property" ) -}}
 {{- $destinationObjstorageConfigurationRef := .deployment_config.destinationObjstorageConfigurationRef -}}
 {{- if not $destinationObjstorageConfigurationRef -}}
@@ -30,10 +45,7 @@ data:
     {{- include "swh.objstorageConfiguration" (dict "serviceName" "objstorage_dst"
                                       "configurationRef" $destinationObjstorageConfigurationRef
                                       "Values" .Values ) | nindent 4 }}
-    {{- include "swh.journalClientConfiguration" (dict "serviceType" "journal_client"
-                                                       "configurationRef" $journalClientConfigurationRef
-                                                       "overrides" $journalClientOverrides
-                                                       "Values" .Values) | nindent 4 }}
+{{ $journalClientConfiguration | toYaml | indent 4 }}
     {{ if hasKey .deployment_config "error_reporter" -}}
     replayer:
       error_reporter:

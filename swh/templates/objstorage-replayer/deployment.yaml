@@ -5,7 +5,8 @@
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $extraCliLogLevel := $deployment_config.extraCliLogLevel | default $.Values.objstorageReplayer.extraCliLogLevel }}
 {{- $stallReportFilename := "/tmp/objstorage-replayer-stall-report" -}}
-{{- $restartOnStallSeconds := $deployment_config.restartOnStallSeconds | default $.Values.objstorageReplayer.restartOnStallSeconds -}}
+{{- $restartOnStallSeconds := $deployment_config.restartOnStallSeconds -}}
+{{- $staticConsumerGroup := $deployment_config.staticConsumerGroup -}}
 {{- $extraCliOptions := $extraCliLogLevel -}}
 ---
 apiVersion: apps/v1
@@ -102,6 +103,10 @@ spec:
         {{- if $restartOnStallSeconds }}
         - name: STALL_REPORT_FILENAME
           value: {{ $stallReportFilename | quote }}
+        {{ end }}
+        {{- if $staticConsumerGroup }}
+        - name: SET_KAFKA_GROUP_INSTANCE_ID_TO_HOSTNAME
+          value: "true"
         {{ end }}
         {{- if and $.Values.sentry.enabled $.Values.objstorageReplayer.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
