@@ -2381,7 +2381,7 @@ objstorageReplayer:
       destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 32
-      fetchConcurrency: 1
+      fetchConcurrency: 4
       checkDestination: "true"
       restartOnStallSeconds: 300
       journalClientOverrides:
