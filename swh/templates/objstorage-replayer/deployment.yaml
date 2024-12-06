@@ -4,13 +4,9 @@
 {{- $deployment_config := include "swh.objstorageReplayer.deploymentConfig" (dict "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $extraCliLogLevel := $deployment_config.extraCliLogLevel | default $.Values.objstorageReplayer.extraCliLogLevel }}
-{{- $extraCliOptionsList := (list $extraCliLogLevel) }}
 {{- $stallReportFilename := "/tmp/objstorage-replayer-stall-report" -}}
 {{- $restartOnStallSeconds := $deployment_config.restartOnStallSeconds | default $.Values.objstorageReplayer.restartOnStallSeconds -}}
-{{- if $restartOnStallSeconds -}}
-{{- $extraCliOptionsList = mustAppend $extraCliOptionsList (printf "--stall-report-filename=%s" $stallReportFilename) -}}
-{{- end -}}
-{{- $extraCliOptions := join " " $extraCliOptionsList -}}
+{{- $extraCliOptions := $extraCliLogLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -102,6 +98,10 @@ spec:
         {{- if $extraCliOptions }}
         - name: SWH_EXTRA_CLI_OPTIONS
           value: {{ $extraCliOptions | quote }}
+        {{ end }}
+        {{- if $restartOnStallSeconds }}
+        - name: STALL_REPORT_FILENAME
+          value: {{ $stallReportFilename | quote }}
         {{ end }}
         {{- if and $.Values.sentry.enabled $.Values.objstorageReplayer.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT

@@ -2377,7 +2377,7 @@ objstorageReplayer:
   deployments:
     winery:
       enabled: true
-      imageVersion: "20241206.1"
+      imageVersion: "20241206.2"
       destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 32
