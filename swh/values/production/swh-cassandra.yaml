@@ -68,10 +68,12 @@ scrubberObjstorageJournalClientConfiguration:
 rpcROStorageService:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
+  enable_requests_retry: true
 
 remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 rpcROStorageCassandraWithRetryConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
@@ -1524,6 +1526,7 @@ counters:
 rpcRWStorageCassandraConfiguration:
   cls: remote
   url: http://storage-rw-cassandra-ingress-swh-cassandra
+  enable_requests_retry: true
 
 rpcWriterWorkloadStorageCassandraConfiguration:
   pipelineStepsRef: storagePipelineSteps

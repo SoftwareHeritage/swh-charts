@@ -1,10 +1,12 @@
 rpcRWStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql-ingress
+  enable_requests_retry: true
 
 remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress
+  enable_requests_retry: true
 
 remoteRpcRWStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps

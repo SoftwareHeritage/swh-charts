@@ -403,6 +403,7 @@ roObjstorageBestEffort:
     timeout:
       - 0.5  # Connect
       - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -411,9 +412,11 @@ roObjstorageBestEffort:
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - *azure-storage-conf-ro
 
 roObjstorageBestEffortConfiguration:
@@ -430,6 +433,7 @@ roObjstorageHighParallelism:
     timeout:
       - 0.5  # Connect
       - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -439,9 +443,11 @@ roObjstorageHighParallelism:
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
 
 roObjstorageHighParallelismConfiguration:
   configurationRef: roObjstorageHighParallelism
@@ -457,6 +463,7 @@ wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
   cls: remote
   name: winery
   url: http://winery-read-write.internal.cea.swh.network
+  enable_requests_retry: true
 
 roObjstorageForWineryReplayer:
   cls: multiplexer
@@ -470,9 +477,11 @@ roObjstorageForWineryReplayer:
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - *azure-storage-conf-ro
 
 roObjstorageForWineryReplayerConfiguration:
@@ -489,12 +498,15 @@ roObjstorageForS3Replayer:
     timeout:
       - 0.5  # Connect
       - 10   # Read
+    enable_requests_retry: true
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - *azure-storage-conf-ro
 
 roObjstorageForS3ReplayerConfiguration:
@@ -525,12 +537,15 @@ multiplexerForLocalStoragesConfiguration:
     timeout:
       - 0.5  # Connect
       - 10   # Read
+    enable_requests_retry: true
   - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+    enable_requests_retry: true
 
 rwObjstorageWineryAndAzure:
   cls: multiplexer
@@ -618,48 +633,59 @@ emptyStoragePipelineSteps: []
 remoteROCassandraRpcIngressStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-only-rpc-ingress
+  enable_requests_retry: true
 
 remoteSearchConfiguration:
   cls: remote
   url: http://search-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteSchedulerConfiguration:
   cls: remote
   url: http://scheduler-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteVaultConfiguration:
   cls: remote
   url: http://vault-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteReadOnlyIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-only-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteReadWriteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-write-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteCountersConfiguration:
   cls: remote
   url: http://counters-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteBancoReadOnlyObjstorageConfiguration:
   cls: remote
   name: banco
   url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 remoteSaamReadOnlyObjstorageConfiguration:
   cls: remote
   name: saam
   url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
+  enable_requests_retry: true
 
 saamZfsDeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-delete-saam-zfs-rpc-ingress
+  enable_requests_retry: true
 
 bancoXfsDeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-delete-banco-xfs-rpc-ingress
+  enable_requests_retry: true
 
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
@@ -1143,6 +1169,7 @@ remoteROCassandraIngressStorageConfiguration:
 provenanceConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress-swh-cassandra
+  enable_requests_retry: true
 
 esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
 
