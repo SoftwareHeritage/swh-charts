@@ -401,6 +401,11 @@ elasticsearch:
   # ii  elasticsearch 7.15.2 amd64 Distributed RESTful search engine
   # Can be overriden per deployment
   version: 7.15.2
+  # Add extra config for the jvm (can be overridden per instance)
+  # config:
+  #   jvm:
+  #     Xms: 1g
+  #     Xmx: 1g
   # Most recent as of today
   # version: 8.14.2
   # No authentication. Default to false if unspecified (can be overridden per instance)

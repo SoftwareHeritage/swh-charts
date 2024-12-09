@@ -9,6 +9,7 @@
 {{- $disableSecurity := $clusterConfig.disableSecurity | default $.Values.elasticsearch.disableSecurity | default false -}}
 {{- $volumeClaimTemplates := $clusterConfig.volumeClaimTemplates | default $.Values.elasticsearch.volumeClaimTemplates -}}
 {{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.elasticsearch.metricsEnabled -}}
+{{- $jvmConfig := and $clusterConfig.config $clusterConfig.config.jvm | default (and $.Values.elasticsearch.config $.Values.elasticsearch.config.jvm) | default (dict "Xms" "1g" "Xmx" "1g") -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -35,7 +36,7 @@ spec:
         - name: elasticsearch
           env:
           - name: ES_JAVA_OPTS
-            value: -Xms1g -Xmx1g
+            value: -Xms{{ $jvmConfig.Xms }} -Xmx{{ $jvmConfig.Xmx }}
     {{ if $volumeClaimTemplates }}
     volumeClaimTemplates:
       {{- toYaml $volumeClaimTemplates | nindent 4 }}
