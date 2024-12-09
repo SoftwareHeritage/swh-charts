@@ -2077,6 +2077,7 @@ search:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
       objects-v3:
+        replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
         searchConfigurationRef: remoteSearchTestConfiguration
@@ -2087,7 +2088,7 @@ search:
           - origin
           - origin_visit_status
       indexed-v3:
-        replicas: 4
+        replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
         searchConfigurationRef: remoteSearchTestConfiguration
