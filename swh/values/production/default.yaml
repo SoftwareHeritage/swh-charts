@@ -541,7 +541,6 @@ rwObjstorageWineryAndAzure:
 rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
-  # record_reference is postgresql backend specific
   - cls: record_references
 
 storageJournalWriterConfiguration:
