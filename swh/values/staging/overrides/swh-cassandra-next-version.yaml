@@ -854,25 +854,31 @@ search:
     storageConfigurationRef: remoteROPostgresqlStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
-      objects:
+      objects-next-version:
         journalClientOverrides:
-          group_id: swh-search-journal-client-origins
+          group_id: swh-search-next-version.journal-client-origins-v0.11
           prefix: swh.journal.objects
           object_types:
             - origin
             - origin_visit_status
 
-      indexed:
+      indexed-next-version:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
-          group_id: swh-search-journal-client-indexed-v0.11
+          group_id: swh-search-next-version.journal-client-indexed-v0.11
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
 
-      objects-test:
+      objects:
+        enabled: false
+      indexed:
+        enabled: false
+      objects-v4:
+        enabled: false
+      indexed-v4:
         enabled: false
 
 postgresqlIndexerStorageConfiguration:
