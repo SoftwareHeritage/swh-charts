@@ -42,10 +42,6 @@ cassandraStorageConfiguration:
   storageConfigurationRef: cassandraStorage
   objstorageConfigurationRef: roObjstorageConfiguration
 
-cassandraReadOnlyStorageConfiguration:
-  storageConfigurationRef: cassandraROStorage
-  objstorageConfigurationRef: roObjstorageConfiguration
-
 scrubberROStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
 
