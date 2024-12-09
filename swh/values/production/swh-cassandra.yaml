@@ -2395,6 +2395,7 @@ objstorageReplayer:
       replicas: null  # handled by keda autoscaling
       fetchConcurrency: 6
       staticConsumerGroup: true
+      restartOnStallSeconds: 300
       journalClientOverrides:
         group_id: swh-archive-prod-s3-content-replayer
         auto_offset_reset: earliest
