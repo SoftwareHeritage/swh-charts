@@ -2077,7 +2077,7 @@ search:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
       objects-test:
-        replicas: 4
+        replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
         searchConfigurationRef: remoteSearchTestConfiguration
