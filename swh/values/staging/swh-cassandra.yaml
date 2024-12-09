@@ -2087,6 +2087,17 @@ search:
           object_types:
           - origin
           - origin_visit_status
+      indexed-v2:
+        replicas: 8
+        requestedCpu: 10m
+        requestedMemory: 50Mi
+        searchConfigurationRef: remoteSearchTestConfiguration
+        journalClientOverrides:
+          group_id: swh.search.journal-client.indexed-v0.11
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
 
 scheduler:
   enabled: true
