@@ -12,6 +12,7 @@
 {{- $jvmConfig := and $clusterConfig.config $clusterConfig.config.jvm | default (and $.Values.elasticsearch.config $.Values.elasticsearch.config.jvm) | default (dict "Xms" "1g" "Xmx" "1g") -}}
 {{- $nodeAffinity := and $clusterConfig.affinity $clusterConfig.affinity.nodeAffinity | default (and $.Values.elasticsearch.affinity $.Values.elasticsearch.affinity.nodeAffinity) -}}
 {{- $nodeSelector := $clusterConfig.nodeSelector | default $.Values.elasticsearch.nodeSelector -}}
+{{- $forcePluginInstall := $clusterConfig.forcePluginInstall | default $.Values.elasticsearch.forcePluginInstall | default false -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -27,7 +28,15 @@ spec:
       spec:
         {{- if $metricsEnabled }}
         initContainers:
-        - name: install-plugins
+        {{- if $forcePluginInstall }}
+        - name: remove-repository-s3
+          command:
+          - sh
+          - -c
+          - |
+            bin/elasticsearch-plugin remove repository-s3
+        {{- end }}
+        - name: install-repository-s3
           command:
           - sh
           - -c
