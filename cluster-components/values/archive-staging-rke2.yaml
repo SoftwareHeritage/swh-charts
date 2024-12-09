@@ -376,8 +376,8 @@ elasticsearch:
       metricsEnabled: false
       config:
         jvm:
-          Xms: 16g
-          Xmx: 16g
+          Xms: 4g
+          Xmx: 4g
 
 redis:
   enabled: true
