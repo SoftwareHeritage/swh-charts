@@ -27,4 +27,4 @@ rabbitmq:
 
 elasticsearch:
   nodeSelector:
-    swh/backend: true
+    swh/backend: "true"
