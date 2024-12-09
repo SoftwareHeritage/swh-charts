@@ -374,10 +374,6 @@ elasticsearch:
       namespace: swh-cassandra
       replicas: 3
       metricsEnabled: false
-      config:
-        jvm:
-          Xms: 2g
-          Xmx: 2g
 
 redis:
   enabled: true
