@@ -39,7 +39,7 @@ swh_loader_svn_image_version: '20241203.1'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
 swh_objstorage_image_version: '20241203.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
-swh_objstorage_replayer_image_version: '20241203.2'
+swh_objstorage_replayer_image_version: '20241206.3'
 swh_provenance_image: container-registry.softwareheritage.org/swh/infra/swh-apps/provenance
 swh_provenance_image_version: '20241203.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
