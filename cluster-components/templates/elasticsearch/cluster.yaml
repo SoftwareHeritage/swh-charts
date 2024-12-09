@@ -10,6 +10,7 @@
 {{- $volumeClaimTemplates := $clusterConfig.volumeClaimTemplates | default $.Values.elasticsearch.volumeClaimTemplates -}}
 {{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.elasticsearch.metricsEnabled -}}
 {{- $jvmConfig := and $clusterConfig.config $clusterConfig.config.jvm | default (and $.Values.elasticsearch.config $.Values.elasticsearch.config.jvm) | default (dict "Xms" "1g" "Xmx" "1g") -}}
+{{- $nodeAffinity := and $clusterConfig.affinity $clusterConfig.affinity.nodeAffinity | default (and $.Values.elasticsearch.affinity $.Values.elasticsearch.affinity.nodeAffinity) -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -37,6 +38,19 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: -Xms{{ $jvmConfig.Xms }} -Xmx{{ $jvmConfig.Xmx }}
+        affinity:
+          {{- if $nodeAffinity }}
+          nodeAffinity:
+            {{- toYaml $nodeAffinity | nindent 12 }}
+          {{- end }}
+          # Only one instance of the cluster on the same node
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  elasticsearch.k8s.elastic.co/cluster-name: {{ $clusterName }}
+              topologyKey: kubernetes.io/hostname
+
     {{ if $volumeClaimTemplates }}
     volumeClaimTemplates:
       {{- toYaml $volumeClaimTemplates | nindent 4 }}
