@@ -374,12 +374,10 @@ elasticsearch:
       namespace: swh-cassandra
       replicas: 3
       metricsEnabled: true
-      forcePluginInstall: true
       config:
         jvm:
           Xms: 16g
           Xmx: 16g
-
 
 redis:
   enabled: true
