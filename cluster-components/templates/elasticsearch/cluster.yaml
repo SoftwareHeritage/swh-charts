@@ -11,6 +11,7 @@
 {{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.elasticsearch.metricsEnabled -}}
 {{- $jvmConfig := and $clusterConfig.config $clusterConfig.config.jvm | default (and $.Values.elasticsearch.config $.Values.elasticsearch.config.jvm) | default (dict "Xms" "1g" "Xmx" "1g") -}}
 {{- $nodeAffinity := and $clusterConfig.affinity $clusterConfig.affinity.nodeAffinity | default (and $.Values.elasticsearch.affinity $.Values.elasticsearch.affinity.nodeAffinity) -}}
+{{- $nodeSelector := $clusterConfig.nodeSelector | default $.Values.elasticsearch.nodeSelector -}}
 ---
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
@@ -38,6 +39,10 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: -Xms{{ $jvmConfig.Xms }} -Xmx{{ $jvmConfig.Xmx }}
+        {{- if $nodeSelector }}
+        nodeSelector:
+          {{- toYaml $nodeSelector | nindent 10 }}
+        {{- end }}
         affinity:
           {{- if $nodeAffinity }}
           nodeAffinity:
