@@ -364,7 +364,7 @@ elasticsearch:
   deployments:
     search-next-version:
       namespace: swh-cassandra-next-version
-      metricsEnabled: true
+      metricsEnabled: false
       replicas: 3
       # version: 8.14.2
       nodeName: node
@@ -373,7 +373,7 @@ elasticsearch:
     search:
       namespace: swh-cassandra
       replicas: 3
-      metricsEnabled: true
+      metricsEnabled: false
       config:
         jvm:
           Xms: 16g
