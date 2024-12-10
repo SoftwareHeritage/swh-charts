@@ -364,7 +364,7 @@ elasticsearch:
   deployments:
     search-next-version:
       namespace: swh-cassandra-next-version
-      metricsEnabled: false
+      metricsEnabled: true
       replicas: 3
       # version: 8.14.2
       nodeName: node
