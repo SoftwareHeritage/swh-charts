@@ -29,7 +29,6 @@ spec:
         enabled: false
     config:
       cassandraYaml:
-        scripted_user_defined_functions_enabled: true
         user_defined_functions_enabled: true
       {{- if $jvmOptions }}
       jvmOptions:
