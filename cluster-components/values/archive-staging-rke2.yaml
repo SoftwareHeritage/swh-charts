@@ -373,7 +373,7 @@ elasticsearch:
     search:
       namespace: swh-cassandra
       replicas: 3
-      metricsEnabled: false
+      metricsEnabled: true
 
 redis:
   enabled: true
