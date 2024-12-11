@@ -1174,6 +1174,8 @@ toolbox:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     web:
       webDbConfigurationRef: postgresqlWebConfiguration
+    deposit:
+      depositDbConfigurationRef: postgresqlDepositConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
 

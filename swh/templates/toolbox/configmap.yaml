@@ -42,6 +42,12 @@ data:
           "configurationRef" (get $deployment_config "webDbConfigurationRef")
           "Values" $.Values) | nindent 4 -}}
 {{ end }}
+{{- if hasKey $deployment_config "depositDbConfigurationRef" }}
+  {{- include "swh.postgresql"
+    (dict "serviceType" "deposit"
+          "configurationRef" (get $deployment_config "depositDbConfigurationRef")
+          "Values" $.Values) | nindent 4 -}}
+{{ end }}
 {{- if hasKey $deployment_config "vaultDbConfigurationRef" }}
   {{- include "swh.postgresql"
     (dict "serviceType" "vault"

@@ -712,6 +712,8 @@ celeryConfiguration:
 toolbox:
   enabled: true
   configs:
+    deposit:
+      depositDbConfigurationRef: postgresqlDepositConfiguration
     storage:
       storageDbConfigurationRef: postgresqlRWStorageConfiguration
     scheduler:
