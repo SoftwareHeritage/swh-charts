@@ -4,7 +4,7 @@
 {{- $jvmOptions := $clusterConfig.jvmOptions | default $.Values.cassandra.jvmOptions -}}
 {{- $annotations := $clusterConfig.annotations | default $.Values.cassandra.annotations | default dict -}}
 {{- $reaper := $clusterConfig.reaper | default $.Values.cassandra.reaper | default (dict "enabled" false) -}}
-{{- $affinity := $clusterConfig.affinity | default $.Values.cassandra.affinity -}}
+{{- $nodeAffinityLabels := $clusterConfig.nodeAffinityLabels | default $.Values.cassandra.nodeAffinityLabels -}}
 ---
 apiVersion: k8ssandra.io/v1alpha1
 kind: K8ssandraCluster
@@ -48,9 +48,11 @@ spec:
         # stargate:
         #   size: 1
         #   heapSize: 256M
-        {{- if $affinity }}
-        affinity:
-          {{- toYaml $affinity | nindent 10 }}
+        {{- if $nodeAffinityLabels }}
+        racks:
+          - name: default
+            nodeAffinityLabels:
+              {{- toYaml $nodeAffinityLabels | nindent 14 }}
         {{- end }}
     {{ end }}
 {{ end }}
