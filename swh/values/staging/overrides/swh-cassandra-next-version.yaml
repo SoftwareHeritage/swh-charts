@@ -775,8 +775,15 @@ scrubber:
 toolbox:
   enabled: true
   configs:
+    scheduler:
+      schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
+      celeryConfigurationRef: producerCeleryConfiguration
     storage:
       storageDbConfigurationRef: postgresqlRWStorageConfiguration
+    web:
+      webDbConfigurationRef: postgresqlWebConfiguration
+    deposit:
+      depositDbConfigurationRef: postgresqlDepositConfiguration
   bulkLoad: null
 
 webhooks:
