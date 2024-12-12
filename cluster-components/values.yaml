@@ -379,6 +379,17 @@ cassandra:
   #   heapSize: 8G
   # Namespace where to run the cassandra cluster
   namespace: cassandra-system
+  # Affinity to declare where to run the cassandra cluster (can be overridden per
+  # instance)
+  affinity: {}
+  #  nodeAffinity:
+  #    requiredDuringSchedulingIgnoredDuringExecution:
+  #      nodeSelectorTerms:
+  #      - matchExpressions:
+  #        - key: cassandra
+  #          operator: In
+  #          values:
+  #          - "true"
   # Enable reaper for all cluster instances (can be overridden per instance)
   reaper:
     enabled: false
