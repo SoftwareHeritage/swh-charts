@@ -1,8 +1,8 @@
 {{ if .Values.cloudnativePg.enabled -}}
-{{ $namespace := .Values.cloudnativePg.namespace -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
 {{- if and $cluster_config.pooler $cluster_config.pooler.enabled -}}
+{{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $pooler_instances := $cluster_config.pooler.instances | default $cluster_config.instances | default 1 -}}
 {{- $pooler_type := $cluster_config.pooler.type -}}
 {{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
