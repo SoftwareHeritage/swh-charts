@@ -88,10 +88,10 @@ postgresqlDepositConfiguration:
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_USERNAME:
-      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyRef: swh-postgresql-swh-deposit-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyRef: swh-postgresql-swh-deposit-secret
       secretKeyName: password
 
 depositConfiguration:
