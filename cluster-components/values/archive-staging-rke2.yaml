@@ -148,7 +148,6 @@ clusterPgStagingDb1:
 
 cloudnativePg:
   enabled: true
-  namespace: swh-cassandra-next-version
   # Specific postgresql setup (can be overridden per instance)
   externalClusterRef: clusterPgStagingDb1
   postgresql:
@@ -178,6 +177,7 @@ cloudnativePg:
   deployments:
     next-version-swh:
       enabled: true
+      namespace: swh-cassandra-next-version
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-swh-secret
@@ -185,6 +185,7 @@ cloudnativePg:
           - swh
     next-version-dbs:
       enabled: true
+      namespace: swh-cassandra-next-version
       testing: true
       instances: 1
       pooler:
@@ -205,6 +206,7 @@ cloudnativePg:
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
       enabled: true
+      namespace: swh-cassandra-next-version
       testing: true
       instances: 1
       pooler:
