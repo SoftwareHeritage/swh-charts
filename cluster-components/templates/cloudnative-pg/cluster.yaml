@@ -25,6 +25,8 @@ metadata:
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{ if $testing }}
+  # Disruption budget
+  # https://cloudnative-pg.io/documentation/1.23/kubernetes_upgrade/#postgresql-clusters-used-for-development-or-testing
   enablePDB: false
   {{ end }}
   # Rolling update strategy:
