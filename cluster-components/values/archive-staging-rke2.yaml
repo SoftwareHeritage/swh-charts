@@ -188,11 +188,6 @@ cloudnativePg:
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
-      pooler:
-        enabled: true
-        type: rw
-        default_pool_size: "10"
-        max_client_conn: "1000"
       # Managed dbs
       initdb:
         type: monolith
@@ -209,11 +204,6 @@ cloudnativePg:
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
-      pooler:
-        enabled: true
-        type: rw
-        default_pool_size: "10"
-        max_client_conn: "1000"
       # Managed dbs
       initdb:
         type: microservice
@@ -223,11 +213,6 @@ cloudnativePg:
     swh-web:
       enabled: true
       namespace: swh-cassandra
-      pooler:
-        enabled: true
-        type: rw
-        default_pool_size: "10"
-        max_client_conn: "1000"
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-web-secret
@@ -237,11 +222,6 @@ cloudnativePg:
     swh-deposit:
       enabled: true
       namespace: swh-cassandra
-      pooler:
-        enabled: true
-        type: rw
-        default_pool_size: "10"
-        max_client_conn: "1000"
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-deposit-secret
