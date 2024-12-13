@@ -5,7 +5,6 @@
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
 {{- $affinity := $clusterConfig.affinity | default $.Values.kafka.affinity -}}
-{{- $zookeeperAffinity := and $clusterConfig.zookeeper $clusterConfig.zookeeper.affinity | default $.Values.kafka.affinity -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
@@ -13,6 +12,7 @@ metadata:
   name: {{ $clusterName }}
   namespace: {{ $.Values.kafka.namespace }}
   annotations:
+    strimzi.io/kraft: enabled
     {{- if $clusterConfig.pools }}
     strimzi.io/node-pools: enabled
     {{- end }}
@@ -50,15 +50,6 @@ spec:
       transaction.state.log.min.isr: {{ $minInSyncReplica }}
       min.insync.replicas: {{ $minInSyncReplica }}
       inter.broker.protocol.version: "3.7"
-  {{- if $clusterConfig.zookeeper }}
-  zookeeper:
-    replicas: {{ $zookeeperReplicas }}
-    {{- if $zookeeperAffinity }}
-    affinity:
-      {{- toYaml $zookeeperAffinity | nindent 6 }}
-    {{- end }}
-    {{- toYaml $clusterConfig.zookeeper | nindent 4 }}
-  {{- end }}
   entityOperator:
     topicOperator: {}
     userOperator: {}
