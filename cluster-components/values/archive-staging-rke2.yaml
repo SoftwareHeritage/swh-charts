@@ -234,8 +234,6 @@ cloudnativePg:
         databases:
         - swh-web
         source: cluster-pg-staging-db1
-    # TODO: Fix the user to be swh and not swh-deposit
-    # (for the next reset)
     swh-deposit:
       enabled: true
       namespace: swh-cassandra
