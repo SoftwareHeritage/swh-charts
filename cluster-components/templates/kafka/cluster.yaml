@@ -1,7 +1,6 @@
 {{ if .Values.kafka.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
 {{- $replicas := $clusterConfig.replicas | default $.Values.kafka.replicas -}}
-{{- $zookeeperReplicas := $clusterConfig.zookeeper.replicas | default $.Values.kafka.replicas -}}
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
 {{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.kafka.metricsEnabled -}}
@@ -49,12 +48,6 @@ spec:
       default.replication.factor: {{ $replicationFactor }}
       transaction.state.log.min.isr: {{ $minInSyncReplica }}
       min.insync.replicas: {{ $minInSyncReplica }}
-      inter.broker.protocol.version: "3.7"
-  {{- if $clusterConfig.zookeeper }}
-  zookeeper:
-    replicas: {{ $zookeeperReplicas }}
-    {{- toYaml $clusterConfig.zookeeper | nindent 4 }}
-  {{- end }}
   entityOperator:
     topicOperator: {}
     userOperator: {}

@@ -272,12 +272,6 @@ kafka:
   deployments:
     kafka-cluster:
       metricsEnabled: true
-      zookeeper:
-        storage:
-          type: persistent-claim
-          size: 5Gi
-          deleteClaim: true
-          class: local-persistent
       pools:
         pool-a:
           roles:
@@ -290,7 +284,6 @@ kafka:
                 size: 5Gi
                 deleteClaim: true
                 class: local-persistent
-
         pool-b:
           roles:
             - broker
