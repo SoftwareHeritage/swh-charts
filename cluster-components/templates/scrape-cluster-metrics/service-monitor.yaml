@@ -3,7 +3,6 @@
 # This may redefine some metrics, see the relabeling configuration dict key if provided
 {{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
 {{- $metricsEndpointPortName := get $deploymentConfig "metricsEndpointPortName" | default "metrics" -}}
-{{- $port := $deploymentConfig.port }}
 {{- $path := $deploymentConfig.path | default "" }}
 {{- $scheme := $deploymentConfig.scheme | default "" }}
 ---
