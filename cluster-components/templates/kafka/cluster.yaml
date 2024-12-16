@@ -5,6 +5,7 @@
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
 {{- $affinity := $clusterConfig.affinity | default $.Values.kafka.affinity -}}
+{{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.kafka.metricsEnabled -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
@@ -17,6 +18,9 @@ metadata:
     strimzi.io/node-pools: enabled
     {{- end }}
 spec:
+  {{- if $metricsEnabled }}
+  kafkaExporter: {}
+  {{- end }}
   kafka:
     version: 3.7.0
     {{ if not $clusterConfig.pools }}

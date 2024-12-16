@@ -271,6 +271,7 @@ kafka:
   minInSyncReplicas: 1
   deployments:
     kafka-cluster:
+      metricsEnabled: true
       zookeeper:
         storage:
           type: persistent-claim
