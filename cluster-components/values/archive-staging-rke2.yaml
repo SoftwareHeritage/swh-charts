@@ -140,8 +140,8 @@ scrapeClusterMetrics:
       path: "/metrics"
       scheme: http
       matchLabels:
-        strimzi.io/cluster: kafka-cluster
-        strimzi.io/component-type: kafka-exporter
+        app.kubernetes.io/instance: kafka-cluster
+        app.kubernetes.io/name: kafka-exporter
 
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
