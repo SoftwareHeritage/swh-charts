@@ -343,6 +343,8 @@ kafka:
   #           - "true"
   # Activate metrics (can be overridden per instance)
   # metricsEnabled: false
+  # Kafka version (can be overridden per instance)
+  version: 3.7.0
   deployments:
     # cluster-name:
     #   # zookeeper:
