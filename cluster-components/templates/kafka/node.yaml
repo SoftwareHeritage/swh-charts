@@ -3,6 +3,7 @@
 {{ if $clusterConfig.pools }}
 {{- range $poolName, $poolConfig := $clusterConfig.pools -}}
 {{- $replicas := $poolConfig.replicas | default $clusterConfig.replicas | default $.Values.kafka.replicas -}}
+{{- $affinity := $clusterConfig.affinity | default $.Values.kafka.affinity -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
@@ -19,6 +20,12 @@ spec:
   {{- if $poolConfig.storage }}
   storage:
     {{- toYaml $poolConfig.storage | nindent 4 }}
+  {{- end }}
+  {{- if $affinity }}
+  template:
+    pod:
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
   {{- end }}
 {{ end }}
 {{ end }}
