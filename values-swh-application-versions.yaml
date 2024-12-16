@@ -3,7 +3,7 @@ cassandra_checks_image_version: '20241203.1'
 software_stories_image: container-registry.softwareheritage.org/swh/infra/swh-apps/software_stories
 software_stories_image_version: '20230912.1'
 swh_alter_image: container-registry.softwareheritage.org/swh/infra/swh-apps/alter
-swh_alter_image_version: '20241211.1'
+swh_alter_image_version: '20241216.1'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20241203.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
