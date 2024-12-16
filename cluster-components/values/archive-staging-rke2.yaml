@@ -303,6 +303,7 @@ kafka:
                 deleteClaim: true
                 class: local-persistent
         pool-c:
+          replicas: 3
           roles:
             - controller
           storage:
