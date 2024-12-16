@@ -341,6 +341,7 @@ kafka:
         swh.journal.indexed.revision_intrinsic_metadata: {}
 
 elasticsearch:
+  enabled: true
   # Can be overridden per instance
   # No authentication
   disableSecurity: true
