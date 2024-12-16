@@ -184,7 +184,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     next-version-swh:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       initdb:
         type: microservice
@@ -192,7 +192,7 @@ cloudnativePg:
         databases:
           - swh
     next-version-dbs:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
@@ -208,7 +208,7 @@ cloudnativePg:
         - swh-scheduler
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
@@ -238,7 +238,7 @@ cloudnativePg:
         source: cluster-pg-staging-db1
 
 rabbitmq:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   replicas: 1
   deployments:
@@ -247,7 +247,7 @@ rabbitmq:
       namespace: swh-cassandra-next-version
 
 cassandra:
-  enabled: false
+  enabled: true
   storageConfig:
     cassandraDataVolumeClaimSpec:
       storageClassName: local-persistent
@@ -272,7 +272,7 @@ cassandra:
         enabled: true
 
 kafka:
-  enabled: false
+  enabled: true
   namespace: swh-cassandra-next-version
   replicas: 1
   replicationFactor: 1
@@ -363,7 +363,7 @@ elasticsearch:
       storageClassName: local-persistent
   deployments:
     search-next-version:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       metricsEnabled: true
       replicas: 3
@@ -381,7 +381,7 @@ redis:
   enabled: true
   deployments:
     counters:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       storage:
         volumeClaimTemplate:
