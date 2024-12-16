@@ -2316,7 +2316,7 @@ loaders:
       requestedCpu: 1
       tmpEphemeralStorage:
         emptyDir: # don't work in memory for this big repositories
-          sizeLimit: 200Gi
+          sizeLimit: 300Gi
       queues:
         - large_repository:swh.loader.svn.tasks.LoadSvnRepository
         - large_repository:swh.loader.svn.tasks.MountAndLoadSvnRepository
