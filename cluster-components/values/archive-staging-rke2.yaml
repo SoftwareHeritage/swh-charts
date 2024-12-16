@@ -134,6 +134,14 @@ scrapeClusterMetrics:
       matchLabels:
         common.k8s.elastic.co/type: elasticsearch
         elasticsearch.k8s.elastic.co/cluster-name: search
+    kafka-next-version:
+      namespace: swh-cassandra-next-version
+      metricsEndpointPortName: tcp-prometheus
+      path: "/metrics"
+      scheme: http
+      matchLabels:
+        strimzi.io/cluster: kafka-cluster
+        strimzi.io/component-type: kafka-exporter
 
 clusterPgStagingDb1:
   name: cluster-pg-staging-db1
