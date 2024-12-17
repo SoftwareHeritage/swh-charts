@@ -69,21 +69,19 @@ spec:
         {{- if $initializeBackendConfig }}
         {{ include "swh.initializeBackend" (dict "Values" $.Values
                                                  "imagePrefixName" "swh_toolbox_image"
-                                                 "module" "indexer"
-                                                 "config" $initializeBackendConfig
-                                                 "moduleConfigKey" "indexer_storage") | nindent 8 }}
+                                                 "module" "indexer_storage"
+                                                 "config" $initializeBackendConfig) | nindent 8 }}
         {{- end }}
         {{- if $checkBackendVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_indexer_storage_image"
-                                                             "module" "indexer"
+                                                             "module" "indexer_storage"
                                                              "moduleConfigKey" "indexer_storage") | nindent 8 }}
         {{- end }}
         {{- if $migrateBackend }}
         {{ include "swh.migrateBackend" (dict "Values" $.Values
                                               "imagePrefixName" "swh_toolbox_image"
-                                              "module" "indexer"
-                                              "moduleConfigKey" "indexer_storage") | nindent 8 }}
+                                              "module" "indexer_storage") | nindent 8 }}
         {{- end }}
       containers:
         - name: {{ $serviceType }}
