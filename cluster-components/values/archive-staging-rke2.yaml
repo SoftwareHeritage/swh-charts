@@ -269,7 +269,7 @@ cassandra:
         - name: next-version
           replicas: 6
       reaper:
-        enabled: true
+        enabled: false
 
 kafka:
   enabled: true
