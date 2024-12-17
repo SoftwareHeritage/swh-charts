@@ -208,7 +208,7 @@ cloudnativePg:
         - swh-scheduler
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
-      enabled: false
+      enabled: true
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
