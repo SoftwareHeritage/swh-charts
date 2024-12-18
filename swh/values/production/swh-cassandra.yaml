@@ -2316,7 +2316,7 @@ loaders:
       requestedCpu: 1
       tmpEphemeralStorage:
         emptyDir: # don't work in memory for this big repositories
-          sizeLimit: 300Gi
+          sizeLimit: 500Gi
       queues:
         - large_repository:swh.loader.svn.tasks.LoadSvnRepository
         - large_repository:swh.loader.svn.tasks.MountAndLoadSvnRepository
@@ -2398,7 +2398,7 @@ objstorageReplayer:
       destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
       replicas: null  # handled by keda autoscaling
-      fetchConcurrency: 10
+      fetchConcurrency: 6
       staticConsumerGroup: true
       restartOnStallSeconds: 300
       journalClientOverrides:
