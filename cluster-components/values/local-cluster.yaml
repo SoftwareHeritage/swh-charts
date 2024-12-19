@@ -159,11 +159,6 @@ kafka:
   minInSyncReplicas: 1
   deployments:
     kafka-cluster:
-      zookeeper:
-        storage:
-          type: persistent-claim
-          size: 1Gi
-          deleteClaim: false
       # storage:
       #   type: jbod
       #   volumes:
@@ -177,6 +172,9 @@ kafka:
       #     deleteClaim: false
       pools:
         pool-a:
+          roles:
+            - broker
+            - controller
           storage:
             type: jbod
             volumes:
@@ -185,6 +183,9 @@ kafka:
                 size: 1Gi
                 deleteClaim: false
         pool-b:
+          roles:
+            - broker
+            - controller
           storage:
             type: jbod
             volumes:
