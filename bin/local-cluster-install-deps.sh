@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-# This scripts installs the necessary dependencies for the charts to work
+# This scripts installs the necessary dependencies for the charts to work. It uses the
+# /cluster-configuration/values.yaml to retrieve the version of the charts to use. So
+# the local cluster installation reflects the version of what's used by actual
+# production cluster.
 
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
@@ -25,44 +28,78 @@ pushd cluster-components
 helm dependency build
 popd
 
+# Retrieve the chart versions to install from cluster-configuration/values.yaml
+
+function parse_simple_yaml_into_variable {
+    # Parse basic yaml files to build variables out of it
+    local prefix=$2
+    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+    sed -ne "s|^\($s\):|\1|" \
+        -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
+        awk -F$fs '{
+     indent = length($1)/2;
+     vname[indent] = $2;
+     for (i in vname) {if (i > indent) {delete vname[i]}}
+     if (length($3) > 0) {
+        vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+        printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+     }
+  }'
+}
+
+eval $(parse_simple_yaml_into_variable "cluster-configuration/values.yaml" "conf_")
+
 # Now actually installs the various operator dependencies
 
 $HELM upgrade --install ingress-nginx ingress-nginx \
-     --repo https://kubernetes.github.io/ingress-nginx \
-     --namespace ingress-nginx --create-namespace
+      --version $conf_ingressNginx_version \
+      --repo https://kubernetes.github.io/ingress-nginx \
+      --namespace ingress-nginx --create-namespace
 
 $HELM upgrade --install rabbitmq-operator \
-     bitnami/rabbitmq-cluster-operator
+      --version $conf_rabbitmq_version \
+      bitnami/rabbitmq-cluster-operator
 
 $HELM upgrade --install cloudnative-pg \
-     --namespace cnpg-system \
-     --create-namespace \
-     cnpg/cloudnative-pg
+      --version $conf_cloudnativePg_version \
+      --namespace cnpg-system \
+      --create-namespace \
+      cnpg/cloudnative-pg
 
 $HELM upgrade --install kafka-operator \
-     --namespace kafka-system \
-     --create-namespace \
-     strimzi/strimzi-kafka-operator \
-     --set watchAnyNamespace=true
+      --version $conf_kafka_version \
+      --namespace kafka-system \
+      --create-namespace \
+      strimzi/strimzi-kafka-operator \
+      --set watchAnyNamespace=true
 
 $HELM upgrade --install cert-manager \
-     jetstack/cert-manager \
-     --namespace cert-manager --create-namespace \
-     --set crds.enabled=true
+      --version $conf_certManager_version \
+      jetstack/cert-manager \
+      --namespace cert-manager --create-namespace \
+      --set crds.enabled=true \
+      --set installCRDs=true
+
+# Cannot have those since prometheus is not necessarily installed yet.
+      # --set prometheus.enabled=true \
+      # --set prometheus.servicemonitor.enabled=true \
 
 $HELM upgrade --install k8ssandra-operator \
-     k8ssandra/k8ssandra-operator \
-     -n k8ssandra-operator --create-namespace \
-     --set global.clusterScoped=true
+      --version $conf_cassandra_version \
+      k8ssandra/k8ssandra-operator \
+      -n k8ssandra-operator --create-namespace \
+      --set global.clusterScoped=true
 
 $HELM upgrade --install eck-operator \
-     elastic/eck-operator \
-     -n elastic-system --create-namespace
+      --version $conf_elasticsearch_version \
+      elastic/eck-operator \
+      -n elastic-system --create-namespace
 
 $HELM upgrade --install redis-operator \
-     ot-helm/redis-operator \
-     -n ot-operators --create-namespace \
-     --version 0.18.3
+      --version $conf_redis_version \
+      ot-helm/redis-operator \
+      -n ot-operators --create-namespace \
 
 $HELM upgrade --install keda \
       kedacore/keda \
