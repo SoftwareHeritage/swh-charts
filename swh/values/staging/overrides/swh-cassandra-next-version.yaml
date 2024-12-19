@@ -851,7 +851,7 @@ search:
           initialize: true
         ingress:
           enabled: false
-      search-in-kube:
+      search-static:
         enabled: false
 
   journalClients:
