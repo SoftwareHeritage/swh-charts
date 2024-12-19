@@ -1,4 +1,5 @@
 apiVersion: v2
+# TODO: Rename properly to cluster-components
 name: cluster-config
 description: A Helm chart for deploying components (e.g. blackbox, irc-relay, ...) in clusters
 
@@ -16,6 +17,7 @@ version: 0.1.0
 # application is using. It is recommended to use it with quotes.
 appVersion: "1.16.0"
 
+# TODO: What purposes do those dependencies serve?
 dependencies:
 - name: cert-manager
   version: 1.12.0
