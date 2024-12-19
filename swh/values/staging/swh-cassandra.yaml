@@ -1946,25 +1946,6 @@ checkerDeposit:
   limitedMemory: 1Gi
   limitedCpu: 1000m
 
-# Elasticsearch running in kube
-elasticsearchInKubeInstances:
-  - host: search-es-http
-    port: 9200
-
-elasticsearchInKubeConfiguration:
-  elasticsearchInstancesRef: elasticsearchInKubeInstances
-  cls: elasticsearch
-  indexes:
-    origin:
-      index: origin-v0.11
-      read_alias: origin-read
-      write_alias: origin-write
-
-remoteSearchTestConfiguration:
-  cls: remote
-  url: http://search-in-kube-rpc-ingress
-  enable_requests_retry: true
-
 search:
   enabled: true
   logLevel: INFO
@@ -1986,11 +1967,10 @@ search:
       cpuPercentageUsage: 75
     deployments:
       # instance-name (will be suffixed by -rpc)
-      search:
-        elasticsearchConfigurationRef: elasticsearchConfiguration
+      search-static:
+        elasticsearchConfigurationRef: elasticsearchStaticConfiguration
         hosts:
-          - search-rpc-ingress
-          - search.internal.staging.swh.network
+          - search-static-rpc-ingress
         ingress:
           enabled: true
           # Optional: the ingress classname to use
@@ -2020,12 +2000,13 @@ search:
               extraWhitelistSourceRange:
                 # vpn network
                 - 192.168.101.0/24
-      search-in-kube:
-        elasticsearchConfigurationRef: elasticsearchInKubeConfiguration
+      search:
+        elasticsearchConfigurationRef: elasticsearchConfiguration
         backend:
           initialize: true
         hosts:
-          - search-in-kube-rpc-ingress
+          - search.internal.staging.swh.network
+          - search-rpc-ingress
         ingress:
           enabled: true
           extraAnnotations:

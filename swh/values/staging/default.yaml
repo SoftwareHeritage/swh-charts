@@ -426,8 +426,23 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
-elasticsearchInstances:
+# Elasticsearch running on static node
+elasticsearchStaticInstances:
   - host: search-esnode0.internal.staging.swh.network
+    port: 9200
+
+elasticsearchStaticConfiguration:
+  elasticsearchInstancesRef: elasticsearchStaticInstances
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.11
+      read_alias: origin-read
+      write_alias: origin-write
+
+# Elasticsearch running in kube
+elasticsearchInstances:
+  - host: search-es-http
     port: 9200
 
 elasticsearchConfiguration:
@@ -525,8 +540,8 @@ externalServices:
     search:
       internalName: search-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    search-in-kube:
-      internalName: search-in-kube-rpc-ingress
+    search-static:
+      internalName: search-static-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     deposit:
       internalName: deposit-rpc-ingress
