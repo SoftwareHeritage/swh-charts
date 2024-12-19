@@ -1,0 +1,29 @@
+{{- if .Values.scrapeClusterMetrics.enabled -}}
+# This defines the service-monitor to monitor the service which scrapes internal metrics
+# This may redefine some metrics, see the relabeling configuration dict key if provided
+{{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
+{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $service := $deploymentConfig.service -}}
+{{- if and $service $service.enabled -}}
+{{- $metricsEndpointPortName := get $deploymentConfig "metricsEndpointPortName" | default "metrics" -}}
+{{- $port := $service.port }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $deploymentConfig.namespace }}
+  name: {{ $deploymentName }}-internal-servers-service
+  labels:
+    {{- toYaml $deploymentConfig.matchLabels | nindent 4 }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- toYaml $deploymentConfig.matchLabels | nindent 4 }}
+  ports:
+    - port: {{ $port }}
+      targetPort: {{ $port }}
+      name: {{ $metricsEndpointPortName }}
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
