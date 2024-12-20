@@ -2398,7 +2398,7 @@ objstorageReplayer:
       destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
       replicas: null  # handled by keda autoscaling
-      fetchConcurrency: 6
+      fetchConcurrency: 4
       staticConsumerGroup: true
       restartOnStallSeconds: 300
       journalClientOverrides:
@@ -2408,7 +2408,7 @@ objstorageReplayer:
       autoScaling:
         minReplicaCount: 4
         stopWhenNoActivity: false
-        maxReplicaCount: 32
+        maxReplicaCount: 48
         advancedKedaConfig:
           horizontalPodAutoscalerConfig:
             behavior:
