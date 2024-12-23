@@ -834,6 +834,15 @@ djangoWebConfiguration:
     DJANGO_SECRET_KEY:
       secretKeyRef: swh-webapp-django-secret
       secretKeyName: webapp-django-secret-key
+    DJANGO_SECRET_KEY_FALLBACK_1:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key-fallback-1
+    DJANGO_SECRET_KEY_FALLBACK_2:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key-fallback-2
+    DJANGO_SECRET_KEY_FALLBACK_3:
+      secretKeyRef: swh-webapp-django-secret
+      secretKeyName: webapp-django-secret-key-fallback-3
 
 webDjangoApps:
   - swh.web.add_forge_now
