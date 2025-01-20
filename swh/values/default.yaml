@@ -6,6 +6,10 @@ prometheus:
     globalLabels:
       release: rancher-monitoring
 
+SwhStatusUrl:
+  server_url: https://status.softwareheritage.org/
+  json_path: 1.0/status/578e5eddcdc0cc7951000520
+
 sentry:
   enabled: true
 

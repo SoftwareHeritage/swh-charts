@@ -938,6 +938,7 @@ web:
               - path: /api/1/content/[^/]+/symbol/
             # auth-file with authentication
             authentication: swh-cassandra/web-auth-secrets
+      statusRef: SwhStatusUrl
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
