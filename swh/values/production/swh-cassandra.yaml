@@ -506,6 +506,8 @@ web:
         matomo:
           url: https://piwik.inria.fr/
           site_id: 59
+        unauthenticated_api_hosts:
+          - archive.internal.softwareheritage.org
 
     cassandra:
       enabled: false
