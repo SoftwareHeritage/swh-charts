@@ -614,7 +614,9 @@ Generate the configuration for a remote service
 {{- define "swh.service.fromYaml" -}}
 {{- $configuration := deepCopy (get .Values .configurationRef) -}}
 {{- $_ := unset $configuration "secrets" -}}
-{{ .service }}:
+{{- if .service -}}
+{{- .service }}:
+{{- end }}
 {{ toYaml $configuration | indent 2 }}
 {{- end -}}
 

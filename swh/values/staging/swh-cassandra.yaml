@@ -852,6 +852,9 @@ provenanceConfiguration:
   url: http://webapp-provenance-ingress
   enable_requests_retry: true
 
+cornerRibbon:
+  show_corner_ribbon: "true"
+  corner_ribbon_text: "Staging"
 
 web:
   enabled: true
@@ -958,6 +961,7 @@ web:
       djangoAppsRef: webDjangoApps
       provenanceConfigurationRef: provenanceConfiguration
       graphConfigurationRef: webGraphConfiguration
+      cornerRibbonRef: cornerRibbon
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:

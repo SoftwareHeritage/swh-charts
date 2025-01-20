@@ -36,6 +36,10 @@ data:
                                                "configurationRef" .configuration.statusRef
                                                "Values" .Values) | nindent 4 }}
     {{- end -}}
+    {{- if .configuration.cornerRibbonRef }}
+      {{- include "swh.service.fromYaml" (dict "configurationRef" .configuration.cornerRibbonRef
+                                               "Values" .Values) | nindent 2 -}}
+    {{- end -}}
     {{- if .configuration.searchConfigurationRef }}
       {{- include "swh.service.fromYaml" (dict "service" "search"
                                                "configurationRef" .configuration.searchConfigurationRef

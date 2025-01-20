@@ -639,6 +639,10 @@ provenanceConfiguration:
 
 historyCountersUrl: http://counters-rpc:5011/counters_history/history.json#
 
+cornerRibbon:
+  show_corner_ribbon: "true"
+  corner_ribbon_text: "StagingNextVersion"
+
 web:
   deployments:
     cassandra:
@@ -653,6 +657,7 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
       graphConfigurationRef: webGraphConfiguration
+      cornerRibbonRef: cornerRibbon
       migrations:
         enabled: false
       replicas: 1
