@@ -1027,7 +1027,13 @@ objstorage:
         threads: 4
         workers: 4
         timeout: 60
-      replicas: 2
+      autoScaling:
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        # more is better than less
+        # given the 4 threads, 1 should be enough
+        factor: 1
       objstorageConfigurationRef: multiplexerForLocalStoragesConfiguration
         # Deploy an ingress to access the objstorage
       hosts:
