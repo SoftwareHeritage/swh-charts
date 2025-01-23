@@ -2458,7 +2458,7 @@ rpcLocalRustWithGrpcGraphConfiguration:
     port: 50091
 
 # The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGrpcGraphConfiguration:
+rpcWithRemoteGrpc20240331GraphConfiguration:
   cls: remote
   url: graph-grpc-20240331-ingress:80
   grpc_server:
@@ -2512,7 +2512,6 @@ graph:
               requests:
                 storage: 1Gi
       hosts:
-        - graph-grpc.internal.softwareheritage.org
         - graph-grpc-20240331-ingress
       ingress:
         enabled: true
@@ -2533,10 +2532,9 @@ graph:
       enabled: true
       type: rpc
       port: 5009
-      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      graphConfigurationRef: rpcWithRemoteGrpc20240331GraphConfiguration
       startService: true
       hosts:
-        - graph-rpc.internal.softwareheritage.org
         - graph-rpc-20240331-ingress
       ingress:
         enabled: true
@@ -2582,7 +2580,9 @@ graph:
               requests:
                 storage: 1Gi
       hosts:
+        - graph-grpc.internal.softwareheritage.org
         - graph-grpc-20241206-ingress
+        - graph-grpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -2605,7 +2605,9 @@ graph:
       graphConfigurationRef: rpcWithRemoteGrpc20241206GraphConfiguration
       startService: true
       hosts:
+        - graph-rpc.internal.softwareheritage.org
         - graph-rpc-20241206-ingress
+        - graph-rpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges

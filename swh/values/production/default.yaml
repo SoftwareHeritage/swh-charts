@@ -37,21 +37,21 @@ provenanceGraphGrpcConfiguration:
   filter_licenses: false
   provenance:
     cls: graph
-    url: graph-grpc-20240331-ingress:80
+    url: graph-grpc-default-ingress:80
     max_edges: 100000
 
 vaultGraphConfiguration:
-  url: http://graph-rpc-20240331-ingress/graph
+  url: http://graph-rpc-default-ingress/graph
 
 webGraphConfiguration:
-  server_url: http://graph-rpc-20240331-ingress/graph/
+  server_url: http://graph-rpc-default-ingress/graph/
   max_edges:
     staff: 0
     user: 100000
     anonymous: 1000
 
 alterGraphConfiguration:
-  url: http://graph-rpc-20240331-ingress/graph
+  url: http://graph-rpc-default-ingress/graph
   timeout: null
 
 memcached:
@@ -1016,6 +1016,12 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     provenance-swh-cassandra:
       internalName: webapp-provenance-ingress-swh-cassandra
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-grpc-default:
+      internalName: graph-grpc-default-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-rpc-default:
+      internalName: graph-rpc-default-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     graph-grpc-20240331:
       internalName: graph-grpc-20240331-ingress
