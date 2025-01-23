@@ -2554,6 +2554,7 @@ graph:
               - 192.168.101.0/24
     grpc-20241206:
       enabled: true
+      imageVersion: "20250123.1"
       type: grpc
       port: 50091
       requestedMemory: 400Gi
@@ -2598,6 +2599,7 @@ graph:
               - 192.168.101.0/24
     rpc-20241206:
       enabled: true
+      imageVersion: "20250123.1"
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGrpc20241206GraphConfiguration
