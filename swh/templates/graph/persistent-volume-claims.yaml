@@ -39,6 +39,9 @@ metadata:
   name: {{ $volumeName }}-pvc
   namespace: {{ $.Values.namespace }}
 spec:
+  resources:
+    requests:
+      storage: 1Gi
   volumeMode: Filesystem
   volumeName: {{ $volumeName }}-local-pv
   storageClassName: local-storage
