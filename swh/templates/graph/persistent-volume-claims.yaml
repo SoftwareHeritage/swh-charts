@@ -8,6 +8,40 @@
         "serviceType"  ( print "graph-" $graphType )
         "volumeConfig" $volumeConfig
         "Values"       $.Values) -}}
+{{- else if eq $volumeConfig.persistentVolumeType "local" -}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $volumeName }}-local-pv
+  namespace: {{ $.Values.namespace }}
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: {{ $volumeConfig.nodePath }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: {{ $volumeConfig.nodes | toYaml | nindent 12 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $volumeName }}-pvc
+  namespace: {{ $.Values.namespace }}
+spec:
+  volumeMode: Filesystem
+  volumeName: {{ $volumeName }}-local-pv
+  storageClassName: local-storage
 {{ end }}
 {{ end }}
 {{ end }}
