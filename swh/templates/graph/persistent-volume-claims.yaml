@@ -42,6 +42,8 @@ spec:
   volumeMode: Filesystem
   volumeName: {{ $volumeName }}-local-pv
   storageClassName: local-storage
+  accessModes:
+  - ReadWriteOnce
 {{ end }}
 {{ end }}
 {{ end }}
