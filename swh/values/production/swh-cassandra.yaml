@@ -1554,10 +1554,16 @@ deposit:
     - deposit.softwareheritage.org
     - deposit-dynamic.internal.softwareheritage.org
     - deposit-rpc-ingress-swh-cassandra
+  gunicorn:
+    workers: 4
+    threads: 1
+    timeout: 150
   ingress:
     enabled: true
     extraAnnotations:
       kubernetes.io/ingress.class: nginx
+      # application timeout is 150s
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "150"
     endpoints:
       default:
         paths:
