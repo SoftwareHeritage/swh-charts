@@ -2478,7 +2478,7 @@ graph:
   enabled: true
   deployments:
     grpc-20240331:
-      enabled: true
+      enabled: false
       type: grpc
       port: 50091
       nodeSelector:
@@ -2529,7 +2529,7 @@ graph:
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-20240331:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGrpc20240331GraphConfiguration
