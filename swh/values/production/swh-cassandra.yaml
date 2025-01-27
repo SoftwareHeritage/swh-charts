@@ -2471,6 +2471,13 @@ rpcWithRemoteGrpc20241206GraphConfiguration:
   grpc_server:
     port: 80
 
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGrpc20241206GraphConfiguration02:
+  cls: remote
+  url: graph-grpc-20241206-02-ingress:80
+  grpc_server:
+    port: 80
+
 plainGrpcGraphConfiguration:
   max_ram: 500g
 
@@ -2603,6 +2610,75 @@ graph:
         - graph-rpc.internal.softwareheritage.org
         - graph-rpc-20241206-ingress
         - graph-rpc-default-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+
+    grpc-20241206-02:
+      enabled: true
+      imageVersion: "20250123.1"
+      type: grpc
+      port: 50091
+      requestedMemory: 400Gi
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      dataset:
+        name: 2024-12-06
+      startService: true
+      prepareMemoryVolume: true
+      extraVolumes:
+        graph-20241206-02-persistent:
+          persistentVolumeType: local
+          mountPath: /srv/dataset/2024-12-06/compressed
+          nodePath: /srv/softwareheritage/ssd/graph/2024-12-06/compressed
+          nodes:
+            - rancher-node-highmem02
+        # in-memory volumes
+        graph-20241206-02-inmemory:
+          mountPath: /srv/graph
+          persistentVolumeClaimDefinition:
+            storageClassName: local-path
+            volumeMode: Filesystem
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+      hosts:
+        - graph-grpc-20241206-02-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    rpc-20241206-02:
+      enabled: true
+      imageVersion: "20250123.1"
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGrpc20241206GraphConfiguration02
+      startService: true
+      hosts:
+        - graph-rpc-20241206-02-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
