@@ -2479,10 +2479,9 @@ graph:
   deployments:
     grpc-20240331:
       enabled: false
+      imageVersion: "20240830.1"
       type: grpc
       port: 50091
-      nodeSelector:
-        kubernetes.io/hostname: rancher-node-metal05
       requestedMemory: 400Gi
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
@@ -2491,15 +2490,11 @@ graph:
       prepareMemoryVolume: true
       extraVolumes:
         graph-20240331-persistent:
-          mountPath: /srv/dataset
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          persistentVolumeType: local
+          mountPath: /srv/dataset/2024-03-31/compressed
+          nodePath: /srv/softwareheritage/ssd/graph/2024-03-31/compressed
+          nodes:
+            - rancher-node-highmem02
         # in-memory volumes
         graph-20240331-inmemory:
           mountPath: /srv/graph
