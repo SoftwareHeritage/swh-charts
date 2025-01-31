@@ -720,12 +720,24 @@ graphql:
 toolbox:
   enabled: true
   configs:
+    blocking:
+      moduleName: storage.proxies.blocking
+      moduleConfigKey: blocking_admin
+      blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
+      # needed for the `swh storage` cli to work...
+      storageConfigurationRef: memoryNoopStorageConfiguration
     deposit:
       depositDbConfigurationRef: postgresqlDepositConfiguration
     indexer-storage:
       moduleName: indexer
       moduleConfigKey: indexer_storage
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
+    masking:
+      moduleName: storage.proxies.masking
+      moduleConfigKey: masking_admin
+      maskingAdminConfigurationRef: maskingAdminPostgresqlConfiguration
+      # needed for the `swh storage` cli to work...
+      storageConfigurationRef: memoryNoopStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
