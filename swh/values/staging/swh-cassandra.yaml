@@ -1045,8 +1045,6 @@ graphql:
     cassandra:
       logLevel: DEBUG
       debug: yes
-      sentry:
-        enabled: true
       storageConfigurationRef: remoteROStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       replicas: 2
@@ -2070,8 +2068,6 @@ search:
 
 scheduler:
   enabled: true
-  sentry:
-    enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: producerCeleryConfiguration
   alerts:
