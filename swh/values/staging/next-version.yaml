@@ -237,10 +237,6 @@ loaders:
   deployments:
     # Force the deployment of one pod of each type to at least
     # ensure they start (not enough but it's a first step)
-    add-forge-now:
-      enabled: false
-    add-forge-now-slow:
-      enabled: false
     archive:
       autoScaling:
         queueThreshold: 1
@@ -523,17 +519,6 @@ objstorage:
     # The mandatory objstorageConfigurationRef key should target a dict
     # with the specific objstorage configuration
 
-    # Deactivate instances from swh/values/staging/swh-cassandra.yaml
-    db1-read-write:
-      enabled: false
-    storage1-read-only:
-      enabled: false
-    db1-read-only:
-      enabled: false
-    multiplexer-read-only:
-      enabled: false
-    multiplexer-read-write:
-      enabled: false
     # Activate dedicated instance for write workload
     rw-pathslicing:
       enabled: true
@@ -604,12 +589,6 @@ rwStorageCassandraWithJournalConfiguration:
 
 storage:
   deployments:
-    # Deactivate those instance in swh-cassandra-next-version namespace
-    cassandra:  # Instance name from the swh-cassandra.yaml file
-      enabled: false
-    # Deactivate those instance in swh-cassandra-next-version namespace
-    cassandra-read-only:  # Instance name from the swh-cassandra.yaml file
-      enabled: false
     # main storage to let the loaders write
     rw-cassandra:
       storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
@@ -704,9 +683,6 @@ web:
               # vpn network
               - 192.168.101.0/24
 
-    webhooks:
-      enabled: false
-
 podPriority:
   # This test environment should not impact the real staging environment
   # so we need to use lower priorities than the 'normal' versions
@@ -774,9 +750,6 @@ scheduler:
       enabled: true
       replicas: 1
 
-scrubber:
-  enabled: false
-
 toolbox:
   enabled: true
   configs:
@@ -790,9 +763,6 @@ toolbox:
     deposit:
       depositDbConfigurationRef: postgresqlDepositConfiguration
   bulkLoad: null
-
-webhooks:
-  enabled: false
 
 listers:
   enabled: true
@@ -856,8 +826,6 @@ search:
           initialize: true
         ingress:
           enabled: false
-      search-static:
-        enabled: false
 
   journalClients:
     enabled: true
@@ -883,15 +851,6 @@ search:
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
-
-      objects:
-        enabled: false
-      indexed:
-        enabled: false
-      objects-v4:
-        enabled: false
-      indexed-v4:
-        enabled: false
 
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
@@ -920,9 +879,6 @@ indexerJournalWriterConfiguration:
 indexerStorage:
   enabled: true
   deployments:
-    # Deactivate the indexer-storage from swh/values/swh-cassandra.yaml
-    rpc:
-      enabled: false
     rw:
       backend:
         # When true, initalize the backend, leave it empty to do nothing
@@ -1030,12 +986,6 @@ checkerDeposit:
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositConfiguration
 
-alter:
-  enabled: false
-
-cassandraChecks:
-  enabled: false
-
 provenanceGraphGrpcConfiguration:
   cls: known_swhid_filter
   filter_licenses: false
@@ -1083,11 +1033,6 @@ plainGrpcGraphConfiguration:
 graph:
   enabled: true
   deployments:
-    # Deactivate the swh-cassandra's (g)rpc services
-    grpc-python3k:
-      enabled: false
-    rpc-python3k:
-      enabled: false
     # grpc graph with test dataset
     grpc-example:
       enabled: true
