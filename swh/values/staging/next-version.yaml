@@ -382,72 +382,163 @@ storageReplayer:
   # ensure they start (not enough but it's a first step)
   deployments:
     content:
+    content:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-content
+        object_types:
+          - content
+      requestedCpu: 350m
+      requestedMemory: 300Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     directory:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-directory
+        object_types:
+          - directory
+        batch_size: 250
+      requestedCpu: 350m
+      requestedMemory: 250Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     extid:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-extid
+        object_types:
+          - extid
+        batch_size: 1000
+      requestedCpu: 400m
+      requestedMemory: 200Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     metadata:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-metadata
+        object_types:
+          - metadata_authority
+          - metadata_fetcher
+      # follow up consumption
+      requestedCpu: 50m
+      requestedMemory: 100Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     raw-extrinsic-metadata:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-raw-extrinsic-metadata
+        object_types:
+          - raw_extrinsic_metadata
+        batch_size: 250
+      requestedCpu: 400m
+      requestedMemory: 200Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-origin
+        object_types:
+          - origin
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 200Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin-visit:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-origin-visit
+        object_types:
+          - origin_visit
+        batch_size: 1000
+      requestedCpu: 400m
+      requestedMemory: 400Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin-visit-status:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-origin-visit-status
+        object_types:
+          - origin_visit_status
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 300Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     release:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-origin-visit-release
+        object_types:
+          - release
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 600m
+      requestedMemory: 300Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     revision:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-revision
+        object_types:
+          - revision
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 750m
+      requestedMemory: 750Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     skipped-content:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-skipped-content
+        object_types:
+          - skipped_content
+        batch_size: 100
+      # Full replay
+      requestedCpu: 300m
+      requestedMemory: 400Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
         # TODO: Support this option
         # stopWhenNoActivity: false
     snapshot:
+      journalClientOverrides:
+        group_id: swh-cassandra-stg-cassandra-replayer-snapshot
+        object_types:
+          - snapshot
+        batch_size: 250
+      # Full replay
+      requestedCpu: 400m
+      requestedMemory: 250Mi
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
