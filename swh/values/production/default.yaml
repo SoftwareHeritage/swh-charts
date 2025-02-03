@@ -981,9 +981,6 @@ externalServices:
     objstorage-ro-saam-zfs-swh-cassandra:
       internalName: objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-delete-saam-zfs:
-      internalName: objstorage-delete-saam-zfs-rpc-ingress
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-delete-saam-zfs-swh-cassandra:
       internalName: objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
@@ -992,9 +989,6 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-ro-banco-xfs-swh-cassandra:
       internalName: objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-delete-banco-xfs:
-      internalName: objstorage-delete-banco-xfs-rpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-delete-banco-xfs-swh-cassandra:
       internalName: objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
