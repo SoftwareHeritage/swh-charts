@@ -809,10 +809,9 @@ scheduler:
   celeryConfigurationRef: celeryConfiguration
   sentry:
     enabled: false
-  alerts:
-    enabled: false
   rpc:
     enabled: true
+    schedulerConfigurationRef: postgresqlSchedulerConfiguration
     backend:
       # check db version with latest code?
       check: true
@@ -824,11 +823,6 @@ scheduler:
       registerListingTask:
         forgeType: list-gitlab-incremental
         forgeUrl: https://gitlab.softwareheritage.org/api/v4
-
-    ingress:
-      enabled: false
-  updateMetrics:
-    enabled: false
   journalClient:
     enabled: true
     journalConfigurationRef: schedulerJournalClientConfiguration
