@@ -1094,10 +1094,28 @@ provenance:
       replicas: 1
       hosts:
         - webapp-provenance-ingress-next-version
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
       extraIngresses:
         - hosts:
           - provenance-next-version.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+              extraWhitelistSourceRange:
+                - 192.168.50.0/24 # for blackbox monitoring
+                - 192.168.101.0/24 # vpn network
 
 # Rpc Rust graph configuration example (for a service rpc spawning an internal grpc
 # instance)
