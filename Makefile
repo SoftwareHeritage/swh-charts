@@ -152,13 +152,14 @@ swh-template-staging-cassandra:
       --values $(SWH_CHART)/values/staging/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
-swh-template-staging-cassandra-next-version:
+swh-template-staging-cassandra-next-version: swh-template-staging-next-version
+
+swh-template-staging-next-version:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/default.yaml \
       --values $(SWH_CHART)/values/staging/default.yaml \
-      --values $(SWH_CHART)/values/staging/swh-cassandra.yaml \
-      --values $(SWH_CHART)/values/staging/overrides/swh-cassandra-next-version.yaml \
+      --values $(SWH_CHART)/values/staging/next-version.yaml \
       -n swh --create-namespace --debug
 
 swh-template-production:

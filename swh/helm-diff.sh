@@ -66,38 +66,30 @@ for environment in "staging" "production"; do
 
   git checkout $MAIN_BRANCH
 
-  for namespace in "swh" "swh-cassandra" "swh-cassandra-next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version"; do
     echo "[$APP] Generate config in $MAIN_BRANCH branch for environment ${environment}, namespace ${namespace}..."
     output="$TMPDIR/${environment}-${namespace}.before"
 
     if [ -f $APP/values/$environment/$namespace.yaml ]; then
       $HELM_CMD $APP/values/$environment/$namespace.yaml > $output
-    elif [ -f $APP/values/$environment/overrides/$namespace.yaml ]; then
-      # Deal with cassandra-next-version
-      $HELM_CMD $APP/values/$environment/swh-cassandra.yaml \
-        --values $APP/values/$environment/overrides/$namespace.yaml > $output
     fi
   done
 
 
   # git stash pop
   git checkout $BRANCH
-  for namespace in "swh" "swh-cassandra" "swh-cassandra-next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version"; do
     echo "[$APP] Generate config in $BRANCH branch for environment ${environment}..."
     output="$TMPDIR/${environment}-${namespace}.after"
 
     if [ -f $APP/values/$environment/$namespace.yaml ]; then
       $HELM_CMD $APP/values/$environment/$namespace.yaml > $output
-    elif [ -f $APP/values/$environment/overrides/$namespace.yaml ]; then
-      # Deal with cassandra-next-version
-      $HELM_CMD $APP/values/$environment/swh-cassandra.yaml \
-        --values $APP/values/$environment/overrides/$namespace.yaml > $output
     fi
   done
 done
 
 for environment in "staging" "production"; do
-  for namespace in "swh" "swh-cassandra" "swh-cassandra-next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version"; do
     output="$TMPDIR/${environment}-${namespace}"
 
     if [ ! -f "${output}.before" ]; then
