@@ -679,13 +679,13 @@ remoteSaamReadOnlyObjstorageConfiguration:
 
 saamZfsDeleteObjstorageConfiguration:
   cls: remote
-  url: http://objstorage-delete-saam-zfs-rpc-ingress
-  enable_requests_retry: true
+  url: http://objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
+  enable_requests_retry: false
 
 bancoXfsDeleteObjstorageConfiguration:
   cls: remote
-  url: http://objstorage-delete-banco-xfs-rpc-ingress
-  enable_requests_retry: true
+  url: http://objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
+  enable_requests_retry: false
 
 producerCeleryConfiguration:
   host: rabbitmq.internal.softwareheritage.org
