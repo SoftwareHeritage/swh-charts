@@ -41,7 +41,7 @@ spec:
       {{- end }}
       initContainers:
         - name: prepare-configuration
-          image: debian:bullseye
+          image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           env:
           {{- if and $journalUser $secretName }}

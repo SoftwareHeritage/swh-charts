@@ -37,7 +37,7 @@ spec:
       initContainers:
       {{- range $service_type, $deployment_config := .Values.toolbox.configs }}
         - name: prepare-configuration-{{ $service_type }}
-          image: debian:bullseye
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           command:
           - /bin/bash
