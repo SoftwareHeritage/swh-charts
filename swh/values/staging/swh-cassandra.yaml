@@ -973,6 +973,7 @@ web:
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
+        activate_citations_ui: true
 
     webhooks:
       requestedCpu: 100m

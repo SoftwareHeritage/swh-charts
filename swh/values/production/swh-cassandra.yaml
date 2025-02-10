@@ -508,6 +508,7 @@ web:
           site_id: 59
         unauthenticated_api_hosts:
           - archive.internal.softwareheritage.org
+        activate_citations_ui: true
 
     cassandra:
       enabled: false
@@ -580,6 +581,7 @@ web:
         give:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
+
     # webhooks instance to serve svix requests
     webhooks:
       # The ingress accepts only 10 concurrent requests so the number of workers
@@ -640,7 +642,6 @@ web:
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
-
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:

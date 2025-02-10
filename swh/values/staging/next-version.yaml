@@ -728,6 +728,8 @@ web:
       provenanceConfigurationRef: provenanceConfiguration
       graphConfigurationRef: webGraphConfiguration
       cornerRibbonRef: cornerRibbon
+      extraConfig:
+        activate_citations_ui: true
       migrations:
         enabled: false
       replicas: 1
