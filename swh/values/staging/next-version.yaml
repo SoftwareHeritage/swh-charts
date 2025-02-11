@@ -742,6 +742,7 @@ web:
         syncMaskingMailmaps:
           enabled: false
       ingress:
+        enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
         endpoints:
           default:
