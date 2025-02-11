@@ -259,15 +259,14 @@ Generate the configuration for a journal writer
   {{- if eq "cassandra" $storageClass -}}
     {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
     {{- if $initKeyspace -}}
-      {{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
-      {{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
 - name: init-cassandra-keyspace
   image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   imagePullPolicy: IfNotPresent
+  env:
+    - name: SWH_CONFIG_FILENAME
+      value: /etc/swh/config.yml
   command:
-  - /usr/local/bin/python3
-  args:
-  - /entrypoints/init-keyspace.py
+  - /entrypoints/init-cassandra-keyspace.sh
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
