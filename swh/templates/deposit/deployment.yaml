@@ -68,7 +68,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - cp -r $PWD/.local/lib/python3.10/site-packages/swh/deposit/static/ /usr/share/swh/deposit/static/
+            - cp -r $PWD/venv/lib/python3.11/site-packages/swh/deposit/static/ /usr/share/swh/deposit/static/
           volumeMounts:
           - name: static
             mountPath: /usr/share/swh/deposit/static

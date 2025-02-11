@@ -98,7 +98,7 @@ spec:
             - /bin/bash
           args:
             - -c
-            - cp -r $PWD/.local/share/swh/web/static/ /usr/share/swh/web/static/
+            - cp -r $PWD/venv/share/swh/web/static/ /usr/share/swh/web/static/
           volumeMounts:
           - name: static
             mountPath: /usr/share/swh/web/static
