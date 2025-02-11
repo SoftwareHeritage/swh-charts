@@ -145,6 +145,8 @@ spec:
               value: deployment:{{ $serviceType }}
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
             - name: SWH_LOG_LEVEL
               value: {{ $storageConfig.logLevel | default $.Values.storage.logLevel | quote }}
             - name: SWH_LOG_CONFIG_JSON
