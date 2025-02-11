@@ -364,7 +364,7 @@ storageReplayer:
   # ensure they start (not enough but it's a first step)
   deployments:
     content:
-    content:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-content
         object_types:
@@ -377,6 +377,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     directory:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-directory
         object_types:
@@ -390,6 +391,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     extid:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-extid
         object_types:
@@ -403,6 +405,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     metadata:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-metadata
         object_types:
@@ -417,6 +420,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     raw-extrinsic-metadata:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-raw-extrinsic-metadata
         object_types:
@@ -444,6 +448,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin-visit:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-origin-visit
         object_types:
@@ -457,6 +462,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin-visit-status:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-origin-visit-status
         object_types:
@@ -471,6 +477,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     release:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-origin-visit-release
         object_types:
@@ -485,6 +492,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     revision:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-revision
         object_types:
@@ -499,6 +507,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     skipped-content:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-skipped-content
         object_types:
@@ -513,6 +522,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     snapshot:
+      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-snapshot
         object_types:
