@@ -53,15 +53,6 @@ data:
     (dict "serviceType" "vault"
           "configurationRef" (get $deployment_config "vaultDbConfigurationRef")
           "Values" $.Values) | nindent 4 -}}
-      # This is required to satisfy the migration routine (since vault v1.13.0)
-      cache:
-        cls: noop
-      scheduler:
-        cls: remote
-        url: mock://scheduler-url
-      storage:
-        cls: remote
-        url: mock://storage-url
 {{ end }}
 {{- if hasKey $deployment_config "indexerDbConfigurationRef" }}
   {{- include "swh.postgresql"
