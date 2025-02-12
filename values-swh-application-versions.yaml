@@ -7,7 +7,7 @@ swh_alter_image_version: '20250211.3'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20250211.2'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
-swh_deposit_checkers_image_version: '20250211.4'
+swh_deposit_checkers_image_version: '20250211.3'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
 swh_deposit_image_version: '20250211.4'
 swh_graph_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graph
