@@ -12,15 +12,13 @@ data:
                                        "configurationRef" .Values.vault.vaultConfigurationRef
                                        "Values" .Values) | nindent 4 -}}
     {{- include "swh.storageConfiguration" (dict "configurationRef" .Values.vault.storageConfigurationRef
-                                                 "Values" .Values) | nindent 4 }}
+                                                 "Values" .Values) | nindent 6 }}
     {{- include "swh.service.fromYaml" (dict "service" "scheduler"
                                              "configurationRef" .Values.vault.schedulerConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-    {{- include "swh.objstorageConfiguration" (dict "configurationRef" .Values.vault.objstorageConfigurationRef
-                                                    "Values" .Values) | nindent 4 }}
+                                             "Values" .Values) | nindent 6 }}
     {{- include "swh.service.fromYaml" (dict "service" "cache"
                                              "configurationRef" .Values.vault.cacheConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
+                                             "Values" .Values) | nindent 6 }}
     {{- if .Values.vault.extraConfig -}}
     {{ toYaml .Values.vault.extraConfig | nindent 4 }}
     {{- end }}
