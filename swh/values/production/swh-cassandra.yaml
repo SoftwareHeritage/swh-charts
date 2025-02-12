@@ -2575,7 +2575,7 @@ graph:
           mountPath: /srv/dataset/2024-12-06/compressed
           nodePath: /srv/softwareheritage/ssd/graph/2024-12-06/compressed
           nodes:
-            - rancher-node-highmem02
+            - rancher-node-highmem01
         # in-memory volumes
         graph-20241206-inmemory:
           mountPath: /srv/graph
