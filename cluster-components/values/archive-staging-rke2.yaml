@@ -272,7 +272,7 @@ cassandra:
         heapSize: 1G
       datacenters:
         - name: next-version
-          replicas: 6
+          replicas: 2
       reaper:
         enabled: false
 
