@@ -52,8 +52,7 @@ data:
   {{- include "swh.postgresql"
     (dict "serviceType" "vault"
           "configurationRef" (get $deployment_config "vaultDbConfigurationRef")
-          "Values" $.Values) | nindent 4 -}}
-      # This is required to satisfy the migration routine (since vault v1.13.0)
+          "Values" $.Values) | nindent 4 }}
       cache:
         cls: noop
       scheduler:
