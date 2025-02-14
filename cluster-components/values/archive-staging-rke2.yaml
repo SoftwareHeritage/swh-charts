@@ -206,8 +206,17 @@ cloudnativePg:
       initdb:
         type: monolith
         databases:
-        - swh-deposit
         - swh-vault
+        source: cluster-pg-staging-db1
+    next-version-swh-deposit:
+      enabled: false
+      testing: true
+      namespace: swh-cassandra-next-version
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-secret
+        databases:
+          - swh-deposit
         source: cluster-pg-staging-db1
     next-version-swh-scheduler:
       enabled: false

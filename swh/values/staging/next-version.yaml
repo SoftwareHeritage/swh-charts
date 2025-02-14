@@ -84,9 +84,8 @@ postgresqlROStorageConfiguration:
 
 postgresqlDepositConfiguration:
   cls: postgresql
-  host: next-version-dbs-rw.swh-cassandra-next-version
+  host: next-version-deposit-rw.swh-cassandra-next-version
   port: '5432'
-  db: swh-deposit
   user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
