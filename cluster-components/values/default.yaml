@@ -27,7 +27,7 @@ rabbitmq:
 
 elasticsearch:
   nodeSelector:
-    swh/backend: "true"
+    "swh/elasticsearch": "true"
 
 cassandra:
   nodeAffinityLabels:
