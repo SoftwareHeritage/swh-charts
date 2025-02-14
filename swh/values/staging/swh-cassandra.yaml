@@ -2041,7 +2041,7 @@ search:
                 - 192.168.101.0/24
 
   journalClients:
-    enabled: false
+    enabled: true
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteReadOnlyStorageConfiguration
@@ -2052,7 +2052,7 @@ search:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
-          group_id: swh.search.journal-client-objects-v4-v0.11
+          group_id: swh.search.journal-client-objects-v5-v0.11
           prefix: swh.journal.objects
           object_types:
           - origin
@@ -2062,7 +2062,7 @@ search:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
-          group_id: swh.search.journal-client-indexed-v4-v0.11
+          group_id: swh.search.journal-client-indexed-v5-v0.11
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
