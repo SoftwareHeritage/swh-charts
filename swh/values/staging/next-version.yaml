@@ -15,7 +15,7 @@ postgresqlWebConfiguration:
       secretKeyName: password
 
 postgresqlVaultConfiguration:
-  host: next-version-vault-rw.swh-cassandra-next-version
+  host: next-version-swh-vault-rw.swh-cassandra-next-version
   port: 5432
   db: swh-vault
   user: ${POSTGRESQL_USERNAME}
@@ -87,7 +87,7 @@ postgresqlROStorageConfiguration:
 
 postgresqlDepositConfiguration:
   cls: postgresql
-  host: next-version-deposit-rw.swh-cassandra-next-version
+  host: next-version-swh-deposit-rw.swh-cassandra-next-version
   port: '5432'
   user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
