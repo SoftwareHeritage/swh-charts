@@ -225,8 +225,8 @@ cloudnativePg:
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
       enabled: false
-      namespace: swh-cassandra-next-version
       testing: true
+      namespace: swh-cassandra-next-version
       instances: 1
       # Managed dbs
       initdb:
