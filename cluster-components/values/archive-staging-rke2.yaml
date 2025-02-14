@@ -199,12 +199,12 @@ cloudnativePg:
         databases:
           - swh
     next-version-swh-deposit:
-      enabled: true
+      enabled: false
       testing: true
       namespace: swh-cassandra-next-version
       initdb:
         type: microservice
-        secretKeyRef: swh-postgresql-swh-swh-secret
+        secretKeyRef: swh-postgresql-swh-deposit-secret
         databases:
           - swh-deposit
         source: cluster-pg-staging-db1
