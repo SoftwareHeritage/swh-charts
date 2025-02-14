@@ -199,7 +199,7 @@ cloudnativePg:
         databases:
           - swh
     next-version-swh-deposit:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       initdb:
