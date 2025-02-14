@@ -252,6 +252,19 @@ loaders:
   storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
   celeryConfigurationRef: celeryConfiguration
   deployments:
+    content:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedCpu: 350m
+      requestedMemory: 150Mi
+      queues:
+        - swh.loader.core.tasks.LoadContent
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
     git:
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
@@ -265,41 +278,6 @@ loaders:
       image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 1
-        stopWhenNoActivity: false
-    deposit:
-      enabled: true
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.deposit.tasks.LoadDeposit
-      autoScaling:
-        queueThreshold: 1
-        maxReplicaCount: 1
-        stopWhenNoActivity: false
-      depositConfigurationRef: depositConfiguration
-      extraConfig:
-        deposit:
-          url: "http://deposit-next-version.internal.staging.swh.network/1/private"
-          auth:
-            username: "${DEPOSIT_USERNAME}"
-            password: "${DEPOSIT_PASSWORD}"
-        default_filename: archive.tar
-    save-code-now:
-      queues:
-        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
-        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
-        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
-        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
-        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
-        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
-        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
-        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
-        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
-      ackLate: true
       autoScaling:
         queueThreshold: 1
         maxReplicaCount: 1
@@ -884,6 +862,19 @@ listers:
         # extra extensions to ignore
         extensions_to_ignore:
           - rock
+    gitlab:
+      queues:
+      - swh.lister.gitlab.tasks.IncrementalGitLabLister
+      - swh.lister.gitlab.tasks.RangeGitLabLister
+      - swh.lister.gitlab.tasks.FullGitLabRelister
+      autoScaling:
+        maxReplicaCount: 1
+    pypi:
+      queues:
+      - swh.lister.pypi.tasks.PyPIListerTask
+      autoScaling:
+        maxReplicaCount: 1
+
 
 elasticsearchHosts:
   - host: search-next-version-es-http
