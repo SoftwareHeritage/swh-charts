@@ -284,6 +284,7 @@ kafka:
   minInSyncReplicas: 1
   deployments:
     kafka-cluster:
+      enabled: false
       metricsEnabled: true
       pools:
         pool-a:
