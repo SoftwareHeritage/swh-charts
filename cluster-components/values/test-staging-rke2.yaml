@@ -176,7 +176,7 @@ elasticsearch:
   # Can be overriden per instance
   deployments:
     search-test:
-      enabled: true
+      enabled: false
       metricsEnabled: false
       replicas: 1
       # version: 8.14.2
