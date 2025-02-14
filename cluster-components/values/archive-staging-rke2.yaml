@@ -414,7 +414,7 @@ elasticsearch:
     # quickstart:
     #   replicas: 1
     search:
-      enabled: true
+      enabled: false
       namespace: swh-cassandra
       replicas: 3
       metricsEnabled: true
