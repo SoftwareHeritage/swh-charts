@@ -196,6 +196,7 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-secret
         databases:
           - swh
+        source: cluster-pg-staging-db1
     next-version-dbs:
       enabled: false
       namespace: swh-cassandra-next-version
@@ -207,7 +208,6 @@ cloudnativePg:
         databases:
         - swh-deposit
         - swh-vault
-        - swh-web
         source: cluster-pg-staging-db1
     next-version-swh-scheduler:
       enabled: false
@@ -235,6 +235,16 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
         databases:
         - swh-indexer
+    next-version-swh-web:
+      enabled: false
+      testing: true
+      namespace: swh-cassandra-next-version
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-web-secret
+        databases:
+          - swh-web
+    # staging/next-version environment
     swh-web:
       enabled: true
       namespace: swh-cassandra

@@ -1,7 +1,7 @@
 namespace: swh-cassandra-next-version
 
 postgresqlWebConfiguration:
-  host: next-version-dbs-rw.swh-cassandra-next-version
+  host: next-version-swh-web-rw.swh-cassandra-next-version
   port: 5432
   db: swh-web
   user: ${POSTGRESQL_USERNAME}
