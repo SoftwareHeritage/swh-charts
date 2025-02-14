@@ -1,5 +1,6 @@
 {{ if .Values.kafka.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- $bootstrapServer := print $clusterName "-kafka-bootstrap:9093" -}}
 {{- range $userName, $userConfig := $clusterConfig.users -}}
 ---
@@ -44,6 +45,7 @@ spec:
         host: "*"
       {{- end }}
       {{- end }}
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}

@@ -1,5 +1,6 @@
 {{ if .Values.kafka.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- range $topicName, $topicConfig := $clusterConfig.topics -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
@@ -17,6 +18,7 @@ spec:
   config:
     {{- toYaml (get $topicConfig "config") | nindent 4 }}
   {{ end }}
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}
