@@ -188,26 +188,16 @@ cloudnativePg:
         name: swh-postgresql-guest-secret
   # Exists as many cluster as we want
   deployments:
+    # staging/next-version environment
     next-version-swh:
       enabled: false
+      testing: true
       namespace: swh-cassandra-next-version
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-swh-secret
         databases:
           - swh
-        source: cluster-pg-staging-db1
-    next-version-dbs:
-      enabled: false
-      namespace: swh-cassandra-next-version
-      testing: true
-      instances: 1
-      # Managed dbs
-      initdb:
-        type: monolith
-        databases:
-        - swh-vault
-        source: cluster-pg-staging-db1
     next-version-swh-deposit:
       enabled: false
       testing: true
@@ -244,6 +234,18 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
         databases:
         - swh-indexer
+    next-version-swh-vault:
+      enabled: false
+      testing: true
+      namespace: swh-cassandra-next-version
+      testing: true
+      instances: 1
+      # Managed dbs
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-vault-secret
+        databases:
+        - swh-vault
     next-version-swh-web:
       enabled: false
       testing: true

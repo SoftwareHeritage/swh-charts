@@ -15,15 +15,18 @@ postgresqlWebConfiguration:
       secretKeyName: password
 
 postgresqlVaultConfiguration:
-  host: next-version-dbs-rw.swh-cassandra-next-version
+  host: next-version-vault-rw.swh-cassandra-next-version
   port: 5432
   db: swh-vault
-  user: swh-vault
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-swh-vault-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-vault-postgresql-secret
-      secretKeyName: postgres-swh-vault-password
+      secretKeyRef: swh-postgresql-swh-swh-vault-secret
+      secretKeyName: password
 
 postgresqlSchedulerConfiguration:
   host: next-version-swh-scheduler-rw.swh-cassandra-next-version
