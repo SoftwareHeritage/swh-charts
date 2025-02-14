@@ -2005,7 +2005,7 @@ search:
                 # vpn network
                 - 192.168.101.0/24
       search:
-        enabled: false
+        enabled: true
         elasticsearchConfigurationRef: elasticsearchConfiguration
         backend:
           initialize: true
