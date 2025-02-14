@@ -190,7 +190,7 @@ cloudnativePg:
   deployments:
     # staging/next-version environment
     next-version-swh:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       initdb:
@@ -199,7 +199,7 @@ cloudnativePg:
         databases:
           - swh
     next-version-swh-deposit:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       initdb:
@@ -209,7 +209,7 @@ cloudnativePg:
           - swh-deposit
         source: cluster-pg-staging-db1
     next-version-swh-scheduler:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       instances: 1
@@ -224,7 +224,7 @@ cloudnativePg:
         - swh-scheduler-k8s
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       instances: 1
@@ -235,7 +235,7 @@ cloudnativePg:
         databases:
         - swh-indexer
     next-version-swh-vault:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       testing: true
@@ -247,7 +247,7 @@ cloudnativePg:
         databases:
         - swh-vault
     next-version-swh-web:
-      enabled: false
+      enabled: true
       testing: true
       namespace: swh-cassandra-next-version
       initdb:
