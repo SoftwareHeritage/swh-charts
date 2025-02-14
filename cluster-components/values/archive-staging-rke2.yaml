@@ -210,7 +210,21 @@ cloudnativePg:
         - swh-masking
         - swh-vault
         - swh-web
-        - swh-scheduler
+        source: cluster-pg-staging-db1
+    next-version-swh-scheduler:
+      enabled: false
+      testing: true
+      namespace: swh-cassandra-next-version
+      instances: 1
+      # Managed dbs
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+        databases:
+        # Specific swh-scheduler db with a smaller footprint than the origin
+        # staging swh-scheduler db. Its db name is "swh-scheduler", only the
+        # source is named with "-k8s"
+        - swh-scheduler-k8s
         source: cluster-pg-staging-db1
     next-version-swh-indexer:
       enabled: false

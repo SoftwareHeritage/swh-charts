@@ -26,15 +26,18 @@ postgresqlVaultConfiguration:
       secretKeyName: postgres-swh-vault-password
 
 postgresqlSchedulerConfiguration:
-  host: next-version-dbs-rw.swh-cassandra-next-version
+  host: next-version-swh-scheduler-rw.swh-cassandra-next-version
   port: 5432
   db: swh-scheduler
-  user: swh-scheduler
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scheduler-postgresql-common-secret
-      secretKeyName: postgres-swh-scheduler-password
+      secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      secretKeyName: password
 
 celeryConfiguration:
   host: rabbitmq-scheduler
