@@ -191,5 +191,3 @@ elasticsearch:
           accessModes:
             - ReadWriteMany
           volumeMode: Filesystem
-          name: elasticsearch-search-test-pvc
-          size: 30Gi
