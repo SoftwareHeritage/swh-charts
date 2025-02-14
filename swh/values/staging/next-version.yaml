@@ -170,9 +170,13 @@ vault:
     minReplicaCount: 1
     maxReplicaCount: 1
   backend:
+    # Initialize data model
+    initialize:
+      adminSecret: next-version-swh-vault-superuser
+      database: swh-vault
     # check db version with latest code?
     check: true
-    # migrate db?
+    # migrate db
     migrate: false
   ingress:
     enabled: false
