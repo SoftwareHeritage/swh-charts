@@ -164,3 +164,32 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+
+elasticsearch:
+  enabled: true
+  # Can be overridden per instance
+  # No authentication
+  disableSecurity: true
+  # Over http
+  disableTLS: true
+  # Common volume claim templates to deal with storage information
+  # Can be overriden per instance
+  deployments:
+    search-test:
+      enabled: true
+      metricsEnabled: false
+      replicas: 1
+      # version: 8.14.2
+      nodeName: node
+      volumeClaimTemplates:
+      - metadata:
+          # Do not change this name unless you set up a volume mount for the
+          # data path.
+          name: elasticsearch-data
+        spec:
+          storageClassName: cephfs
+          accessModes:
+            - ReadWriteMany
+          volumeMode: Filesystem
+          name: elasticsearch-search-test-pvc
+          size: 30Gi
