@@ -46,3 +46,6 @@ rabbitmq:
 
 redis:
   enabled: true
+
+elasticsearch:
+  enabled: true
