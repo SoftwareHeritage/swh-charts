@@ -189,7 +189,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     next-version-swh:
-      enabled: true
+      enabled: false
       namespace: swh-cassandra-next-version
       initdb:
         type: microservice
