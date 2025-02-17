@@ -835,7 +835,7 @@ toolbox:
       indexerDbConfigurationRef: postgresqlIndexerStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
-      celeryConfigurationRef: producerCeleryConfiguration
+      celeryConfigurationRef: celeryConfiguration
     storage:
       storageDbConfigurationRef: postgresqlRWStorageConfiguration
     vault:
