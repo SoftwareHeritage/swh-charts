@@ -812,6 +812,10 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 200Mi
       release:
+        # Disabled until a fix or workaroud for swh/devel/swh-scrubber#4705
+        # / swh/infra/sysadm-environment#5571
+        # are available
+        enabled: false
         configName: journal-checker-release
         journalClientOverrides:
           batch_size: 200
