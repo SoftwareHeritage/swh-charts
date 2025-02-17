@@ -148,25 +148,20 @@ data:
     #!/usr/bin/env python3
 
     import click
-    # import a pure-Python implementation of the AMQP 0-9-1
     import pika
     import ssl
 
     @click.command()
-
     @click.option(
         "-u", "--username",
-        required=True,
         help="Username login",
     )
     @click.option(
         "-p", "--password",
-        required=True,
         help="Password login",
     )
     @click.option(
         "-s", "--server",
-        required=True,
         help="Server url",
     )
     @click.option(
@@ -180,25 +175,55 @@ data:
         is_flag=True,
         help="Use ssl connection",
     )
-    def main(username, password, server, port, ssl):
+    @click.option(
+        "-C", "--config-file",
+        type=click.Path(exists=True, readable=True),
+        help="Yaml configuration file.",
+    )
+    @click.option(
+        "-a", "--amqp-url",
+        help="Yaml configuration file.",
+    )
+    def main(username, password, server, port, ssl, config_file, amqp_url):
         """Check rabbitmq server connection.
 
         """
-        credentials = pika.PlainCredentials(username, password)
+        if username and password and server:
+            credentials = pika.PlainCredentials(username, password)
 
-        if ssl:
-            context = ssl.create_default_context()
-            ssl_options = pika.SSLOptions(context, server_url)
+            if ssl:
+                context = ssl.create_default_context()
+                ssl_options = pika.SSLOptions(context, server_url)
+            else:
+                ssl_options = None
+
+            parameters = pika.ConnectionParameters(
+                host=server,
+                port=port,
+                virtual_host='/',
+                credentials=credentials,
+                ssl_options=ssl_options,
+            )
+
+        elif config_file:
+            from yaml import safe_load
+            with open(config_file, 'rb') as f:
+                config_data = f.read()
+            yaml_config = safe_load(config_data)
+            amqp_url = yaml_config.get('celery', {}).get('task_broker')
+            if not amqp_url:
+                raise ValueError(
+                    'Configuration file provided is missing a celery.task_broker key entry.'
+                )
+            parameters = pika.connection.URLParameters(amqp_url)
+        elif amqp_url:
+            parameters = pika.connection.URLParameters(amqp_url)
         else:
-            ssl_options = None
-
-        parameters = pika.ConnectionParameters(
-            host=server,
-            port=port,
-            virtual_host='/',
-            credentials=credentials,
-            ssl_options=ssl_options,
-        )
+            raise ValueError(
+                "You must provide either the tuple (--username, --password, --server) "
+                "or a swh configuration file (--config-file) or the --amqp-url "
+                "connection string."
+            )
 
         # Establish connection and check status
         try:
@@ -214,7 +239,6 @@ data:
 
     if __name__ == '__main__':
         main()
-
 
 {{ end }}
 {{- end -}}
