@@ -144,5 +144,77 @@ data:
 
     exec /opt/swh/bin/migrate-db-version.sh {{ $module_name }} {{ $module_config }} {{ $module_config_key }}
 
+  swh-check-rabbitmq.py: |
+    #!/usr/bin/env python3
+
+    import click
+    # import a pure-Python implementation of the AMQP 0-9-1
+    import pika
+    import ssl
+
+    @click.command()
+
+    @click.option(
+        "-u", "--username",
+        required=True,
+        help="Username login",
+    )
+    @click.option(
+        "-p", "--password",
+        required=True,
+        help="Password login",
+    )
+    @click.option(
+        "-s", "--server",
+        required=True,
+        help="Server url",
+    )
+    @click.option(
+        "-p", "--port",
+        default="5672",
+        type=int,
+        help="Server port",
+    )
+    @click.option(
+        "-s", "--ssl",
+        is_flag=True,
+        help="Use ssl connection",
+    )
+    def main(username, password, server, port, ssl):
+        """Check rabbitmq server connection.
+
+        """
+        credentials = pika.PlainCredentials(username, password)
+
+        if ssl:
+            context = ssl.create_default_context()
+            ssl_options = pika.SSLOptions(context, server_url)
+        else:
+            ssl_options = None
+
+        parameters = pika.ConnectionParameters(
+            host=server,
+            port=port,
+            virtual_host='/',
+            credentials=credentials,
+            ssl_options=ssl_options,
+        )
+
+        # Establish connection and check status
+        try:
+            connection = pika.BlockingConnection(parameters)
+            if connection.is_open:
+                msg, return_code = 'OK', 0
+                connection.close()
+        except Exception as error:
+            msg, return_code = f'Error: {error.__class__.__name__}', 1
+        finally:
+            print(msg)
+            exit(return_code)
+
+    if __name__ == '__main__':
+        main()
+
+
 {{ end }}
 {{- end -}}
