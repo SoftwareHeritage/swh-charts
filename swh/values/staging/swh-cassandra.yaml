@@ -2047,7 +2047,7 @@ search:
     storageConfigurationRef: remoteReadOnlyStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
-      objects-v4:
+      objects-v5:
         replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
@@ -2057,7 +2057,7 @@ search:
           object_types:
           - origin
           - origin_visit_status
-      indexed-v4:
+      indexed-v5:
         replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
