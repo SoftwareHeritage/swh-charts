@@ -1,10 +1,16 @@
 {{ if .Values.svix.enabled -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- $appName := print $svixName "-server" -}}
+{{- $podSelectorPolicy := $svixConfiguration.redis.podSelectorPolicy
+      | default $.Values.svix.redis.podSelectorPolicy
+      | default dict -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: default-deny-svix-ingress
-  namespace: {{ .Values.svix.namespace }}
+  name: default-deny-{{ $svixName }}-ingress
+  namespace: {{ $ns }}
 spec:
   podSelector:
     matchLabels: {}
@@ -14,12 +20,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: all-access-svix-http
-  namespace: {{ .Values.svix.namespace }}
+  name: all-access-{{ $svixName }}-http
+  namespace: {{ $ns }}
 spec:
   podSelector:
     matchLabels:
-      app: svix-server
+      app: {{ $appName }}
   ingress:
     - from:
         - namespaceSelector:
@@ -29,25 +35,24 @@ spec:
         - protocol: TCP
           port: 8071
 ---
-{{- $podSelectorPolicy := .Values.svix.redis.podSelectorPolicy | default dict -}}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: svix-access-redis
-  namespace: {{ .Values.svix.namespace }}
+  name: {{ $svixName }}-access-redis
+  namespace: {{ $ns }}
 spec:
   podSelector:
     matchLabels:
 {{- if $podSelectorPolicy }}
       {{ toYaml $podSelectorPolicy -}}
 {{- else }}
-      app: redis-svix
+      app: redis-{{ $svixName }}
 {{- end }}
   ingress:
     - from:
         - podSelector:
             matchLabels:
-              app: svix-server
+              app: {{ $appName }}
         {{- if $podSelectorPolicy }}
         - podSelector:
             matchLabels:
@@ -62,24 +67,25 @@ spec:
       ports:
         - protocol: TCP
           port: 9121
-{{- end }}
-{{ if .Values.svix.postgres.enabled -}}
+{{ if $svixConfiguration.postgres.enabled -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: svix-access-postgres
-  namespace: {{ .Values.svix.namespace }}
+  name: {{ $svixName }}-access-postgres
+  namespace: {{ $ns }}
 spec:
   podSelector:
     matchLabels:
-      app: svix-postgres
+      app: {{ $svixName }}-postgres
   ingress:
     - from:
         - podSelector:
             matchLabels:
-             app: svix-server
+             app: {{ $appName }}
       ports:
         - protocol: TCP
           port: 5432
+{{- end }}
+{{- end }}
 {{- end }}

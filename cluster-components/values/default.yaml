@@ -43,3 +43,14 @@ kafka:
             operator: In
             values:
             - "true"
+
+svix:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: svix-server
+            operator: In
+            values:
+            - "true"

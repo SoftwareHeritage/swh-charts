@@ -1,19 +1,23 @@
-{{ if and .Values.svix.enabled .Values.svix.postgres.enabled -}}
-{{ with .Values.svix -}}
+{{ if .Values.svix.enabled -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- $appName := print $svixName "-postgres" -}}
+{{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
+{{ if $svixConfiguration.postgres.enabled -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ .namespace }}
-  name: svix-postgres
+  namespace: {{ $ns }}
+  name: {{ $appName }}
   labels:
-    app: svix-postgres
+    app: {{ $appName }}
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .replicas | default 1 }}
+  replicas: {{ $svixConfiguration.replicas | default 1 }}
   selector:
     matchLabels:
-      app: svix-postgres
+      app: {{ $appName }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,18 +25,18 @@ spec:
   template:
     metadata:
       labels:
-        app: svix-postgres
+        app: {{ $appName }}
     spec:
-      {{- if .affinity }}
+      {{- if $affinity }}
       affinity:
-        {{- toYaml .affinity | nindent 8 }}
+        {{- toYaml $affinity | nindent 8 }}
       {{- end }}
       containers:
         - name: postgres
           resources:
             requests:
-              memory: {{ .postgres.requestedMemory | default "512Mi" }}
-              cpu: {{ .postgres.requestedCpu | default "500m" }}
+              memory: {{ $svixConfiguration.postgres.requestedMemory | default "512Mi" }}
+              cpu: {{ $svixConfiguration.postgres.requestedCpu | default "500m" }}
           image: postgres:13.12
           imagePullPolicy: IfNotPresent
           ports:
@@ -80,7 +84,7 @@ spec:
               mountPath: /var/lib/postgresql/data
       volumes:
       - name: postgres-data
-      {{- if .postgres.persistentVolume }}
+      {{- if $svixConfiguration.postgres.persistentVolume }}
         volumeClaimTemplate:
           metadata:
             labels:
@@ -95,5 +99,6 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

@@ -34,24 +34,26 @@ podPriority:
 
 svix:
   enabled: false
-  ingress:
-    enabled: true
-    host: svix-test
-    createTLS: false
-    # annotations:
-    #   foo: bar
-    # whitelistSourceRange:
-    # - 192.168.49.0/24
-  requestedMemory: 100Mi
-  requestedCpu: 100m
   namespace: cluster-components
-  postgres:
-    enabled: true
-    persistentVolume: false
-  redis:
-    enabled: true
-    persistentVolume: false
-    dsn: redis-svix.cluster-components
+  deployments:
+    svix:
+      ingress:
+        enabled: true
+        host: svix-test
+        createTLS: false
+        # annotations:
+        #   foo: bar
+        # whitelistSourceRange:
+        # - 192.168.49.0/24
+      requestedMemory: 100Mi
+      requestedCpu: 100m
+      postgres:
+        enabled: true
+        persistentVolume: false
+      redis:
+        enabled: true
+        persistentVolume: false
+        dsn: redis-svix.cluster-components
 
 dockerCache:
   enabled: false

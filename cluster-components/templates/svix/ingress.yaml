@@ -1,26 +1,33 @@
 {{ if .Values.svix.enabled -}}
-{{ with .Values.svix -}}
-{{- $whitelistSourceRange := .ingress.whitelistSourceRange | default list -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
+{{- $appName := print $svixName "-ingress" -}}
+{{- $whitelistSourceRange := $svixConfiguration.ingress.whitelistSourceRange | default list -}}
 {{- $whitelistSourceRangeCSV := join "," $whitelistSourceRange -}}
+{{- $ingressAnnotations := $svixConfiguration.ingress.annotations -}}
+{{- $ingressClassName := $svixConfiguration.ingress.className -}}
+{{- $ingressHost := $svixConfiguration.ingress.host -}}
+{{- $createTLS := $svixConfiguration.ingress.createTLS }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: {{ .namespace }}
-  name: svix-ingress
+  namespace: {{ $ns }}
+  name: {{ $appName }}
   annotations:
-  {{- if .ingress.annotations }}
-    {{- toYaml .ingress.annotations | nindent 4 }}
+  {{- if $ingressAnnotations }}
+    {{- toYaml $ingressAnnotations | nindent 4 }}
   {{- end }}
   {{- if $whitelistSourceRangeCSV }}
     nginx.ingress.kubernetes.io/whitelist-source-range: {{ $whitelistSourceRangeCSV }}
   {{- end }}
 spec:
-  {{- if .ingress.className }}
-  ingressClassName: {{ .ingress.className }}
+  {{- if $ingressClassName }}
+  ingressClassName: {{ $ingressClassName }}
   {{- end }}
   rules:
-  - host: {{ .ingress.host }}
+  - host: {{ $ingressHost }}
     http:
       paths:
       - path: /
@@ -30,10 +37,10 @@ spec:
             name: svix
             port:
               number: 8071
-  {{- if .ingress.createTLS }}
+  {{- if $createTLS }}
   tls:
   - hosts:
-    - {{ .ingress.host }}
+    - {{ $ingressHost }}
     secretName: swh-svix-crt
   {{- end }}
 {{- end }}

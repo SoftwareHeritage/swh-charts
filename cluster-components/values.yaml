@@ -118,27 +118,34 @@ podPriority:
 
 svix:
   enabled: false
-  # Svix-server version must match the svix python library
-  # in the swh-webhooks image's requirements.
-  version: v1.35
-  ingress:
-    host: svix.example.org
-    createTLS: true
-  requestedMemory: 100Mi
-  requestedCpu: 100m
+  # Namespace where to run the svix server (can be overridden per instance)
   namespace: svix-server
-  postgres:
-    requestedMemory: 100Mi
-    requestedCpu: 100m
-    persistentVolume: false
-  redis:
-    requestedMemory: 100Mi
-    requestedCpu: 100m
-    persistentVolume: false
-    # dsn: svix-redis
-    # podSelectorPolicy:
-    #   matchLabels:
-    #     app: redis-svix-leader
+  # Svix-server version must match the svix python library
+  # in the swh-webhooks image's requirements (can be overriden per instance)
+  version: v1.35
+  # Redis configuration (can be overridden per instance)
+  redis: {}
+  # Postgres configuration (can be overridden per instance)
+  postgres: {}
+  deployments:
+    # instance-name:
+    #   ingress:
+    #     host: svix.example.org
+    #     createTLS: true
+    #   requestedMemory: 100Mi
+    #   requestedCpu: 100m
+    #   postgres:
+    #     requestedMemory: 100Mi
+    #     requestedCpu: 100m
+    #     persistentVolume: false
+    #   redis:
+    #     requestedMemory: 100Mi
+    #     requestedCpu: 100m
+    #     persistentVolume: false
+    #     # dsn: svix-redis
+    #     # podSelectorPolicy:
+    #     #   matchLabels:
+    #     #     app: redis-svix-leader
 
 alerting:
   enabled: false

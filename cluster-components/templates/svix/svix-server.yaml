@@ -1,23 +1,31 @@
 {{ if .Values.svix.enabled -}}
-{{ with .Values.svix -}}
-{{ $redisDsn := .redis.dsn | default "redis" -}}
-{{ $redisQueueType := .redis.queueType | default "redis" -}}
-{{ $redisCacheType := .redis.cacheType | default "redis" -}}
-{{ $postgresDsn := .postgresDsn | default "postgres" -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{ $redisDsn := $svixConfiguration.redis.dsn | default "redis" -}}
+{{ $redisFullDsn := print "redis://" $redisDsn ":6379" }}
+{{ $redisQueueType := $svixConfiguration.redis.queueType | default "redis" -}}
+{{ $redisCacheType := $svixConfiguration.redis.cacheType | default "redis" -}}
+{{ $postgresDsn := $svixConfiguration.postgres.dsn | default "postgres" -}}
+{{ $postgresFullDsn := print "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@" $postgresDsn -}}
+{{ $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{ $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
+{{ $appName := print $svixName "-server" -}}
+{{ $version := $svixConfiguration.version | default $.Values.svix.version -}}
+{{ $tlsDisable := $svixConfiguration.tlsDisable | default $.Values.svix.tlsDisable -}}
+{{ $whitelistSubnets := $svixConfiguration.whitelistSubnets | default $.Values.svix.whitelistSubnets -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: {{ .namespace }}
-  name: svix-server
+  namespace: {{ $ns }}
+  name: {{ $appName }}
   labels:
-    app: svix-server
+    app: {{ $appName }}
 spec:
   revisionHistoryLimit: 2
-  replicas: {{ .replicas | default 1 }}
+  replicas: {{ $svixConfiguration.replicas | default 1 }}
   selector:
     matchLabels:
-      app: svix-server
+      app: {{ $appName }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -25,19 +33,19 @@ spec:
   template:
     metadata:
       labels:
-        app: svix-server
+        app: {{ $appName }}
     spec:
-      {{- if .affinity }}
+      {{- if $affinity }}
       affinity:
-        {{- toYaml .affinity | nindent 8 }}
+        {{- toYaml $affinity | nindent 8 }}
       {{- end }}
       containers:
         - name: svix-server
           resources:
             requests:
-              memory: {{ .requestedMemory | default "512Mi" }}
-              cpu: {{ .requestedCpu | default "500m" }}
-          image: svix/svix-server:{{ .version }}
+              memory: {{ $svixConfiguration.requestedMemory | default "512Mi" }}
+              cpu: {{ $svixConfiguration.requestedCpu | default "500m" }}
+          image: svix/svix-server:{{ $version }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8071
@@ -80,16 +88,16 @@ spec:
             - name: SVIX_CACHE_TYPE
               value: {{ $redisCacheType }}
             - name: SVIX_REDIS_DSN
-              value: "redis://{{ $redisDsn }}:6379"
+              value: {{ $redisFullDsn | quote }}
             - name: SVIX_DB_DSN
-              value: "postgresql://$(SVIX_DB_USER):$(SVIX_DB_PASS)@{{ $postgresDsn }}"
-            {{- if .tls_disable }}
+              value: {{ $postgresFullDsn | quote }}
+            {{- if $tlsDisable }}
             - name: SVIX_DANGEROUS_DISABLE_TLS_VERIFICATION
               value: "true"
             {{- end }}
-            {{- if .whitelistSubnets }}
+            {{- if $whitelistSubnets }}
             - name: SVIX_WHITELIST_SUBNETS
-              value: {{ print "[" (join "," .whitelistSubnets) "]" | quote }}
+              value: {{ print "[" (join "," $whitelistSubnets) "]" | quote }}
             {{- end }}
 {{- end }}
 {{- end }}

@@ -1,51 +1,51 @@
 {{ if .Values.svix.enabled -}}
-{{ if .Values.svix.postgres.enabled -}}
-{{- with .Values.svix }}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- $appName := print $svixName "-server" -}}
+{{ if $svixConfiguration.postgres.enabled -}}
+{{- $appPostgresqlName := print $svixName "-postgres" -}}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
-  namespace: {{ .namespace }}
+  name: {{ $appPostgresqlName }}
+  namespace: {{ $ns }}
 spec:
   type: ClusterIP
   selector:
-    app: svix-postgres
+    app: {{ $appPostgresqlName }}
   ports:
     - port: 5432
       targetPort: 5432
       name: postgres
 {{- end }}
-{{- end }}
-{{ if .Values.svix.redis.enabled -}}
-{{- with .Values.svix }}
+{{ if $svixConfiguration.redis.enabled -}}
+{{- $appRedisName := print $svixName "-redis" -}}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis
-  namespace: {{ .namespace }}
+  name: {{ $appRedisName }}
+  namespace: {{ $ns }}
 spec:
   type: ClusterIP
   selector:
-    app: svix-redis
+    app: {{ $appRedisName }}
   ports:
     - port: 6379
       targetPort: 6379
       name: redis
 {{- end }}
-{{- end }}
-{{- with .Values.svix }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: svix
-  namespace: {{ .namespace }}
+  name: {{ $svixName }}
+  namespace: {{ $ns }}
 spec:
   type: ClusterIP
   selector:
-    app: svix-server
+    app: {{ $appName }}
   ports:
     - port: 8071
       targetPort: 8071

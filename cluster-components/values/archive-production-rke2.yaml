@@ -70,34 +70,29 @@ scrapeExternalMetrics:
 
 svix:
   enabled: true
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: svix-server
-            operator: In
-            values:
-            - "true"
-  ingress:
-    host: svix.internal.softwareheritage.org
-    createTLS: true
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-      kubernetes.io/tls-acme: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    whitelistSourceRange:
-      # cluster internal range ip
-      - 10.42.0.0/16
-      - 10.43.0.0/16
-      # admin ip
-      - 192.168.50.0/24
-  requestedMemory: 1Gi
-  requestedCpu: 100m
-  namespace: svix-server
-  redis:
-    dsn: redis-svix.svix-server
-  postgresDsn: db.internal.softwareheritage.org
+  deployments:
+    svix:
+      ingress:
+        host: svix.internal.softwareheritage.org
+        createTLS: true
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        whitelistSourceRange:
+          # cluster internal range ip
+          - 10.42.0.0/16
+          - 10.43.0.0/16
+          # admin ip
+          - 192.168.50.0/24
+      requestedMemory: 1Gi
+      requestedCpu: 100m
+      redis:
+        enabled: false
+        dsn: redis-svix.svix-server
+      postgres:
+        enabled: false
+        dsn: db.internal.softwareheritage.org
 
 redis:
   enabled: true
