@@ -49,6 +49,27 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: -Xms{{ $jvmConfig.Xms }} -Xmx{{ $jvmConfig.Xmx }}
+          {{- if or $clusterConfig.requestedMemory $clusterConfig.requestedCpu $clusterConfig.limitedMemory $clusterConfig.limitedCpu }}
+          resources:
+            {{- if or $clusterConfig.requestedMemory $clusterConfig.requestedCpu }}
+            requests:
+              {{- if $clusterConfig.requestedMemory }}
+              memory: {{ get $clusterConfig "requestedMemory" }}
+              {{- end }}
+              {{- if $clusterConfig.requestedCpu }}
+              cpu: {{ get $clusterConfig "requestedCpu" }}
+              {{- end }}
+            {{- end }}
+            {{- if or $clusterConfig.limitedMemory $clusterConfig.limitedCpu }}
+            limits:
+              {{- if $clusterConfig.limitedMemory }}
+              memory: {{ $clusterConfig.limitedMemory }}
+              {{- end }}
+              {{- if $clusterConfig.limitedCpu }}
+              cpu: {{ $clusterConfig.limitedCpu }}
+              {{- end }}
+          {{- end }}
+        {{- end }}
         {{- if $nodeSelector }}
         nodeSelector:
           {{- toYaml $nodeSelector | nindent 10 }}
@@ -65,7 +86,6 @@ spec:
                 matchLabels:
                   elasticsearch.k8s.elastic.co/cluster-name: {{ $clusterName }}
               topologyKey: kubernetes.io/hostname
-
     {{ if $volumeClaimTemplates }}
     volumeClaimTemplates:
       {{- toYaml $volumeClaimTemplates | nindent 4 }}
