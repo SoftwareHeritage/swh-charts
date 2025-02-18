@@ -48,10 +48,11 @@ svix:
       requestedMemory: 100Mi
       requestedCpu: 100m
       postgres:
-        enabled: true
+        enabled: false
         persistentVolume: false
+        dsn: svix-rw.cluster-components
       redis:
-        enabled: true
+        enabled: false
         persistentVolume: false
         dsn: redis-svix.cluster-components
 
@@ -149,10 +150,18 @@ cloudnativePg:
       enabled: true
       initdb:
         type: microservice
+        namespace: cluster-components
         secretKeyRef: swh-deposit-swh-postgresql-secret
         databases:
           - swh-deposit
-
+    svix:
+      enabled: true
+      namespace: cluster-components
+      initdb:
+        type: microservice
+        secretKeyRef: swh-svix-swh-postgresql-secret
+        databases:
+          - swh-svix
 kafka:
   enabled: false
   namespace: swh
