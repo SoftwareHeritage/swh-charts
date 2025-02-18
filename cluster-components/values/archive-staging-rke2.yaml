@@ -419,8 +419,8 @@ elasticsearch:
       # 2 replicas + 1 master
       replicas: 2
       metricsEnabled: true
-      requestedMemory: 3g
-      limitedMemory: 3g
+      requestedMemory: 3Gi
+      limitedMemory: 3Gi
       jvmConfig:
         Xms: 2g
         Xmx: 2g
