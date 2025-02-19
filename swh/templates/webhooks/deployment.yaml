@@ -46,11 +46,11 @@ spec:
           env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.webhooks
                                                                       "Values" $.Values) | nindent 10 }}
           command:
-          - /bin/bash
-          args:
-          - -c
-          - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
+            - /entrypoints/prepare-configuration.sh
           volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-template
@@ -129,6 +129,10 @@ spec:
       - name: backend-utils
         configMap:
           name: backend-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
           defaultMode: 0555
 {{ end }}
 {{ end }}
