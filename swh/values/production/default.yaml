@@ -92,7 +92,7 @@ cassandraSeeds:
   - cassandra12.internal.softwareheritage.org
   - cassandra13.internal.softwareheritage.org
 
-cassandraStorage:
+cassandraStorage: &cassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
@@ -109,11 +109,22 @@ cassandraStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-rw-password
 
+cassandraStorageForReferenceTableJob:
+  <<: *cassandraStorage
+  specificOptions:
+    # /!\ All the specific options of ^ are overridden
+    table_options:
+      object_references_*: "compression = {'class': 'ZstdCompressor', 'compression_level':'19'} AND compaction = {'class': 'UnifiedCompactionStrategy'}"
+
 noopObjstorageConfiguration:
   cls: noop
 
 cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+cassandraRWForReferenceTableJobConfiguration:
+  storageConfigurationRef: cassandraStorageForReferenceTableJob
   objstorageConfigurationRef: noopObjstorageConfiguration
 
 memoryNoopStorageConfiguration:

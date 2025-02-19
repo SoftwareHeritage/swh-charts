@@ -376,7 +376,7 @@ storage:
       cronjobs:
         create-object-reference-partitions:
           enabled: true
-          storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+          storageConfigurationRef: cassandraRWForReferenceTableJobConfiguration
           logLevel: INFO
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid
