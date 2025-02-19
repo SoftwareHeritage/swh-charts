@@ -527,7 +527,7 @@ storageReplayer:
 cassandraSeeds:
   - cassandra-cluster-next-version-service
 
-cassandraStorage:
+cassandraStorage: &cassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
@@ -657,12 +657,30 @@ rwStorageCassandraWithJournalConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
 
+
+cassandraStorageForReferenceTableJob:
+  <<: *cassandraStorage
+  specificOptions:
+    table_options:
+      object_references_*: "compression = {'class': 'ZstdCompressor', 'compression_level':'19'} AND compaction = {'class': 'UnifiedCompactionStrategy'}"
+
+rwCassandraStorageForReferenceTableJob:
+  storageConfigurationRef: cassandraStorageForReferenceTableJob
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
 storage:
   enabled: true
   deployments:
     # main storage to let the loaders write
     rw-cassandra:
       storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
+      cronjobs:
+        create-object-reference-partitions:
+          enabled: false
+          storageConfigurationRef: rwCassandraStorageForReferenceTableJob
+          logLevel: INFO
+          cron: 5 0 * * mon
+          concurrencyPolicy: Forbid
     # a storage postgresql instance to replay data
     rw-postgresql:
       enabled: true
