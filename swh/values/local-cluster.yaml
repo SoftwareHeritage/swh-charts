@@ -588,7 +588,7 @@ web:
 
 svixConfiguration:
   svix:
-    server_url: http://svix.cluster-components:8071
+    server_url: http://svix-test
     auth_token: ${SVIX_AUTH_TOKEN}
   event_retention_period: 7
   secrets:
@@ -603,13 +603,6 @@ webhooksConfiguration:
       secretKeyRef: svix-server-secrets
       secretKeyName: webhooks-secret
 
-webhookRegisterEndpointConfiguration:
-  # specifically for the register event type endpoint in webhooks
-  url: https://web-local-archive/save/origin/visit/webhook/
-  webhookSecret:
-    key: svix-server-secrets
-    name: webhook-secret
-
 dnsConfiguration:
   ndots: 1
   overrideSearch: true
@@ -620,7 +613,6 @@ webhooks:
   journalClientConfigurationRef: webhookJournalClientConfiguration
   priorityClassName: frontend-rpc-workload
   replicas: 1
-
   deployments:
     origin-visit-status:
       dnsConfigurationRef: dnsConfiguration
@@ -1539,6 +1531,9 @@ externalServices:
       target: local-cluster-control-plane
     rpc-popular:
       internalName: graph-rpc-popular-ingress
+      target: local-cluster-control-plane
+    svix-test-ingress:
+      internalName: svix-test
       target: local-cluster-control-plane
 
 graph:
