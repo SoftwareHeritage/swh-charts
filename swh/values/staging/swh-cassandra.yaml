@@ -37,7 +37,7 @@ cassandraSeeds:
   - cassandra2.internal.staging.swh.network
   - cassandra3.internal.staging.swh.network
 
-cassandraStorage:
+cassandraStorage: &cassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
@@ -88,8 +88,19 @@ cassandraChecksROStorage:
       secretKeyRef: common-secrets
       secretKeyName: cassandra-swh-ro-password
 
+cassandraStorageForReferenceTableJob:
+  <<: *cassandraStorage
+  specificOptions:
+    # /!\ All the specific options of ^ are overridden
+    table_options:
+      object_references_*: "compression = {'class': 'ZstdCompressor', 'compression_level':'19'} AND compaction = {'class': 'UnifiedCompactionStrategy'}"
+
 cassandraRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: cassandraStorage
+  objstorageConfigurationRef: noopObjstorageConfiguration
+
+cassandraRWForReferenceTableJobConfiguration:
+  storageConfigurationRef: cassandraStorageForReferenceTableJob
   objstorageConfigurationRef: noopObjstorageConfiguration
 
 postgresqlRWNoObjstorageStorageConfiguration:
@@ -813,7 +824,7 @@ storage:
       cronjobs:
         create-object-reference-partitions:
           enabled: true
-          storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+          storageConfigurationRef: cassandraRWForReferenceTableJobConfiguration
           logLevel: INFO
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid
