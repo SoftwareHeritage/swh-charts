@@ -50,7 +50,7 @@ svix:
       postgres:
         enabled: false
         persistentVolume: false
-        dsn: svix-rw.cluster-components
+        dsn: svix-rw.swh
       redis:
         enabled: false
         persistentVolume: false
@@ -156,7 +156,6 @@ cloudnativePg:
           - swh-deposit
     svix:
       enabled: true
-      namespace: cluster-components
       initdb:
         type: microservice
         secretKeyRef: swh-svix-swh-postgresql-secret
