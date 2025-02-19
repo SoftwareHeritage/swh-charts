@@ -680,8 +680,6 @@ storage:
         check: false
         migrate: false
 
-webhooksConfiguration: {}
-
 provenanceConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress-next-version
@@ -831,6 +829,16 @@ scheduler:
       enabled: true
       replicas: 1
 
+svixConfiguration:
+  svix:
+    server_url: https://svix-next-version.internal.staging.swh.network
+    auth_token: ${SVIX_AUTH_TOKEN}
+  event_retention_period: 7
+  secrets:
+    SVIX_AUTH_TOKEN:
+      secretKeyRef: common-secrets
+      secretKeyName: svix-token
+
 toolbox:
   enabled: true
   configs:
@@ -849,7 +857,30 @@ toolbox:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     web:
       webDbConfigurationRef: postgresqlWebConfiguration
+    webhooks:
+      webhooksConfigurationRef: svixConfiguration
   bulkLoad: null
+
+webhooksJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+
+webhooks:
+  enabled: true
+  svixConfigurationRef: svixConfiguration
+  journalClientConfigurationRef: webhooksJournalClientConfiguration
+  priorityClassName: frontend-rpc-workload
+  autoScaling:
+    maxReplicaCount: 1
+  deployments:
+    origin-visit-status:
+      dnsConfigurationRef: dnsConfiguration
+      requestedCpu: 100m
+      requestedMemory: 100Mi
+      journalClientOverrides:
+        auto_offset_reset: latest
+        group_id: staging-next-version-archive-webhooks
+        object_types:
+          - origin_visit_status
 
 listers:
   enabled: true
