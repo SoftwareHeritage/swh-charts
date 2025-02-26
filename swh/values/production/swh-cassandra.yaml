@@ -2323,8 +2323,8 @@ loaders:
       autoScaling:
         stopWhenNoActivity: false
         queueThreshold: 1
-        minReplicaCount: 16
-        maxReplicaCount: 16
+        minReplicaCount: 24
+        maxReplicaCount: 24
     svn:
       enabled: true
       queues:
