@@ -553,7 +553,7 @@ storageReplayer:
 cassandraSeeds:
   - cassandra-cluster-next-version-service
 
-cassandraStorage: &cassandraStorage
+rwCassandraStorage: &rwCassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
@@ -566,6 +566,25 @@ cassandraStorage: &cassandraStorage
     username: ${CASSANDRA_RW_USERNAME}
     password: ${CASSANDRA_RW_PASSWORD}
   secrets:
+    CASSANDRA_RW_USERNAME:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: username
+    CASSANDRA_RW_PASSWORD:
+      secretKeyRef: cassandra-cluster-superuser
+      secretKeyName: password
+
+roCassandraStorage:
+  cls: cassandra
+  cassandraSeedsRef: cassandraSeeds
+  keyspace: swh
+  initKeyspace: false
+  consistencyLevel: LOCAL_QUORUM
+  authProvider:
+    cls: cassandra.auth.PlainTextAuthProvider
+    username: ${CASSANDRA_RW_USERNAME}
+    password: ${CASSANDRA_RW_PASSWORD}
+  secrets:
+    # TODO: deploy a real cassandra RO user
     CASSANDRA_RW_USERNAME:
       secretKeyRef: cassandra-cluster-superuser
       secretKeyName: username
@@ -678,20 +697,23 @@ rpcROObjstoragePathslicingConfiguration:
   url: http://objstorage-ro-pathslicing:5003
   enable_requests_retry: true
 
-rwStorageCassandraWithJournalConfiguration:
-  storageConfigurationRef: cassandraStorage
+rwCassandraStorageWithJournalConfiguration:
+  storageConfigurationRef: rwCassandraStorage
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
 
+roCassandraStorageConfiguration:
+  storageConfigurationRef: roCassandraStorage
+  objstorageConfigurationRef: rpcROObjstoragePathslicingConfiguration
 
-cassandraStorageForReferenceTableJob:
-  <<: *cassandraStorage
+rwCassandraStorageForReferenceTableJob:
+  <<: *rwCassandraStorage
   specificOptions:
     table_options:
       object_references_*: "compression = {'class': 'ZstdCompressor', 'compression_level':'19'} AND compaction = {'class': 'UnifiedCompactionStrategy'}"
 
-rwCassandraStorageForReferenceTableJob:
-  storageConfigurationRef: cassandraStorageForReferenceTableJob
+roCassandraStorageForReferenceTableJob:
+  storageConfigurationRef: rwCassandraStorageForReferenceTableJob
   objstorageConfigurationRef: noopObjstorageConfiguration
 
 storage:
@@ -699,7 +721,7 @@ storage:
   deployments:
     # main storage to let the loaders write
     rw-cassandra:
-      storageConfigurationRef: rwStorageCassandraWithJournalConfiguration
+      storageConfigurationRef: rwCassandraStorageWithJournalConfiguration
       cronjobs:
         create-object-reference-partitions:
           enabled: false
@@ -707,7 +729,13 @@ storage:
           logLevel: INFO
           cron: 5 0 * * mon
           concurrencyPolicy: Forbid
-    # a storage postgresql instance to replay data
+    # RO cassandra storage, for webapp
+    ro-cassandra:
+      storageConfigurationRef: roCassandraStorageConfiguration
+      autoScaling:
+        minReplicaCount: 1
+        maxReplicaCount: 1
+    # storage postgresql instance to replay data
     rw-postgresql:
       enabled: true
       storageConfigurationRef: rwStoragePostgresqlConfiguration
