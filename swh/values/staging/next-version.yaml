@@ -299,6 +299,32 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 1
         stopWhenNoActivity: false
+    save-code-now:
+      queues:
+        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
+      ackLate: true
+      autoScaling:
+        stopWhenNoActivity: true
+        queueThreshold: 1
+        minReplicaCount: 0
+        maxReplicaCount: 2
+      requestedMemory: 200Mi
+      requestedCpu: 50m
+      limitedMemory: 15Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
     svn:
       enabled: true
       queues:
