@@ -121,14 +121,19 @@ remoteROPostgresqlStorageConfiguration:
   url: http://storage-ro-postgresql:5002
   enable_requests_retry: true
 
-remoteCassandraStorageConfiguration:
+remoteROCassandraStorageConfiguration:
+  cls: remote
+  url: http://storage-ro-cassandra:5002
+  enable_requests_retry: true
+
+remoteRWCassandraStorageConfiguration:
   cls: remote
   url: http://storage-rw-cassandra:5002
   enable_requests_retry: true
 
 remoteRWStorageWithPipelineConfiguration:
   pipelineStepsRef: storagePipelineSteps
-  storageConfigurationRef: remoteCassandraStorageConfiguration
+  storageConfigurationRef: remoteRWCassandraStorageConfiguration
 
 rwStoragePostgresqlConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
@@ -782,7 +787,7 @@ web:
       indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
-      storageConfigurationRef: remoteROPostgresqlStorageConfiguration
+      storageConfigurationRef: remoteROCassandraStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: provenanceConfiguration
       graphConfigurationRef: webGraphConfiguration
@@ -1209,7 +1214,7 @@ deposit:
   # In prod this storage is read-only
   storageConfigurationRef: remoteROPostgresqlStorageConfiguration
   # XXX: but this one is read-write?
-  storageMetadataConfigurationRef: remoteCassandraStorageConfiguration
+  storageMetadataConfigurationRef: remoteRWCassandraStorageConfiguration
   djangoConfigurationRef: djangoDepositConfiguration
   blobstorageConfigurationRef: azureDepositConfiguration
   keycloakConfigurationRef: keycloakConfiguration
