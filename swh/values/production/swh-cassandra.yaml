@@ -2300,6 +2300,7 @@ loaders:
           sizeLimit: 30Gi
     save-code-now:
       enabled: true
+      replicas: 10
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 50Gi
@@ -2320,11 +2321,6 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_code_now:swh.loader.package.archive.tasks.LoadTarball
       ackLate: true
-      autoScaling:
-        stopWhenNoActivity: false
-        queueThreshold: 1
-        minReplicaCount: 10
-        maxReplicaCount: 10
     save-code-now-git:
       enabled: true
       image: swh_loader_savecodenow_image
@@ -2341,11 +2337,6 @@ loaders:
         - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
         - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       ackLate: true
-      autoScaling:
-        stopWhenNoActivity: false
-        queueThreshold: 1
-        minReplicaCount: 6
-        maxReplicaCount: 6
     svn:
       enabled: true
       queues:
