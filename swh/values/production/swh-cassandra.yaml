@@ -2323,8 +2323,29 @@ loaders:
       autoScaling:
         stopWhenNoActivity: false
         queueThreshold: 1
-        minReplicaCount: 32
-        maxReplicaCount: 32
+        minReplicaCount: 10
+        maxReplicaCount: 10
+    save-code-now-git:
+      enabled: true
+      image: swh_loader_savecodenow_image
+      replicas: 6
+      requestedMemory: 2Gi
+      requestedCpu: 200m
+      limitedMemory: 50Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 25Gi
+      queues:
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      ackLate: true
+      autoScaling:
+        stopWhenNoActivity: false
+        queueThreshold: 1
+        minReplicaCount: 6
+        maxReplicaCount: 6
     svn:
       enabled: true
       queues:
