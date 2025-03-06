@@ -93,10 +93,12 @@ spec:
         {{- end }}
       containers:
       - name: loaders
-        {{- if $local_container_image }}
+        {{- if and $local_container_image $local_container_image_version }}
         image: {{ $local_container_image }}:{{ $local_container_image_version }}
-        {{- else if $container_image }}
+        {{- else if and $container_image $container_image_version }}
         image: {{ $container_image }}:{{ $container_image_version }}
+        {{- else -}}
+          {{ fail (print "Unable to determine the image or image version of the '" $loader_type "' loader") }}
         {{- end }}
         imagePullPolicy: IfNotPresent
         command:
