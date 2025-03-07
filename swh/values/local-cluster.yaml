@@ -1618,7 +1618,9 @@ graph:
         # in-memory volumes
         graph-example-inmemory:
           mountPath: /srv/graph
-          pvcName: graph-example-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaimName:
+              claimName: graph-example-inmemory-pvc
       hosts:
         - graph-grpc-example-ingress
       ingress:

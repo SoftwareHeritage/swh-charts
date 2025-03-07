@@ -219,10 +219,15 @@ spec:
           name: backend-utils
           defaultMode: 0555
       {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
-      {{- $pvcName := $volumeConfig.pvcName | default (print $volumeName "-pvc") }}
+      {{- $pvcName := $volumeConfig.pvcName }}
       - name: {{ $volumeName }}
+        {{- if $pvcName }}
         persistentVolumeClaim:
           claimName: {{ $pvcName }}
+        {{- end }}
+        {{- if $volumeConfig.volumeDefinition }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+        {{- end }}
       {{ end }}
 {{ end }}
 {{ end -}}
