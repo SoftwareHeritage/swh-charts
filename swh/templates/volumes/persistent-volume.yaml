@@ -14,7 +14,7 @@ metadata:
     app: {{ $appName }}
   {{- end }}
 spec:
-    {{- toYaml $pvConfig.spec | nindent 2 }}
+  {{- toYaml $pvConfig.spec | nindent 2 }}
 {{ end }}
 {{ end }}
 {{ end }}
