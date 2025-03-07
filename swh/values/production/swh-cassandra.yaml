@@ -2550,6 +2550,17 @@ volumes:
                 - rancher-node-highmem01
 
   persistentVolumeClaims:
+    alter-recovery-bundles-pvc:
+      enabled: true
+      appName: alter
+      spec:
+        storageClassName: cephfs
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 30Gi
     graph-20240331-persistent-pvc:
       enabled: false
       appName: graph-grpc-20240331
@@ -2732,13 +2743,6 @@ alter:
       volumeDefinition:
         persistentVolumeClaim:
           claimName: alter-recovery-bundles-pvc
-    volumeClaim:
-      storageClassName: cephfs
-      accessModes:
-        - ReadWriteMany
-      volumeMode: Filesystem
-      name: alter-recovery-bundles-pvc
-      size: 30Gi
 
   inventoryStorageConfigurationRef: remoteROStorageConfiguration
   graphConfigurationRef: alterGraphConfiguration

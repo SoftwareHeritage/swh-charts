@@ -2311,14 +2311,6 @@ alter:
       volumeDefinition:
         persistentVolumeClaim:
           claimName: alter-recovery-bundles-pvc
-    volumeClaim:
-      storageClassName: cephfs
-      accessModes:
-        - ReadWriteMany
-      volumeMode: Filesystem
-      name: alter-recovery-bundles-pvc
-      size: 30Gi
-
   inventoryStorageConfigurationRef: cassandraROStorageNoMaskingConfiguration
   graphConfigurationRef: alterGraphConfiguration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
@@ -2422,6 +2414,17 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumeClaims:
+    alter-recovery-bundles-pvc:
+      enabled: true
+      appName: alter
+      spec:
+        storageClassName: cephfs
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 30Gi
     graph-python3k-persistent-pvc:
       enabled: true
       appName: graph-grpc-python3k

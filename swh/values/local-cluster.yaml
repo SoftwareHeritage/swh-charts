@@ -1410,12 +1410,6 @@ alter:
       volumeDefinition:
         persistentVolumeClaim:
           claimName: alter-recovery-bundles-pvc
-    volumeClaim:
-      storageClassName: standard
-      name: alter-recovery-bundles-pvc
-      accessModes:
-        - ReadWriteOnce
-      size: 1Gi
   inventoryStorageConfigurationRef: rpcROStorageConfiguration
   graphConfigurationRef: graphConfiguration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
@@ -1539,6 +1533,17 @@ externalServices:
 volumes:
   enabled: true
   persistentVolumeClaims:
+    alter-recovery-bundles-pvc:
+      enabled: true
+      appName: alter
+      spec:
+        storageClassName: standard
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
     grpc-example-dataset-example-pvc:
       enabled: true
       appName: graph-grpc-example

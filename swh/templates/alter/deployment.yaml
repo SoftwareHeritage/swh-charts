@@ -1,28 +1,5 @@
 {{- if .Values.alter.enabled -}}
 
-{{- if .Values.alter.deployment.volumeClaim -}}
-{{- $volumeMode := .Values.alter.deployment.volumeClaim.volumeMode -}}
-{{- $accessModes := .Values.alter.deployment.volumeClaim.accessModes -}}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.alter.deployment.volumeClaim.name }}
-  namespace: {{ .Values.namespace }}
-spec:
-  storageClassName: {{ .Values.alter.deployment.volumeClaim.storageClassName }}
-  {{- if $accessModes }}
-  accessModes:
-    {{- toYaml $accessModes | nindent 4 }}
-  {{- end }}
-  {{- if $volumeMode }}
-  volumeMode: {{ $volumeMode }}
-  {{- end }}
-  resources:
-    requests:
-      storage: {{ .Values.alter.deployment.volumeClaim.size | default "20Gi" }}
-{{ end }}
-
 {{- $service_name := "alter" -}}
 {{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
 {{- $affinity := .Values.alter.deployment.affinity -}}
