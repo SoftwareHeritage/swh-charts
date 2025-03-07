@@ -2508,6 +2508,7 @@ volumes:
   persistentVolumes:
     graph-20240331-persistent-local-pv:
       enabled: false
+      appName: graph-grpc-20240331
       spec:
         capacity:
           storage: 1Gi
@@ -2528,6 +2529,7 @@ volumes:
                 - rancher-node-highmem02
     graph-20241206-persistent-local-pv:
       enabled: true
+      appName: graph-grpc-20241206
       spec:
         capacity:
           storage: 1Gi

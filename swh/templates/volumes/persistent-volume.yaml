@@ -2,12 +2,17 @@
 {{- range $pvName, $pvConfig := .Values.volumes.persistentVolumes }}
 {{- if or (not (hasKey $pvConfig "enabled")) (get $pvConfig "enabled") -}}
 {{- $namespace := $pvConfig.namespace | default $.Values.namespace -}}
+{{- $appName := $pvConfig.appName -}}
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: {{ $pvName }}
   namespace: {{ $namespace }}
+  {{- if $appName }}
+  labels:
+    app: {{ $appName }}
+  {{- end }}
 spec:
     {{- toYaml $pvConfig.spec | nindent 2 }}
 {{ end }}
