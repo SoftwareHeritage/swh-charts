@@ -2212,10 +2212,6 @@ cassandraChecks:
   #   volumeDefinition:
   #     persistentVolumeClaim:
   #       claimName: cassandra-checks-pvc
-  # volumeClaim:
-  #   storageClassName: cephfs
-  #   name: cassandra-checks-pvc
-  #   size: 20Gi
 
   priorityClassName: swh-background-workload
   nodeSelector:

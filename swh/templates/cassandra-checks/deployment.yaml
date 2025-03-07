@@ -1,22 +1,5 @@
 {{- if .Values.cassandraChecks.enabled -}}
 
-{{- if and .Values.cassandraChecks.volumeClaim -}}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Values.cassandraChecks.volumeClaim.name }}
-  namespace: swh-cassandra
-spec:
-  storageClassName: {{ .Values.cassandraChecks.volumeClaim.storageClassName }}
-  accessModes:
-    - ReadWriteMany
-  volumeMode: Filesystem
-  resources:
-    requests:
-      storage: {{ $.Values.cassandraChecks.volumeClaim.size | default "20Gi" }}
-{{ end }}
-
 {{ range $service_type, $deployment_config := .Values.cassandraChecks.deployments -}}
 {{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $service_name := ( print "cassandra-checks-" $service_type ) -}}
