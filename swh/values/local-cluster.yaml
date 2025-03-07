@@ -1292,18 +1292,8 @@ objstorage:
         pathslicing-rw:
           mountPath: /srv/swh/objects
           volumeDefinition:
-            ephemeral:
-              volumeClaimTemplate:
-                metadata:
-                  labels:
-                    type: persistent-volume
-                spec:
-                  accessModes:
-                  - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 1Gi
-                  storageClassName: standard
+            persistentVolumeClaim:
+              claimName: objstorage-pathslicing-pvc
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
@@ -1318,18 +1308,8 @@ objstorage:
           mountPath: /srv/swh/objects
           readOnly: true
           volumeDefinition:
-            ephemeral:
-              volumeClaimTemplate:
-                metadata:
-                  labels:
-                    type: persistent-volume
-                spec:
-                  accessModes:
-                  - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 1Gi
-                  storageClassName: standard
+            persistentVolumeClaim:
+              claimName: objstorage-pathslicing-pvc
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
@@ -1589,6 +1569,14 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    objstorage-pathslicing-pvc:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
 
 graph:
   enabled: false
