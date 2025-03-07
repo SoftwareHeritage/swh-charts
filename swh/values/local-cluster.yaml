@@ -1614,12 +1614,14 @@ graph:
         # persistent volume
         grpc-example-dataset-example:
           mountPath: /srv/dataset
-          pvcName: grpc-example-dataset-example-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: grpc-example-dataset-example-pvc
         # in-memory volumes
         graph-example-inmemory:
           mountPath: /srv/graph
           volumeDefinition:
-            persistentVolumeClaimName:
+            persistentVolumeClaim:
               claimName: graph-example-inmemory-pvc
       hosts:
         - graph-grpc-example-ingress
@@ -1673,11 +1675,15 @@ graph:
       extraVolumes:
         graph-popular-persistent:
           mountPath: /srv/dataset
-          pvcName: graph-popular-persistent-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-popular-persistent-pvc
         # in-memory volumes
         graph-popular-inmemory:
           mountPath: /srv/graph
-          pvcName: graph-popular-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-popular-inmemory-pvc
       hosts:
         - graph-grpc-popular-ingress
       ingress:

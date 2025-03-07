@@ -650,7 +650,6 @@ objstorage:
           volumeDefinition:
             persistentVolumeClaim:
               claimName: objstorage-pathslicing-pvc
-
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: pathslicingRWObjstorageConfiguration
@@ -1327,12 +1326,16 @@ graph:
         # persistent volume (where the full dataset files are stored)
         swh-graph-grpc-dataset-example:
           mountPath: /srv/dataset
-          pvcName: swh-graph-grpc-dataset-example-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-grpc-dataset-example-pvc
         # in-memory volume (where the *.graph files and links to the files in persistent
         # volume are)
         swh-graph-grpc-inmemory:
           mountPath: /srv/graph
-          pvcName: swh-graph-grpc-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: swh-graph-grpc-inmemory-pvc
       hosts:
         - graph-grpc-next-version.internal.staging.swh.network
         - graph-grpc-next-version-ingress

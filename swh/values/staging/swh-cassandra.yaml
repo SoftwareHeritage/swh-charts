@@ -2469,11 +2469,15 @@ graph:
       extraVolumes:
         graph-python3k-persistent:
           mountPath: /srv/dataset
-          pvcName: graph-python3k-persistent-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-python3k-persistent-pvc
         # in-memory volumes
         graph-python3k-inmemory:
           mountPath: /srv/graph
-          pvcName: graph-python3k-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-python3k-inmemory-pvc
       hosts:
         - graph-grpc.internal.staging.swh.network
         - graph-grpc-ingress

@@ -221,13 +221,7 @@ spec:
       {{- range $volumeName, $volumeConfig := $graphConfig.extraVolumes }}
       {{- $pvcName := $volumeConfig.pvcName }}
       - name: {{ $volumeName }}
-        {{- if $pvcName }}
-        persistentVolumeClaim:
-          claimName: {{ $pvcName }}
-        {{- end }}
-        {{- if $volumeConfig.volumeDefinition }}
         {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
-        {{- end }}
       {{ end }}
 {{ end }}
 {{ end -}}

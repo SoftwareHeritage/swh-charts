@@ -2625,12 +2625,15 @@ graph:
       extraVolumes:
         graph-20240331-persistent:
           mountPath: /srv/dataset/2024-03-31/compressed
-          pvcName: graph-20240331-persistent-pvc
-
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20240331-persistent-pvc
         # in-memory volumes
         graph-20240331-inmemory:
           mountPath: /srv/graph
-          pvcName: graph-20240331-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20240331-inmemory-pvc
       hosts:
         - graph-grpc-20240331-ingress
       ingress:
@@ -2684,11 +2687,15 @@ graph:
       extraVolumes:
         graph-20241206-persistent:
           mountPath: /srv/dataset/2024-12-06/compressed
-          pvcName: graph-20241206-persistent-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20241206-persistent-pvc
         # in-memory volumes
         graph-20241206-inmemory:
           mountPath: /srv/graph
-          pvcName: graph-20241206-inmemory-pvc
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20241206-inmemory-pvc
       hosts:
         - graph-grpc.internal.softwareheritage.org
         - graph-grpc-20241206-ingress
