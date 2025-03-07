@@ -1536,6 +1536,55 @@ externalServices:
       internalName: svix-test
       target: local-cluster-control-plane
 
+volumes:
+  enabled: true
+  persistentVolumeClaims:
+    grpc-example-dataset-example-pvc:
+      enabled: true
+      appName: graph-grpc-example
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    graph-example-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-example
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    graph-popular-persistent-pvc:
+      enabled: true
+      appName: graph-popular
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    # in-memory volumes
+    graph-popular-inmemory-pvc:
+      enabled: true
+      appName: graph-popular
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
 graph:
   enabled: false
   imageVersion: "20241105.2"
@@ -1572,25 +1621,11 @@ graph:
         # persistent volume
         grpc-example-dataset-example:
           mountPath: /srv/dataset
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: grpc-example-dataset-example-pvc
         # in-memory volumes
         graph-example-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-example-inmemory-pvc
       hosts:
         - graph-grpc-example-ingress
       ingress:
@@ -1643,25 +1678,11 @@ graph:
       extraVolumes:
         graph-popular-persistent:
           mountPath: /srv/dataset
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-popular-persistent-pvc
         # in-memory volumes
         graph-popular-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-popular-inmemory-pvc
       hosts:
         - graph-grpc-popular-ingress
       ingress:

@@ -2503,6 +2503,98 @@ rpcWithRemoteGrpc20241206GraphConfiguration:
 plainGrpcGraphConfiguration:
   max_ram: 500g
 
+volumes:
+  enabled: true
+  persistentVolumes:
+    graph-20240331-persistent-local-pv:
+      enabled: false
+      spec:
+        capacity:
+          storage: 1Gi
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/ssd/graph/2024-03-31/compressed
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-highmem02
+    graph-20241206-persistent-local-pv:
+      enabled: true
+      spec:
+        capacity:
+          storage: 1Gi
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/ssd/graph/2024-12-06/compressed
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-highmem01
+
+  persistentVolumeClaims:
+    graph-20240331-persistent-pvc:
+      enabled: false
+      appName: graph-grpc-20240331
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        volumeName: graph-20240331-persistent-local-pv
+        storageClassName: local-storage
+    graph-20240331-inmemory-pvc:
+      enabled: false
+      appName: graph-grpc-20240331
+      spec:
+        storageClassName: local-path
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
+    graph-20241206-persistent-pvc:
+      enabled: true
+      appName: graph-grpc-20241206
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+        volumeName: graph-20241206-persistent-local-pv
+        storageClassName: local-storage
+        accessModes:
+        - ReadWriteOnce
+    graph-20241206-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-20241206
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
 graph:
   enabled: true
   deployments:
@@ -2519,22 +2611,13 @@ graph:
       prepareMemoryVolume: true
       extraVolumes:
         graph-20240331-persistent:
-          persistentVolumeType: local
           mountPath: /srv/dataset/2024-03-31/compressed
-          nodePath: /srv/softwareheritage/ssd/graph/2024-03-31/compressed
-          nodes:
-            - rancher-node-highmem02
+          pvcName: graph-20240331-persistent-pvc
+
         # in-memory volumes
         graph-20240331-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-20240331-inmemory-pvc
       hosts:
         - graph-grpc-20240331-ingress
       ingress:
@@ -2587,22 +2670,12 @@ graph:
       prepareMemoryVolume: true
       extraVolumes:
         graph-20241206-persistent:
-          persistentVolumeType: local
           mountPath: /srv/dataset/2024-12-06/compressed
-          nodePath: /srv/softwareheritage/ssd/graph/2024-12-06/compressed
-          nodes:
-            - rancher-node-highmem01
+          pvcName: graph-20241206-persistent-pvc
         # in-memory volumes
         graph-20241206-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-20241206-inmemory-pvc
       hosts:
         - graph-grpc.internal.softwareheritage.org
         - graph-grpc-20241206-ingress

@@ -1262,6 +1262,34 @@ rpcWithRemoteGrpcGraphConfiguration:
 plainGrpcGraphConfiguration:
   max_ram: 1g
 
+volumes:
+  enabled: true
+  persistentVolumeClaims:
+    swh-graph-grpc-dataset-example-pvc:
+      enabled: true
+      appName: graph-grpc-example
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    # in-memory volume (where the *.graph files and links to the files in persistent
+    # volume are)
+    swh-graph-grpc-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-example
+      spec:
+        storageClassName: local-path
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+
 graph:
   enabled: true
   deployments:
@@ -1284,27 +1312,12 @@ graph:
         # persistent volume (where the full dataset files are stored)
         swh-graph-grpc-dataset-example:
           mountPath: /srv/dataset
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: swh-graph-grpc-dataset-example-pvc
         # in-memory volume (where the *.graph files and links to the files in persistent
         # volume are)
         swh-graph-grpc-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
-            volumeMode: Filesystem
-
+          pvcName: swh-graph-grpc-inmemory-pvc
       hosts:
         - graph-grpc-next-version.internal.staging.swh.network
         - graph-grpc-next-version-ingress

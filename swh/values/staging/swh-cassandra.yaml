@@ -2423,6 +2423,33 @@ rpcWithRemoteGrpcGraphConfiguration:
 plainGrpcGraphConfiguration:
   max_ram: 1g
 
+volumes:
+  enabled: true
+  persistentVolumeClaims:
+    graph-python3k-persistent-pvc:
+      enabled: true
+      appName: graph-grpc-python3k
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    # in-memory volumes
+    graph-python3k-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-python3k
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
 graph:
   enabled: true
   deployments:
@@ -2443,25 +2470,11 @@ graph:
       extraVolumes:
         graph-python3k-persistent:
           mountPath: /srv/dataset
-          persistentVolumeClaimDefinition:
-            storageClassName: local-persistent
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-python3k-persistent-pvc
         # in-memory volumes
         graph-python3k-inmemory:
           mountPath: /srv/graph
-          persistentVolumeClaimDefinition:
-            storageClassName: local-path
-            volumeMode: Filesystem
-            accessModes:
-            - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Gi
+          pvcName: graph-python3k-inmemory-pvc
       hosts:
         - graph-grpc.internal.staging.swh.network
         - graph-grpc-ingress
