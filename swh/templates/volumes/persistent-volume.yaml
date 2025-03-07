@@ -1,0 +1,15 @@
+{{ if .Values.volumes.enabled -}}
+{{- range $pvName, $pvConfig := .Values.volumes.persistentVolumes }}
+{{- if or (not (hasKey $pvConfig "enabled")) (get $pvConfig "enabled") -}}
+{{- $namespace := $pvConfig.namespace | default $.Values.namespace -}}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $pvName }}
+  namespace: {{ $namespace }}
+spec:
+    {{- toYaml $pvConfig.spec | nindent 2 }}
+{{ end }}
+{{ end }}
+{{ end }}
