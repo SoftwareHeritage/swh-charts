@@ -1,0 +1,18 @@
+{{- range $pvcName, $pvcConfig := .Values.volumes.persistentVolumeClaims }}
+{{- if or (not (hasKey $pvcConfig "enabled")) (get $pvcConfig "enabled") -}}
+{{- $namespace := $pvcConfig.namespace | default $.Values.namespace -}}
+{{- $appName := $pvcConfig.appName -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $pvcName }}
+  namespace: {{ $namespace }}
+  {{- if $appName }}
+  labels:
+    app: {{ $appName }}
+  {{- end }}
+spec:
+  {{- toYaml $pvcConfig.spec | nindent 2 }}
+{{ end }}
+{{ end }}

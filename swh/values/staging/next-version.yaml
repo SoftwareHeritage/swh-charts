@@ -1269,16 +1269,6 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumeClaims:
-    objstorage-pathslicing-pvc:
-      enabled: true
-      spec:
-        storageClassName: local-persistent
-        volumeMode: Filesystem
-        accessModes:
-          - ReadWriteMany
-        resources:
-          requests:
-            storage: 10Gi
     swh-graph-grpc-dataset-example-pvc:
       enabled: true
       appName: graph-grpc-example

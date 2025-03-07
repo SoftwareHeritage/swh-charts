@@ -568,3 +568,17 @@ redis:
               requests:
                 storage: 1Gi
 
+volumes:
+  persistentVolumeClaims:
+    objstorage-pathslicing-pvc:
+      enabled: true
+      namespace: swh-cassandra-next-version
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 10Gi
+

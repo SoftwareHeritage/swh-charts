@@ -533,3 +533,57 @@ redis:
   #     # [optional] Application name override (e.g. to call it "redis" for example)
   #     # appName: redis
   #     replicas: 3
+
+volumes:
+  # Where to declare the pvs and pvcs (can be overridden per instance)
+  # namespace: swh
+  # Dictionary of persistent volumes specification
+  persistentVolumes: {}
+    # Dictionary of persistent volumes specification
+    # graph-20240331-persistent-local-pv:
+    #   # Can be disabled, enabled by default if not provided
+    #   enabled: true
+    #   # namespace: swh-cassandra
+    #   # The pv's specification, this is the raw yaml supported by kubernetes
+    #   spec:
+    #     capacity:
+    #       storage: 1Gi
+    #     volumeMode: Filesystem
+    #     accessModes:
+    #     - ReadWriteOnce
+    #     persistentVolumeReclaimPolicy: Retain
+    #     storageClassName: local-storage
+    #     local:
+    #       path: /srv/softwareheritage/ssd/graph/2024-03-31/compressed
+    #     nodeAffinity:
+    #       required:
+    #         nodeSelectorTerms:
+    #         - matchExpressions:
+    #           - key: kubernetes.io/hostname
+    #             operator: In
+    #             values: rancher-node-highmem02
+  # Dictionary of persistent volume claims specification
+  persistentVolumeClaims: {}
+    # graph-20240331-persistent-pvc:
+    #   enabled: true
+    #   # optional application name to whom this pv is associated
+    #   appName: graph-20240331
+    #   spec:
+    #     storageClassName: local-storage
+    #     volumeMode: Filesystem
+    #     volumeName: graph-20240331-persistent-pv
+    #     accessModes:
+    #     - ReadWriteOnce
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+    # graph-20240331-inmemory-pvc:
+    #   enabled: true
+    #   spec:
+    #     storageClassName: local-path
+    #     volumeMode: Filesystem
+    #     accessModes:
+    #     - ReadWriteOnce
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
