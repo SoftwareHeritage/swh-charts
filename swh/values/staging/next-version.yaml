@@ -648,22 +648,23 @@ objstorage:
         pathslicing-rw:
           mountPath: /srv/swh/objects
           volumeDefinition:
-            ephemeral:
-              volumeClaimTemplate:
-                metadata:
-                  labels:
-                    type: persistent-volume
-                spec:
-                  accessModes:
-                  - ReadWriteOnce
-                  resources:
-                    requests:
-                      storage: 10Gi
-                  storageClassName: local-persistent
+            persistentVolumeClaim:
+              claimName: objstorage-pathslicing-pvc
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: pathslicingRWObjstorageConfiguration
+    ro-pathslicing:
+      enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
+      extraVolumes:
+        pathslicing-rw:
+          mountPath: /srv/swh/objects
+          readOnly: true
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: objstorage-pathslicing-pvc
 
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
@@ -679,10 +680,14 @@ rwCassandraStorageWithJournalConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
 
+rpcROObjstoragePathslicingConfiguration:
+  cls: remote
+  url: http://objstorage-ro-pathslicing:5003
+  enable_requests_retry: true
+
 roCassandraStorageConfiguration:
   storageConfigurationRef: roCassandraStorage
-  # TODO: Use a RO objstorage
-  objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
+  objstorageConfigurationRef: rpcROObjstoragePathslicingConfiguration
 
 rwCassandraStorageForReferenceTableJob:
   <<: *rwCassandraStorage
@@ -1265,6 +1270,16 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumeClaims:
+    objstorage-pathslicing-pvc:
+      enabled: true
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteMany
+        resources:
+          requests:
+            storage: 10Gi
     swh-graph-grpc-dataset-example-pvc:
       enabled: true
       appName: graph-grpc-example
