@@ -2177,6 +2177,12 @@ scheduler:
     enabled: true
     requestedMemory: 400Mi
     requestedCpu: 10m
+    visitTypes:
+    - cvs
+    - git
+    - git-checkout
+    - deposit
+    - svn
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
