@@ -878,6 +878,9 @@ scheduler:
     listener:
       enabled: true
       replicas: 1
+    schedule-recurrent:
+      enabled: true
+      replicas: 1
 
 svixConfiguration:
   svix:
