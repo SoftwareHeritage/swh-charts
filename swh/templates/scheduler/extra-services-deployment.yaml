@@ -12,10 +12,9 @@
 {{- $deployment_config = include "swh.scheduler.deploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | fromYaml -}}
 {{- $service_name := ( print "scheduler-" $service_type ) -}}
 {{- $logLevel := get $deployment_config "logLevel" | default $.Values.scheduler.logLevel -}}
-
 {{- $enabled := get $deployment_config "enabled" -}}
+{{- $taskTypes := get $deployment_config "taskTypes" -}}
 {{- if $enabled -}}
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,16 +92,15 @@ spec:
           - start-runner
           - --period
           - {{ get $deployment_config "period" | default 10 | quote }}
-          {{- end }}
-          {{- if ( eq "runner-priority" $service_type ) }}
-          - --with-priority
-          {{- $taskTypes := get $deployment_config "taskTypes" -}}
           {{- if $taskTypes }}
           {{- range $task_type := $taskTypes }}
           - --task-type
           - {{ $task_type }}
           {{- end -}}
           {{- end }}
+          {{- end }}
+          {{ if ( eq "runner-priority" $service_type ) }}
+          - --with-priority
           {{- end }}
           {{- if ( eq "listener" $service_type ) }}
           # listener
