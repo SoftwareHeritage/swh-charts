@@ -1131,44 +1131,6 @@ scheduler:
   # requestedCpu: 500m
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # celeryConfigurationRef: guestCeleryConfiguration
-  recurrent:
-    enabled: false
-    schedulerPolicies:
-      default:
-      - policy: already_visited_order_by_lag
-        weight: 40
-      - policy: never_visited_oldest_update_first
-        weight: 40
-      - policy: origins_without_last_update
-        weight: 20
-      opam:
-      - policy: origins_without_last_update
-        weight: 100
-      git-checkout:
-      - policy: origins_without_last_update
-        weight: 100
-      hg-checkout:
-      - policy: origins_without_last_update
-        weight: 100
-      svn-export:
-      - policy: origins_without_last_update
-        weight: 100
-      tarball-directory:
-      - policy: origins_without_last_update
-        weight: 100
-      content:
-      - policy: origins_without_last_update
-        weight: 100
-      git:
-      - policy: origins_without_last_update
-        weight: 5
-        tablesample: 0.1
-      - policy: never_visited_oldest_update_first
-        weight: 80
-        tablesample: 0.1
-      - policy: already_visited_order_by_lag
-        weight: 15
-        tablesample: 0.1
   rpc:
     enabled: false
     port: 5008
@@ -1246,7 +1208,7 @@ scheduler:
       # Use dashed (-) name to avoid issues when naming (kube) service
       enabled: false
       period: 10
-      extraConfig:
+      taskTypes:
         - load-bzr
         - load-cvs
         - load-git
@@ -1255,6 +1217,46 @@ scheduler:
         - load-hg
     listener:
       enabled: false
+    schedule-recurrent:
+      enabled: false
+      visitTypes: []
+      extraConfig:
+        schedulerPolicies:
+          default:
+          - policy: already_visited_order_by_lag
+            weight: 40
+          - policy: never_visited_oldest_update_first
+            weight: 40
+          - policy: origins_without_last_update
+            weight: 20
+          opam:
+          - policy: origins_without_last_update
+            weight: 100
+          git-checkout:
+          - policy: origins_without_last_update
+            weight: 100
+          hg-checkout:
+          - policy: origins_without_last_update
+            weight: 100
+          svn-export:
+          - policy: origins_without_last_update
+            weight: 100
+          tarball-directory:
+          - policy: origins_without_last_update
+            weight: 100
+          content:
+          - policy: origins_without_last_update
+            weight: 100
+          git:
+          - policy: origins_without_last_update
+            weight: 5
+            tablesample: 0.1
+          - policy: never_visited_oldest_update_first
+            weight: 80
+            tablesample: 0.1
+          - policy: already_visited_order_by_lag
+            weight: 15
+            tablesample: 0.1
 
 # defaultElasticsearchHosts:
 #   - host: search-esnode0.internal.staging.swh.network
