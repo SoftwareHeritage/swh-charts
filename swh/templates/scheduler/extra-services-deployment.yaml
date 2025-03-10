@@ -103,8 +103,8 @@ spec:
           - {{ $task_type }}
           {{- end -}}
           {{- end }}
-          {{ end }}
-          {{ if ( eq "runner-priority" $service_type ) }}
+          {{- end }}
+          {{- if ( eq "runner-priority" $service_type ) }}
           - --with-priority
           {{- end }}
           {{- if ( eq "listener" $service_type ) }}
@@ -118,7 +118,7 @@ spec:
           {{- end }}
           {{- if ( eq "schedule-recurrent" $service_type ) }}
           - schedule-recurrent
-          {{ if $visitTypes }}
+          {{- if $visitTypes }}
           {{- range $visitType := $visitTypes }}
           - --visit-type
           - {{ $visitType }}
