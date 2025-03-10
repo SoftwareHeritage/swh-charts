@@ -1363,13 +1363,13 @@ scheduler:
       enabled: true
       logLevel: INFO
       period: 10
-      extraConfig:
-        - load-bzr
-        - load-cvs
-        - load-git
-        - load-svn
-        - load-archive-files
-        - load-hg
+      taskTypes:
+      - load-bzr
+      - load-cvs
+      - load-git
+      - load-svn
+      - load-archive-files
+      - load-hg
     listener:
       enabled: true
       replicas: 4

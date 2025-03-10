@@ -96,9 +96,9 @@ spec:
           {{- end }}
           {{- if ( eq "runner-priority" $service_type ) }}
           - --with-priority
-          {{- $extraConfig := get $deployment_config "extraConfig" -}}
-          {{- if $extraConfig }}
-          {{- range $task_type := $extraConfig }}
+          {{- $taskTypes := get $deployment_config "taskTypes" -}}
+          {{- if $taskTypes }}
+          {{- range $task_type := $taskTypes }}
           - --task-type
           - {{ $task_type }}
           {{- end -}}

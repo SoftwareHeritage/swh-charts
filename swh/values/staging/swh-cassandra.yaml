@@ -2157,13 +2157,13 @@ scheduler:
       period: 10
       requestedMemory: 50Mi
       requestedCpu: 5m
-      extraConfig:
-        - load-bzr
-        - load-cvs
-        - load-git
-        - load-svn
-        - load-archive-files
-        - load-hg
+      taskTypes:
+      - load-bzr
+      - load-cvs
+      - load-git
+      - load-svn
+      - load-archive-files
+      - load-hg
     listener:
       enabled: true
       replicas: 2

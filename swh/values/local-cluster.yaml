@@ -827,8 +827,8 @@ scheduler:
     runner-priority:
       enabled: true
       period: 100
-      extraConfig:
-        - load-git
+      taskTypes:
+      - load-git
     runner-first-visits:
       enabled: true
       replicas: 1
