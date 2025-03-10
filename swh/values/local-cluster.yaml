@@ -751,15 +751,6 @@ scheduler:
   celeryConfigurationRef: celeryConfiguration
   alerts:
     enabled: false
-  recurrent:
-    enabled: true
-    schedulerPolicies:
-      default:
-      - policy: never_visited_oldest_update_first
-        weight: 100
-      opam:
-      - policy: origins_without_last_update
-        weight: 100
   rpc:
     enabled: true
     schedulerConfigurationRef: postgresqlSchedulerConfiguration
@@ -837,6 +828,16 @@ scheduler:
       requestedCpu: 10m
     listener:
       enabled: true
+    schedule-recurrent:
+      enable: true
+      extraConfig:
+        schedulerPolicies:
+          default:
+          - policy: never_visited_oldest_update_first
+            weight: 100
+          opam:
+          - policy: origins_without_last_update
+            weight: 100
 
 loaderMetadata:
   enabled: false

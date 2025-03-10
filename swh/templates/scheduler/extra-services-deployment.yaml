@@ -6,14 +6,19 @@
 {{- $namespace := .Values.namespace }}
 {{- $sentry := .Values.scheduler.sentry }}
 {{- $affinity := .Values.scheduler.affinity }}
-{{- $configurationChecksum := include (print .Template.BasePath "/scheduler/extra-services-configmap.yaml") . -}}
-
 {{- range $service_type, $deployment_config := .Values.scheduler.extraServices -}}
-{{- $deployment_config = include "swh.scheduler.deploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | fromYaml -}}
+{{- $deployment_config = include "swh.scheduler.deploymentConfig"
+                          (dict "deploymentConfig" $deployment_config
+                                "Values"           $.Values) | fromYaml -}}
+{{- $configurationDict := (dict "configuration" $deployment_config
+                                "name"          $service_type
+                                "Values"        $.Values) -}}
+{{- $configurationChecksum := include "swh.scheduler.extraService.configmap" $configurationDict | sha256sum -}}
 {{- $service_name := ( print "scheduler-" $service_type ) -}}
 {{- $logLevel := get $deployment_config "logLevel" | default $.Values.scheduler.logLevel -}}
 {{- $enabled := get $deployment_config "enabled" -}}
-{{- $taskTypes := get $deployment_config "taskTypes" -}}
+{{- $taskTypes := get $deployment_config "taskTypes" | default list -}}
+{{- $visitTypes := get $deployment_config "visitTypes" | default list -}}
 {{- if $enabled -}}
 ---
 apiVersion: apps/v1
@@ -40,7 +45,7 @@ spec:
       labels:
         app: {{ $service_name }}
       annotations:
-        checksum/config: {{ $configurationChecksum | sha256sum }}
+        checksum/config: {{ $configurationChecksum }}
     spec:
       {{- if $affinity }}
       affinity:
@@ -98,7 +103,7 @@ spec:
           - {{ $task_type }}
           {{- end -}}
           {{- end }}
-          {{- end }}
+          {{ end }}
           {{ if ( eq "runner-priority" $service_type ) }}
           - --with-priority
           {{- end }}
@@ -110,6 +115,15 @@ spec:
           - start-runner-first-visits
           - --period
           - {{ get $deployment_config "period" | default 10 | quote }}
+          {{- end }}
+          {{- if ( eq "schedule-recurrent" $service_type ) }}
+          - schedule-recurrent
+          {{ if $visitTypes }}
+          {{- range $visitType := $visitTypes }}
+          - --visit-type
+          - {{ $visitType }}
+          {{- end }}
+          {{- end }}
           {{- end }}
           env:
             - name: STATSD_HOST
@@ -146,7 +160,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: extra-services-configuration-template
+          name: extra-services-configuration-{{ $service_type }}
           items:
           - key: "config.yml.template"
             path: "config.yml.template"

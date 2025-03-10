@@ -1,17 +1,11 @@
 {{ if and .Values.scheduler.enabled .Values.scheduler.extraServices -}}
-{{ $namespace := .Values.namespace }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: extra-services-configuration-template
-  namespace: {{ $namespace }}
-data:
-  config.yml.template: |
-    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.scheduler.schedulerConfigurationRef
-                                                   "Values" .Values) | nindent 4 }}
-
-    {{- include "celery.configuration" (dict "configurationRef" .Values.scheduler.celeryConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
-
+{{- range $serviceType, $deploymentConfig := .Values.scheduler.extraServices -}}
+{{- $deploymentConfig = include "swh.scheduler.deploymentConfig"
+                          (dict "deploymentConfig" $deploymentConfig
+                                "Values"           $.Values) | fromYaml -}}
+{{- $configurationDict := dict "configuration" $deploymentConfig
+                               "name"          (print "extra-services-configuration-" $serviceType)
+                               "Values"        $.Values -}}
+{{- include "swh.scheduler.extraService.configmap" $configurationDict -}}
+{{- end }}
 {{- end -}}

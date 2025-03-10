@@ -2090,10 +2090,6 @@ scheduler:
         scheduler0:
           threshold: 10000
 
-  recurrent:
-    enabled: true
-    requestedMemory: 400Mi
-    requestedCpu: 10m
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance
@@ -2177,6 +2173,10 @@ scheduler:
       period: 30
       requestedMemory: 100Mi
       requestedCpu: 10m
+  schedule-recurrent:
+    enabled: true
+    requestedMemory: 400Mi
+    requestedCpu: 10m
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
