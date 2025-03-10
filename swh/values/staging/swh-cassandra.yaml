@@ -2173,16 +2173,16 @@ scheduler:
       period: 30
       requestedMemory: 100Mi
       requestedCpu: 10m
-  schedule-recurrent:
-    enabled: true
-    requestedMemory: 400Mi
-    requestedCpu: 10m
-    visitTypes:
-    - cvs
-    - git
-    - git-checkout
-    - deposit
-    - svn
+    schedule-recurrent:
+      enabled: true
+      requestedMemory: 400Mi
+      requestedCpu: 10m
+      visitTypes:
+      - cvs
+      - git
+      - git-checkout
+      - deposit
+      - svn
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
