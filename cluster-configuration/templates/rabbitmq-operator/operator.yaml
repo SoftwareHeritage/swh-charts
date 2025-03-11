@@ -23,4 +23,16 @@ spec:
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+    - kind: Secret
+      name: {{ printf "%s%s" $appName "-rabbitmq-messaging-topology" | trunc 63 }}
+      namespace: {{ .Values.argocdNamespace }}
+      jsonPointers:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
 {{ end }}
