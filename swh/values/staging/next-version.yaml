@@ -642,8 +642,6 @@ objstorage:
     # Activate dedicated instance for write workload
     rw-pathslicing:
       enabled: true
-      nodeSelector:
-        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       extraVolumes:
         pathslicing-rw:
           mountPath: /srv/swh/objects
@@ -655,8 +653,6 @@ objstorage:
       objstorageConfigurationRef: pathslicingRWObjstorageConfiguration
     ro-pathslicing:
       enabled: true
-      nodeSelector:
-        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
       extraVolumes:
         pathslicing-rw:
           mountPath: /srv/swh/objects
