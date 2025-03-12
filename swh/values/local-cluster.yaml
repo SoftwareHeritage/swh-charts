@@ -829,7 +829,7 @@ scheduler:
     listener:
       enabled: true
     schedule-recurrent:
-      enable: true
+      enabled: true
       extraConfig:
         schedulerPolicies:
           default:
