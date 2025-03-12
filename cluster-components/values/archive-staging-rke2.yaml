@@ -577,7 +577,7 @@ volumes:
         storageClassName: local-persistent
         volumeMode: Filesystem
         accessModes:
-          - ReadWriteMany
+          - ReadWriteOnce
         resources:
           requests:
             storage: 10Gi
