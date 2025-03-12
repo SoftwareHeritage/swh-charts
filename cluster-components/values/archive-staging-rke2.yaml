@@ -574,7 +574,7 @@ volumes:
       enabled: true
       namespace: swh-cassandra-next-version
       spec:
-        storageClassName: local-persistent
+        storageClassName: ceph-rbd
         volumeMode: Filesystem
         accessModes:
           - ReadWriteMany
