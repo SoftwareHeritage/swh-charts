@@ -1310,6 +1310,7 @@ scheduler:
       threads: 4
       workers: 8
       timeout: 3600
+    requestedMemory: 2Gi
     hosts:
       # Used by future add-forge-now runner0 vm
       - scheduler.internal.softwareheritage.org
