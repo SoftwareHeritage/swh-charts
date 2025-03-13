@@ -1355,7 +1355,7 @@ scheduler:
   extraServices:
     runner:
       enabled: true
-      logLevel: INFO
+      logLevel: DEBUG
       period: 10
     runner-priority:
       enabled: true
