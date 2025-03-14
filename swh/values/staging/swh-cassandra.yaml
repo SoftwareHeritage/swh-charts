@@ -1865,6 +1865,8 @@ indexerStorage:
             paths:
               - path: /
                 pathType: Exact
+              - path: /check_config
+                pathType: Exact
               - path: /content_mimetype
                 pathType: Exact
               - path: /content_mimetype/missing
