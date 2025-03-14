@@ -1846,6 +1846,7 @@ indexerStorage:
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
       hosts:
         - indexer-storage-rpc-ingress
+        - indexer.internal.staging.swh.network
       ingress:
         enabled: true
         extraAnnotations:
@@ -1860,6 +1861,43 @@ indexerStorage:
           default:
             paths:
               - path: /
+          read-only:
+            paths:
+              - path: /
+                pathType: Exact
+              - path: /content_mimetype
+                pathType: Exact
+              - path: /content_mimetype/missing
+                pathType: Exact
+              - path: /content_mimetype/range
+                pathType: Exact
+              - path: /content/fossology_license
+                pathType: Exact
+              - path: /content/fossology_license/range
+                pathType: Exact
+              - path: /content_metadata
+                pathType: Exact
+              - path: /content_metadata/missing
+                pathType: Exact
+              - path: /directory_intrinsic_metadata
+                pathType: Exact
+              - path: /directory_intrinsic_metadata/missing
+                pathType: Exact
+              - path: /origin_intrinsic_metadata
+                pathType: Exact
+              - path: /origin_intrinsic_metadata/search/fulltext
+                pathType: Exact
+              - path: /origin_intrinsic_metadata/search/by_producer
+                pathType: Exact
+              - path: /origin_intrinsic_metadata/stats
+                pathType: Exact
+              - path: /origin_extrinsic_metadata
+                pathType: Exact
+              - path: /indexer_configuration/data
+                pathType: Exact
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
       gunicorn:
         threads: 2
         workers: 4
