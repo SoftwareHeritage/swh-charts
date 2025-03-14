@@ -1307,6 +1307,7 @@ scheduler:
           threshold: 30000
   rpc:
     enabled: true
+    logLevel: DEBUG
     # The scheduler instance to use for rpc must be a postgresql instance
     schedulerConfigurationRef: postgresqlSchedulerConfiguration
     replicas: 6
