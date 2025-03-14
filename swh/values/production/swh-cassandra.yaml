@@ -1242,6 +1242,7 @@ indexerStorage:
       indexerStorageConfigurationRef: postgresqlReadOnlyIndexerStorageConfiguration
       hosts:
         - indexer-storage-read-only-rpc-ingress-swh-cassandra
+        - indexer.internal.softwareheritage.org
       ingress:
         enabled: true
         extraAnnotations:
@@ -1256,6 +1257,9 @@ indexerStorage:
           default:
             paths:
               - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
     read-write:
       checkDbVersion: true
       gunicorn:
