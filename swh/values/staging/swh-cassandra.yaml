@@ -1898,6 +1898,9 @@ indexerStorage:
               - path: /indexer_configuration/data
                 pathType: Exact
             extraWhitelistSourceRange:
+              # internal networks
+              - 192.168.100.0/24
+              - 192.168.130.0/24
               # vpn network
               - 192.168.101.0/24
       gunicorn:
