@@ -3,7 +3,7 @@ cassandra_checks_image_version: '20250317.2'
 software_stories_image: container-registry.softwareheritage.org/swh/infra/swh-apps/software_stories
 software_stories_image_version: '20230912.1'
 swh_alter_image: container-registry.softwareheritage.org/swh/infra/swh-apps/alter
-swh_alter_image_version: '20250317.2'
+swh_alter_image_version: '20250317.3'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20250211.2'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
@@ -15,7 +15,7 @@ swh_graph_image_version: '20250317.3'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
 swh_graphql_image_version: '20250317.2'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
-swh_indexer_image_version: '20250317.2'
+swh_indexer_image_version: '20250317.3'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
 swh_indexer_storage_image_version: '20250317.2'
 swh_lister_image: container-registry.softwareheritage.org/swh/infra/swh-apps/lister
