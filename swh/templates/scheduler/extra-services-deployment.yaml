@@ -19,6 +19,7 @@
 {{- $enabled := get $deployment_config "enabled" -}}
 {{- $taskTypes := get $deployment_config "taskTypes" | default list -}}
 {{- $visitTypes := get $deployment_config "visitTypes" | default list -}}
+{{- $taskTypePatterns := get $deployment_config "taskTypePatterns" | default list -}}
 {{- if $enabled -}}
 ---
 apiVersion: apps/v1
@@ -103,9 +104,15 @@ spec:
           - {{ $task_type }}
           {{- end -}}
           {{- end }}
+          {{- if $taskTypePatterns }}
+          {{- range $taskTypePattern := $taskTypePatterns }}
+          - --task-type-pattern
+          - {{ $taskTypePattern | quote }}
+          {{- end -}}
           {{- end }}
           {{- if ( eq "runner-priority" $service_type ) }}
           - --with-priority
+          {{- end }}
           {{- end }}
           {{- if ( eq "listener" $service_type ) }}
           # listener

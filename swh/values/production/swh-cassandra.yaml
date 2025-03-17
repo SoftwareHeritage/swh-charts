@@ -1363,6 +1363,11 @@ scheduler:
       enabled: true
       logLevel: DEBUG
       period: 10
+      taskTypePatterns:
+        - "list-"
+        - "cook-"
+        - "check-"
+        - "load-deposit"
     runner-priority:
       enabled: true
       logLevel: INFO

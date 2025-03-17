@@ -2190,6 +2190,11 @@ scheduler:
       period: 10
       requestedMemory: 100Mi
       requestedCpu: 10m
+      taskTypePatterns:
+        - "list-"
+        - "cook-"
+        - "check-"
+        - "load-deposit"
     runner-priority:
       enabled: true
       logLevel: INFO
