@@ -99,9 +99,9 @@ spec:
           - --period
           - {{ get $deployment_config "period" | default 10 | quote }}
           {{- if $taskTypes }}
-          {{- range $task_type := $taskTypes }}
+          {{- range $taskType := $taskTypes }}
           - --task-type
-          - {{ $task_type }}
+          - {{ $taskType | quote }}
           {{- end -}}
           {{- end }}
           {{- if $taskTypePatterns }}
@@ -128,7 +128,7 @@ spec:
           {{- if $visitTypes }}
           {{- range $visitType := $visitTypes }}
           - --visit-type
-          - {{ $visitType }}
+          - {{ $visitType | quote }}
           {{- end }}
           {{- end }}
           {{- end }}
