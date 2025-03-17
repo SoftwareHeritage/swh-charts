@@ -30,9 +30,7 @@ spec:
         - '.webhooks[]?.clientConfig.caBundle'
     - kind: Secret
       name: {{ printf "%s%s" $appName "-rabbitmq-messaging-topology" | trunc 63 }}
-      namespace: {{ .Values.argocdNamespace }}
+      namespace: {{ .Values.rabbitmq.namespace }}
       jsonPointers:
-        - /data/ca.crt
-        - /data/tls.crt
-        - /data/tls.key
+        - /data
 {{ end }}
