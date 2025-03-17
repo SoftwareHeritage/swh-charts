@@ -1360,7 +1360,7 @@ scheduler:
     journalConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
-      enabled: true
+      enabled: false
       logLevel: DEBUG
       period: 10
     runner-priority:
