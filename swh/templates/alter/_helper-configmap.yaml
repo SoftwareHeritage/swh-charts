@@ -12,6 +12,11 @@
                                       "service" "restoration_storage"
                                       "configurationRef" .Values.alter.restorationStorageConfigurationRef
                                       "Values" .Values) | fromYaml | mustMerge $alterConfiguration -}}
+{{- if .Values.alter.journalWriterMirrorConfigurationRef }}
+{{- $alterConfiguration = include "swh.journalWriterConfiguration" (dict
+                                      "configurationRef" .Values.alter.journalWriterMirrorConfigurationRef
+                                      "Values" .Values) | fromYaml | mustMerge $alterConfiguration -}}
+{{- end }}
 
 {{- $removalSearches := (dict) -}}
 {{- range $searchName, $searchConfig := .Values.alter.removalSearches -}}

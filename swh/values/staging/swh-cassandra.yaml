@@ -2371,6 +2371,7 @@ alter:
   inventoryStorageConfigurationRef: cassandraROStorageNoMaskingConfiguration
   graphConfigurationRef: alterGraphConfiguration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
+  journalWriterMirrorConfigurationRef: journalWriterMirrorConfiguration
   removalSearches:
     search:
       searchConfigurationRef: remoteSearchConfiguration

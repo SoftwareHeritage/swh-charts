@@ -483,3 +483,10 @@ graph:
             operator: In
             values:
             - "true"
+
+journalWriterMirrorConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  clientId: swh.alter.removals.${HOSTNAME}
+  prefix: swh.journal.mirror-notifications
+  producerConfig:
+    message.max.bytes: 1000000000
