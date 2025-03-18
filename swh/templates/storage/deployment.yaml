@@ -74,25 +74,26 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{ include "swh.storage.cassandra.initKeyspaceContainer" (dict "Values" $.Values
-                                                                       "configurationRef" $storageConfig.storageConfigurationRef
-                                                                       "imagePrefixName" "swh_storage_image") | nindent 8 }}
-        {{- if $initializeBackendConfig }}
-        {{ include "swh.initializeBackend" (dict "Values" $.Values
-                                                 "imagePrefixName" "swh_toolbox_image"
-                                                 "module" "storage"
-                                                 "config" $initializeBackendConfig) | nindent 8 }}
-        {{- end }}
-        {{- if $checkBackendVersion }}
-        {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
-                                                             "imagePrefixName" "swh_storage_image"
-                                                             "module" "storage") | nindent 8 }}
-        {{- end }}
-        {{- if $migrateBackend }}
-        {{ include "swh.migrateBackend" (dict "Values" $.Values
-                                              "imagePrefixName" "swh_toolbox_image"
-                                              "module" "storage") | nindent 8 }}
-        {{- end }}
+{{ include "swh.storage.cassandra.keyspaceManagementContainers"
+    (dict "Values" $.Values
+          "configurationRef" $storageConfig.storageConfigurationRef
+          "imagePrefixName" "swh_storage_image") | indent 8 }}
+{{- if $initializeBackendConfig }}
+{{ include "swh.initializeBackend" (dict "Values" $.Values
+                                          "imagePrefixName" "swh_toolbox_image"
+                                          "module" "storage"
+                                          "config" $initializeBackendConfig) | indent 8 }}
+{{- end }}
+{{- if $checkBackendVersion }}
+{{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
+                                                      "imagePrefixName" "swh_storage_image"
+                                                      "module" "storage") | indent 8 }}
+{{- end }}
+{{- if $migrateBackend }}
+{{ include "swh.migrateBackend" (dict "Values" $.Values
+                                       "imagePrefixName" "swh_toolbox_image"
+                                       "module" "storage") | indent 8 }}
+{{- end }}
       containers:
         - name: {{ $serviceType }}
           resources:

@@ -250,7 +250,7 @@ Generate the configuration for a journal writer
 {{- end -}}
 
 {{/* Generate the init keyspace container configuration if needed */}}
-{{- define "swh.storage.cassandra.initKeyspaceContainer" -}}
+{{- define "swh.storage.cassandra.keyspaceManagementContainers" -}}
   {{- $storageDefinition := required (print "Storage definition " .configurationRef " not found") (get .Values .configurationRef) -}}
   {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " .configurationRef) (get $storageDefinition "storageConfigurationRef") -}}
   {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get .Values $storageConfigurationRef) -}}
@@ -267,6 +267,24 @@ Generate the configuration for a journal writer
       value: /etc/swh/config.yml
   command:
   - /entrypoints/init-cassandra-keyspace.sh
+  volumeMounts:
+  - name: configuration
+    mountPath: /etc/swh
+    readOnly: false
+  - name: backend-utils
+    mountPath: /entrypoints
+    readOnly: true
+    {{- end -}}
+    {{- $upgradeKeyspace := get $storageConfiguration "upgradeKeyspace" -}}
+    {{- if $upgradeKeyspace -}}
+- name: upgrade-cassandra-keyspace
+  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
+  imagePullPolicy: IfNotPresent
+  env:
+    - name: SWH_CONFIG_FILENAME
+      value: /etc/swh/config.yml
+  command:
+  - /entrypoints/upgrade-cassandra-keyspace.sh
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh

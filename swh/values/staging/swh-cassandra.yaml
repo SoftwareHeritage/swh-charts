@@ -41,7 +41,8 @@ cassandraStorage: &cassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: true
+  initKeyspace: false
+  upgradeKeyspace: true
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
     directory_entries_insert_algo: batch
@@ -59,6 +60,7 @@ cassandraROStorage:
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
   initKeyspace: false
+  upgradeKeyspace: false
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
@@ -73,7 +75,8 @@ cassandraChecksROStorage:
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: true
+  initKeyspace: false
+  upgradeKeyspace: false
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider

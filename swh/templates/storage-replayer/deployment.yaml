@@ -54,7 +54,7 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-          {{ include "swh.storage.cassandra.initKeyspaceContainer"
+          {{ include "swh.storage.cassandra.keyspaceManagementContainers"
             (dict "Values" $.Values
                   "configurationRef" $.Values.storageReplayer.storageConfigurationRef
                   "imagePrefixName" "swh_storage_replayer_image") | nindent 8 }}

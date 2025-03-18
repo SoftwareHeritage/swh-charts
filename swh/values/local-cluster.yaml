@@ -324,7 +324,9 @@ cassandraStorage:
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: true
+  # When bootstrapping an empty cluster, these need to be flipped
+  initKeyspace: false
+  upgradeKeyspace: true
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
     directory_entries_insert_algo: batch

@@ -5,6 +5,7 @@ cassandraROStorage:
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
   initKeyspace: false
+  upgradeKeyspace: false
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
@@ -20,6 +21,7 @@ cassandraChecksROStorage:
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
   initKeyspace: false
+  upgradeKeyspace: false
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider

@@ -346,7 +346,23 @@ data:
     [ ! -f "${CONFIG_CASSANDRA}" ] && \
         echo "Missing <${CONFIG_CASSANDRA}> file" && exit 1
 
-    swh storage --config-file=${CONFIG_CASSANDRA} create-keyspace
+    swh storage --config-file=${CONFIG_CASSANDRA} cassandra init
+
+  upgrade-cassandra-keyspace.sh: |
+    #!/usr/bin/env bash
+
+    [ -z "${SWH_CONFIG_FILENAME}" ] && \
+        echo "<SWH_CONFIG_FILENAME> env variable must be set" && exit 1
+
+    CONFIG_CASSANDRA=/etc/swh/storage-cassandra-config.yaml
+
+    python /entrypoints/extract-storage-cassandra-config.py > \
+        ${CONFIG_CASSANDRA}
+
+    [ ! -f "${CONFIG_CASSANDRA}" ] && \
+        echo "Missing <${CONFIG_CASSANDRA}> file" && exit 1
+
+    swh storage --config-file=${CONFIG_CASSANDRA} cassandra upgrade
 
   extract-storage-postgresql-config-py: |
     import yaml
