@@ -4,6 +4,10 @@
 {{- if and (hasKey $graphConfig "ingress") $graphConfig.ingress.enabled -}}
 {{- $type := $graphConfig.type -}}
 {{- $port := $graphConfig.port | default (ternary $.Values.graph.rpcPort $.Values.graph.grpcPort (eq $type "rpc")) -}}
+{{- if not (hasKey $graphConfig "port") }}
+{{- $graphConfig := set $graphConfig "port" $port -}}
+{{- end -}}
+
 {{- $annotations := $graphConfig.ingress.extraAnnotations | default dict }}
 {{- if (eq $type "grpc") }}
 {{- $annotations = mustMergeOverwrite $annotations
