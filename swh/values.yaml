@@ -1895,18 +1895,35 @@ storage_backfiller:
 
 provenance:
   enabled: false
-  # Default service port (overridable per instance)
-  port: 5014
+  # Default rpc port
+  rpcPort: 5014
+  # Default grpc port
+  grpcPort: 50141
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
     secretKeyRef: common-secrets
     secretKeyName: provenance-sentry-dsn
   deployments: {}
-    # instance:
+    # instance-rpc:
     #   enabled: false
+    #   # The server type to deploy, either a rpc or a grpc
+    #   type: rpc
+    #   # Port to use, either inferred from the type or explicitly set (can be
+    #   # overridden per instance)
     #   # port: 5014
+    #   # For type rpc, the graph configuration to use
     #   graphConfigurationRef: graphConfiguration
+    #   hosts: []
+    #   ingress:
+    #     enabled: true
+    #     endpoints: []
+    # instance-grpc:
+    #   enabled: false
+    #   # The server type to deploy, either a rpc or a grpc
+    #   type: grpc
+    #   # For type grpc, the parquet files to use
+    #   parquetFiles: /srv/volumes/datasets/parquet-$version
     #   hosts: []
     #   ingress:
     #     enabled: true

@@ -12,6 +12,8 @@
 {{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
                                  (dict "configuration" $provenanceConfig.gunicorn
                                        "defaultConfiguration" $.Values.provenance.gunicorn)) -}}
+{{- $type := $provenanceConfig.type | default "rpc" -}}
+{{- $port := $provenanceConfig.port | default (ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort (eq $type "rpc")) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,18 +95,23 @@ spec:
           image: {{ $.Values.swh_provenance_image }}:{{ $.Values.swh_provenance_image_version }}
           imagePullPolicy: IfNotPresent
           ports:
-            - containerPort: {{ $provenanceConfig.port | default $.Values.provenance.port }}
-              name: rpc
+            - containerPort: {{ $port }}
+              name: {{ $type }}
           readinessProbe:
+          {{- if (eq $type "rpc") }}
             httpGet:
               path: /
-              port: rpc
+              port: {{ $type }}
+          {{- else }}
+            tcpSocket:
+              port: {{ $type }}
+          {{- end }}
             initialDelaySeconds: 15
             failureThreshold: 30
             periodSeconds: 5
           livenessProbe:
             tcpSocket:
-              port: rpc
+              port: {{ $type }}
             initialDelaySeconds: 10
             periodSeconds: 5
           command:

@@ -3,6 +3,13 @@
 {{- $serviceType := ( print "provenance-" $provenanceType ) -}}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") }}
 {{- if and (hasKey $deploymentConfig "ingress") $deploymentConfig.ingress.enabled -}}
+
+{{- if not (hasKey $deploymentConfig "port") }}
+{{- $type := $deploymentConfig.type | default "rpc" -}}
+{{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
+{{- $deploymentConfig := set $deploymentConfig "port" $port -}}
+{{- end -}}
+
 {{- include "swh.ingress" (dict "serviceType"   $serviceType
                                 "configuration" $deploymentConfig
                                 "Values"        $.Values) -}}
