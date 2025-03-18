@@ -1455,8 +1455,17 @@ objstorageReplayer:
 provenance:
   enabled: false
   deployments:
-    test:
+    test-rpc:
       enabled: true
+      graphConfigurationRef: fakeGraphConfiguration
+      replicas: 1
+      # gunicorn:
+      #   workers: 4
+      #   threads: 1
+      #   timeout: 60
+    test-grpc:
+      enabled: true
+      type: grpc
       graphConfigurationRef: fakeGraphConfiguration
       replicas: 1
       # gunicorn:
