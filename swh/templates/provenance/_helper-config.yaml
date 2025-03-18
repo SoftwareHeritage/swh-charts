@@ -30,3 +30,21 @@ data:
         "Values" .Values) -}}
 {{- end }}
 
+
+{{/*
+   * Read default provenance configuration
+   */}}
+{{ define "swh.provenance.config" }}
+{{- $configuration := .configuration -}}
+{{- if not (hasKey $configuration "type") }}
+{{- $configuration := set $configuration "type" "rpc" -}}
+{{- end -}}
+{{- $type := $configuration.type -}}
+{{- if not (hasKey $configuration "port") }}
+{{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
+{{- $configuration := set $configuration "port" $port -}}
+{{- end -}}
+{{- toYaml $configuration -}}
+{{- end }}
+
+

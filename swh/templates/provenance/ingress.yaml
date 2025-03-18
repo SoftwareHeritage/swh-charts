@@ -4,14 +4,10 @@
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") }}
 {{- if and (hasKey $deploymentConfig "ingress") $deploymentConfig.ingress.enabled -}}
 
-{{- if not (hasKey $deploymentConfig "port") }}
-{{- $type := $deploymentConfig.type | default "rpc" -}}
-{{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
-{{- $deploymentConfig := set $deploymentConfig "port" $port -}}
-{{- end -}}
-
+{{- $configuration := include "swh.provenance.config" (dict "configuration" $deploymentConfig
+                                                            "Values" $.Values) | fromYaml -}}
 {{- include "swh.ingress" (dict "serviceType"   $serviceType
-                                "configuration" $deploymentConfig
+                                "configuration" $configuration
                                 "Values"        $.Values) -}}
 {{- end -}}
 {{- if $deploymentConfig.extraIngresses -}}
@@ -21,8 +17,10 @@
 {{- $mergedIngressConfig :=
   mustMergeOverwrite (omit $deploymentConfig "extraIngresses" "ingress")
                      (dict "ingress" (mustMergeOverwrite $deploymentConfig.ingress $extraIngressConfig)) -}}
+{{- $config := include "swh.provenance.config" (dict "configuration" $mergedIngressConfig
+                                                     "Values" $.Values) | fromYaml -}}
 {{- include "swh.ingress" (dict "serviceType"    $serviceType
-                                "configuration"  $mergedIngressConfig
+                                "configuration"  $config
                                 "extraNameLabel" ( print "extra-" $extraNameLabelCtr )
                                 "Values"         $.Values) -}}
 {{- end -}}

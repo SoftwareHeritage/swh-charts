@@ -1,13 +1,10 @@
 {{ if .Values.provenance.enabled -}}
 {{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
-{{- if not (hasKey $deploymentConfig "port") }}
-{{- $type := $deploymentConfig.type | default "rpc" -}}
-{{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
-{{- $deploymentConfig := set $deploymentConfig "port" $port -}}
-{{- end -}}
+{{- $configuration := include "swh.provenance.config" (dict "configuration" $deploymentConfig
+                                                            "Values" $.Values) | fromYaml -}}
 {{- include "swh.service" (dict "serviceType"   ( print "provenance-" $provenanceType )
-                                "configuration" $deploymentConfig
+                                "configuration" $configuration
                                 "Values"        $.Values) -}}
 {{- end -}}
 {{ end -}}

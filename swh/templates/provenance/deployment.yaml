@@ -12,8 +12,10 @@
 {{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
                                  (dict "configuration" $provenanceConfig.gunicorn
                                        "defaultConfiguration" $.Values.provenance.gunicorn)) -}}
-{{- $type := $provenanceConfig.type | default "rpc" -}}
-{{- $port := $provenanceConfig.port | default (ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort (eq $type "rpc")) -}}
+{{- $provenanceConfig := include "swh.provenance.config" (dict "configuration" $provenanceConfig
+                                                            "Values" $.Values) | fromYaml -}}
+{{- $type := $provenanceConfig.type -}}
+{{- $port := $provenanceConfig.port -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
