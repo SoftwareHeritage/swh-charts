@@ -362,7 +362,29 @@ data:
     [ ! -f "${CONFIG_CASSANDRA}" ] && \
         echo "Missing <${CONFIG_CASSANDRA}> file" && exit 1
 
-    swh storage --config-file=${CONFIG_CASSANDRA} cassandra upgrade
+    ret=0
+
+    swh storage --config-file=${CONFIG_CASSANDRA} cassandra list-migrations
+    swh storage --config-file=${CONFIG_CASSANDRA} cassandra upgrade || ret=$?
+
+    case "$ret" in
+        0)
+          # Migrations have succeeded
+          exit 0
+          ;;
+        3)
+          # No migrations to do
+          exit 0
+          ;;
+        5)
+          # Only optional migrations are left to do, we can start the RPC service
+          exit 0
+          ;;
+        *)
+          # Unknown exit code
+          exit $ret
+          ;;
+    esac
 
   extract-storage-postgresql-config-py: |
     import yaml
