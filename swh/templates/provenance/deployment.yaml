@@ -16,7 +16,10 @@
 {{- $type := $provenanceConfig.type -}}
 {{- $port := $provenanceConfig.port -}}
 {{- $logLevel := $provenanceConfig.logLevel -}}
-{{- $gunicornConfig := .configuration.gunicornConfig -}}
+{{- $datasetName := $provenanceConfig.datasetName | default "" -}}
+{{- $graphPath := $provenanceConfig.graphPath | default "" -}}
+{{- $provenancePath := $provenanceConfig.provenancePath | default "" -}}
+{{- $gunicornConfig := $provenanceConfig.gunicornConfig | default dict -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -123,7 +126,11 @@ spec:
           - -c
           - /opt/swh/entrypoint.sh
           env:
-            {{ if $gunicornConfig -}}
+            - name: PROVENANCE_TYPE
+              value: {{ $type }}
+            - name: PORT
+              value: {{ $port }}
+            {{ if eq $type "rpc" -}}
             - name: WORKERS
               value: {{ $gunicornConfig.workers | quote }}
             - name: THREADS
@@ -132,6 +139,13 @@ spec:
               value: {{ $gunicornConfig.timeout | quote }}
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
+            - name: STATSD_SERVICE_TYPE
+              value: {{ $serviceType }}
+            {{ else -}}
+            - name: PROVENANCE_PATH
+              value: {{ $provenancePath }}
+            - name: GRAPH_PATH
+              value: {{ $graphPath }}
             {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -139,8 +153,6 @@ spec:
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:{{ $serviceType }}
-            - name: STATSD_SERVICE_TYPE
-              value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $logLevel }}
           {{- if $.Values.provenance.sentry.enabled }}

@@ -2,7 +2,8 @@
    * Create a provenance configmap for service .serviceType
    */}}
 {{ define "swh.provenance.configmap" }}
-{{- $graphConfigurationRef := required (print "<.configuration.graphConfigurationRef> key is mandatory" ) .configuration.graphConfigurationRef -}}
+{{- $graphConfigurationRef := .configuration.graphConfigurationRef -}}
+{{- if $graphConfigurationRef -}}
 {{- $graphConfiguration := get .Values $graphConfigurationRef -}}
 ---
 apiVersion: v1
@@ -14,6 +15,7 @@ data:
   config.yml.template: |
     provenance:
       {{- toYaml $graphConfiguration | nindent 6 -}}
+{{ end }}
 {{- end -}}
 
 {{/*
@@ -32,7 +34,8 @@ data:
 
 
 {{/*
-   * Read default provenance configuration
+   * Configure provenance configuration with default values.
+   * This also raises when mandatory configuration is missing.
    */}}
 {{ define "swh.provenance.config" }}
 {{- $configuration := .configuration -}}
@@ -45,13 +48,30 @@ data:
 {{- $configuration := set $configuration "port" $port -}}
 {{- end -}}
 
-{{- $logLevel := .configuration.logLevel | default $.Values.provenance.logLevel | default "INFO" | upper -}}
+{{- $logLevel := $configuration.logLevel | default $.Values.provenance.logLevel | default "INFO" | upper -}}
 {{- $configuration := set $configuration "logLevel" $logLevel -}}
-{{ $gunicornConfig := eq $type "rpc" | ternary
-  (fromYaml (include "swh.gunicorn.config"
-    (dict "configuration" $provenanceConfig.gunicorn
-          "defaultConfiguration" $.Values.provenance.gunicorn)) dict -}}
+
+{{- if eq $type "rpc" -}}
+{{- $graphConfigurationRef := required (print "<.configuration.graphConfigurationRef> key is mandatory" ) .configuration.graphConfigurationRef -}}
+{{- $gunicornConfig := fromYaml
+                       (include "swh.gunicorn.config"
+                         (dict "defaultConfiguration" $.Values.provenance.gunicorn
+                               "configuration" $configuration.gunicorn)) -}}
 {{- $configuration := set $configuration "gunicornConfig" $gunicornConfig -}}
+{{- else -}}
+{{- $provenanceIndexDataset := dig "dataset" "provenance" "index" false $configuration -}}
+{{- $configuration := set $configuration "provenanceIndexDataset" $provenanceIndexDataset -}}
+{{- $provenanceFetchDataset := dig "dataset" "provenance" "fetch" false $configuration -}}
+{{- $configuration := set $configuration "provenanceFetchDataset" $provenanceFetchDataset -}}
+{{- if or $provenanceIndexDataset $provenanceFetchDataset -}}
+{{- $datasetName := required (print "<.configuration.dataset.name> key is mandatory") (dig "dataset" "name" nil $configuration) -}}
+{{- $configuration := set $configuration "datasetName" $datasetName -}}
+{{- end -}}
+{{- $graphPath := required (print "<.configuration.dataset.graph.path> key is mandatory")  $configuration.dataset.graph.path -}}
+{{- $configuration := set $configuration "graphPath" $graphPath -}}
+{{- $provenancePath := $configuration.dataset.provenance.path -}}
+{{- $graphPath := required (print "<.configuration.dataset.provenance.path> key is mandatory")  $configuration.dataset.provenance.path -}}
+{{- $configuration := set $configuration "provenancePath" $provenancePath -}}
 {{- end -}}
 {{- toYaml $configuration -}}
 {{- end }}
