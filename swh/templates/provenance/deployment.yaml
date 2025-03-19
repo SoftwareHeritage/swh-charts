@@ -11,14 +11,12 @@
 {{- $configChecksum := include "swh.provenance.configmap" $configArgsDict | sha256sum -}}
 {{- $configLoggingChecksum := include "swh.provenance.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $securityContext := $provenanceConfig.securityContext | default $.Values.provenance.securityContext -}}
-{{ $gunicornConfig := fromYaml (include "swh.gunicorn.config"
-                                 (dict "configuration" $provenanceConfig.gunicorn
-                                       "defaultConfiguration" $.Values.provenance.gunicorn)) -}}
 {{- $provenanceConfig := include "swh.provenance.config" (dict "configuration" $provenanceConfig
                                                             "Values" $.Values) | fromYaml -}}
 {{- $type := $provenanceConfig.type -}}
 {{- $port := $provenanceConfig.port -}}
 {{- $logLevel := $provenanceConfig.logLevel -}}
+{{- $gunicornConfig := .configuration.gunicornConfig -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -132,6 +130,8 @@ spec:
               value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
               value: {{ $gunicornConfig.timeout | quote }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
             {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
@@ -143,8 +143,6 @@ spec:
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
               value: {{ $logLevel }}
-            - name: SWH_LOG_CONFIG_JSON
-              value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.provenance.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}

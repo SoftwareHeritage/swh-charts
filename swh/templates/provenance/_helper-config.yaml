@@ -43,7 +43,15 @@ data:
 {{- if not (hasKey $configuration "port") }}
 {{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
 {{- $configuration := set $configuration "port" $port -}}
+{{- end -}}
+
 {{- $logLevel := .configuration.logLevel | default $.Values.provenance.logLevel | default "INFO" | upper -}}
+{{- $configuration := set $configuration "logLevel" $logLevel -}}
+{{ $gunicornConfig := eq $type "rpc" | ternary
+  (fromYaml (include "swh.gunicorn.config"
+    (dict "configuration" $provenanceConfig.gunicorn
+          "defaultConfiguration" $.Values.provenance.gunicorn)) dict -}}
+{{- $configuration := set $configuration "gunicornConfig" $gunicornConfig -}}
 {{- end -}}
 {{- toYaml $configuration -}}
 {{- end }}
