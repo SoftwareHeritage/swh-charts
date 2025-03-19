@@ -43,6 +43,7 @@ data:
 {{- if not (hasKey $configuration "port") }}
 {{- $port := eq $type "rpc" | ternary $.Values.provenance.rpcPort $.Values.provenance.grpcPort -}}
 {{- $configuration := set $configuration "port" $port -}}
+{{- $logLevel := .configuration.logLevel | default $.Values.provenance.logLevel | default "INFO" | upper -}}
 {{- end -}}
 {{- toYaml $configuration -}}
 {{- end }}

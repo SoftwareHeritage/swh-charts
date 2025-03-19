@@ -18,6 +18,7 @@
                                                             "Values" $.Values) | fromYaml -}}
 {{- $type := $provenanceConfig.type -}}
 {{- $port := $provenanceConfig.port -}}
+{{- $logLevel := $provenanceConfig.logLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -141,7 +142,7 @@ spec:
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
             - name: SWH_LOG_LEVEL
-              value: {{ $provenanceConfig.logLevel | default $.Values.provenance.logLevel | default "INFO" | quote }}
+              value: {{ $logLevel }}
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
           {{- if $.Values.provenance.sentry.enabled }}
