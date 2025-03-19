@@ -1466,7 +1466,22 @@ provenance:
     test-grpc:
       enabled: true
       type: grpc
-      graphConfigurationRef: fakeGraphConfiguration
+      dataset:
+        name: 2024-08-23-popular-500-python
+        provenance:
+          fetch: true
+          index: true
+          path: /srv/dataset/provenance
+        graph:
+          path: /srv/dataset/graph
+      startService: true
+      extraVolumes:
+        dataset-persistent:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: provenance-popular-persistent-pvc
+
       replicas: 1
       # gunicorn:
       #   workers: 4
@@ -1525,6 +1540,17 @@ externalServices:
 volumes:
   enabled: true
   persistentVolumeClaims:
+    provenance-popular-persistent-pvc:
+      enabled: true
+      appName: provenance-test-grpc
+      spec:
+        storageClassName: standard
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
     alter-recovery-bundles-pvc:
       enabled: true
       appName: alter

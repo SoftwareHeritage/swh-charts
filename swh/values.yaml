@@ -1922,8 +1922,24 @@ provenance:
     #   enabled: false
     #   # The server type to deploy, either a rpc or a grpc
     #   type: grpc
-    #   # For type grpc, the parquet files to use
-    #   parquetFiles: /srv/volumes/datasets/parquet-$version
+    #   # For type grpc, datasets need to be available for the service to use
+    #   dataset:
+    #     # Name of the dataset, graph and provenance must be in sync so same
+    #     # version must be used
+    #     name: 2024-08-23-popular-500-python
+    #     # Graph setup
+    #     graph:
+    #       # Where to store the files
+    #       path: /srv/dataset/graph
+    #     provenance:
+    #       # Whether or not to fetch provenance dataset
+    #       fetch: true
+    #       # Whether or not to build the provenance dataset indices
+    #       index: true
+    #       # Where to store the parquet files
+    #       path: /srv/dataset/provenance
+    #   # Whether to start/stop the service
+    #   startService: true
     #   hosts: []
     #   ingress:
     #     enabled: true
