@@ -88,7 +88,7 @@
   image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
   imagePullPolicy: IfNotPresent
   command:
-  - /entrypoints/graph-wait-for-dataset.sh
+  - /entrypoints/wait-for-dataset.sh
   env:
     {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .graphPath) | nindent 4 }}
     - name: DATASET_LOCATION

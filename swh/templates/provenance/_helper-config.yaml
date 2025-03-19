@@ -39,6 +39,8 @@ data:
    */}}
 {{ define "swh.provenance.config" }}
 {{- $configuration := .configuration -}}
+{{- $provenanceImageVersion := get $configuration "imageVersion" | default $.Values.provenance.imageVersion | default $.Values.swh_provenance_image_version -}}
+{{- $configuration := set $configuration "imageVersion" $provenanceImageVersion -}}
 {{- if not (hasKey $configuration "type") }}
 {{- $configuration := set $configuration "type" "rpc" -}}
 {{- end -}}
