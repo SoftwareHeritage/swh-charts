@@ -414,9 +414,11 @@ postgresqlScrubberConfiguration:
 
 kafkaBrokers:
   - journal2.internal.staging.swh.network:9092
+  - kafka3.internal.staging.swh.network:9092
 
 internalSecuredKafkaBrokers:
   - journal2.internal.staging.swh.network:9094
+  - kafka3.internal.staging.swh.network:9094
 
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
