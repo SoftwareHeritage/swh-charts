@@ -1,7 +1,9 @@
 {{ if .Values.provenance.enabled -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $provenanceType, $provenanceConfig := .Values.provenance.deployments }}
-{{- if or (not (hasKey $provenanceConfig "enabled")) (get $provenanceConfig "enabled") -}}
+{{- if and (or (not (hasKey $provenanceConfig "enabled")) (get $provenanceConfig "enabled"))
+           (or (not (hasKey $provenanceConfig "startService")) (get $provenanceConfig "startService")) -}}
+
 {{- $serviceType := ( print "provenance-" $provenanceType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $provenanceConfig
