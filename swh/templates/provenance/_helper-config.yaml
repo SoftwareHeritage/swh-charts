@@ -66,13 +66,12 @@ data:
 {{- $provenanceFetchDataset := dig "dataset" "provenance" "fetch" false $configuration -}}
 {{- $configuration := set $configuration "provenanceFetchDataset" $provenanceFetchDataset -}}
 {{- if or $provenanceIndexDataset $provenanceFetchDataset -}}
-{{- $datasetName := required (print "<.configuration.dataset.name> key is mandatory") (dig "dataset" "name" nil $configuration) -}}
+{{- $datasetName := required (print "<.configuration.dataset.name> key is mandatory") $configuration.dataset.name -}}
 {{- $configuration := set $configuration "datasetName" $datasetName -}}
 {{- end -}}
-{{- $graphPath := required (print "<.configuration.dataset.graph.path> key is mandatory")  $configuration.dataset.graph.path -}}
+{{- $graphPath := required (print "<.configuration.dataset.graph.path> key is mandatory") $configuration.dataset.graph.path -}}
 {{- $configuration := set $configuration "graphPath" $graphPath -}}
-{{- $provenancePath := $configuration.dataset.provenance.path -}}
-{{- $graphPath := required (print "<.configuration.dataset.provenance.path> key is mandatory")  $configuration.dataset.provenance.path -}}
+{{- $provenancePath := required (print "<.configuration.dataset.provenance.path> key is mandatory") $configuration.dataset.provenance.path -}}
 {{- $configuration := set $configuration "provenancePath" $provenancePath -}}
 {{- end -}}
 {{- toYaml $configuration -}}
