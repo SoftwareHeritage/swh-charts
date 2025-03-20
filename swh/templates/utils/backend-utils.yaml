@@ -173,36 +173,49 @@ data:
         echo "Datasets graph & provenance <${DATASET_VERSION}> already present. Skip." && \
         exit 0
 
+    set -e
+
+    # Create destination paths
+    mkdir -p ${PROVENANCE_PATH} ${GRAPH_PATH}
+
+    echo "Fetching datasets..."
+
     URL_PROVENANCE="s3://softwareheritage/derived_datasets/${DATASET_VERSION}/provenance/all/"
 
-    CMD_GET="aws s3 cp --no-sign-request"
+    CMD_GET="aws s3 cp --no-progress --no-sign-request"
 
-    # Retrieve the provenance dataset parquet files
-    $CMD_GET --recursive "${URL_PROVENANCE}" "${PROVENANCE_PATH}"
+    echo "1. Fetching provenance dataset (parquet files)..."
+    ${CMD_GET} --recursive "${URL_PROVENANCE}" "${PROVENANCE_PATH}"
+    echo "1. Provenance datasets installed!"
 
-    # Retrieve the required graph files
+    echo "2. Fetching extra graph files..."
     URL_GRAPH="s3://softwareheritage/graph/${DATASET_VERSION}/compressed"
+
+    mkdir -p "${GRAPH_PATH}"
     for filename in graph.pthash graph.pthash.order graph.node2swhid.bin.zst graph.node2type.bin.zst; do
-        $CMD_GET "${URL_GRAPH}/${filename}" "${GRAPH_PATH}"
+        ${CMD_GET} "${URL_GRAPH}/${filename}" "${GRAPH_PATH}"
     done
+    echo "2. Extra graph files installed!"
 
-    # Uncompress the compressed graph files
-    pushd "${DIR_GRAPH}"
-
+    echo "3. Uncompressing graph files..."
+    # Uncompress the compressed graph *.zst files
     for filename in graph.node2type.bin.zst graph.node2swhid.bin.zst; do
+        filepath="${GRAPH_PATH}/${filename}"
+        CMD="unzstd --rm \"${filepath}\""
         # Uncompress and delete the .zst file
-        [ -f "${filename}" ] && unzstd --rm "${filename}"
+        [ -f "${filepath}" ] && echo "${CMD}" && "${CMD}"
     done
-
-    popd
+    echo "3. Graph files uncompressed!"
 
     # Make explicit the provenance datasets are fetched
     touch ${WITNESS_FETCH_FILE}
 
+    echo "Provenance datasets installed!"
+
   provenance-index-dataset.sh: |
     #!/usr/bin/env bash
-    [ -z "${WITNESS_SOURCE_FILE}" ] && \
-      echo "<WITNESS_SOURCE_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_DATASETS_FILE}" ] && \
+      echo "<WITNESS_DATASETS_FILE> env variable must be set" && exit 1
     [ -z "${WITNESS_INDEX_FILE}" ] && \
       echo "<WITNESS_INDEX_FILE> env variable must be set" && exit 1
     [ -z "${PERIOD}" ] && \
@@ -210,24 +223,34 @@ data:
     [ -z "${PROVENANCE_PATH}" ] && \
       echo "<PROVENANCE_PATH> env variable must be set" && exit 1
 
-    [ -f ${WITNESS_INDEX_FILE} ] && echo "Provenance already indexed, do nothing." && \
-      exit 0
+    # [ -f ${WITNESS_INDEX_FILE} ] && echo "Provenance already indexed, do nothing." && \
+    #   exit 0
 
-    set -eux
+    set -eu
 
     # Let's wait for the dataset installation
-    while [ ! -f "${WITNESS_SOURCE_FILE}" ]; do
-        echo "${WITNESS_SOURCE_FILE} missing, waiting provenance dataset installation..."
+    while [ ! -f "${WITNESS_DATASETS_FILE}" ]; do
+        echo "${WITNESS_DATASETS_FILE} missing, waiting provenance dataset installation..."
         sleep $PERIOD
     done
 
+    echo "Datasets file installed, build provenance dataset indexes..."
+
+    echo "provenance path: $PROVENANCE_PATH"
+    set -x
+
+    ls -lah /srv/dataset
+    ls -lah $PROVENANCE_PATH
+    ls -lah /srv/dataset/graph/
     # To make the query faster, the provenance needs to build index out of the
     # current dataset files. We store the output indexes in the same path as
     # the dataset.
     swh-provenance-index \
-      --database ${PROVENANCE_PATH} \
-      --indexes ${PROVENANCE_PATH} && \
-      touch "${WITNESS_INDEX_FILE}"
+      --database file://${PROVENANCE_PATH} && \
+      touch "${WITNESS_INDEX_FILE}" && \
+      echo "Provenance indexes built!" || \
+
+    echo "Provenance indexes failed!"
 
   initialize-search-backend.sh: |
     #!/usr/bin/env bash

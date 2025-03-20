@@ -13,7 +13,8 @@
   command:
   - /entrypoints/provenance-fetch-datasets.sh
   env:
-  {{- include "swh.provenance.volume.witnessfile" (dict "provenancePath" .provenancePath) | nindent 2 }}
+  {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_FETCH_FILE"
+                                                        "provenancePath" .provenancePath) | nindent 2 }}
   - name: SWH_CONFIG_FILENAME
     value: /etc/swh/config.yml
   - name: PROVENANCE_PATH
@@ -66,9 +67,11 @@
   command:
   - /entrypoints/provenance-index-dataset.sh
   env:
+    {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_DATASETS_FILE"
+                                                          "provenancePath" .provenancePath) | nindent 4 }}
     {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_INDEX_FILE"
                                                           "provenancePath" .provenancePath
-                                                          "filename" ".provenance-is-reindexed") | nindent 4 }}
+                                                          "filename" ".provenance-is-indexed") | nindent 4 }}
     - name: PROVENANCE_PATH
       value: {{ .provenancePath }}
     - name: PERIOD
