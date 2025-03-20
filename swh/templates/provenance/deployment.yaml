@@ -152,7 +152,7 @@ spec:
             - name: PROVENANCE_TYPE
               value: {{ $type }}
             - name: PORT
-              value: {{ $port }}
+              value: {{ $port | quote }}
             {{ if eq $type "rpc" -}}
             - name: WORKERS
               value: {{ $gunicornConfig.workers | quote }}
@@ -160,6 +160,8 @@ spec:
               value: {{ $gunicornConfig.threads | quote }}
             - name: TIMEOUT
               value: {{ $gunicornConfig.timeout | quote }}
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
             - name: SWH_LOG_CONFIG_JSON
               value: /etc/swh/logging/logging-gunicorn.json
             - name: STATSD_SERVICE_TYPE
