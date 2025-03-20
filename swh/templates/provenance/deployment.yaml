@@ -1,5 +1,6 @@
 {{ if .Values.provenance.enabled -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{- $backendUtilsChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
 {{ range $provenanceType, $provenanceConfig := .Values.provenance.deployments }}
 {{- if and (or (not (hasKey $provenanceConfig "enabled")) (get $provenanceConfig "enabled"))
            (or (not (hasKey $provenanceConfig "startService")) (get $provenanceConfig "startService")) -}}
@@ -51,6 +52,7 @@ spec:
         checksum/config: {{ $configChecksum }}
         checksum/config-logging: {{ $configLoggingChecksum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
+        checksum/backend-utils: {{ $backendUtilsChecksum }}
     spec:
       {{- if $securityContext }}
       securityContext:
@@ -222,6 +224,10 @@ spec:
       - name: config-utils
         configMap:
           name: config-utils
+          defaultMode: 0555
+      - name: backend-utils
+        configMap:
+          name: backend-utils
           defaultMode: 0555
       {{- range $volumeName, $volumeConfig := $provenanceConfig.extraVolumes }}
       - name: {{ $volumeName }}
