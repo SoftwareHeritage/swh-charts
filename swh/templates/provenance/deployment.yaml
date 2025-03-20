@@ -13,7 +13,7 @@
 {{- $configLoggingChecksum := include "swh.provenance.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $securityContext := $provenanceConfig.securityContext | default $.Values.provenance.securityContext -}}
 {{- $provenanceConfig := include "swh.provenance.config" (dict "configuration" $provenanceConfig
-                                                            "Values" $.Values) | fromYaml -}}
+                                                               "Values" $.Values) | fromYaml -}}
 {{- $type := $provenanceConfig.type -}}
 {{- $port := $provenanceConfig.port -}}
 {{- $logLevel := $provenanceConfig.logLevel -}}
