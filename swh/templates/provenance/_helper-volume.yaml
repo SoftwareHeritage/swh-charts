@@ -20,7 +20,7 @@
   - name: PROVENANCE_PATH
     value: {{ .provenancePath }}
   - name: PROVENANCE_DATASET_FULL
-    value: {{ .provenanceDatasetFull }}
+    value: {{ .datasetFull | quote }}
   - name: GRAPH_PATH
     value: {{ .graphPath }}
   - name: DATASET_VERSION

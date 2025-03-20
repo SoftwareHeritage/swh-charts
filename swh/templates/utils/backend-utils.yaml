@@ -201,7 +201,12 @@ data:
     URL_GRAPH="s3://softwareheritage/graph/${DATASET_VERSION}/compressed"
 
     mkdir -p "${GRAPH_PATH}"
-    for filename in graph.pthash graph.pthash.order graph.node2swhid.bin.zst graph.node2type.bin.zst; do
+    for filename in graph.pthash graph.pthash.order graph.nodes.count.txt \
+                    graph.property.message.bin.zst \
+                    graph.property.message.offset.bin.zst \
+                    graph.property.tag_name.bin.zst \
+                    graph.property.tag_name.offset.bin.zst \
+                    graph.node2swhid.bin.zst graph.node2type.bin.zst; do
         ${CMD_GET} "${URL_GRAPH}/${filename}" "${GRAPH_PATH}"
     done
     echo "2. Extra graph files installed!"
@@ -209,10 +214,9 @@ data:
     echo "3. Uncompressing graph files..."
     set -x
     # Uncompress the compressed graph *.zst files
-    for filename in graph.node2type.bin.zst graph.node2swhid.bin.zst; do
-        filepath="${GRAPH_PATH}/${filename}"
+    for filepath in $(ls ${GRAPH_PATH}/*.zst); do
         # Uncompress and delete the .zst file
-        [ -f "${filepath}" ] && unzstd --rm "${filepath}"
+        [ -f "${filepath}" ] && unzstd --force --rm "${filepath}"
     done
     set +x
     echo "3. Graph files uncompressed!"

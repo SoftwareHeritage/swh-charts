@@ -174,7 +174,7 @@ spec:
             - name: PROVENANCE_PATH
               value: {{ $provenancePath }}
             - name: GRAPH_PATH
-              value: {{ $graphPath }}
+              value: {{ $graphPath }}/graph
             {{ end -}}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
