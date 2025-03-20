@@ -180,7 +180,16 @@ data:
 
     echo "Fetching datasets..."
 
-    URL_PROVENANCE="s3://softwareheritage/derived_datasets/${DATASET_VERSION}/provenance/all/"
+    if [ ${PROVENANCE_DATASET_FULL} = true ]; then
+        # Retrieve all the provenance dataset
+        REFS=all
+    else
+        # This excludes revisions not targetted by a snapshot
+        # Ok to use for test purposes
+        REFS=heads
+    fi
+
+    URL_PROVENANCE="s3://softwareheritage/derived_datasets/${DATASET_VERSION}/provenance/${REFS}/"
 
     CMD_GET="aws s3 cp --no-progress --no-sign-request"
 

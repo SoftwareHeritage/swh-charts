@@ -1471,6 +1471,8 @@ provenance:
         provenance:
           fetch: true
           index: true
+          # For test purpose, use a dataset subset
+          full: false
           path: /srv/dataset/provenance
         graph:
           path: /srv/dataset/graph

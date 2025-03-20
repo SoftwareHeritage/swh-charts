@@ -24,6 +24,7 @@
 {{- $provenanceFetchDataset := $provenanceConfig.provenanceFetchDataset -}}
 {{- $provenanceIndexDataset := $provenanceConfig.provenanceIndexDataset -}}
 {{- $provenanceImageVersion := $provenanceConfig.imageVersion -}}
+{{- $provenanceDatasetFull := $provenanceConfig.provenanceDatasetFull -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,6 +94,7 @@ spec:
         {{- if $provenanceFetchDataset }}
         {{- include "swh.provenance.fetchDataset" (dict "Values" $.Values
                                                         "datasetName" $datasetName
+                                                        "datasetFull" $provenanceDatasetFull
                                                         "provenancePath" $provenancePath
                                                         "graphPath" $graphPath
                                                         "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 -}}

@@ -19,6 +19,8 @@
     value: /etc/swh/config.yml
   - name: PROVENANCE_PATH
     value: {{ .provenancePath }}
+  - name: PROVENANCE_DATASET_FULL
+    value: {{ .provenanceDatasetFull }}
   - name: GRAPH_PATH
     value: {{ .graphPath }}
   - name: DATASET_VERSION

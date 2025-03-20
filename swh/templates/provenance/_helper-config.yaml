@@ -61,6 +61,8 @@ data:
                                "configuration" $configuration.gunicorn)) -}}
 {{- $configuration := set $configuration "gunicornConfig" $gunicornConfig -}}
 {{- else -}}
+{{- $provenanceDatasetFull := dig "dataset" "provenance" "full" true $configuration -}}
+{{- $configuration := set $configuration "provenanceDatasetFull" $provenanceDatasetFull -}}
 {{- $provenanceIndexDataset := dig "dataset" "provenance" "index" false $configuration -}}
 {{- $configuration := set $configuration "provenanceIndexDataset" $provenanceIndexDataset -}}
 {{- $provenanceFetchDataset := dig "dataset" "provenance" "fetch" false $configuration -}}
