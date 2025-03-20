@@ -1,11 +1,16 @@
 {{ if .Values.provenance.enabled -}}
 {{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- $provenanceConfig := include "swh.provenance.config" (dict "configuration" $deploymentConfig
+                                                               "Values" $.Values) | fromYaml -}}
+{{- $type := $provenanceConfig.type -}}
+{{- if eq $type "rpc" -}}
 {{- $argsDict := dict "serviceType" (print "provenance-" $provenanceType)
-                      "configuration" $deploymentConfig
+                      "configuration" $provenanceConfig
                       "Values" $.Values -}}
 {{ include "swh.provenance.configmap" $argsDict }}
 {{ include "swh.provenance.gunicorn.logging" $argsDict }}
+{{- end -}}
 {{- end -}}
 {{ end -}}
 {{- end -}}
