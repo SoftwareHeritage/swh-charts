@@ -6,10 +6,10 @@
 
 {{/* Generate the initialize provenance backend container configuration if needed */}}
 {{- define "swh.provenance.fetchDataset" -}}
-{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
-        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+{{- $imagePrefixName := .imagePrefixName | default "swh_provenance_image" -}}
+{{- $imageVersion := .imageVersion | default ( get .Values (print $imagePrefixName "_version") ) -}}
 - name: {{ .containerName | default "fetch-provenance-dataset" }}
-  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+  image: {{ get .Values $imagePrefixName }}:{{ $imageVersion }}
   command:
   - /entrypoints/provenance-fetch-datasets.sh
   env:
@@ -58,10 +58,10 @@
 
 {{/* init-container to index provenance dataset. */}}
 {{- define "swh.provenance.indexDataset" -}}
-{{- $image_version := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
-        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
-- name: {{ .containerName | default "reindex-provenance-dataset" }}
-  image: {{ get .Values .imagePrefixName }}:{{ $image_version }}
+{{- $imagePrefixName := .imagePrefixName | default "swh_provenance_image" -}}
+{{- $imageVersion := .imageVersion | default ( get .Values (print $imagePrefixName "_version") ) -}}
+- name: {{ .containerName | default "index-provenance-dataset" }}
+  image: {{ get .Values $imagePrefixName }}:{{ $imageVersion }}
   imagePullPolicy: IfNotPresent
   command:
   - /entrypoints/provenance-index-dataset.sh

@@ -89,25 +89,23 @@ spec:
             mountPath: /entrypoints
             readOnly: true
         {{- if $provenanceFetchDataset }}
-        {{ include "swh.provenance.fetchDataset" (dict "Values" $.Values
-                                                       "imagePrefixName" "swh_provenance_image"
-                                                       "datasetName" $datasetName
-                                                       "provenancePath" $provenancePath
-                                                       "graphPath" $graphPath
-                                                       "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 }}
+        {{- include "swh.provenance.fetchDataset" (dict "Values" $.Values
+                                                        "datasetName" $datasetName
+                                                        "provenancePath" $provenancePath
+                                                        "graphPath" $graphPath
+                                                        "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 -}}
         {{- end }}
         {{- if $provenanceIndexDataset }}
-        {{ include "swh.provenance.indexDataset" (dict "Values" $.Values
-                                                       "imagePrefixName" "swh_provenance_image"
-                                                       "imageVersion" $provenanceImageVersion
-                                                       "provenancePath" $provenancePath
-                                                       "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 }}
-        {{ end }}
+        {{- include "swh.provenance.indexDataset" (dict "Values" $.Values
+                                                        "imageVersion" $provenanceImageVersion
+                                                        "provenancePath" $provenancePath
+                                                        "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 -}}
+        {{- end }}
         {{- if $provenanceFetchDataset }}
-        {{ include "swh.provenance.waitForDataset" (dict "Values" $.Values
-                                                         "provenancePath" $provenancePath
-                                                         "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 }}
-        {{ end }}
+        {{- include "swh.provenance.waitForDataset" (dict "Values" $.Values
+                                                          "provenancePath" $provenancePath
+                                                          "extraVolumes" $provenanceConfig.extraVolumes) | nindent 8 -}}
+        {{- end }}
       containers:
         - name: {{ $serviceType }}
           resources:
