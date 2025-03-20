@@ -207,13 +207,14 @@ data:
     echo "2. Extra graph files installed!"
 
     echo "3. Uncompressing graph files..."
+    set -x
     # Uncompress the compressed graph *.zst files
     for filename in graph.node2type.bin.zst graph.node2swhid.bin.zst; do
         filepath="${GRAPH_PATH}/${filename}"
-        CMD="unzstd --rm \"${filepath}\""
         # Uncompress and delete the .zst file
-        [ -f "${filepath}" ] && echo "${CMD}" && "${CMD}"
+        [ -f "${filepath}" ] && unzstd --rm "${filepath}"
     done
+    set +x
     echo "3. Graph files uncompressed!"
 
     # Make explicit the provenance datasets are fetched
@@ -232,8 +233,8 @@ data:
     [ -z "${PROVENANCE_PATH}" ] && \
       echo "<PROVENANCE_PATH> env variable must be set" && exit 1
 
-    # [ -f ${WITNESS_INDEX_FILE} ] && echo "Provenance already indexed, do nothing." && \
-    #   exit 0
+    [ -f ${WITNESS_INDEX_FILE} ] && echo "Provenance already indexed, do nothing." && \
+      exit 0
 
     set -eu
 
@@ -248,9 +249,6 @@ data:
     echo "provenance path: $PROVENANCE_PATH"
     set -x
 
-    ls -lah /srv/dataset
-    ls -lah $PROVENANCE_PATH
-    ls -lah /srv/dataset/graph/
     # To make the query faster, the provenance needs to build index out of the
     # current dataset files. We store the output indexes in the same path as
     # the dataset.
