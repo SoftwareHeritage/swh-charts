@@ -1457,7 +1457,7 @@ provenance:
   deployments:
     test-rpc:
       enabled: true
-      graphConfigurationRef: fakeGraphConfiguration
+      graphConfigurationRef: provenanceRpcWithRemoteGrpcGraphPopularConfiguration
       replicas: 1
       # gunicorn:
       #   workers: 4
@@ -1485,14 +1485,18 @@ provenance:
               claimName: provenance-popular-persistent-pvc
 
       replicas: 1
-      # gunicorn:
-      #   workers: 4
-      #   threads: 1
-      #   timeout: 60
-
-fakeGraphConfiguration:
-  cls: graph
-  url: graph.i.s.o:50091
+      hosts:
+        - provenance-grpc-popular-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 # Rpc Rust graph configuration (the rpc instance spawns a grpc instance too)
 rpcLocalRustWithGrpcGraphConfiguration:
@@ -1508,11 +1512,16 @@ rpcWithRemoteGrpcGraphExampleConfiguration:
     port: 80
 
 # The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGrpcGraphPopularConfiguration:
+graphRpcWithRemoteGrpcGraphPopularConfiguration:
   cls: remote
   url: graph-grpc-popular-ingress:80
   grpc_server:
     port: 80
+
+# The equivalent provenance configuration to discuss with the graph
+provenanceRpcWithRemoteGrpcGraphPopularConfiguration:
+  cls: graph
+  url: graph-grpc-popular-ingress:80
 
 plainGrpcGraphConfiguration:
   max_ram: 1g
@@ -1538,6 +1547,9 @@ externalServices:
     svix-test-ingress:
       internalName: svix-test
       target: local-cluster-control-plane
+    grpc-provenance:
+      internalName: provenance-grpc-popular-ingress
+      target: local-cluster-control-plane
 
 volumes:
   enabled: true
@@ -1546,7 +1558,7 @@ volumes:
       enabled: true
       appName: provenance-test-grpc
       spec:
-        storageClassName: standard
+        storageClassName: local-persistent
         volumeMode: Filesystem
         accessModes:
           - ReadWriteOnce
@@ -1743,7 +1755,7 @@ graph:
         kubernetes.io/hostname: local-cluster-worker
       type: rpc
       port: 5009
-      graphConfigurationRef: rpcWithRemoteGrpcGraphPopularConfiguration
+      graphConfigurationRef: graphRpcWithRemoteGrpcGraphPopularConfiguration
       startService: true
       hosts:
         - graph-rpc-popular-ingress
