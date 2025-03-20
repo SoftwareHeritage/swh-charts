@@ -390,6 +390,7 @@ loaders:
         maxReplicaCount: 1
       # only used for secrets below
       depositConfigurationRef: depositConfiguration
+      ackLate: true
       extraConfig:
         deposit:
           url: "http://deposit-dynamic.internal.staging.swh.network/1/private"
