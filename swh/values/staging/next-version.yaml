@@ -1250,6 +1250,27 @@ provenance:
               extraWhitelistSourceRange:
                 - 192.168.50.0/24 # for blackbox monitoring
                 - 192.168.101.0/24 # vpn network
+    grpc:
+      enabled: true
+      type: grpc
+      dataset:
+        name: 2024-08-23-popular-500-python
+        provenance:
+          fetch: true
+          index: true
+          # For test purpose, use a dataset subset
+          full: false
+          path: /srv/dataset/provenance
+        graph:
+          path: /srv/dataset/graph
+      startService: true
+      extraVolumes:
+        dataset-persistent:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: provenance-popular-persistent-pvc
+
 
 # Rpc Rust graph configuration example (for a service rpc spawning an internal grpc
 # instance)
@@ -1294,6 +1315,17 @@ volumes:
           requests:
             storage: 1Gi
         volumeMode: Filesystem
+    provenance-popular-persistent-pvc:
+      enabled: true
+      appName: provenance-grpc
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 graph:
   enabled: true
