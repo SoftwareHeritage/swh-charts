@@ -73,6 +73,7 @@ spec:
       priorityClassName: {{ $.Values.namespace }}-{{ $.Values.provenance.priorityClassName }}
       {{- end }}
       initContainers:
+        {{- if eq $type "rpc" }}
         - name: prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
@@ -88,6 +89,7 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
+        {{- end }}
         {{- if $provenanceFetchDataset }}
         {{- include "swh.provenance.fetchDataset" (dict "Values" $.Values
                                                         "datasetName" $datasetName
@@ -197,10 +199,12 @@ spec:
               value: "true"
           {{- end }}
           volumeMounts:
+          {{- if eq $type "rpc" }}
           - name: configuration
             mountPath: /etc/swh
           - name: configuration-logging
             mountPath: /etc/swh/logging
+          {{ end }}
           {{- range $volumeName, $volumeConfig := $provenanceConfig.extraVolumes }}
           - name: {{ $volumeName }}
             mountPath: {{ $volumeConfig.mountPath }}
@@ -209,6 +213,7 @@ spec:
       volumes:
       - name: configuration
         emptyDir: {}
+      {{- if eq $type "rpc" }}
       - name: configuration-template
         configMap:
           name: {{ $serviceType }}-configuration-template
@@ -221,6 +226,7 @@ spec:
           items:
           - key: "logging-gunicorn.json"
             path: "logging-gunicorn.json"
+      {{ end }}
       - name: config-utils
         configMap:
           name: config-utils
