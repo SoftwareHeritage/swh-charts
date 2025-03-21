@@ -456,10 +456,14 @@ webThrottling:
       limiter_rate:
         default: 120/h
 
-provenanceConfiguration:
+provenanceRpcConfiguration:
   cls: remote
   url: http://provenance-test:5014
   enable_requests_retry: true
+
+provenanceGrpcConfiguration:
+  cls: grpc
+  url: provenance-grpc-popular-ingress:80
 
 webDjangoApps:
   - swh.web.add_forge_now
@@ -476,6 +480,10 @@ webDjangoApps:
   - swh.web.vault
   - swh.web.provenance
   - swh.web.save_bulk
+
+cornerRibbon:
+  show_corner_ribbon: "true"
+  corner_ribbon_text: "LocalVersion"
 
 web:
   enabled: false
@@ -530,9 +538,10 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       djangoAppsRef: webDjangoApps
       graphConfigurationRef: graphConfiguration
+      cornerRibbonRef: cornerRibbon
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
-      provenanceConfigurationRef: provenanceConfiguration
+      provenanceConfigurationRef: provenanceGrpcConfiguration
       hosts:
         - web-local-archive-ingress
       ingress:
