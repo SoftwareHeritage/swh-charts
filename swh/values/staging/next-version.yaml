@@ -209,6 +209,9 @@ externalServices:
     graph-rpc-next-version:
       internalName: graph-rpc-next-version-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    provenance-grpc-next-version:
+      internalName: provenance-grpc-next-version-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -732,10 +735,9 @@ storage:
         check: false
         migrate: false
 
-provenanceConfiguration:
-  cls: remote
-  url: http://webapp-provenance-ingress-next-version
-  enable_requests_retry: true
+webappProvenanceGrpcConfiguration:
+  cls: grpc
+  url: provenance-grpc-next-version-ingress:80
 
 historyCountersUrl: http://counters-rpc:5011/counters_history/history.json#
 
@@ -764,7 +766,7 @@ web:
       historyCountersUrlRef: historyCountersUrl
       storageConfigurationRef: remoteROCassandraStorageConfiguration
       webhooksConfigurationRef: webhooksConfiguration
-      provenanceConfigurationRef: provenanceConfiguration
+      provenanceConfigurationRef: webappProvenanceGrpcConfiguration
       graphConfigurationRef: webGraphConfiguration
       cornerRibbonRef: cornerRibbon
       extraConfig:
@@ -1270,7 +1272,19 @@ provenance:
           volumeDefinition:
             persistentVolumeClaim:
               claimName: provenance-popular-persistent-pvc
-
+      hosts:
+        - provenance-grpc-next-version-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: clusterNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 # Rpc Rust graph configuration example (for a service rpc spawning an internal grpc
 # instance)
