@@ -49,6 +49,13 @@ Create a Kind Ingress for service .serviceType
 
 {{- $annotations = mustMergeOverwrite $annotations ($configuration.ingress.extraAnnotations | default dict) -}}
 {{- $annotations = mustMergeOverwrite $annotations ($endpoint_config.extraAnnotations | default dict) -}}
+{{- $type := $configuration.type | default "rpc" -}}
+{{- if (eq $type "grpc") }}
+{{- $annotations = mustMergeOverwrite $annotations
+                                      (dict "nginx.ingress.kubernetes.io/ssl-redirect" "true"
+                                            "nginx.ingress.kubernetes.io/backend-protocol" "GRPC") -}}
+{{- $_ := set $configuration.ingress "className" "nginx" -}}
+{{- end }}
 {{- range $annKey := keys $annotations -}}
 {{- if not (get $annotations $annKey) -}}
 {{- $_ := unset $annotations $annKey -}}
