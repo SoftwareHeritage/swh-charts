@@ -2764,6 +2764,7 @@ alter:
   inventoryStorageConfigurationRef: remoteROStorageConfiguration
   graphConfigurationRef: alterGraphConfiguration
   restorationStorageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
+  journalWriterMirrorConfigurationRef: journalWriterMirrorConfiguration
   removalSearches:
     search:
       searchConfigurationRef: remoteSearchConfiguration
