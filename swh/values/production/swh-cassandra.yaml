@@ -2070,13 +2070,9 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
       image: swh_loader_package_image
+      replicas: 6
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
-      autoScaling:
-        queueThreshold: 1
-        stopWhenNoActivity: false
-        minReplicaCount: 4
-        maxReplicaCount: 12
       # only used for secrets
       depositConfigurationRef: depositDynamicConfiguration
       ackLate: true

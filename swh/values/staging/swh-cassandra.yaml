@@ -376,6 +376,7 @@ loaders:
       requestedMemory: 256Mi
       requestedCpu: 200m
       limitedMemory: 18Gi
+      replicas: 2
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -383,11 +384,6 @@ loaders:
       image: swh_loader_package_image
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
-      autoScaling:
-        queueThreshold: 1
-        stopWhenNoActivity: false
-        minReplicaCount: 2
-        maxReplicaCount: 2
       # only used for secrets below
       depositConfigurationRef: depositConfiguration
       ackLate: true
