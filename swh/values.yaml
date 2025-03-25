@@ -1936,6 +1936,9 @@ provenance:
     #       fetch: true
     #       # Whether or not to build the provenance dataset indices
     #       index: true
+    #       # Whether to use a full dataset (true by default). False will use
+    #       # heads dataset (for testing purposes).
+    #       full: true
     #       # Where to store the parquet files
     #       path: /srv/dataset/provenance
     #   # Whether to start/stop the service
