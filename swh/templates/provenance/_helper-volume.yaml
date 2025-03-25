@@ -79,6 +79,9 @@
     {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_INDEX_FILE"
                                                           "provenancePath" .provenancePath
                                                           "filename" ".provenance-is-indexed") | nindent 4 }}
+    {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_INDEXING_FILE"
+                                                          "provenancePath" .provenancePath
+                                                          "filename"       ".provenance-is-indexing") | nindent 4 }}
     - name: PROVENANCE_PATH
       value: {{ .provenancePath }}
     - name: PERIOD

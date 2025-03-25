@@ -284,12 +284,16 @@ data:
       echo "<WITNESS_DATASETS_FILE> env variable must be set" && exit 1
     [ -z "${WITNESS_INDEX_FILE}" ] && \
       echo "<WITNESS_INDEX_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_INDEXING_FILE}" ] && \
+      echo "<WITNESS_INDEXING_FILE> env variable must be set" && exit 1
     [ -z "${PERIOD}" ] && \
       echo "<PERIOD> env variable must be set" && exit 1
     [ -z "${PROVENANCE_PATH}" ] && \
       echo "<PROVENANCE_PATH> env variable must be set" && exit 1
 
-    [ -f ${WITNESS_INDEX_FILE} ] && echo "Provenance already indexed, do nothing." && \
+    [ -f "${WITNESS_INDEX_FILE}" ] && echo "Provenance already indexed, skip." && \
+      exit 0
+    [ -f "${WITNESS_INDEXING_FILE}" ] && echo "Provenance indices are building, skip." && \
       exit 0
 
     set -eu
@@ -299,6 +303,10 @@ data:
         echo "${WITNESS_DATASETS_FILE} missing, waiting provenance dataset installation..."
         sleep ${PERIOD}
     done
+
+    # Mark explicit an init-container is already indexing provenance
+    mkdir -p $(dirname "${WITNESS_INDEXING_FILE}")
+    touch "${WITNESS_INDEXING_FILE}"
 
     echo "Datasets file installed, build provenance dataset indexes..."
 
@@ -312,8 +320,9 @@ data:
       --database "file://${PROVENANCE_PATH}" && \
       touch "${WITNESS_INDEX_FILE}" && \
       echo "Provenance indexes built!" || \
-
     echo "Provenance indexes failed!"
+
+    [ -f "${WITNESS_INDEXING_FILE}" ] && rm "${WITNESS_INDEXING_FILE}"
 
   initialize-search-backend.sh: |
     #!/usr/bin/env bash
