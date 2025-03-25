@@ -113,10 +113,8 @@ data:
               --depth 1 \
               https://gitlab.softwareheritage.org/swh/devel/swh-graph.git/ \
               /tmp/swh-graph
-            # Create empty dataset location destination for copy to be ok
-            mkdir -p "${DATASET_LOCATION}" && rmdir "${DATASET_LOCATION}"
             # Actual copy of the test dataset
-            cp -r /tmp/swh-graph/swh/graph/example_dataset/compressed \
+            cp -r /tmp/swh-graph/swh/graph/example_dataset/compressed/* \
                   "${DATASET_LOCATION}"
 
             # Make explicit the graph is ready
