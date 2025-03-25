@@ -86,12 +86,24 @@ data:
       echo "<WITNESS_FILE> env variable must be set" && exit 1
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_DOWNLOADING_FILE}" ] && \
+      echo "<WITNESS_DOWNLOADING_FILE> env variable must be set" && exit 1
 
     set -eux
 
     [ -f "${WITNESS_FILE}" ] && \
         echo "Dataset <${DATASET_NAME}> already present. Skip." && \
         exit 0
+
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && \
+        echo "Dataset <${DATASET_NAME}> download is ongoing. Skip." && \
+        exit 0
+
+    # Mark that we start the download
+    mkdir -p $(dirname "${WITNESS_DOWNLOADING_FILE}")
+    touch "${WITNESS_DOWNLOADING_FILE}"
 
     case "${DATASET_NAME}" in
         test|example)
@@ -111,6 +123,7 @@ data:
             touch "${WITNESS_FILE}"
         ;;
         *)
+            touch "${WITNESS_DOWNLOADING_FILE}"
             # Otherwise, download the dataset locally
             swh graph download \
               --name "${DATASET_NAME}" \
@@ -130,6 +143,9 @@ data:
             touch "${WITNESS_FILE}"
         ;;
     esac
+
+    # We are done so we clean up the download witness file
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && rm "${WITNESS_DOWNLOADING_FILE}"
 
   graph-reindex-dataset.sh: |
     #!/usr/bin/env bash
