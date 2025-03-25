@@ -47,10 +47,11 @@ ingressNginx:
   # loadBalanceIP: xxx.xxx.xxx.xxx
   # annotations:
   #   annotation1: value
-  # config:
-  #   # see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
-  #   # for more configuration options
-  #   worker_processes: 1
+  config:
+    # Allow pulling secrets from a separate namespace
+    allow-cross-namespace-resources: true
+    # see https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
+    # for more configuration options
   # requestedCpu: 90m
   # requestedMemory: 100Mi
 
