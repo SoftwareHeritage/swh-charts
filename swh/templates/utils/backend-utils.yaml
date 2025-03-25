@@ -200,6 +200,8 @@ data:
     #!/usr/bin/env bash
     [ -z "${WITNESS_FETCH_FILE}" ] && \
       echo "<WITNESS_FETCH_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_DOWNLOADING_FILE}" ] && \
+      echo "<WITNESS_DOWNLOADING_FILE> env variable must be set" && exit 1
     [ -z "${DATASET_VERSION}" ] && \
       echo "<DATASET_VERSION> env variable must be set" && exit 1
     [ -z "${PROVENANCE_PATH}" ] && \
@@ -208,10 +210,18 @@ data:
       echo "<GRAPH_PATH> env variable must be set" && exit 1
 
     [ -f "${WITNESS_FETCH_FILE}" ] && \
-        echo "Datasets graph & provenance <${DATASET_VERSION}> already present. Skip." && \
+        echo "Datasets graph & provenance <${DATASET_VERSION}> present. Skip." && \
+        exit 0
+
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && \
+        echo "Datasets graph & provenance <${DATASET_VERSION}> downloading. Skip." && \
         exit 0
 
     set -e
+
+    # Make explicit an init-container is already downloading file
+    mkdir -p $(dirname "${WITNESS_DOWNLOADING_FILE}")
+    touch "${WITNESS_DOWNLOADING_FILE}"
 
     # Create destination paths
     mkdir -p "${PROVENANCE_PATH}" "${GRAPH_PATH}"
@@ -219,7 +229,7 @@ data:
     echo "Fetching datasets..."
 
     if [ ${PROVENANCE_DATASET_FULL} = true ]; then
-        # Retrieve all the provenance dataset
+        # Retrieve all the provenance dataset (default behavior)
         REFS=all
     else
         # This excludes revisions not targetted by a snapshot
@@ -259,10 +269,14 @@ data:
     set +x
     echo "3. Graph files uncompressed!"
 
+    echo "Provenance datasets installed!"
+
+    # Cleanup witness downloading dataset file
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && \
+      rm ${WITNESS_DOWNLOADING_FILE}
+
     # Make explicit the provenance datasets are fetched
     touch "${WITNESS_FETCH_FILE}"
-
-    echo "Provenance datasets installed!"
 
   provenance-index-dataset.sh: |
     #!/usr/bin/env bash

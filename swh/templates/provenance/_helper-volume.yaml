@@ -15,6 +15,9 @@
   env:
   {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_FETCH_FILE"
                                                         "provenancePath" .provenancePath) | nindent 2 }}
+  {{- include "swh.provenance.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_DOWNLOADING_FILE"
+                                                        "provenancePath" .provenancePath
+                                                        "filename"       ".provenance-is-downloading") | nindent 2 }}
   - name: SWH_CONFIG_FILENAME
     value: /etc/swh/config.yml
   - name: PROVENANCE_PATH
