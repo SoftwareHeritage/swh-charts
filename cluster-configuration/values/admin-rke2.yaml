@@ -9,6 +9,7 @@ ingressNginx:
   enabled: true
   defaultClass: true
   watchIngressWithoutClass: true
+  allowSnippetAnnotations: true
   serviceAnnotations:
     # To be able to share the same ip for several services
     # https://metallb.org/usage/#ip-address-sharing
