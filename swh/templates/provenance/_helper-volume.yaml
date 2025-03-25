@@ -46,6 +46,8 @@
   - /entrypoints/wait-for-dataset.sh
   env:
     {{- include "swh.provenance.volume.witnessfile" (dict "provenancePath" .provenancePath) | nindent 4 }}
+    - name: SERVICE_NAME
+      value: "provenance"
     - name: PERIOD
       value: {{ .period | default "3" | quote }}
   volumeMounts:

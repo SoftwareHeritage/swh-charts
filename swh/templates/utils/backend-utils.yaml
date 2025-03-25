@@ -67,9 +67,11 @@ data:
     # Uses env variables WITNESS_FILE
     [ -z "${WITNESS_FILE}" ] && \
       echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${SERVICE_NAME}" ] && \
+      echo "<SERVICE_NAME> env variable must be set" && exit 1
 
     while [ ! -f "${WITNESS_FILE}" ]; do
-        echo "${WITNESS_FILE} not present, wait for it to start the graph..."
+        echo "${WITNESS_FILE} not present, wait for ${SERVICE_NAME} to start..."
         sleep ${PERIOD}
     done
 

@@ -93,6 +93,8 @@
     {{- include "swh.graph.volume.witnessfile" (dict "graphPath" .graphPath) | nindent 4 }}
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
+    - name: SERVICE_NAME
+      value: "graph"
     - name: PERIOD
       value: {{ .period | default "3" | quote }}
   volumeMounts:
