@@ -855,10 +855,15 @@ storage:
         threads: 4
         workers: 8
 
-provenanceConfiguration:
+# No longer used
+provenanceRpcConfiguration:
   cls: remote
   url: http://webapp-provenance-ingress
   enable_requests_retry: true
+
+provenanceGrpcConfiguration:
+  cls: grpc
+  url: provenance-grpc-popular-ingress:80
 
 cornerRibbon:
   show_corner_ribbon: "true"
@@ -967,7 +972,7 @@ web:
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
       djangoAppsRef: webDjangoApps
-      provenanceConfigurationRef: provenanceConfiguration
+      provenanceConfigurationRef: provenanceGrpcConfiguration
       graphConfigurationRef: webGraphConfiguration
       cornerRibbonRef: cornerRibbon
       extraConfig:
