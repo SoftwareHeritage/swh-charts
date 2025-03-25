@@ -126,6 +126,9 @@
     {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_REINDEX_FILE"
                                                      "graphPath" .graphPath
                                                      "filename" ".graph-is-reindexed") | nindent 4 }}
+    {{- include "swh.graph.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_REINDEXING_FILE"
+                                                     "graphPath" .graphPath
+                                                     "filename" ".graph-is-reindexing") | nindent 4 }}
     - name: DATASET_LOCATION
       value: {{ .graphPath }}
     - name: GRAPH_NAME

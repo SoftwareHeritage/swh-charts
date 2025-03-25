@@ -153,6 +153,10 @@ data:
       echo "<WITNESS_SOURCE_FILE> env variable must be set" && exit 1
     [ -z "${WITNESS_REINDEX_FILE}" ] && \
       echo "<WITNESS_REINDEX_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_REINDEXING_FILE}" ] && \
+      echo "<WITNESS_GRAPH_REINDEXING_FILE> env variable must be set" && exit 1
+    [ -z "${GRAPH_NAME}" ] && \
+      echo "<GRAPH_NAME> env variable must be set" && exit 1
     [ -z "${PERIOD}" ] && \
       echo "<PERIOD> env variable must be set" && exit 1
     [ -z "${DATASET_LOCATION}" ] && \
@@ -160,7 +164,13 @@ data:
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
 
-    [ -f "${WITNESS_REINDEX_FILE}" ] && echo "Graph reindexed, do nothing." && exit 0
+    [ -f "${WITNESS_REINDEX_FILE}" ] && \
+      echo "Graph reindexed, do nothing." && \
+      exit 0
+
+    [ -f "${WITNESS_REINDEXING_FILE}" ] && \
+        echo "Dataset <${DATASET_NAME}> indexation is ongoing. Skip." && \
+        exit 0
 
     set -eux
 
@@ -170,11 +180,21 @@ data:
         sleep ${PERIOD}
     done
 
+    [ -f "${WITNESS_REINDEXING_FILE}" ] && \
+      echo "Graph index already being built. Skip." && exit 0
+
+    # Mark that we start the indexation
+    mkdir -p $(dirname "${WITNESS_REINDEXING_FILE}")
+    touch "${WITNESS_REINDEXING_FILE}"
+
     # For old datasets missing a .ef or in the wrong format, this fails with
     # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
     # reindex the dataset
     swh graph reindex --ef "${DATASET_LOCATION}/${GRAPH_NAME}" && \
       touch "${WITNESS_REINDEX_FILE}"
+
+    # We are done so we clean up the download witness file
+    [ -f "${WITNESS_REINDEXING_FILE}" ] && rm "${WITNESS_REINDEXING_FILE}"
 
   provenance-fetch-datasets.sh: |
     #!/usr/bin/env bash
