@@ -1,6 +1,13 @@
 {{ if .Values.ingressNginx.enabled }}
 {{- $applicationName := .Values.ingressNginx.applicationNameOverride | default (print .Values.clusterName "-ingress-nginx-application") }}
-
+{{- $config := dict -}}
+{{- if .Values.ingressNginx.config }}
+{{- $config = mustMergeOverwrite $config .Values.ingressNginx.config }}
+{{- end }}
+{{- if .Values.ingressNginx.allowSnippetAnnotations }}
+{{- $config = mustMergeOverwrite $config (dict "annotations-risk-level" "critical") }}
+{{- end }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -60,9 +67,9 @@ spec:
               namespaceSelector:
                 any: true
           {{- end }}
-          {{- if .Values.ingressNginx.config }}
+          {{- if $config }}
           config:
-            {{ .Values.ingressNginx.config | toYaml | nindent 12 }}
+            {{ $config | toYaml | nindent 12 }}
           {{- end }}
           resources:
             requests:
