@@ -169,14 +169,14 @@ data:
     [ -z "${GRAPH_PATH}" ] && \
       echo "<GRAPH_PATH> env variable must be set" && exit 1
 
-    [ -f ${WITNESS_FETCH_FILE} ] && \
+    [ -f "${WITNESS_FETCH_FILE}" ] && \
         echo "Datasets graph & provenance <${DATASET_VERSION}> already present. Skip." && \
         exit 0
 
     set -e
 
     # Create destination paths
-    mkdir -p ${PROVENANCE_PATH} ${GRAPH_PATH}
+    mkdir -p "${PROVENANCE_PATH}" "${GRAPH_PATH}"
 
     echo "Fetching datasets..."
 
@@ -214,7 +214,7 @@ data:
     echo "3. Uncompressing graph files..."
     set -x
     # Uncompress the compressed graph *.zst files
-    for filepath in $(ls ${GRAPH_PATH}/*.zst); do
+    for filepath in $(ls "${GRAPH_PATH}"/*.zst); do
         # Uncompress and delete the .zst file
         [ -f "${filepath}" ] && unzstd --force --rm "${filepath}"
     done
@@ -222,7 +222,7 @@ data:
     echo "3. Graph files uncompressed!"
 
     # Make explicit the provenance datasets are fetched
-    touch ${WITNESS_FETCH_FILE}
+    touch "${WITNESS_FETCH_FILE}"
 
     echo "Provenance datasets installed!"
 
@@ -245,7 +245,7 @@ data:
     # Let's wait for the dataset installation
     while [ ! -f "${WITNESS_DATASETS_FILE}" ]; do
         echo "${WITNESS_DATASETS_FILE} missing, waiting provenance dataset installation..."
-        sleep $PERIOD
+        sleep ${PERIOD}
     done
 
     echo "Datasets file installed, build provenance dataset indexes..."
@@ -257,7 +257,7 @@ data:
     # current dataset files. We store the output indexes in the same path as
     # the dataset.
     swh-provenance-index \
-      --database file://${PROVENANCE_PATH} && \
+      --database "file://${PROVENANCE_PATH}" && \
       touch "${WITNESS_INDEX_FILE}" && \
       echo "Provenance indexes built!" || \
 
