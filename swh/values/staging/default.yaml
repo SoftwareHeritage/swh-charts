@@ -593,6 +593,9 @@ externalServices:
     rpc-python3k:
       internalName: graph-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    grpc-provenance:
+      internalName: provenance-grpc-popular-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:

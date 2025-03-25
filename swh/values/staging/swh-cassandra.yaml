@@ -2420,7 +2420,50 @@ alter:
 provenance:
   enabled: true
   deployments:
+    popular-grpc:
+      enabled: true
+      type: grpc
+      replicas: 2
+      dataset:
+        name: 2024-08-23-popular-500-python
+        provenance:
+          fetch: true
+          index: true
+          path: /srv/dataset/provenance
+        graph:
+          path: /srv/dataset/graph
+      startService: true
+      extraVolumes:
+        dataset-persistent:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: provenance-popular-persistent-pvc
+      hosts:
+        - provenance-grpc-popular-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      extraIngresses:
+        - hosts:
+          - provenance.internal.staging.swh.network
+          whitelistSourceRangeRef: stagingNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+              extraWhitelistSourceRange:
+                - 192.168.50.0/24 # for blackbox monitoring
+                - 192.168.101.0/24 # vpn network
     graph-granet:
+      type: rpc
       graphConfigurationRef: provenanceGraphGrpcConfiguration
       replicas: 2
       gunicorn:
@@ -2441,7 +2484,7 @@ provenance:
               - path: /
       extraIngresses:
         - hosts:
-          - provenance.internal.staging.swh.network
+          - provenance-rpc.internal.staging.swh.network
           whitelistSourceRangeRef: stagingNetworkRanges
           endpoints:
             default:
@@ -2470,6 +2513,18 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumeClaims:
+    # grpc provenance volume
+    provenance-popular-persistent-pvc:
+      enabled: true
+      appName: provenance-popular-grpc
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
     alter-recovery-bundles-pvc:
       enabled: true
       appName: alter
