@@ -24,43 +24,43 @@ data:
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
 
-    [ -f ${WITNESS_FILE} ] && echo "Graph ready, do nothing." && exit 0
+    [ -f "${WITNESS_FILE}" ] && echo "Graph ready, do nothing." && exit 0
 
     # Let's wait for the dataset installation
-    while [ ! -f ${WITNESS_SOURCE_FILE} ]; do
+    while [ ! -f "${WITNESS_SOURCE_FILE}" ]; do
         echo "${WITNESS_SOURCE_FILE} missing, waiting graph dataset installation..."
-        sleep $PERIOD
+        sleep ${PERIOD}
     done
 
     # Let's wait for the reindexation to be done
     if [ ! -z "${WITNESS_REINDEX_FILE}" ]; then
-        while [ ! -f ${WITNESS_REINDEX_FILE} ]; do
+        while [ ! -f "${WITNESS_REINDEX_FILE}" ]; do
             echo "${WITNESS_REINDEX_FILE} missing, waiting graph dataset reindexation..."
-            sleep $PERIOD
+            sleep ${PERIOD}
         done
     fi
 
     # Create empty dataset location destination for copy to be ok
-    mkdir -p ${DATASET_LOCATION}
+    mkdir -p "${DATASET_LOCATION}"
 
-    graph_stats=${GRAPH_NAME}.stats
+    graph_stats="${GRAPH_NAME}.stats"
     # Symlink all files from dataset source to the destination (including the *.graph)
     [ -L "${DATASET_LOCATION}/${graph_stats}" ] || \
-      ln -sf ${DATASET_SOURCE}/* ${DATASET_LOCATION}/
+      ln -sf "${DATASET_SOURCE}"/* "${DATASET_LOCATION}/"
 
-    graph_name=${GRAPH_NAME}.graph
+    graph_name="${GRAPH_NAME}.graph"
     # We hard-copy the *.graph file
-    if [ -L "${DATASET_LOCATION}/${graph_name}" ] || ! [ -f ${DATASET_LOCATION}/${graph_name} ]; then
-      cp -v --remove-destination ${DATASET_SOURCE}/${graph_name} ${DATASET_LOCATION}/;
+    if [ -L "${DATASET_LOCATION}/${graph_name}" ] || ! [ -f "${DATASET_LOCATION}/${graph_name}" ]; then
+      cp -v --remove-destination "${DATASET_SOURCE}/${graph_name}" "${DATASET_LOCATION}/";
     fi
 
-    graph_transposed_name=${GRAPH_NAME}-transposed.graph
-    if [ -L ${DATASET_LOCATION}/${graph_transposed_name} ] || ! [ -f ${DATASET_LOCATION}/${graph_transposed_name} ]; then
-      cp -v --remove-destination ${DATASET_SOURCE}/${graph_transposed_name} ${DATASET_LOCATION}/;
+    graph_transposed_name="${GRAPH_NAME}-transposed.graph"
+    if [ -L "${DATASET_LOCATION}/${graph_transposed_name}" ] || ! [ -f "${DATASET_LOCATION}/${graph_transposed_name}" ]; then
+      cp -v --remove-destination "${DATASET_SOURCE}/${graph_transposed_name}" "${DATASET_LOCATION}/";
     fi
 
     # Finally, we make explicit the graph is ready
-    touch ${WITNESS_FILE}
+    touch "${WITNESS_FILE}"
 
   wait-for-dataset.sh: |
     #!/usr/bin/env bash
@@ -68,9 +68,9 @@ data:
     [ -z "${WITNESS_FILE}" ] && \
       echo "<WITNESS_FILE> env variable must be set" && exit 1
 
-    while [ ! -f ${WITNESS_FILE} ]; do
+    while [ ! -f "${WITNESS_FILE}" ]; do
         echo "${WITNESS_FILE} not present, wait for it to start the graph..."
-        sleep $PERIOD
+        sleep ${PERIOD}
     done
 
   graph-fetch-dataset.sh: |
@@ -87,7 +87,7 @@ data:
 
     set -eux
 
-    [ -f ${WITNESS_FILE} ] && \
+    [ -f "${WITNESS_FILE}" ] && \
         echo "Dataset <${DATASET_NAME}> already present. Skip." && \
         exit 0
 
@@ -100,19 +100,19 @@ data:
               https://gitlab.softwareheritage.org/swh/devel/swh-graph.git/ \
               /tmp/swh-graph
             # Create empty dataset location destination for copy to be ok
-            mkdir -p ${DATASET_LOCATION} && rmdir ${DATASET_LOCATION}
+            mkdir -p "${DATASET_LOCATION}" && rmdir "${DATASET_LOCATION}"
             # Actual copy of the test dataset
             cp -r /tmp/swh-graph/swh/graph/example_dataset/compressed \
-                  ${DATASET_LOCATION}
+                  "${DATASET_LOCATION}"
 
             # Make explicit the graph is ready
-            touch ${WITNESS_FILE}
+            touch "${WITNESS_FILE}"
         ;;
         *)
             # Otherwise, download the dataset locally
             swh graph download \
-              --name ${DATASET_NAME} \
-              ${DATASET_LOCATION}
+              --name "${DATASET_NAME}" \
+              "${DATASET_LOCATION}"
 
             # Reindex graph dataset (for those anterior to 2024). This should not be
             # necessary for most recent graph datasets.
@@ -120,12 +120,12 @@ data:
             # For old datasets missing a .ef though, this just fails with
             # `2024-09-02T14:11:56.190692004Z graph-rpc-python3k 0: Cannot map
             # Elias-Fano pointer list .../graph.ef`, so we trigger a reindex step
-            reindex_witness_file=${DATASET_LOCATION}/${GRAPH_NAME}.ef
-            [ ! -f $reindex_witness_file ] && \
-              swh graph reindex --ef ${DATASET_LOCATION}/${GRAPH_NAME}
+            reindex_witness_file="${DATASET_LOCATION}/${GRAPH_NAME}.ef"
+            [ ! -f "$reindex_witness_file" ] && \
+              swh graph reindex --ef "${DATASET_LOCATION}/${GRAPH_NAME}"
 
             # Make explicit the graph is ready
-            touch ${WITNESS_FILE}
+            touch "${WITNESS_FILE}"
         ;;
     esac
 
@@ -142,21 +142,21 @@ data:
     [ -z "${GRAPH_NAME}" ] && \
       echo "<GRAPH_NAME> env variable must be set" && exit 1
 
-    [ -f ${WITNESS_REINDEX_FILE} ] && echo "Graph reindexed, do nothing." && exit 0
+    [ -f "${WITNESS_REINDEX_FILE}" ] && echo "Graph reindexed, do nothing." && exit 0
 
     set -eux
 
     # Let's wait for the dataset installation
-    while [ ! -f ${WITNESS_SOURCE_FILE} ]; do
+    while [ ! -f "${WITNESS_SOURCE_FILE}" ]; do
         echo "${WITNESS_SOURCE_FILE} missing, waiting graph dataset installation..."
-        sleep $PERIOD
+        sleep ${PERIOD}
     done
 
     # For old datasets missing a .ef or in the wrong format, this fails with
     # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
     # reindex the dataset
-    swh graph reindex --ef ${DATASET_LOCATION}/${GRAPH_NAME} && \
-      touch $WITNESS_REINDEX_FILE
+    swh graph reindex --ef "${DATASET_LOCATION}/${GRAPH_NAME}" && \
+      touch "${WITNESS_REINDEX_FILE}"
 
   provenance-fetch-datasets.sh: |
     #!/usr/bin/env bash
