@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: alertmanager-irc-relay-internal-ingress-status
-  namespace: cattle-monitoring-system
+  namespace: {{ .Values.alertmanagerIrcRelay.namespace }}
   annotations:
     {{ if .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}
     cert-manager.io/cluster-issuer: {{ .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}

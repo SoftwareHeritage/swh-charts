@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: alertmanager-irc-relay-internal-ingress
-  namespace: cattle-monitoring-system
+  namespace: {{ .Values.alertmanagerIrcRelay.namespace }}
   annotations:
     {{ if .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}
     cert-manager.io/cluster-issuer: {{ .Values.alertmanagerIrcRelay.ingress.tls.clusterIssuer }}
@@ -17,7 +17,7 @@ metadata:
     # an htpasswd file in the key auth within the secret
     nginx.ingress.kubernetes.io/auth-secret-type: auth-file
     # name of the secret that contains the user/password definitions
-    nginx.ingress.kubernetes.io/auth-secret: {{ .Values.alertmanagerIrcRelay.ingress.authentication }}
+    nginx.ingress.kubernetes.io/auth-secret: {{ .Values.alertmanagerIrcRelay.namespace }}/{{ .Values.alertmanagerIrcRelay.ingress.authentication }}
     # message to display with an appropriate context why the authentication is required
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
     {{ end }}

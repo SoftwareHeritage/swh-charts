@@ -7,7 +7,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: alertmanager-irc-relay
-  namespace: cattle-monitoring-system
+  namespace: {{ .Values.alertmanagerIrcRelay.namespace }}
 data:
   # For more information, check
   # https://gitlab.softwareheritage.org/swh/infra/ci-cd/3rdparty/alertmanager-irc-relay/-/tree/master#configuring-and-running-the-bot

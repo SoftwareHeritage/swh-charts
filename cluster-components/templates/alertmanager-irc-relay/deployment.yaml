@@ -5,7 +5,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: alertmanager-irc-relay
-  namespace: cattle-monitoring-system
+  namespace: {{ .Values.alertmanagerIrcRelay.namespace }}
 spec:
   selector:
     matchLabels:
