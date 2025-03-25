@@ -1020,6 +1020,7 @@ loaders:
         - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
         - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
         - save_code_now:swh.loader.package.archive.tasks.LoadTarball
+        - save_code_now:swh.loader.core.tasks.LoadTarballDirectory
       ackLate: true
       replicas: 2
 
