@@ -36,7 +36,7 @@
   {{- range $volumeName, $volumeConfig := .extraVolumes }}
   - name: {{ $volumeName }}
     mountPath: {{ $volumeConfig.mountPath }}
-    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+    readOnly: false
   {{ end }}
 {{- end -}}
 
@@ -60,7 +60,7 @@
   {{- range $volumeName, $volumeConfig := .extraVolumes }}
   - name: {{ $volumeName }}
     mountPath: {{ $volumeConfig.mountPath }}
-    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+    readOnly: true
   {{ end }}
 {{- end -}}
 
@@ -93,7 +93,7 @@
   {{- range $volumeName, $volumeConfig := .extraVolumes }}
   - name: {{ $volumeName }}
     mountPath: {{ $volumeConfig.mountPath }}
-    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+    readOnly: false
   {{ end }}
 {{- end -}}
 
