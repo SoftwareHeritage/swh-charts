@@ -41,7 +41,7 @@ swh_objstorage_image_version: '20250319.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
 swh_objstorage_replayer_image_version: '20250319.1'
 swh_provenance_image: container-registry.softwareheritage.org/swh/infra/swh-apps/provenance
-swh_provenance_image_version: '20250321.1'
+swh_provenance_image_version: '20250326.2'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
 swh_scheduler_image_version: '20250319.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
