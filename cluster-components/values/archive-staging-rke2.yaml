@@ -36,6 +36,7 @@ podPriority:
 
 svix:
   enabled: true
+  version: v1.62
   deployments:
     svix:
       ingress:
