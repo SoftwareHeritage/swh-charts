@@ -1620,7 +1620,50 @@ deposit:
 provenance:
   enabled: true
   deployments:
+    20241206-grpc:
+      enabled: true
+      type: grpc
+      replicas: 2
+      dataset:
+        name: 2024-12-06
+        provenance:
+          fetch: true
+          index: true
+          path: /srv/dataset/provenance
+        graph:
+          path: /srv/dataset/graph
+      startService: true
+      extraVolumes:
+        dataset-persistent:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: provenance-20241206-persistent-pvc
+      hosts:
+        - provenance-20241206-grpc-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+      extraIngresses:
+        - hosts:
+          - provenance.internal.softwareheritage.org
+          whitelistSourceRangeRef: internalNetworkRanges
+          endpoints:
+            default:
+              paths:
+                - path: /
+              extraWhitelistSourceRange:
+                - 192.168.50.0/24 # for blackbox monitoring
+                - 192.168.101.0/24 # vpn network
     graph-granet:
+      type: rpc
       graphConfigurationRef: provenanceGraphGrpcConfiguration
       replicas: 2
       gunicorn:
@@ -1641,7 +1684,7 @@ provenance:
               - path: /
       extraIngresses:
        - hosts:
-         - provenance.internal.softwareheritage.org
+         - provenance-rpc.internal.softwareheritage.org
          whitelistSourceRangeRef: internalNetworkRanges
          endpoints:
            default:
@@ -2559,8 +2602,42 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-highmem01
+    provenance-20241206-persistent-local-pv:
+      enabled: true
+      appName: provenance-grpc-20241206
+      spec:
+        capacity:
+          storage: 30Ti
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/ssd/provenance-20241206
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-highmem03
 
   persistentVolumeClaims:
+    # grpc provenance volume
+    provenance-20241206-persistent-pvc:
+      enabled: true
+      appName: provenance-20241206-grpc
+      spec:
+        storageClassName: local-storage
+        volumeMode: Filesystem
+        volumeName: provenance-20241206-persistent-local-pv
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 30Ti
     alter-recovery-bundles-pvc:
       enabled: true
       appName: alter

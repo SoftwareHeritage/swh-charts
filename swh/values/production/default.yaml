@@ -1041,6 +1041,9 @@ externalServices:
     graph-rpc-20241206:
       internalName: graph-rpc-20241206-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    provenance-20241206-grpc:
+      internalName: provenance-20241206-grpc-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 svixConfiguration:
   svix:
