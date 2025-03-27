@@ -2429,6 +2429,7 @@ provenance:
       enabled: true
       type: grpc
       replicas: 2
+      requestedMemory: 768Mi
       dataset:
         name: 2024-08-23-popular-500-python
         provenance:
