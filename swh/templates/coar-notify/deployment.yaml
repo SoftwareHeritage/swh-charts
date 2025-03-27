@@ -1,0 +1,119 @@
+{{- if .Values.coar_notify.enabled -}}
+{{- $service_name := "coar-notify" -}}
+#{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
+{{- $affinity := .Values.coar_notify.deployment.affinity -}}
+{{- $nodeSelector := .Values.coar_notify.deployment.nodeSelector | default dict -}}
+{{- $priority_class_name := .Values.coar_notify.deployment.priorityClassName -}}
+{{- $requested_cpu := get .Values.coar_notify.deployment "requestedCpu" -}}
+{{- $requested_memory := get .Values.coar_notify.deployment "requestedMemory" -}}
+{{- $limited_cpu := get .Values.coar_notify.deployment "limitedCpu" -}}
+{{- $limited_memory := get .Values.coar_notify.deployment "limitedMemory" -}}
+{{- $replicas := .Values.coar_notify.replicas | default 1 }}
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ $service_name }}
+  name: {{ $service_name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ $replicas }}
+  selector:
+    matchLabels:
+      app: {{ $service_name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $service_name }}
+      annotations:
+        # Force a rollout upgrade if the configuration changes
+        #checksum/config: {{ $configurationChecksum }}
+    spec:
+      securityContext:
+        fsGroup: 1000
+      {{- if $nodeSelector }}
+      nodeSelector:
+        {{- toYaml $nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+      priorityClassName: {{ $priority_class_name }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          {{/* To be updated if secrets appear in $deployment_config! */}}
+          {{/* env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.coar_notify
+                                                                      "Values" .Values) | nindent 10 }} */}}
+          command:
+            - /entrypoints/prepare-configuration.sh
+          volumeMounts:
+            - name: config-utils
+              mountPath: /entrypoints
+              readOnly: true
+            - name: configuration
+              mountPath: /etc/swh
+            - name: configuration-template
+              mountPath: /etc/swh/configuration-template
+      containers:
+        - name: {{ $service_name }}
+          resources:
+            requests:
+              memory: {{ $requested_memory | default "512Mi" }}
+              cpu: {{ $requested_cpu | default "500m" }}
+            {{- if or $limited_cpu $limited_memory }}
+            limits:
+              {{- if $limited_memory }}
+              memory: {{ $limited_memory }}
+              {{- end }}
+              {{- if $limited_cpu }}
+              cpu: {{ $limited_cpu }}
+              {{- end }}
+            {{- end }}
+          command:
+            - /opt/swh/entrypoint.sh
+          image: {{ .Values.swh_coar_notify_image }}:{{ .Values.swh_coar_notify_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: SWH_LOG_LEVEL
+            value: {{ .Values.coar_notify.logLevel | default "INFO" }}
+          - name: SWH_CONFIG_FILENAME
+            value: /etc/swh/config.yml
+            {{- if .Values.coar_notify.deployment.volume }}
+          - name: HISTFILE
+            value: {{ .Values.coar_notify.deployment.volume.mountPath }}/.bash_history
+            {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+            {{- if .Values.coar_notify.deployment.volume }}
+          - name: {{ .Values.coar_notify.deployment.volume.name }}
+            mountPath: {{ .Values.coar_notify.deployment.volume.mountPath }}
+            readOnly: {{ .Values.coar_notify.deployment.volume.readOnly | default "false" }}
+            {{- end }}
+      volumes:
+        - name: configuration
+          emptyDir: {}
+        - name: configuration-template
+          configMap:
+            name: {{ $service_name }}-template
+            defaultMode: 0777
+            items:
+            - key: "config.yml.template"
+              path: "config.yml.template"
+        - name: config-utils
+          configMap:
+            name: config-utils
+            defaultMode: 0555
+        {{- if and .Values.coar_notify.deployment.volume .Values.coar_notify.deployment.volume.volumeDefinition -}}
+          {{- (list (mustMerge (dict "name" .Values.coar_notify.deployment.volume.name) .Values.coar_notify.deployment.volume.volumeDefinition)) | toYaml | nindent 8 -}}
+        {{- end -}}
+{{ end }}

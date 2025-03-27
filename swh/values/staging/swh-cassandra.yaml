@@ -2362,6 +2362,12 @@ storage1DeleteObjstorageConfiguration:
   url: http://objstorage-storage1-delete-rpc-ingress
   enable_requests_retry: true
 
+coar_notify:
+  enabled: true
+  deployment:
+    limitedCpu: 1
+    limitedMemory: 1Gi
+
 alter:
   enabled: true
   directoryOutput: /srv/recovery-bundles

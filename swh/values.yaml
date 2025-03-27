@@ -2107,3 +2107,6 @@ graph:
     #       default:
     #         paths:
     #           - path: /
+
+coar_notify:
+  enabled: false

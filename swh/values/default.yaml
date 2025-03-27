@@ -484,6 +484,23 @@ graph:
             values:
             - "true"
 
+coar_notify:
+  sentry:
+    enabled: true
+    # secretKeyRef: common-secrets
+    # secretKeyName: alter-sentry-dsn
+  deployment:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: "swh/coar-notify"
+              operator: In
+              values:
+              - "true"
+    priorityClassName: swh-cassandra-frontend-rpc-workload
+
 journalWriterMirrorConfiguration:
   brokersConfigurationRef: kafkaBrokers
   clientId: swh.alter.removals.${HOSTNAME}
