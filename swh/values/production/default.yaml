@@ -1196,10 +1196,9 @@ remoteROCassandraIngressStorageConfiguration:
   pipelineStepsRef: retryStoragePipelineSteps
   storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
 
-provenanceConfiguration:
-  cls: remote
-  url: http://webapp-provenance-ingress-swh-cassandra
-  enable_requests_retry: true
+provenanceGrpcConfiguration:
+  cls: grpc
+  url: provenance-20241206-grpc-ingress:80
 
 esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
 

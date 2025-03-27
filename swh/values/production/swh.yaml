@@ -467,7 +467,7 @@ web:
       depositConfigurationRef: depositConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
-      provenanceConfigurationRef: provenanceConfiguration
+      provenanceConfigurationRef: provenanceGrpcConfiguration
       djangoAppsRef: webDjangoApps
       graphConfigurationRef: webGraphConfiguration
       extraConfig:
