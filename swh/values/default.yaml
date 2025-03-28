@@ -465,7 +465,7 @@ provenance:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: "swh/rpc"
+          - key: "swh/provenance"
             operator: In
             values:
             - "true"
