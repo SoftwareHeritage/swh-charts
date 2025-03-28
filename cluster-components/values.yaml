@@ -123,7 +123,7 @@ svix:
   namespace: svix-server
   # Svix-server version must match the svix python library
   # in the swh-webhooks image's requirements (can be overriden per instance)
-  version: v1.35
+  #version: v1.35
   # Redis configuration (can be overridden per instance)
   redis:
     # (deprecated) When true, this installs and configure a redis instance. Use the
