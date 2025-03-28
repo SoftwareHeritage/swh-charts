@@ -1,6 +1,6 @@
 {{- if .Values.coar_notify.enabled -}}
 {{- $service_name := "coar-notify" -}}
-#{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
+{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
 {{- $affinity := .Values.coar_notify.deployment.affinity -}}
 {{- $nodeSelector := .Values.coar_notify.deployment.nodeSelector | default dict -}}
 {{- $priority_class_name := .Values.coar_notify.deployment.priorityClassName -}}
@@ -33,7 +33,7 @@ spec:
         app: {{ $service_name }}
       annotations:
         # Force a rollout upgrade if the configuration changes
-        #checksum/config: {{ $configurationChecksum }}
+        checksum/config: {{ $configurationChecksum }}
     spec:
       securityContext:
         fsGroup: 1000
@@ -50,9 +50,8 @@ spec:
         - name: prepare-configuration
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          {{/* To be updated if secrets appear in $deployment_config! */}}
-          {{/* env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.coar_notify
-                                                                      "Values" .Values) | nindent 10 }} */}}
+          env:{{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.coar_notify
+                                                                      "Values" .Values) | nindent 10 }}
           command:
             - /entrypoints/prepare-configuration.sh
           volumeMounts:

@@ -2362,11 +2362,34 @@ storage1DeleteObjstorageConfiguration:
   url: http://objstorage-storage1-delete-rpc-ingress
   enable_requests_retry: true
 
+postgresqlRWCoarNotifyConfiguration:
+  host: swh-coar-notify.swh-coar-notify
+  port: 5432
+  db: swh-coar-notify
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      secretKeyName: username
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      secretKeyName: password
+
+extraConfigCoarNotifyConfiguration:
+    coar_notify_client: swh.coarnotify.client.DummyCOARNotifyClient
+    serve_assets: true
+
 coar_notify:
   enabled: true
-  deployment:
-    limitedCpu: 1
-    limitedMemory: 1Gi
+  storageConfigurationRef: scrubberROStorageConfiguration
+  databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
+  extraConfigRef: extraConfigCoarNotifyConfiguration
+  allowed_hosts:
+    - webapp.staging.swh.network
+    - webapp-cassandra.internal.staging.swh.network
+    - web-cassandra.swh-cassandra
+    - ${POD_IP}
 
 alter:
   enabled: true
