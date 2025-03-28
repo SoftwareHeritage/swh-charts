@@ -2607,7 +2607,7 @@ volumes:
       appName: provenance-grpc-20241206
       spec:
         capacity:
-          storage: 30Ti
+          storage: 10Ti
         volumeMode: Filesystem
         accessModes:
         - ReadWriteOnce
@@ -2637,7 +2637,7 @@ volumes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 30Ti
+            storage: 10Ti
     alter-recovery-bundles-pvc:
       enabled: true
       appName: alter
