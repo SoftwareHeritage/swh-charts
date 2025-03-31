@@ -195,16 +195,6 @@ cloudnativePg:
       # lc_time: 'C.UTF-8' # locale for time formatting
     pg_hba:
     - host all all all md5
-  roles:
-    - name: guest
-      ensure: present
-      comment: Guest
-      login: true
-      connectionLimit: -1
-      inherit: true
-      passwordSecret:
-        name: swh-postgresql-guest-secret
-  # Exists as many cluster as we want
   deployments:
     # staging/next-version environment
     next-version-swh:
@@ -311,17 +301,26 @@ cloudnativePg:
       instances: 2
       delay: 300
       imageCatalogRef: 17
-      enableSuperuserAccess: false
+      enableSuperuserAccess: 'false'
+      enableMonitoring: true
       namespace: swh-coar-notify
       initdb:
         databases:
         - swh-cora-notify
-      enableMonitoring: true
       storage:
         size: 5Gi
       walStorage:
         size: 1Gi
         storageClass: local-persistent
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
 
 rabbitmq:
   enabled: true

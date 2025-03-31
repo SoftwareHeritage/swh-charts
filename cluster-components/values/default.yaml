@@ -1,7 +1,17 @@
 cloudnativePg:
+  enableSuperuserAccess: true
   storage:
     storageClass: local-persistent
     size: 1Gi
+  roles:
+    - name: guest
+      ensure: present
+      comment: Guest
+      login: true
+      connectionLimit: -1
+      inherit: true
+      passwordSecret:
+        name: swh-postgresql-guest-secret
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

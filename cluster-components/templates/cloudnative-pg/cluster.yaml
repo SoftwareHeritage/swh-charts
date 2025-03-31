@@ -16,6 +16,7 @@
 {{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
 {{- $storage := mustMerge ($cluster_config.storage | default (dict)) $.Values.cloudnativePg.storage -}}
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
+{{- $enableSuperuserAccess := $cluster_config.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
 {{- $swhCnpgLabeled := $cluster_config.labeled -}}
 {{- $delay := $cluster_config.delay -}}
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
@@ -55,14 +56,11 @@ spec:
   #               the switchover of the primary
   # https://cloudnative-pg.io/documentation/1.23/rolling_update/
   primaryUpdateStrategy: unsupervised
-  {{- if $cluster_config.enableSuperuserAccess }}
-  enableSuperuserAccess: true
-  {{- end }}
+  enableSuperuserAccess: {{ $enableSuperuserAccess }}
   {{- if $affinity }}
   affinity:
     {{- toYaml $affinity | nindent 4 }}
   {{- end }}
-
   {{- if $storage }}
   storage:
     {{- toYaml $storage | nindent 4 }}
@@ -70,12 +68,11 @@ spec:
   {{- if $walStorage }}
   walStorage:
     {{- toYaml $walStorage | nindent 4 }}
-  {{ end }}
-
+  {{- end }}
   {{- if $roles }}
   managed:
     roles:
-      {{ toYaml $roles | nindent 6 }}
+    {{- toYaml $roles | nindent 4 }}
   {{ end }}
 
   {{- if $cluster_config.initdb }}
