@@ -195,7 +195,7 @@ spec:
             requests:
               memory: {{ $webConfig.nginxRequestedMemory | default "50Mi" }}
               cpu: {{ $webConfig.nginxRequestedCpu | default "10m" }}
-          image: nginx:bullseye
+          image: {{ $.Values.web.staticImage }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
