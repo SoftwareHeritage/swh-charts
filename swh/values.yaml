@@ -818,7 +818,7 @@ storage:
 
 web:
   enabled: false
-  staticImage: nginx:bookworm
+  staticImage: nginx:1.27.4
   port: 5004
   logLevel: INFO
   migrations:
