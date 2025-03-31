@@ -1,3 +1,4 @@
+{{- if .Values.cloudnativePg.enabled -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
@@ -15,3 +16,4 @@ spec:
       image: ghcr.io/cloudnative-pg/postgresql:16.8-8-bookworm@sha256:2de76acdc46122ed7e05667f49f6aed830d7a6f01b74c84688c58fea8bc1b6fb
     - major: 17
       image: ghcr.io/cloudnative-pg/postgresql:17.4-8-bookworm@sha256:6462966e5cc15ef5ad868c27e646d5f7d3879ff33633276d19ef3ec51bb50899
+{{ end }}
