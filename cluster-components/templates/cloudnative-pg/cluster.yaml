@@ -54,7 +54,9 @@ spec:
   #               the switchover of the primary
   # https://cloudnative-pg.io/documentation/1.23/rolling_update/
   primaryUpdateStrategy: unsupervised
+  {{- if $cluster_config.enableSuperuserAccess }}
   enableSuperuserAccess: true
+  {{- end }}
 
   {{- if $affinity }}
   affinity:
