@@ -18,6 +18,7 @@
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
 {{- $swhCnpgLabeled := $cluster_config.labeled -}}
 {{- $delay := $cluster_config.delay -}}
+{{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -38,6 +39,13 @@ spec:
   {{- if $delay }}
   startDelay: {{ $delay }}
   stopDelay: {{ $delay }}
+  {{- end }}
+  {{- if $imageCatalogRef }}
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ClusterImageCatalog
+    name: postgresql
+    major: {{ $imageCatalogRef }}
   {{- end }}
   # Rolling update strategy:
   # - unsupervised: automated update of the primary once all
