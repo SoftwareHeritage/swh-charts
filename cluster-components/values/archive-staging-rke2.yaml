@@ -317,6 +317,11 @@ cloudnativePg:
         databases:
         - swh-cora-notify
       enableMonitoring: true
+      storage:
+        size: 5Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
 
 rabbitmq:
   enabled: true
