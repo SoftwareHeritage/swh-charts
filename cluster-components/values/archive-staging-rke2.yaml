@@ -307,6 +307,7 @@ cloudnativePg:
         source: cluster-pg-staging-db1
     swh-coar-notify:
       enabled: true
+      labeled: true
       namespace: swh-coar-notify
       initdb:
         databases:

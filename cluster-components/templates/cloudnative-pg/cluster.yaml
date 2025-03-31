@@ -16,12 +16,17 @@
 {{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
 {{- $storage := $cluster_config.storage | default $.Values.cloudnativePg.storage | default dict -}}
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
+{{- $swhCnpgLabeled := $cluster_config.labeled -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ $cluster_name }}
   namespace: {{ $namespace }}
+{{- if $swhCnpgLabeled }}
+  labels:
+    cnpg.io/cluster: {{ $cluster_name }}
+{{- end }}
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{ if $testing }}
