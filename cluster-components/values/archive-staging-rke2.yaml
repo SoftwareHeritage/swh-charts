@@ -308,6 +308,8 @@ cloudnativePg:
     swh-coar-notify:
       enabled: true
       labeled: true
+      instances: 2
+      delay: 300
       namespace: swh-coar-notify
       initdb:
         databases:

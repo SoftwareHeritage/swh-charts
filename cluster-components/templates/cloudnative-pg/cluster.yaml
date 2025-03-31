@@ -17,6 +17,7 @@
 {{- $storage := $cluster_config.storage | default $.Values.cloudnativePg.storage | default dict -}}
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
 {{- $swhCnpgLabeled := $cluster_config.labeled -}}
+{{- $delay := $cluster_config.delay -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -29,11 +30,15 @@ metadata:
 {{- end }}
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
-  {{ if $testing }}
+  {{- if $testing }}
   # Disruption budget
   # https://cloudnative-pg.io/documentation/1.23/kubernetes_upgrade/#postgresql-clusters-used-for-development-or-testing
   enablePDB: false
-  {{ end }}
+  {{- end }}
+  {{- if $delay }}
+  startDelay: {{ $delay }}
+  stopDelay: {{ $delay }}
+  {{- end }}
   # Rolling update strategy:
   # - unsupervised: automated update of the primary once all
   #                 replicas have been upgraded (default)
