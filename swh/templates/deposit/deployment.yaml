@@ -177,7 +177,7 @@ spec:
             requests:
               memory: {{ .Values.deposit.requestedMemory | default "512Mi" }}
               cpu: {{ .Values.deposit.requestedCpu | default "500m" }}
-          image: nginx:bullseye
+          image: {{ .Values.deposit.staticImage }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
