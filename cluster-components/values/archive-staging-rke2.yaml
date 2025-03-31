@@ -305,6 +305,13 @@ cloudnativePg:
         databases:
         - swh-deposit
         source: cluster-pg-staging-db1
+    swh-coar-notify:
+      enabled: true
+      namespace: swh-coar-notify
+      initdb:
+        databases:
+        - swh-cora-notify
+      enableMonitoring: true
 
 rabbitmq:
   enabled: true
