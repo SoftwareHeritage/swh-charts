@@ -323,6 +323,10 @@ cloudnativePg:
           name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices: ["r","ro"]
+      limitedCpu: 400m
+      limitedMemory: 256Mi
+      requestedCpu: 400m
+      requestedMemory: 256Mi
 
 rabbitmq:
   enabled: true

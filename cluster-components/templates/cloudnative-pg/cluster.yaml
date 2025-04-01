@@ -22,6 +22,10 @@
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
 {{- $services := $cluster_config.services | default false -}}
+{{- $limited_cpu := $cluster_config.limitedCpu | default false -}}
+{{- $limited_memory := $cluster_config.limitedMemory | default false -}}
+{{- $requested_cpu := $cluster_config.requestedCpu | default false -}}
+{{- $requested_memory := $cluster_config.requestedMemory | default false -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -78,6 +82,23 @@ spec:
     services:
     {{- toYaml $services | nindent 6 }}
     {{- end }}
+  {{- end }}
+  {{ if or $limited_cpu $limited_memory }}
+  resources:
+    requests:
+      {{- if $requested_memory }}
+      memory: {{ $requested_memory }}
+      {{- end }}
+      {{- if $requested_cpu }}
+      cpu: {{ $requested_cpu }}
+      {{- end }}
+    limits:
+      {{- if $limited_memory }}
+      memory: {{ $limited_memory }}
+      {{- end }}
+      {{- if $limited_cpu }}
+      cpu: {{ $limited_cpu }}
+      {{- end }}
   {{ end }}
 
   {{- if $cluster_config.initdb }}
