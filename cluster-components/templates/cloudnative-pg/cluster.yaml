@@ -14,7 +14,6 @@
 {{- $storage := mustMerge ($cluster_config.storage | default (dict)) $.Values.cloudnativePg.storage -}}
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
 {{- $enableSuperuserAccess := $cluster_config.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
-{{- $swhCnpgLabeled := $cluster_config.labeled -}}
 {{- $delay := $cluster_config.delay -}}
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
@@ -24,16 +23,15 @@
 {{- $requested_cpu := $cluster_config.requestedCpu | default false -}}
 {{- $requested_memory := $cluster_config.requestedMemory | default false -}}
 {{- $secret_key_ref := $cluster_config.initdb.secretKeyRef | default false -}}
+{{- $backup := mustMerge (get $cluster_config "backup" | default (dict)) $.Values.cloudnativePg.backup -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: {{ $cluster_name }}
   namespace: {{ $namespace }}
-{{- if $swhCnpgLabeled }}
   labels:
     cnpg.io/cluster: {{ $cluster_name }}
-{{- end }}
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{- if $testing }}
@@ -108,9 +106,6 @@ spec:
       {{- if $cluster_config.initdb.localeCType }}
       localeCType:  {{ $cluster_config.initdb.localeCType }}
       {{- end }}
-      {{- if $cluster_config.initdb.walSegmentSize }}
-      walSegmentSize: {{ $cluster_config.initdb.walSegmentSize }}
-      {{- end }}
       secret:
         name: {{ $secret_key_ref }}
     {{- end }}
@@ -130,18 +125,18 @@ spec:
   {{- end }}
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
   backup:
-    retentionPolicy: {{ $cluster_config.backup.retention | default "30d" | quote }}
+    retentionPolicy: {{ $backup.retention | default "30d" | quote }}
     target: prefer-standby
     barmanObjectStore:
-      destinationPath: {{ $.Values.cloudnativePg.backup.destinationPath }}
-      endpointURL: https://minio.admin.swh.network
+      destinationPath: {{ $backup.s3Config.path }}
+      endpointURL: {{ $backup.s3Config.url }}
       s3Credentials:
         accessKeyId:
-          name: cnpg-minio-secret
-          key: MINIO_ACCESS_KEY
+          name: {{ $backup.s3Config.secretName }}
+          key: {{ $backup.s3Config.accessKey }}
         secretAccessKey:
-          name: cnpg-minio-secret
-          key: MINIO_SECRET_KEY
+          name: {{ $backup.s3Config.secretName }}
+          key: {{ $backup.s3Config.secretKey }}
       wal:
         compression: {{ $.Values.cloudnativePg.backup.compression }}
       data:

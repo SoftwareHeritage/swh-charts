@@ -297,7 +297,6 @@ cloudnativePg:
         source: cluster-pg-staging-db1
     swh-coar-notify:
       enabled: true
-      labeled: true
       instances: 2
       delay: 300
       imageCatalogRef: 17
@@ -310,7 +309,6 @@ cloudnativePg:
         secretKeyRef: cnpg-swh-coar-notify-secret
         localeCollate: 'en_US.utf8'
         localeCType: 'en_US.utf8'
-        walSegmentSize: 32
       storage:
         size: 5Gi
       walStorage:
@@ -346,6 +344,8 @@ cloudnativePg:
         enabled: true
         retention: 1d
         schedule: "0 25 0/2 * * *"
+        s3Config:
+          secretName: cnpg-minio-secret
       pooler:
         enabled: true
         types: [rw,]
