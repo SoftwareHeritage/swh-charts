@@ -346,6 +346,9 @@ cloudnativePg:
         enabled: true
         retention: 1d
         schedule: "0 25 0/2 * * *"
+      pooler:
+        enabled: true
+        types: [rw,]
 
 rabbitmq:
   enabled: true

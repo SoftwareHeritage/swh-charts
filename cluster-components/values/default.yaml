@@ -1,4 +1,8 @@
 cloudnativePg:
+  pooler:
+    enabled: false
+    mode: session
+    types: []
   backup:
     compression: gzip
     destinationPath: s3://backup-cnpg/archive-staging-rke2

@@ -4,39 +4,43 @@
 {{- if and $cluster_config.pooler $cluster_config.pooler.enabled -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $pooler_instances := $cluster_config.pooler.instances | default $cluster_config.instances | default 1 -}}
-{{- $pooler_type := $cluster_config.pooler.type -}}
+{{- $pool_mode := $cluster_config.pooler.mode | default $.Values.cloudnativePg.pooler.mode }}
 {{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
 {{- $max_client_conn := $cluster_config.pooler.max_client_conn | default "1000" -}}
+{{- range $type := $cluster_config.pooler.types }}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: {{ $cluster_name}}-pooler-{{ $pooler_type }}
+  name: {{ $cluster_name }}-pooler-{{ $type }}
   namespace: {{ $namespace }}
 spec:
   instances: {{ $pooler_instances }}
-  type: {{ $pooler_type }}
+  type: {{ . }}
   cluster:
     name: {{ $cluster_name }}
-
-  serviceTemplate:
-    metadata:
-      labels:
-        app: {{ $cluster_name}}-pooler
-      annotations:
-        # To be able to share the same ip for several services
-        # https://metallb.org/usage/#ip-address-sharing
-        metallb.universe.tf/allow-shared-ip: clusterIP
-    spec:
-      type: LoadBalancer
-      externalTrafficPolicy: Cluster
-
   pgbouncer:
-    poolMode: session
+    poolMode: {{ $pool_mode }}
     parameters:
       max_client_conn: {{ $max_client_conn | quote }}
       default_pool_size: {{ $default_pool_size | quote }}
-
+  template:
+    metadata:
+      labels:
+        app: {{ $cluster_name}}-pooler-{{ $type }}
+    spec:
+      containers: []
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ $cluster_name}}-pooler-{{ $type }}
+            topologyKey: "kubernetes.io/hostname"
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}
