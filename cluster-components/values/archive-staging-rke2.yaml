@@ -306,7 +306,11 @@ cloudnativePg:
       namespace: swh-coar-notify
       initdb:
         databases:
-        - swh-cora-notify
+        - swh-coar-notify
+        secretKeyRef: swh-postgresql-swh-coar-notify-secret
+        localeCollate: 'en_US.utf8'
+        localeCType: 'en_US.utf8'
+        walSegmentSize: 32
       storage:
         size: 5Gi
       walStorage:

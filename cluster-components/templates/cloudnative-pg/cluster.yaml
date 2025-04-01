@@ -26,6 +26,7 @@
 {{- $limited_memory := $cluster_config.limitedMemory | default false -}}
 {{- $requested_cpu := $cluster_config.requestedCpu | default false -}}
 {{- $requested_memory := $cluster_config.requestedMemory | default false -}}
+{{- $secret_key_ref := $cluster_config.initdb.secretKeyRef | default false -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -39,8 +40,6 @@ metadata:
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{- if $testing }}
-  # Disruption budget
-  # https://cloudnative-pg.io/documentation/1.23/kubernetes_upgrade/#postgresql-clusters-used-for-development-or-testing
   enablePDB: false
   {{- end }}
   {{- if $delay }}
@@ -54,12 +53,6 @@ spec:
     name: postgresql
     major: {{ $imageCatalogRef }}
   {{- end }}
-  # Rolling update strategy:
-  # - unsupervised: automated update of the primary once all
-  #                 replicas have been upgraded (default)
-  # - supervised: requires manual supervision to perform
-  #               the switchover of the primary
-  # https://cloudnative-pg.io/documentation/1.23/rolling_update/
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: {{ $enableSuperuserAccess }}
   {{- if $affinity }}
@@ -106,56 +99,38 @@ spec:
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}
-
-  {{ if $cluster_config.initdb }}
-  {{- $secretKeyRef := $cluster_config.initdb.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
-
   bootstrap:
+    {{- if $secret_key_ref }}
     initdb:
-      {{ if eq $db_type "microservice" }}
-      # Use the following to define the database's name (default <app>).
-      # And its associated owner
       database: {{ first $databases }}
       owner: {{ first $databases }}
-      {{ end }}
-      {{ if $secretKeyRef }}
-      secret:
-        name: {{ $secretKeyRef }}
-      {{ end }}
-      # The following optionals are the equivalent of flags passed to initdb
-      # commented because those are already the default values
-      # --encoding
-      # encoding: UTF8
-      # --lc-ctype
-      # localeCType: C
-      # --lc-collate
-      # localeCollate: C
-      # -k option to enable checksums on data pages to help detect I/O
-      # -corruption
       dataChecksums: true
-      {{ if $cluster_config.initdb.source }}
+      {{- if $cluster_config.initdb.localeCollate }}
+      localeCollate: {{ $cluster_config.initdb.localeCollate }}
+      {{- end }}
+      {{- if $cluster_config.initdb.localeCType }}
+      localeCType:  {{ $cluster_config.initdb.localeCType }}
+      {{- end }}
+      {{- if $cluster_config.initdb.walSegmentSize }}
+      walSegmentSize: {{ $cluster_config.initdb.walSegmentSize }}
+      {{- end }}
+      secret:
+        name: {{ $secret_key_ref }}
+    {{- end }}
+      dataChecksums: true
+      {{- if $cluster_config.initdb.source }}
       import:
-        # 2 types possibles
-        # - monolith: for one cluster with all dbs
-        # - microservice (recommended): one db per cluster (lots of pods)
         type: {{ $db_type }}
         databases:
           {{- toYaml $databases | nindent 10 }}
-        {{ if eq $db_type "monolith" }}
-        roles:
-          - "*"
-        {{ end }}
         source:
           externalCluster: {{ $cluster_config.initdb.source }}
-      {{ end }}
+      {{- end }}
 
-  # Reference to postgresql source cluster to initialize db(s) from
-  {{- if and $cluster_config.initdb $cluster_config.initdb.source $externalPgClusterDict }}
+  {{- if and $cluster_config.initdb.source $externalPgClusterDict }}
   externalClusters:
     {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
   {{- end }}
-  {{- end }}
-
 
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
   # Backup properties
