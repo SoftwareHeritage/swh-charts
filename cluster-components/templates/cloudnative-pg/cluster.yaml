@@ -100,8 +100,14 @@ spec:
       cpu: {{ $limited_cpu }}
       {{- end }}
   {{ end }}
+  {{- if $config_postgresql }}
+  postgresql:
+    {{- toYaml $config_postgresql | nindent 4 }}
+  {{- end }}
+  monitoring:
+    enablePodMonitor: {{ $enableMonitoring }}
 
-  {{- if $cluster_config.initdb }}
+  {{ if $cluster_config.initdb }}
   {{- $secretKeyRef := $cluster_config.initdb.secretKeyRef | default $.Values.cloudnativePg.secretKeyRef -}}
 
   bootstrap:
@@ -150,15 +156,6 @@ spec:
   {{- end }}
   {{- end }}
 
-  # Parameters and pg_hba configuration will be append
-  # to the default ones to make the cluster work
-  {{- if $config_postgresql }}
-  postgresql:
-    {{- toYaml $config_postgresql | nindent 4 }}
-  {{- end }}
-
-  monitoring:
-    enablePodMonitor: {{ $enableMonitoring }}
 
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
   # Backup properties

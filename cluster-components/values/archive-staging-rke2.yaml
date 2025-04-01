@@ -327,6 +327,17 @@ cloudnativePg:
       limitedMemory: 256Mi
       requestedCpu: 400m
       requestedMemory: 256Mi
+      postgresql:
+        parameters:
+          shared_buffers: "64MB"
+          pg_stat_statements.max: '10000'
+          pg_stat_statements.track: all
+          auto_explain.log_min_duration: '10s'
+        pg_hba:
+          - host all all all md5
+        synchronous:
+          method: any
+          number: 1
 
 rabbitmq:
   enabled: true
