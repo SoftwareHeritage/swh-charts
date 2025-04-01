@@ -321,6 +321,8 @@ cloudnativePg:
         inherit: false
         passwordSecret:
           name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices: ["r","ro"]
 
 rabbitmq:
   enabled: true

@@ -21,6 +21,7 @@
 {{- $delay := $cluster_config.delay -}}
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
+{{- $services := $cluster_config.services | default false -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -73,6 +74,10 @@ spec:
   managed:
     roles:
     {{- toYaml $roles | nindent 4 }}
+    {{- if $services }}
+    services:
+    {{- toYaml $services | nindent 6 }}
+    {{- end }}
   {{ end }}
 
   {{- if $cluster_config.initdb }}
