@@ -1,4 +1,7 @@
 cloudnativePg:
+  backup:
+    compression: gzip
+    destinationPath: s3://backup-cnpg/archive-staging-rke2
   enableSuperuserAccess: true
   storage:
     storageClass: local-persistent

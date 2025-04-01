@@ -1,28 +1,20 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
 {{- if and $cluster_config.backup $cluster_config.backup.enabled -}}
-{{- $backup_name := $cluster_config.backup.name -}}
-{{- $backup_cron := $cluster_config.backup.cron -}}
+{{- $schedule := $cluster_config.backup.schedule -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: backup-{{ $backup_name }}
+  name: backup-{{ $cluster_name }}
   namespace: {{ $namespace }}
 spec:
-  schedule: {{ $backup_cron }}
-  # backupOwnerReference
-  # - none: no owner reference for created backup objects (same behavior as
-  #   before the field was introduced)
-  # - self: sets the Scheduled backup object as owner of the backup
-  # - cluster: set the cluster as owner of the backup
-  backupOwnerReference: self
+  backupOwnerReference: cluster
   cluster:
     name: {{ $cluster_name }}
-
-{{ end }}
+  immediate: true
+  schedule: {{ $schedule | default "0 0 2 * * *"}}
 {{ end }}
 {{ end }}
 {{ end }}

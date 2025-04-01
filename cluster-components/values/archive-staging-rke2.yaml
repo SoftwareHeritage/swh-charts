@@ -342,6 +342,10 @@ cloudnativePg:
         synchronous:
           method: any
           number: 1
+      backup:
+        enabled: true
+        retention: 1d
+        schedule: "0 25 0/2 * * *"
 
 rabbitmq:
   enabled: true

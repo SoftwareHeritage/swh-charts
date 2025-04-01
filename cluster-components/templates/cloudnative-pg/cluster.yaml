@@ -2,9 +2,6 @@
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $barmanObjectStoreRef := get $cluster_config "barmanObjectStoreRef" | default
-      (get $.Values.cloudnativePg "barmanObjectStoreRef") -}}
-{{- $barmanObjectStoreDict := get $.Values $barmanObjectStoreRef -}}
 {{- $externalClusterRef := get $cluster_config "externalClusterRef" | default
       (get $.Values.cloudnativePg "externalClusterRef") -}}
 {{- $externalPgClusterDict := get $.Values $externalClusterRef -}}
@@ -131,24 +128,29 @@ spec:
   externalClusters:
     {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
   {{- end }}
-
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
-  # Backup properties
-  # This assumes a local minio setup
   backup:
-    volumeSnapshot:
-      className: local-persistent
-      online: true
-      # onlineConfiguration:
-      #   immediateCheckpoint: true
-      #   waitForArchive: false
     retentionPolicy: {{ $cluster_config.backup.retention | default "30d" | quote }}
-    {{- if $barmanObjectStoreDict }}
+    target: prefer-standby
     barmanObjectStore:
-      {{- toYaml $barmanObjectStoreDict | nindent 6 }}
-    {{- end }}
+      destinationPath: {{ $.Values.cloudnativePg.backup.destinationPath }}
+      endpointURL: https://minio.admin.swh.network
+      s3Credentials:
+        accessKeyId:
+          name: cnpg-minio-secret
+          key: MINIO_ACCESS_KEY
+        secretAccessKey:
+          name: cnpg-minio-secret
+          key: MINIO_SECRET_KEY
+      wal:
+        compression: {{ $.Values.cloudnativePg.backup.compression }}
+      data:
+        compression: {{ $.Values.cloudnativePg.backup.compression }}
+        additionalCommandArgs:
+          - "--min-chunk-size=5MB"
+          - "--read-timeout=60"
+          - "-vv"
   {{ end }}
-
 {{ end }}
 {{ end }}
 {{ end }}
