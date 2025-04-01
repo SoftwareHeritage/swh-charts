@@ -2110,3 +2110,4 @@ graph:
 
 coar_notify:
   enabled: false
+  port: 5009

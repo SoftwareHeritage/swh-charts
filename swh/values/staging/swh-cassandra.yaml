@@ -2363,7 +2363,7 @@ storage1DeleteObjstorageConfiguration:
   enable_requests_retry: true
 
 postgresqlRWCoarNotifyConfiguration:
-  host: swh-coar-notify.swh-coar-notify
+  host: swh-coar-notify-pooler-rw.swh-coar-notify
   port: 5432
   db: swh-coar-notify
   user: ${POSTGRESQL_USERNAME}
@@ -2386,10 +2386,27 @@ coar_notify:
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
   allowed_hosts:
-    - webapp.staging.swh.network
-    - webapp-cassandra.internal.staging.swh.network
-    - web-cassandra.swh-cassandra
+    - inbound.staging.swh.network
+    - inbound-cassandra.internal.staging.swh.network
+    - coar-notify.swh-cassandra
     - ${POD_IP}
+  ingress:
+    enabled: true
+    hosts:
+    - inbound.staging.swh.network
+    - inbound.internal.staging.swh.network
+    secretName: swh-coar-notify-crt
+    extraAnnotations:
+      cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    tlsEnabled: true
+    endpoints:
+      default:
+        paths:
+          - path: /
+            port: 5009
 
 alter:
   enabled: true

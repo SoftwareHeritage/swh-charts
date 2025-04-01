@@ -1,0 +1,5 @@
+{{ if .Values.coar_notify.enabled -}}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   "coar-notify"
+                                "configuration" .Values.coar_notify) -}}
+{{- end -}}
