@@ -89,28 +89,6 @@ cloudnativePg:
       - host all all all md5
   # Exists as many cluster as we want
   deployments:
-    staging-secondary-dbs:
-      enabled: true
-      instances: 1
-      # Managed dbs
-      initdb:
-        type: monolith
-        databases:
-        - swh-blocking
-        - swh-deposit
-        - swh-masking
-        - swh-vault
-        - swh-web
-        source: cluster-pg-staging-db1
-      backup:
-        enabled: true
-        retention: "30d"
-        name: daily-midnight
-        # every day at midnight
-        cron: "0 0 0 * * *"
-      pooler:
-        enabled: true
-        type: ro
     staging-archive-db:
       enabled: false
       # Managed dbs (optional)

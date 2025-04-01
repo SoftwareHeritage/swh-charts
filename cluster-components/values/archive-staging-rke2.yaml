@@ -307,7 +307,7 @@ cloudnativePg:
       initdb:
         databases:
         - swh-coar-notify
-        secretKeyRef: swh-postgresql-swh-coar-notify-secret
+        secretKeyRef: cnpg-swh-coar-notify-secret
         localeCollate: 'en_US.utf8'
         localeCType: 'en_US.utf8'
         walSegmentSize: 32
@@ -324,7 +324,7 @@ cloudnativePg:
         connectionLimit: 10
         inherit: false
         passwordSecret:
-          name: swh-postgresql-guest-secret
+          name: cnpg-guest-secret
       services:
         disabledDefaultServices: ["r","ro"]
       limitedCpu: 400m
