@@ -49,7 +49,9 @@ spec:
     major: {{ $imageCatalogRef }}
   {{- end }}
   primaryUpdateStrategy: unsupervised
+  {{- if $enableSuperuserAccess }}
   enableSuperuserAccess: {{ $enableSuperuserAccess }}
+  {{- end }}
   {{- if $affinity }}
   affinity:
     {{- toYaml $affinity | nindent 4 }}
