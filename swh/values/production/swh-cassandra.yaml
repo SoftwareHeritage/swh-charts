@@ -1624,7 +1624,7 @@ provenance:
       enabled: true
       imageVersion: '20250326.4'
       type: grpc
-      replicas: 2
+      replicas: 1
       dataset:
         name: 2024-12-06
         provenance:
