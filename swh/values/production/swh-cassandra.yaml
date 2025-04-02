@@ -1622,7 +1622,6 @@ provenance:
   deployments:
     20241206-grpc:
       enabled: true
-      imageVersion: '20250326.4'
       type: grpc
       replicas: 1
       dataset:
