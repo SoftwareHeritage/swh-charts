@@ -18,12 +18,12 @@
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
 {{- $services := $cluster_config.services | default false -}}
-{{- $limited_cpu := $cluster_config.limitedCpu | default false -}}
-{{- $limited_memory := $cluster_config.limitedMemory | default false -}}
-{{- $requested_cpu := $cluster_config.requestedCpu | default false -}}
-{{- $requested_memory := $cluster_config.requestedMemory | default false -}}
-{{- $secret_key_ref := $cluster_config.initdb.secretKeyRef | default false -}}
+{{- $limitedCpu := $cluster_config.limitedCpu | default false -}}
+{{- $limitedMemory := $cluster_config.limitedMemory | default false -}}
+{{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
+{{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
 {{- $backup := mustMerge (get $cluster_config "backup" | default (dict)) $.Values.cloudnativePg.backup -}}
+{{- $initdb := mustMerge ($cluster_config.initdb | default (dict)) $.Values.cloudnativePg.initdb -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -73,21 +73,21 @@ spec:
     {{- toYaml $services | nindent 6 }}
     {{- end }}
   {{- end }}
-  {{ if or $limited_cpu $limited_memory }}
+  {{ if or $limitedCpu $limitedMemory }}
   resources:
     requests:
-      {{- if $requested_memory }}
-      memory: {{ $requested_memory }}
+      {{- if $requestedMemory }}
+      memory: {{ $requestedMemory }}
       {{- end }}
-      {{- if $requested_cpu }}
-      cpu: {{ $requested_cpu }}
+      {{- if $requestedCpu }}
+      cpu: {{ $requestedCpu }}
       {{- end }}
     limits:
-      {{- if $limited_memory }}
-      memory: {{ $limited_memory }}
+      {{- if $limitedMemory }}
+      memory: {{ $limitedMemory }}
       {{- end }}
-      {{- if $limited_cpu }}
-      cpu: {{ $limited_cpu }}
+      {{- if $limitedCpu }}
+      cpu: {{ $limitedCpu }}
       {{- end }}
   {{ end }}
   {{- if $config_postgresql }}
@@ -97,31 +97,31 @@ spec:
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}
   bootstrap:
-    {{- if $secret_key_ref }}
+    {{- if $initdb.secretKeyRef }}
     initdb:
       database: {{ first $databases }}
       owner: {{ first $databases }}
       dataChecksums: true
-      {{- if $cluster_config.initdb.localeCollate }}
-      localeCollate: {{ $cluster_config.initdb.localeCollate }}
+      {{- if $initdb.localeCollate }}
+      localeCollate: {{ $initdb.localeCollate }}
       {{- end }}
-      {{- if $cluster_config.initdb.localeCType }}
-      localeCType:  {{ $cluster_config.initdb.localeCType }}
+      {{- if $initdb.localeCType }}
+      localeCType: {{ $initdb.localeCType }}
       {{- end }}
       secret:
-        name: {{ $secret_key_ref }}
+        name: {{ $initdb.secretKeyRef }}
     {{- end }}
       dataChecksums: true
-      {{- if $cluster_config.initdb.source }}
+      {{- if $initdb.source }}
       import:
         type: {{ $db_type }}
         databases:
           {{- toYaml $databases | nindent 10 }}
         source:
-          externalCluster: {{ $cluster_config.initdb.source }}
+          externalCluster: {{ $initdb.source }}
       {{- end }}
 
-  {{- if and $cluster_config.initdb.source $externalPgClusterDict }}
+  {{- if and $initdb.source $externalPgClusterDict }}
   externalClusters:
     {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
   {{- end }}

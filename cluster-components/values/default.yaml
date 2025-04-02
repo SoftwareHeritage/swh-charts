@@ -1,4 +1,7 @@
 cloudnativePg:
+  initdb:
+    localeCollate: 'C'
+    localeCType: 'C'
   pooler:
     enabled: false
     mode: session
