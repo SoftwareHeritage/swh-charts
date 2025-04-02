@@ -7,16 +7,17 @@
 {{- $pool_mode := $cluster_config.pooler.mode | default $.Values.cloudnativePg.pooler.mode }}
 {{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
 {{- $max_client_conn := $cluster_config.pooler.max_client_conn | default "1000" -}}
-{{- range $type := $cluster_config.pooler.types }}
+{{- range $type := $cluster_config.pooler.types -}}
+{{- $name := cat $cluster_name "-pooler-" $type | nospace -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
 metadata:
-  name: {{ $cluster_name }}-pooler-{{ $type }}
+  name: {{ $name }}
   namespace: {{ $namespace }}
 spec:
   instances: {{ $pooler_instances }}
-  type: {{ . }}
+  type: {{ $type }}
   cluster:
     name: {{ $cluster_name }}
   pgbouncer:
@@ -27,7 +28,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ $cluster_name}}-pooler-{{ $type }}
+        app: {{ $name }}
     spec:
       containers: []
       affinity:
@@ -38,7 +39,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - {{ $cluster_name}}-pooler-{{ $type }}
+                - {{ $name }}
             topologyKey: "kubernetes.io/hostname"
 {{ end }}
 {{ end }}
