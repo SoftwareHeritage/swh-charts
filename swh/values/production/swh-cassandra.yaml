@@ -1624,6 +1624,8 @@ provenance:
       enabled: true
       type: grpc
       replicas: 1
+      requestedMemory: 235Gi
+      requestedCpu: 750m
       dataset:
         name: 2024-12-06
         provenance:
