@@ -332,7 +332,9 @@ cloudnativePg:
         passwordSecret:
           name: cnpg-guest-secret
       services:
-        disabledDefaultServices: ["r","ro"]
+        disabledDefaultServices:
+        - "r"
+        - "ro"
       limitedCpu: 400m
       limitedMemory: 256Mi
       requestedCpu: 400m
@@ -356,7 +358,8 @@ cloudnativePg:
           secretName: cnpg-minio-secret
       pooler:
         enabled: true
-        types: [rw,]
+        types:
+        - "rw"
 
 rabbitmq:
   enabled: true
