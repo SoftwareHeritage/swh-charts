@@ -9,6 +9,7 @@
 {{- $max_client_conn := $cluster_config.pooler.max_client_conn | default "1000" -}}
 {{- range $type := $cluster_config.pooler.types -}}
 {{- $name := cat $cluster_name "-pooler-" $type | nospace -}}
+{{- $exposed := $cluster_config.exposed | default $.Values.cloudnativePg.exposed -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
@@ -41,6 +42,17 @@ spec:
                 values:
                 - {{ $name }}
             topologyKey: "kubernetes.io/hostname"
+  {{- if $exposed }}
+  serviceTemplate:
+    metadata:
+      labels:
+        app: {{ $name }}
+      annotations:
+        metallb.universe.tf/allow-shared-ip: clusterIP
+    spec:
+      type: LoadBalancer
+      externalTrafficPolicy: Cluster
+  {{- end }}
 {{ end }}
 {{ end }}
 {{ end }}
