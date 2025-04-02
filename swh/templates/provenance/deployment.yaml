@@ -130,23 +130,27 @@ spec:
           ports:
             - containerPort: {{ $port }}
               name: {{ $type }}
-          readinessProbe:
           {{- if (eq $type "rpc") }}
+          readinessProbe:
             httpGet:
               path: /
               port: {{ $type }}
-          {{- else }}
-            tcpSocket:
-              port: {{ $type }}
-          {{- end }}
             initialDelaySeconds: 15
             failureThreshold: 30
             periodSeconds: 5
+          {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ $type }}
             initialDelaySeconds: 10
             periodSeconds: 5
+          {{- if (eq $type "grpc") }}
+          startupProbe:
+            tcpSocket:
+              port: {{ $type }}
+            failureThreshold: 30
+            periodSeconds: 10
+          {{- end }}
           command:
           - /bin/bash
           args:
