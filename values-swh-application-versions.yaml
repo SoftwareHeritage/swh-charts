@@ -41,7 +41,7 @@ swh_objstorage_image_version: '20250326.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
 swh_objstorage_replayer_image_version: '20250326.1'
 swh_provenance_image: container-registry.softwareheritage.org/swh/infra/swh-apps/provenance
-swh_provenance_image_version: '20250403.1'
+swh_provenance_image_version: '20250403.2'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
 swh_scheduler_image_version: '20250401.2'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
@@ -61,6 +61,6 @@ swh_vault_cookers_image_version: '20250401.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20250401.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20250402.1'
+swh_web_image_version: '20250403.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20250326.1'
