@@ -2393,8 +2393,8 @@ coar_notify:
   ingress:
     enabled: true
     hosts:
-    - inbound.staging.swh.network
-    - inbound.internal.staging.swh.network
+    - inbox.staging.swh.network
+    - inbox.internal.staging.swh.network
     secretName: swh-coar-notify-crt
     extraAnnotations:
       cert-manager.io/cluster-issuer: letsencrypt-production-gandi
