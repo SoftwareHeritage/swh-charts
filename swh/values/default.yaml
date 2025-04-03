@@ -495,7 +495,7 @@ coar_notify:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: "swh/coar-notify"
+            - key: "swh/deposit"
               operator: In
               values:
               - "true"
