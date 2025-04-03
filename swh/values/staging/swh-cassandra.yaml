@@ -2213,6 +2213,7 @@ scheduler:
       - load-git
       - load-svn
       - load-archive-files
+      - load-tarball-directory
       - load-hg
     listener:
       enabled: true
