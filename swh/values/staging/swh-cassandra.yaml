@@ -2382,6 +2382,7 @@ extraConfigCoarNotifyConfiguration:
 
 coar_notify:
   enabled: true
+  type: coar-notify
   storageConfigurationRef: scrubberROStorageConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
