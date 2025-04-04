@@ -1,0 +1,32 @@
+{{- $datasetExporterConfig := .Values.datasetsExporter -}}
+{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+
+{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
+{{- $serviceType := "luigi-scheduler" -}}
+{{- if $deploymentConfig.config }}
+{{- $recordTaskHistory := $deploymentConfig.config.recordTask | default false -}}
+{{- $orgRamMb := $deploymentConfig.config.orgRamMb | default 1024 -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $serviceType }}-configuration-template
+data:
+  luigi.cfg.template: |
+    [scheduler]
+    record_task_history = {{ $recordTaskHistory }}
+
+    {{ if $recordTaskHistory }}
+    [task_history]
+    db_connection = sqlite://{{ $deploymentConfig.path }}/db/luigi-task-hist.db
+    {{ end }}
+
+    [resources]
+    {{ if $orgRamMb }}
+    {{ first $deploymentConfig.hosts | default "localhost" }}.org_ram_mb = {{ $orgRamMb }}
+    {{ end }}
+
+{{- end -}}
+{{- end -}}

@@ -2143,3 +2143,25 @@ coarNotify:
 #       paths:
 #         - path: /
 #           port: 5015
+datasetsExporter:
+  enabled: false
+  # Default namespace to use (can be overridden per instance or per scheduler)
+  # namespace: swh
+  # Dedicated scheduler instance
+  scheduler:
+    # namespace: swh
+    enabled: false
+    port: 8082
+    type: http
+    priorityClassName: frontend-rpc-workload
+    hosts: []
+    ingress: {}
+
+  # The exports dataset to build
+  exports:
+    enabled: true
+    priorityClassName: normal-workload
+    # namespace: swh
+    # Datasets to export
+    datasets:
+      2024-12-06: {}

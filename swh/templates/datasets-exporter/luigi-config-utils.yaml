@@ -1,0 +1,26 @@
+{{- $datasetExporterConfig := .Values.datasetsExporter -}}
+{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+
+{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: luigi-config-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  prepare-configuration.sh: |
+    #!/bin/bash
+
+    set -eu
+
+    export POD_IP=$(hostname -i)
+
+    TEMPLATE=/etc/luigi/configuration-template/luigi.cfg.template
+    TARGET=/etc/luigi/config.cfg
+
+    echo "Following variables will be replaced:"
+    envsubst -v "$(<$TEMPLATE)"
+
+    cat $TEMPLATE | envsubst > $TARGET
+{{- end -}}

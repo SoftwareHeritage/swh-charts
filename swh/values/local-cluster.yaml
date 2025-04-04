@@ -1779,3 +1779,22 @@ graph:
           default:
             paths:
               - path: /
+
+datasetsExporter:
+  # Specify the associated container image version (can be overriden per instance)
+  # imageVersion: '20250401.1'
+  # Default namespace to use (can be overridden per instance or per scheduler)
+  # Dedicated scheduler instance
+  scheduler:
+    enabled: false
+    config:
+      recordTaskHistory: false
+      orgRamMb: 1024
+
+  # The exports dataset to build
+  exports:
+    enabled: false
+    # namespace: swh
+    # Datasets to export
+    datasets:
+      2024-12-06: {}

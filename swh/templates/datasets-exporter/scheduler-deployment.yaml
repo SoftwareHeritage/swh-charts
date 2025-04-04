@@ -1,0 +1,134 @@
+{{- $datasetExporterConfig := .Values.datasetsExporter -}}
+{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+
+{{- $containerImageKey := $datasetExporterConfig.image -}}
+{{- $containerImage := .Values.swh_datasets_image -}}
+{{- $containerImageVersion := .Values.swh_datasets_image_version -}}
+
+{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $serviceType := "luigi-scheduler" -}}
+{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
+{{- $replicas := $deploymentConfig.replicas -}}
+{{- $affinity := $deploymentConfig.affinity -}}
+{{- $priorityClassName := $deploymentConfig.priorityClassName -}}
+{{- $port := $deploymentConfig.port -}}
+{{- $type := $deploymentConfig.type -}}
+{{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $serviceType }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $replicas -}}
+  replicas: {{ $replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+    spec:
+      {{- if $affinity }}
+      affinity:
+        {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+      {{- if and .Values.podPriority.enabled $priorityClassName }}
+      priorityClassName: {{ print $namespace "-" $priorityClassName | quote }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deploymentConfig
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/luigi
+          - name: configuration-template
+            mountPath: /etc/luigi/configuration-template
+          - name: luigi-config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      containers:
+        - name: {{ $serviceType }}
+          resources:
+            requests:
+              memory: {{ $deploymentConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $deploymentConfig.requestedCpu | default "500m" }}
+          {{- if or $deploymentConfig.limitedMemory $deploymentConfig.limitedCpu }}
+            limits:
+            {{- if $deploymentConfig.limitedMemory }}
+              memory: {{ $deploymentConfig.limitedMemory }}
+            {{- end }}
+            {{- if $deploymentConfig.limitedCpu }}
+              cpu: {{ $deploymentConfig.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          image: {{ print $containerImage ":" $containerImageVersion | quote }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $port }}
+              name: {{ $type }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ $type }}
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: {{ $type }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            - name: APP_NAME
+              value: luigi
+            - name: LUIGI_PATH_TO_PIDFILE
+              value: {{ $path }}/pid
+            - name: LUIGI_PATH_TO_LOGDIR
+              value: {{ $path }}/log
+            - name: LUIGI_PATH_TO_STATEFILE
+              value: {{ $path }}/state
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/luigi
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "luigi.cfg.template"
+            path: "luigi.cfg.template"
+      - name: backend-utils
+        configMap:
+          name: backend-utils
+          defaultMode: 0555
+      - name: luigi-config-utils
+        configMap:
+          name: luigi-config-utils
+          defaultMode: 0555
+{{- end -}}

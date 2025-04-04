@@ -1,0 +1,8 @@
+{{- $datasetExporterConfig := .Values.datasetsExporter -}}
+{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{- $serviceType := "luigi-scheduler" -}}
+{{- include "swh.service" (dict "Values"        .Values
+                                "serviceType"   $serviceType
+                                "configuration" $deploymentConfig) -}}
+{{ end }}
