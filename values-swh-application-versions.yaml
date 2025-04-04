@@ -28,6 +28,8 @@ swh_loader_cvs_image: container-registry.softwareheritage.org/swh/infra/swh-apps
 swh_loader_cvs_image_version: '20250402.1'
 swh_loader_git_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git
 swh_loader_git_image_version: '20250402.1'
+swh_loader_git_pypy_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_git_pypy
+swh_loader_git_pypy_image_version: '20250404.1'
 swh_loader_mercurial_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_mercurial
 swh_loader_mercurial_image_version: '20250402.1'
 swh_loader_metadata_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_metadata
