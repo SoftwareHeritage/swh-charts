@@ -495,7 +495,7 @@ coarNotify:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: "swh/deposit"
+            - key: "swh/frontend"
               operator: In
               values:
               - "true"
