@@ -2377,7 +2377,7 @@ postgresqlRWCoarNotifyConfiguration:
       secretKeyName: password
 
 extraConfigCoarNotifyConfiguration:
-    coar_notify_client: swh.coarnotify.client.DummyCOARNotifyClient
+    coar_notify_client: swh.coarnotify.client.COARNotifyClient
     serve_assets: true
 
 coar_notify:
