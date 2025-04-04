@@ -62,6 +62,22 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
+        {{- if .Values.coarNotify.migrationsEnabled }}
+        - name: do-migration
+          image: {{ .Values.swh_coar_notify_image }}:{{ .Values.swh_coar_notify_image_version }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SWH_CONFIG_FILENAME
+              value: /etc/swh/config.yml
+          command:
+            - django-admin
+          args:
+            - migrate
+            - --settings=swh.coarnotify.settings.production
+          volumeMounts:
+            - name: configuration
+              mountPath: /etc/swh
+        {{- end }}
       containers:
         - name: {{ $service_name }}
           resources:
