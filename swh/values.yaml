@@ -2111,3 +2111,33 @@ graph:
 coarNotify:
   enabled: false
   port: 5015
+# # name of the service port
+# type: coar-notify
+# # storage configuration
+# storageConfigurationRef: scrubberROStorageConfiguration
+# # database configuration
+# databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
+# # extra configuration for swh-coar-notify application
+# extraConfigRef: extraConfigCoarNotifyConfiguration
+# # hosts that can access swh-coar-notify application
+# allowed_hosts:
+#   - <host_1>
+#   - <svc_name>.<svc_namespace>
+#   - ${POD_IP}
+# # External access with https support
+# ingress:
+#   enabled: true
+#   hosts:
+#   - <host_1>
+#   secretName: swh-coar-notify-crt
+#   extraAnnotations:
+#     cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+#     kubernetes.io/ingress.class: nginx
+#     kubernetes.io/tls-acme: "true"
+#     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+#   tlsEnabled: true
+#   endpoints:
+#     default:
+#       paths:
+#         - path: /
+#           port: 5015
