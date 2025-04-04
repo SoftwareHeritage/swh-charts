@@ -86,10 +86,6 @@ spec:
             value: {{ .Values.coarNotify.logLevel | default "INFO" }}
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml
-            {{- if .Values.coarNotify.deployment.volume }}
-          - name: HISTFILE
-            value: {{ .Values.coarNotify.deployment.volume.mountPath }}/.bash_history
-            {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
