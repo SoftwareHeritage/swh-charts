@@ -317,6 +317,24 @@ loaders:
         emptyDir:
           medium: Memory
           sizeLimit: 15Gi
+    git-pypy:
+      image: swh_loader_git_pypy_image
+      priorityClassName: low-workload
+      queues:
+        - swh.loader.git.tasks.UpdateGitRepository
+        - swh.loader.git.tasks.LoadDiskGitRepository
+        - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+      autoScaling:
+        maxReplicaCount: 1
+        minReplicaCount: 1
+        stopWhenNoActivity: false
+      requestedMemory: 768Mi
+      requestedCpu: 100m
+      limitedMemory: 20Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
     git-checkout:
       image: swh_loader_git_image
       queues:
