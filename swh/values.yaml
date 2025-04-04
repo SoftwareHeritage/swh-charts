@@ -2108,6 +2108,6 @@ graph:
     #         paths:
     #           - path: /
 
-coar_notify:
+coarNotify:
   enabled: false
   port: 5009

@@ -1,4 +1,4 @@
-{{ if .Values.coar_notify.enabled }}
+{{ if .Values.coarNotify.enabled }}
 {{ include "coar-notify.configmap"
   (dict "serviceType" "coar-notify"
         "Values" $.Values) }}

@@ -484,7 +484,7 @@ graph:
             values:
             - "true"
 
-coar_notify:
+coarNotify:
   sentry:
     enabled: true
     # secretKeyRef: common-secrets

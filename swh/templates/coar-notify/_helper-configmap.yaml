@@ -2,18 +2,18 @@
 {{- $coarNotifyConfiguration := (dict) -}}
 {{- $coarNotifyConfiguration = include "swh.storageConfiguration" (dict
                                       "service" "storage"
-                                      "configurationRef" .Values.coar_notify.storageConfigurationRef
+                                      "configurationRef" .Values.coarNotify.storageConfigurationRef
                                       "Values" .Values) | fromYaml | mustMerge $coarNotifyConfiguration -}}
 
-{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_host" .Values.coar_notify.allowed_hosts ) -}}
+{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_host" .Values.coarNotify.allowed_hosts ) -}}
 {{- $databaseConfiguration := (dict) -}}
 {{- $databaseConfiguration := include "swh.postgresql" (dict "serviceType" "private"
                                       "Values" .Values
-                                      "configurationRef" .Values.coar_notify.databaseCoarNotifyConfigurationRef
+                                      "configurationRef" .Values.coarNotify.databaseCoarNotifyConfigurationRef
                                       ) | fromYaml | mustMerge $databaseConfiguration -}}
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $databaseConfiguration -}}
 {{- $extraConfiguration := (dict) -}}
-{{- $extraConfiguration := include "swh.service.fromYaml" (dict "configurationRef" .Values.coar_notify.extraConfigRef
+{{- $extraConfiguration := include "swh.service.fromYaml" (dict "configurationRef" .Values.coarNotify.extraConfigRef
                                       "Values" .Values) | fromYaml | mustMerge $extraConfiguration  }}
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $extraConfiguration -}}
 {{ $coarNotifyConfiguration | toYaml }}

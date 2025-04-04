@@ -1,14 +1,14 @@
-{{- if .Values.coar_notify.enabled -}}
+{{- if .Values.coarNotify.enabled -}}
 {{- $service_name := "coar-notify" -}}
 {{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
-{{- $affinity := .Values.coar_notify.deployment.affinity -}}
-{{- $nodeSelector := .Values.coar_notify.deployment.nodeSelector | default dict -}}
-{{- $priority_class_name := .Values.coar_notify.deployment.priorityClassName -}}
-{{- $requested_cpu := get .Values.coar_notify.deployment "requestedCpu" -}}
-{{- $requested_memory := get .Values.coar_notify.deployment "requestedMemory" -}}
-{{- $limited_cpu := get .Values.coar_notify.deployment "limitedCpu" -}}
-{{- $limited_memory := get .Values.coar_notify.deployment "limitedMemory" -}}
-{{- $replicas := .Values.coar_notify.replicas | default 1 }}
+{{- $affinity := .Values.coarNotify.deployment.affinity -}}
+{{- $nodeSelector := .Values.coarNotify.deployment.nodeSelector | default dict -}}
+{{- $priority_class_name := .Values.coarNotify.deployment.priorityClassName -}}
+{{- $requested_cpu := get .Values.coarNotify.deployment "requestedCpu" -}}
+{{- $requested_memory := get .Values.coarNotify.deployment "requestedMemory" -}}
+{{- $limited_cpu := get .Values.coarNotify.deployment "limitedCpu" -}}
+{{- $limited_memory := get .Values.coarNotify.deployment "limitedMemory" -}}
+{{- $replicas := .Values.coarNotify.replicas | default 1 }}
 
 ---
 apiVersion: apps/v1
@@ -50,7 +50,7 @@ spec:
         - name: prepare-configuration
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env:{{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.coar_notify
+          env:{{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.coarNotify
                                                                       "Values" .Values) | nindent 10 }}
           command:
             - /entrypoints/prepare-configuration.sh
@@ -83,20 +83,20 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
           - name: SWH_LOG_LEVEL
-            value: {{ .Values.coar_notify.logLevel | default "INFO" }}
+            value: {{ .Values.coarNotify.logLevel | default "INFO" }}
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml
-            {{- if .Values.coar_notify.deployment.volume }}
+            {{- if .Values.coarNotify.deployment.volume }}
           - name: HISTFILE
-            value: {{ .Values.coar_notify.deployment.volume.mountPath }}/.bash_history
+            value: {{ .Values.coarNotify.deployment.volume.mountPath }}/.bash_history
             {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-            {{- if .Values.coar_notify.deployment.volume }}
-          - name: {{ .Values.coar_notify.deployment.volume.name }}
-            mountPath: {{ .Values.coar_notify.deployment.volume.mountPath }}
-            readOnly: {{ .Values.coar_notify.deployment.volume.readOnly | default "false" }}
+            {{- if .Values.coarNotify.deployment.volume }}
+          - name: {{ .Values.coarNotify.deployment.volume.name }}
+            mountPath: {{ .Values.coarNotify.deployment.volume.mountPath }}
+            readOnly: {{ .Values.coarNotify.deployment.volume.readOnly | default "false" }}
             {{- end }}
       volumes:
         - name: configuration
@@ -112,7 +112,7 @@ spec:
           configMap:
             name: config-utils
             defaultMode: 0555
-        {{- if and .Values.coar_notify.deployment.volume .Values.coar_notify.deployment.volume.volumeDefinition -}}
-          {{- (list (mustMerge (dict "name" .Values.coar_notify.deployment.volume.name) .Values.coar_notify.deployment.volume.volumeDefinition)) | toYaml | nindent 8 -}}
+        {{- if and .Values.coarNotify.deployment.volume .Values.coarNotify.deployment.volume.volumeDefinition -}}
+          {{- (list (mustMerge (dict "name" .Values.coarNotify.deployment.volume.name) .Values.coarNotify.deployment.volume.volumeDefinition)) | toYaml | nindent 8 -}}
         {{- end -}}
 {{ end }}

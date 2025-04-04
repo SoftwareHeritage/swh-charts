@@ -1,5 +1,5 @@
-{{ if and .Values.coar_notify.enabled .Values.coar_notify.ingress.enabled -}}
+{{ if and .Values.coarNotify.enabled .Values.coarNotify.ingress.enabled -}}
 {{- include "swh.ingress" (dict "Values"        .Values
                                 "serviceType"   "coar-notify"
-                                "configuration" .Values.coar_notify) -}}
+                                "configuration" .Values.coarNotify) -}}
 {{ end }}
