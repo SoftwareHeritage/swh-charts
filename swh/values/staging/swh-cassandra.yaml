@@ -2376,6 +2376,9 @@ postgresqlRWCoarNotifyConfiguration:
       secretKeyRef: swh-postgresql-swh-coar-notify-secret
       secretKeyName: password
 
+cassandraRWCoarNotifyStorageConfiguration:
+  storageConfigurationRef: cassandraStorage
+
 extraConfigCoarNotifyConfiguration:
     coar_notify_client: swh.coarnotify.client.COARNotifyClient
     serve_assets: true
@@ -2384,7 +2387,7 @@ coarNotify:
   enabled: true
   migrationsEnabled: true
   type: coar-notify
-  storageConfigurationRef: scrubberROStorageConfiguration
+  storageConfigurationRef: cassandraRWCoarNotifyStorageConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
   allowed_hosts:
