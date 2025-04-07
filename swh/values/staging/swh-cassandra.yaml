@@ -2376,18 +2376,23 @@ postgresqlRWCoarNotifyConfiguration:
       secretKeyRef: swh-postgresql-swh-coar-notify-secret
       secretKeyName: password
 
-cassandraRWCoarNotifyStorageConfiguration:
-  storageConfigurationRef: cassandraStorage
-
 extraConfigCoarNotifyConfiguration:
     coar_notify_client: swh.coarnotify.client.COARNotifyClient
     serve_assets: true
+
+simpleStoragePipelineSteps:
+  - cls: filter
+  - cls: retry
+
+storageRWCoarNotifyConfiguration:
+  pipelineStepsRef: simpleStoragePipelineSteps
+  storageConfigurationRef: localRpcRWStorageConfiguration
 
 coarNotify:
   enabled: true
   migrationsEnabled: true
   type: coar-notify
-  storageConfigurationRef: cassandraRWCoarNotifyStorageConfiguration
+  storageConfigurationRef: storageRWCoarNotifyConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
   allowed_hosts:
