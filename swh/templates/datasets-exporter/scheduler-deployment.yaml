@@ -1,6 +1,7 @@
 {{- $datasetExporterConfig := .Values.datasetsExporter -}}
 {{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
-
+{{- $luigiConfigDirpath := "/etc/luigi" -}}
+{{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 {{- $containerImageKey := $datasetExporterConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 {{- $containerImageVersion := .Values.swh_datasets_image_version -}}
@@ -57,14 +58,19 @@ spec:
           - /entrypoints/prepare-configuration.sh
           env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deploymentConfig
                                                                       "Values" $.Values) | nindent 10 }}
+            - name: CONFIG_TEMPLATE_PATH
+              value: {{ print $luigiConfigDirpath "/configuration-template/luigi.cfg.template" }}
+            - name: CONFIG_PATH
+              value: {{ $luigiConfigPath }}
           volumeMounts:
           - name: configuration
-            mountPath: /etc/luigi
+            mountPath: {{ $luigiConfigDirpath }}
           - name: configuration-template
-            mountPath: /etc/luigi/configuration-template
+            mountPath: {{ print $luigiConfigDirpath "/configuration-template" }}
           - name: luigi-config-utils
             mountPath: /entrypoints
             readOnly: true
+
       containers:
         - name: {{ $serviceType }}
           resources:
@@ -111,9 +117,13 @@ spec:
               value: {{ $path }}/log
             - name: LUIGI_PATH_TO_STATEFILE
               value: {{ $path }}/state
+            - name: LUIGI_CONFIG_PATH
+              value: {{ $luigiConfigPath }}
+            - name: LUIGI_CONFIG_PARSER
+              value: cfg
           volumeMounts:
           - name: configuration
-            mountPath: /etc/luigi
+            mountPath: {{ $luigiConfigDirpath }}
       volumes:
       - name: configuration
         emptyDir: {}
