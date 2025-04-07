@@ -2388,13 +2388,17 @@ extraConfigCoarNotifyConfiguration:
     coar_notify_client: swh.coarnotify.client.COARNotifyClient
     serve_assets: true
 
-simpleStoragePipelineSteps:
+coarNotifyStoragePipelineSteps:
   - cls: filter
   - cls: retry
 
+coarNotifyRpcRWStorageConfiguration:
+  cls: remote
+  url: http://raw-extrinsic-metadata-storage-cassandra-read-write-ingress
+
 storageRWCoarNotifyConfiguration:
-  pipelineStepsRef: simpleStoragePipelineSteps
-  storageConfigurationRef: localRpcRWStorageConfiguration
+  pipelineStepsRef: coarNotifyStoragePipelineSteps
+  storageConfigurationRef: coarNotifyRpcRWStorageConfiguration
 
 coarNotify:
   enabled: true
