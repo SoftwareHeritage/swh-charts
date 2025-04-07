@@ -486,9 +486,7 @@ graph:
 
 coarNotify:
   sentry:
-    enabled: true
-    # secretKeyRef: common-secrets
-    # secretKeyName: alter-sentry-dsn
+    enabled: false
   deployment:
     affinity:
       nodeAffinity:
