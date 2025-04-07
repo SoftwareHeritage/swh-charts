@@ -499,7 +499,7 @@ coarNotify:
               operator: In
               values:
               - "true"
-    priorityClassName: swh-cassandra-frontend-rpc-workload
+    priorityClassName: frontend-rpc
 
 journalWriterMirrorConfiguration:
   brokersConfigurationRef: kafkaBrokers
