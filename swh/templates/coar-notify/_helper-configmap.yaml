@@ -1,4 +1,4 @@
-{{- define "coar-notify.config.fromYaml" -}}
+{{- define "coarNotify.config.fromYaml" -}}
 {{- $coarNotifyConfiguration := (dict) -}}
 {{- $coarNotifyConfiguration = include "swh.storageConfiguration" (dict
                                       "service" "storage"
@@ -18,7 +18,7 @@
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $extraConfiguration -}}
 {{ $coarNotifyConfiguration | toYaml }}
 {{- end -}}
-{{- define "coar-notify.configmap" -}}
+{{- define "coarNotify.configmap" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -27,5 +27,5 @@ metadata:
   namespace: {{ .Values.namespace }}
 data:
   config.yml.template: |
-    {{- include "coar-notify.config.fromYaml" (dict "Values" .Values) | nindent 4 -}}
+    {{- include "coarNotify.config.fromYaml" (dict "Values" .Values) | nindent 4 -}}
 {{ end }}

@@ -1,13 +1,13 @@
 {{- if .Values.coarNotify.enabled -}}
-{{- $service_name := "coar-notify" -}}
-{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $service_name "Values" .Values) | sha256sum -}}
+{{- $serviceName := "coar-notify" -}}
+{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $serviceName "Values" .Values) | sha256sum -}}
 {{- $affinity := .Values.coarNotify.deployment.affinity -}}
 {{- $nodeSelector := .Values.coarNotify.deployment.nodeSelector | default dict -}}
-{{- $priority_class_name := cat .Values.namespace "-" .Values.coarNotify.deployment.priorityClassName | nospace -}}
-{{- $requested_cpu := get .Values.coarNotify.deployment "requestedCpu" -}}
-{{- $requested_memory := get .Values.coarNotify.deployment "requestedMemory" -}}
-{{- $limited_cpu := get .Values.coarNotify.deployment "limitedCpu" -}}
-{{- $limited_memory := get .Values.coarNotify.deployment "limitedMemory" -}}
+{{- $priorityClassName := cat .Values.namespace "-" .Values.coarNotify.deployment.priorityClassName | nospace -}}
+{{- $requestedCpu := get .Values.coarNotify.deployment "requestedCpu" -}}
+{{- $requestedMemory := get .Values.coarNotify.deployment "requestedMemory" -}}
+{{- $limitedCpu := get .Values.coarNotify.deployment "limitedCpu" -}}
+{{- $limitedMemory := get .Values.coarNotify.deployment "limitedMemory" -}}
 {{- $replicas := .Values.coarNotify.replicas | default 1 }}
 
 ---
@@ -15,14 +15,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: {{ $service_name }}
-  name: {{ $service_name }}
+    app: {{ $serviceName }}
+  name: {{ $serviceName }}
   namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ $replicas }}
   selector:
     matchLabels:
-      app: {{ $service_name }}
+      app: {{ $serviceName }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -30,7 +30,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ $service_name }}
+        app: {{ $serviceName }}
       annotations:
         # Force a rollout upgrade if the configuration changes
         checksum/config: {{ $configurationChecksum }}
@@ -45,7 +45,7 @@ spec:
       affinity:
         {{- toYaml $affinity | nindent 8 }}
       {{- end }}
-      priorityClassName: {{ $priority_class_name }}
+      priorityClassName: {{ $priorityClassName }}
       initContainers:
         - name: prepare-configuration
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
@@ -79,18 +79,18 @@ spec:
               mountPath: /etc/swh
         {{- end }}
       containers:
-        - name: {{ $service_name }}
+        - name: {{ $serviceName }}
           resources:
             requests:
-              memory: {{ $requested_memory | default "512Mi" }}
-              cpu: {{ $requested_cpu | default "500m" }}
-            {{- if or $limited_cpu $limited_memory }}
+              memory: {{ $requestedMemory | default "512Mi" }}
+              cpu: {{ $requestedCpu | default "500m" }}
+            {{- if or $limitedCpu $limitedMemory }}
             limits:
-              {{- if $limited_memory }}
-              memory: {{ $limited_memory }}
+              {{- if $limitedMemory }}
+              memory: {{ $limitedMemory }}
               {{- end }}
-              {{- if $limited_cpu }}
-              cpu: {{ $limited_cpu }}
+              {{- if $limitedCpu }}
+              cpu: {{ $limitedCpu }}
               {{- end }}
             {{- end }}
           command:
@@ -115,7 +115,7 @@ spec:
           emptyDir: {}
         - name: configuration-template
           configMap:
-            name: {{ $service_name }}-template
+            name: {{ $serviceName }}-template
             defaultMode: 0777
             items:
             - key: "config.yml.template"
