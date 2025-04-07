@@ -1560,6 +1560,9 @@ externalServices:
     grpc-provenance:
       internalName: provenance-grpc-popular-ingress
       target: local-cluster-control-plane
+    luigi-scheduler-ingress:
+      internalName: luigi-scheduler-ingress
+      target: local-cluster-control-plane
 
 volumes:
   enabled: true
@@ -1790,6 +1793,18 @@ datasetsExporter:
     config:
       recordTaskHistory: true
       orgRamMb: 1024
+    hosts:
+      - luigi-scheduler-ingress
+    ingress:
+      enabled: true
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      endpoints:
+        default:
+          paths:
+            - path: /
 
   # The exports dataset to build
   exports:
