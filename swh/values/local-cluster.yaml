@@ -1788,7 +1788,7 @@ datasetsExporter:
   scheduler:
     enabled: false
     config:
-      recordTaskHistory: false
+      recordTaskHistory: true
       orgRamMb: 1024
 
   # The exports dataset to build

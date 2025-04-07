@@ -16,11 +16,8 @@ data:
 
     export POD_IP=$(hostname -i)
 
-    TEMPLATE=/etc/luigi/configuration-template/luigi.cfg.template
-    TARGET=/etc/luigi/config.cfg
-
     echo "Following variables will be replaced:"
-    envsubst -v "$(<$TEMPLATE)"
+    envsubst -v "$(<${CONFIG_TEMPLATE_PATH})"
 
-    cat $TEMPLATE | envsubst > $TARGET
+    cat "${TEMPLATE}" | envsubst > "${CONFIG_PATH}"
 {{- end -}}

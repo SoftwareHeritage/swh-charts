@@ -2145,6 +2145,7 @@ coarNotify:
 #           port: 5015
 datasetsExporter:
   enabled: false
+  logLevel: INFO
   # Default namespace to use (can be overridden per instance or per scheduler)
   # namespace: swh
   # Dedicated scheduler instance
