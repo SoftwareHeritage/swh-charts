@@ -8,6 +8,7 @@
 
 {{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-exporter/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $serviceType := "luigi-scheduler" -}}
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
 {{- $replicas := $deploymentConfig.replicas -}}
@@ -42,6 +43,7 @@ spec:
         app: {{ $serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
+        checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
       {{- if $affinity }}
       affinity:

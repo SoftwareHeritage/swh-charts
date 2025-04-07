@@ -19,5 +19,5 @@ data:
     echo "Following variables will be replaced:"
     envsubst -v "$(<${CONFIG_TEMPLATE_PATH})"
 
-    cat "${TEMPLATE}" | envsubst > "${CONFIG_PATH}"
+    cat "${CONFIG_TEMPLATE_PATH}" | envsubst > "${CONFIG_PATH}"
 {{- end -}}
