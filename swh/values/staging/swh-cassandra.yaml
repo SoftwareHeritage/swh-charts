@@ -2394,7 +2394,6 @@ coarNotify:
     - inbox.staging.swh.network
     - inbox.internal.staging.swh.network
     - coar-notify.swh-cassandra
-    - ${POD_IP}
   ingress:
     enabled: true
     hosts:
