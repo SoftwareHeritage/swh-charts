@@ -122,6 +122,7 @@ spec:
           - --dataset-name
           - {{ $datasetExportName | quote }}
           - {{ $config.datasetExportTask | quote }}
+          - --
           - --scheduler-url
           - {{ $config.luigiSchedulerUrl | quote }}
           - --LocalExport-export-task-type
