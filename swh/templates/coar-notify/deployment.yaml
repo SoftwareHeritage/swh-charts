@@ -1,6 +1,6 @@
 {{- if .Values.coarNotify.enabled -}}
 {{- $serviceName := "coar-notify" -}}
-{{- $configurationChecksum := include "alter.configmap" (dict "serviceType" $serviceName "Values" .Values) | sha256sum -}}
+{{- $configurationChecksum := include "coarNotify.configmap" (dict "serviceType" $serviceName "Values" .Values) | sha256sum -}}
 {{- $affinity := .Values.coarNotify.deployment.affinity -}}
 {{- $nodeSelector := .Values.coarNotify.deployment.nodeSelector | default dict -}}
 {{- $priorityClassName := cat .Values.namespace "-" .Values.coarNotify.deployment.priorityClassName | nospace -}}
