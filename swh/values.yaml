@@ -2171,6 +2171,8 @@ datasetsExporter:
     # # instance)
     # graphDirectoryPathRef: graphDirectoryPath
     # # Number of processes to use (can be overridden per instance)
+    # Masking db connection access (can be overridden per instance)
+    # maskingDbConfigurationRef: maskingDbConfiguration
     # nbProcesses: 1
     # # Datasets to export
     deployments: {}

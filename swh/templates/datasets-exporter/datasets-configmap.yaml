@@ -11,7 +11,11 @@
 {{- $exportTask := $config.datasetExportTask -}}
 {{- if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) -}}
 {{- $journalConfigRef := $datasetsExporterConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
-{{- $journalConfigurationRef := required (print "Key <journalClientConfigurationRef> missing.") $journalConfigRef -}}
+{{- $journalConfigurationRef := required (print "Mandatory key <journalConfigurationRef> missing.") $journalConfigRef -}}
+{{- $maskingDbConfigRef := $datasetExportConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
+{{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}
+{{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
+                                                  "Values" $.Values) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -22,7 +26,7 @@ data:
   config.yml.template: |
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
                                                        "Values" $.Values) | nindent 4 }}
-
+    masking_db: {{ $connstring }}
 {{- end -}}
 {{- end -}}
 {{- end -}}

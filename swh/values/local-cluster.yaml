@@ -1832,6 +1832,7 @@ datasetsExporter:
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
+    maskingDbConfigurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
     nbProcesses: 1
     # Datasets to export
     deployments:
