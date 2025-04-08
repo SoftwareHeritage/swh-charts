@@ -1,0 +1,37 @@
+{{/*
+   * Create a configuration dict for specific dataset export instance.
+   *
+   * This raises as soon as a missing key is detected.
+   */}}
+{{- define "swh.datasets.export.config" -}}
+{{- $config := deepCopy .exportConfiguration -}}
+{{- $topLevelConfig := .datasetsExporterConfiguration -}}
+{{- $datasetsConfig := $topLevelConfig.datasets -}}
+
+{{- $logLevel := $config.logLevel | default $datasetsConfig.logLevel | default $topLevelConfig.logLevel -}}
+{{- $namespace := $config.namespace | default $datasetsConfig.namespace | default $topLevelConfig.namespace | default .Values.namespace -}}
+{{- $replicas := $config.replicas | default $datasetsConfig.replicas | default 1 -}}
+{{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
+{{- $priorityClassName := $config.priorityClassName | default $datasetsConfig.priorityClassName -}}
+{{- $nbProcesses := $config.nbProcesses | default 1 -}}
+{{- $datasetExportTask := required (print "Required dataset export type (a luigi task name)") $config.exportTask -}}
+{{- $urlRef := $config.luigiSchedulerUrlRef | default $datasetsConfig.luigiSchedulerUrlRef -}}
+{{- $luigiSchedulerUrlRef := required (print "Required luigi scheduler url reference.") $urlRef -}}
+{{- $luigiSchedulerUrl := required (print "Invalid <luigiSchedulerUrlRef> configuration key.") (get .Values $luigiSchedulerUrlRef) -}}
+{{- $graphPathRef := $config.graphDirectoryPathRef | default $datasetsConfig.graphDirectoryPathRef -}}
+{{- $graphDirectoryPathRef := required (print "Required graph directory path reference.") $graphPathRef -}}
+{{- $graphDirectoryPath := required (print "Invalid <graphDirectoryPathRef> configuration key.") (get .Values $graphDirectoryPathRef) -}}
+{{- $configPath := "/etc/swh/config.yml" -}}
+
+{{- dict "serviceType"        (print "dataset-" .datasetExportName)
+         "logLevel"           $logLevel
+         "namespace"          $namespace
+         "replicas"           $replicas
+         "affinity"           $affinity
+         "priorityClassName"  $priorityClassName
+         "luigiSchedulerUrl"  $luigiSchedulerUrl
+         "graphDirectoryPath" $graphDirectoryPath
+         "datasetExportTask"  $datasetExportTask
+         "configPath"         $configPath
+         "nbProcesses"        $nbProcesses | mustMergeOverwrite $config | toYaml -}}
+{{- end -}}

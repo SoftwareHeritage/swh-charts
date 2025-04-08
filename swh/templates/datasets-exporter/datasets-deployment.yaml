@@ -1,0 +1,177 @@
+{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
+{{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
+{{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
+{{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-exporter/luigi-config-utils.yaml") . | sha256sum -}}
+{{- $containerImageKey := $datasetsExporterConfig.image -}}
+{{- $containerImage := .Values.swh_datasets_image -}}
+{{- $containerImageVersion := .Values.swh_datasets_image_version -}}
+{{- $luigiConfigDirpath := "/etc/luigi" -}}
+{{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
+
+{{- range $datasetExportName, $datasetExportConfig := $datasetsExporterConfig.datasets.deployments -}}
+{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled") -}}
+{{- $config := include "swh.datasets.export.config"
+      (dict "datasetExportName"             $datasetExportName
+            "exportConfiguration"           $datasetExportConfig
+            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "Values"                        $.Values) | fromYaml -}}
+{{- $exportTask := $config.datasetExportTask -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $config.namespace }}
+  name: {{ $config.serviceType }}
+  labels:
+    app: {{ $config.serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $config.replicas }}
+  replicas: {{ $config.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $config.serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $config.serviceType }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+        checksum/config-utils: {{ $configUtilsChecksum }}
+    spec:
+      {{- if $config.affinity }}
+      affinity:
+        {{- toYaml $config.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $config.priorityClassName }}
+      priorityClassName: {{ print $config.namespace "-" $config.priorityClassName | quote }}
+      {{ end }}
+      initContainers:
+        - name: prepare-luigi-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
+                                                                      "Values" $.Values) | nindent 10 }}
+            - name: CONFIG_TEMPLATE_PATH
+              value: {{ print $luigiConfigDirpath "/configuration-template/luigi.cfg.template" }}
+            - name: CONFIG_PATH
+              value: {{ $luigiConfigPath }}
+          volumeMounts:
+          - name: configuration
+            mountPath: {{ $luigiConfigDirpath }}
+          - name: luigi-scheduler-config-template
+            mountPath: {{ print $luigiConfigDirpath "/configuration-template" }}
+          - name: luigi-config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+        - name: {{ $config.serviceType }}-prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: {{ $config.serviceType }}-config-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+        {{ end }}
+      containers:
+        - name: {{ $config.serviceType }}
+          resources:
+            requests:
+              memory: {{ $config.requestedMemory | default "512Mi" }}
+              cpu: {{ $config.requestedCpu | default "500m" }}
+          {{- if or $config.limitedMemory $config.limitedCpu }}
+            limits:
+            {{- if $config.limitedMemory }}
+              memory: {{ $config.limitedMemory }}
+            {{- end }}
+            {{- if $config.limitedCpu }}
+              cpu: {{ $config.limitedCpu }}
+            {{- end }}
+          {{- end }}
+          image: {{ print $containerImage ":" $containerImageVersion | quote }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /bin/sleep
+          args:
+          - "3600"
+          # command:
+          # - /bin/bash
+          # args:
+          # - -c
+          # - /opt/swh/entrypoint.sh
+          # - --base-directory
+          # - {{ $config.graphDirectoryPath | quote }}
+          # - --dataset-name
+          # - {{ $datasetExportName | quote }}
+          # - {{ $config.datasetExportTask | quote }}
+          # - --scheduler-url
+          # - {{ $config.luigiSchedulerUrl | quote }}
+          # - --LocalExport-export-task-type
+          # - ExportGraph
+          # - --ExportGraph-config-file
+          # - {{ $config.configPath | quote }}
+          # - --ExportGraph-process
+          # - {{ $config.nbProcesses | quote }}
+          # - --log-level
+          # - {{ $config.logLevel | quote }}
+          # - --Llp-gammas=-1,-2,-3,-4
+          env:
+            - name: SWH_DEBUG_ENTRYPOINT
+              value: "1"
+            - name: APP_NAME
+              value: datasets
+            - name: LUIGI_CONFIG_PATH
+              value: {{ $luigiConfigPath | quote }}
+            - name: LUIGI_CONFIG_PARSER
+              value: cfg
+          volumeMounts:
+          - name: configuration
+            mountPath: {{ $luigiConfigDirpath | quote }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+      - name: {{ $config.serviceType }}-config-template
+        configMap:
+          name: {{ $config.serviceType }}-journal-client-config-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+      {{ end }}
+      - name: luigi-scheduler-config-template
+        configMap:
+          name: luigi-scheduler-configuration-template
+          items:
+          - key: "luigi.cfg.template"
+            path: "luigi.cfg.template"
+      - name: luigi-config-utils
+        configMap:
+          name: luigi-config-utils
+          defaultMode: 0555
+      {{- range $volumeName, $volumeConfig := $datasetExportConfig.extraVolumes }}
+      - name: {{ $volumeName }}
+        {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
+      {{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

@@ -284,6 +284,13 @@ objstorageJournalClientConfiguration:
   group_id: swh-objstorage-replayer-journal-checker
   prefix: swh.journal.objects
 
+datasetsJournalClientConfiguration:
+  brokersConfigurationRef: readOnlyInternalKafkaBrokers
+  group_id: swh-datasets-journal-export-graph
+  prefix: swh.journal.objects
+  privileged: true
+  batch_size: 10
+
 webhookJournalClientConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
   group_id: swh-webhooks
@@ -1642,6 +1649,15 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: standard
+    graph-20240408-persistent-pvc:
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
 
 graph:
   enabled: false
@@ -1783,10 +1799,13 @@ graph:
             paths:
               - path: /
 
+# Luigi's scheduler url to access
+luigiSchedulerUrl: http://luigi-scheduler-ingress:80
+
+# Graph directory path to write or read graph data from
+graphDirectoryPath: /srv/dataset/2025-04-08
+
 datasetsExporter:
-  # Specify the associated container image version (can be overriden per instance)
-  # imageVersion: '20250401.1'
-  # Default namespace to use (can be overridden per instance or per scheduler)
   # Dedicated scheduler instance
   scheduler:
     enabled: false
@@ -1806,10 +1825,22 @@ datasetsExporter:
           paths:
             - path: /
 
-  # The exports dataset to build
-  exports:
-    enabled: false
-    # namespace: swh
+  # The datasets export to build
+  datasets:
+    enabled: true
+    luigiSchedulerUrlRef: luigiSchedulerUrl
+    graphDirectoryPathRef: graphDirectoryPath
+    journalClientConfigurationRef: datasetsJournalClientConfiguration
+    nbProcesses: 1
     # Datasets to export
-    datasets:
-      2024-12-06: {}
+    deployments:
+      2025-04-08:
+        enabled: true
+        # Kind of dataset export to build
+        exportTask: CompressGraph
+        extraVolumes:
+          dataset-persistent:
+            mountPath: /srv/dataset/2025-04-08
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20240408-persistent-pvc

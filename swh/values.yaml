@@ -2152,17 +2152,32 @@ datasetsExporter:
   scheduler:
     # namespace: swh
     enabled: false
+    priorityClassName: frontend-rpc-workload
     port: 8082
     type: http
-    priorityClassName: frontend-rpc-workload
     hosts: []
     ingress: {}
 
-  # The exports dataset to build
-  exports:
-    enabled: true
-    priorityClassName: normal-workload
+  # The datasets export to build
+  datasets:
+    enabled: false
+    replicas: 1
+    affinity: {}
     # namespace: swh
-    # Datasets to export
-    datasets:
-      2024-12-06: {}
+    priorityClassName: normal-workload
+    # # Luigi url instance to use (can be overridden per instance)
+    # luigiSchedulerUrlRef: luigiSchedulerUrl
+    # # Graph directory path to use either to write or read data (can be overridden per
+    # # instance)
+    # graphDirectoryPathRef: graphDirectoryPath
+    # # Number of processes to use (can be overridden per instance)
+    # nbProcesses: 1
+    # # Datasets to export
+    deployments: {}
+    #   # Name of the export (usually timestamp of the export deployment)
+    #   2024-12-06:
+    #     enabled: false
+    #     # Type of export to execute (can be one of the luigi tasks defined in
+    #     # swh.datasets or swh.export repository)
+    #     exportTask: CompressGraph
+

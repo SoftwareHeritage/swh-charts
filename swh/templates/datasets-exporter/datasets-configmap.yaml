@@ -1,0 +1,29 @@
+{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
+{{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
+{{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
+{{- range $datasetExportName, $datasetExportConfig := $datasetsConfig.deployments -}}
+{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled") -}}
+{{- $config := include "swh.datasets.export.config"
+      (dict "datasetExportName"             $datasetExportName
+            "exportConfiguration"           $datasetExportConfig
+            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "Values"                        $.Values) | fromYaml -}}
+{{- $exportTask := $config.datasetExportTask -}}
+{{- if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) -}}
+{{- $journalConfigRef := $datasetsExporterConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
+{{- $journalConfigurationRef := required (print "Key <journalClientConfigurationRef> missing.") $journalConfigRef -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $config.serviceType }}-journal-client-config-template
+  namespace: {{ $config.namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
+                                                       "Values" $.Values) | nindent 4 }}
+
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
