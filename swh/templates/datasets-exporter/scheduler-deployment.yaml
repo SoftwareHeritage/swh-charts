@@ -135,10 +135,6 @@ spec:
           items:
           - key: "luigi.cfg.template"
             path: "luigi.cfg.template"
-      - name: backend-utils
-        configMap:
-          name: backend-utils
-          defaultMode: 0555
       - name: luigi-config-utils
         configMap:
           name: luigi-config-utils
