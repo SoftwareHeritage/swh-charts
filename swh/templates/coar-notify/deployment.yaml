@@ -105,11 +105,6 @@ spec:
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
-            {{- if .Values.coarNotify.deployment.volume }}
-          - name: {{ .Values.coarNotify.deployment.volume.name }}
-            mountPath: {{ .Values.coarNotify.deployment.volume.mountPath }}
-            readOnly: {{ .Values.coarNotify.deployment.volume.readOnly | default "false" }}
-            {{- end }}
       volumes:
         - name: configuration
           emptyDir: {}
