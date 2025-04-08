@@ -2418,6 +2418,12 @@ storageRWCoarNotifyConfiguration:
   pipelineStepsRef: coarNotifyStoragePipelineSteps
   storageConfigurationRef: coarNotifyRpcRWStorageConfiguration
 
+djangoCoarNotifyConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: swh-coarnotify-django-secret
+      secretKeyName: coarnotify-django-secret-key
+
 coarNotify:
   enabled: true
   migrationsEnabled: true
@@ -2425,6 +2431,7 @@ coarNotify:
   storageConfigurationRef: storageRWCoarNotifyConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
+  djangoSecretRef: djangoCoarNotifyConfiguration
   allowed_hosts:
     - inbox.staging.swh.network
     - inbox.internal.staging.swh.network

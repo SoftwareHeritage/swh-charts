@@ -4,18 +4,17 @@
                                       "service" "storage"
                                       "configurationRef" .Values.coarNotify.storageConfigurationRef
                                       "Values" .Values) | fromYaml | mustMerge $coarNotifyConfiguration -}}
-
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_host" .Values.coarNotify.allowed_hosts ) -}}
-{{- $databaseConfiguration := (dict) -}}
-{{- $databaseConfiguration := include "swh.postgresql" (dict "serviceType" "private"
-                                      "Values" .Values
-                                      "configurationRef" .Values.coarNotify.databaseCoarNotifyConfigurationRef
-                                      ) | fromYaml | mustMerge $databaseConfiguration -}}
-{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $databaseConfiguration -}}
 {{- $extraConfiguration := (dict) -}}
 {{- $extraConfiguration := include "swh.service.fromYaml" (dict "configurationRef" .Values.coarNotify.extraConfigRef
                                       "Values" .Values) | fromYaml | mustMerge $extraConfiguration  }}
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $extraConfiguration -}}
+{{- $djangoConfiguration := dict "private" (dict) -}}
+{{- $databaseConfiguration := include "django.postgresql" (dict "configurationRef" .Values.coarNotify.databaseCoarNotifyConfigurationRef
+                                              "Values" .Values) | fromYaml -}}
+{{- $_ := set $djangoConfiguration.private "db" $databaseConfiguration -}}
+{{- $_ := set $djangoConfiguration.private "secret_key" "${DJANGO_SECRET_KEY}" -}}
+{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $djangoConfiguration -}}
 {{ $coarNotifyConfiguration | toYaml }}
 {{- end -}}
 {{- define "coarNotify.configmap" -}}
