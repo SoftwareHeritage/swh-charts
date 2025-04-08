@@ -2481,7 +2481,7 @@ objstorageReplayer:
   deployments:
     winery:
       enabled: true
-      destinationObjstorageConfigurationRef: wineryObjstorageRWConfiguration
+      destinationObjstorageConfigurationRef: rwObjstorageWineryConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
       replicas: 32
       fetchConcurrency: 4
@@ -2867,7 +2867,7 @@ alter:
     s3:
       objstorageConfigurationRef: s3DeleteObjectstorageConfiguration
     winery:
-      objstorageConfigurationRef: wineryObjstorageRWConfiguration
+      objstorageConfigurationRef: rwObjstorageWineryConfiguration
   removalJournals:
     journal:
       journalWriterConfigurationRef: storageJournalWriterConfiguration

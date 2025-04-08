@@ -402,10 +402,33 @@ azureObjStorageROConfigurationSecrets: &azure-storage-secrets-ro
     secretKeyRef: swh-objstorage-azure-ro
     secretKeyName: container_url_f
 
+wineryObjstorageROSecrets: &winery-objstorage-secrets-ro
+  WINERY_RO_USERNAME:
+    secretKeyRef: swh-objstorage-winery-ro
+    secretKeyName: username
+  WINERY_RO_PASSWORD:
+    secretKeyRef: swh-objstorage-winery-ro
+    secretKeyName: password
+
+wineryObjstorageRWSecrets: &winery-objstorage-secrets-rw
+  WINERY_RW_USERNAME:
+    secretKeyRef: swh-objstorage-winery-rw
+    secretKeyName: username
+  WINERY_RW_PASSWORD:
+    secretKeyRef: swh-objstorage-winery-rw
+    secretKeyName: password
+
+objstorageROSecrets: &objstorage-secrets-ro
+  <<: *azure-storage-secrets-ro
+  <<: *winery-objstorage-secrets-ro
+
+objstorageRWSecrets: &objstorage-secrets-rw
+  <<: *azure-storage-secrets-rw
+  <<: *winery-objstorage-secrets-rw
 
 roObjstorageConfiguration:
   configurationRef: roObjstorageBestEffort
-  secrets: *azure-storage-secrets-ro
+  secrets: *objstorage-secrets-ro
 
 roObjstorageBestEffort:
   cls: multiplexer
@@ -413,7 +436,11 @@ roObjstorageBestEffort:
   objstorages:
   - cls: remote
     name: winery
-    url: http://winery-read-only.internal.cea.swh.network
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
     timeout:
       - 0.5  # Connect
       - 10   # Read
@@ -435,7 +462,7 @@ roObjstorageBestEffort:
 
 roObjstorageBestEffortConfiguration:
   configurationRef: roObjstorageBestEffort
-  secrets: *azure-storage-secrets-ro
+  secrets: *objstorage-secrets-ro
 
 roObjstorageHighParallelism:
   cls: multiplexer
@@ -443,7 +470,11 @@ roObjstorageHighParallelism:
   objstorages:
   - cls: remote
     name: winery
-    url: http://winery-read-only.internal.cea.swh.network
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
     timeout:
       - 0.5  # Connect
       - 10   # Read
@@ -465,18 +496,26 @@ roObjstorageHighParallelism:
 
 roObjstorageHighParallelismConfiguration:
   configurationRef: roObjstorageHighParallelism
-  secrets: *azure-storage-secrets-ro
+  secrets: *objstorage-secrets-ro
 
 cassandraReadOnlyStorageConfiguration:
   storageConfigurationRef: cassandraROStorage
   objstorageConfigurationRef: roObjstorageBestEffort
   pipelineStepsRef: maskingStoragePipelineSteps
-  secrets: *azure-storage-secrets-ro
+  secrets: *objstorage-secrets-ro
+
+rwObjstorageWineryConfiguration:
+  configurationRef: wineryObjstorageRWConfiguration
+  secrets: *winery-objstorage-secrets-rw
 
 wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
   cls: remote
   name: winery
-  url: http://winery-read-write.internal.cea.swh.network
+  url: https://winery-read-write.cea.swh.network
+  session_kwargs:
+    auth:
+    - ${WINERY_RW_USERNAME}
+    - ${WINERY_RW_PASSWORD}
   enable_requests_retry: true
 
 roObjstorageForWineryReplayer:
@@ -508,7 +547,11 @@ roObjstorageForS3Replayer:
   objstorages:
   - cls: remote
     name: winery
-    url: http://winery-read-only.internal.cea.swh.network
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
     timeout:
       - 0.5  # Connect
       - 10   # Read
@@ -525,7 +568,7 @@ roObjstorageForS3Replayer:
 
 roObjstorageForS3ReplayerConfiguration:
   configurationRef: roObjstorageForS3Replayer
-  secrets: *azure-storage-secrets-ro
+  secrets: *objstorage-secrets-ro
 
 pathslicingSaamZfsObjstorageConfiguration:
   cls: pathslicing
@@ -547,7 +590,11 @@ multiplexerForLocalStoragesConfiguration:
   objstorages:
   - cls: remote
     name: winery
-    url: http://winery-read-only.internal.cea.swh.network
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
     timeout:
       - 0.5  # Connect
       - 10   # Read
@@ -597,7 +644,7 @@ rwStoragePostgresqlWithWineryObjstorageConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageWineryAndAzure
   pipelineStepsRef: rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps
-  secrets: *azure-storage-secrets-rw
+  secrets: *objstorage-secrets-rw
 
 postgresqlRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
@@ -614,7 +661,7 @@ rwStorageCassandraWithWineryObjstorageConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageWineryAndAzure
   pipelineStepsRef: rwStoragePipelineBlockingSteps
-  secrets: *azure-storage-secrets-rw
+  secrets: *objstorage-secrets-rw
 
 retryStoragePipelineSteps:
   - cls: retry
