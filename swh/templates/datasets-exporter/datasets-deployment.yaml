@@ -106,34 +106,39 @@ spec:
           {{- end }}
           image: {{ print $containerImage ":" $containerImageVersion | quote }}
           imagePullPolicy: IfNotPresent
+          {{- if $datasetExportConfig.debug }}
           command:
           - /bin/sleep
           args:
           - "3600"
-          # command:
-          # - /bin/bash
-          # args:
-          # - -c
-          # - /opt/swh/entrypoint.sh
-          # - --base-directory
-          # - {{ $config.graphDirectoryPath | quote }}
-          # - --dataset-name
-          # - {{ $datasetExportName | quote }}
-          # - {{ $config.datasetExportTask | quote }}
-          # - --scheduler-url
-          # - {{ $config.luigiSchedulerUrl | quote }}
-          # - --LocalExport-export-task-type
-          # - ExportGraph
-          # - --ExportGraph-config-file
-          # - {{ $config.configPath | quote }}
-          # - --ExportGraph-process
-          # - {{ $config.nbProcesses | quote }}
-          # - --log-level
-          # - {{ $config.logLevel | quote }}
-          # - --Llp-gammas=-1,-2,-3,-4
+          {{- else }}
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          - --base-directory
+          - {{ $config.graphDirectoryPath | quote }}
+          - --dataset-name
+          - {{ $datasetExportName | quote }}
+          - {{ $config.datasetExportTask | quote }}
+          - --scheduler-url
+          - {{ $config.luigiSchedulerUrl | quote }}
+          - --LocalExport-export-task-type
+          - ExportGraph
+          - --ExportGraph-config-file
+          - {{ $config.configPath | quote }}
+          - --ExportGraph-process
+          - {{ $config.nbProcesses | quote }}
+          - --log-level
+          - {{ $config.logLevel | quote }}
+          - --Llp-gammas=-1,-2,-3,-4
+          {{ end }}
           env:
+            {{- if $datasetExportConfig.debug }}
             - name: SWH_DEBUG_ENTRYPOINT
               value: "1"
+            {{- end }}
             - name: APP_NAME
               value: datasets
             - name: LUIGI_CONFIG_PATH

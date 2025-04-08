@@ -1809,6 +1809,7 @@ datasetsExporter:
   # Dedicated scheduler instance
   scheduler:
     enabled: false
+    debug: false
     config:
       recordTaskHistory: true
       orgRamMb: 1024
@@ -1836,6 +1837,7 @@ datasetsExporter:
     deployments:
       2025-04-08:
         enabled: true
+        debug: false
         # Kind of dataset export to build
         exportTask: CompressGraph
         extraVolumes:
