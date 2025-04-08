@@ -813,10 +813,13 @@ web:
               # vpn network
               - 192.168.101.0/24
           authenticated:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/use-regex: "true"
             paths:
               - path: /api/1/provenance/
               - path: /api/1/entity/
               - path: /api/1/content/[^/]+/symbol/
+                pathType: ImplementationSpecific
             # auth-file with authentication
             authentication: swh-cassandra/web-auth-secrets
             extraWhitelistSourceRange:
