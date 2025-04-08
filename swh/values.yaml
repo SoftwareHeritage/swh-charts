@@ -2117,6 +2117,8 @@ coarNotify:
 # storageConfigurationRef: scrubberROStorageConfiguration
 # # database configuration
 # databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
+# # Activate automatic database migration on startup
+# migrationEnabled: false
 # # extra configuration for swh-coar-notify application
 # extraConfigRef: extraConfigCoarNotifyConfiguration
 # # hosts that can access swh-coar-notify application
