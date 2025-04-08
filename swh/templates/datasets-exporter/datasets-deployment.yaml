@@ -65,14 +65,14 @@ spec:
             - name: CONFIG_PATH
               value: {{ $luigiConfigPath }}
           volumeMounts:
-          - name: configuration
+          - name: luigi-configuration
             mountPath: {{ $luigiConfigDirpath }}
           - name: luigi-scheduler-config-template
             mountPath: {{ print $luigiConfigDirpath "/configuration-template" }}
           - name: luigi-config-utils
             mountPath: /entrypoints
             readOnly: true
-      {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+        {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
         - name: {{ $config.serviceType }}-prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
@@ -81,7 +81,7 @@ spec:
           env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
-          - name: configuration
+          - name: dataset-configuration
             mountPath: /etc/swh
           - name: {{ $config.serviceType }}-config-template
             mountPath: /etc/swh/configuration-template
@@ -141,12 +141,21 @@ spec:
             - name: LUIGI_CONFIG_PARSER
               value: cfg
           volumeMounts:
-          - name: configuration
+          - name: luigi-configuration
             mountPath: {{ $luigiConfigDirpath | quote }}
+          {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+          - name: dataset-configuration
+            mountPath: /etc/swh
+          {{ end }}
+          {{- range $volumeName, $volumeConfig := $datasetExportConfig.extraVolumes }}
+          - name: {{ $volumeName }}
+            mountPath: {{ $volumeConfig.mountPath }}
+            readOnly: {{ $volumeConfig.readOnly | default "false" }}
+          {{ end }}
       volumes:
-      - name: configuration
-        emptyDir: {}
       {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+      - name: dataset-configuration
+        emptyDir: {}
       - name: {{ $config.serviceType }}-config-template
         configMap:
           name: {{ $config.serviceType }}-journal-client-config-template
@@ -158,6 +167,8 @@ spec:
           name: config-utils
           defaultMode: 0555
       {{ end }}
+      - name: luigi-configuration
+        emptyDir: {}
       - name: luigi-scheduler-config-template
         configMap:
           name: luigi-scheduler-configuration-template
