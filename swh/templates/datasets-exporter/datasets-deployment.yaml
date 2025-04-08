@@ -130,10 +130,16 @@ spec:
           - {{ $config.luigiSchedulerUrl | quote }}
           - --LocalExport-export-task-type
           - ExportGraph
+          - --LocalExport-local-sensitive-export-path
+          - {{ $config.graphDirectoryPath | quote }}
           - --ExportGraph-config-file
           - {{ $config.configPath | quote }}
           - --ExportGraph-process
           - {{ $config.nbProcesses | quote }}
+          - --CompressGraph-local-export-path
+          - {{ $config.graphDirectoryPath | quote }}
+          - --CompressGraph-local-graph-path
+          - {{ $config.graphDirectoryPath | quote }}
           - --log-level
           - {{ $config.logLevel | quote }}
           - --Llp-gammas=-1,-2,-3,-4
