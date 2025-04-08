@@ -2416,7 +2416,6 @@ coarNotify:
     hosts:
     - inbox.staging.swh.network
     - inbox.internal.staging.swh.network
-    secretName: swh-coar-notify-crt
     extraAnnotations:
       kubernetes.io/ingress.class: nginx
     endpoints:
