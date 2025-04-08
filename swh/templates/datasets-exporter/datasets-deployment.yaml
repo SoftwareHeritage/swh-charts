@@ -58,8 +58,10 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
-                                                                      "Values" $.Values) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+                  (dict "deploymentConfig" $datasetsExporterConfig
+                        "Values" $.Values) | nindent 12 }}
+
             - name: CONFIG_TEMPLATE_PATH
               value: {{ print $luigiConfigDirpath "/configuration-template/luigi.cfg.template" }}
             - name: CONFIG_PATH
@@ -78,8 +80,9 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
-                                                                      "Values" $.Values) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+                  (dict "deploymentConfig" $datasetsExporterConfig
+                        "Values" $.Values) | nindent 12 }}
           volumeMounts:
           - name: dataset-configuration
             mountPath: /etc/swh
