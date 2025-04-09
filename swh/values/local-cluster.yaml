@@ -1812,7 +1812,7 @@ datasetsExporter:
     debug: false
     config:
       recordTaskHistory: true
-      orgRamMb: 1024
+      orgRamMb: 130000
     hosts:
       - luigi-scheduler-ingress
     ingress:
