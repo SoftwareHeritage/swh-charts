@@ -6,7 +6,7 @@
 {{- $serviceType := "luigi-scheduler" -}}
 {{- $logLevel := $deploymentConfig.logLevel | default $datasetExporterConfig.logLevel | default "INFO" -}}
 {{- if $deploymentConfig.config }}
-{{- $recordTaskHistory := $deploymentConfig.config.recordTask | default false -}}
+{{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
 {{- $orgRamMb := $deploymentConfig.config.orgRamMb | default 1024 -}}
 ---
 apiVersion: v1
