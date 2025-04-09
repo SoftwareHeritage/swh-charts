@@ -17,6 +17,7 @@
             "datasetsExporterConfiguration" $datasetsExporterConfig
             "Values"                        $.Values) | fromYaml -}}
 {{- $exportTask := $config.datasetExportTask -}}
+{{- $debug := $config.debug -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -109,7 +110,7 @@ spec:
           {{- end }}
           image: {{ print $containerImage ":" $containerImageVersion | quote }}
           imagePullPolicy: IfNotPresent
-          {{- if $datasetExportConfig.debug }}
+          {{- if $debug }}
           command:
           - /bin/sleep
           args:
@@ -145,7 +146,7 @@ spec:
           - --Llp-gammas=-1,-2,-3,-4
           {{ end }}
           env:
-            {{- if $datasetExportConfig.debug }}
+            {{- if $debug }}
             - name: SWH_DEBUG_ENTRYPOINT
               value: "1"
             {{- end }}

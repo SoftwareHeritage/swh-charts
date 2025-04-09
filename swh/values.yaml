@@ -2152,6 +2152,8 @@ datasetsExporter:
   scheduler:
     # namespace: swh
     enabled: false
+    # non-production use (to ease debugging in the container)
+    debug: false
     priorityClassName: frontend-rpc-workload
     port: 8082
     type: http
@@ -2163,6 +2165,8 @@ datasetsExporter:
     enabled: false
     replicas: 1
     affinity: {}
+    # non-production use (to ease debugging in the container)
+    debug: false
     # namespace: swh
     priorityClassName: normal-workload
     # # Luigi url instance to use (can be overridden per instance)

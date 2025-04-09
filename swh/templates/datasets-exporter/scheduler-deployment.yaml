@@ -17,6 +17,7 @@
 {{- $port := $deploymentConfig.port -}}
 {{- $type := $deploymentConfig.type -}}
 {{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
+{{- $debug := $deploymentConfig.debug | default false -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -93,7 +94,7 @@ spec:
           ports:
             - containerPort: {{ $port }}
               name: {{ $type }}
-          {{- if $deploymentConfig.debug }}
+          {{- if $debug }}
           command:
           - /bin/sleep
           args:

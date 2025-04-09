@@ -22,6 +22,7 @@
 {{- $graphDirectoryPathRef := required (print "Required graph directory path reference.") $graphPathRef -}}
 {{- $graphDirectoryPath := required (print "Invalid <graphDirectoryPathRef> configuration key.") (get .Values $graphDirectoryPathRef) -}}
 {{- $configPath := "/etc/swh/config.yml" -}}
+{{- $debug := $config.debug | default $topLevelConfig.debug | default false -}}
 
 {{- dict "serviceType"        (print "dataset-" .datasetExportName)
          "logLevel"           $logLevel
@@ -33,5 +34,6 @@
          "graphDirectoryPath" $graphDirectoryPath
          "datasetExportTask"  $datasetExportTask
          "configPath"         $configPath
-         "nbProcesses"        $nbProcesses | mustMergeOverwrite $config | toYaml -}}
+         "nbProcesses"        $nbProcesses
+         "debug"              $debug | mustMergeOverwrite $config | toYaml -}}
 {{- end -}}
