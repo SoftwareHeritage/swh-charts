@@ -1,4 +1,4 @@
-{{ if .Values.alerting.enabled -}}
+{{ if and .Values.alerting.enabled .Values.alerting.cnpgEnabled -}}
 {{ with .Values.alerting -}}
 ---
 apiVersion: monitoring.coreos.com/v1

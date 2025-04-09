@@ -163,6 +163,7 @@ svix:
 
 alerting:
   enabled: false
+  cnpgEnabled: false
   period:
     microDelay: 2m
     tinyDelay: 5m
