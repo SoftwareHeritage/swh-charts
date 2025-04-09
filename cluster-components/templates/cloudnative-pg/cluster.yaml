@@ -22,8 +22,8 @@
 {{- $limitedMemory := $cluster_config.limitedMemory | default false -}}
 {{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
 {{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
-{{- $backup := mustMerge (get $cluster_config "backup" | default (dict)) $.Values.cloudnativePg.backup -}}
-{{- $initdb := mustMerge ($cluster_config.initdb | default (dict)) $.Values.cloudnativePg.initdb -}}
+{{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
+{{- $initdb := mustMerge ($cluster_config.initdb | default dict) ($.Values.cloudnativePg.initdb | default dict) -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
