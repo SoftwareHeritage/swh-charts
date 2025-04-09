@@ -15,7 +15,9 @@ spec:
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
       releaseName: {{ $appName }}
-
+      values: |
+        monitoring:
+          podMonitorEnabled: true
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
