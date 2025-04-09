@@ -2146,6 +2146,7 @@ coarNotify:
 datasetsExporter:
   enabled: false
   logLevel: INFO
+  affinity: {}
   # Default namespace to use (can be overridden per instance or per scheduler)
   # namespace: swh
   # Dedicated scheduler instance
@@ -2164,7 +2165,6 @@ datasetsExporter:
   datasets:
     enabled: false
     replicas: 1
-    affinity: {}
     # non-production use (to ease debugging in the container)
     debug: false
     # namespace: swh
