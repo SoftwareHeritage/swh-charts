@@ -5,6 +5,7 @@
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
 {{- $serviceType := "luigi-scheduler" -}}
 {{- $logLevel := $deploymentConfig.logLevel | default $datasetExporterConfig.logLevel | default "INFO" -}}
+{{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
 {{- if $deploymentConfig.config }}
 {{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
 {{- $orgRamMb := $deploymentConfig.config.orgRamMb | default 1024 -}}
@@ -74,7 +75,7 @@ data:
 
     {{- if $recordTaskHistory }}
     [task_history]
-    db_connection = sqlite://{{ $deploymentConfig.path }}/db/luigi-task-hist.db
+    db_connection = sqlite://{{ $path }}/luigi-task-hist.db
     {{- end }}
 
     [resources]
