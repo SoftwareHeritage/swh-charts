@@ -124,6 +124,10 @@ svix:
   # Svix-server version must match the svix python library
   # in the swh-webhooks image's requirements (can be overriden per instance)
   #version: v1.35
+  # Default white list subnets (can be overridden per instance)
+  whitelistSubnets: []
+  # Whether to disable tls (can be overridden per instance)
+  tlsDisable: false
   # Redis configuration (can be overridden per instance)
   redis:
     # (deprecated) When true, this installs and configure a redis instance. Use the
@@ -138,7 +142,7 @@ svix:
     enabled: false
     # The dsn to access the postgres instance (independent of the enabled above)
     # dsn: db1.internal.softwareheritage.org
-  deployments:
+  deployments: {}
     # instance-name:
     #   ingress:
     #     host: svix.example.org
