@@ -4,7 +4,7 @@
                                       "service" "storage"
                                       "configurationRef" .Values.coarNotify.storageConfigurationRef
                                       "Values" .Values) | fromYaml | mustMerge $coarNotifyConfiguration -}}
-{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_host" .Values.coarNotify.allowed_hosts ) -}}
+{{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_hosts" .Values.coarNotify.allowed_hosts ) -}}
 {{- $extraConfiguration := (dict) -}}
 {{- $extraConfiguration := include "swh.service.fromYaml" (dict "configurationRef" .Values.coarNotify.extraConfigRef
                                       "Values" .Values) | fromYaml | mustMerge $extraConfiguration  }}
