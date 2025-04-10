@@ -2440,14 +2440,27 @@ coarNotify:
     enabled: true
     hosts:
     - inbox.staging.swh.network
-    - inbox.internal.staging.swh.network
     extraAnnotations:
       kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/use-regex: "true"
     endpoints:
       default:
         paths:
-          - path: /
+          - path: ^/(?!\badmin\b).*$
             port: 5015
+            pathType: ImplementationSpecific
+  extraIngresses:
+    - hosts:
+      - inbox.internal.staging.swh.network
+      whitelistSourceRangeRef: clusterNetworkRanges
+      endpoints:
+        default:
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+          extraWhitelistSourceRange:
+            - 192.168.50.0/24 # for blackbox monitoring
+            - 192.168.101.0/24 # vpn network
 
 alter:
   enabled: true
