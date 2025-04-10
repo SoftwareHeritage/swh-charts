@@ -2,4 +2,18 @@
 {{- include "swh.ingress" (dict "Values"        .Values
                                 "serviceType"   "coar-notify"
                                 "configuration" .Values.coarNotify) -}}
-{{ end }}
+{{- if .Values.coarNotify.extraIngresses -}}
+{{ $extraNameLabelCtr := 0 }}
+{{ range $extraIngressConfig := .Values.coarNotify.extraIngresses }}
+{{ $extraNameLabelCtr = add $extraNameLabelCtr 1 }}
+{{- $mergedIngressConfig :=
+  mustMergeOverwrite (omit $.Values.coarNotify "extraIngresses" "ingress")
+                     (dict "ingress" (mustMergeOverwrite $.Values.coarNotify.ingress $extraIngressConfig)) -}}
+
+{{- include "swh.ingress" (dict "serviceType"    ( print "coar-notify")
+                                "configuration"  $mergedIngressConfig
+                                "extraNameLabel" ( print "extra-" $extraNameLabelCtr )
+                                "Values"         $.Values) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
