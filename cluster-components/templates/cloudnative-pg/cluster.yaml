@@ -96,6 +96,10 @@ spec:
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}
+    podMonitorMetricRelabelings:
+    - sourceLabels:
+      - cluster
+      targetLabel: cnpg_cluster
   bootstrap:
     {{- if $initdb.secretKeyRef }}
     initdb:
