@@ -251,6 +251,7 @@ dockerCache:
 cloudnativePg:
   enabled: false
   externalLoadBalancer: false
+  enableMonitoring: true
   nameOverride: cloudnative-pg
   # secrets must be stored in the same namespace
   # namespace: cnpg

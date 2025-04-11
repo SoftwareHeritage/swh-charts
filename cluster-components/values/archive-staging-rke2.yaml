@@ -308,7 +308,6 @@ cloudnativePg:
       instances: 2
       delay: 300
       imageCatalogRef: 17
-      enableMonitoring: true
       namespace: swh-coar-notify
       initdb:
         databases:
