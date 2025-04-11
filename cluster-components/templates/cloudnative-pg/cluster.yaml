@@ -96,6 +96,10 @@ spec:
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}
+    podMonitorRelabelings:
+    - sourceLabels:
+      - __meta_kubernetes_pod_name
+      targetLabel: instance
     podMonitorMetricRelabelings:
     - sourceLabels:
       - cluster
