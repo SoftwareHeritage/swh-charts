@@ -305,7 +305,7 @@ cloudnativePg:
         source: cluster-pg-staging-db1
     swh-coar-notify:
       enabled: true
-      instances: 2
+      instances: 3
       delay: 300
       imageCatalogRef: 17
       namespace: swh-coar-notify
@@ -355,6 +355,7 @@ cloudnativePg:
         s3Config:
           secretName: cnpg-minio-secret
       pooler:
+        instances: 2
         enabled: true
         types:
         - "rw"
