@@ -351,7 +351,7 @@ cloudnativePg:
       backup:
         enabled: true
         retention: 1d
-        schedule: "0 25 0/2 * * *"
+        schedule: "0 25 * * * *"
         s3Config:
           secretName: cnpg-minio-secret
       pooler:
