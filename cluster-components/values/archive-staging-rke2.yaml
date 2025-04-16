@@ -359,6 +359,63 @@ cloudnativePg:
         enabled: true
         types:
         - "rw"
+    swh-web-alter:
+      enabled: true
+      instances: 3
+      delay: 300
+      imageCatalogRef: 17
+      namespace: swh-web-alter
+      initdb:
+        databases:
+        - swh-web-alter
+        secretKeyRef: cnpg-swh-web-alter-secret
+        localeCollate: 'en_US.utf8'
+        localeCType: 'en_US.utf8'
+      storage:
+        size: 5Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: cnpg-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      limitedCpu: 400m
+      limitedMemory: 256Mi
+      requestedCpu: 400m
+      requestedMemory: 256Mi
+      postgresql:
+        parameters:
+          shared_buffers: "64MB"
+          pg_stat_statements.max: '10000'
+          pg_stat_statements.track: all
+          auto_explain.log_min_duration: '10s'
+        pg_hba:
+          - host all all all md5
+        synchronous:
+          method: any
+          number: 1
+      backup:
+        enabled: true
+        retention: 1d
+        schedule: "0 35 * * * *"
+        s3Config:
+          secretName: cnpg-minio-secret
+      pooler:
+        instances: 2
+        enabled: true
+        types:
+        - "rw"
+
 
 rabbitmq:
   enabled: true
