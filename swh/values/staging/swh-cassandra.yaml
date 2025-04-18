@@ -320,6 +320,7 @@ loaders:
     git-pypy:
       image: swh_loader_git_pypy_image
       priorityClassName: low-workload
+      maxTasksPerChild: 1000
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
         - swh.loader.git.tasks.LoadDiskGitRepository
