@@ -30,19 +30,19 @@ spec:
         {{- if $metricsEnabled }}
         initContainers:
         {{- if $forcePluginInstall }}
-        - name: remove-repository-s3
+        - name: remove-prometheus-exporter
           command:
           - sh
           - -c
           - |
-            bin/elasticsearch-plugin remove repository-s3
+            bin/elasticsearch-plugin remove prometheus-exporter
         {{- end }}
-        - name: install-repository-s3
+        - name: install-prometheus-exporter
           command:
           - sh
           - -c
           - |
-            bin/elasticsearch-plugin install -b repository-s3 {{ $metricsPluginUrl }}
+            bin/elasticsearch-plugin install -b {{ $metricsPluginUrl }}
         {{- end }}
         containers:
         - name: elasticsearch
