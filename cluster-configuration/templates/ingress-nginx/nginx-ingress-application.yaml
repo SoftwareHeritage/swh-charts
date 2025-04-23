@@ -79,6 +79,10 @@ spec:
           nodeSelector:
             {{- toYaml .Values.ingressNginx.nodeSelector | nindent 12 }}
           {{- end }}
+          {{- if .Values.ingressNginx.affinity }}
+          affinity:
+            {{- toYaml .Values.ingressNginx.affinity | nindent 12 }}
+          {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.ingressNginx.namespace }}

@@ -38,6 +38,16 @@ ingressNginx:
   replicaCount: 6
   nodeSelector:
     ingress-controller: "true"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                  - saam
+                  - banco
 
 certManager:
   enabled: true
