@@ -80,7 +80,8 @@ data:
 
     [resources]
     {{- if $orgRamMb }}
-    {{ first $deploymentConfig.hosts | default "localhost" }}.ram_mb = {{ $orgRamMb }}
+    {{ first $deploymentConfig.hosts | default "localhost" }}_ram_mb = {{ $orgRamMb }}
+    localhost_ram_mb = {{ $orgRamMb }}
     {{- end }}
 
 {{- end -}}
