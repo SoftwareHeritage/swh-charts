@@ -2487,7 +2487,7 @@ objstorageReplayer:
       replicas: 32
       fetchConcurrency: 4
       staticConsumerGroup: true
-      checkDestination: "true"
+      checkDestination: "false"
       restartOnStallSeconds: 300
       journalClientOverrides:
         group_id: swh-archive-prod-winery-content-replayer-check
