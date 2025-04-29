@@ -844,7 +844,11 @@ scheduler:
       enabled: true
       period: 100
       taskTypes:
+      - load-cvs
       - load-git
+      - load-hg
+      - load-pypi
+      - load-svn
     runner-first-visits:
       enabled: true
       replicas: 1
@@ -855,15 +859,19 @@ scheduler:
       enabled: true
     schedule-recurrent:
       enabled: true
+      visitTypes:
+        - cvs
+        - hg
+        - git
+        - pypi
+        - svn
       extraConfig:
         schedulerPolicies:
           default:
           - policy: never_visited_oldest_update_first
-            weight: 100
-          opam:
+            weight: 50
           - policy: origins_without_last_update
-            weight: 100
-
+            weight: 50
 loaderMetadata:
   enabled: false
   storageConfigurationRef: rpcRWStorageConfiguration
