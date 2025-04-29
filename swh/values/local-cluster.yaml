@@ -792,6 +792,13 @@ scheduler:
       registerListingTask:
         forgeType: list-gitlab-incremental
         forgeUrl: https://gitlab.softwareheritage.org/api/v4
+      # FIXME: Possible evolution to this ^ ?
+      # registerListingTasks:
+      #   - list-gitlab-incremental:
+      #     - https://gitlab.softwareheritage.org/api/v4
+      #     - https://gitlab.cri.epita.fr/api/v4
+      #   - list-gitlab-full:
+      #     - https://gitlab.softwareheritage.org/api/v4
 
     # autoScaling:
     #   minReplicaCount: 4
