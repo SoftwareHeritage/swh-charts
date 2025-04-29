@@ -707,7 +707,7 @@ deposit:
     cache_uri: memcached:11211
 
 celeryConfiguration:
-  host: rabbitmq-scheduler.cluster-components
+  host: rabbitmq-scheduler
   port: 5672
   user: ${AMQP_USERNAME}
   pass: ${AMQP_PASSWORD}

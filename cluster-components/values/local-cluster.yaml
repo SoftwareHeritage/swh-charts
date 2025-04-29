@@ -67,7 +67,7 @@ dockerCache:
 
 rabbitmq:
   enabled: false
-  namespace: cluster-components
+  namespace: swh
   logLevel: info
   storageVolume:
     class: standard
