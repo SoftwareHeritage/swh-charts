@@ -39,6 +39,7 @@ scrapeExternalMetrics:
         - 192.168.100.193
         - 192.168.100.194
         - 192.168.100.195
+        - 192.168.100.196
       relabelings:
         # https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
         - sourceLabels:
