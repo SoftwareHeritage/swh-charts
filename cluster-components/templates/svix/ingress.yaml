@@ -41,7 +41,7 @@ spec:
   tls:
   - hosts:
     - {{ $ingressHost }}
-    secretName: swh-svix-crt
+    secretName: {{ $svixName }}-crt
   {{- end }}
 {{- end }}
 {{- end }}
