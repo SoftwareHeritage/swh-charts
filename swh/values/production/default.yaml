@@ -585,7 +585,7 @@ pathslicingBancoXfsObjstorageConfiguration:
   compression: gzip
   allow_delete: true
 
-multiplexerForLocalStoragesConfiguration:
+multiplexerForLocalStorages:
   cls: multiplexer
   readonly: true
   objstorages:
@@ -608,6 +608,10 @@ multiplexerForLocalStoragesConfiguration:
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
+
+multiplexerForLocalStoragesConfiguration:
+  configurationRef: multiplexerForLocalStorages
+  secrets: *winery-objstorage-secrets-ro
 
 rwObjstorageWineryAndAzure:
   cls: multiplexer
