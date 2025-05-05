@@ -503,9 +503,10 @@ elasticsearch:
       metricsEnabled: true
       requestedMemory: 3Gi
       limitedMemory: 3Gi
-      jvmConfig:
-        Xms: 2g
-        Xmx: 2g
+      config:
+        jvm:
+          Xms: 2g
+          Xmx: 2g
 
 redis:
   enabled: true
