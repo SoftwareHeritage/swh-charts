@@ -27,6 +27,8 @@ data:
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
+    profile: release
+    test_flavor: "none"
 {{- end -}}
 {{- end -}}
 {{- end -}}
