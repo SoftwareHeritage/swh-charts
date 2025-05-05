@@ -2140,7 +2140,7 @@ search:
           object_types:
           - origin
           - origin_visit_status
-          batch_size: 100
+          batch_size: 25
       indexed-v5:
         replicas: 2
         requestedCpu: 10m
@@ -2151,7 +2151,7 @@ search:
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
-          batch_size: 100
+          batch_size: 25
 
 scheduler:
   enabled: true
