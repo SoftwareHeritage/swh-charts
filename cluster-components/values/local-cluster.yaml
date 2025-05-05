@@ -205,12 +205,7 @@ kafka:
                 size: 1Gi
                 deleteClaim: false
       topics:
-        swh.journal.objects.origin:
-          partitions: 1
-          replicas: 1
-          config:
-            retention.ms: 7200000
-            segment.bytes: 1073741824
+        swh.journal.objects.origin: {}
         swh.journal.objects.origin_visit: {}
         swh.journal.objects.origin_visit_status: {}
         swh.journal.objects.snapshot: {}
