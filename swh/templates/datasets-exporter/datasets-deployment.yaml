@@ -116,7 +116,7 @@ spec:
           command:
           - /bin/sleep
           args:
-          - "3600"
+          - "86400"
           {{- else }}
           command:
           - /bin/bash
