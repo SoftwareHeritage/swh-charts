@@ -1,7 +1,8 @@
 {{- $datasetsExporterConfig := .Values.datasetsExporter -}}
 {{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
 {{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
-{{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/datasets-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-exporter/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $containerImageKey := $datasetsExporterConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
@@ -44,6 +45,7 @@ spec:
         app: {{ $config.serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
+        checksum/config-scheduler: {{ $configSchedulerChecksum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
       {{- if $config.affinity }}
