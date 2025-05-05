@@ -11,7 +11,8 @@
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 
 {{- range $datasetExportName, $datasetExportConfig := $datasetsExporterConfig.datasets.deployments -}}
-{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled") -}}
+{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+          (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
 {{- $config := include "swh.datasets.export.config"
       (dict "datasetExportName"             $datasetExportName
             "exportConfiguration"           $datasetExportConfig
@@ -48,6 +49,7 @@ spec:
         checksum/config-scheduler: {{ $configSchedulerChecksum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
     spec:
+      hostname: {{ $config.serviceType }}
       {{- if $config.affinity }}
       affinity:
         {{- toYaml $config.affinity | nindent 8 }}

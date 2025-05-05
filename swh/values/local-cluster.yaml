@@ -792,6 +792,8 @@ scheduler:
       registerListingTask:
         forgeType: list-gitlab-incremental
         forgeUrl: https://gitlab.softwareheritage.org/api/v4
+        # forgeUrl: https://gitlab.cristal.univ-lille.fr/api/v4
+        # forgeUrl: https://forge.apps.education.fr/api/v4
       # FIXME: Possible evolution to this ^ ?
       # registerListingTasks:
       #   - list-gitlab-incremental:

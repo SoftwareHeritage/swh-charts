@@ -1,10 +1,10 @@
-{{- $datasetExporterConfig := .Values.datasetsExporter -}}
-{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
+{{- $deploymentConfig := $datasetsExporterConfig.scheduler -}}
 
-{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{ if and $datasetsExporterConfig.enabled $deploymentConfig.enabled -}}
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
 {{- $serviceType := "luigi-scheduler" -}}
-{{- $logLevel := $deploymentConfig.logLevel | default $datasetExporterConfig.logLevel | default "INFO" -}}
+{{- $logLevel := $deploymentConfig.logLevel | default $datasetsExporterConfig.logLevel | default "INFO" -}}
 {{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
 {{- if $deploymentConfig.config }}
 {{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
@@ -24,9 +24,9 @@ data:
     # interactions between the worker and scheduler.
     [core]
     # Hostname of the machine running the scheduler. Defaults to localhost.
-    default_scheduler_host = {{ first $deploymentConfig.hosts }}
+    # default_scheduler_host = {{ first $deploymentConfig.hosts }}
     # Port of the remote scheduler api process. Defaults to 8082.
-    default_scheduler_port = 80
+    # default_scheduler_port = 80
     # Full path to remote scheduler. Defaults to http://localhost:8082/. For TLS support
     # use the URL scheme: https, example: https://luigi.example.com:443/ (Note: you will
     # have to terminate TLS using an HTTP proxy) You can also use this to connect to a
@@ -79,9 +79,18 @@ data:
     {{- end }}
 
     [resources]
-    {{- if $orgRamMb }}
-    {{ first $deploymentConfig.hosts | default "localhost" }}_ram_mb = {{ $orgRamMb }}
-    localhost_ram_mb = {{ $orgRamMb }}
+    {{ if $orgRamMb }}
+    {{- range $datasetExportName, $datasetExportConfig := $datasetsExporterConfig.datasets.deployments -}}
+    {{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+              (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
+    {{- $config := include "swh.datasets.export.config"
+      (dict "datasetExportName"             $datasetExportName
+            "exportConfiguration"           $datasetExportConfig
+            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "Values"                        $.Values) | fromYaml -}}
+    {{ $config.serviceType }}_ram_mb = {{ $orgRamMb }}
+    {{- end }}
+    {{- end }}
     {{- end }}
 
 {{- end -}}
