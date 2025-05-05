@@ -498,8 +498,8 @@ elasticsearch:
     search:
       enabled: true
       namespace: swh-cassandra
-      # 2 replicas + 1 master
-      replicas: 2
+      # 3 masters
+      replicas: 3
       metricsEnabled: true
       requestedMemory: 3Gi
       limitedMemory: 3Gi
