@@ -145,6 +145,8 @@ spec:
           - {{ $config.graphDirectoryPath | quote }}
           - --CompressGraph-local-graph-path
           - {{ $config.graphDirectoryPath | quote }}
+          - --CompressGraph-local-sensitive-export-path
+          - {{ $config.graphDirectoryPath | quote }}
           - --CompressGraph-test-flavor
           - "none"
           - --log-level
