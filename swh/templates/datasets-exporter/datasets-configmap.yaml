@@ -2,7 +2,8 @@
 {{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
 {{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
 {{- range $datasetExportName, $datasetExportConfig := $datasetsConfig.deployments -}}
-{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled") -}}
+{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+          (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
 {{- $config := include "swh.datasets.export.config"
       (dict "datasetExportName"             $datasetExportName
             "exportConfiguration"           $datasetExportConfig
