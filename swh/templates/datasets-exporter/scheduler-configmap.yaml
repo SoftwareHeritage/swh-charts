@@ -24,9 +24,9 @@ data:
     # interactions between the worker and scheduler.
     [core]
     # Hostname of the machine running the scheduler. Defaults to localhost.
-    # default_scheduler_host = {{ first $deploymentConfig.hosts }}
+    default_scheduler_host = {{ first $deploymentConfig.hosts }}
     # Port of the remote scheduler api process. Defaults to 8082.
-    # default_scheduler_port = 80
+    default_scheduler_port = 80
     # Full path to remote scheduler. Defaults to http://localhost:8082/. For TLS support
     # use the URL scheme: https, example: https://luigi.example.com:443/ (Note: you will
     # have to terminate TLS using an HTTP proxy) You can also use this to connect to a
