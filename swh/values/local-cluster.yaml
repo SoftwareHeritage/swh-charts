@@ -799,6 +799,8 @@ scheduler:
       #   - list-gitlab-incremental:
       #     - https://gitlab.softwareheritage.org/api/v4
       #     - https://gitlab.cri.epita.fr/api/v4
+      #     - https://gitlab.cristal.univ-lille.fr/api/v4
+      #     - https://forge.apps.education.fr/api/v4
       #   - list-gitlab-full:
       #     - https://gitlab.softwareheritage.org/api/v4
 
