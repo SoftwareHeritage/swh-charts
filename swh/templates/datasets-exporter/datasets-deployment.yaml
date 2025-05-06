@@ -145,6 +145,8 @@ spec:
           - {{ $config.graphDirectoryPath | quote }}
           - --CompressGraph-local-graph-path
           - {{ $config.graphDirectoryPath | quote }}
+          - --CompressGraph-test-flavor
+          - "none"
           - --log-level
           - {{ $config.logLevel | quote }}
           - --Llp-gammas=-1,-2,-3,-4
