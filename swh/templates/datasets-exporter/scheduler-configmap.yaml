@@ -89,7 +89,7 @@ data:
             "datasetsExporterConfiguration" $datasetsExporterConfig
             "Values"                        $.Values) | fromYaml -}}
     {{ $config.serviceType }}_ram_mb = {{ $orgRamMb }}
-    {{- end }}
+    {{ end }}
     {{- end }}
     {{- end }}
 
