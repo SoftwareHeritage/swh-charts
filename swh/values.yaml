@@ -2178,7 +2178,7 @@ datasetsGenerator:
     # Masking db connection access (can be overridden per instance)
     # maskingDbConfigurationRef: maskingDbConfiguration
     # nbProcesses: 1
-    # # Datasets to export
+    # Datasets to generate
     deployments: {}
     #   # Name of the export (usually timestamp of the export deployment)
     #   2024-12-06:

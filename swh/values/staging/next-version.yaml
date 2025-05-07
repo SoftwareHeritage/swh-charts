@@ -42,6 +42,17 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       secretKeyName: password
 
+postgresqlMaskingConfiguration:
+  host: next-version-swh-masking-rw.swh-cassandra-next-version
+  port: '5432'
+  db: swh-masking
+  user: swh-masking
+  pass: ${MASKING_ADMIN_PGPASSWORD}
+  secrets:
+    MASKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+      secretKeyName: password
+
 celeryConfiguration:
   host: rabbitmq-scheduler
   port: 5672
@@ -161,6 +172,13 @@ remoteSchedulerConfiguration:
   # already activated by default (inlined in code)
   # enable_requests_retry: true
 
+datasetsJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-datasets-journal-export-graph
+  prefix: swh.journal.objects
+  privileged: true
+  batch_size: 10
+
 vault:
   enabled: true
   priorityClassName: frontend-rpc
@@ -211,6 +229,9 @@ externalServices:
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     provenance-grpc-next-version:
       internalName: provenance-grpc-next-version-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    luigi-scheduler-ingress-next-version:
+      internalName: luigi-scheduler-ingress-next-version
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 countersJournalClientConfiguration:
@@ -1344,6 +1365,15 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    graph-20240507-persistent-pvc:
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
 
 graph:
   enabled: true
@@ -1420,3 +1450,53 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+
+# Luigi's scheduler url to access
+luigiSchedulerUrl: http://luigi-scheduler-next-version-ingress:80
+
+# Graph directory path to write or read graph data from
+graphDirectoryPath: /srv/dataset/2025-05-07
+
+datasetsGenerator:
+  enabled: true
+  # Dedicated scheduler instance
+  scheduler:
+    enabled: true
+    debug: false
+    config:
+      recordTaskHistory: false
+      orgRamMb: 130000
+    hosts:
+      - luigi-scheduler-next-version-ingress
+    ingress:
+      enabled: true
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      endpoints:
+        default:
+          paths:
+            - path: /
+
+  # The datasets export to build
+  datasets:
+    enabled: true
+    luigiSchedulerUrlRef: luigiSchedulerUrl
+    graphDirectoryPathRef: graphDirectoryPath
+    journalClientConfigurationRef: datasetsJournalClientConfiguration
+    maskingDbConfigurationRef: postgresqlMaskingConfiguration
+    nbProcesses: 1
+    # Datasets to generate
+    deployments:
+      2025-05-07:
+        enabled: true
+        debug: true
+        # Kind of dataset export to build
+        exportTask: CompressGraph
+        extraVolumes:
+          dataset-persistent:
+            mountPath: /srv/dataset/2025-05-07
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20240507-persistent-pvc

@@ -1853,7 +1853,7 @@ datasetsGenerator:
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
     nbProcesses: 1
-    # Datasets to export
+    # Datasets to generate
     deployments:
       2025-04-08:
         enabled: true
