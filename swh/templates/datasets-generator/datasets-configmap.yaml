@@ -1,17 +1,17 @@
-{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
-{{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
-{{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
+{{- if and $datasetsGeneratorConfig.enabled $datasetsConfig.enabled -}}
 {{- range $datasetExportName, $datasetExportConfig := $datasetsConfig.deployments -}}
-{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
           (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
 {{- $config := include "swh.datasets.export.config"
       (dict "datasetExportName"             $datasetExportName
             "exportConfiguration"           $datasetExportConfig
-            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                        $.Values) | fromYaml -}}
 {{- $exportTask := $config.datasetExportTask -}}
 {{- if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) -}}
-{{- $journalConfigRef := $datasetsExporterConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
+{{- $journalConfigRef := $datasetsGeneratorConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
 {{- $journalConfigurationRef := required (print "Mandatory key <journalConfigurationRef> missing.") $journalConfigRef -}}
 {{- $maskingDbConfigRef := $datasetExportConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
 {{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}

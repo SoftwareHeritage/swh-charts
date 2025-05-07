@@ -1,22 +1,22 @@
-{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
-{{- $datasetsConfig := $datasetsExporterConfig.datasets -}}
-{{- if and $datasetsExporterConfig.enabled $datasetsConfig.enabled -}}
-{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-exporter/scheduler-configmap.yaml") . | sha256sum -}}
-{{- $configChecksum := include (print $.Template.BasePath "/datasets-exporter/datasets-configmap.yaml") . | sha256sum -}}
-{{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-exporter/luigi-config-utils.yaml") . | sha256sum -}}
-{{- $containerImageKey := $datasetsExporterConfig.image -}}
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
+{{- if and $datasetsGeneratorConfig.enabled $datasetsConfig.enabled -}}
+{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-configmap.yaml") . | sha256sum -}}
+{{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
+{{- $containerImageKey := $datasetsGeneratorConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 {{- $containerImageVersion := .Values.swh_datasets_image_version -}}
 {{- $luigiConfigDirpath := "/etc/luigi" -}}
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 
-{{- range $datasetExportName, $datasetExportConfig := $datasetsExporterConfig.datasets.deployments -}}
-{{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+{{- range $datasetExportName, $datasetExportConfig := $datasetsGeneratorConfig.datasets.deployments -}}
+{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
           (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
 {{- $config := include "swh.datasets.export.config"
       (dict "datasetExportName"             $datasetExportName
             "exportConfiguration"           $datasetExportConfig
-            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                        $.Values) | fromYaml -}}
 {{- $exportTask := $config.datasetExportTask -}}
 {{- $debug := $config.debug -}}
@@ -64,7 +64,7 @@ spec:
           command:
           - /entrypoints/prepare-configuration.sh
           env: {{ include "swh.secrets.envFromDeploymentConfig"
-                  (dict "deploymentConfig" $datasetsExporterConfig
+                  (dict "deploymentConfig" $datasetsGeneratorConfig
                         "Values" $.Values) | nindent 12 }}
 
             - name: CONFIG_TEMPLATE_PATH
@@ -86,7 +86,7 @@ spec:
           command:
           - /entrypoints/prepare-configuration.sh
           env: {{ include "swh.secrets.envFromDeploymentConfig"
-                  (dict "deploymentConfig" $datasetsExporterConfig
+                  (dict "deploymentConfig" $datasetsGeneratorConfig
                         "Values" $.Values) | nindent 12 }}
           volumeMounts:
           - name: dataset-configuration

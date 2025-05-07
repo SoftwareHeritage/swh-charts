@@ -2143,7 +2143,7 @@ coarNotify:
 #       paths:
 #         - path: /
 #           port: 5015
-datasetsExporter:
+datasetsGenerator:
   enabled: false
   logLevel: INFO
   affinity: {}

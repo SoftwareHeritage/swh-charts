@@ -1,4 +1,4 @@
-{{- $datasetExporterConfig := .Values.datasetsExporter -}}
+{{- $datasetExporterConfig := .Values.datasetsGenerator -}}
 {{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
 
 {{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}

@@ -5,7 +5,7 @@
    */}}
 {{- define "swh.datasets.export.config" -}}
 {{- $config := deepCopy .exportConfiguration -}}
-{{- $topLevelConfig := .datasetsExporterConfiguration -}}
+{{- $topLevelConfig := .datasetsGeneratorConfiguration -}}
 {{- $datasetsConfig := $topLevelConfig.datasets -}}
 
 {{- $logLevel := $config.logLevel | default $datasetsConfig.logLevel | default $topLevelConfig.logLevel -}}

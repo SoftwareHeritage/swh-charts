@@ -1824,7 +1824,7 @@ luigiSchedulerUrl: http://luigi-scheduler-ingress:80
 # Graph directory path to write or read graph data from
 graphDirectoryPath: /srv/dataset/2025-04-08
 
-datasetsExporter:
+datasetsGenerator:
   # Dedicated scheduler instance
   scheduler:
     enabled: false

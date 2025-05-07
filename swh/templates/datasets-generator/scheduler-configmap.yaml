@@ -1,10 +1,10 @@
-{{- $datasetsExporterConfig := .Values.datasetsExporter -}}
-{{- $deploymentConfig := $datasetsExporterConfig.scheduler -}}
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
 
-{{ if and $datasetsExporterConfig.enabled $deploymentConfig.enabled -}}
-{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsExporter.namespace | default .Values.namespace -}}
+{{ if and $datasetsGeneratorConfig.enabled $deploymentConfig.enabled -}}
+{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
 {{- $serviceType := "luigi-scheduler" -}}
-{{- $logLevel := $deploymentConfig.logLevel | default $datasetsExporterConfig.logLevel | default "INFO" -}}
+{{- $logLevel := $deploymentConfig.logLevel | default $datasetsGeneratorConfig.logLevel | default "INFO" -}}
 {{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
 {{- if $deploymentConfig.config }}
 {{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
@@ -80,13 +80,13 @@ data:
 
     [resources]
     {{ if $orgRamMb }}
-    {{- range $datasetExportName, $datasetExportConfig := $datasetsExporterConfig.datasets.deployments -}}
-    {{- if or (not (hasKey $datasetsExporterConfig "enabled")) (get $datasetsExporterConfig "enabled")
+    {{- range $datasetExportName, $datasetExportConfig := $datasetsGeneratorConfig.datasets.deployments -}}
+    {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
               (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
     {{- $config := include "swh.datasets.export.config"
       (dict "datasetExportName"             $datasetExportName
             "exportConfiguration"           $datasetExportConfig
-            "datasetsExporterConfiguration" $datasetsExporterConfig
+            "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                        $.Values) | fromYaml -}}
     {{ $config.serviceType }}_ram_mb = {{ $orgRamMb }}
     {{ end }}
