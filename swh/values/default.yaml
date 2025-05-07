@@ -506,3 +506,15 @@ journalWriterMirrorConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
 
+datasetsGenerator:
+  datasets:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: swh/graph
+              operator: In
+              values:
+              - "true"
+
