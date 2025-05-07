@@ -281,6 +281,16 @@ cloudnativePg:
         secretKeyRef: swh-next-version-postgresql-secret
         databases:
           - swh-svix
+    next-version-swh-masking:
+      enabled: true
+      enableSuperuserAccess: true
+      namespace: swh-cassandra-next-version
+      initdb:
+        type: microservice
+        secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+        databases:
+        - swh-masking
+        source: cluster-pg-staging-db1
 
     # staging/next-version environment
     swh-web:
