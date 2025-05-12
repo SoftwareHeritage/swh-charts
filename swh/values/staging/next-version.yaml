@@ -42,16 +42,23 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       secretKeyName: password
 
-postgresqlMaskingConfiguration:
+maskingQueryPostgresqlConfiguration:
   host: next-version-swh-masking-rw.swh-cassandra-next-version
   port: '5432'
   db: swh-masking
-  user: swh-masking
+  user: ${MASKING_ADMIN_PGUSERNAME}
   pass: ${MASKING_ADMIN_PGPASSWORD}
   secrets:
     MASKING_ADMIN_PGPASSWORD:
       secretKeyRef: swh-next-version-postgresql-swh-masking-secret
       secretKeyName: password
+    MASKING_ADMIN_PGUSERNAME:
+      secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+      secretKeyName: username
+
+maskingStoragePipelineSteps:
+  - cls: masking
+    postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
 
 celeryConfiguration:
   host: rabbitmq-scheduler
@@ -613,14 +620,14 @@ roCassandraStorage:
   consistencyLevel: LOCAL_QUORUM
   authProvider:
     cls: cassandra.auth.PlainTextAuthProvider
-    username: ${CASSANDRA_RW_USERNAME}
-    password: ${CASSANDRA_RW_PASSWORD}
+    username: ${CASSANDRA_RO_USERNAME}
+    password: ${CASSANDRA_RO_PASSWORD}
   secrets:
     # TODO: deploy a real cassandra RO user
-    CASSANDRA_RW_USERNAME:
+    CASSANDRA_RO_USERNAME:
       secretKeyRef: cassandra-cluster-superuser
       secretKeyName: username
-    CASSANDRA_RW_PASSWORD:
+    CASSANDRA_RO_PASSWORD:
       secretKeyRef: cassandra-cluster-superuser
       secretKeyName: password
 
@@ -702,14 +709,15 @@ rwCassandraStorageWithJournalConfiguration:
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
 
-rpcROObjstoragePathslicingConfiguration:
+roRpcObjstoragePathslicingConfiguration:
   cls: remote
   url: http://objstorage-ro-pathslicing:5003
   enable_requests_retry: true
 
 roCassandraStorageConfiguration:
+  pipelineStepsRef: maskingStoragePipelineSteps
   storageConfigurationRef: roCassandraStorage
-  objstorageConfigurationRef: rpcROObjstoragePathslicingConfiguration
+  objstorageConfigurationRef: roRpcObjstoragePathslicingConfiguration
 
 rwCassandraStorageForReferenceTableJob:
   <<: *rwCassandraStorage
@@ -1485,7 +1493,7 @@ datasetsGenerator:
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
-    maskingDbConfigurationRef: postgresqlMaskingConfiguration
+    maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
     nbProcesses: 1
     # Datasets to generate
     deployments:
