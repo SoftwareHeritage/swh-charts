@@ -118,7 +118,7 @@ spec:
           command:
           - /bin/sleep
           args:
-          - "86400"
+          - infinity
           {{- else }}
           command:
           - /bin/bash
