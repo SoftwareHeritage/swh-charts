@@ -42,7 +42,7 @@ postgresqlSchedulerConfiguration:
       secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       secretKeyName: password
 
-maskingQueryPostgresqlConfiguration:
+rwMaskingPostgresqlConfiguration:
   host: next-version-swh-masking-rw.swh-cassandra-next-version
   port: '5432'
   db: swh-masking
@@ -56,9 +56,23 @@ maskingQueryPostgresqlConfiguration:
       secretKeyRef: swh-next-version-postgresql-swh-masking-secret
       secretKeyName: username
 
+roMaskingPostgresqlConfiguration:
+  host: next-version-swh-masking-ro.swh-cassandra-next-version
+  port: '5432'
+  db: swh-masking
+  user: ${MASKING_GUEST_PGUSERNAME}
+  pass: ${MASKING_GUEST_PGPASSWORD}
+  secrets:
+    MASKING_GUEST_PGPASSWORD:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
+    MASKING_GUEST_PGUSERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
+
 maskingStoragePipelineSteps:
   - cls: masking
-    postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
+    postgresqlConfigurationRef: roMaskingPostgresqlConfiguration
 
 celeryConfiguration:
   host: rabbitmq-scheduler
@@ -949,6 +963,12 @@ toolbox:
       webDbConfigurationRef: postgresqlWebConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+    masking:
+      moduleName: storage.proxies.masking
+      moduleConfigKey: masking_admin
+      maskingAdminConfigurationRef: rwMaskingPostgresqlConfiguration
+      storageConfigurationRef: memoryNoopStorageConfiguration
+
   bulkLoad: null
 
 webhooksJournalClientConfiguration:
@@ -1493,7 +1513,7 @@ datasetsGenerator:
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
-    maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
+    maskingDbConfigurationRef: roMaskingPostgresqlConfiguration
     nbProcesses: 1
     # Datasets to generate
     deployments:
