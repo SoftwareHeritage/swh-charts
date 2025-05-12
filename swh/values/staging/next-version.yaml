@@ -251,8 +251,8 @@ externalServices:
     provenance-grpc-next-version:
       internalName: provenance-grpc-next-version-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    luigi-scheduler-ingress-next-version:
-      internalName: luigi-scheduler-ingress-next-version
+    luigi-scheduler-next-version:
+      internalName: luigi-scheduler-next-version-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 countersJournalClientConfiguration:
