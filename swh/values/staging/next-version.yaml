@@ -242,11 +242,17 @@ externalServices:
     provenance:
       internalName: webapp-provenance-ingress-next-version
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    graph-grpc-next-version:
-      internalName: graph-grpc-next-version-ingress
+    graph-grpc-next-version-example:
+      internalName: graph-grpc-next-version-example-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    graph-rpc-next-version:
-      internalName: graph-rpc-next-version-ingress
+    graph-rpc-next-version-example:
+      internalName: graph-rpc-next-version-example-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-grpc-next-version-20250507:
+      internalName: graph-grpc-next-version-20250507-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-rpc-next-version-20250507:
+      internalName: graph-rpc-next-version-20250507-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     provenance-grpc-next-version:
       internalName: provenance-grpc-next-version-ingress
@@ -1265,11 +1271,11 @@ provenanceGraphGrpcConfiguration:
   filter_licenses: false
   provenance:
     cls: graph
-    url: graph-grpc-next-version-ingress:80
+    url: graph-grpc-next-version-20250507-ingress:80
     max_edges: 100000
 
 webGraphConfiguration:
-  server_url: http://graph-rpc-next-version-ingress/graph/
+  server_url: http://graph-rpc-next-version-20250507-ingress/graph/
   max_edges:
     staff: 0
     user: 100000
@@ -1436,8 +1442,7 @@ graph:
             persistentVolumeClaim:
               claimName: swh-graph-grpc-inmemory-pvc
       hosts:
-        - graph-grpc-next-version.internal.staging.swh.network
-        - graph-grpc-next-version-ingress
+        - graph-grpc-next-version-example-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
@@ -1462,8 +1467,63 @@ graph:
       graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
+        - graph-rpc-next-version-example-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    grpc-20250507:
+      enabled: true
+      type: grpc
+      port: 50091
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      startService: true
+      dataset:
+        name: 2025-05-07
+      extraVolumes:
+        # persistent volume (where the full dataset files are stored)
+        swh-graph-grpc-dataset-example:
+          mountPath: /srv/graph/2025-05-07
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20240507-persistent-pvc  # misnamed (year is off by 1)
+      hosts:
+        - graph-grpc-next-version.internal.staging.swh.network
+        - graph-grpc-next-version-20250507-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    # rpc graph which hit the grpc graph instance declared above ^
+    rpc-20250507:
+      enabled: true
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      startService: true
+      hosts:
         - graph-next-version.internal.staging.swh.network
-        - graph-rpc-next-version-ingress
+        - graph-rpc-next-version-20250507-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
@@ -1527,4 +1587,4 @@ datasetsGenerator:
             mountPath: /srv/dataset/2025-05-07
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-20240507-persistent-pvc
+                claimName: graph-20240507-persistent-pvc  # misnamed (year is off by 1)
