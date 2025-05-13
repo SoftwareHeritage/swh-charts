@@ -1352,9 +1352,15 @@ provenance:
 #   grpc_server:
 #     port: 50091
 
-rpcWithRemoteGrpcGraphConfiguration:
+rpcExampleWithRemoteGrpcGraphConfiguration:
   cls: remote
-  url: graph-grpc-next-version-ingress:80
+  url: graph-grpc-next-version-example-ingress:80
+  grpc_server:
+    port: 80
+
+rpc20250507WithRemoteGrpcGraphConfiguration:
+  cls: remote
+  url: graph-grpc-next-version-20250507-ingress:80
   grpc_server:
     port: 80
 
@@ -1476,7 +1482,7 @@ graph:
       port: 5009
       nodeSelector:
         kubernetes.io/hostname: rancher-node-staging-rke2-metal01
-      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      graphConfigurationRef: rpcExampleWithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
         - graph-rpc-next-version-example-ingress
@@ -1531,7 +1537,7 @@ graph:
       enabled: true
       type: rpc
       port: 5009
-      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      graphConfigurationRef: rpc20250507WithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
         - graph-next-version.internal.staging.swh.network
