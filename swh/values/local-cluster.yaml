@@ -1680,7 +1680,8 @@ volumes:
 
 graph:
   enabled: false
-  imageVersion: "20241105.2"
+  # Version used to export the latest dataset
+  imageVersion: "20250513.3"
   # Test dataset uses the "example" name
   deployments:
     # basic grpc graph with sample dataset with sample dataset (cloned out of
