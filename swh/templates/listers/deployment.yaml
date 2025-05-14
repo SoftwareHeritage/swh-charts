@@ -1,6 +1,7 @@
 {{ if .Values.listers.enabled -}}
 {{- $enable_sentry := and .Values.sentry.enabled .Values.listers.sentry.enabled }}
 {{- range $lister_type, $deployment_config := .Values.listers.deployments -}}
+{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
 {{- $configurationChecksum := include "swh.lister.configmap" (dict "lister_type" $lister_type "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $lister_name := ( print "lister-" $lister_type ) -}}
 # Set useJsonLogger to false to let the logs be plain text
@@ -158,5 +159,6 @@ spec:
           secretName: sentry-settings-for-celery-tasks
           optional: true
       {{- end }}
+{{ end }}
 {{ end }}
 {{- end -}}
