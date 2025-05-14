@@ -1879,6 +1879,7 @@ listers:
       requestedCpu: 1000m
       requestedMemory: 6Gi
     npm:
+      enabled: false
       queues:
       - swh.lister.npm.tasks.NpmListerTask
       autoScaling:
@@ -2264,7 +2265,7 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
     npm:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
