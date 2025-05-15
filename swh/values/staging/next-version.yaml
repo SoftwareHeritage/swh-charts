@@ -1597,7 +1597,7 @@ datasetsGenerator:
     # Datasets to generate
     deployments:
       2025-05-07:
-        enabled: true
+        enabled: false
         # So we can trigger the dataset export manually
         debug: true
         # Kind of dataset to generate
