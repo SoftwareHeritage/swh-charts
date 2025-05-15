@@ -1414,6 +1414,15 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
+    graph-20250515-persistent-pvc:
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
 
 graph:
   enabled: true
@@ -1589,8 +1598,9 @@ datasetsGenerator:
     deployments:
       2025-05-07:
         enabled: true
+        # So we can trigger the dataset export manually
         debug: true
-        # Kind of dataset export to build
+        # Kind of dataset to generate
         generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
@@ -1598,3 +1608,13 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250507-persistent-pvc
+      2025-05-15:
+        enabled: true
+        debug: false
+        generatorTask: CompressGraph
+        extraVolumes:
+          dataset-persistent:
+            mountPath: /srv/dataset/2025-05-15
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20250515-persistent-pvc
