@@ -9,8 +9,7 @@
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                         $.Values) | fromYaml -}}
-{{- $generatorTask := $config.datasetGeneratorTask -}}
-{{- if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) -}}
+
 {{- $journalConfigRef := $datasetsGeneratorConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
 {{- $journalConfigurationRef := required (print "Mandatory key <journalConfigurationRef> missing.") $journalConfigRef -}}
 {{- $maskingDbConfigRef := $datasetGeneratorConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
@@ -29,7 +28,6 @@ data:
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
     profile: release
-{{- end -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}

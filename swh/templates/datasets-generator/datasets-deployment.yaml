@@ -18,7 +18,6 @@
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                         $.Values) | fromYaml -}}
-{{- $generatorTask := $config.datasetGeneratorTask -}}
 {{- $debug := $config.debug -}}
 {{- $graphDirectoryDir := $config.graphDirectoryDir -}}
 {{- $graphDirectoryPath := print $graphDirectoryDir "/" $datasetGeneratorName -}}
@@ -81,7 +80,6 @@ spec:
           - name: luigi-config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
         - name: {{ $config.serviceType }}-prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
@@ -98,7 +96,6 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{ end }}
       containers:
         - name: {{ $config.serviceType }}
           resources:
@@ -132,7 +129,7 @@ spec:
           - {{ $graphDirectoryDir | quote }}
           - --dataset-name
           - {{ $datasetGeneratorName | quote }}
-          - {{ $config.datasetGeneratorTask | quote }}
+          - CompressGraph
           - --
           - --scheduler-url
           - {{ $config.luigiSchedulerUrl | quote }}
@@ -168,17 +165,14 @@ spec:
           volumeMounts:
           - name: luigi-configuration
             mountPath: {{ $luigiConfigDirpath | quote }}
-          {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
           - name: dataset-configuration
             mountPath: /etc/swh
-          {{ end }}
           {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
           - name: {{ $volumeName }}
             mountPath: {{ $volumeConfig.mountPath | default $graphDirectoryPath }}
             readOnly: {{ $volumeConfig.readOnly | default "false" }}
           {{ end }}
       volumes:
-      {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
       - name: dataset-configuration
         emptyDir: {}
       - name: {{ $config.serviceType }}-config-template
@@ -191,7 +185,6 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-      {{ end }}
       - name: luigi-configuration
         emptyDir: {}
       - name: luigi-scheduler-config-template

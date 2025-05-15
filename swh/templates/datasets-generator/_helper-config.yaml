@@ -14,7 +14,6 @@
 {{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
 {{- $priorityClassName := $config.priorityClassName | default $datasetsConfig.priorityClassName -}}
 {{- $nbProcesses := $config.nbProcesses | default 1 -}}
-{{- $datasetGeneratorTask := required (print "Required dataset export type (a luigi task name)") $config.generatorTask -}}
 {{- $urlRef := $config.luigiSchedulerUrlRef | default $datasetsConfig.luigiSchedulerUrlRef -}}
 {{- $luigiSchedulerUrlRef := required (print "Required luigi scheduler url reference.") $urlRef -}}
 {{- $luigiSchedulerUrl := required (print "Invalid <luigiSchedulerUrlRef> configuration key.") (get .Values $luigiSchedulerUrlRef) -}}
@@ -36,7 +35,6 @@
          "priorityClassName"    $priorityClassName
          "luigiSchedulerUrl"    $luigiSchedulerUrl
          "graphDirectoryDir"    $graphDirectoryPath
-         "datasetGeneratorTask" $datasetGeneratorTask
          "configPath"           $configPath
          "nbProcesses"          $nbProcesses
          "requestedMemory"      $requestedMemory

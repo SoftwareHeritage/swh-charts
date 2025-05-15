@@ -1601,7 +1601,6 @@ datasetsGenerator:
         # So we can trigger the dataset export manually
         debug: true
         # Kind of dataset to generate
-        generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
@@ -1610,7 +1609,6 @@ datasetsGenerator:
       2025-05-15:
         enabled: true
         debug: false
-        generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
             volumeDefinition:

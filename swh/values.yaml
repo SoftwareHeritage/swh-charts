@@ -2185,5 +2185,4 @@ datasetsGenerator:
     #     enabled: false
     #     # Type of export to execute (can be one of the luigi tasks defined in
     #     # swh.datasets or swh.export repository)
-    #     generatorTask: CompressGraph
 
