@@ -1570,7 +1570,7 @@ datasetsGenerator:
     debug: false
     config:
       recordTaskHistory: false
-      orgRamMb: 500000
+      orgRamMb: "1000000"
     hosts:
       - luigi-scheduler-next-version-ingress
     ingress:
