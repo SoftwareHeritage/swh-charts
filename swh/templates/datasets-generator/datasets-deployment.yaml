@@ -20,6 +20,8 @@
             "Values"                         $.Values) | fromYaml -}}
 {{- $generatorTask := $config.datasetGeneratorTask -}}
 {{- $debug := $config.debug -}}
+{{- $graphDirectoryDir := $config.graphDirectoryDir -}}
+{{- $graphDirectoryPath := print $graphDirectoryDir "/" $datasetGeneratorName -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -127,7 +129,7 @@ spec:
           - datasets
           - luigi
           - --base-directory
-          - {{ $config.graphDirectoryPath | quote }}
+          - {{ $graphDirectoryDir | quote }}
           - --dataset-name
           - {{ $datasetGeneratorName | quote }}
           - {{ $config.datasetGeneratorTask | quote }}
@@ -137,17 +139,17 @@ spec:
           - --LocalExport-export-task-type
           - ExportGraph
           - --LocalExport-local-sensitive-export-path
-          - {{ $config.graphDirectoryPath | quote }}
+          - {{ $graphDirectoryPath | quote }}
           - --ExportGraph-config-file
           - {{ $config.configPath | quote }}
           - --ExportGraph-process
           - {{ $config.nbProcesses | quote }}
           - --CompressGraph-local-export-path
-          - {{ $config.graphDirectoryPath | quote }}
+          - {{ $graphDirectoryPath | quote }}
           - --CompressGraph-local-graph-path
-          - {{ $config.graphDirectoryPath | quote }}
+          - {{ $graphDirectoryPath | quote }}
           - --CompressGraph-local-sensitive-export-path
-          - {{ $config.graphDirectoryPath | quote }}
+          - {{ print $graphDirectoryPath "/compressed" | quote }}
           - --CompressGraph-test-flavor
           - "none"
           - --log-level

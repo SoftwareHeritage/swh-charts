@@ -1560,7 +1560,7 @@ graph:
 luigiSchedulerUrl: http://luigi-scheduler-next-version-ingress:80
 
 # Graph directory path to write or read graph data from
-graphDirectoryPath: /srv/dataset/2025-05-07
+graphDirectoryPath: /srv/dataset
 
 datasetsGenerator:
   enabled: true

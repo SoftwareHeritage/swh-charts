@@ -35,7 +35,7 @@
          "affinity"             $affinity
          "priorityClassName"    $priorityClassName
          "luigiSchedulerUrl"    $luigiSchedulerUrl
-         "graphDirectoryPath"   $graphDirectoryPath
+         "graphDirectoryDir"    $graphDirectoryPath
          "datasetGeneratorTask" $datasetGeneratorTask
          "configPath"           $configPath
          "nbProcesses"          $nbProcesses
