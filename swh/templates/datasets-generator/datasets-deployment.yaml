@@ -174,7 +174,7 @@ spec:
           {{ end }}
           {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
           - name: {{ $volumeName }}
-            mountPath: {{ $volumeConfig.mountPath }}
+            mountPath: {{ $volumeConfig.mountPath | default $graphDirectoryPath }}
             readOnly: {{ $volumeConfig.readOnly | default "false" }}
           {{ end }}
       volumes:

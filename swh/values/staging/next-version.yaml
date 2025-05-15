@@ -1604,7 +1604,6 @@ datasetsGenerator:
         generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
-            mountPath: /srv/dataset/2025-05-07
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250507-persistent-pvc
@@ -1614,7 +1613,6 @@ datasetsGenerator:
         generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
-            mountPath: /srv/dataset/2025-05-15
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250515-persistent-pvc
