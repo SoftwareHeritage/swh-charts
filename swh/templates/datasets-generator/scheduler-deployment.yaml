@@ -113,14 +113,9 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           command:
-          - /bin/bash
-          args:
-          - -c
           - /opt/swh/entrypoint.sh
           {{- end }}
           env:
-            - name: APP_NAME
-              value: luigi
             - name: LUIGI_PATH_TO_PIDFILE
               value: {{ $path }}/pid
             - name: LUIGI_PATH_TO_LOGDIR

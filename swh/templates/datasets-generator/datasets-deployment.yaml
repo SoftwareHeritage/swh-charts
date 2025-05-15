@@ -121,10 +121,11 @@ spec:
           - infinity
           {{- else }}
           command:
-          - /bin/bash
-          args:
-          - -c
           - /opt/swh/entrypoint.sh
+          args:
+          - swh
+          - datasets
+          - luigi
           - --base-directory
           - {{ $config.graphDirectoryPath | quote }}
           - --dataset-name
@@ -158,8 +159,6 @@ spec:
             - name: SWH_DEBUG_ENTRYPOINT
               value: "1"
             {{- end }}
-            - name: APP_NAME
-              value: datasets
             - name: LUIGI_CONFIG_PATH
               value: {{ $luigiConfigPath | quote }}
             - name: LUIGI_CONFIG_PARSER
