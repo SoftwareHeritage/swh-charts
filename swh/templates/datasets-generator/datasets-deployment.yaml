@@ -101,8 +101,8 @@ spec:
         - name: {{ $config.serviceType }}
           resources:
             requests:
-              memory: {{ $config.requestedMemory | default "512Mi" }}
-              cpu: {{ $config.requestedCpu | default "500m" }}
+              memory: {{ $config.requestedMemory }}
+              cpu: {{ $config.requestedCpu }}
           {{- if or $config.limitedMemory $config.limitedCpu }}
             limits:
             {{- if $config.limitedMemory }}
