@@ -1608,7 +1608,7 @@ datasetsGenerator:
                 claimName: graph-20250507-persistent-pvc
       2025-05-15:
         enabled: true
-        debug: false
+        debug: true
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
