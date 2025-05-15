@@ -10,15 +10,15 @@
 {{- $luigiConfigDirpath := "/etc/luigi" -}}
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 
-{{- range $datasetExportName, $datasetExportConfig := $datasetsGeneratorConfig.datasets.deployments -}}
+{{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
 {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
-          (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
-{{- $config := include "swh.datasets.export.config"
-      (dict "datasetExportName"             $datasetExportName
-            "exportConfiguration"           $datasetExportConfig
+          (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
+{{- $config := include "swh.datasets.generator.config"
+      (dict "datasetGeneratorName"           $datasetGeneratorName
+            "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
-            "Values"                        $.Values) | fromYaml -}}
-{{- $exportTask := $config.datasetExportTask -}}
+            "Values"                         $.Values) | fromYaml -}}
+{{- $generatorTask := $config.datasetGeneratorTask -}}
 {{- $debug := $config.debug -}}
 ---
 apiVersion: apps/v1
@@ -79,7 +79,7 @@ spec:
           - name: luigi-config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+        {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
         - name: {{ $config.serviceType }}-prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
@@ -128,8 +128,8 @@ spec:
           - --base-directory
           - {{ $config.graphDirectoryPath | quote }}
           - --dataset-name
-          - {{ $datasetExportName | quote }}
-          - {{ $config.datasetExportTask | quote }}
+          - {{ $datasetGeneratorName | quote }}
+          - {{ $config.datasetGeneratorTask | quote }}
           - --
           - --scheduler-url
           - {{ $config.luigiSchedulerUrl | quote }}
@@ -167,17 +167,17 @@ spec:
           volumeMounts:
           - name: luigi-configuration
             mountPath: {{ $luigiConfigDirpath | quote }}
-          {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+          {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
           - name: dataset-configuration
             mountPath: /etc/swh
           {{ end }}
-          {{- range $volumeName, $volumeConfig := $datasetExportConfig.extraVolumes }}
+          {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
           - name: {{ $volumeName }}
             mountPath: {{ $volumeConfig.mountPath }}
             readOnly: {{ $volumeConfig.readOnly | default "false" }}
           {{ end }}
       volumes:
-      {{ if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) }}
+      {{ if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) }}
       - name: dataset-configuration
         emptyDir: {}
       - name: {{ $config.serviceType }}-config-template
@@ -203,7 +203,7 @@ spec:
         configMap:
           name: luigi-config-utils
           defaultMode: 0555
-      {{- range $volumeName, $volumeConfig := $datasetExportConfig.extraVolumes }}
+      {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
       - name: {{ $volumeName }}
         {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}
       {{ end }}

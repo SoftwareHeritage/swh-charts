@@ -3,8 +3,8 @@
    *
    * This raises as soon as a missing key is detected.
    */}}
-{{- define "swh.datasets.export.config" -}}
-{{- $config := deepCopy .exportConfiguration -}}
+{{- define "swh.datasets.generator.config" -}}
+{{- $config := deepCopy .datasetGeneratorConfiguration -}}
 {{- $topLevelConfig := .datasetsGeneratorConfiguration -}}
 {{- $datasetsConfig := $topLevelConfig.datasets -}}
 
@@ -14,7 +14,7 @@
 {{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
 {{- $priorityClassName := $config.priorityClassName | default $datasetsConfig.priorityClassName -}}
 {{- $nbProcesses := $config.nbProcesses | default 1 -}}
-{{- $datasetExportTask := required (print "Required dataset export type (a luigi task name)") $config.exportTask -}}
+{{- $datasetGeneratorTask := required (print "Required dataset export type (a luigi task name)") $config.generatorTask -}}
 {{- $urlRef := $config.luigiSchedulerUrlRef | default $datasetsConfig.luigiSchedulerUrlRef -}}
 {{- $luigiSchedulerUrlRef := required (print "Required luigi scheduler url reference.") $urlRef -}}
 {{- $luigiSchedulerUrl := required (print "Invalid <luigiSchedulerUrlRef> configuration key.") (get .Values $luigiSchedulerUrlRef) -}}
@@ -24,16 +24,16 @@
 {{- $configPath := "/etc/swh/config.yml" -}}
 {{- $debug := $config.debug | default $topLevelConfig.debug | default false -}}
 
-{{- dict "serviceType"        (print "dataset-" .datasetExportName)
-         "logLevel"           $logLevel
-         "namespace"          $namespace
-         "replicas"           $replicas
-         "affinity"           $affinity
-         "priorityClassName"  $priorityClassName
-         "luigiSchedulerUrl"  $luigiSchedulerUrl
-         "graphDirectoryPath" $graphDirectoryPath
-         "datasetExportTask"  $datasetExportTask
-         "configPath"         $configPath
-         "nbProcesses"        $nbProcesses
-         "debug"              $debug | mustMergeOverwrite $config | toYaml -}}
+{{- dict "serviceType"          (print "dataset-" .datasetGeneratorName)
+         "logLevel"             $logLevel
+         "namespace"            $namespace
+         "replicas"             $replicas
+         "affinity"             $affinity
+         "priorityClassName"    $priorityClassName
+         "luigiSchedulerUrl"    $luigiSchedulerUrl
+         "graphDirectoryPath"   $graphDirectoryPath
+         "datasetGeneratorTask" $datasetGeneratorTask
+         "configPath"           $configPath
+         "nbProcesses"          $nbProcesses
+         "debug"                $debug | mustMergeOverwrite $config | toYaml -}}
 {{- end -}}

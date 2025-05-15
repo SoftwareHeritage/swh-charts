@@ -1860,7 +1860,7 @@ datasetsGenerator:
         enabled: true
         debug: false
         # Kind of dataset export to build
-        exportTask: CompressGraph
+        generatorTask: CompressGraph
         extraVolumes:
           dataset-persistent:
             mountPath: /srv/dataset/2025-04-08

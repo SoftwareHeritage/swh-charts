@@ -1,19 +1,19 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
 {{- if and $datasetsGeneratorConfig.enabled $datasetsConfig.enabled -}}
-{{- range $datasetExportName, $datasetExportConfig := $datasetsConfig.deployments -}}
+{{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsConfig.deployments -}}
 {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
-          (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
-{{- $config := include "swh.datasets.export.config"
-      (dict "datasetExportName"             $datasetExportName
-            "exportConfiguration"           $datasetExportConfig
+          (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
+{{- $config := include "swh.datasets.generator.config"
+      (dict "datasetGeneratorName"           $datasetGeneratorName
+            "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
-            "Values"                        $.Values) | fromYaml -}}
-{{- $exportTask := $config.datasetExportTask -}}
-{{- if (or (eq $exportTask "CompressGraph") (eq $exportTask "ExportGraph")) -}}
+            "Values"                         $.Values) | fromYaml -}}
+{{- $generatorTask := $config.datasetGeneratorTask -}}
+{{- if (or (eq $generatorTask "CompressGraph") (eq $generatorTask "ExportGraph")) -}}
 {{- $journalConfigRef := $datasetsGeneratorConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
 {{- $journalConfigurationRef := required (print "Mandatory key <journalConfigurationRef> missing.") $journalConfigRef -}}
-{{- $maskingDbConfigRef := $datasetExportConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
+{{- $maskingDbConfigRef := $datasetGeneratorConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
 {{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}
 {{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
                                                   "Values" $.Values) -}}

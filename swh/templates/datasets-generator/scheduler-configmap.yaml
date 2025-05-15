@@ -80,14 +80,14 @@ data:
 
     [resources]
     {{ if $orgRamMb }}
-    {{- range $datasetExportName, $datasetExportConfig := $datasetsGeneratorConfig.datasets.deployments -}}
+    {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
     {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled")
-              (not (hasKey $datasetExportConfig "enabled")) (get $datasetExportConfig "enabled") -}}
-    {{- $config := include "swh.datasets.export.config"
-      (dict "datasetExportName"             $datasetExportName
-            "exportConfiguration"           $datasetExportConfig
+              (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
+    {{- $config := include "swh.datasets.generator.config"
+      (dict "datasetGeneratorName"           $datasetGeneratorName
+            "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
-            "Values"                        $.Values) | fromYaml -}}
+            "Values"                         $.Values) | fromYaml -}}
     {{ $config.serviceType }}_ram_mb = {{ $orgRamMb }}
     {{ end }}
     {{- end }}
