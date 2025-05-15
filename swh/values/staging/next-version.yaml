@@ -1405,16 +1405,6 @@ volumes:
         resources:
           requests:
             storage: 1Gi
-    # Misnamed pvc, to remove once we recreate a new one
-    graph-20240507-persistent-pvc:
-      spec:
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-persistent
     graph-20250507-persistent-pvc:
       spec:
         volumeMode: Filesystem
@@ -1514,7 +1504,7 @@ graph:
           mountPath: /srv/graph/2025-05-07
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-20240507-persistent-pvc  # misnamed (year is off by 1)
+              claimName: graph-20250507-persistent-pvc
       hosts:
         - graph-grpc-next-version.internal.staging.swh.network
         - graph-grpc-next-version-20250507-ingress
