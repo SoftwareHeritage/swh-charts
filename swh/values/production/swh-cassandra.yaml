@@ -2484,7 +2484,7 @@ objstorageReplayer:
       enabled: true
       destinationObjstorageConfigurationRef: rwObjstorageWineryConfiguration
       sourceObjstorageConfigurationRef: roObjstorageForWineryReplayerConfiguration
-      replicas: 32
+      replicas: 48
       fetchConcurrency: 4
       staticConsumerGroup: true
       checkDestination: "false"
