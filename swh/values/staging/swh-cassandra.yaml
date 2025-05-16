@@ -1535,6 +1535,15 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 60
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/rpc
+                operator: In
+                values:
+                - "true"
       autoScaling:
         type: keda
         minReplicaCount: 2
@@ -1589,6 +1598,15 @@ objstorage:
         workers: 4
         threads: 2
         timeout: 60
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/rpc
+                operator: In
+                values:
+                - "true"
       objstorageConfigurationRef: multiplexerReadWriteObjstorageConfiguration
       hosts:
         - objstorage-multiplexer-read-write-rpc-ingress
