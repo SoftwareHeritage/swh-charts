@@ -1609,6 +1609,7 @@ datasetsGenerator:
       2025-05-15:
         enabled: true
         debug: true
+        nbProcesses: 32
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
