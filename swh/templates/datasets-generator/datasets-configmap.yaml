@@ -19,7 +19,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $config.serviceType }}-journal-client-config-template
+  name: config-{{ $config.serviceType }}-template
   namespace: {{ $config.namespace }}
 data:
   config.yml.template: |

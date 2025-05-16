@@ -92,7 +92,7 @@ spec:
           volumeMounts:
           - name: dataset-configuration
             mountPath: /etc/swh
-          - name: {{ $config.serviceType }}-config-template
+          - name: config-{{ $config.serviceType }}-template
             mountPath: /etc/swh/configuration-template
           - name: config-utils
             mountPath: /entrypoints
@@ -163,9 +163,9 @@ spec:
       volumes:
       - name: dataset-configuration
         emptyDir: {}
-      - name: {{ $config.serviceType }}-config-template
+      - name: config-{{ $config.serviceType }}-template
         configMap:
-          name: {{ $config.serviceType }}-journal-client-config-template
+          name: config-{{ $config.serviceType }}-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
