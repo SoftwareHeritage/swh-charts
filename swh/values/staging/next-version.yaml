@@ -1593,7 +1593,7 @@ datasetsGenerator:
     maskingDbConfigurationRef: roMaskingPostgresqlConfiguration
     requestedMemory: 1Gi
     requestedCpu: 1000m
-    nbProcesses: 1
+    nbProcesses: 16
     # Datasets to generate
     deployments:
       2025-05-07:
