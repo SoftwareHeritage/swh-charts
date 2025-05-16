@@ -27,6 +27,6 @@ data:
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
     profile: release
-{{- end -}}
-{{- end -}}
-{{- end -}}
+{{ end }}
+{{ end }}
+{{ end }}
