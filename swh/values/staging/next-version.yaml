@@ -1598,8 +1598,8 @@ datasetsGenerator:
     deployments:
       2025-05-07:
         enabled: true
-        # So we can trigger the dataset export manually
-        debug: false
+        # So we can trigger the dataset generation manually
+        debug: true
         # Kind of dataset to generate
         extraVolumes:
           dataset-persistent:
