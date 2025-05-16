@@ -1,12 +1,13 @@
-{{- $datasetExporterConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
 {{- $luigiConfigDirpath := "/etc/luigi" -}}
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
-{{- $containerImageKey := $datasetExporterConfig.image -}}
+{{- $containerImageKey := $datasetsGeneratorConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 {{- $containerImageVersion := .Values.swh_datasets_image_version -}}
 
-{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
+            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $serviceType := "luigi-scheduler" -}}

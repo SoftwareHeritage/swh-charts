@@ -1,7 +1,8 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
 
-{{ if and $datasetsGeneratorConfig.enabled $deploymentConfig.enabled -}}
+{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
+            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
 {{- $serviceType := "luigi-scheduler" -}}
 {{- $logLevel := $deploymentConfig.logLevel | default $datasetsGeneratorConfig.logLevel | default "INFO" -}}

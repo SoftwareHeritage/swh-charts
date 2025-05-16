@@ -1,9 +1,8 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
-{{- if and $datasetsGeneratorConfig.enabled $datasetsConfig.enabled -}}
+{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
 {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsConfig.deployments -}}
-{{- if and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-           (or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled")) -}}
+{{- if or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
 {{- $config := include "swh.datasets.generator.config"
       (dict "datasetGeneratorName"           $datasetGeneratorName
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig

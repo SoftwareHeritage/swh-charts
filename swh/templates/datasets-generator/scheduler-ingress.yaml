@@ -1,7 +1,7 @@
-{{- $datasetExporterConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetExporterConfig.scheduler -}}
-
-{{ if and $datasetExporterConfig.enabled $deploymentConfig.enabled -}}
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
+{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
+            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
 {{- $serviceType := "luigi-scheduler" -}}
 {{- include "swh.ingress" (dict "Values"        .Values
                                 "serviceType"   $serviceType
