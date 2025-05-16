@@ -16,6 +16,37 @@ metadata:
   name: {{ $config.serviceType }}-script-utils
   namespace: {{ $.Values.namespace }}
 data:
+  cleanup-generated-compressed-graph.sh: |
+    #!/usr/bin/env bash
+    # Uses env variables:
+    # - GRAPH_DIRECTORY_PATH
+    set -e
+
+    if [ -n "${SWH_DEBUG_ENTRYPOINT}" ]; then
+        set -x
+    fi
+
+    [ -z "${GRAPH_DIRECTORY_PATH}" ] && \
+      echo "<GRAPH_DIRECTORY_PATH> env variable must be set" && exit 1
+
+    rm -rf "${GRAPH_DIRECTORY_PATH}"/{.*,*} && \
+      echo "Cleanup <${GRAPH_DIRECTORY_PATH}> done"
+
+  display-compressed-graph-logs.sh: |
+    #!/usr/bin/env bash
+    # Uses env variables:
+    # - GRAPH_COMPRESSED_DIRECTORY_PATH
+    set -e
+
+    [ -z "${GRAPH_COMPRESSED_DIRECTORY_PATH}" ] && \
+      echo "<GRAPH_COMPRESSED_DIRECTORY_PATH> env variable must be set" && exit 1
+
+    for logpath in $(ls "${GRAPH_COMPRESSED_DIRECTORY_PATH}"/logs/*); do
+      echo "##################### ${logpath}"
+      cat "${logpath}"
+      echo
+    done
+
   generate-compressed-graph.sh: |
     #!/usr/bin/env bash
     # Uses env variables:
