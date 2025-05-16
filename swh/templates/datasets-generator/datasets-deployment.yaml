@@ -154,7 +154,7 @@ spec:
             mountPath: {{ $luigiConfigDirpath | quote }}
           - name: dataset-configuration
             mountPath: /etc/swh
-          - name: {{ $config.serviceType }}-script-utils
+          - name: datasets-script-utils
             mountPath: /script
           {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
           - name: {{ $volumeName }}
@@ -170,9 +170,9 @@ spec:
           items:
           - key: "config.yml.template"
             path: "config.yml.template"
-      - name: {{ $config.serviceType }}-script-utils
+      - name: datasets-script-utils
         configMap:
-          name: {{ $config.serviceType }}-script-utils
+          name: datasets-script-utils
           defaultMode: 0555
       - name: config-utils
         configMap:
