@@ -1,0 +1,74 @@
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
+{{- if and $datasetsGeneratorConfig.enabled $datasetsConfig.enabled -}}
+{{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
+{{- if and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
+           (or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled")) -}}
+{{- $config := include "swh.datasets.generator.config"
+      (dict "datasetGeneratorName"           $datasetGeneratorName
+            "datasetGeneratorConfiguration"  $datasetGeneratorConfig
+            "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
+            "Values"                         $.Values) | fromYaml -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $config.serviceType }}-script-utils
+  namespace: {{ $.Values.namespace }}
+data:
+  generate-compressed-graph.sh: |
+    #!/usr/bin/env bash
+    # Uses env variables:
+    # - SWH_CONFIG_FILENAME
+    # - LUIGI_SCHEDULER_URL
+    # - GRAPH_MOUNTPOINT
+    # - GRAPH_DATASET_NAME
+    # - GRAPH_DIRECTORY_PATH
+    # - NB_PROCESSES
+    # - LOG_LEVEL
+
+    set -e
+
+    if [ -n "${SWH_DEBUG_ENTRYPOINT}" ]; then
+        set -x
+    fi
+
+    [ -z "${SWH_CONFIG_FILENAME}" ] && \
+      echo "<SWH_CONFIG_FILENAME> env variable must be set" && exit 1
+    [ -z "${LUIGI_SCHEDULER_URL}" ] && \
+      echo "<LUIGI_SCHEDULER_URL> env variable must be set" && exit 1
+    [ -z "${GRAPH_MOUNTPOINT}" ] && \
+      echo "<GRAPH_MOUNTPOINT> env variable must be set" && exit 1
+    [ -z "${GRAPH_DATASET_NAME}" ] && \
+      echo "<GRAPH_DATASET_NAME> env variable must be set" && exit 1
+    [ -z "${GRAPH_DIRECTORY_PATH}" ] && \
+      echo "<GRAPH_DIRECTORY_PATH> env variable must be set" && exit 1
+    [ -z "${NB_PROCESSES}" ] && \
+      echo "<NB_PROCESSES> env variable must be set" && exit 1
+    [ -z "${LOG_LEVEL}" ] && \
+      echo "<LOG_LEVEL> env variable must be set" && exit 1
+
+    set -x
+
+    /opt/swh/entrypoint.sh \
+       swh datasets luigi \
+          --base-directory "${GRAPH_MOUNTPOINT}" \
+          --dataset-name "${GRAPH_DATASET_NAME}" \
+          CompressGraph \
+          -- \
+          --scheduler-url "${LUIGI_SCHEDULER_URL}" \
+          --LocalExport-export-task-type ExportGraph \
+          --LocalExport-local-sensitive-export-path "${GRAPH_DIRECTORY_PATH}" \
+          --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
+          --ExportGraph-process "${NB_PROCESSES}" \
+          --CompressGraph-local-export-path "${GRAPH_DIRECTORY_PATH}" \
+          --CompressGraph-local-graph-path "${GRAPH_COMPRESSED_DIRECTORY_PATH}" \
+          --CompressGraph-rust-executable-dir /usr/local/bin \
+          --CompressGraph-local-sensitive-export-path "${GRAPH_DIRECTORY_PATH}" \
+          --CompressGraph-test-flavor "none" \
+          --log-level "${LOG_LEVEL}" \
+          --Llp-gammas=-1,-2,-3,-4
+
+{{ end }}
+{{ end }}
+{{ end }}
