@@ -1968,7 +1968,7 @@ webhooks:
   priorityClassName: frontend-rpc-workload
   autoScaling:
     minReplicaCount: 2
-    maxReplicaCount: 5
+    maxReplicaCount: 32
     lagThreshold: 2000
   deployments:
     origin-visit-status:
