@@ -8,6 +8,7 @@
             (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
+{{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-script-utils.yaml") . | sha256sum -}}
 
 {{- $schedulerConfig := include "swh.luigi.scheduler.config"
                                 (dict "luigiSchedulerConfig"    $luigiSchedulerConfig
@@ -51,6 +52,7 @@ spec:
       annotations:
         checksum/config: {{ $configChecksum }}
         checksum/config-utils: {{ $configUtilsChecksum }}
+        checksum/script-utils: {{ $configScriptUtilsChecksum }}
     spec:
       {{- if $affinity }}
       affinity:
@@ -103,7 +105,7 @@ spec:
           command:
           - /bin/sleep
           args:
-          - "3600"
+          - infinity
           {{- else }}
           readinessProbe:
             httpGet:
