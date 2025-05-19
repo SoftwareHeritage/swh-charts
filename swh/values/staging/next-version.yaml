@@ -1573,6 +1573,7 @@ datasetsGenerator:
       orgRamMb: "1000000"
     hosts:
       - luigi-scheduler-next-version-ingress
+      - luigi-scheduler-next-version.internal.staging.swh.network
     ingress:
       enabled: true
       extraAnnotations:
