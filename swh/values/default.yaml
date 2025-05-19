@@ -506,13 +506,3 @@ journalWriterMirrorConfiguration:
   producerConfig:
     message.max.bytes: 1000000000
 
-webAlter:
-  smtp:
-    host: smtp.inria.fr
-    port: 25
-  alter_settings:
-    support_mail_alias: alter-support@softwareheritage.org
-    manager_mail_alias: alter-manager@softwareheritage.org
-    legal_mail_alias: alter-legal@softwareheritage.org
-    technical_mail_alias: alter-technical@softwareheritage.org
-    block_disposable_email_domains: false
