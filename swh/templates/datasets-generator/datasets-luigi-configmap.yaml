@@ -4,22 +4,17 @@
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
             (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
-{{- $serviceType := "luigi-scheduler" -}}
 {{- $logLevel := $deploymentConfig.logLevel | default $datasetsGeneratorConfig.logLevel | default "INFO" -}}
 {{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
 {{- if $deploymentConfig.config }}
-{{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
-{{- $orgRamMb := $deploymentConfig.config.orgRamMb | default 1024 -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: {{ $namespace }}
-  name: {{ $serviceType }}-configuration-template
+  name: datasets-luigi-configmap-configuration-template
 data:
   luigi.cfg.template: |
-    [scheduler]
-    record_task_history = {{ $recordTaskHistory }}
 
     # These parameters control core Luigi behavior, such as error e-mails and
     # interactions between the worker and scheduler.
@@ -73,26 +68,6 @@ data:
     # Number of seconds to wait before the next attempt will be started to connect to
     # the central scheduler between two retry attempts. Defaults to 30
     # rpc_retry_wait = 30
-
-    {{- if $recordTaskHistory }}
-    [task_history]
-    db_connection = sqlite://{{ $path }}/luigi-task-hist.db
-    {{- end }}
-
-    [resources]
-    {{ if $orgRamMb }}
-    {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
-    {{- if and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-               (or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled")) -}}
-      {{- $config := include "swh.datasets.generator.config"
-      (dict "datasetGeneratorName"           $datasetGeneratorName
-            "datasetGeneratorConfiguration"  $datasetGeneratorConfig
-            "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
-            "Values"                         $.Values) | fromYaml -}}
-    {{ $config.serviceType }}_ram_mb = {{ $orgRamMb }}
-    {{ end }}
-    {{- end }}
-    {{- end }}
 
 {{- end -}}
 {{- end -}}

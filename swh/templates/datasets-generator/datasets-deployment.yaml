@@ -1,7 +1,7 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
 {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
-{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-script-utils.yaml") . | sha256sum -}}
@@ -76,7 +76,7 @@ spec:
           volumeMounts:
           - name: luigi-configuration
             mountPath: {{ $luigiConfigDirpath }}
-          - name: luigi-scheduler-config-template
+          - name: datasets-luigi-config-template
             mountPath: {{ print $luigiConfigDirpath "/configuration-template" }}
           - name: luigi-config-utils
             mountPath: /entrypoints
@@ -179,9 +179,9 @@ spec:
           defaultMode: 0555
       - name: luigi-configuration
         emptyDir: {}
-      - name: luigi-scheduler-config-template
+      - name: datasets-luigi-config-template
         configMap:
-          name: luigi-scheduler-configuration-template
+          name: datasets-luigi-configmap-configuration-template
           items:
           - key: "luigi.cfg.template"
             path: "luigi.cfg.template"

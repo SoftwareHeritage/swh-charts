@@ -8,7 +8,7 @@
 
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
             (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
-{{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-configmap.yaml") . | sha256sum -}}
+{{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $serviceType := "luigi-scheduler" -}}
 {{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
@@ -135,7 +135,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: {{ $serviceType }}-configuration-template
+          name: scheduler-luigi-configmap-configuration-template
           items:
           - key: "luigi.cfg.template"
             path: "luigi.cfg.template"
