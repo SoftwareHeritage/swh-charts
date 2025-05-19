@@ -1002,6 +1002,7 @@ web:
       provenanceConfigurationRef: provenanceGrpcConfiguration
       graphConfigurationRef: webGraphConfiguration
       cornerRibbonRef: cornerRibbon
+      webAlterRef: webAlter
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:

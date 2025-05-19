@@ -132,6 +132,10 @@ data:
     {{- if .configuration.extraConfig -}}
     {{ toYaml .configuration.extraConfig | nindent 4 }}
     {{- end }}
+    {{- if .configuration.webAlterRef }}
+    {{- $webAlter := get .Values .configuration.webAlterRef -}}
+      {{- toYaml $webAlter | nindent 4 }}
+    {{- end }}
 
 {{- end -}}
 
