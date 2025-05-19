@@ -1,19 +1,19 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
+{{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
-{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
-{{- $logLevel := $deploymentConfig.logLevel | default $datasetsGeneratorConfig.logLevel | default "INFO" -}}
-{{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
-{{- if $deploymentConfig.config }}
-{{- $recordTaskHistory := $deploymentConfig.config.recordTaskHistory | default false -}}
-{{- $orgRamMb := $deploymentConfig.config.orgRamMb | default 1024 -}}
+            (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
+{{- $schedulerConfig := include "swh.luigi.scheduler.config"
+                                (dict "luigiSchedulerConfig"    $luigiSchedulerConfig
+                                      "datasetsGeneratorConfig" $datasetsGeneratorConfig
+                                      "Values"                  $.Values) | fromYaml -}}
+{{- $recordTaskHistory := $schedulerConfig.recordTaskHistory -}}
+{{- $orgRamMb := $schedulerConfig.orgRamMb -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: {{ $namespace }}
+  namespace: {{ $schedulerConfig.namespace }}
   name: scheduler-luigi-configmap-configuration-template
 data:
   luigi.cfg.template: |
@@ -24,7 +24,7 @@ data:
     # interactions between the worker and scheduler.
     [core]
     # Hostname of the machine running the scheduler. Defaults to localhost.
-    default_scheduler_host = {{ first $deploymentConfig.hosts }}
+    default_scheduler_host = {{ first $schedulerConfig.hosts }}
     # Port of the remote scheduler api process. Defaults to 8082.
     default_scheduler_port = 80
     # Full path to remote scheduler. Defaults to http://localhost:8082/. For TLS support
@@ -44,7 +44,7 @@ data:
 
     # The default log level to use when no logging_conf_file is set. Must be a valid
     # name of a Python log level. Default is DEBUG.
-    log_level = {{ $logLevel }}
+    log_level = {{ $schedulerConfig.logLevel }}
 
     # Location of the logging configuration file.
     # logging_conf_file =
@@ -75,7 +75,7 @@ data:
 
     {{- if $recordTaskHistory }}
     [task_history]
-    db_connection = sqlite://{{ $path }}/luigi-task-hist.db
+    db_connection = sqlite:///{{ $schedulerConfig.recordDbPath }}
     {{- end }}
 
     [resources]
@@ -93,5 +93,4 @@ data:
     {{- end }}
     {{- end }}
 
-{{- end -}}
 {{- end -}}

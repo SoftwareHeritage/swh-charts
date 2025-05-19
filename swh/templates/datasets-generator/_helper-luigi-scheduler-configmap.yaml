@@ -1,0 +1,38 @@
+{{/*
+   * Create a configuration dict for luigi scheduler instance.
+   *
+   * This raises as soon as a missing key is detected.
+   */}}
+{{- define "swh.luigi.scheduler.config" -}}
+{{- $config := deepCopy .luigiSchedulerConfig -}}
+{{- $topLevelConfig := .datasetsGeneratorConfig -}}
+
+{{- $luigiConfigDirpath := "/etc/luigi" -}}
+{{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
+{{- $logLevel := $config.logLevel | default $topLevelConfig.logLevel | default "INFO" -}}
+{{- $namespace := $config.namespace | default $topLevelConfig.namespace | default .Values.namespace -}}
+{{- $path := $config.path | default "/tmp/luigid" -}}
+{{- $requestedMemory := $config.requestedMemory | default $topLevelConfig.requestedMemory | default "512Mi" -}}
+{{- $requestedCpu := $config.requestedCpu | default $topLevelConfig.requestedCpu | default "500m" -}}
+{{- $limitedMemory := $config.limitedMemory | default $topLevelConfig.limitedMemory -}}
+{{- $limitedCpu := $config.limitedCpu | default $topLevelConfig.limitedCpu -}}
+{{- $debug := $config.debug | default false -}}
+{{- $recordDbPath := print $path "/luigi-task-hist.db" -}}
+{{- $recordTaskHistory := dig "config" "recordTaskHistory" false $config  -}}
+{{- $orgRamMb := dig "config" "orgRamMb" 1024 $config -}}
+{{- dict "serviceType"        "luigi-scheduler"
+         "luigiConfigDirpath" $luigiConfigDirpath
+         "luigiConfigPath"    $luigiConfigPath
+         "logLevel"           $logLevel
+         "namespace"          $namespace
+         "path"               $path
+         "requestedMemory"    $requestedMemory
+         "requestedCpu"       $requestedCpu
+         "limitedMemory"      $limitedMemory
+         "limitedCpu"         $limitedCpu
+         "recordDbPath"       $recordDbPath
+         "recordTaskHistory"  $recordTaskHistory
+         "orgRamMb"           $orgRamMb
+         "debug"              $debug | mustMergeOverwrite $config | toYaml -}}
+
+{{- end -}}

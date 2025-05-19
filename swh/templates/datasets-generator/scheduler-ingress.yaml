@@ -1,9 +1,12 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
+{{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
-{{- $serviceType := "luigi-scheduler" -}}
+            (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
+{{- $schedulerConfig := include "swh.luigi.scheduler.config"
+                                (dict "luigiSchedulerConfig"    $luigiSchedulerConfig
+                                      "datasetsGeneratorConfig" $datasetsGeneratorConfig
+                                      "Values"                  $.Values) | fromYaml -}}
 {{- include "swh.ingress" (dict "Values"        .Values
-                                "serviceType"   $serviceType
-                                "configuration" $deploymentConfig) -}}
+                                "serviceType"   $schedulerConfig.serviceType
+                                "configuration" $schedulerConfig) -}}
 {{ end }}

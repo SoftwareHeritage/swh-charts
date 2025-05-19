@@ -1,24 +1,29 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
-{{- $luigiConfigDirpath := "/etc/luigi" -}}
-{{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
+{{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 {{- $containerImageKey := $datasetsGeneratorConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 {{- $containerImageVersion := .Values.swh_datasets_image_version -}}
 
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
+            (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
-{{- $serviceType := "luigi-scheduler" -}}
-{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
-{{- $replicas := $deploymentConfig.replicas -}}
-{{- $affinity := $deploymentConfig.affinity -}}
-{{- $priorityClassName := $deploymentConfig.priorityClassName -}}
-{{- $port := $deploymentConfig.port -}}
-{{- $type := $deploymentConfig.type -}}
-{{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
-{{- $debug := $deploymentConfig.debug | default false -}}
+
+{{- $schedulerConfig := include "swh.luigi.scheduler.config"
+                                (dict "luigiSchedulerConfig"    $luigiSchedulerConfig
+                                      "datasetsGeneratorConfig" $datasetsGeneratorConfig
+                                      "Values"                  $.Values) | fromYaml -}}
+{{- $serviceType := $schedulerConfig.serviceType -}}
+{{- $namespace := $schedulerConfig.namespace -}}
+{{- $replicas := $schedulerConfig.replicas -}}
+{{- $affinity := $schedulerConfig.affinity -}}
+{{- $priorityClassName := $schedulerConfig.priorityClassName -}}
+{{- $port := $schedulerConfig.port -}}
+{{- $type := $schedulerConfig.type -}}
+{{- $path := $schedulerConfig.path -}}
+{{- $debug := $schedulerConfig.debug -}}
+{{- $luigiConfigDirpath := $schedulerConfig.luigiConfigDirpath -}}
+{{- $luigiConfigPath := $schedulerConfig.luigiConfigPath -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,7 +65,7 @@ spec:
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deploymentConfig
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $luigiSchedulerConfig
                                                                       "Values" $.Values) | nindent 10 }}
             - name: CONFIG_TEMPLATE_PATH
               value: {{ print $luigiConfigDirpath "/configuration-template/luigi.cfg.template" }}
@@ -74,20 +79,19 @@ spec:
           - name: luigi-config-utils
             mountPath: /entrypoints
             readOnly: true
-
       containers:
         - name: {{ $serviceType }}
           resources:
             requests:
-              memory: {{ $deploymentConfig.requestedMemory | default "512Mi" }}
-              cpu: {{ $deploymentConfig.requestedCpu | default "500m" }}
-          {{- if or $deploymentConfig.limitedMemory $deploymentConfig.limitedCpu }}
+              memory: {{ $luigiSchedulerConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $luigiSchedulerConfig.requestedCpu | default "500m" }}
+          {{- if or $luigiSchedulerConfig.limitedMemory $luigiSchedulerConfig.limitedCpu }}
             limits:
-            {{- if $deploymentConfig.limitedMemory }}
-              memory: {{ $deploymentConfig.limitedMemory }}
+            {{- if $luigiSchedulerConfig.limitedMemory }}
+              memory: {{ $luigiSchedulerConfig.limitedMemory }}
             {{- end }}
-            {{- if $deploymentConfig.limitedCpu }}
-              cpu: {{ $deploymentConfig.limitedCpu }}
+            {{- if $luigiSchedulerConfig.limitedCpu }}
+              cpu: {{ $luigiSchedulerConfig.limitedCpu }}
             {{- end }}
         {{- end }}
           image: {{ print $containerImage ":" $containerImageVersion | quote }}
@@ -114,7 +118,7 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           command:
-          - /opt/swh/entrypoint.sh
+          - /script/luigi-scheduler-run.sh
           {{- end }}
           env:
             - name: LUIGI_PATH_TO_PIDFILE
@@ -127,9 +131,15 @@ spec:
               value: {{ $luigiConfigPath }}
             - name: LUIGI_CONFIG_PARSER
               value: cfg
+            - name: LUIGI_RECORD_TASK_HISTORY
+              value: {{ $schedulerConfig.recordTaskHistory | quote }}
+            - name: LUIGI_RECORD_DB_PATH
+              value: {{ $schedulerConfig.recordDbPath }}
           volumeMounts:
           - name: configuration
             mountPath: {{ $luigiConfigDirpath }}
+          - name: luigi-scheduler-script-utils
+            mountPath: /script
       volumes:
       - name: configuration
         emptyDir: {}
@@ -142,5 +152,9 @@ spec:
       - name: luigi-config-utils
         configMap:
           name: luigi-config-utils
+          defaultMode: 0555
+      - name: luigi-scheduler-script-utils
+        configMap:
+          name: luigi-scheduler-script-utils
           defaultMode: 0555
 {{- end -}}

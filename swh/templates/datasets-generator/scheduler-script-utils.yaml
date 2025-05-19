@@ -11,18 +11,29 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: luigi-config-utils
+  name: luigi-scheduler-script-utils
   namespace: {{ $schedulerConfig.namespace }}
 data:
-  prepare-configuration.sh: |
-    #!/bin/bash
+  luigi-scheduler-run.sh: |
+    #!/usr/bin/env bash
+    # Can use env variables:
+    # - LUIGI_RECORD_TASK_HISTORY
+    # - LUIGI_RECORD_DB_PATH
+    set -e
 
-    set -eu
+    if [ -n "${SWH_DEBUG_ENTRYPOINT}" ]; then
+        set -x
+    fi
 
-    export POD_IP=$(hostname -i)
+    # Prepare where to write the record task history
+    if [ "${LUIGI_RECORD_TASK_HISTORY}" = "true" ]; then
+        [ -z "${LUIGI_RECORD_DB_PATH}" ] && \
+          echo "<LUIGI_RECORD_DB_PATH> env variable must be set" && exit 1
 
-    echo "Following variables will be replaced:"
-    envsubst -v "$(<${CONFIG_TEMPLATE_PATH})"
+        mkdir -p $(dirname "${LUIGI_RECORD_DB_PATH}")
+        [ ! -f "${LUIGI_RECORD_DB_PATH}" ] && touch "${LUIGI_RECORD_DB_PATH}"
+    fi
 
-    cat "${CONFIG_TEMPLATE_PATH}" | envsubst > "${CONFIG_PATH}"
-{{- end -}}
+    /opt/swh/entrypoint.sh
+
+{{ end }}
