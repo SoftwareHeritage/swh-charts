@@ -1,12 +1,9 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
-{{- $deploymentConfig := $datasetsGeneratorConfig.scheduler -}}
+{{- $schedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 
-{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled"))) -}}
-{{- $namespace := $deploymentConfig.namespace | default .Values.datasetsGenerator.namespace | default .Values.namespace -}}
-{{- $logLevel := $deploymentConfig.logLevel | default $datasetsGeneratorConfig.logLevel | default "INFO" -}}
-{{- $path := $deploymentConfig.path | default "/tmp/luigid" -}}
-{{- if $deploymentConfig.config }}
+{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
+{{- $namespace := $datasetsGeneratorConfig.namespace | default .Values.namespace -}}
+{{- $logLevel := $datasetsGeneratorConfig.logLevel | default "INFO" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -15,12 +12,11 @@ metadata:
   name: datasets-luigi-configmap-configuration-template
 data:
   luigi.cfg.template: |
-
     # These parameters control core Luigi behavior, such as error e-mails and
     # interactions between the worker and scheduler.
     [core]
     # Hostname of the machine running the scheduler. Defaults to localhost.
-    default_scheduler_host = {{ first $deploymentConfig.hosts }}
+    default_scheduler_host = {{ first $schedulerConfig.hosts }}
     # Port of the remote scheduler api process. Defaults to 8082.
     default_scheduler_port = 80
     # Full path to remote scheduler. Defaults to http://localhost:8082/. For TLS support
@@ -69,5 +65,4 @@ data:
     # the central scheduler between two retry attempts. Defaults to 30
     # rpc_retry_wait = 30
 
-{{- end -}}
 {{- end -}}
