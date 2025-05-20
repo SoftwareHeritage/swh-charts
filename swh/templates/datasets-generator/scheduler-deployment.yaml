@@ -22,9 +22,10 @@
 {{- $port := $schedulerConfig.port -}}
 {{- $type := $schedulerConfig.type -}}
 {{- $path := $schedulerConfig.path -}}
-{{- $debug := $schedulerConfig.debug -}}
+{{- $toolbox := $schedulerConfig.toolbox -}}
 {{- $luigiConfigDirpath := $schedulerConfig.luigiConfigDirpath -}}
 {{- $luigiConfigPath := $schedulerConfig.luigiConfigPath -}}
+{{- $logLevel := $schedulerConfig.logLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -101,7 +102,7 @@ spec:
           ports:
             - containerPort: {{ $port }}
               name: {{ $type }}
-          {{- if $debug }}
+          {{- if $toolbox }}
           command:
           - /bin/sleep
           args:
@@ -123,6 +124,10 @@ spec:
           - /script/luigi-scheduler-run.sh
           {{- end }}
           env:
+            {{- if eq $logLevel (quote "DEBUG") }}
+            - name: SWH_DEBUG_ENTRYPOINT
+              value: "1"
+            {{- end }}
             - name: LUIGI_PATH_TO_PIDFILE
               value: {{ $path }}/pid
             - name: LUIGI_PATH_TO_LOGDIR

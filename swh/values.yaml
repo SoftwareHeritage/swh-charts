@@ -2152,21 +2152,19 @@ datasetsGenerator:
   scheduler:
     # namespace: swh
     enabled: false
-    # non-production use (to ease debugging in the container)
-    debug: false
+    # toolbox mode (connect and trigger script oneself), should be unnecessary
+    # toolbox: false
     priorityClassName: frontend-rpc-workload
     port: 8082
     type: http
     hosts: []
     ingress: {}
 
-  # The datasets export to build
+  # The datasets to generate
   datasets:
     enabled: false
     affinity: {}
     replicas: 1
-    # non-production use (to ease debugging in the container)
-    debug: false
     # namespace: swh
     priorityClassName: normal-workload
     # # Luigi url instance to use (can be overridden per instance)
@@ -2183,6 +2181,8 @@ datasetsGenerator:
     #   # Name of the export (usually timestamp of the export deployment)
     #   2024-12-06:
     #     enabled: false
+    #     # toolbox mode (connect and trigger script oneself), can be useful
+    #     toolbox: false
     #     # Type of export to execute (can be one of the luigi tasks defined in
     #     # swh.datasets or swh.export repository)
 

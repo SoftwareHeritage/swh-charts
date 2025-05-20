@@ -1564,10 +1564,11 @@ graphDirectoryPath: /srv/dataset
 
 datasetsGenerator:
   enabled: true
+  logLevel: debug
   # Dedicated scheduler instance
   scheduler:
     enabled: true
-    debug: false
+    toolbox: false
     config:
       recordTaskHistory: false
       orgRamMb: "1000000"
@@ -1600,7 +1601,7 @@ datasetsGenerator:
       2025-05-07:
         enabled: true
         # So we can trigger the dataset generation manually
-        debug: true
+        toolbox: true
         # Kind of dataset to generate
         extraVolumes:
           dataset-persistent:
@@ -1609,7 +1610,7 @@ datasetsGenerator:
                 claimName: graph-20250507-persistent-pvc
       2025-05-15:
         enabled: true
-        debug: true
+        toolbox: true
         nbProcesses: 32
         extraVolumes:
           dataset-persistent:

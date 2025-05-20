@@ -18,9 +18,10 @@
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig
             "datasetsGeneratorConfiguration" $datasetsGeneratorConfig
             "Values"                         $.Values) | fromYaml -}}
-{{- $debug := $config.debug -}}
+{{- $toolbox := $config.toolbox -}}
 {{- $graphMountpoint := $config.graphMountpoint -}}
 {{- $graphDirectoryPath := print $graphMountpoint "/" $datasetGeneratorName -}}
+{{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -114,7 +115,7 @@ spec:
           {{- end }}
           image: {{ print $containerImage ":" $containerImageVersion | quote }}
           imagePullPolicy: IfNotPresent
-          {{- if $debug }}
+          {{- if $toolbox }}
           command:
           - /bin/sleep
           args:
@@ -124,7 +125,7 @@ spec:
           - /script/generate-compressed-graph.sh
           {{ end }}
           env:
-            {{- if $debug }}
+            {{- if eq $logLevel (quote "DEBUG") }}
             - name: SWH_DEBUG_ENTRYPOINT
               value: "1"
             {{- end }}
@@ -143,7 +144,7 @@ spec:
             - name: GRAPH_COMPRESSED_DIRECTORY_PATH
               value: {{ print $graphDirectoryPath "/compressed" | quote }}
             - name: LOG_LEVEL
-              value: {{ $config.logLevel | quote }}
+              value: {{ $logLevel }}
             - name: LUIGI_CONFIG_PATH
               value: {{ $luigiConfigPath | quote }}
             - name: LUIGI_CONFIG_PARSER

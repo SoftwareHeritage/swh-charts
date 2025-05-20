@@ -2826,7 +2826,7 @@ datasetsGenerator:
       2025-05-20:
         enabled: true
         # So we can trigger the dataset generation manually
-        debug: true
+        toolbox: true
         extraVolumes:
           dataset-persistent:
             volumeDefinition:

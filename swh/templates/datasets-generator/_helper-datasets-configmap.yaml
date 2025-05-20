@@ -8,7 +8,7 @@
 {{- $topLevelConfig := .datasetsGeneratorConfiguration -}}
 {{- $datasetsConfig := $topLevelConfig.datasets -}}
 
-{{- $logLevel := $config.logLevel | default $datasetsConfig.logLevel | default $topLevelConfig.logLevel -}}
+{{- $logLevel := $config.logLevel | default $datasetsConfig.logLevel | default $topLevelConfig.logLevel | upper | quote -}}
 {{- $namespace := $config.namespace | default $datasetsConfig.namespace | default $topLevelConfig.namespace | default .Values.namespace -}}
 {{- $replicas := $config.replicas | default $datasetsConfig.replicas | default 1 -}}
 {{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
@@ -25,7 +25,7 @@
 {{- $limitedMemory := $config.limitedMemory | default $topLevelConfig.limitedMemory | default $datasetsConfig.limitedMemory -}}
 {{- $limitedCpu := $config.limitedCpu | default $topLevelConfig.limitedCpu | default $datasetsConfig.limitedCpu -}}
 {{- $configPath := "/etc/swh/config.yml" -}}
-{{- $debug := $config.debug | default $topLevelConfig.debug | default false -}}
+{{- $toolbox := $config.toolbox | default $topLevelConfig.toolbox | default false -}}
 
 {{- dict "serviceType"       (print "dataset-" .datasetGeneratorName)
          "logLevel"          $logLevel
@@ -41,5 +41,5 @@
          "requestedCpu"      $requestedCpu
          "limitedMemory"     $limitedMemory
          "limitedCpu"        $limitedCpu
-         "debug"             $debug | mustMergeOverwrite $config | toYaml -}}
+         "toolbox"           $toolbox | mustMergeOverwrite $config | toYaml -}}
 {{- end -}}

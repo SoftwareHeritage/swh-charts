@@ -9,14 +9,14 @@
 
 {{- $luigiConfigDirpath := "/etc/luigi" -}}
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
-{{- $logLevel := $config.logLevel | default $topLevelConfig.logLevel | default "INFO" -}}
+{{- $logLevel := $config.logLevel | default $topLevelConfig.logLevel | upper | quote -}}
 {{- $namespace := $config.namespace | default $topLevelConfig.namespace | default .Values.namespace -}}
 {{- $path := $config.path | default "/tmp/luigid" -}}
 {{- $requestedMemory := $config.requestedMemory | default $topLevelConfig.requestedMemory | default "512Mi" -}}
 {{- $requestedCpu := $config.requestedCpu | default $topLevelConfig.requestedCpu | default "500m" -}}
 {{- $limitedMemory := $config.limitedMemory | default $topLevelConfig.limitedMemory -}}
 {{- $limitedCpu := $config.limitedCpu | default $topLevelConfig.limitedCpu -}}
-{{- $debug := $config.debug | default false -}}
+{{- $toolbox := $config.toolbox | default false -}}
 {{- $recordDbPath := print $path "/luigi-task-hist.db" -}}
 {{- $recordTaskHistory := dig "config" "recordTaskHistory" false $config  -}}
 {{- $orgRamMb := dig "config" "orgRamMb" 1024 $config -}}
@@ -33,6 +33,6 @@
          "recordDbPath"       $recordDbPath
          "recordTaskHistory"  $recordTaskHistory
          "orgRamMb"           $orgRamMb
-         "debug"              $debug | mustMergeOverwrite $config | toYaml -}}
+         "toolbox"            $toolbox | mustMergeOverwrite $config | toYaml -}}
 
 {{- end -}}

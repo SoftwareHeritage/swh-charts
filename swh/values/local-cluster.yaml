@@ -1829,7 +1829,7 @@ datasetsGenerator:
   # Dedicated scheduler instance
   scheduler:
     enabled: false
-    debug: false
+    toolbox: false
     config:
       recordTaskHistory: false
       orgRamMb: 130000
@@ -1858,7 +1858,7 @@ datasetsGenerator:
     deployments:
       2025-04-08:
         enabled: true
-        debug: false
+        toolbox: false
         # Kind of dataset export to build
         generatorTask: CompressGraph
         extraVolumes:
