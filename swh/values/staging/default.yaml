@@ -597,6 +597,9 @@ externalServices:
     grpc-provenance:
       internalName: provenance-grpc-popular-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    luigi-scheduler:
+      internalName: luigi-scheduler-ingress
+      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:

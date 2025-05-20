@@ -2694,6 +2694,16 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    # Volume for generated graph from the datasets tools
+    graph-20250520-persistent-pvc:
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
 
 graph:
   enabled: true
@@ -2765,3 +2775,60 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+
+# Luigi's scheduler url to access
+luigiSchedulerUrl: http://luigi-scheduler-ingress:80
+
+# Graph directory path to write or read graph data from
+graphDirectoryPath: /srv/dataset
+
+datasetsJournalClientConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh-datasets-journal-export-graph
+  prefix: swh.journal.objects
+  privileged: true
+  batch_size: 100
+
+datasetsGenerator:
+  enabled: true
+  # Dedicated scheduler instance
+  scheduler:
+    enabled: true
+    config:
+      recordTaskHistory: false
+      orgRamMb: "1000000"
+    hosts:
+      - luigi-scheduler-ingress
+      - luigi-scheduler.internal.staging.swh.network
+    ingress:
+      enabled: true
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      endpoints:
+        default:
+          paths:
+            - path: /
+
+  # The datasets export to build
+  datasets:
+    enabled: true
+    luigiSchedulerUrlRef: luigiSchedulerUrl
+    graphDirectoryPathRef: graphDirectoryPath
+    journalClientConfigurationRef: datasetsJournalClientConfiguration
+    maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
+    requestedMemory: 1Gi
+    requestedCpu: 1000m
+    nbProcesses: 16
+    # Datasets to generate
+    deployments:
+      2025-05-20:
+        enabled: true
+        # So we can trigger the dataset generation manually
+        debug: true
+        extraVolumes:
+          dataset-persistent:
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20250520-persistent-pvc
