@@ -2853,7 +2853,7 @@ datasetsGenerator:
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
     requestedMemory: 35Gi
-    requestedCpu: 30000m
+    requestedCpu: 20000m
     nbProcesses: 32
     # Datasets to generate
     deployments:
