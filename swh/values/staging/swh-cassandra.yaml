@@ -2728,7 +2728,6 @@ volumes:
             storage: 1Gi
         storageClassName: local-persistent
     graph-20250520-persistent-local-pvc:
-      enabled: false
       appName: datasets-2025-05-20
       spec:
         resources:
