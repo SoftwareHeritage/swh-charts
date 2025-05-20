@@ -2787,7 +2787,7 @@ datasetsJournalClientConfiguration:
   group_id: swh-datasets-journal-export-graph
   prefix: swh.journal.objects
   privileged: true
-  batch_size: 100
+  batch_size: 250
 
 datasetsGenerator:
   enabled: true
