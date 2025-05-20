@@ -2818,9 +2818,9 @@ datasetsGenerator:
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
-    requestedMemory: 1Gi
-    requestedCpu: 1000m
     nbProcesses: 16
+    requestedMemory: 20Gi
+    requestedCpu: 20000m
     # Datasets to generate
     deployments:
       2025-05-20:
