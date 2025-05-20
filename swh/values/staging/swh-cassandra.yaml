@@ -2647,6 +2647,29 @@ plainGrpcGraphConfiguration:
 
 volumes:
   enabled: true
+  persistentVolumes:
+    graph-20250520-persistent-local-pv:
+      enabled: true
+      appName: datasets-2025-05-20
+      spec:
+        capacity:
+          storage: 500Gi
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/kubernetes/volumes/datasets/graph-2025-05-20
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-staging-rke2-metal01
+
   persistentVolumeClaims:
     # grpc provenance volume
     provenance-popular-persistent-pvc:
@@ -2704,6 +2727,18 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
+    graph-20250520-persistent-local-pvc:
+      enabled: false
+      appName: datasets-2025-05-20
+      spec:
+        resources:
+          requests:
+            storage: 500Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        volumeName: graph-20250520-persistent-local-pv
+        storageClassName: local-storage
 
 graph:
   enabled: true
@@ -2831,4 +2866,4 @@ datasetsGenerator:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-20250520-persistent-pvc
+                claimName: graph-20250520-persistent-local-pvc
