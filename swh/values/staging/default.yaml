@@ -663,9 +663,10 @@ webGraphConfiguration:
     anonymous: 1000
 
 webAlter:
-  smtp:
+  email_setup:
     host: smtp.inria.fr
     port: 25
+    default_from_email: "no-reply@softwareheritage.org"
   alter_settings:
     support_mail_alias: alter-staging-support@softwareheritage.org
     manager_mail_alias: alter-staging-manager@softwareheritage.org
