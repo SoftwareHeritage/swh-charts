@@ -90,7 +90,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     staging-archive-db:
-      enabled: false
+      enabled: true
       # Managed dbs (optional)
       initdb:
         type: microservice
