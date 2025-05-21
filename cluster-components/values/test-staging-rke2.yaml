@@ -98,6 +98,12 @@ cloudnativePg:
           # - swh
           - swh-scheduler
         source: cluster-pg-staging-db1
+      externalLoadBalancer: true
+      pooler:
+        instances: 1
+        enabled: true
+        types:
+        - "ro"
       backup:
         enabled: false
         retention: "10d"
