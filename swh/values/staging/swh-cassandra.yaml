@@ -2658,7 +2658,7 @@ volumes:
         accessModes:
         - ReadWriteOnce
         persistentVolumeReclaimPolicy: Retain
-        storageClassName: local-storage
+        storageClassName: local-persistent
         local:
           path: /srv/kubernetes/volumes/datasets/graph-2025-05-20
         nodeAffinity:
@@ -2737,7 +2737,7 @@ volumes:
         - ReadWriteOnce
         volumeMode: Filesystem
         volumeName: graph-20250520-persistent-local-pv
-        storageClassName: local-storage
+        storageClassName: local-persistent
 
 graph:
   enabled: true
