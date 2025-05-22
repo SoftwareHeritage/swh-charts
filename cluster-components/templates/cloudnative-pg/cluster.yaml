@@ -105,11 +105,13 @@ spec:
       - cluster
       targetLabel: cnpg_cluster
   bootstrap:
-    {{- if $initdb.secretKeyRef }}
+    {{- if or $initdb.secretKeyRef $initdb.source }}
     initdb:
+      dataChecksums: true
+    {{- end }}
+    {{- if $initdb.secretKeyRef }}
       database: {{ first $databases }}
       owner: {{ first $databases }}
-      dataChecksums: true
       {{- if $initdb.localeCollate }}
       localeCollate: {{ $initdb.localeCollate }}
       {{- end }}
@@ -119,15 +121,14 @@ spec:
       secret:
         name: {{ $initdb.secretKeyRef }}
     {{- end }}
-      dataChecksums: true
-      {{- if $initdb.source }}
+    {{- if $initdb.source }}
       import:
         type: {{ $db_type }}
         databases:
           {{- toYaml $databases | nindent 10 }}
         source:
           externalCluster: {{ $initdb.source }}
-      {{- end }}
+    {{- end }}
 
   {{- if and $initdb.source $externalPgClusterDict }}
   externalClusters:
