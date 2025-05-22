@@ -1984,7 +1984,7 @@ webhooks:
           - origin_visit_status
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
@@ -2476,7 +2476,7 @@ loaderMetadata:
     maxReplicaCount: 6
 
 objstorageReplayer:
-  enabled: true
+  enabled: false
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   extraCliLogLevel: "--log-level azure.core.pipeline.policies.http_logging_policy:WARNING"
   deployments:
