@@ -29,6 +29,7 @@ metallb:
               operator: In
               values:
                 - staging-secondary-dbs-pooler
+                - staging-archive-db-pooler-ro
 
 podPriority:
   enabled: true
