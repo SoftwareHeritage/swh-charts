@@ -24,6 +24,7 @@
 {{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
 {{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
 {{- $initdb := mustMerge ($cluster_config.initdb | default dict) ($.Values.cloudnativePg.initdb | default dict) -}}
+{{- $dbname := $initdb.dbname | default (first $databases) -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -110,8 +111,8 @@ spec:
       dataChecksums: true
     {{- end }}
     {{- if $initdb.secretKeyRef }}
-      database: {{ first $databases }}
-      owner: {{ first $databases }}
+      database: {{ $dbname }}
+      owner: {{ $dbname }}
       {{- if $initdb.localeCollate }}
       localeCollate: {{ $initdb.localeCollate }}
       {{- end }}
