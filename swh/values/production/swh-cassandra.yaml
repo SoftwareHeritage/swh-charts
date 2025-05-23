@@ -1725,6 +1725,7 @@ indexers:
       autoScaling:
         maxReplicaCount: 18
     content-mimetype:
+      enabled: false
       autoScaling:
         maxReplicaCount: 1
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
