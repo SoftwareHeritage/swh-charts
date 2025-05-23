@@ -250,8 +250,11 @@ dockerCache:
 
 cloudnativePg:
   enabled: false
-  externalLoadBalancer: false
   enableMonitoring: true
+  # External load balancer configuration (can be overridden per pooler db instance)
+  externalLoadBalancer:
+    enabled: false
+    port: 5432
   nameOverride: cloudnative-pg
   # secrets must be stored in the same namespace
   # namespace: cnpg

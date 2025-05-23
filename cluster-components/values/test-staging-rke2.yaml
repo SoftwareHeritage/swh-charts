@@ -105,6 +105,10 @@ cloudnativePg:
         types:
         - "rw"
         - "ro"
+        externalLoadBalancer:
+          enabled: true
+          port: 5433
+
     staging-archive-db:
       enabled: true
       # Managed dbs (optional)
@@ -121,7 +125,6 @@ cloudnativePg:
         # - alter database "swh-scheduler-k8s" rename to "swh-scheduler";
         - swh-scheduler-k8s
         source: cluster-pg-staging-db1
-      externalLoadBalancer: true
       pooler:
         instances: 1
         enabled: true

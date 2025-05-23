@@ -1,15 +1,18 @@
 {{ if .Values.cloudnativePg.enabled -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
-{{- if and $cluster_config.pooler $cluster_config.pooler.enabled -}}
+{{- $poolerConfig := $cluster_config.pooler -}}
+{{- if and $poolerConfig $poolerConfig.enabled -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $pooler_instances := $cluster_config.pooler.instances | default $cluster_config.instances | default 1 -}}
-{{- $pool_mode := $cluster_config.pooler.mode | default $.Values.cloudnativePg.pooler.mode }}
-{{- $default_pool_size := $cluster_config.pooler.default_pool_size | default "10" -}}
-{{- $max_client_conn := $cluster_config.pooler.max_client_conn | default "1000" -}}
-{{- range $type := $cluster_config.pooler.types -}}
+{{- $pooler_instances := $poolerConfig.instances | default $cluster_config.instances | default 1 -}}
+{{- $pool_mode := $poolerConfig.mode | default $.Values.cloudnativePg.pooler.mode }}
+{{- $default_pool_size := $poolerConfig.default_pool_size | default "10" -}}
+{{- $max_client_conn := $poolerConfig.max_client_conn | default "1000" -}}
+{{- range $type := $poolerConfig.types -}}
 {{- $name := cat $cluster_name "-pooler-" $type | nospace -}}
-{{- $externalLoadBalancer := $cluster_config.externalLoadBalancer | default $.Values.cloudnativePg.externalLoadBalancer -}}
+{{- $externalLoadBalancerConfig := $poolerConfig.externalLoadBalancer | default $.Values.cloudnativePg.externalLoadBalancer -}}
+{{- $externalLoadBalancer := $externalLoadBalancerConfig.enabled -}}
+{{- $port := $externalLoadBalancerConfig.port | quote -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Pooler
@@ -52,6 +55,13 @@ spec:
     spec:
       type: LoadBalancer
       externalTrafficPolicy: Cluster
+      {{- if ne $port "5432" }}
+      ports:
+        - name: pgbouncer
+          port: {{ $port }}
+          targetPort: pgbouncer
+          protocol: TCP
+      {{- end }}
   {{- end }}
 {{ end }}
 {{ end }}
