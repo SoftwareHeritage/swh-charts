@@ -93,7 +93,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     test-db:
-      enabled: true
+      enabled: false
       externalLoadBalancer: true
       initdb:
         type: microservice
@@ -109,8 +109,8 @@ cloudnativePg:
           enabled: true
           port: 5433
 
-    staging-archive-db:
-      enabled: true
+    swh-scheduler-db:
+      enabled: false
       # Managed dbs (optional)
       initdb:
         type: microservice
