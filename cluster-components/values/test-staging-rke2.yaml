@@ -30,6 +30,8 @@ metallb:
               values:
                 - staging-secondary-dbs-pooler
                 - staging-archive-db-pooler-ro
+                - test-db-pooler-ro
+                - test-db-pooler-rw
 
 podPriority:
   enabled: true
@@ -90,6 +92,19 @@ cloudnativePg:
       - host all all all md5
   # Exists as many cluster as we want
   deployments:
+    test-db:
+      enabled: true
+      externalLoadBalancer: true
+      initdb:
+        type: microservice
+        databases:
+          - test-db
+      pooler:
+        instances: 1
+        enabled: true
+        types:
+        - "rw"
+        - "ro"
     staging-archive-db:
       enabled: true
       # Managed dbs (optional)
