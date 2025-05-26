@@ -345,7 +345,7 @@ storage:
               # vpn network
               - 192.168.101.0/24
     cassandra-winery:
-      enabled: false
+      enabled: true
       requestedCpu: 1000m
       requestedMemory: 2Gi
       autoScaling:
