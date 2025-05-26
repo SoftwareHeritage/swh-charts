@@ -20,6 +20,8 @@
 {{- $recordDbPath := print $path "/luigi-task-hist.db" -}}
 {{- $recordTaskHistory := dig "config" "recordTaskHistory" false $config  -}}
 {{- $orgRamMb := dig "config" "orgRamMb" 1024 $config -}}
+{{- $imageVersion := $config.imageVersion | default $topLevelConfig.imageVersion  | default .Values.swh_datasets_image_version -}}
+
 {{- dict "serviceType"        "luigi-scheduler"
          "luigiConfigDirpath" $luigiConfigDirpath
          "luigiConfigPath"    $luigiConfigPath
@@ -33,6 +35,7 @@
          "recordDbPath"       $recordDbPath
          "recordTaskHistory"  $recordTaskHistory
          "orgRamMb"           $orgRamMb
+         "imageVersion"       $imageVersion
          "toolbox"            $toolbox | mustMergeOverwrite $config | toYaml -}}
 
 {{- end -}}

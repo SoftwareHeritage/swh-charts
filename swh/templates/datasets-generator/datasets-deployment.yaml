@@ -5,9 +5,7 @@
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-script-utils.yaml") . | sha256sum -}}
-{{- $containerImageKey := $datasetsGeneratorConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
-{{- $containerImageVersion := .Values.swh_datasets_image_version -}}
 {{- $luigiConfigDirpath := "/etc/luigi" -}}
 {{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 
@@ -113,7 +111,7 @@ spec:
               cpu: {{ $config.limitedCpu }}
             {{- end }}
           {{- end }}
-          image: {{ print $containerImage ":" $containerImageVersion | quote }}
+          image: {{ print $containerImage ":" $config.imageVersion | quote }}
           imagePullPolicy: IfNotPresent
           {{- if $toolbox }}
           command:

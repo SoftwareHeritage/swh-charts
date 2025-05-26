@@ -1,8 +1,6 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
-{{- $containerImageKey := $datasetsGeneratorConfig.image -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
-{{- $containerImageVersion := .Values.swh_datasets_image_version -}}
 
 {{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
             (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
@@ -97,7 +95,7 @@ spec:
               cpu: {{ $luigiSchedulerConfig.limitedCpu }}
             {{- end }}
         {{- end }}
-          image: {{ print $containerImage ":" $containerImageVersion | quote }}
+          image: {{ print $containerImage ":" $schedulerConfig.imageVersion | quote }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ $port }}

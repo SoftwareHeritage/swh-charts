@@ -26,6 +26,7 @@
 {{- $limitedCpu := $config.limitedCpu | default $topLevelConfig.limitedCpu | default $datasetsConfig.limitedCpu -}}
 {{- $configPath := "/etc/swh/config.yml" -}}
 {{- $toolbox := $config.toolbox | default $topLevelConfig.toolbox | default false -}}
+{{- $imageVersion := $config.imageVersion | default $datasetsConfig.imageVersion | default $topLevelConfig.imageVersion  | default .Values.swh_datasets_image_version -}}
 
 {{- dict "serviceType"       (print "dataset-" .datasetGeneratorName)
          "logLevel"          $logLevel
@@ -41,5 +42,6 @@
          "requestedCpu"      $requestedCpu
          "limitedMemory"     $limitedMemory
          "limitedCpu"        $limitedCpu
+         "imageVersion"      $imageVersion
          "toolbox"           $toolbox | mustMergeOverwrite $config | toYaml -}}
 {{- end -}}
