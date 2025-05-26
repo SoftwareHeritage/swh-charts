@@ -2825,6 +2825,7 @@ datasetsJournalClientConfiguration:
 
 datasetsGenerator:
   enabled: true
+  logLevel: DEBUG
   # Dedicated scheduler instance
   scheduler:
     enabled: true
