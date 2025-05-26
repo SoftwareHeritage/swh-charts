@@ -1,0 +1,70 @@
+{{/*
+   * Create a configmap for luigi configuration file.
+   */}}
+{{- define "swh.datasets.config.luigi" -}}
+{{- $config := .schedulerConfig -}}
+{{- $configmapName := .configmapName -}}
+{{- $namespace := .namespace -}}
+{{- $logLevel := .logLevel -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $configmapName }}
+data:
+  luigi.cfg.template: |
+    # These parameters control core Luigi behavior, such as error e-mails and
+    # interactions between the worker and scheduler.
+    [core]
+    # Hostname of the machine running the scheduler. Defaults to localhost.
+    default_scheduler_host = {{ first $config.hosts }}
+    # Port of the remote scheduler api process. Defaults to 8082.
+    default_scheduler_port = 80
+    # Full path to remote scheduler. Defaults to http://localhost:8082/. For TLS support
+    # use the URL scheme: https, example: https://luigi.example.com:443/ (Note: you will
+    # have to terminate TLS using an HTTP proxy) You can also use this to connect to a
+    # local Unix socket using the non-standard URI scheme: http+unix example:
+    # http+unix://%2Fvar%2Frun%2Fluigid%2Fluigid.sock/
+    # default_scheduler_url = localhost
+    # Base directory in which to store temporary files on hdfs. Defaults to
+    # tempfile.gettempdir()
+    # hdfs_tmp_dir =
+
+    # If set, specifies a filename for Luigi to write stuff (currently just job id) to
+    # in mapreduce job’s output directory. Useful in a configuration where no history is
+    # stored in the output directory by Hadoop.
+    # history_filename =
+
+    # The default log level to use when no logging_conf_file is set. Must be a valid
+    # name of a Python log level. Default is DEBUG.
+    log_level = {{ $logLevel }}
+
+    # Location of the logging configuration file.
+    # logging_conf_file =
+
+    # If true, logging is not configured. Defaults to false.
+    # no_configure_logging = false
+
+    # If true, the scheduler will compute complete functions of tasks in parallel using
+    # multiprocessing. This can significantly speed up scheduling, but requires that all
+    # tasks can be pickled. Defaults to false.
+    parallel_scheduling = true
+
+    # The number of processes to use for parallel scheduling. If not specified the
+    # default number of processes will be the total number of CPUs available.
+    # parallel_scheduling_processes = 10
+
+    # Number of seconds to wait before timing out when making an API call. Defaults to
+    # 10.0
+    # rpc_connect_timeout = 10.0
+
+    # The maximum number of retries to connect the central scheduler before giving up.
+    # Defaults to 3
+    # rpc_retry_attempts = 3
+
+    # Number of seconds to wait before the next attempt will be started to connect to
+    # the central scheduler between two retry attempts. Defaults to 30
+    # rpc_retry_wait = 30
+
+{{- end -}}
