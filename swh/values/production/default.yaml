@@ -421,6 +421,7 @@ wineryObjstorageRWSecrets: &winery-objstorage-secrets-rw
 
 objstorageROSecrets: &objstorage-secrets-ro
   <<: *azure-storage-secrets-ro
+  <<: *winery-objstorage-secrets-ro
 
 objstorageRWSecrets: &objstorage-secrets-rw
   <<: *azure-storage-secrets-rw
@@ -434,6 +435,17 @@ roObjstorageBestEffort:
   cls: multiplexer
   readonly: true
   objstorages:
+  - cls: remote
+    name: winery
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
+    timeout:
+      - 0.5  # Connect
+      - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -457,6 +469,17 @@ roObjstorageHighParallelism:
   cls: multiplexer
   readonly: true
   objstorages:
+  - cls: remote
+    name: winery
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
+    timeout:
+      - 0.5  # Connect
+      - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -567,6 +590,17 @@ multiplexerForLocalStorages:
   readonly: true
   objstorages:
   - cls: remote
+    name: winery
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
+    timeout:
+      - 0.5  # Connect
+      - 10   # Read
+    enable_requests_retry: true
+  - cls: remote
     name: banco
     url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
@@ -577,6 +611,7 @@ multiplexerForLocalStorages:
 
 multiplexerForLocalStoragesConfiguration:
   configurationRef: multiplexerForLocalStorages
+  secrets: *winery-objstorage-secrets-ro
 
 rwObjstorageWineryAndAzure:
   cls: multiplexer
