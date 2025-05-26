@@ -67,4 +67,16 @@ data:
     # the central scheduler between two retry attempts. Defaults to 30
     # rpc_retry_wait = 30
 
+    # Configure return codes for the Luigi binary. In the case of multiple return codes
+    # that could apply, for example a failing task and missing data, the numerically
+    # greatest return code is returned.
+    # https://luigi.readthedocs.io/en/stable/configuration.html#retcode
+    [retcode]
+    already_running=128
+    missing_data=129
+    not_run=130
+    task_failed=131
+    scheduling_error=132
+    unhandled_exception=133
+
 {{- end -}}
