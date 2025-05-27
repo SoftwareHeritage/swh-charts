@@ -1546,7 +1546,7 @@ graphDirectoryPath: /srv/dataset
 
 datasetsGenerator:
   enabled: true
-  logLevel: debug
+  logLevel: DEBUG
   # Dedicated scheduler instance
   scheduler:
     enabled: true
