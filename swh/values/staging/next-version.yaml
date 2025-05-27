@@ -1405,24 +1405,6 @@ volumes:
         resources:
           requests:
             storage: 1Gi
-    graph-20250507-persistent-pvc:
-      spec:
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-persistent
-    graph-20250515-persistent-pvc:
-      spec:
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-persistent
 
 graph:
   enabled: true

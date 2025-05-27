@@ -647,4 +647,26 @@ volumes:
         resources:
           requests:
             storage: 10Gi
+    graph-20250507-persistent-pvc:
+      enabled: true
+      namespace: swh-cassandra-next-version
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
+    graph-20250515-persistent-pvc:
+      enabled: true
+      namespace: swh-cassandra-next-version
+      spec:
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: local-persistent
 
