@@ -2171,7 +2171,7 @@ datasetsGenerator:
     affinity: {}
     replicas: 1
     # namespace: swh
-    priorityClassName: normal-workload
+    priorityClassName: heavy-workload
     # # Luigi url instance to use (can be overridden per instance)
     # luigiSchedulerUrlRef: luigiSchedulerUrl
     # # Graph directory path to use either to write or read data (can be overridden per
