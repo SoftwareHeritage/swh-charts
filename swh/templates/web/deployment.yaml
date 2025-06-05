@@ -12,6 +12,7 @@
                          (and $.Values.web.migrations $.Values.web.migrations.enabled) -}}
 {{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
                                   (dict "configuration" $webConfig.gunicorn)) -}}
+{{- $sentryTracing := $webConfig.sentryTracing | quote -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -184,6 +185,10 @@ spec:
                   optional: true
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
               value: "true"
+            {{- if $sentryTracing }}
+            - name: SWH_SENTRY_TRACES_SAMPLE_RATE
+              value: {{ $sentryTracing }}
+            {{- end }}
             {{- end }}
           volumeMounts:
           - name: configuration

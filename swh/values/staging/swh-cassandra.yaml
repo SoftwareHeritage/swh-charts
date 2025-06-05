@@ -1015,6 +1015,7 @@ web:
           public_key: ${GIVE_PUBLIC_KEY}
           token: ${GIVE_PRIVATE_TOKEN}
         activate_citations_ui: true
+      sentryTracing: 0.5
 
     webhooks:
       requestedCpu: 100m
