@@ -2561,6 +2561,13 @@ rpcWithRemoteGrpc20241206GraphConfiguration:
   grpc_server:
     port: 80
 
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGrpc20250419GraphConfiguration:
+  cls: remote
+  url: graph-grpc-20250419-ingress:80
+  grpc_server:
+    port: 80
+
 plainGrpcGraphConfiguration:
   max_ram: 500g
 
@@ -2630,6 +2637,27 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-highmem03
+    graph-20250419-persistent-local-pv:
+      enabled: true
+      appName: graph-grpc-20250419
+      spec:
+        capacity:
+          storage: 1Gi
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/ssd/graph/2025-04-19/compressed
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-highmem02
 
   persistentVolumeClaims:
     # grpc provenance volume
@@ -2702,6 +2730,30 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    graph-20250419-persistent-pvc:
+      enabled: true
+      appName: graph-grpc-20250419
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+        volumeName: graph-20250419-persistent-local-pv
+        storageClassName: local-storage
+        accessModes:
+        - ReadWriteOnce
+    graph-20250419-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-20250419
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
 
 graph:
   enabled: true
@@ -2820,6 +2872,68 @@ graph:
         - graph-rpc.internal.softwareheritage.org
         - graph-rpc-20241206-ingress
         - graph-rpc-default-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    grpc-20250419:
+      enabled: true
+      imageVersion: "20250528.1"
+      type: grpc
+      port: 50091
+      requestedMemory: 400Gi
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      dataset:
+        name: 2025-04-19
+      startService: true
+      prepareMemoryVolume: true
+      extraVolumes:
+        graph-20250419-persistent:
+          mountPath: /srv/dataset/2025-04-19/compressed
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20250419-persistent-pvc
+        # in-memory volumes
+        graph-20250419-inmemory:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20250419-inmemory-pvc
+      hosts:
+        - graph-grpc-20250419-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    rpc-20250419:
+      enabled: true
+      imageVersion: "20250528.1"
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGrpc20250419GraphConfiguration
+      startService: true
+      hosts:
+        - graph-rpc-20250419-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
