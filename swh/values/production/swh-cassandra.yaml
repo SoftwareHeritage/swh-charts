@@ -2063,7 +2063,7 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        maxReplicaCount: 4
+        maxReplicaCount: 12
     content:
       enabled: true
       requestedCpu: 350m
