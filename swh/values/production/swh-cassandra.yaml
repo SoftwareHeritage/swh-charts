@@ -754,7 +754,8 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
-    cassandra-storage-rw-for-table-references-cleanup:
+    # To manage record reference tables cleanup
+    cassandra-storage-rw:
       moduleName: storage
       # To avoid generating unneeded backend management scripts
       configFileOnly: true
