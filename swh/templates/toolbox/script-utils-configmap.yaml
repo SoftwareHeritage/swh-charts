@@ -130,6 +130,8 @@ data:
   {{- $module_name := $deployment_config.moduleName | default $service_type }}
   {{- $module_config := $deployment_config.moduleConfig | default (print "/etc/swh/config-" $service_type ".yml") }}
   {{- $module_config_key := $deployment_config.moduleConfigKey | default $module_name }}
+  {{- $configFileOnly := $deployment_config.configFileOnly | default false -}}
+  {{- if not $configFileOnly }}
   check-{{ $service_type }}-db-version.sh: |
     #!/bin/bash
 
@@ -240,5 +242,6 @@ data:
     if __name__ == '__main__':
         main()
 
+  {{- end }}
 {{ end }}
 {{- end -}}
