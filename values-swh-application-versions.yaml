@@ -13,11 +13,11 @@ swh_datasets_image_version: '20250528.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
 swh_deposit_checkers_image_version: '20250528.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
-swh_deposit_image_version: '20250528.1'
+swh_deposit_image_version: '20250609.1'
 swh_graph_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graph
 swh_graph_image_version: '20250528.1'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
-swh_graphql_image_version: '20250528.1'
+swh_graphql_image_version: '20250609.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
 swh_indexer_image_version: '20250528.1'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
@@ -59,7 +59,7 @@ swh_storage_image_version: '20250528.1'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
 swh_storage_replayer_image_version: '20250528.1'
 swh_toolbox_image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox
-swh_toolbox_image_version: '20250528.4'
+swh_toolbox_image_version: '20250609.1'
 swh_utils_image: container-registry.softwareheritage.org/swh/infra/swh-apps/utils
 swh_utils_image_version: '20250211.1'
 swh_vault_cookers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault_cookers
@@ -67,6 +67,6 @@ swh_vault_cookers_image_version: '20250528.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20250528.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20250604.1'
+swh_web_image_version: '20250609.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20250528.1'
