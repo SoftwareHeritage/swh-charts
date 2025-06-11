@@ -1162,7 +1162,7 @@ cookers:
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
-  graphConfigurationRef: vaultGraphConfiguration
+  graphConfigurationRef: vaultGraph20250520Configuration
   threadPoolSize: 4
   deployments:
     simple:
@@ -2385,19 +2385,19 @@ cassandraChecks:
         - raw_extrinsic_metadata
         batch_size: 1000
 
-provenanceGraphGrpcConfiguration:
+provenanceGraphGrpc20250520Configuration:
   cls: known_swhid_filter
   filter_licenses: false
   provenance:
     cls: graph
-    url: graph-grpc-ingress:80
+    url: graph-grpc-20250520-ingress:80
     max_edges: 100000
 
-vaultGraphConfiguration:
-  url: http://graph-rpc-ingress/graph
+vaultGraph20250520Configuration:
+  url: http://graph-rpc-20250520-ingress/graph
 
-alterGraphConfiguration:
-  url: http://graph-rpc-ingress/graph
+alterGraph20250520Configuration:
+  url: http://graph-rpc-20250520-ingress/graph
   timeout: null
 
 db1DeleteObjstorageConfiguration:
@@ -2501,7 +2501,7 @@ alter:
         persistentVolumeClaim:
           claimName: alter-recovery-bundles-pvc
   inventoryStorageConfigurationRef: cassandraROStorageNoMaskingConfiguration
-  graphConfigurationRef: alterGraphConfiguration
+  graphConfigurationRef: alterGraph20250520Configuration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
   journalWriterMirrorConfigurationRef: journalWriterMirrorConfiguration
   removalSearches:
@@ -2600,7 +2600,7 @@ provenance:
                 - 192.168.101.0/24 # vpn network
     graph-granet:
       type: rpc
-      graphConfigurationRef: provenanceGraphGrpcConfiguration
+      graphConfigurationRef: provenanceGraphGrpc20250520Configuration
       replicas: 2
       gunicorn:
         workers: 4
@@ -2777,7 +2777,6 @@ graph:
             persistentVolumeClaim:
               claimName: graph-python3k-inmemory-pvc
       hosts:
-        - graph-grpc.internal.staging.swh.network
         - graph-grpc-ingress
       ingress:
         enabled: true
@@ -2801,7 +2800,6 @@ graph:
       graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
       startService: true
       hosts:
-        - graph.internal.staging.swh.network
         - graph-rpc-ingress
       ingress:
         enabled: true
@@ -2835,6 +2833,7 @@ graph:
             persistentVolumeClaim:
               claimName: graph-20250520-persistent-local-pvc
       hosts:
+        - graph-grpc.internal.staging.swh.network
         - graph-grpc-20250520-ingress
       ingress:
         enabled: true
@@ -2859,6 +2858,7 @@ graph:
       graphConfigurationRef: rpcWithRemoteGraphGrpc20250520Configuration
       startService: true
       hosts:
+        - graph.internal.staging.swh.network
         - graph-rpc-20250520-ingress
       ingress:
         enabled: true
