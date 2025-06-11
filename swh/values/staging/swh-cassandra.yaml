@@ -2835,6 +2835,8 @@ graph:
       type: grpc
       port: 50091
       graphConfigurationRef: plainGrpcGraphConfiguration
+      dataset:
+        name: 2025-05-20
       startService: true
       prepareMemoryVolume: true
       extraVolumes:
