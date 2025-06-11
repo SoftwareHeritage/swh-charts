@@ -588,11 +588,11 @@ externalServices:
     provenance:
       internalName: webapp-provenance-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    grpc-python3k:
-      internalName: graph-grpc-ingress
+    graph-grpc-python3k:
+      internalName: graph-grpc-python3k-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    rpc-python3k:
-      internalName: graph-rpc-ingress
+    graph-rpc-python3k:
+      internalName: graph-rpc-python3k-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     graph-grpc-20250520:
       internalName: graph-grpc-20250520-ingress

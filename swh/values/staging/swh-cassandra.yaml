@@ -2637,9 +2637,9 @@ rpcLocalRustWithGrpcGraphConfiguration:
     port: 50091
 
 # The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGrpcGraphConfiguration:
+rpcWithRemoteGraphGrpcPython3kConfiguration:
   cls: remote
-  url: graph-grpc-ingress:80
+  url: graph-grpc-python3k-ingress:80
   grpc_server:
     port: 80
 
@@ -2777,7 +2777,7 @@ graph:
             persistentVolumeClaim:
               claimName: graph-python3k-inmemory-pvc
       hosts:
-        - graph-grpc-ingress
+        - graph-grpc-python3k-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
@@ -2797,10 +2797,10 @@ graph:
       enabled: true
       type: rpc
       port: 5009
-      graphConfigurationRef: rpcWithRemoteGrpcGraphConfiguration
+      graphConfigurationRef: rpcWithRemoteGraphGrpcPython3kConfiguration
       startService: true
       hosts:
-        - graph-rpc-ingress
+        - graph-rpc-python3k-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
