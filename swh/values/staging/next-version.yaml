@@ -1394,17 +1394,6 @@ volumes:
           requests:
             storage: 1Gi
         volumeMode: Filesystem
-    provenance-popular-persistent-pvc:
-      enabled: true
-      appName: provenance-grpc
-      spec:
-        storageClassName: local-persistent
-        volumeMode: Filesystem
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
 
 graph:
   enabled: true

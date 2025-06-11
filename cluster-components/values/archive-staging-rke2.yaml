@@ -669,4 +669,16 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
+    provenance-popular-persistent-pvc:
+      enabled: true
+      appName: provenance-grpc
+      namespace: swh-cassandra-next-version
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
