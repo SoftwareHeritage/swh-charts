@@ -2839,7 +2839,7 @@ graph:
       prepareMemoryVolume: true
       extraVolumes:
         graph-staging-persistent:
-          mountPath: /srv/dataset
+          mountPath: /srv/dataset/2025-05-20/compressed
           volumeDefinition:
             persistentVolumeClaim:
               claimName: graph-20250520-persistent-local-pvc
