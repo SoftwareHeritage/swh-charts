@@ -2757,7 +2757,8 @@ volumes:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
+            # graph.graph & transposed-graph.graph amount to 39Gi
+            storage: 40Gi
 
 graph:
   enabled: true
