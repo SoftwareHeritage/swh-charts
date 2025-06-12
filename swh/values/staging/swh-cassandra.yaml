@@ -2756,7 +2756,7 @@ graph:
       type: grpc
       port: 50091
       nodeSelector:
-        kubernetes.io/hostname: rancher-node-staging-rke2-metal01
+        kubernetes.io/hostname: rancher-node-staging-rke2-metal02
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
         fetch: true
