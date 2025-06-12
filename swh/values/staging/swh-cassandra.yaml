@@ -2831,7 +2831,7 @@ graph:
               - 192.168.101.0/24
     # grpc graph with test dataset
     20250520-grpc:
-      enabled: false
+      enabled: true
       imageVersion: "20250127.1"
       type: grpc
       port: 50091
