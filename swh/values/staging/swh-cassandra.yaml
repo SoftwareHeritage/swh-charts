@@ -2746,19 +2746,6 @@ volumes:
         volumeMode: Filesystem
         volumeName: graph-20250520-persistent-local-pv
         storageClassName: local-persistent
-    # in-memory volumes
-    graph-20250520-inmemory-pvc:
-      enabled: true
-      appName: graph-grpc-20250520
-      spec:
-        storageClassName: local-path
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            # graph.graph & transposed-graph.graph amount to 39Gi
-            storage: 50Gi
 
 graph:
   enabled: true
@@ -2840,19 +2827,13 @@ graph:
       dataset:
         name: 2025-05-20
       startService: true
-      prepareMemoryVolume: true
+      prepareMemoryVolume: false
       extraVolumes:
         graph-staging-persistent:
           mountPath: /srv/dataset/2025-05-20
           volumeDefinition:
             persistentVolumeClaim:
               claimName: graph-20250520-persistent-local-pvc
-        # in-memory volumes
-        graph-staging-inmemory:
-          mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-20250520-inmemory-pvc
       hosts:
         - graph-grpc-20250520-ingress
       ingress:
