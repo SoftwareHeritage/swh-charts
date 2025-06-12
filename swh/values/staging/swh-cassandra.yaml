@@ -2758,7 +2758,7 @@ volumes:
         resources:
           requests:
             # graph.graph & transposed-graph.graph amount to 39Gi
-            storage: 40Gi
+            storage: 50Gi
 
 graph:
   enabled: true
