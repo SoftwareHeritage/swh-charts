@@ -1224,6 +1224,12 @@ toolbox:
       depositDbConfigurationRef: postgresqlDepositConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+    # To manage record reference tables cleanup
+    cassandra-storage-rw:
+      moduleName: storage
+      # To avoid generating unneeded backend management scripts
+      configFileOnly: true
+      storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
 
 scrubber:
   enabled: true
