@@ -150,17 +150,17 @@ spec:
           env:
             - name: PORT
               value: {{ $port | quote }}
-            {{ if eq $type "rpc-grpc" }}
+            {{- if eq $type "rpc-grpc" }}
             - name: GRAPH_TYPE
               value: rpc
-            {{ else }}
+            {{- else }}
             - name: GRAPH_TYPE
               value: {{ $type }}
-            {{ end }}
-            {{ if ne $type "rpc" }}
+            {{- end }}
+            {{- if ne $type "rpc" }}
             - name: GRAPH_PATH
               value: {{ $graphPath }}/{{ $graphName }}
-            {{ end }}
+            {{- end }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
