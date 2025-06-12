@@ -2683,6 +2683,27 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-staging-rke2-metal01
+    graph-20250612-persistent-local-pv:
+      enabled: true
+      appName: datasets-2025-06-12
+      spec:
+        capacity:
+          storage: 1Ti
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-persistent
+        local:
+          path: /srv/kubernetes/volumes/generated-datasets/2025-06-12
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-staging-rke2-metal01
 
   persistentVolumeClaims:
     # grpc provenance volume
@@ -2751,6 +2772,17 @@ volumes:
         - ReadWriteOnce
         volumeMode: Filesystem
         volumeName: graph-20250520-persistent-local-pv
+        storageClassName: local-persistent
+    graph-20250612-persistent-local-pvc:
+      appName: datasets-2025-06-12
+      spec:
+        resources:
+          requests:
+            storage: 1Ti
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        volumeName: graph-20250612-persistent-local-pv
         storageClassName: local-persistent
 
 graph:
@@ -2924,8 +2956,6 @@ datasetsGenerator:
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
-    requestedMemory: 35Gi
-    requestedCpu: 20000m
     nbProcesses: 32
     # Datasets to generate
     deployments:
@@ -2938,3 +2968,14 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250520-persistent-local-pvc
+      2025-06-12:
+        enabled: true
+        # So we can trigger the dataset generation manually
+        toolbox: true
+        requestedMemory: 35Gi
+        requestedCpu: 20000m
+        extraVolumes:
+          dataset-persistent:
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20250612-persistent-local-pvc
