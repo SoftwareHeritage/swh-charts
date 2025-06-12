@@ -2833,7 +2833,7 @@ graph:
     # grpc graph with test dataset
     20250520-grpc:
       enabled: true
-      imageVersion: "20250127.1"
+      imageVersion: "20250528.1"
       type: grpc
       port: 50091
       graphConfigurationRef: plainGrpcGraphConfiguration
@@ -2872,7 +2872,7 @@ graph:
     # rpc graph which hit the grpc graph instance declared above ^
     20250520-rpc:
       enabled: false
-      imageVersion: "20250127.1"
+      imageVersion: "20250528.1"
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGraphGrpc20250520Configuration
