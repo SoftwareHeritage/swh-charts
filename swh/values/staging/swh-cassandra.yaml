@@ -2752,7 +2752,7 @@ graph:
   deployments:
     # grpc graph with test dataset
     grpc-python3k:
-      enabled: true
+      enabled: false
       type: grpc
       port: 50091
       nodeSelector:
@@ -2794,7 +2794,7 @@ graph:
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-python3k:
-      enabled: true
+      enabled: false
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGraphGrpcPython3kConfiguration
