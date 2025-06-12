@@ -2852,7 +2852,7 @@ graph:
               - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     20250520-rpc:
-      enabled: false
+      enabled: true
       imageVersion: "20250610.1"
       type: rpc
       port: 5009
