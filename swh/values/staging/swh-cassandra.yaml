@@ -2674,7 +2674,7 @@ volumes:
         persistentVolumeReclaimPolicy: Retain
         storageClassName: local-persistent
         local:
-          path: /srv/kubernetes/volumes/datasets/graph-2025-05-20
+          path: /srv/kubernetes/volumes/generated-datasets/2025-05-20
         nodeAffinity:
           required:
             nodeSelectorTerms:
