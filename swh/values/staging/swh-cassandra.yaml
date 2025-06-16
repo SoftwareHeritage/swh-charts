@@ -2752,17 +2752,7 @@ volumes:
         resources:
           requests:
             storage: 1Gi
-    # Volume for generated graph from the datasets tools
     graph-20250520-persistent-pvc:
-      spec:
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-        storageClassName: local-persistent
-    graph-20250520-persistent-local-pvc:
       appName: datasets-2025-05-20
       spec:
         resources:
@@ -2869,7 +2859,7 @@ graph:
           mountPath: /srv/graph/2025-05-20
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-20250520-persistent-local-pvc
+              claimName: graph-20250520-persistent-pvc
       hosts:
         - graph-grpc.internal.staging.swh.network
         - graph-grpc-20250520-ingress
