@@ -2957,7 +2957,7 @@ datasetsGenerator:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-20250520-persistent-local-pvc
+                claimName: graph-20250520-persistent-pvc
       2025-06-12:
         enabled: true
         # So we can trigger the dataset generation manually
