@@ -2662,7 +2662,7 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumes:
-    graph-20250520-persistent-local-pv:
+    graph-20250520-persistent-pv:
       enabled: true
       appName: datasets-2025-05-20
       spec:
@@ -2771,7 +2771,7 @@ volumes:
         accessModes:
         - ReadWriteOnce
         volumeMode: Filesystem
-        volumeName: graph-20250520-persistent-local-pv
+        volumeName: graph-20250520-persistent-pv
         storageClassName: local-persistent
     graph-20250612-persistent-local-pvc:
       appName: datasets-2025-06-12
