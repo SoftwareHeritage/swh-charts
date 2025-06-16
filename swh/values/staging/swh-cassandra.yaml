@@ -2662,7 +2662,7 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumes:
-    graph-20250520-persistent-pv:
+    graph-20250520-generated-persistent-pv:
       enabled: true
       appName: datasets-2025-05-20
       spec:
@@ -2752,7 +2752,7 @@ volumes:
         resources:
           requests:
             storage: 1Gi
-    graph-20250520-persistent-pvc:
+    graph-20250520-generated-persistent-pvc:
       appName: datasets-2025-05-20
       spec:
         resources:
@@ -2761,7 +2761,7 @@ volumes:
         accessModes:
         - ReadWriteOnce
         volumeMode: Filesystem
-        volumeName: graph-20250520-persistent-pv
+        volumeName: graph-20250520-generated-persistent-pv
         storageClassName: local-persistent
     graph-20250612-persistent-local-pvc:
       appName: datasets-2025-06-12
@@ -2859,7 +2859,7 @@ graph:
           mountPath: /srv/graph/2025-05-20
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: graph-20250520-persistent-pvc
+              claimName: graph-20250520-generated-persistent-pvc
       hosts:
         - graph-grpc.internal.staging.swh.network
         - graph-grpc-20250520-ingress
@@ -2957,7 +2957,7 @@ datasetsGenerator:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-20250520-persistent-pvc
+                claimName: graph-20250520-generated-persistent-pvc
       2025-06-12:
         enabled: true
         # So we can trigger the dataset generation manually
