@@ -231,7 +231,6 @@ cloudnativePg:
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
-        externalClustersRef: externalClusters
       recovery:
         source: next-version-db-swh-scheduler
       roles:
