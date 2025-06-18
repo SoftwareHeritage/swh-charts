@@ -199,6 +199,11 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
       # Managed dbs
       initdb:
         type: microservice
