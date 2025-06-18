@@ -225,6 +225,9 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
+      database:
+        name: swh-scheduler
+        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       recovery:
         source: next-version-db-swh-scheduler-init
       services:
@@ -245,12 +248,13 @@ cloudnativePg:
         storageClass: local-persistent
       # Specific postgresql setup (can be overridden per instance)
       externalClustersRef: externalClusters
+      database:
+        name: swh-scheduler
+        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+        externalClustersRef: externalClusters
       # Managed dbs
       initdb:
-        type: microservice
-        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
-        dbname: swh-scheduler
-        externalClustersRef: externalClusters
+        enabled: true
         databases:
         # Specific swh-scheduler db with a smaller footprint (than the origin
         # staging swh-scheduler db). The final db name should be
@@ -284,22 +288,22 @@ cloudnativePg:
       enableSuperuserAccess: true
       testing: true
       namespace: swh-cassandra-next-version
-      initdb:
-        type: microservice
+      database:
+        name: swh
         secretKeyRef: swh-postgresql-swh-swh-secret
-        databases:
-          - swh
+      initdb:
+        enabled: true
     next-version-swh-deposit:
       enabled: true
       enableSuperuserAccess: true
       testing: true
       namespace: swh-cassandra-next-version
       externalClustersRef: externalClusters
-      initdb:
-        type: microservice
+      database:
+        name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
-        databases:
-          - swh-deposit
+      initdb:
+        enabled: true
         source: cluster-pg-staging-db1
     next-version-swh-scheduler:
       enabled: true
@@ -308,10 +312,11 @@ cloudnativePg:
       namespace: swh-cassandra-next-version
       instances: 1
       externalClustersRef: externalClusters
-      # Managed dbs
-      initdb:
-        type: microservice
+      database:
+        name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      initdb:
+        enabled: true
         databases:
         # Specific swh-scheduler db with a smaller footprint (than the origin
         # staging swh-scheduler db). The final db name should be
@@ -327,12 +332,12 @@ cloudnativePg:
       testing: true
       namespace: swh-cassandra-next-version
       instances: 1
+      database:
+        name: swh-indexer
+        secretKeyRef: swh-postgresql-swh-swh-indexer-secret
       # Managed dbs
       initdb:
-        type: microservice
-        secretKeyRef: swh-postgresql-swh-swh-indexer-secret
-        databases:
-        - swh-indexer
+        enabled: true
     next-version-swh-vault:
       enabled: true
       enableSuperuserAccess: true
@@ -341,41 +346,41 @@ cloudnativePg:
       testing: true
       instances: 1
       # Managed dbs
-      initdb:
-        type: microservice
+      database:
+        name: swh-vault
         secretKeyRef: swh-postgresql-swh-swh-vault-secret
-        databases:
-        - swh-vault
+      initdb:
+        enabled: true
     next-version-swh-web:
       enabled: true
       enableSuperuserAccess: true
       testing: true
       namespace: swh-cassandra-next-version
-      initdb:
-        type: microservice
+      database:
+        name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
-        databases:
-          - swh-web
+      initdb:
+        enabled: true
     next-version-swh-svix:
       enabled: true
       enableSuperuserAccess: true
       testing: true
       namespace: swh-cassandra-next-version
-      initdb:
-        type: microservice
+      database:
+        name: swh-svix
         secretKeyRef: swh-next-version-postgresql-secret
-        databases:
-          - swh-svix
+      initdb:
+        enabled: true
     next-version-swh-masking:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra-next-version
       externalClustersRef: externalClusters
-      initdb:
-        type: microservice
+      database:
+        name: swh-masking
         secretKeyRef: swh-next-version-postgresql-swh-masking-secret
-        databases:
-        - swh-masking
+      initdb:
+        enabled: true
         source: cluster-pg-staging-db1
 
     # staging/next-version environment
@@ -384,22 +389,22 @@ cloudnativePg:
       enableSuperuserAccess: true
       namespace: swh-cassandra
       externalClustersRef: externalClusters
-      initdb:
-        type: microservice
+      database:
+        name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
-        databases:
-        - swh-web
+      initdb:
+        enabled: true
         source: cluster-pg-staging-db1
     swh-deposit:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra
       externalClustersRef: externalClusters
-      initdb:
-        type: microservice
+      database:
+        name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
-        databases:
-        - swh-deposit
+      initdb:
+        enabled: true
         source: cluster-pg-staging-db1
     swh-coar-notify:
       enabled: true
@@ -407,12 +412,13 @@ cloudnativePg:
       delay: 300
       imageCatalogRef: 17
       namespace: swh-coar-notify
-      initdb:
-        databases:
-        - swh-coar-notify
+      database:
+        name: swh-coar-notify
         secretKeyRef: cnpg-swh-coar-notify-secret
         localeCollate: 'en_US.utf8'
         localeCType: 'en_US.utf8'
+      initdb:
+        enabled: true
       storage:
         size: 5Gi
       walStorage:

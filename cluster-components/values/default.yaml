@@ -1,5 +1,5 @@
 cloudnativePg:
-  initdb:
+  database:
     # default locale for swh modules
     # for Django applications use `en_US.utf8`
     localeCollate: 'C.UTF-8'

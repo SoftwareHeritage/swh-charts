@@ -100,68 +100,68 @@ cloudnativePg:
   deployments:
     archive:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh
         secretKeyRef: swh-swh-postgresql-secret
-        databases:
-          - swh
+      initdb:
+        enabled: true
     maskingproxy:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swhmaskingproxy
         secretKeyRef: swh-maskingproxy-postgresql-secret
-        databases:
-          - swhmaskingproxy
+      initdb:
+        enabled: true
     scheduler:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-scheduler
         secretKeyRef: swh-scheduler-swh-postgresql-secret
-        databases:
-          - swh-scheduler
+      initdb:
+        enabled: true
     vault:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-vault
         secretKeyRef: swh-vault-swh-postgresql-secret
-        databases:
-          - swh-vault
+      initdb:
+        enabled: true
     indexer-storage:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-indexer
         secretKeyRef: swh-indexer-storage-swh-postgresql-secret
-        databases:
-          - swh-indexer
+      initdb:
+        enabled: true
     web:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-web
         secretKeyRef: swh-web-swh-postgresql-secret
-        databases:
-          - swh-web
+      initdb:
+        enabled: true
     scrubber:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-scrubber
         secretKeyRef: swh-scrubber-swh-postgresql-secret
-        databases:
-          - swh-scrubber
+      initdb:
+        enabled: true
     deposit:
       enabled: true
-      initdb:
-        type: microservice
-        namespace: cluster-components
+      namespace: cluster-components
+      database:
+        name: swh-deposit
         secretKeyRef: swh-deposit-swh-postgresql-secret
-        databases:
-          - swh-deposit
+      initdb:
+        enabled: true
     svix:
       enabled: true
-      initdb:
-        type: microservice
+      database:
+        name: swh-svix
         secretKeyRef: swh-svix-swh-postgresql-secret
-        databases:
-          - swh-svix
+      initdb:
+        enabled: true
 kafka:
   enabled: false
   namespace: swh

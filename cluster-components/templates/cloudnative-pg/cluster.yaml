@@ -22,8 +22,11 @@
 {{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
 {{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
 {{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- $initdb := $cluster_config.initdb | default dict -}}
 {{- $recovery := $cluster_config.recovery | default dict -}}
+{{- $database := mustMerge $cluster_config.database ($.Values.cloudnativePg.database) | default dict -}}
+{{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $cluster_name ">") $database.name -}}
+{{- $dbOwner := $database.owner | default $database.name -}}
+{{- $initdb := $cluster_config.initdb | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -105,29 +108,26 @@ spec:
       - cluster
       targetLabel: cnpg_cluster
   bootstrap:
-    {{- if $initdb }}
-    {{- $initdb := mustMerge $initdb ($.Values.cloudnativePg.initdb | default dict) -}}
-    {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $initdb.databases -}}
-    {{- $dbname := $initdb.dbname | default (first $databases) -}}
-    {{- if or $initdb.secretKeyRef $initdb.source }}
+    {{- if and $initdb $initdb.enabled }}
     initdb:
       dataChecksums: true
-    {{- end }}
-    {{- if $initdb.secretKeyRef }}
-      database: {{ $dbname }}
-      owner: {{ $dbname }}
-      {{- if $initdb.localeCollate }}
-      localeCollate: {{ $initdb.localeCollate }}
+      database: {{ $dbName }}
+      owner: {{ $dbOwner }}
+      {{- if $database.localeCollate }}
+      localeCollate: {{ $database.localeCollate }}
       {{- end }}
-      {{- if $initdb.localeCType }}
-      localeCType: {{ $initdb.localeCType }}
+      {{- if $database.localeCType }}
+      localeCType: {{ $database.localeCType }}
       {{- end }}
+      {{- if $database.secretKeyRef }}
       secret:
-        name: {{ $initdb.secretKeyRef }}
-    {{- end }}
+        name: {{ $database.secretKeyRef }}
+      {{ end -}}
+
     {{- if $initdb.source }}
+    {{- $databases := $initdb.databases | default (list $dbName) -}}
       import:
-        type: {{ $db_type }}
+        type: microservice
         databases:
           {{- toYaml $databases | nindent 10 }}
         source:
@@ -136,7 +136,13 @@ spec:
     {{- end }}
     {{- if $recovery }}
     recovery:
+      database: {{ $dbName }}
+      owner: {{ $dbOwner }}
       {{- toYaml $recovery | nindent 6 }}
+      {{- if $database.secretKeyRef }}
+      secret:
+        name: {{ $database.secretKeyRef }}
+      {{- end }}
     {{- end }}
 
   {{- if $externalPgClusters }}
