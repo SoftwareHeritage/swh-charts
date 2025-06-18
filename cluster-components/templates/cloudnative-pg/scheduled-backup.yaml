@@ -2,7 +2,8 @@
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- if and $cluster_config.backup $cluster_config.backup.enabled -}}
-{{- $schedule := $cluster_config.backup.schedule -}}
+{{- $schedulePeriod := $cluster_config.backup.schedule -}}
+{{- if $schedulePeriod -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
@@ -14,7 +15,8 @@ spec:
   cluster:
     name: {{ $cluster_name }}
   immediate: true
-  schedule: {{ $schedule | default "0 0 2 * * *"}}
+  schedule: {{ $schedulePeriod }}
+{{ end }}
 {{ end }}
 {{ end }}
 {{ end }}
