@@ -200,8 +200,6 @@ recoveryExternalClusters:
 
 cloudnativePg:
   enabled: true
-  # Specific postgresql setup (can be overridden per instance)
-  externalClustersRef: externalClusters
   postgresql:
     parameters:
       # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
@@ -245,11 +243,14 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
+      # Specific postgresql setup (can be overridden per instance)
+      externalClustersRef: externalClusters
       # Managed dbs
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
         dbname: swh-scheduler
+        externalClustersRef: externalClusters
         databases:
         # Specific swh-scheduler db with a smaller footprint (than the origin
         # staging swh-scheduler db). The final db name should be
@@ -293,6 +294,7 @@ cloudnativePg:
       enableSuperuserAccess: true
       testing: true
       namespace: swh-cassandra-next-version
+      externalClustersRef: externalClusters
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-deposit-secret
@@ -305,6 +307,7 @@ cloudnativePg:
       testing: true
       namespace: swh-cassandra-next-version
       instances: 1
+      externalClustersRef: externalClusters
       # Managed dbs
       initdb:
         type: microservice
@@ -367,6 +370,7 @@ cloudnativePg:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra-next-version
+      externalClustersRef: externalClusters
       initdb:
         type: microservice
         secretKeyRef: swh-next-version-postgresql-swh-masking-secret
@@ -379,6 +383,7 @@ cloudnativePg:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra
+      externalClustersRef: externalClusters
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-web-secret
@@ -389,6 +394,7 @@ cloudnativePg:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra
+      externalClustersRef: externalClusters
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-deposit-secret
