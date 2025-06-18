@@ -218,6 +218,19 @@ cloudnativePg:
         # - alter database "swh-scheduler-k8s" rename to "swh-scheduler";
         - swh-scheduler-k8s
         source: cluster-pg-staging-db1
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: cnpg-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
       backup:
         enabled: true
         s3Config:
