@@ -208,6 +208,7 @@ cloudnativePg:
       initdb:
         type: microservice
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+        dname: swh-scheduler
         databases:
         # Specific swh-scheduler db with a smaller footprint (than the origin
         # staging swh-scheduler db). The final db name should be
