@@ -195,6 +195,28 @@ cloudnativePg:
     pg_hba:
     - host all all all md5
   deployments:
+    next-version-db-swh-scheduler:
+      enabled: true
+      namespace: cnpg
+      instances: 1
+      # Managed dbs
+      initdb:
+        type: microservice
+        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+        databases:
+        # Specific swh-scheduler db with a smaller footprint (than the origin
+        # staging swh-scheduler db). The final db name should be
+        # "swh-scheduler", only the source target is named with "-k8s"
+        # After this starts, rename it with the following:
+        # - alter user "swh-scheduler-k8s" rename to "swh-scheduler";
+        # - alter database "swh-scheduler-k8s" rename to "swh-scheduler";
+        - swh-scheduler-k8s
+        source: cluster-pg-staging-db1
+      backup:
+        enabled: true
+        s3Config:
+          secretName: cnpg-minio-secret
+
     # staging/next-version environment
     next-version-swh:
       enabled: true
