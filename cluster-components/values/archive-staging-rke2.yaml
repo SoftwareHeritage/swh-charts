@@ -183,10 +183,10 @@ recoveryExternalClusters:
       endpointURL: https://minio.admin.swh.network
       s3Credentials:
         accessKeyId:
-          name: cnpg-minio-creds
+          name: cnpg-minio-secret
           key: MINIO_ACCESS_KEY
         secretAccessKey:
-          name: cnpg-minio-creds
+          name: cnpg-minio-secret
           key: MINIO_SECRET_KEY
       wal:
         compression: gzip
