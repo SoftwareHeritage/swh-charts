@@ -217,7 +217,8 @@ cloudnativePg:
     - host all all all md5
   deployments:
     next-version-db-swh-scheduler:
-      enabled: true
+      # Recovery is failing for now
+      enabled: false
       namespace: cnpg
       instances: 1
       storage:
