@@ -2,11 +2,10 @@
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $externalClusterRef := get $cluster_config "externalClusterRef" | default
-      (get $.Values.cloudnativePg "externalClusterRef") -}}
-{{- $externalPgClusterDict := get $.Values $externalClusterRef -}}
+{{- $externalClustersRef := get $cluster_config "externalClustersRef" | default
+      (get $.Values.cloudnativePg "externalClustersRef") -}}
+{{- $externalPgClusters := get $.Values $externalClustersRef -}}
 {{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
-{{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $cluster_config.initdb.databases -}}
 {{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 {{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $cluster_config.testing | default "false" -}}
@@ -23,8 +22,8 @@
 {{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
 {{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
 {{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- $initdb := mustMerge ($cluster_config.initdb | default dict) ($.Values.cloudnativePg.initdb | default dict) -}}
-{{- $dbname := $initdb.dbname | default (first $databases) -}}
+{{- $initdb := $cluster_config.initdb | default dict -}}
+{{- $recovery := $cluster_config.recovery | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -106,6 +105,10 @@ spec:
       - cluster
       targetLabel: cnpg_cluster
   bootstrap:
+    {{- if $initdb }}
+    {{- $initdb := mustMerge $initdb ($.Values.cloudnativePg.initdb | default dict) -}}
+    {{- $databases := required (print "Missing <$cluster_config.initdb.databases> value managed db in cluster <" $cluster_name ">") $initdb.databases -}}
+    {{- $dbname := $initdb.dbname | default (first $databases) -}}
     {{- if or $initdb.secretKeyRef $initdb.source }}
     initdb:
       dataChecksums: true
@@ -130,10 +133,15 @@ spec:
         source:
           externalCluster: {{ $initdb.source }}
     {{- end }}
+    {{- end }}
+    {{- if $recovery }}
+    recovery:
+      {{- toYaml $recovery | nindent 6 }}
+    {{- end }}
 
-  {{- if and $initdb.source $externalPgClusterDict }}
+  {{- if $externalPgClusters }}
   externalClusters:
-    {{- toYaml (list $externalPgClusterDict) | nindent 4 }}
+    {{- toYaml $externalPgClusters | nindent 4 }}
   {{- end }}
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
   backup:

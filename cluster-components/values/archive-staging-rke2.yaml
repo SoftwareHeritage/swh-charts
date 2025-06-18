@@ -165,21 +165,43 @@ scrapeClusterMetrics:
         enabled: true
         port: 9404
 
-clusterPgStagingDb1:
-  name: cluster-pg-staging-db1
-  password:
-    name: cluster-staging-db1-postgres-user-credential
-    key: password
-  connectionParameters:
-    # Use the correct IP or host name for the source database
-    host: db1.internal.staging.swh.network
-    user: postgres
-    port: "5433"
+externalClusters:
+  - name: cluster-pg-staging-db1
+    password:
+      name: cluster-staging-db1-postgres-user-credential
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: db1.internal.staging.swh.network
+      user: postgres
+      port: "5433"
+
+recoveryExternalClusters:
+  - name: next-version-db-swh-scheduler-init
+    barmanObjectStore:
+      destinationPath: s3://backup-cpng/archive-staging-rke2/
+      endpointURL: https://minio.admin.swh.network
+      s3Credentials:
+        accessKeyId:
+          name: cnpg-minio-creds
+          key: MINIO_ACCESS_KEY
+        secretAccessKey:
+          name: cnpg-minio-creds
+          key: MINIO_SECRET_KEY
+      wal:
+        compression: gzip
+        maxParallel: 8
+      data:
+        compression: gzip
+        additionalCommandArgs:
+          - "--min-chunk-size=5MB"
+          - "--read-timeout=60"
+          - "-vv"
 
 cloudnativePg:
   enabled: true
   # Specific postgresql setup (can be overridden per instance)
-  externalClusterRef: clusterPgStagingDb1
+  externalClustersRef: externalClusters
   postgresql:
     parameters:
       # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
@@ -195,6 +217,25 @@ cloudnativePg:
     pg_hba:
     - host all all all md5
   deployments:
+    next-version-db-swh-scheduler-test:
+      enabled: true
+      namespace: cnpg
+      externalClustersRef: recoveryExternalClusters
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      recovery:
+        source: next-version-db-swh-scheduler-init
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
     next-version-db-swh-scheduler:
       enabled: true
       namespace: cnpg
