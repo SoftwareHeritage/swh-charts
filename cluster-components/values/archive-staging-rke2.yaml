@@ -191,10 +191,10 @@ recoveryExternalClusters:
           key: MINIO_SECRET_KEY
       wal:
         compression: gzip
-        additionalCommandArgs:
-          - "--max-concurrency=8"
-          - "--read-timeout=60"
-          - "-vv"
+        # additionalCommandArgs:
+        #   - "--max-concurrency=8"
+        #   - "--read-timeout=60"
+        #   - "-vv"
       data:
         compression: gzip
         additionalCommandArgs:
