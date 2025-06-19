@@ -233,15 +233,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       recovery:
         source: next-version-db-swh-scheduler
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: cnpg-guest-secret
       services:
         disabledDefaultServices:
         - "r"
