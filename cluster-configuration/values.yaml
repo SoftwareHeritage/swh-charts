@@ -78,7 +78,7 @@ cloudnativePg:
   enabled: false
   namespace: cnpg-system
   # https://cloudnative-pg.io/documentation/1.23/installation_upgrade/#upgrades
-  version: 0.23.2
+  version: 0.24.0
 
 rabbitmq:
   enabled: false
