@@ -179,8 +179,7 @@ externalClusters:
 recoveryExternalClusters:
   - name: next-version-db-swh-scheduler
     barmanObjectStore:
-      serverName: next-version-db-swh-scheduler
-      destinationPath: s3://backup-cpng/archive-staging-rke2/
+      destinationPath: s3://backup-cpng/archive-staging-rke2/next-version-db-swh-scheduler
       endpointURL: https://minio.admin.swh.network
       s3Credentials:
         accessKeyId:
