@@ -218,6 +218,39 @@ cloudnativePg:
     pg_hba:
     - host all all all md5
   deployments:
+    next-version-db-swh-scheduler-recovery:
+      enabled: true
+      namespace: cnpg
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      # Specific postgresql setup (can be overridden per instance)
+      externalClustersRef: recoveryExternalClusters
+      database:
+        name: swh-scheduler
+        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      recovery:
+        source: next-version-db-swh-scheduler
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: cnpg-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+        s3Config:
+          secretName: cnpg-minio-secret
     next-version-db-swh-scheduler:
       enabled: true
       namespace: cnpg
@@ -232,7 +265,6 @@ cloudnativePg:
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
-      # Managed dbs
       initdb:
         enabled: true
         databases:
