@@ -165,6 +165,10 @@ spec:
           key: {{ $backup.s3Config.secretKey }}
       wal:
         compression: {{ $.Values.cloudnativePg.backup.compression }}
+        additionalCommandArgs:
+          - "--max-concurrency=8"
+          - "--read-timeout=60"
+          - "-vv"
       data:
         compression: {{ $.Values.cloudnativePg.backup.compression }}
         additionalCommandArgs:
