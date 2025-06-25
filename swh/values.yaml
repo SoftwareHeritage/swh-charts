@@ -2031,7 +2031,7 @@ graph:
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
     secretKeyRef: common-secrets
-    secretKeyName: storage-sentry-dsn
+    secretKeyName: graph-sentry-dsn
   # nodeSelector:
   #   kubernetes.io/hostname: local-cluster-worker2
   # affinity:
