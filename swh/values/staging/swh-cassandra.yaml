@@ -2464,6 +2464,9 @@ coarNotify:
     - inbox.staging.swh.network
     - inbox.internal.staging.swh.network
     - coar-notify.swh-cassandra
+  sentry:
+    secretKeyRef: common-secrets
+    secretKeyName: coarnotify-sentry-dsn
   ingress:
     enabled: true
     hosts:
