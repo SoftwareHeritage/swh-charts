@@ -2440,7 +2440,7 @@ coarNotifyStoragePipelineSteps:
 
 coarNotifyRpcRWStorageConfiguration:
   cls: remote
-  url: http://raw-extrinsic-metadata-storage-cassandra-read-write-ingress
+  url: http://storage-cassandra-read-write-ingress
 
 storageRWCoarNotifyConfiguration:
   pipelineStepsRef: coarNotifyStoragePipelineSteps
