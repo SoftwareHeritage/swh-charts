@@ -50,6 +50,8 @@ spec:
     kind: ClusterImageCatalog
     name: postgresql
     major: {{ $imageCatalogRef }}
+  {{- else }}
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
   {{- end }}
   primaryUpdateStrategy: unsupervised
   {{- if $enableSuperuserAccess }}
