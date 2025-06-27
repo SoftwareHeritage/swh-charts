@@ -834,14 +834,6 @@ storage:
           default:
             paths:
               - path: /
-      extraIngresses:
-        - hosts:
-          - raw-extrinsic-metadata-storage-cassandra-read-write-ingress
-          whitelistSourceRangeRef: clusterNetworkRanges
-          endpoints:
-            default:
-              paths:
-                - path: /raw_extrinsic_metadata
       gunicorn:
         threads: 4
         workers: 8
