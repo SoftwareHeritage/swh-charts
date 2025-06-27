@@ -14,7 +14,7 @@
 {{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
 {{- $enableSuperuserAccess := $cluster_config.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
 {{- $delay := $cluster_config.delay -}}
-{{- $imageCatalogRef := $cluster_config.imageCatalogRef }}
+{{- $imageCatalogRef := $cluster_config.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
 {{- $services := $cluster_config.services | default false -}}
 {{- $limitedCpu := $cluster_config.limitedCpu | default false -}}

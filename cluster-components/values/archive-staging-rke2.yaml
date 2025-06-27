@@ -423,7 +423,6 @@ cloudnativePg:
       enabled: true
       instances: 3
       delay: 300
-      imageCatalogRef: 17
       namespace: swh-coar-notify
       database:
         name: swh-coar-notify

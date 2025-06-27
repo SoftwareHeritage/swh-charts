@@ -251,6 +251,8 @@ dockerCache:
 cloudnativePg:
   enabled: false
   enableMonitoring: true
+  # Determine the postgresql image to use (this can be overriden per db instance)
+  imageCatalogRef: 17
   # External load balancer configuration (can be overridden per pooler db instance)
   externalLoadBalancer:
     enabled: false
