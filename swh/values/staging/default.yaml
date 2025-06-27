@@ -606,9 +606,6 @@ externalServices:
     luigi-scheduler:
       internalName: luigi-scheduler-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    coar-notify:
-      internalName: raw-extrinsic-metadata-storage-cassandra-read-write-ingress
-      target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 vault:
   hosts:
