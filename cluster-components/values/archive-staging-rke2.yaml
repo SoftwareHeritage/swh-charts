@@ -176,7 +176,7 @@ externalClusters:
       user: postgres
       port: "5433"
 
-recoveryExternalClusters:
+recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
     barmanObjectStore:
       serverName: next-version-db-swh-scheduler-backup
@@ -191,10 +191,28 @@ recoveryExternalClusters:
           key: MINIO_SECRET_KEY
       wal:
         compression: gzip
-        # additionalCommandArgs:
-        #   - "--max-concurrency=8"
-        #   - "--read-timeout=60"
-        #   - "-vv"
+      data:
+        compression: gzip
+        additionalCommandArgs:
+          - "--min-chunk-size=5MB"
+          - "--read-timeout=60"
+          - "-vv"
+
+recoverySwhMaskingClusters:
+  - name: next-version-db-swh-masking
+    barmanObjectStore:
+      serverName: next-version-db-swh-masking-backup
+      destinationPath: s3://backup-cnpg/archive-staging-rke2/
+      endpointURL: https://minio.admin.swh.network
+      s3Credentials:
+        accessKeyId:
+          name: cnpg-minio-secret
+          key: MINIO_ACCESS_KEY
+        secretAccessKey:
+          name: cnpg-minio-secret
+          key: MINIO_SECRET_KEY
+      wal:
+        compression: gzip
       data:
         compression: gzip
         additionalCommandArgs:
@@ -231,7 +249,7 @@ cloudnativePg:
         size: 1Gi
         storageClass: local-persistent
       # Specific postgresql setup (can be overridden per instance)
-      externalClustersRef: recoveryExternalClusters
+      externalClustersRef: recoverySwhSchedulerClusters
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
