@@ -775,7 +775,7 @@ storage:
       storageConfigurationRef: rwStoragePostgresqlConfiguration
       backend:
         initialize:
-          adminSecret: next-version-swh-superuser
+          adminSecret: swh-postgresql-swh-swh-secret
           database: swh
         check: false
         migrate: false
