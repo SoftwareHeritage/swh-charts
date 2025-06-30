@@ -336,17 +336,6 @@ cloudnativePg:
       backup:
         enabled: false
 
-    # staging/next-version environment
-    next-version-swh:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      database:
-        name: swh
-        secretKeyRef: swh-postgresql-swh-swh-secret
-      initdb:
-        enabled: true
     next-version-swh-deposit:
       enabled: true
       enableSuperuserAccess: true
