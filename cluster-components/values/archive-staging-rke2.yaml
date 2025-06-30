@@ -308,6 +308,34 @@ cloudnativePg:
         s3Config:
           secretName: cnpg-minio-secret
 
+    next-version-db-swh:
+      enabled: true
+      namespace: cnpg-next-version
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh
+        secretKeyRef: swh-postgresql-swh-swh-secret
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
     # staging/next-version environment
     next-version-swh:
       enabled: true
