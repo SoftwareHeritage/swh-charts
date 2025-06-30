@@ -223,7 +223,7 @@ cloudnativePg:
     # (minimalistic swh-scheduler db)
     next-version-db-swh-scheduler:
       enabled: true
-      namespace: cnpg
+      namespace: cnpg-next-version
       instances: 1
       storage:
         size: 1Gi
