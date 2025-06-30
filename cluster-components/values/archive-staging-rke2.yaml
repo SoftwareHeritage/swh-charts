@@ -297,7 +297,7 @@ cloudnativePg:
         connectionLimit: 10
         inherit: false
         passwordSecret:
-          name: cnpg-guest-secret
+          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
