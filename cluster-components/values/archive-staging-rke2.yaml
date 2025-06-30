@@ -254,6 +254,40 @@ cloudnativePg:
         enabled: false
         s3Config:
           secretName: cnpg-minio-secret
+    # (temporary) Create a new db masking out of the masking running in db1 to create a
+    # recovery backup source of a new masking db for each next-version reset
+    next-version-db-swh-masking-backup:
+      enabled: true
+      namespace: cnpg-next-version
+      externalClustersRef: externalClusters
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-masking
+        secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: cnpg-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: true
+        s3Config:
+          secretName: cnpg-minio-secret
 
     # staging/next-version environment
     next-version-swh:
