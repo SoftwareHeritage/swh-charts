@@ -29,7 +29,7 @@ postgresqlVaultConfiguration:
       secretKeyName: password
 
 postgresqlSchedulerConfiguration:
-  host: next-version-swh-scheduler-rw.swh-cassandra-next-version
+  host: next-version-db-swh-scheduler-rw.cnpg-next-version
   port: 5432
   db: swh-scheduler
   user: ${POSTGRESQL_USERNAME}

@@ -278,27 +278,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
-    next-version-swh-scheduler:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      instances: 1
-      externalClustersRef: externalClusters
-      database:
-        name: swh-scheduler
-        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
-      initdb:
-        enabled: true
-        databases:
-        # Specific swh-scheduler db with a smaller footprint (than the origin
-        # staging swh-scheduler db). The final db name should be
-        # "swh-scheduler", only the source target is named with "-k8s"
-        # After this starts, rename it with the following:
-        # - alter user "swh-scheduler-k8s" rename to "swh-scheduler";
-        # - alter database "swh-scheduler-k8s" rename to "swh-scheduler";
-        - swh-scheduler-k8s
-        source: cluster-pg-staging-db1
     next-version-swh-indexer:
       enabled: true
       enableSuperuserAccess: true
