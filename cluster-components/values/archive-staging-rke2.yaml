@@ -415,18 +415,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
-    next-version-swh-indexer:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      instances: 1
-      database:
-        name: swh-indexer
-        secretKeyRef: swh-postgresql-swh-swh-indexer-secret
-      # Managed dbs
-      initdb:
-        enabled: true
     next-version-swh-web:
       enabled: true
       enableSuperuserAccess: true
