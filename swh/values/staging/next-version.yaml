@@ -778,7 +778,7 @@ storage:
         initialize:
           adminSecret: swh-postgresql-postgres-secret
           database: swh
-          host: next-version-db-swh-rw
+          host: next-version-db-swh-rw.cnpg-next-version
         check: false
         migrate: false
     ro-postgresql:
