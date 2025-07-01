@@ -383,7 +383,7 @@ cloudnativePg:
         size: 1Gi
         storageClass: local-persistent
       database:
-        name: swh-vault
+        name: swh-indexer
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
       initdb:
         enabled: true
