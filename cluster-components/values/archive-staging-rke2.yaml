@@ -496,16 +496,6 @@ cloudnativePg:
       backup:
         enabled: false
 
-    next-version-swh-svix:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      database:
-        name: swh-svix
-        secretKeyRef: swh-next-version-postgresql-secret
-      initdb:
-        enabled: true
     next-version-swh-masking:
       enabled: true
       enableSuperuserAccess: true
