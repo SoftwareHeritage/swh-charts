@@ -323,6 +323,8 @@ cloudnativePg:
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-swh-secret
+      initdb:
+        enabled: true
       roles:
       - name: guest
         ensure: present
