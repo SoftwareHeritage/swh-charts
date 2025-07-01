@@ -27,6 +27,7 @@
 {{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $cluster_name ">") $database.name -}}
 {{- $dbOwner := $database.owner | default $database.name -}}
 {{- $initdb := $cluster_config.initdb | default dict -}}
+{{- $superUserSecretRef := $cluster_config.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -37,6 +38,9 @@ metadata:
     cnpg.io/cluster: {{ $cluster_name }}
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
+  {{- if $superUserSecretRef }}
+  superuserSecret: {{ $cluster_config.superUserSecretRef }}
+  {{- end }}
   {{- if $testing }}
   enablePDB: false
   {{- end }}

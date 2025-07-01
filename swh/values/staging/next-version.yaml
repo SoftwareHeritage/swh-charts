@@ -219,6 +219,7 @@ vault:
     initialize:
       adminSecret: next-version-swh-vault-superuser
       database: swh-vault
+      host: next-version-swh-vault-rw
     # check db version with latest code?
     check: true
     # migrate db
@@ -775,8 +776,9 @@ storage:
       storageConfigurationRef: rwStoragePostgresqlConfiguration
       backend:
         initialize:
-          adminSecret: swh-postgresql-swh-swh-secret
+          adminSecret: swh-postgresql-postgres-secret
           database: swh
+          host: next-version-db-swh-rw
         check: false
         migrate: false
     ro-postgresql:
@@ -1133,6 +1135,7 @@ indexerStorage:
         initialize:
           adminSecret: next-version-swh-indexer-superuser
           database: swh-indexer
+          host: next-version-swh-indexer-rw
         # When true, check db & code versions and do not start if they diverge
         check: true
         # When true, migrate or initialize db model

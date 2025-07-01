@@ -236,6 +236,8 @@ cloudnativePg:
       # lc_time: 'C.UTF-8' # locale for time formatting
     pg_hba:
     - host all all all md5
+  # Postgres credentials to setup (can be overridden per instance)
+  # superUserSecretRef: swh-postgresql-postgres-secret
   deployments:
     # Specific swh-scheduler database mounted from a backup from swh-scheduler-k8s
     # (minimalistic swh-scheduler db)
@@ -311,6 +313,7 @@ cloudnativePg:
     next-version-db-swh:
       enabled: true
       namespace: cnpg-next-version
+      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi

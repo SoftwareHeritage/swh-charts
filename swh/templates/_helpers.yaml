@@ -449,16 +449,13 @@ Generate the configuration for a journal writer
     value: /etc/swh/config.yml
   - name: SWH_PGDATABASE
     value: {{ .config.database }}
+  - name: SWH_PGHOST
+    value: {{ .config.host }}
   - name: SWH_PGPASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ .config.adminSecret }}
         key: password
-  - name: SWH_PGHOST
-    valueFrom:
-      secretKeyRef:
-        name: {{ .config.adminSecret }}
-        key: host
   volumeMounts:
   - name: configuration
     mountPath: /etc/swh
