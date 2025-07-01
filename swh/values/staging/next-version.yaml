@@ -1104,7 +1104,7 @@ search:
 
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
-  host: next-version-swh-indexer-rw.swh-cassandra-next-version
+  host: next-version-db-swh-indexer-rw.cnpg-next-version
   port: 5432
   db: swh-indexer
   user: ${POSTGRESQL_IDX_USERNAME}
@@ -1131,11 +1131,11 @@ indexerStorage:
   deployments:
     rw:
       backend:
-        # When true, initalize the backend, leave it empty to do nothing
+        # When true, initialize the backend, leave it empty to do nothing
         initialize:
-          adminSecret: next-version-swh-indexer-superuser
+          adminSecret: swh-postgresql-postgres-secret
           database: swh-indexer
-          host: next-version-swh-indexer-rw
+          host: next-version-db-swh-indexer-rw.cnpg-next-version
         # When true, check db & code versions and do not start if they diverge
         check: true
         # When true, migrate or initialize db model
