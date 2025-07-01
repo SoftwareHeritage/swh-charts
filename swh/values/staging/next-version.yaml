@@ -15,7 +15,7 @@ postgresqlWebConfiguration:
       secretKeyName: password
 
 postgresqlVaultConfiguration:
-  host: next-version-swh-vault-rw.swh-cassandra-next-version
+  host: next-version-db-swh-vault-rw.cnpg-next-version
   port: 5432
   db: swh-vault
   user: ${POSTGRESQL_USERNAME}
@@ -217,9 +217,9 @@ vault:
   backend:
     # Initialize data model
     initialize:
-      adminSecret: next-version-swh-vault-superuser
+      adminSecret: swh-postgresql-postgres-secret
       database: swh-vault
-      host: next-version-swh-vault-rw
+      host: next-version-db-swh-vault-rw.cnpg-next-version
     # check db version with latest code?
     check: true
     # migrate db

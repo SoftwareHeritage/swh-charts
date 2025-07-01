@@ -396,19 +396,6 @@ cloudnativePg:
       # Managed dbs
       initdb:
         enabled: true
-    next-version-swh-vault:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      testing: true
-      instances: 1
-      # Managed dbs
-      database:
-        name: swh-vault
-        secretKeyRef: swh-postgresql-swh-swh-vault-secret
-      initdb:
-        enabled: true
     next-version-swh-web:
       enabled: true
       enableSuperuserAccess: true
