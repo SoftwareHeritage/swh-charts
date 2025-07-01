@@ -341,6 +341,37 @@ cloudnativePg:
       backup:
         enabled: false
 
+    next-version-db-swh-vault:
+      enabled: true
+      namespace: cnpg-next-version
+      superUserSecretRef: swh-postgresql-postgres-secret
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-vault
+        secretKeyRef: swh-postgresql-swh-swh-vault-secret
+      initdb:
+        enabled: true
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
     next-version-swh-deposit:
       enabled: true
       enableSuperuserAccess: true
