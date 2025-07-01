@@ -42,6 +42,9 @@ spec:
   superuserSecret:
     name: {{ $cluster_config.superUserSecretRef }}
   {{- end }}
+  {{- if or $enableSuperuserAccess $superUserSecretRef }}
+  enableSuperuserAccess: {{ $enableSuperuserAccess }}
+  {{- end }}
   {{- if $testing }}
   enablePDB: false
   {{- end }}
@@ -59,9 +62,6 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.5
   {{- end }}
   primaryUpdateStrategy: unsupervised
-  {{- if $enableSuperuserAccess }}
-  enableSuperuserAccess: {{ $enableSuperuserAccess }}
-  {{- end }}
   {{- if $affinity }}
   affinity:
     {{- toYaml $affinity | nindent 4 }}
