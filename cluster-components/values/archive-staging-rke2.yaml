@@ -403,6 +403,47 @@ cloudnativePg:
       backup:
         enabled: false
 
+    next-version-db-swh-web:
+      enabled: true
+      namespace: cnpg-next-version
+      superUserSecretRef: swh-postgresql-postgres-secret
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-web
+        secretKeyRef: swh-postgresql-swh-web-secret
+      initdb:
+        enabled: true
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
+    next-version-swh-web:
+      enabled: true
+      enableSuperuserAccess: true
+      testing: true
+      namespace: swh-cassandra-next-version
+      database:
+        name: swh-web
+        secretKeyRef: swh-postgresql-swh-web-secret
+      initdb:
+        enabled: true
     next-version-swh-deposit:
       enabled: true
       enableSuperuserAccess: true
@@ -415,16 +456,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
-    next-version-swh-web:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      database:
-        name: swh-web
-        secretKeyRef: swh-postgresql-swh-web-secret
-      initdb:
-        enabled: true
     next-version-swh-svix:
       enabled: true
       enableSuperuserAccess: true
