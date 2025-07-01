@@ -39,7 +39,8 @@ metadata:
 spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{- if $superUserSecretRef }}
-  superuserSecret: {{ $cluster_config.superUserSecretRef }}
+  superuserSecret:
+    name: {{ $cluster_config.superUserSecretRef }}
   {{- end }}
   {{- if $testing }}
   enablePDB: false
