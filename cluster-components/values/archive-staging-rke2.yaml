@@ -80,7 +80,7 @@ svix:
         dsn: redis-svix-next-version.swh-cassandra-next-version
       postgres:
         enabled: false
-        dsn: next-version-swh-svix-rw.swh-cassandra-next-version
+        dsn: next-version-db-swh-svix-rw.cnpg-next-version
 
 alerting:
   enabled: true
