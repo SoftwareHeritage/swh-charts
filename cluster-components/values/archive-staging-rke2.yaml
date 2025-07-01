@@ -465,18 +465,6 @@ cloudnativePg:
       backup:
         enabled: false
 
-    next-version-swh-deposit:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      externalClustersRef: externalClusters
-      database:
-        name: swh-deposit
-        secretKeyRef: swh-postgresql-swh-deposit-secret
-      initdb:
-        enabled: true
-        source: cluster-pg-staging-db1
     next-version-swh-svix:
       enabled: true
       enableSuperuserAccess: true
