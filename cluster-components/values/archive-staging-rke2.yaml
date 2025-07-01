@@ -434,16 +434,6 @@ cloudnativePg:
       backup:
         enabled: false
 
-    next-version-swh-web:
-      enabled: true
-      enableSuperuserAccess: true
-      testing: true
-      namespace: swh-cassandra-next-version
-      database:
-        name: swh-web
-        secretKeyRef: swh-postgresql-swh-web-secret
-      initdb:
-        enabled: true
     next-version-swh-deposit:
       enabled: true
       enableSuperuserAccess: true
