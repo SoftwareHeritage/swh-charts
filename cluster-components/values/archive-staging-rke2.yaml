@@ -305,8 +305,6 @@ cloudnativePg:
         - "ro"
       backup:
         enabled: false
-        s3Config:
-          secretName: cnpg-minio-secret
 
     next-version-db-swh-masking:
       enabled: true
@@ -556,7 +554,7 @@ cloudnativePg:
         - "r"
         - "ro"
       backup:
-        enabled: false
+        enabled: true
 
     db-swh-deposit:
       enabled: true
