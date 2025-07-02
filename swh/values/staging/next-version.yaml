@@ -43,7 +43,7 @@ postgresqlSchedulerConfiguration:
       secretKeyName: password
 
 rwMaskingPostgresqlConfiguration:
-  host: next-version-swh-masking-rw.swh-cassandra-next-version
+  host: next-version-db-swh-masking-rw.swh-cassandra-next-version
   port: '5432'
   db: swh-masking
   user: ${MASKING_ADMIN_PGUSERNAME}
@@ -57,7 +57,7 @@ rwMaskingPostgresqlConfiguration:
       secretKeyName: username
 
 roMaskingPostgresqlConfiguration:
-  host: next-version-swh-masking-r.swh-cassandra-next-version
+  host: next-version-db-swh-masking-rw.swh-cassandra-next-version
   port: '5432'
   db: swh-masking
   user: ${MASKING_GUEST_PGUSERNAME}
