@@ -157,6 +157,11 @@ spec:
     {{- toYaml $externalPgClusters | nindent 4 }}
   {{- end }}
   {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
+  env:
+  - name: AWS_REQUEST_CHECKSUM_CALCULATION
+    value: when_required
+  - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+    value: when_required
   backup:
     retentionPolicy: {{ $backup.retention | default "30d" | quote }}
     target: prefer-standby
