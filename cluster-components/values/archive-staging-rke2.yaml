@@ -165,7 +165,9 @@ scrapeClusterMetrics:
         enabled: true
         port: 9404
 
-externalClusters:
+# This is slowly being decommissioned as it's using db1 to retrieve data from dbs hosted
+# there
+externalPostgresqlClusters:
   - name: cluster-pg-staging-db1
     password:
       name: cluster-staging-db1-postgres-user-credential
@@ -278,7 +280,7 @@ cloudnativePg:
     next-version-db-swh-masking:
       enabled: true
       namespace: cnpg-next-version
-      externalClustersRef: externalClusters
+      externalClustersRef: externalPostgresqlClusters
       superUserSecretRef: swh-postgresql-postgres-secret
       storage:
         size: 1Gi
@@ -496,10 +498,10 @@ cloudnativePg:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra
-      externalClustersRef: externalClusters
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
+      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
@@ -507,7 +509,7 @@ cloudnativePg:
       enabled: true
       enableSuperuserAccess: true
       namespace: swh-cassandra
-      externalClustersRef: externalClusters
+      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
