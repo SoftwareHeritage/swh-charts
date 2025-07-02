@@ -594,6 +594,7 @@ cloudnativePg:
 
     db-swh-coar-notify:
       enabled: true
+      namespace: cnpg
       instances: 1
       superUserSecretRef: swh-postgresql-postgres-secret
       database:
