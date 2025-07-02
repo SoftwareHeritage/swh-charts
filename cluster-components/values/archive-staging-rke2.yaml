@@ -199,6 +199,15 @@ internalPostgresqlClusters:
       host: swh-deposit-rw.swh-cassandra
       user: swh-deposit
       port: "5432"
+  - name: cluster-pg-staging-kube-swh-coar-notify
+    password:
+      name: swh-postgresql-swh-coar-notify-secret
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: swh-coar-notify-rw.swh-cassandra
+      user: swh-coar-notify
+      port: "5432"
 
 recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
@@ -582,6 +591,55 @@ cloudnativePg:
         - "ro"
       backup:
         enabled: false
+
+    db-swh-coar-notify:
+      enabled: true
+      instances: 1
+      delay: 300
+      namespace: swh-coar-notify
+      database:
+        name: swh-coar-notify
+        secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-kube-swh-coar-notify
+      storage:
+        size: 5Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      limitedCpu: 400m
+      limitedMemory: 256Mi
+      requestedCpu: 400m
+      requestedMemory: 256Mi
+      postgresql:
+        parameters:
+          shared_buffers: "64MB"
+          pg_stat_statements.max: '10000'
+          pg_stat_statements.track: all
+          auto_explain.log_min_duration: '10s'
+        pg_hba:
+          - host all all all md5
+        synchronous:
+          method: any
+          number: 1
+      backup:
+        enabled: false
+        s3Config:
+          secretName: cnpg-minio-secret
 
     swh-coar-notify:
       enabled: true
