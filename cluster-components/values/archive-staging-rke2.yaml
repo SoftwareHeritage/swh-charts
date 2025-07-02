@@ -178,6 +178,18 @@ externalPostgresqlClusters:
       user: postgres
       port: "5433"
 
+# This is to access already existing dbs running in cnpg clusters
+internalPostgresqlClusters:
+  - name: cluster-pg-staging-kube-swh-web
+    password:
+      name: swh-postgresql-swh-web-secret
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: swh-web-rw.swh-cassandra
+      user: swh-web
+      port: "5432"
+
 recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
     barmanObjectStore:
@@ -493,7 +505,40 @@ cloudnativePg:
       backup:
         enabled: false
 
-    # staging/next-version environment
+    db-swh-web:
+      enabled: true
+      namespace: cnpg
+      superUserSecretRef: swh-postgresql-postgres-secret
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-web
+        secretKeyRef: swh-postgresql-swh-web-secret
+      # Pg cluster db to use as boostrap
+      externalClustersRef: internalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-kube-swh-web
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
     swh-web:
       enabled: true
       enableSuperuserAccess: true
