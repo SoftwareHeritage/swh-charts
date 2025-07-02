@@ -491,18 +491,6 @@ cloudnativePg:
       backup:
         enabled: false
 
-    next-version-swh-masking:
-      enabled: true
-      enableSuperuserAccess: true
-      namespace: swh-cassandra-next-version
-      externalClustersRef: externalClusters
-      database:
-        name: swh-masking
-        secretKeyRef: swh-next-version-postgresql-swh-masking-secret
-      initdb:
-        enabled: true
-        source: cluster-pg-staging-db1
-
     # staging/next-version environment
     swh-web:
       enabled: true
