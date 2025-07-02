@@ -308,7 +308,7 @@ cloudnativePg:
         - "r"
         - "ro"
       backup:
-        enabled: false
+        enabled: true
         s3Config:
           secretName: cnpg-minio-secret
 
