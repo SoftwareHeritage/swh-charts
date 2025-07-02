@@ -274,13 +274,15 @@ cloudnativePg:
         enabled: false
         s3Config:
           secretName: cnpg-minio-secret
+
     # (temporary) Create a new db masking out of the masking running in db1 to create a
     # recovery backup source of a new masking db for each next-version reset
     # Currently failing to write its wal in minio for some reason...
     next-version-db-swh-masking-backup:
-      enabled: false
+      enabled: true
       namespace: cnpg-next-version
       externalClustersRef: externalClusters
+      superUserSecretRef: swh-postgresql-postgres-secret
       storage:
         size: 1Gi
       walStorage:
@@ -306,7 +308,7 @@ cloudnativePg:
         - "r"
         - "ro"
       backup:
-        enabled: true
+        enabled: false
         s3Config:
           secretName: cnpg-minio-secret
 
