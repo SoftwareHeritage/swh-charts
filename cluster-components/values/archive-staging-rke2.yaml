@@ -180,6 +180,7 @@ externalPostgresqlClusters:
 
 # This is to access already existing dbs running in cnpg clusters
 internalPostgresqlClusters:
+  # No longer relevant datasource (since it's been decommissionned)
   - name: cluster-pg-staging-kube-swh-web
     password:
       name: swh-postgresql-swh-web-secret
@@ -188,6 +189,15 @@ internalPostgresqlClusters:
       # Use the correct IP or host name for the source database
       host: swh-web-rw.swh-cassandra
       user: swh-web
+      port: "5432"
+  - name: cluster-pg-staging-kube-swh-deposit
+    password:
+      name: swh-postgresql-swh-deposit-secret
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: swh-deposit-rw.swh-cassandra
+      user: swh-deposit
       port: "5432"
 
 recoverySwhSchedulerClusters:
@@ -523,6 +533,40 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-kube-swh-web
+      roles:
+      - name: guest
+        ensure: present
+        comment: read-only user
+        login: true
+        connectionLimit: 10
+        inherit: false
+        passwordSecret:
+          name: swh-postgresql-guest-secret
+      services:
+        disabledDefaultServices:
+        - "r"
+        - "ro"
+      backup:
+        enabled: false
+
+    db-swh-deposit:
+      enabled: true
+      namespace: cnpg
+      superUserSecretRef: swh-postgresql-postgres-secret
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-deposit
+        secretKeyRef: swh-postgresql-swh-deposit-secret
+      # Pg cluster db to use as boostrap
+      externalClustersRef: internalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-kube-swh-deposit
       roles:
       - name: guest
         ensure: present
