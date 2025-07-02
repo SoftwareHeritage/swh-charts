@@ -157,7 +157,7 @@ postgresqlVaultConfiguration:
       secretKeyName: postgres-swh-vault-password
 
 postgresqlWebConfiguration:
-  host: swh-web-rw.swh-cassandra
+  host: db-swh-web-rw.cnpg
   port: 5432
   db: swh-web
   user: ${POSTGRESQL_USERNAME}
