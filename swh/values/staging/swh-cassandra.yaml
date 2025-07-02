@@ -2409,7 +2409,7 @@ storage1DeleteObjstorageConfiguration:
   enable_requests_retry: true
 
 postgresqlRWCoarNotifyConfiguration:
-  host: db-swh-coar-notify-rw.swh-coar-notify
+  host: db-swh-coar-notify-rw.cnpg
   port: 5432
   db: swh-coar-notify
   user: ${POSTGRESQL_USERNAME}
