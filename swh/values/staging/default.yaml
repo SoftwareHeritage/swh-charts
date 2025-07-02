@@ -171,7 +171,7 @@ postgresqlWebConfiguration:
       secretKeyName: password
 
 postgresqlDepositConfiguration:
-  host: swh-deposit-rw.swh-cassandra
+  host: db-swh-deposit-rw.cnpg
   port: 5432
   db: swh-deposit
   user: ${POSTGRESQL_USERNAME}
