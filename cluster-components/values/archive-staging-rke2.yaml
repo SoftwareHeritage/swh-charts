@@ -447,7 +447,7 @@ cloudnativePg:
     db-swh-coar-notify:
       enabled: true
       namespace: cnpg
-      instances: 1
+      instances: 2
       superUserSecretRef: swh-postgresql-postgres-secret
       # Pg cluster db to use as boostrap
       externalClustersRef: internalPostgresqlClusters
