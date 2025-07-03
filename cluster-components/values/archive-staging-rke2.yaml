@@ -395,10 +395,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-svix-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     db-swh-web:
       enabled: true
