@@ -445,6 +445,25 @@ cloudnativePg:
         # Run once a day at 2:05am (UTC)
         schedule: "0 05 2 * * *"
 
+    db-swh-scrubber:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      superUserSecretRef: swh-postgresql-postgres-secret
+      database:
+        name: swh-scrubber
+        secretKeyRef: swh-postgresql-swh-scrubber-secret
+      externalClusterRef: externalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+
 rabbitmq:
   enabled: true
   namespace: swh-cassandra-next-version
