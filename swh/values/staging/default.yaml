@@ -403,15 +403,18 @@ postgresqlIndexerStorageConfiguration:
 
 postgresqlScrubberConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-scrubber-rw.cnpg
   port: '5432'
-  user: swh-scrubber
+  user: ${SCRUBBER_POSTGRESQL_USERNAME}
   pass: ${SCRUBBER_POSTGRESQL_PASSWORD}
   db: swh-scrubber
   secrets:
+    SCRUBBER_POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-scrubber-secret
+      secretKeyName: username
     SCRUBBER_POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scrubber-postgresql-common-secret
-      secretKeyName: postgres-swh-scrubber-password
+      secretKeyRef: swh-postgresql-swh-scrubber-secret
+      secretKeyName: password
 
 kafkaBrokers:
   - journal2.internal.staging.swh.network:9092
