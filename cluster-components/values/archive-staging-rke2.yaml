@@ -453,7 +453,7 @@ cloudnativePg:
       database:
         name: swh-scrubber
         secretKeyRef: swh-postgresql-swh-scrubber-secret
-      externalClusterRef: externalPostgresqlClusters
+      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
