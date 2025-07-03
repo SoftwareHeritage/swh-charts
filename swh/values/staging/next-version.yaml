@@ -22,10 +22,10 @@ postgresqlVaultConfiguration:
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_USERNAME:
-      secretKeyRef: swh-postgresql-swh-swh-vault-secret
+      secretKeyRef: swh-postgresql-swh-vault-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-swh-swh-vault-secret
+      secretKeyRef: swh-postgresql-swh-vault-secret
       secretKeyName: password
 
 postgresqlSchedulerConfiguration:

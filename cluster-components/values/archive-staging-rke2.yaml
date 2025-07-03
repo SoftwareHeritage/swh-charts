@@ -318,7 +318,7 @@ cloudnativePg:
         size: 1Gi
       database:
         name: swh-vault
-        secretKeyRef: swh-postgresql-swh-swh-vault-secret
+        secretKeyRef: swh-postgresql-swh-vault-secret
       initdb:
         enabled: true
 
