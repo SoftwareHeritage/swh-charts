@@ -146,15 +146,18 @@ primaryPostgresqlRWStorageConfiguration:
 
 postgresqlVaultConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
-  port: 5432
+  host: db-swh-vault-rw.cnpg
+  port: "5432"
   db: swh-vault
-  user: swh-vault
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-vault-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-vault-postgresql-secret
-      secretKeyName: postgres-swh-vault-password
+      secretKeyRef: swh-postgresql-swh-vault-secret
+      secretKeyName: password
 
 postgresqlWebConfiguration:
   host: db-swh-web-rw.cnpg
