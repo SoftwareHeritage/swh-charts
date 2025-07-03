@@ -282,7 +282,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       # Specific postgresql setup (can be overridden per instance)
       externalClustersRef: recoverySwhSchedulerClusters
       database:
@@ -300,7 +299,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-masking
         secretKeyRef: swh-next-version-postgresql-swh-masking-secret
@@ -317,7 +315,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-swh-secret
@@ -333,7 +330,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-swh-vault-secret
@@ -349,7 +345,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
@@ -365,7 +360,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
@@ -381,7 +375,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
@@ -397,7 +390,6 @@ cloudnativePg:
         size: 1Gi
       walStorage:
         size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
