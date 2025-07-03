@@ -294,8 +294,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-masking:
       enabled: true
@@ -337,8 +335,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-vault:
       enabled: true
@@ -359,8 +355,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-indexer:
       enabled: true
@@ -381,8 +375,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-web:
       enabled: true
@@ -403,8 +395,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-deposit:
       enabled: true
@@ -425,8 +415,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     next-version-db-swh-svix:
       enabled: true
@@ -447,8 +435,6 @@ cloudnativePg:
         disabledDefaultServices:
         - "r"
         - "ro"
-      backup:
-        enabled: false
 
     db-swh-web:
       enabled: true
