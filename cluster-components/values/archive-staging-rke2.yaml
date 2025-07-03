@@ -290,10 +290,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       recovery:
         source: next-version-db-swh-scheduler
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-masking:
       enabled: true
@@ -311,10 +307,6 @@ cloudnativePg:
       externalClustersRef: recoverySwhMaskingClusters
       recovery:
         source: next-version-db-swh-masking
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh:
       enabled: true
@@ -331,10 +323,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-vault:
       enabled: true
@@ -351,10 +339,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-vault-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-indexer:
       enabled: true
@@ -371,10 +355,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-web:
       enabled: true
@@ -391,10 +371,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-web-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-deposit:
       enabled: true
@@ -411,10 +387,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-deposit-secret
       initdb:
         enabled: true
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
 
     next-version-db-swh-svix:
       enabled: true
@@ -477,10 +449,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-kube-swh-deposit
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
       backup:
         enabled: true
         # Run once a day at 1:10am
@@ -504,10 +472,6 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
       backup:
         enabled: true
         # Run once a day at 2:05am

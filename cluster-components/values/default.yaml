@@ -23,6 +23,10 @@ cloudnativePg:
   storage:
     storageClass: local-persistent
     size: 1Gi
+  services:
+    disabledDefaultServices:
+      - "r"
+      - "ro"
   roles:
   - name: guest
     ensure: present

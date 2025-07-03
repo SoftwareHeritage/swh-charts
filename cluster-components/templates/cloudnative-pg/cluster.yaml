@@ -16,7 +16,7 @@
 {{- $delay := $cluster_config.delay -}}
 {{- $imageCatalogRef := $cluster_config.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
 {{- $walStorage := $cluster_config.walStorage | default false -}}
-{{- $services := $cluster_config.services | default false -}}
+{{- $services := $cluster_config.services | default $.Values.cloudnativePg.services | default false -}}
 {{- $limitedCpu := $cluster_config.limitedCpu | default false -}}
 {{- $limitedMemory := $cluster_config.limitedMemory | default false -}}
 {{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
