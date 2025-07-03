@@ -205,7 +205,7 @@ internalPostgresqlClusters:
       key: password
     connectionParameters:
       # Use the correct IP or host name for the source database
-      host: swh-coar-notify-rw.swh-coar-notify
+      host: swh-coar-notify-rw.cnpg
       user: swh-coar-notify
       port: "5432"
 
