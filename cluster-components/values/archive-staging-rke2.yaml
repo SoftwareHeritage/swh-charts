@@ -464,6 +464,25 @@ cloudnativePg:
         size: 1Gi
         storageClass: local-persistent
 
+    db-swh-vault:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      superUserSecretRef: swh-postgresql-postgres-secret
+      database:
+        name: swh-vault
+        secretKeyRef: swh-postgresql-swh-vault-secret
+      externalClustersRef: externalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+
 rabbitmq:
   enabled: true
   namespace: swh-cassandra-next-version
