@@ -424,7 +424,7 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       superUserSecretRef: swh-postgresql-postgres-secret
-      instances: 1
+      instances: 2
       storage:
         size: 1Gi
         storageClass: local-persistent
