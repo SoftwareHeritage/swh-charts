@@ -290,15 +290,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
       recovery:
         source: next-version-db-swh-scheduler
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -322,15 +313,6 @@ cloudnativePg:
       externalClustersRef: recoverySwhMaskingClusters
       recovery:
         source: next-version-db-swh-masking
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -351,15 +333,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -382,15 +355,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-vault-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -413,15 +377,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-swh-indexer-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -444,15 +399,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-web-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -475,15 +421,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-deposit-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -506,15 +443,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-svix-secret
       initdb:
         enabled: true
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -540,19 +468,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-kube-swh-web
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
-      services:
-        disabledDefaultServices:
-        - "r"
-        - "ro"
       backup:
         enabled: true
         # Run once a day at 0:15am
@@ -576,15 +491,6 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-staging-kube-swh-deposit
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"
@@ -612,15 +518,6 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
-      roles:
-      - name: guest
-        ensure: present
-        comment: read-only user
-        login: true
-        connectionLimit: 10
-        inherit: false
-        passwordSecret:
-          name: swh-postgresql-guest-secret
       services:
         disabledDefaultServices:
         - "r"

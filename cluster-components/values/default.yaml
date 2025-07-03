@@ -24,14 +24,13 @@ cloudnativePg:
     storageClass: local-persistent
     size: 1Gi
   roles:
-    - name: guest
-      ensure: present
-      comment: Guest
-      login: true
-      connectionLimit: -1
-      inherit: true
-      passwordSecret:
-        name: swh-postgresql-guest-secret
+  - name: guest
+    ensure: present
+    comment: read-only user
+    login: true
+    connectionLimit: -1
+    passwordSecret:
+      name: swh-postgresql-guest-secret
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
