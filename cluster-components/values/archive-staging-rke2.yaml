@@ -191,6 +191,8 @@ internalPostgresqlClusters: []
   #     user: swh-web
   #     port: "5432"
 
+# Mandatory recovery backup which will be used when the next-version environment is
+# resetted.
 recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
     barmanObjectStore:
@@ -213,6 +215,8 @@ recoverySwhSchedulerClusters:
           - "--read-timeout=60"
           - "-vv"
 
+# Mandatory recovery backup which will be used when the next-version environment is
+# resetted.
 recoverySwhMaskingClusters:
   - name: next-version-db-swh-masking
     barmanObjectStore:
