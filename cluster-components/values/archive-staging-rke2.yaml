@@ -179,35 +179,17 @@ externalPostgresqlClusters:
       port: "5433"
 
 # This is to access already existing dbs running in cnpg clusters
-internalPostgresqlClusters:
+internalPostgresqlClusters: []
   # No longer relevant datasource (since it's been decommissionned)
-  - name: cluster-pg-staging-kube-swh-web
-    password:
-      name: swh-postgresql-swh-web-secret
-      key: password
-    connectionParameters:
-      # Use the correct IP or host name for the source database
-      host: swh-web-rw.swh-cassandra
-      user: swh-web
-      port: "5432"
-  - name: cluster-pg-staging-kube-swh-deposit
-    password:
-      name: swh-postgresql-swh-deposit-secret
-      key: password
-    connectionParameters:
-      # Use the correct IP or host name for the source database
-      host: swh-deposit-rw.swh-cassandra
-      user: swh-deposit
-      port: "5432"
-  - name: cluster-pg-staging-kube-swh-coar-notify
-    password:
-      name: swh-postgresql-swh-coar-notify-secret
-      key: password
-    connectionParameters:
-      # Use the correct IP or host name for the source database
-      host: swh-coar-notify-rw.cnpg
-      user: swh-coar-notify
-      port: "5432"
+  # - name: cluster-pg-staging-kube-swh-web
+  #   password:
+  #     name: swh-postgresql-swh-web-secret
+  #     key: password
+  #   connectionParameters:
+  #     # Use the correct IP or host name for the source database
+  #     host: swh-web-rw.swh-cassandra
+  #     user: swh-web
+  #     port: "5432"
 
 recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
@@ -410,11 +392,8 @@ cloudnativePg:
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
-      # Pg cluster db to use as boostrap
-      externalClustersRef: internalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-kube-swh-web
       backup:
         enabled: true
         # Run once a day at 0:15am (UTC)
@@ -434,11 +413,8 @@ cloudnativePg:
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
-      # Pg cluster db to use as boostrap
-      externalClustersRef: internalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-kube-swh-deposit
       backup:
         enabled: true
         # Run once a day at 1:10am (UTC)
@@ -449,14 +425,11 @@ cloudnativePg:
       namespace: cnpg
       instances: 2
       superUserSecretRef: swh-postgresql-postgres-secret
-      # Pg cluster db to use as boostrap
-      externalClustersRef: internalPostgresqlClusters
       database:
         name: swh-coar-notify
         secretKeyRef: swh-postgresql-swh-coar-notify-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-kube-swh-coar-notify
       storage:
         size: 5Gi
         storageClass: local-persistent
