@@ -463,6 +463,10 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
+      backup:
+        enabled: true
+        # Run once a day at 3:20am (UTC)
+        schedule: "0 20 3 * * *"
 
     db-swh-vault:
       enabled: true
