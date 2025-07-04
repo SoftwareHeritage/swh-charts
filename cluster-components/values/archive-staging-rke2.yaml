@@ -287,7 +287,7 @@ cloudnativePg:
         size: 1Gi
       database:
         name: swh-masking
-        secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+        secretKeyRef: swh-postgresql-swh-masking-secret
       externalClustersRef: recoverySwhMaskingClusters
       recovery:
         source: next-version-db-swh-masking
@@ -303,7 +303,7 @@ cloudnativePg:
         size: 1Gi
       database:
         name: swh
-        secretKeyRef: swh-postgresql-swh-swh-secret
+        secretKeyRef: swh-postgresql-swh-secret
       initdb:
         enabled: true
 
@@ -333,7 +333,7 @@ cloudnativePg:
         size: 1Gi
       database:
         name: swh-indexer
-        secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+        secretKeyRef: swh-postgresql-swh-indexer-secret
       initdb:
         enabled: true
 

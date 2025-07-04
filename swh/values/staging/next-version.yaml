@@ -50,10 +50,10 @@ rwMaskingPostgresqlConfiguration:
   pass: ${MASKING_ADMIN_PGPASSWORD}
   secrets:
     MASKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+      secretKeyRef: swh-postgresql-swh-masking-secret
       secretKeyName: password
     MASKING_ADMIN_PGUSERNAME:
-      secretKeyRef: swh-next-version-postgresql-swh-masking-secret
+      secretKeyRef: swh-postgresql-swh-masking-secret
       secretKeyName: username
 
 roMaskingPostgresqlConfiguration:
@@ -96,10 +96,10 @@ postgresqlRWStorageConfiguration:
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_USERNAME:
-      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyRef: swh-postgresql-swh-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-swh-swh-secret
+      secretKeyRef: swh-postgresql-swh-secret
       secretKeyName: password
 
 postgresqlROStorageConfiguration:
@@ -1111,10 +1111,10 @@ postgresqlIndexerStorageConfiguration:
   pass: ${POSTGRESQL_IDX_PASSWORD}
   secrets:
     POSTGRESQL_IDX_USERNAME:
-      secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+      secretKeyRef: swh-postgresql-swh-indexer-secret
       secretKeyName: username
     POSTGRESQL_IDX_PASSWORD:
-      secretKeyRef: swh-postgresql-swh-swh-indexer-secret
+      secretKeyRef: swh-postgresql-swh-indexer-secret
       secretKeyName: password
 
 indexerJournalWriterConfiguration:
