@@ -486,6 +486,10 @@ cloudnativePg:
       walStorage:
         size: 1Gi
         storageClass: local-persistent
+      backup:
+        enabled: true
+        # Run once a day at 4:25am (UTC)
+        schedule: "0 25 4 * * *"
 
 rabbitmq:
   enabled: true
