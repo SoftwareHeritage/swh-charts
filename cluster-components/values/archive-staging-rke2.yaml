@@ -58,7 +58,7 @@ svix:
         dsn: redis-svix.svix-server
       postgres:
         enabled: false
-        dsn: db1.internal.staging.swh.network
+        dsn: db-swh-svix-rw.cnpg
     svix-next-version:
       ingress:
         host: svix-next-version.internal.staging.swh.network
