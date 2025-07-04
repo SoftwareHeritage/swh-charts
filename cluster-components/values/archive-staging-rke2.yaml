@@ -511,8 +511,33 @@ cloudnativePg:
         storageClass: local-persistent
       backup:
         enabled: true
-        # Run once a day at 4:25am (UTC)
+        # Run once a day at 5:30am (UTC)
         schedule: "0 30 5 * * *"
+
+    db-swh-svix:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      superUserSecretRef: swh-postgresql-postgres-secret
+      database:
+        name: swh-svix
+        secretKeyRef: swh-postgresql-swh-svix-secret
+      externalClustersRef: externalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      storage:
+        size: 5Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 5Gi
+        storageClass: local-persistent
+      backup:
+        enabled: true
+        # Run once a day at 6:35am (UTC)
+        schedule: "0 35 6 * * *"
+        # swh-svix is potentially a huge database
+        retention: 2d
 
 rabbitmq:
   enabled: true
