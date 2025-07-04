@@ -36,10 +36,10 @@ postgresqlSchedulerConfiguration:
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
     POSTGRESQL_USERNAME:
-      secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      secretKeyRef: swh-postgresql-swh-scheduler-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+      secretKeyRef: swh-postgresql-swh-scheduler-secret
       secretKeyName: password
 
 rwMaskingPostgresqlConfiguration:

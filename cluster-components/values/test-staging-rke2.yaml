@@ -114,7 +114,7 @@ cloudnativePg:
       # Managed dbs (optional)
       initdb:
         type: microservice
-        secretKeyRef: swh-postgresql-swh-swh-scheduler-secret
+        secretKeyRef: swh-postgresql-swh-scheduler-secret
         dbname: swh-scheduler
         databases:
         # Specific swh-scheduler db with a smaller footprint (than the origin
