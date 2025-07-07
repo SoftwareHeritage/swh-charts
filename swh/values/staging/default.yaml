@@ -291,6 +291,7 @@ webDjangoApps:
   - swh.web.provenance
   - swh.web.save_bulk
   - swh.web.alter
+  - swh.web.admin
 
 remoteSearchConfiguration:
   cls: remote
