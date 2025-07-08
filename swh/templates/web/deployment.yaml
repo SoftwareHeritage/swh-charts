@@ -99,11 +99,12 @@ spec:
             - /bin/bash
           args:
             - -c
-            - cp -r $PWD/venv/lib/python3.11/site-packages/swh/web/static/ /usr/share/swh/web/static/
-            - cp -r $PWD/venv/lib/python3.11/site-packages/django/contrib/admin/static/admin /usr/share/swh/web/static/
+            - mkdir /srv/html/static && cp -r $PWD/venv/lib/python3.11/site-packages/swh/web/static/*
+              $PWD/venv/lib/python3.11/site-packages/django/contrib/admin/static/admin
+              /srv/html/static
           volumeMounts:
           - name: static
-            mountPath: /usr/share/swh/web/static
+            mountPath: /srv/html
       containers:
         - name: {{ $serviceType }}
           resources:
