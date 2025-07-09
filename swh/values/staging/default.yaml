@@ -216,12 +216,15 @@ maskingAdminPostgresqlConfiguration:
   host: db1.internal.staging.swh.network
   port: '5432'
   db: swh-masking
-  user: swh-masking
+  user: ${MASKING_ADMIN_PGUSER}
   pass: ${MASKING_ADMIN_PGPASSWORD}
   secrets:
+    MASKING_ADMIN_PGUSER:
+      secretKeyRef: swh-postgresql-swh-masking-secret
+      secretKeyName: username
     MASKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-postgresql-masking-secret
-      secretKeyName: postgres-swh-masking-password
+      secretKeyRef: swh-postgresql-swh-masking-secret
+      secretKeyName: password
 
 # Passed as postgresqlConfigurationRef to the masking proxy storage
 # pipeline entry
