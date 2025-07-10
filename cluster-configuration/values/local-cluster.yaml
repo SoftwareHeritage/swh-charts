@@ -63,3 +63,15 @@ redis:
   #   --namespace ot-operators --create-namespace
   enabled: true
   namespace: ot-operators
+
+pgbouncer:
+  enabled: false
+  userlist:
+    secret: swh-guest-postgresql-secret
+  databases:
+    archive:
+      dbname: archive
+      host: archive-rw
+      port: 5432
+      auth_user: postgres
+

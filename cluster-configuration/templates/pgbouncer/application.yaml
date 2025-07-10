@@ -1,0 +1,46 @@
+{{ if .Values.pgbouncer.enabled -}}
+{{- $appName := print .Values.clusterName "-pgbouncer" -}}
+{{- $userlist := $.Values.pgbouncer.userlist -}}
+{{- $databases := $.Values.pgbouncer.databases -}}
+{{- $service := $.Values.pgbouncer.services -}}
+{{- $pgbouncerExporter := $.Values.pgbouncer.pgbouncerExporter -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    chart: pgbouncer
+    repoURL: 'https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart'
+    path: chart
+    helm:
+      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ $appName }}
+      values: |
+        {{- if $userlist }}
+        userlist:
+          {{- toYaml $userlist | nindent 10 }}
+        {{- end }}
+        {{- if $databases }}
+        databases:
+          {{- toYaml $databases | nindent 10 }}
+        {{- end }}
+        {{- if $service }}
+        service:
+          {{- toYaml $service | nindent 10 }}
+        {{- end }}
+        {{- if $pgbouncerExporter }}
+        pgbouncerExporter:
+          {{- toYaml $pgbouncerExporter | nindent 10 }}
+        {{- end }}
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.pgbouncer.namespace | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+{{ end }}

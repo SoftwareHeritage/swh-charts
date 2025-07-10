@@ -21,3 +21,5 @@ $HELM uninstall -n k8ssandra-operator k8ssandra-operator
 $HELM uninstall -n ot-operators redis-operator
 
 $HELM uninstall -n keda keda
+
+$HELM uninstall -n pgbouncer pgbouncer

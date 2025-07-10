@@ -106,3 +106,28 @@ redis:
   version: 0.18.3
   prune: true
   selfHeal: true
+
+pgbouncer:
+  enabled: false
+  namespace: pgbouncer
+  userlist:
+    enabled: false
+  # Dict of databases to allow access from pgbouncer
+  databases: {}
+  # test-db:
+  #   host: test-db-rw
+  #   port: 5432
+  #   dbname: test-db
+  #   auth_user: postgres
+  #   user: guest
+  service:
+    enabled: true
+    type: ClusterIP
+    name: ""
+    annotations: {}
+  pgbouncerExporter:
+    enabled: false
+    image:
+      repository: prometheuscommunity/pgbouncer-exporter
+  # prune: true
+  # selfHeal: true

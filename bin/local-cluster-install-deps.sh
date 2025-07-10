@@ -148,6 +148,17 @@ $HELM install ./deploy/chart/local-path-provisioner \
       -f $CONFIG_FILE2
 popd
 
+git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
+    --depth 1 \
+    /tmp/pgbouncer-helm-chart
+pushd /tmp/pgbouncer-helm-chart
+
+$HELM install ./chart \
+      --name-template pgbouncer
+      --namespace pgbouncer \
+      --create-namespace
+popd
+
 if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
     # Ingress specific setup for kind
     # TODO: Inline the file deploy.yaml in this repository?
