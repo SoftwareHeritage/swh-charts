@@ -9,3 +9,6 @@ alertmanagerConfig:
     - targetMatch:
       - name: alertname
         value: KubeMemoryOvercommit
+
+cloudnativePg:
+  enabled: true
