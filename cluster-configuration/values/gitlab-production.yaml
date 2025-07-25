@@ -16,3 +16,6 @@ ingressNginx:
 certManager:
   enabled: true
   webhookGandiEnabled: true
+
+cloudnativePg:
+  enabled: true
