@@ -414,6 +414,7 @@ web:
         # given the 2 threads, 1 should be enough, but more margin is better
         factor: 1.5
       metricsScrapingEnabled: true
+      sentryTracing: 0.1
       requestedCpu: 500m
       requestedMemory: 6Gi
       scnMetricsScraping:
