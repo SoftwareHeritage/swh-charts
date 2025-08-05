@@ -1059,7 +1059,7 @@ objstorage:
       autoScaling:
         type: keda
         minReplicaCount: 2
-        maxReplicaCount: 10
+        maxReplicaCount: 32
         # more is better than less
         # given the 4 threads, 1 should be enough
         factor: 1
