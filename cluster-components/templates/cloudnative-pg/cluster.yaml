@@ -40,7 +40,7 @@ spec:
   instances: {{ $cluster_config.instances | default 1 }}
   {{- if $superUserSecretRef }}
   superuserSecret:
-    name: {{ $cluster_config.superUserSecretRef }}
+    name: {{ $superUserSecretRef }}
   {{- end }}
   {{- if or $enableSuperuserAccess $superUserSecretRef }}
   enableSuperuserAccess: true
