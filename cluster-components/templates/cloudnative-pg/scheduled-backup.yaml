@@ -16,6 +16,9 @@ spec:
     name: {{ $cluster_name }}
   immediate: true
   schedule: {{ $schedulePeriod }}
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
 {{ end }}
 {{ end }}
 {{ end }}
