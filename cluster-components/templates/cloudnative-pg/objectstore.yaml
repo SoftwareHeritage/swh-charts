@@ -1,0 +1,42 @@
+{{- if .Values.cloudnativePg.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
+{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
+{{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
+{{- if and $backup $backup.enabled }}
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: {{ $clusterName }}-objectstore
+  namespace: {{ $namespace }}
+spec:
+  retentionPolicy: {{ $backup.retention | default "30d" | quote }}
+  target: prefer-standby
+  # env:
+  # - name: AWS_REQUEST_CHECKSUM_CALCULATION
+  #   value: when_required
+  # - name: AWS_RESPONSE_CHECKSUM_VALIDATION
+  #   value: when_required
+  configuration:
+    destinationPath: {{ $backup.s3Config.path }}
+    endpointURL: {{ $backup.s3Config.url }}
+    s3Credentials:
+      accessKeyId:
+        name: {{ $backup.s3Config.secretName }}
+        key: {{ $backup.s3Config.accessKey }}
+      secretAccessKey:
+        name: {{ $backup.s3Config.secretName }}
+        key: {{ $backup.s3Config.secretKey }}
+    wal:
+      compression: {{ $backup.compression }}
+    data:
+      compression: {{ $backup.compression }}
+      additionalCommandArgs:
+        - "--min-chunk-size=5MB"
+        - "--read-timeout=60"
+        - "-vv"
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

@@ -156,33 +156,17 @@ spec:
   externalClusters:
     {{- toYaml $externalPgClusters | nindent 4 }}
   {{- end }}
-  {{- if and $cluster_config.backup $cluster_config.backup.enabled }}
+  {{- if and $backup $backup.enabled }}
   env:
   - name: AWS_REQUEST_CHECKSUM_CALCULATION
     value: when_required
   - name: AWS_RESPONSE_CHECKSUM_VALIDATION
     value: when_required
-  backup:
-    retentionPolicy: {{ $backup.retention | default "30d" | quote }}
-    target: prefer-standby
-    barmanObjectStore:
-      destinationPath: {{ $backup.s3Config.path }}
-      endpointURL: {{ $backup.s3Config.url }}
-      s3Credentials:
-        accessKeyId:
-          name: {{ $backup.s3Config.secretName }}
-          key: {{ $backup.s3Config.accessKey }}
-        secretAccessKey:
-          name: {{ $backup.s3Config.secretName }}
-          key: {{ $backup.s3Config.secretKey }}
-      wal:
-        compression: {{ $.Values.cloudnativePg.backup.compression }}
-      data:
-        compression: {{ $.Values.cloudnativePg.backup.compression }}
-        additionalCommandArgs:
-          - "--min-chunk-size=5MB"
-          - "--read-timeout=60"
-          - "-vv"
+  plugins:
+  - name: barman-cloud.cloudnative-pg.io
+    isWALArchiver: true
+    parameters:
+      barmanObjectName: {{ $cluster_name }}-objectstore
   {{ end }}
 {{ end }}
 {{ end }}
