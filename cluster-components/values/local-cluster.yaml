@@ -82,6 +82,7 @@ cloudnativePg:
   testing: true
   enableMonitoring: false
   enableSuperuserAccess: true
+  superUserSecretRef: swh-postgresql-postgres-secret
   storage:
     storageClass: standard
     size: 1Gi

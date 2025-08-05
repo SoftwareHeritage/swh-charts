@@ -371,8 +371,9 @@ storage:
       storageConfigurationRef: roStoragePostgresqlConfiguration
       backend:
         initialize:
-          adminSecret: archive-superuser
+          adminSecret: swh-postgresql-postgres-secret
           database: swh
+          host: archive-rw
         check: true
         migrate: true
       cronjobs:
@@ -780,8 +781,9 @@ scheduler:
     backend:
       # initialize db if empty?
       initialize:
-        adminSecret: scheduler-superuser
+        adminSecret: swh-postgresql-postgres-secret
         database: swh-scheduler
+        host: scheduler-rw
       # check db version with latest code?
       check: true
       # migrate db?
@@ -1093,8 +1095,9 @@ vault:
     enabled: false
   backend:
     initialize:
-      adminSecret: vault-superuser
+      adminSecret: swh-postgresql-postgres-secret
       database: swh-vault
+      host: vault-rw
     check: true
     migrate: true
 
@@ -1137,8 +1140,9 @@ indexerStorage:
       backend:
         # When true, initalize the backend, leave it empty to do nothing
         initialize:
-          adminSecret: indexer-storage-superuser
+          adminSecret: swh-postgresql-postgres-secret
           database: swh-indexer
+          host: indexer-storage-rw
         # When true, check db & code versions and do not start if they diverge
         check: true
         # When true, migrate or initialize db model
@@ -1258,7 +1262,8 @@ scrubber:
           migrate: true
           initialize:
             database: swh-scrubber
-            adminSecret: scrubber-superuser
+            adminSecret: swh-postgresql-postgres-secret
+            host: scrubber-rw
           config:
             name: storage-checker-directory
             objectType: directory
