@@ -900,14 +900,14 @@ web:
       requestedCpu: 100m
       requestedMemory: 512Mi
       gunicorn:
-        workers: 4
-        threads: 2
-        timeout: 3600
+        workers: 8
+        threads: 1
+        timeout: 100
       autoScaling:
         type: keda
         minReplicaCount: 2
         maxReplicaCount: 6
-        factor: 1
+        factor: 1.5
       hosts:
         - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
