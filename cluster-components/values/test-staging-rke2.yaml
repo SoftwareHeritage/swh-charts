@@ -95,9 +95,12 @@ cloudnativePg:
   deployments:
     test-db:
       enabled: true
+      instances: 1
       database:
         name: test-db
         secretKeyRef: swh-postgresql-test-db-secret
+      initdb:
+        enabled: true
 
 rabbitmq:
   enabled: true
