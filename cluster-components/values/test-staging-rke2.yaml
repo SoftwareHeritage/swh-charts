@@ -85,6 +85,7 @@ cloudnativePg:
   # barmanobjectstoreRef: minioTestObjectStore
   # Cluster Postgresql to read db to initialize from
   externalClusterRef: clusterPgStagingDb1
+  superUserSecretRef: swh-postgresql-postgres-secret
   postgresql:
     parameters:
       max_worker_processes: "60"
@@ -94,11 +95,9 @@ cloudnativePg:
   deployments:
     test-db:
       enabled: true
-      initdb:
-        type: microservice
-        databases:
-          - test-db
-
+      database:
+        name: test-db
+        secretKeyRef: swh-postgresql-test-db-secret
 
 rabbitmq:
   enabled: true
