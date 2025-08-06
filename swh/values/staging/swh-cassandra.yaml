@@ -846,11 +846,13 @@ storage:
           concurrencyPolicy: Forbid
     cassandra-read-only:
       autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 6
-        cpuPercentageUsage: 150
-      requestedCpu: 250m
-      requestedMemory: 500Mi
+        type: keda
+        minReplicaCount: 2
+        maxReplicaCount: 10
+        # add margin to avoid any error if there is a peak of requests
+        factor: 1.5
+      requestedCpu: 500m
+      requestedMemory: 1000Mi
       storageConfigurationRef: cassandraROStorageConfiguration
       hosts:
         - storage-cassandra-read-only-ingress
