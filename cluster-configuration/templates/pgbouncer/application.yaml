@@ -13,10 +13,13 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    chart: pgbouncer
-    repoURL: 'https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart'
+    repoURL: 'https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart.git'
     targetRevision: {{ .Values.pgbouncer.version }}
-    path: chart
+    path: ./chart
+    # NOTE: As we are using a git repository, we must not set the chart key entry
+    # according to argocd's documentation, in their yaml sample
+    # https://argo-cd.readthedocs.io/en/stable/user-guide/application-specification/
+    # chart: pgbouncer
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
       releaseName: {{ $appName }}
