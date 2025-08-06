@@ -99,42 +99,6 @@ cloudnativePg:
         databases:
           - test-db
 
-    swh-scheduler-db:
-      enabled: false
-      # Managed dbs (optional)
-      initdb:
-        type: microservice
-        secretKeyRef: swh-postgresql-swh-scheduler-secret
-        dbname: swh-scheduler
-        databases:
-        # Specific swh-scheduler db with a smaller footprint (than the origin
-        # staging swh-scheduler db). The final db name should be
-        # "swh-scheduler", only the source target is named with "-k8s"
-        # After this starts, rename it with the following:
-        # - alter user "swh-scheduler-k8s" rename to "swh-scheduler";
-        # - alter database "swh-scheduler-k8s" rename to "swh-scheduler";
-        - swh-scheduler-k8s
-        source: cluster-pg-staging-db1
-      pooler:
-        instances: 1
-        enabled: true
-        types:
-        - "ro"
-      backup:
-        enabled: false
-        retention: "10d"
-        name: dayly-at-one
-        # every day at 1am
-        cron: "0 0 1 * * *"
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "kubernetes.io/hostname"
-                operator: In
-                values:
-                - "rancher-node-test-rke2-worker3"
 
 rabbitmq:
   enabled: true
