@@ -404,15 +404,15 @@ web:
     archive:
       gunicorn:
         workers: 8
-        threads: 2
-        timeout: 3600
+        threads: 1
+        timeout: 110
       autoScaling:
         type: keda
         minReplicaCount: 2
-        maxReplicaCount: 10
+        maxReplicaCount: 15
         # more is better than less
         # given the 2 threads, 1 should be enough, but more margin is better
-        factor: 1.5
+        factor: 2
       metricsScrapingEnabled: true
       sentryTracing: 0.1
       requestedCpu: 500m
@@ -450,6 +450,9 @@ web:
         secretName: swh-web-archive-crt
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/proxy-next-upstream: "error"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "100"
+          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "100"
         tlsExtraAnnotations:
           cert-manager.io/cluster-issuer: letsencrypt-production-gandi
           kubernetes.io/tls-acme: "true"
