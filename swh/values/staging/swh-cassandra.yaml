@@ -902,7 +902,7 @@ web:
       gunicorn:
         workers: 8
         threads: 1
-        timeout: 100
+        timeout: 110
       autoScaling:
         type: keda
         minReplicaCount: 2
@@ -955,7 +955,7 @@ web:
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-next-upstream: "error"
           nginx.ingress.kubernetes.io/proxy-read-timeout: "110"
-          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "110"
+          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "100"
         tlsEnabled: true
         endpoints:
           default:
