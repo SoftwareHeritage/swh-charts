@@ -954,7 +954,7 @@ web:
           kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
           nginx.ingress.kubernetes.io/proxy-next-upstream: "error"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "110"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "100"
           nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "100"
         tlsEnabled: true
         endpoints:
