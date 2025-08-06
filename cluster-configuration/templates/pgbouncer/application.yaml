@@ -15,6 +15,7 @@ spec:
   source:
     chart: pgbouncer
     repoURL: 'https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart'
+    targetRevision: {{ .Values.pgbouncer.version }}
     path: chart
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)

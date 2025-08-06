@@ -109,6 +109,8 @@ redis:
 
 pgbouncer:
   enabled: false
+  # No release, we target a commit instead of master branch to still pin it
+  version: 609cce7f5a8b27533a994a6b7c19b569bada41dc
   namespace: pgbouncer
   userlist:
     enabled: false
