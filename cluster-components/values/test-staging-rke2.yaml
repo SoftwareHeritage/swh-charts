@@ -93,21 +93,11 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     test-db:
-      enabled: false
-      externalLoadBalancer: true
+      enabled: true
       initdb:
         type: microservice
         databases:
           - test-db
-      pooler:
-        instances: 1
-        enabled: true
-        types:
-        - "rw"
-        - "ro"
-        externalLoadBalancer:
-          enabled: true
-          port: 5433
 
     swh-scheduler-db:
       enabled: false

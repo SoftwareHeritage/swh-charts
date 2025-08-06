@@ -41,6 +41,18 @@ certManager:
 cloudnativePg:
   enabled: true
 
+pgbouncer:
+  enabled: true
+  userlist:
+    enabled: true
+    secret: pgbouncer-userlist-secret
+  databases:
+    test-db:
+      host: test-db-rw
+      port: 5432
+      dbname: test-db
+      auth_user: postgres
+
 rabbitmq:
   enabled: true
 
