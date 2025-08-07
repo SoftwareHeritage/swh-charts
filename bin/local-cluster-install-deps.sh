@@ -154,7 +154,7 @@ git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
 pushd /tmp/pgbouncer-helm-chart
 
 $HELM install ./chart \
-      --name-template pgbouncer
+      --name-template pgbouncer \
       --namespace pgbouncer \
       --create-namespace
 popd
