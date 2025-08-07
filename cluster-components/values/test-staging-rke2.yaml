@@ -28,6 +28,7 @@ metallb:
             - key: app
               operator: In
               values:
+                - test-staging-rke2-pgbouncer-pgbouncer
 
 podPriority:
   enabled: true
