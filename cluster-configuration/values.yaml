@@ -124,9 +124,11 @@ pgbouncer:
   #   user: guest
   service:
     enabled: true
-    type: ClusterIP
+    type: LoadBalancer
     name: ""
-    annotations: {}
+    annotations:
+      # Allow metallb to set the external IP to the load-balancer
+      metallb.universe.tf/allow-shared-ip: clusterIP
   pgbouncerExporter:
     enabled: false
     image:
