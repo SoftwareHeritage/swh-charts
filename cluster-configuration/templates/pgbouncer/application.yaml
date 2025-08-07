@@ -2,7 +2,7 @@
 {{- $appName := print .Values.clusterName "-pgbouncer" -}}
 {{- $userlist := $.Values.pgbouncer.userlist -}}
 {{- $databases := $.Values.pgbouncer.databases -}}
-{{- $service := $.Values.pgbouncer.services -}}
+{{- $service := $.Values.pgbouncer.service -}}
 {{- $pgbouncerExporter := $.Values.pgbouncer.pgbouncerExporter -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
