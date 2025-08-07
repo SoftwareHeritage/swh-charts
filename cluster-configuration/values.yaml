@@ -104,8 +104,8 @@ redis:
 cloudnativePg:
   enabled: false
   namespace: cnpg-system
-  # https://cloudnative-pg.io/documentation/1.23/installation_upgrade/#upgrades
-  version: 0.24.0
+  # https://cloudnative-pg.io/documentation/current/installation_upgrade/#upgrades
+  version: 0.25.0
 
 pgbouncer:
   enabled: false
