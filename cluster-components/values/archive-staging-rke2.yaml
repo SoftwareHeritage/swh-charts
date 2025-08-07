@@ -241,6 +241,7 @@ recoverySwhMaskingClusters:
 
 cloudnativePg:
   enabled: true
+  superUserSecretRef: swh-postgresql-postgres-secret
   postgresql:
     parameters:
       # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
@@ -280,7 +281,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg-next-version
       externalClustersRef: externalPostgresqlClusters
-      superUserSecretRef: swh-postgresql-postgres-secret
       storage:
         size: 1Gi
       walStorage:
@@ -295,7 +295,6 @@ cloudnativePg:
     next-version-db-swh:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -310,7 +309,6 @@ cloudnativePg:
     next-version-db-swh-vault:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -325,7 +323,6 @@ cloudnativePg:
     next-version-db-swh-indexer:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -340,7 +337,6 @@ cloudnativePg:
     next-version-db-swh-web:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -355,7 +351,6 @@ cloudnativePg:
     next-version-db-swh-deposit:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -370,7 +365,6 @@ cloudnativePg:
     next-version-db-swh-svix:
       enabled: true
       namespace: cnpg-next-version
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 1
       storage:
         size: 1Gi
@@ -385,7 +379,6 @@ cloudnativePg:
     db-swh-web:
       enabled: true
       namespace: cnpg
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 2
       storage:
         size: 1Gi
@@ -406,7 +399,6 @@ cloudnativePg:
     db-swh-deposit:
       enabled: true
       namespace: cnpg
-      superUserSecretRef: swh-postgresql-postgres-secret
       instances: 2
       storage:
         size: 1Gi
@@ -428,7 +420,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      superUserSecretRef: swh-postgresql-postgres-secret
       database:
         name: swh-coar-notify
         secretKeyRef: swh-postgresql-swh-coar-notify-secret
@@ -449,7 +440,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      superUserSecretRef: swh-postgresql-postgres-secret
       database:
         name: swh-scrubber
         secretKeyRef: swh-postgresql-swh-scrubber-secret
@@ -472,7 +462,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      superUserSecretRef: swh-postgresql-postgres-secret
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-vault-secret
@@ -495,7 +484,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      superUserSecretRef: swh-postgresql-postgres-secret
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
@@ -518,7 +506,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      superUserSecretRef: swh-postgresql-postgres-secret
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
