@@ -23,13 +23,13 @@ metallb:
       serviceAllocation:
         priority: 50
         namespaces:
-          - swh-cassandra-next-version
+          - cnpg
         serviceSelectors:
           - matchExpressions:
             - key: app
               operator: In
               values:
-                - next-version-dbs-pooler
+                - archive-staging-rke2-pgbouncer-pgbouncer
 
 podPriority:
   enabled: true
