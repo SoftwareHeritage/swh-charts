@@ -74,12 +74,6 @@ otlpCollector:
   #   - http://esnode3.internal.softwareheritage.org:9200
   #   - http://esnode7.internal.softwareheritage.org:9200
 
-cloudnativePg:
-  enabled: false
-  namespace: cnpg-system
-  # https://cloudnative-pg.io/documentation/1.23/installation_upgrade/#upgrades
-  version: 0.24.0
-
 rabbitmq:
   enabled: false
   namespace: rabbitmq
@@ -106,6 +100,12 @@ redis:
   version: 0.18.3
   prune: true
   selfHeal: true
+
+cloudnativePg:
+  enabled: false
+  namespace: cnpg-system
+  # https://cloudnative-pg.io/documentation/1.23/installation_upgrade/#upgrades
+  version: 0.24.0
 
 pgbouncer:
   enabled: false
