@@ -197,7 +197,7 @@ recoverySwhSchedulerClusters:
   - name: next-version-db-swh-scheduler
     barmanObjectStore:
       serverName: next-version-db-swh-scheduler-backup
-      destinationPath: s3://backup-cnpg/archive-staging-rke2/cnpg-next-version/
+      destinationPath: s3://backup-cnpg/archive-staging-rke2/cnpg-next-version
       endpointURL: https://minio.admin.swh.network
       s3Credentials:
         accessKeyId:

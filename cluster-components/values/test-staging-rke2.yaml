@@ -46,7 +46,7 @@ podPriority:
       description: Backend storages used by other services (memcached, redis, ...)
 
 # minioTestObjectStore:
-#   destinationPath: s3://test/
+#   destinationPath: s3://test
 #   endpointURL: https://minio.admin.swh.network
 #   s3Credentials:
 #     accessKeyId:
