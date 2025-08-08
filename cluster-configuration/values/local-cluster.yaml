@@ -66,6 +66,7 @@ redis:
 
 pgbouncer:
   enabled: false
+  servicePort: 5432
   userlist:
     secret: swh-guest-postgresql-secret
   databases:

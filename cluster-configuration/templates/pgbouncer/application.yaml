@@ -3,6 +3,7 @@
 {{- $userlist := $.Values.pgbouncer.userlist -}}
 {{- $databases := $.Values.pgbouncer.databases -}}
 {{- $service := $.Values.pgbouncer.service -}}
+{{- $servicePort := $.Values.pgbouncer.servicePort -}}
 {{- $pgbouncerExporter := $.Values.pgbouncer.pgbouncerExporter -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -33,6 +34,9 @@ spec:
           {{- toYaml $databases | nindent 10 }}
         {{- end }}
         {{- if $service }}
+        {{- if $servicePort }}
+        servicePort: {{- $servicePort }}
+        {{- end }}
         service:
           {{- toYaml $service | nindent 10 }}
         {{- end }}
