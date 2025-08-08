@@ -35,7 +35,7 @@ spec:
         {{- end }}
         {{- if $service }}
         {{- if $servicePort }}
-        servicePort: {{- $servicePort }}
+        servicePort: {{ $servicePort }}
         {{- end }}
         service:
           {{- toYaml $service | nindent 10 }}
