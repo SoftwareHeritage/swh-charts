@@ -518,3 +518,11 @@ datasetsGenerator:
               values:
               - "true"
 
+webAlter:
+  email_setup:
+    backend: "django.core.mail.backends.smtp.EmailBackend"
+    host: smtp.inria.fr
+    port: 25
+    default_from_email: "no-reply@softwareheritage.org"
+  alter_settings:
+    block_disposable_email_domains: false

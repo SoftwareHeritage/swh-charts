@@ -682,14 +682,8 @@ webGraphConfiguration:
     anonymous: 1000
 
 webAlter:
-  email_setup:
-    backend: "django.core.mail.backends.smtp.EmailBackend"
-    host: smtp.inria.fr
-    port: 25
-    default_from_email: "no-reply@softwareheritage.org"
   alter_settings:
     support_mail_alias: alter-staging-support@softwareheritage.org
     manager_mail_alias: alter-staging-manager@softwareheritage.org
     legal_mail_alias: alter-staging-legal@softwareheritage.org
     technical_mail_alias: alter-staging-technical@softwareheritage.org
-    block_disposable_email_domains: false

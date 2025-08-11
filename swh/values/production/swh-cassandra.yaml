@@ -502,6 +502,7 @@ web:
       provenanceConfigurationRef: provenanceGrpcConfiguration
       djangoAppsRef: webDjangoApps
       graphConfigurationRef: webGraphConfiguration
+      webAlterRef: webAlter
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
         search_config:

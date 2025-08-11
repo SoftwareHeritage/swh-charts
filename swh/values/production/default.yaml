@@ -1317,3 +1317,10 @@ s3RWObjectstorageConfiguration: &s3-rw-configuration
 s3DeleteObjectstorageConfiguration:
   <<: *s3-rw-configuration
   allow_delete: true
+
+webAlter:
+  alter_settings:
+    support_mail_alias: alter-support@softwareheritage.org
+    manager_mail_alias: alter-manager@softwareheritage.org
+    legal_mail_alias: alter-legal@softwareheritage.org
+    technical_mail_alias: alter-technical@softwareheritage.org
