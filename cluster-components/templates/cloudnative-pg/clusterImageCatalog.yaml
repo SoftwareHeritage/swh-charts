@@ -12,6 +12,10 @@ spec:
       image: ghcr.io/cloudnative-pg/postgresql:14.18-21-bookworm@sha256:b10c13ba9f5482d8473624ceecebe5891b65a86de0c35d20c3b4f4f8af1b2fca
     - major: 15
       image: ghcr.io/cloudnative-pg/postgresql:15.13-21-bookworm@sha256:2ec3a6a5b90aa343a89de7e9d5e5ded421f7bdfa605fe189714fa13f87925257
+    # Keep previous versions for gitlab cnpg databases
+    # Drop this when ready to migrate gitlab dbs (staging & prod)
+    - major: 16-gitlab
+      image: ghcr.io/cloudnative-pg/postgresql:16.9-8-bookworm@sha256:9302e432a0366108e0d742e989655a0a8cb18459cfde8076ea2165b076d43c70
     - major: 16
       image: ghcr.io/cloudnative-pg/postgresql:16.9-21-bookworm@sha256:d06ee3c28929b5ce93f0691ee6eb5a1ea4f3b7b99c08972c66dcf02191e4aa84
     - major: 17
