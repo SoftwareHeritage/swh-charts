@@ -1,8 +1,9 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
 {{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- if and $cluster_config.backup $cluster_config.backup.enabled -}}
-{{- $schedulePeriod := $cluster_config.backup.schedule -}}
+{{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
+{{- if and $backup $backup.enabled -}}
+{{- $schedulePeriod := $backup.schedule -}}
 {{- if $schedulePeriod -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
@@ -16,9 +17,11 @@ spec:
     name: {{ $cluster_name }}
   immediate: true
   schedule: {{ $schedulePeriod }}
+  {{- if eq $backup.systemType "plugin" }}
   method: plugin
   pluginConfiguration:
     name: barman-cloud.cloudnative-pg.io
+  {{ end }}
 {{ end }}
 {{ end }}
 {{ end }}

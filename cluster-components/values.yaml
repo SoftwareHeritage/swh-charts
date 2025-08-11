@@ -258,6 +258,9 @@ cloudnativePg:
     enabled: false
     port: 5432
   nameOverride: cloudnative-pg
+  backup:
+    # Backup system type is in (in-tree, plugin)
+    systemType: in-tree
   # secrets must be stored in the same namespace
   # namespace: cnpg
   # Specific postgresql setup (can be overridden per instance)

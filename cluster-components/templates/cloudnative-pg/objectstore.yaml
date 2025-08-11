@@ -3,7 +3,7 @@
 {{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- if and $backup $backup.enabled }}
+{{- if and $backup $backup.enabled (eq $backup.systemType "plugin") }}
 ---
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
