@@ -12,7 +12,6 @@ metadata:
   namespace: {{ $namespace }}
 spec:
   retentionPolicy: {{ $backup.retention | default "30d" | quote }}
-  target: prefer-standby
   configuration:
     destinationPath: {{ $backup.s3Config.path }}
     endpointURL: {{ $backup.s3Config.url }}
