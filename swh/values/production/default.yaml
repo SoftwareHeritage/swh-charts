@@ -926,6 +926,7 @@ webDjangoApps:
   - swh.web.provenance
   - swh.web.save_bulk
   - swh.web.admin
+  - swh.web.alter
 
 webThrottling:
   internalExemptedNetworkRangesRef: internalNetworkRanges
