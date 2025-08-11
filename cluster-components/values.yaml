@@ -259,7 +259,9 @@ cloudnativePg:
     port: 5432
   nameOverride: cloudnative-pg
   backup:
-    # Backup system type is in (in-tree, plugin)
+    # Backup system type is in ("in-tree", "plugin"). Defaults to "in-tree" for now.
+    # - in-tree: Deprecated backup system integrated in-tree with cloudnative-pg
+    # - plugin: Newly dedicated backup system implemented out-of cloudnative-pg's tree
     systemType: in-tree
   # secrets must be stored in the same namespace
   # namespace: cnpg
