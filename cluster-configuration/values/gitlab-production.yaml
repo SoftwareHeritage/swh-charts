@@ -19,3 +19,4 @@ certManager:
 
 cloudnativePg:
   enabled: true
+  version: 0.24.0
