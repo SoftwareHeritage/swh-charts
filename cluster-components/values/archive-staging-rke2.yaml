@@ -393,6 +393,7 @@ cloudnativePg:
         enabled: true
       backup:
         enabled: true
+        systemType: plugin
         # Run once a day at 0:15am (UTC)
         schedule: "0 15 0 * * *"
 
