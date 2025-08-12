@@ -264,6 +264,7 @@ cloudnativePg:
     next-version-db-swh-scheduler:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -280,6 +281,7 @@ cloudnativePg:
     next-version-db-swh-masking:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       externalClustersRef: externalPostgresqlClusters
       storage:
         size: 1Gi
@@ -295,6 +297,7 @@ cloudnativePg:
     next-version-db-swh:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -309,6 +312,7 @@ cloudnativePg:
     next-version-db-swh-vault:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -323,6 +327,7 @@ cloudnativePg:
     next-version-db-swh-indexer:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -337,6 +342,7 @@ cloudnativePg:
     next-version-db-swh-web:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -351,6 +357,7 @@ cloudnativePg:
     next-version-db-swh-deposit:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
@@ -365,6 +372,7 @@ cloudnativePg:
     next-version-db-swh-svix:
       enabled: true
       namespace: cnpg-next-version
+      testing: true
       instances: 1
       storage:
         size: 1Gi
