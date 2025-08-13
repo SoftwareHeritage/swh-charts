@@ -1,43 +1,43 @@
 {{- if .Values.cloudnativePg.enabled -}}
-{{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
-{{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $externalClustersRef := get $cluster_config "externalClustersRef" | default
+{{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
+{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
+{{- $externalClustersRef := get $clusterConfig "externalClustersRef" | default
       (get $.Values.cloudnativePg "externalClustersRef") -}}
 {{- $externalPgClusters := get $.Values $externalClustersRef -}}
-{{- $db_type := dig "initdb" "type" "monolith" $cluster_config -}}
-{{- $config_postgresql := $cluster_config.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
-{{- $affinity := $cluster_config.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
-{{- $testing := $cluster_config.testing | default false -}}
-{{- $roles := $cluster_config.roles | default $.Values.cloudnativePg.roles -}}
-{{- $storage := mustMerge ($cluster_config.storage | default (dict)) $.Values.cloudnativePg.storage -}}
-{{- $enableMonitoring := $cluster_config.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
-{{- $enableSuperuserAccess := $cluster_config.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
-{{- $delay := $cluster_config.delay -}}
-{{- $imageCatalogRef := $cluster_config.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
-{{- $walStorage := $cluster_config.walStorage | default false -}}
-{{- $services := $cluster_config.services | default $.Values.cloudnativePg.services | default false -}}
-{{- $limitedCpu := $cluster_config.limitedCpu | default false -}}
-{{- $limitedMemory := $cluster_config.limitedMemory | default false -}}
-{{- $requestedCpu := $cluster_config.requestedCpu | default false -}}
-{{- $requestedMemory := $cluster_config.requestedMemory | default false -}}
-{{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- $recovery := $cluster_config.recovery | default dict -}}
-{{- $database := mustMerge $cluster_config.database ($.Values.cloudnativePg.database) | default dict -}}
-{{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $cluster_name ">") $database.name -}}
+{{- $db_type := dig "initdb" "type" "monolith" $clusterConfig -}}
+{{- $configPostgresql := $clusterConfig.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
+{{- $affinity := $clusterConfig.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
+{{- $testing := $clusterConfig.testing | default false -}}
+{{- $roles := $clusterConfig.roles | default $.Values.cloudnativePg.roles -}}
+{{- $storage := mustMerge ($clusterConfig.storage | default (dict)) $.Values.cloudnativePg.storage -}}
+{{- $enableMonitoring := $clusterConfig.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
+{{- $enableSuperuserAccess := $clusterConfig.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
+{{- $delay := $clusterConfig.delay -}}
+{{- $imageCatalogRef := $clusterConfig.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
+{{- $walStorage := $clusterConfig.walStorage | default false -}}
+{{- $services := $clusterConfig.services | default $.Values.cloudnativePg.services | default false -}}
+{{- $limitedCpu := $clusterConfig.limitedCpu | default false -}}
+{{- $limitedMemory := $clusterConfig.limitedMemory | default false -}}
+{{- $requestedCpu := $clusterConfig.requestedCpu | default false -}}
+{{- $requestedMemory := $clusterConfig.requestedMemory | default false -}}
+{{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
+{{- $recovery := $clusterConfig.recovery | default dict -}}
+{{- $database := mustMerge $clusterConfig.database ($.Values.cloudnativePg.database) | default dict -}}
+{{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $clusterName ">") $database.name -}}
 {{- $dbOwner := $database.owner | default $database.name -}}
-{{- $initdb := $cluster_config.initdb | default dict -}}
-{{- $superUserSecretRef := $cluster_config.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
+{{- $initdb := $clusterConfig.initdb | default dict -}}
+{{- $superUserSecretRef := $clusterConfig.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: {{ $cluster_name }}
+  name: {{ $clusterName }}
   namespace: {{ $namespace }}
   labels:
-    cnpg.io/cluster: {{ $cluster_name }}
+    cnpg.io/cluster: {{ $clusterName }}
 spec:
-  instances: {{ $cluster_config.instances | default 1 }}
+  instances: {{ $clusterConfig.instances | default 1 }}
   {{- if $superUserSecretRef }}
   superuserSecret:
     name: {{ $superUserSecretRef }}
@@ -100,9 +100,9 @@ spec:
       cpu: {{ $limitedCpu }}
       {{- end }}
   {{ end }}
-  {{- if $config_postgresql }}
+  {{- if $configPostgresql }}
   postgresql:
-    {{- toYaml $config_postgresql | nindent 4 }}
+    {{- toYaml $configPostgresql | nindent 4 }}
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}
@@ -189,7 +189,7 @@ spec:
   - name: barman-cloud.cloudnative-pg.io
     isWALArchiver: true
     parameters:
-      barmanObjectName: {{ $cluster_name }}-objectstore
+      barmanObjectName: {{ $clusterName }}-objectstore
   {{ end }}
   {{ end }}
 {{ end }}

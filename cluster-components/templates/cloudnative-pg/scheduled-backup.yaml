@@ -1,7 +1,7 @@
 {{- if .Values.cloudnativePg.enabled -}}
-{{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $backup := mustMerge (get $cluster_config "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
+{{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
+{{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
+{{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
 {{- if and $backup $backup.enabled -}}
 {{- $schedulePeriod := $backup.schedule -}}
 {{- if $schedulePeriod -}}
@@ -9,12 +9,12 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 metadata:
-  name: backup-{{ $cluster_name }}
+  name: backup-{{ $clusterName }}
   namespace: {{ $namespace }}
 spec:
   backupOwnerReference: cluster
   cluster:
-    name: {{ $cluster_name }}
+    name: {{ $clusterName }}
   immediate: true
   schedule: {{ $schedulePeriod }}
   {{- if eq $backup.systemType "plugin" }}

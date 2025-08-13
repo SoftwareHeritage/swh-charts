@@ -1,15 +1,15 @@
 {{ if .Values.cloudnativePg.enabled -}}
-{{- range $cluster_name, $cluster_config := .Values.cloudnativePg.deployments -}}
-{{- if or (not (hasKey $cluster_config "enabled")) (get $cluster_config "enabled") -}}
-{{- $poolerConfig := $cluster_config.pooler -}}
+{{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
+{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- $poolerConfig := $clusterConfig.pooler -}}
 {{- if and $poolerConfig $poolerConfig.enabled -}}
-{{- $namespace := get $cluster_config "namespace" | default $.Values.cloudnativePg.namespace -}}
-{{- $pooler_instances := $poolerConfig.instances | default $cluster_config.instances | default 1 -}}
-{{- $pool_mode := $poolerConfig.mode | default $.Values.cloudnativePg.pooler.mode }}
-{{- $default_pool_size := $poolerConfig.default_pool_size | default "10" -}}
-{{- $max_client_conn := $poolerConfig.max_client_conn | default "1000" -}}
+{{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
+{{- $poolerInstances := $poolerConfig.instances | default $clusterConfig.instances | default 1 -}}
+{{- $poolMode := $poolerConfig.mode | default $.Values.cloudnativePg.pooler.mode }}
+{{- $defaultPoolSize := $poolerConfig.default_pool_size | default "10" -}}
+{{- $maxClientConn := $poolerConfig.max_client_conn | default "1000" -}}
 {{- range $type := $poolerConfig.types -}}
-{{- $name := cat $cluster_name "-pooler-" $type | nospace -}}
+{{- $name := cat $clusterName "-pooler-" $type | nospace -}}
 {{- $externalLoadBalancerConfig := $poolerConfig.externalLoadBalancer | default $.Values.cloudnativePg.externalLoadBalancer -}}
 {{- $externalLoadBalancer := $externalLoadBalancerConfig.enabled -}}
 {{- $port := $externalLoadBalancerConfig.port | quote -}}
@@ -20,15 +20,15 @@ metadata:
   name: {{ $name }}
   namespace: {{ $namespace }}
 spec:
-  instances: {{ $pooler_instances }}
+  instances: {{ $poolerInstances }}
   type: {{ $type }}
   cluster:
-    name: {{ $cluster_name }}
+    name: {{ $clusterName }}
   pgbouncer:
-    poolMode: {{ $pool_mode }}
+    poolMode: {{ $poolMode }}
     parameters:
-      max_client_conn: {{ $max_client_conn | quote }}
-      default_pool_size: {{ $default_pool_size | quote }}
+      max_client_conn: {{ $maxClientConn | quote }}
+      default_pool_size: {{ $defaultPoolSize | quote }}
   template:
     metadata:
       labels:
