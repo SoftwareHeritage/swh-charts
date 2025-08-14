@@ -459,6 +459,30 @@ cloudnativePg:
         # Run once a day at 1:10am (UTC)
         schedule: "0 10 1 * * *"
 
+    db-swh-masking:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      systemType: plugin
+      externalClustersRef: externalPostgresqlClusters
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-masking
+        secretKeyRef: swh-postgresql-swh-masking-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      backup:
+        enabled: true
+        systemType: plugin
+        # Run once a day at 7:55 (UTC)
+        schedule: "0 55 7 * * *"
+
     db-swh-scheduler:
       enabled: true
       namespace: cnpg
