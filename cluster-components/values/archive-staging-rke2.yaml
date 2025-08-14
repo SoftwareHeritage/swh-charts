@@ -259,6 +259,74 @@ cloudnativePg:
   # Postgres credentials to setup (can be overridden per instance)
   # superUserSecretRef: swh-postgresql-postgres-secret
   deployments:
+    # Next-version dbs followed by staging dbs sorted in alphabetical order
+    # to look for them more easily
+
+    ##################
+    # Next-version dbs
+    ##################
+
+    next-version-db-swh:
+      enabled: true
+      namespace: cnpg-next-version
+      testing: true
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+      database:
+        name: swh
+        secretKeyRef: swh-postgresql-swh-secret
+      initdb:
+        enabled: true
+
+    next-version-db-swh-deposit:
+      enabled: true
+      namespace: cnpg-next-version
+      testing: true
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+      database:
+        name: swh-deposit
+        secretKeyRef: swh-postgresql-swh-deposit-secret
+      initdb:
+        enabled: true
+
+    next-version-db-swh-indexer:
+      enabled: true
+      namespace: cnpg-next-version
+      testing: true
+      instances: 1
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+      database:
+        name: swh-indexer
+        secretKeyRef: swh-postgresql-swh-indexer-secret
+      initdb:
+        enabled: true
+
+    next-version-db-swh-masking:
+      enabled: true
+      namespace: cnpg-next-version
+      testing: true
+      externalClustersRef: externalPostgresqlClusters
+      storage:
+        size: 1Gi
+      walStorage:
+        size: 1Gi
+      database:
+        name: swh-masking
+        secretKeyRef: swh-postgresql-swh-masking-secret
+      externalClustersRef: recoverySwhMaskingClusters
+      recovery:
+        source: next-version-db-swh-masking
+
     # Specific swh-scheduler database mounted from a backup from swh-scheduler-k8s
     # (minimalistic swh-scheduler db)
     next-version-db-swh-scheduler:
@@ -278,23 +346,7 @@ cloudnativePg:
       recovery:
         source: next-version-db-swh-scheduler
 
-    next-version-db-swh-masking:
-      enabled: true
-      namespace: cnpg-next-version
-      testing: true
-      externalClustersRef: externalPostgresqlClusters
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
-      database:
-        name: swh-masking
-        secretKeyRef: swh-postgresql-swh-masking-secret
-      externalClustersRef: recoverySwhMaskingClusters
-      recovery:
-        source: next-version-db-swh-masking
-
-    next-version-db-swh:
+    next-version-db-swh-svix:
       enabled: true
       namespace: cnpg-next-version
       testing: true
@@ -304,8 +356,8 @@ cloudnativePg:
       walStorage:
         size: 1Gi
       database:
-        name: swh
-        secretKeyRef: swh-postgresql-swh-secret
+        name: swh-svix
+        secretKeyRef: swh-postgresql-swh-svix-secret
       initdb:
         enabled: true
 
@@ -324,21 +376,6 @@ cloudnativePg:
       initdb:
         enabled: true
 
-    next-version-db-swh-indexer:
-      enabled: true
-      namespace: cnpg-next-version
-      testing: true
-      instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
-      database:
-        name: swh-indexer
-        secretKeyRef: swh-postgresql-swh-indexer-secret
-      initdb:
-        enabled: true
-
     next-version-db-swh-web:
       enabled: true
       namespace: cnpg-next-version
@@ -354,76 +391,9 @@ cloudnativePg:
       initdb:
         enabled: true
 
-    next-version-db-swh-deposit:
-      enabled: true
-      namespace: cnpg-next-version
-      testing: true
-      instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
-      database:
-        name: swh-deposit
-        secretKeyRef: swh-postgresql-swh-deposit-secret
-      initdb:
-        enabled: true
-
-    next-version-db-swh-svix:
-      enabled: true
-      namespace: cnpg-next-version
-      testing: true
-      instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
-      database:
-        name: swh-svix
-        secretKeyRef: swh-postgresql-swh-svix-secret
-      initdb:
-        enabled: true
-
-    db-swh-web:
-      enabled: true
-      namespace: cnpg
-      instances: 2
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
-      database:
-        name: swh-web
-        secretKeyRef: swh-postgresql-swh-web-secret
-      initdb:
-        enabled: true
-      backup:
-        enabled: true
-        systemType: plugin
-        # Run once a day at 0:15am (UTC)
-        schedule: "0 15 0 * * *"
-
-    db-swh-deposit:
-      enabled: true
-      namespace: cnpg
-      instances: 2
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
-      database:
-        name: swh-deposit
-        secretKeyRef: swh-postgresql-swh-deposit-secret
-      initdb:
-        enabled: true
-      backup:
-        enabled: true
-        # Run once a day at 1:10am (UTC)
-        schedule: "0 10 1 * * *"
+    #############
+    # Staging dbs
+    #############
 
     db-swh-coar-notify:
       enabled: true
@@ -445,49 +415,25 @@ cloudnativePg:
         # Run once a day at 2:05am (UTC)
         schedule: "0 05 2 * * *"
 
-    db-swh-scrubber:
+    db-swh-deposit:
       enabled: true
       namespace: cnpg
       instances: 2
-      database:
-        name: swh-scrubber
-        secretKeyRef: swh-postgresql-swh-scrubber-secret
-      externalClustersRef: externalPostgresqlClusters
-      initdb:
-        enabled: true
-        source: cluster-pg-staging-db1
       storage:
         size: 1Gi
         storageClass: local-persistent
       walStorage:
         size: 1Gi
         storageClass: local-persistent
-      backup:
-        enabled: true
-        # Run once a day at 3:20am (UTC)
-        schedule: "0 20 3 * * *"
-
-    db-swh-vault:
-      enabled: true
-      namespace: cnpg
-      instances: 2
       database:
-        name: swh-vault
-        secretKeyRef: swh-postgresql-swh-vault-secret
-      externalClustersRef: externalPostgresqlClusters
+        name: swh-deposit
+        secretKeyRef: swh-postgresql-swh-deposit-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       backup:
         enabled: true
-        # Run once a day at 4:25am (UTC)
-        schedule: "0 25 4 * * *"
+        # Run once a day at 1:10am (UTC)
+        schedule: "0 10 1 * * *"
 
     db-swh-scheduler:
       enabled: true
@@ -510,6 +456,28 @@ cloudnativePg:
         enabled: true
         # Run once a day at 5:30am (UTC)
         schedule: "0 30 5 * * *"
+
+    db-swh-scrubber:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      database:
+        name: swh-scrubber
+        secretKeyRef: swh-postgresql-swh-scrubber-secret
+      externalClustersRef: externalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      backup:
+        enabled: true
+        # Run once a day at 3:20am (UTC)
+        schedule: "0 20 3 * * *"
 
     db-swh-svix:
       enabled: true
@@ -534,6 +502,49 @@ cloudnativePg:
         schedule: "0 35 6 * * *"
         # swh-svix is potentially a huge database
         retention: 2d
+
+    db-swh-vault:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      database:
+        name: swh-vault
+        secretKeyRef: swh-postgresql-swh-vault-secret
+      externalClustersRef: externalPostgresqlClusters
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      backup:
+        enabled: true
+        # Run once a day at 4:25am (UTC)
+        schedule: "0 25 4 * * *"
+
+    db-swh-web:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-web
+        secretKeyRef: swh-postgresql-swh-web-secret
+      initdb:
+        enabled: true
+      backup:
+        enabled: true
+        systemType: plugin
+        # Run once a day at 0:15am (UTC)
+        schedule: "0 15 0 * * *"
 
 rabbitmq:
   enabled: true
