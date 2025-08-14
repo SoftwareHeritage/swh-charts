@@ -409,7 +409,7 @@ cloudnativePg:
         storageClass: local-persistent
       database:
         name: swh-blocking
-        secretKeyRef: swh-postgresql-blocking-secret
+        secretKeyRef: swh-postgresql-swh-blocking-secret
       initdb:
         enabled: true
         source: cluster-pg-staging-db1
