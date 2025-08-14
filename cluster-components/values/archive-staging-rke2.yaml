@@ -465,6 +465,14 @@ cloudnativePg:
       instances: 2
       systemType: plugin
       externalClustersRef: externalPostgresqlClusters
+      roles:
+      - name: swhmailmap
+        ensure: present
+        comment: read-only user for display_name table
+        login: true
+        connectionLimit: -1
+        passwordSecret:
+          name: swh-postgresql-swhmailmap-secret
       storage:
         size: 1Gi
         storageClass: local-persistent

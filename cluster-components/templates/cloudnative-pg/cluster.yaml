@@ -9,7 +9,9 @@
 {{- $configPostgresql := $clusterConfig.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
 {{- $affinity := $clusterConfig.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $clusterConfig.testing | default false -}}
-{{- $roles := $clusterConfig.roles | default $.Values.cloudnativePg.roles -}}
+{{- $localRoles := $clusterConfig.roles | default list -}}
+{{- $globalRoles := $.Values.cloudnativePg.roles | default list -}}
+{{- $roles := concat $globalRoles $localRoles -}}
 {{- $storage := mustMerge ($clusterConfig.storage | default (dict)) $.Values.cloudnativePg.storage -}}
 {{- $enableMonitoring := $clusterConfig.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
 {{- $enableSuperuserAccess := $clusterConfig.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
