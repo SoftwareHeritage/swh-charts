@@ -415,6 +415,7 @@ cloudnativePg:
         source: cluster-pg-staging-db1
       backup:
         enabled: true
+        systemType: plugin
         # Run once a day at 7:40am (UTC)
         schedule: "0 40 7 * * *"
 
