@@ -192,28 +192,34 @@ postgresqlSyncmailmapsConfiguration:
   host: db1.internal.staging.swh.network
   port: '5432'
   db: swh
-  user: swhmailmap
-  pass: ${PGPASSWORD}
+  user: ${POSTGRESQL_MAILMAP_USERNAME}
+  pass: ${POSTGRESQL_MAILMAP_PASSWORD}
   secrets:
-    PGPASSWORD:
-      secretKeyRef: swh-postgresql-syncmailmap-secret
-      secretKeyName: postgres-syncmailmap-password
+    POSTGRESQL_MAILMAP_USERNAME:
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: username
+    POSTGRESQL_MAILMAP_PASSWORD:
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: password
 
 postgresqlSyncMaskingProxyMailmapsConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-masking-rw.cnpg
   port: '5432'
   db: swh-masking
-  user: swhmailmap
-  pass: ${PGPASSWORD}
+  user: ${POSTGRESQL_MAILMAP_USERNAME}
+  pass: ${POSTGRESQL_MAILMAP_PASSWORD}
   secrets:
-    PGPASSWORD:
-      secretKeyRef: swh-postgresql-syncmailmap-secret
-      secretKeyName: postgres-syncmailmap-password
+    POSTGRESQL_MAILMAP_USERNAME:
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: username
+    POSTGRESQL_MAILMAP_PASSWORD:
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: password
 
 maskingAdminPostgresqlConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-masking-rw.cnpg
   port: '5432'
   db: swh-masking
   user: ${MASKING_ADMIN_PGUSER}
@@ -229,15 +235,18 @@ maskingAdminPostgresqlConfiguration:
 # Passed as postgresqlConfigurationRef to the masking proxy storage
 # pipeline entry
 maskingQueryPostgresqlConfiguration:
-  host: db1.internal.staging.swh.network
+  host: db-swh-masking-rw.cnpg
   port: '5432'
   db: swh-masking
-  user: guest
+  user: ${MASKING_GUEST_PGUSERNAME}
   pass: ${MASKING_GUEST_PGPASSWORD}
   secrets:
+    MASKING_GUEST_PGUSERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
     MASKING_GUEST_PGPASSWORD:
-      secretKeyRef: swh-postgresql-common-secret
-      secretKeyName: postgres-guest-password
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
 
 blockingAdminPostgresqlConfiguration:
   host: db-swh-blocking-rw.cnpg
