@@ -400,6 +400,7 @@ cloudnativePg:
       namespace: cnpg
       instances: 2
       systemType: plugin
+      externalClustersRef: externalPostgresqlClusters
       storage:
         size: 1Gi
         storageClass: local-persistent
@@ -411,6 +412,7 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-blocking-secret
       initdb:
         enabled: true
+        source: cluster-pg-staging-db1
       backup:
         enabled: true
         # Run once a day at 7:40am (UTC)
