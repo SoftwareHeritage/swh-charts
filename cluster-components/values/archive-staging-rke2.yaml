@@ -395,6 +395,27 @@ cloudnativePg:
     # Staging dbs
     #############
 
+    db-swh-blocking:
+      enabled: true
+      namespace: cnpg
+      instances: 2
+      systemType: plugin
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh-blocking
+        secretKeyRef: swh-postgresql-blocking-secret
+      initdb:
+        enabled: true
+      backup:
+        enabled: true
+        # Run once a day at 7:40am (UTC)
+        schedule: "0 40 7 * * *"
+
     db-swh-coar-notify:
       enabled: true
       namespace: cnpg
