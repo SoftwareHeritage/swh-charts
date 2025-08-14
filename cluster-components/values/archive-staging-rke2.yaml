@@ -482,6 +482,8 @@ cloudnativePg:
         systemType: plugin
         # Run once a day at 23:05pm (UTC)
         schedule: "0 5 23 * * *"
+        # swh-indexer is big (~97GB), keep less backups.
+        retention: 1d
 
     db-swh-masking:
       enabled: true
