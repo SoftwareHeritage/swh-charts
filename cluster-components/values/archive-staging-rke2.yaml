@@ -395,6 +395,45 @@ cloudnativePg:
     # Staging dbs
     #############
 
+    db-swh:
+      enabled: true
+      namespace: cnpg
+      # No replica for now, we need to determine where to make it run
+      # It's around 2Tb currently
+      instances: 2
+      systemType: plugin
+      externalClustersRef: externalPostgresqlClusters
+      storage:
+        size: 1Gi
+        storageClass: local-persistent
+      walStorage:
+        size: 1Gi
+        storageClass: local-persistent
+      database:
+        name: swh
+        secretKeyRef: swh-postgresql-swh-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-staging-db1
+      backup:
+        enabled: false
+        # This is a huge database relatively to the rest of staging
+        retention: 1d
+        systemType: plugin
+        # Run once a day at 20:30pm (UTC)
+        schedule: "0 30 20 * * *"
+      affinity:
+        # Install the main db on a node with a specific label (staging-metal01
+        # & db1). As this db requires a lot of disks (> 2TB)
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/db-archive
+                operator: In
+                values:
+                - "true"
+
     db-swh-blocking:
       enabled: true
       namespace: cnpg
