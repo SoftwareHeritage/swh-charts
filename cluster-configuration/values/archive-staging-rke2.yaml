@@ -81,6 +81,11 @@ pgbouncer:
       port: 5432
       dbname: swh-deposit
       auth_user: postgres
+    swh-deposit:
+      host: db-swh-indexer-rw
+      port: 5432
+      dbname: swh-indexer
+      auth_user: postgres
     swh-scrubber:
       host: db-swh-scrubber-rw
       port: 5432
