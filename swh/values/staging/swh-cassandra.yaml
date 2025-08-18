@@ -2051,8 +2051,8 @@ checkerDeposit:
   autoScaling:
     queueThreshold: 1
     stopWhenNoActivity: false
-    minReplicaCount: 1
-    maxReplicaCount: 1
+    minReplicaCount: 2
+    maxReplicaCount: 2
   requestedMemory: 100Mi
   requestedCpu: 100m
   limitedMemory: 1Gi
