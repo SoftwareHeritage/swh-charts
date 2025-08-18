@@ -81,20 +81,10 @@ pgbouncer:
       port: 5432
       dbname: swh-deposit
       auth_user: postgres
-    swh-web:
-      host: db-swh-web-rw
-      port: 5432
-      dbname: swh-web
-      auth_user: postgres
     swh-scrubber:
       host: db-swh-scrubber-rw
       port: 5432
       dbname: swh-scrubber
-      auth_user: postgres
-    swh-vault:
-      host: db-swh-vault-rw
-      port: 5432
-      dbname: swh-vault
       auth_user: postgres
     swh-scheduler:
       host: db-swh-scheduler-rw
@@ -105,4 +95,14 @@ pgbouncer:
       host: db-swh-svix-rw
       port: 5432
       dbname: swh-svix
+      auth_user: postgres
+    swh-vault:
+      host: db-swh-vault-rw
+      port: 5432
+      dbname: swh-vault
+      auth_user: postgres
+    swh-web:
+      host: db-swh-web-rw
+      port: 5432
+      dbname: swh-web
       auth_user: postgres
