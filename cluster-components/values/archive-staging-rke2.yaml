@@ -422,6 +422,14 @@ cloudnativePg:
         systemType: plugin
         # Run once a day at 20:30pm (UTC)
         schedule: "0 30 20 * * *"
+      roles:
+      - name: swhmailmap
+        ensure: present
+        comment: extra read-only user
+        login: true
+        connectionLimit: -1
+        passwordSecret:
+          name: swh-postgresql-swhmailmap-secret
       affinity:
         # Install the main db on a node with a specific label (staging-metal01
         # & db1). As this db requires a lot of disks (> 2TB)
