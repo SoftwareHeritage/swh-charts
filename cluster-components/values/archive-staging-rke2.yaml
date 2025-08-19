@@ -84,7 +84,6 @@ svix:
 
 alerting:
   enabled: true
-  cnpgEnabled: true
   environment: staging
   saveCodeNow:
     threshold: 5

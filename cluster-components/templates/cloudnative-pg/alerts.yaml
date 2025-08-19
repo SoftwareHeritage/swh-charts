@@ -1,4 +1,4 @@
-{{ if and .Values.alerting.enabled .Values.alerting.cnpgEnabled -}}
+{{ if and .Values.alerting.enabled .Values.cloudnativePg.enabled .Values.cloudnativePg.enableMonitoring -}}
 {{ with .Values.alerting -}}
 ---
 apiVersion: monitoring.coreos.com/v1
