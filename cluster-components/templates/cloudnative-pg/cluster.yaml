@@ -15,8 +15,8 @@
 {{- $globalRoles := $.Values.cloudnativePg.roles | default list -}}
 {{- $roles := concat $globalRoles $localRoles -}}
 {{- $storage := mustMerge ($clusterConfig.storage | default (dict)) $.Values.cloudnativePg.storage -}}
-{{- $enableMonitoring := $clusterConfig.enableMonitoring | default $.Values.cloudnativePg.enableMonitoring -}}
-{{- $enableSuperuserAccess := $clusterConfig.enableSuperuserAccess | default $.Values.cloudnativePg.enableSuperuserAccess -}}
+{{- $monitoringEnabled := $clusterConfig.monitoringEnabled | default $.Values.cloudnativePg.monitoringEnabled -}}
+{{- $superuserAccessEnabled := $clusterConfig.superuserAccessEnabled | default $.Values.cloudnativePg.superuserAccessEnabled -}}
 {{- $delay := $clusterConfig.delay -}}
 {{- $imageCatalogRef := $clusterConfig.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
 {{- $walStorage := $clusterConfig.walStorage | default false -}}
@@ -46,7 +46,7 @@ spec:
   superuserSecret:
     name: {{ $superUserSecretRef }}
   {{- end }}
-  {{- if or $enableSuperuserAccess $superUserSecretRef }}
+  {{- if or $superuserAccessEnabled $superUserSecretRef }}
   enableSuperuserAccess: true
   {{- end }}
   {{- if $testing }}
@@ -109,7 +109,7 @@ spec:
     {{- toYaml $postgresqlConfig | nindent 4 }}
   {{- end }}
   monitoring:
-    enablePodMonitor: {{ $enableMonitoring }}
+    enablePodMonitor: {{ $monitoringEnabled }}
     podMonitorRelabelings:
     - sourceLabels:
       - __meta_kubernetes_pod_name

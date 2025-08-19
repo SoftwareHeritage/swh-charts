@@ -80,8 +80,8 @@ cloudnativePg:
   enabled: false
   namespace: swh
   testing: true
-  enableMonitoring: false
-  enableSuperuserAccess: true
+  monitoringEnabled: false
+  superuserAccessEnabled: true
   superUserSecretRef: swh-postgresql-postgres-secret
   storage:
     storageClass: standard
