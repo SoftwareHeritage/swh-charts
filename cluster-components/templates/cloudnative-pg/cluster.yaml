@@ -6,7 +6,9 @@
       (get $.Values.cloudnativePg "externalClustersRef") -}}
 {{- $externalPgClusters := get $.Values $externalClustersRef -}}
 {{- $db_type := dig "initdb" "type" "monolith" $clusterConfig -}}
-{{- $configPostgresql := $clusterConfig.postgresql | default $.Values.cloudnativePg.postgresql | default dict -}}
+{{- $postgresqlConfig := $.Values.cloudnativePg.postgresql | default dict -}}
+{{- $extraPostgresqlConfig := $clusterConfig.extraPostgresqlConfig | default dict -}}
+{{- $postgresqlConfig := mustMerge $extraPostgresqlConfig $postgresqlConfig -}}
 {{- $affinity := $clusterConfig.affinity | default $.Values.cloudnativePg.affinity | default dict -}}
 {{- $testing := $clusterConfig.testing | default false -}}
 {{- $localRoles := $clusterConfig.roles | default list -}}
@@ -102,9 +104,9 @@ spec:
       cpu: {{ $limitedCpu }}
       {{- end }}
   {{ end }}
-  {{- if $configPostgresql }}
+  {{- if $postgresqlConfig }}
   postgresql:
-    {{- toYaml $configPostgresql | nindent 4 }}
+    {{- toYaml $postgresqlConfig | nindent 4 }}
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $enableMonitoring }}

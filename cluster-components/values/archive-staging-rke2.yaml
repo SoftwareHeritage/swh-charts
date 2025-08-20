@@ -403,6 +403,10 @@ cloudnativePg:
       instances: 2
       systemType: plugin
       externalClustersRef: externalPostgresqlClusters
+      extraPostgresqlConfig:
+        parameters:
+          # Setup used in the previous instance (defaulted to 128MB so far)
+          shared_buffers: 32GB
       storage:
         size: 1Gi
         storageClass: local-persistent
