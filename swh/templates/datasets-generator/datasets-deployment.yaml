@@ -18,7 +18,8 @@
             "Values"                         $.Values) | fromYaml -}}
 {{- $toolbox := $config.toolbox -}}
 {{- $graphMountpoint := $config.graphMountpoint -}}
-{{- $graphDirectoryPath := print $graphMountpoint "/" $datasetGeneratorName -}}
+{{- $graphDirectoryPath := $config.graphDirectoryPath -}}
+{{- $graphDirectorySensitivePath := $config.graphDirectorySensitivePath -}}
 {{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
@@ -135,6 +136,8 @@ spec:
               value: {{ $config.luigiSchedulerUrl | quote }}
             - name: GRAPH_DIRECTORY_PATH
               value: {{ $graphDirectoryPath | quote }}
+            - name: GRAPH_DIRECTORY_SENSITIVE_PATH }}
+              value: {{ $graphDirectorySensitivePath | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: NB_PROCESSES
