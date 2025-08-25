@@ -400,7 +400,7 @@ cloudnativePg:
       namespace: cnpg
       # No replica for now, we need to determine where to make it run
       # It's around 2Tb currently
-      instances: 2
+      instances: 1
       systemType: plugin
       externalClustersRef: externalPostgresqlClusters
       extraPostgresqlConfig:
