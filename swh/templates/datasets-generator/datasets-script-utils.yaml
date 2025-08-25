@@ -73,6 +73,11 @@ data:
 
     set -x
 
+    # Sensitive data should be kept on different arborescence so it's not
+    # uploaded to s3
+    GRAPH_SENSITIVE_PATH="${GRAPH_DIRECTORY_PATH}/sensitive"
+    mkdir -p ${GRAPH_SENSITIVE_PATH}
+
     /opt/swh/entrypoint.sh \
        swh datasets luigi \
           --base-directory "${GRAPH_MOUNTPOINT}" \
@@ -81,13 +86,13 @@ data:
           -- \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \
           --LocalExport-export-task-type ExportGraph \
-          --LocalExport-local-sensitive-export-path "${GRAPH_DIRECTORY_PATH}" \
+          --LocalExport-local-sensitive-export-path "${GRAPH_SENSITIVE_PATH}" \
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
           --CompressGraph-local-export-path "${GRAPH_DIRECTORY_PATH}" \
           --CompressGraph-local-graph-path "${GRAPH_COMPRESSED_DIRECTORY_PATH}" \
           --CompressGraph-rust-executable-dir /usr/local/bin \
-          --CompressGraph-local-sensitive-export-path "${GRAPH_DIRECTORY_PATH}" \
+          --CompressGraph-local-sensitive-export-path "${GRAPH_SENSITIVE_PATH}" \
           --CompressGraph-test-flavor "none" \
           --log-level "${LOG_LEVEL}" \
           --Llp-gammas=-1,-2,-3,-4
