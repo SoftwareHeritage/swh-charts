@@ -15,6 +15,7 @@
 {{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}
 {{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
                                                   "Values" $.Values) -}}
+{{- $batchSize := $config.batchSize -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -27,6 +28,9 @@ data:
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
     profile: release
+    {{- if $batchSize }}
+    batch_size: {{ $batchSize | int }}
+    {{- end }}
 {{ end }}
 {{ end }}
 {{ end }}

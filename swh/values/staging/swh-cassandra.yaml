@@ -2914,6 +2914,7 @@ datasetsGenerator:
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
+    batchSize: 10000000
     nbProcesses: 32
     # Datasets to generate
     deployments:
