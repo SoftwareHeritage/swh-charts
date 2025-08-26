@@ -1966,7 +1966,7 @@ checkerDeposit:
     queueThreshold: 1
     stopWhenNoActivity: false
     minReplicaCount: 1
-    maxReplicaCount: 2
+    maxReplicaCount: 16
   requestedMemory: 100Mi
   requestedCpu: 100m
   limitedMemory: 1Gi
@@ -2131,7 +2131,7 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
       image: swh_loader_package_image
-      replicas: 6
+      replicas: 16
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
       # only used for secrets
