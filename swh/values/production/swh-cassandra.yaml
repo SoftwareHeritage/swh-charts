@@ -2207,6 +2207,7 @@ loaders:
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 800m
+      ackLate: true
       tmpEphemeralStorage:
         emptyDir:
           sizeLimit: 35Gi
