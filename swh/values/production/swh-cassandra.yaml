@@ -1963,7 +1963,9 @@ checkerDeposit:
   celeryConfigurationRef: consumerCeleryConfiguration
   depositConfigurationRef: depositDynamicConfiguration
   autoScaling:
-    queueThreshold: 1
+    # deposit checker are faster than the loader
+    # so no need to scale too far and too fast
+    queueThreshold: 100
     stopWhenNoActivity: false
     minReplicaCount: 1
     maxReplicaCount: 16
@@ -2131,7 +2133,12 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
       image: swh_loader_package_image
-      replicas: 16
+      autoScaling:
+        # max compute if queue lengh is > 1000
+        maxReplicaCount: 20
+        minReplicaCount: 1
+        stopWhenNoActivity: false
+        queueThreshold: 50
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
       # only used for secrets
