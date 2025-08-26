@@ -2079,40 +2079,6 @@ search:
       cpuPercentageUsage: 75
     deployments:
       # instance-name (will be suffixed by -rpc)
-      search-static:
-        enabled: false
-        elasticsearchConfigurationRef: elasticsearchStaticConfiguration
-        hosts:
-          - search-static-rpc-ingress
-        ingress:
-          enabled: true
-          # Optional: the ingress classname to use
-          # className: nginx
-          extraAnnotations:
-            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-          # Default allowed ip ranges that can be extended per ingress definitions paths
-          whitelistSourceRangeRef: stagingNetworkRanges
-          endpoints:
-            default:
-              paths:
-                - path: /
-            read-only:
-              paths:
-                - path: /
-                  pathType: Exact
-                - path: /origin/search
-                  pathType: Exact
-                - path: /origin/get
-                  pathType: Exact
-                - path: /visit_types_count
-                  pathType: Exact
-              extraWhitelistSourceRange:
-                # vpn network
-                - 192.168.101.0/24
       search:
         enabled: true
         elasticsearchConfigurationRef: elasticsearchConfiguration
