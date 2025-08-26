@@ -1592,7 +1592,7 @@ deposit:
   enabled: true
   logLevel: INFO
   requestedCpu: 500m
-  requestedMemory: 500Mi
+  requestedMemory: 1Gi
   migrationsEnabled: false
   replicas: 4
   hosts:
