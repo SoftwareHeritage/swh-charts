@@ -2140,10 +2140,10 @@ loaders:
       image: swh_loader_package_image
       autoScaling:
         # max compute if queue lengh is > 1000
-        maxReplicaCount: 20
+        maxReplicaCount: 32
         minReplicaCount: 1
         stopWhenNoActivity: false
-        queueThreshold: 50
+        queueThreshold: 32
       queues:
         - swh.loader.package.deposit.tasks.LoadDeposit
       # only used for secrets
