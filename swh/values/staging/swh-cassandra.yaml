@@ -2080,6 +2080,7 @@ search:
     deployments:
       # instance-name (will be suffixed by -rpc)
       search-static:
+        enabled: false
         elasticsearchConfigurationRef: elasticsearchStaticConfiguration
         hosts:
           - search-static-rpc-ingress
