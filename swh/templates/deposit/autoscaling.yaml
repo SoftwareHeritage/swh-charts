@@ -1,5 +1,9 @@
 {{- if and .Values.deposit.enabled .Values.deposit.autoScaling -}}
-{{- include "swh.autoscale" (dict "Values"        .Values
-                                  "serviceType"   "deposit"
-                                  "configuration" .Values.deposit) -}}
+{{- with $.Values.deposit }}
+{{- $autoScalingType := get .autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{- include $autoScalerFn (dict "serviceType"   ( print "deposit" )
+                                "configuration" .autoScaling
+                                "Values"        $.Values) -}}
+{{ end }}
 {{- end -}}
