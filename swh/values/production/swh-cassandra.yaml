@@ -2141,7 +2141,7 @@ loaders:
       autoScaling:
         # max compute if queue lengh is > 1000
         maxReplicaCount: 32
-        minReplicaCount: 1
+        minReplicaCount: 6
         stopWhenNoActivity: false
         queueThreshold: 32
       queues:
