@@ -5,6 +5,9 @@ alertmanagerConfig:
   inhibitRules:
     - targetMatch:
       - name: alertname
+        value: KubeAggregatedAPIErrors
+    - targetMatch:
+      - name: alertname
         value: KubeCPUOvercommit
     - targetMatch:
       - name: alertname
