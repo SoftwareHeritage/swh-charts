@@ -134,15 +134,18 @@ remoteROObjstorageConfiguration:
 
 primaryPostgresqlRWStorageConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-rw.cnpg
   port: '5432'
-  user: swh
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   db: swh
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-common-secret
-      secretKeyName: postgres-swh-password
+      secretKeyRef: swh-postgresql-swh-secret
+      secretKeyName: password
 
 postgresqlVaultConfiguration:
   cls: postgresql
@@ -189,7 +192,7 @@ postgresqlDepositConfiguration:
 
 postgresqlSyncmailmapsConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-rw.cnpg
   port: '5432'
   db: swh
   user: ${POSTGRESQL_MAILMAP_USERNAME}
@@ -389,15 +392,18 @@ guestCeleryConfiguration:
 
 primaryPostgresqlROStorageConfiguration:
   cls: postgresql
-  host: db1.internal.staging.swh.network
+  host: db-swh-rw.cnpg
   port: '5432'
-  user: guest
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   db: swh
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-common-secret
-      secretKeyName: postgres-guest-password
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
