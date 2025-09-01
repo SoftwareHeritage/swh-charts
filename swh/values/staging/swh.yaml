@@ -111,7 +111,7 @@ storageReplayerJournalClientConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 storageReplayer:
-  enabled: false
+  enabled: true
   storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   affinity:
