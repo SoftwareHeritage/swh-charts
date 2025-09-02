@@ -566,7 +566,7 @@ volumes:
   # Dictionary of persistent volumes specification
   persistentVolumes: {}
     # Dictionary of persistent volumes specification
-    # graph-20240331-persistent-local-pv:
+    # graph-20240310-persistent-local-pv:
     #   # Can be disabled, enabled by default if not provided
     #   enabled: true
     #   # namespace: swh-cassandra
@@ -590,20 +590,20 @@ volumes:
     #             values: rancher-node-highmem02
   # Dictionary of persistent volume claims specification
   persistentVolumeClaims: {}
-    # graph-20240331-persistent-pvc:
+    # graph-20240310-persistent-pvc:
     #   enabled: true
     #   # optional application name to whom this pv is associated
-    #   appName: graph-20240331
+    #   appName: graph-20240310
     #   spec:
     #     storageClassName: local-storage
     #     volumeMode: Filesystem
-    #     volumeName: graph-20240331-persistent-pv
+    #     volumeName: graph-20240310-persistent-pv
     #     accessModes:
     #     - ReadWriteOnce
     #     resources:
     #       requests:
     #         storage: 1Gi
-    # graph-20240331-inmemory-pvc:
+    # graph-20240310-inmemory-pvc:
     #   enabled: true
     #   spec:
     #     storageClassName: local-path
