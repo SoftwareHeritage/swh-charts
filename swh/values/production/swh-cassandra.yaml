@@ -2652,17 +2652,6 @@ volumes:
         resources:
           requests:
             storage: 30Gi
-    graph-20240331-inmemory-pvc:
-      enabled: false
-      appName: graph-grpc-20240331
-      spec:
-        storageClassName: local-path
-        accessModes:
-        - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 1Gi
     graph-20250419-persistent-pvc:
       enabled: true
       appName: graph-grpc-20250419
