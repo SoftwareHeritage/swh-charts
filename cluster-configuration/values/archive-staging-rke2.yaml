@@ -71,6 +71,11 @@ pgbouncer:
     enabled: true
     secret: pgbouncer-userlist-secret
   databases:
+    swh:
+      host: db-swh-rw
+      port: 5432
+      dbname: swh
+      auth_user: postgres
     swh-coar-notify:
       host: db-swh-coar-notify-rw
       port: 5432
