@@ -10,8 +10,10 @@ spec:
   project: {{ .Values.defaultProject }}
   source:
     repoURL: 'https://github.com/cloudnative-pg/plugin-barman-cloud'
-    targetRevision: {{ .Values.cloudnativePg.barmanPluginVersion }}
+    targetRevision: v{{ .Values.cloudnativePg.barmanPluginVersion }}
     path: .
+    directory:
+      include: 'manifest.yaml'
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
