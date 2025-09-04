@@ -392,6 +392,61 @@ cloudnativePg:
         enabled: true
 
     #############
+    # Staging test db
+    #############
+
+    # Test db to mount out of a dataset volume with existing postgresql data 1 primary
+    # only, no backup enabled.
+    db-swh-test:
+      enabled: true
+      namespace: cnpg
+      # Targetted version will be the same as db1 (ongoing migration from 12 to 13)
+      imageCatalogRef: 13
+      # No replica for now, we need to determine where to make it run
+      # It's around 2Tb currently
+      instances: 1
+      externalClustersRef: externalPostgresqlClusters
+      extraPostgresqlConfig:
+        parameters:
+          # Setup used in the previous instance (defaulted to 128MB so far)
+          shared_buffers: 32GB
+      storage:
+        pvcTemplate:
+          spec:
+            storageClassName: local-storage
+            volumeMode: Filesystem
+            volumeName: database-db1-persistent-local-pv
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Ti
+      walStorage:
+        pvcTemplate:
+          spec:
+            storageClassName: local-storage
+            volumeMode: Filesystem
+            volumeName: database-db1-persistent-local-pv
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Ti
+      database:
+        name: swh
+        secretKeyRef: swh-postgresql-swh-secret
+      initdb:
+        enabled: true
+      roles:
+      - name: swhmailmap
+        ensure: present
+        comment: extra read-only user
+        login: true
+        connectionLimit: -1
+        passwordSecret:
+          name: swh-postgresql-swhmailmap-secret
+
+    #############
     # Staging dbs
     #############
 
@@ -935,6 +990,29 @@ redis:
                 storage: 1Gi
 
 volumes:
+  persistentVolumes:
+    database-db1-persistent-local-pv:
+      enabled: true
+      appName: db-swh-test
+      spec:
+        capacity:
+          storage: 1Ti
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/postgres/data
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - db1
+
   persistentVolumeClaims:
     objstorage-pathslicing-pvc:
       enabled: true
