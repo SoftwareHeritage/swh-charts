@@ -1,0 +1,24 @@
+{{ if .Values.cloudnativePg.enabled -}}
+{{- $appName := print .Values.clusterName "-cnpg-barman-plugin" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    repoURL: 'https://github.com/cloudnative-pg/plugin-barman-cloud'
+    targetRevision: {{ .Values.cloudnativePg.barmanPluginVersion }}
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - ServerSideApply=true
+  ignoreDifferences: []
+{{ end }}
