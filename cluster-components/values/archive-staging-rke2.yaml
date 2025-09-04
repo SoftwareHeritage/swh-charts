@@ -401,7 +401,6 @@ cloudnativePg:
       # No replica for now, we need to determine where to make it run
       # It's around 2Tb currently
       instances: 2
-      systemType: plugin
       externalClustersRef: externalPostgresqlClusters
       extraPostgresqlConfig:
         parameters:
@@ -423,7 +422,6 @@ cloudnativePg:
         enabled: false
         # This is a huge database relatively to the rest of staging
         retention: 1d
-        systemType: plugin
         # Run once a day at 20:30pm (UTC)
         schedule: "0 30 20 * * *"
       roles:
@@ -450,7 +448,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      systemType: plugin
       externalClustersRef: externalPostgresqlClusters
       storage:
         size: 1Gi
@@ -466,7 +463,6 @@ cloudnativePg:
         source: cluster-pg-staging-db1
       backup:
         enabled: true
-        systemType: plugin
         # Run once a day at 7:40am (UTC)
         schedule: "0 40 7 * * *"
 
@@ -514,7 +510,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      systemType: plugin
       externalClustersRef: externalPostgresqlClusters
       storage:
         size: 1Gi
@@ -530,7 +525,6 @@ cloudnativePg:
         source: cluster-pg-staging-db1
       backup:
         enabled: true
-        systemType: plugin
         # Run once a day at 23:05pm (UTC)
         schedule: "0 5 23 * * *"
         # swh-indexer is big (~97GB), keep less backups.
@@ -540,7 +534,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      systemType: plugin
       externalClustersRef: externalPostgresqlClusters
       roles:
       - name: swhmailmap
@@ -564,7 +557,6 @@ cloudnativePg:
         source: cluster-pg-staging-db1
       backup:
         enabled: true
-        systemType: plugin
         # Run once a day at 7:55 (UTC)
         schedule: "0 55 7 * * *"
 
@@ -675,7 +667,6 @@ cloudnativePg:
         enabled: true
       backup:
         enabled: true
-        systemType: plugin
         # Run once a day at 0:15am (UTC)
         schedule: "0 15 0 * * *"
 

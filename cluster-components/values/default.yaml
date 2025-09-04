@@ -10,6 +10,9 @@ cloudnativePg:
     types: []
   backup:
     compression: gzip
+    # Let's use the new barman plugin
+    # It's required for future cnpg version > 1.26
+    systemType: plugin
     # 1 week retention for staging
     retention: 7d
     s3Config:
