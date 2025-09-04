@@ -105,6 +105,8 @@ cloudnativePg:
   enabled: false
   namespace: cnpg-system
   # https://cloudnative-pg.io/documentation/current/installation_upgrade/#upgrades
+  # cnpg/cloudnative-pg  0.26.0  1.27.0  CloudNativePG Operator Helm Chart <- latest
+  # cnpg/cloudnative-pg  0.25.0  1.26.1  CloudNativePG Operator Helm Chart <- current
   version: 0.25.0
 
 pgbouncer:
