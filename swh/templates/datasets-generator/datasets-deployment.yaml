@@ -136,7 +136,7 @@ spec:
               value: {{ $config.luigiSchedulerUrl | quote }}
             - name: GRAPH_DIRECTORY_PATH
               value: {{ $graphDirectoryPath | quote }}
-            - name: GRAPH_DIRECTORY_SENSITIVE_PATH }}
+            - name: GRAPH_DIRECTORY_SENSITIVE_PATH
               value: {{ $graphDirectorySensitivePath | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
