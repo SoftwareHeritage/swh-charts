@@ -422,6 +422,7 @@ cloudnativePg:
               requests:
                 storage: 1Ti
       walStorage:
+        size: 1Gi
         pvcTemplate:
           spec:
             storageClassName: local-storage
