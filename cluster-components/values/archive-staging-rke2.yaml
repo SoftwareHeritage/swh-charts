@@ -412,7 +412,7 @@ cloudnativePg:
           shared_buffers: 32GB
       storage:
         pvcTemplate:
-          storageClassName: local-storage
+          storageClassName: local-persistent
           volumeMode: Filesystem
           volumeName: database-db1-persistent-local-pv
           accessModes:
