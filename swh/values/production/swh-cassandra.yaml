@@ -346,11 +346,11 @@ storage:
               - 192.168.101.0/24
     cassandra-winery:
       enabled: true
-      requestedCpu: 1000m
-      requestedMemory: 2Gi
+      requestedCpu: 3000m
+      requestedMemory: 6Gi
       autoScaling:
         minReplicaCount: 4
-        maxReplicaCount: 10
+        maxReplicaCount: 12
         cpuPercentageUsage: 50
       gunicorn:
         workers: 16
