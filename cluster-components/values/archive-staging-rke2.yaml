@@ -412,27 +412,25 @@ cloudnativePg:
           shared_buffers: 32GB
       storage:
         pvcTemplate:
-          spec:
-            storageClassName: local-storage
-            volumeMode: Filesystem
-            volumeName: database-db1-persistent-local-pv
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Ti
+          storageClassName: local-storage
+          volumeMode: Filesystem
+          volumeName: database-db1-persistent-local-pv
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Ti
       walStorage:
         size: 1Gi
         pvcTemplate:
-          spec:
-            storageClassName: local-storage
-            volumeMode: Filesystem
-            volumeName: database-db1-persistent-local-pv
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 1Ti
+          storageClassName: local-storage
+          volumeMode: Filesystem
+          volumeName: database-db1-persistent-local-pv
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Ti
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
