@@ -421,6 +421,7 @@ cloudnativePg:
             requests:
               storage: 1Ti
       walStorage:
+        storageClass: local-persistent
         size: 1Gi
       database:
         name: swh
