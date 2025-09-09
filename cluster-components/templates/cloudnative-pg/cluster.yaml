@@ -32,7 +32,6 @@
 {{- $dbOwner := $database.owner | default $database.name -}}
 {{- $initdb := $clusterConfig.initdb | default dict -}}
 {{- $superUserSecretRef := $clusterConfig.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
-{{- $env := $clusterConfig.env | default $.Values.cloudnativePg.env | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -161,11 +160,8 @@ spec:
   externalClusters:
     {{- toYaml $externalPgClusters | nindent 4 }}
   {{- end }}
-  env:
-  {{- if $env }}
-    {{- toYaml $env | nindent 4 }}
-  {{- end }}
   {{- if and $backup $backup.enabled }}
+  env:
   - name: AWS_REQUEST_CHECKSUM_CALCULATION
     value: when_required
   - name: AWS_RESPONSE_CHECKSUM_VALIDATION

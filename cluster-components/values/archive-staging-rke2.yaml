@@ -433,9 +433,6 @@ cloudnativePg:
         connectionLimit: -1
         passwordSecret:
           name: swh-postgresql-swhmailmap-secret
-      env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data
       affinity:
         # Install the main db on a node with a specific label (staging-metal01
         # & db1). As this db requires a lot of disks (> 2TB)
