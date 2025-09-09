@@ -992,7 +992,7 @@ volumes:
         accessModes:
         - ReadWriteOnce
         persistentVolumeReclaimPolicy: Retain
-        storageClassName: local-storage
+        storageClassName: local-persistent
         local:
           path: /srv/softwareheritage/postgres/data
         nodeAffinity:
