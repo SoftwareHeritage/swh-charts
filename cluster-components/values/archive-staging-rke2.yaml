@@ -398,7 +398,7 @@ cloudnativePg:
     # Test db to mount out of a dataset volume with existing postgresql data 1 primary
     # only, no backup enabled.
     db-swh-test:
-      enabled: false
+      enabled: true
       namespace: cnpg
       # Targetted version will be the same as db1 (ongoing migration from 12 to 13)
       imageCatalogRef: 13
