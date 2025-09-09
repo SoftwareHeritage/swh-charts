@@ -1895,11 +1895,11 @@ indexerStorage:
     rpc:
       checkDbVersion: true
       autoScaling:
-        minReplicaCount: 2
-        maxReplicaCount: 4
+        minReplicaCount: 3
+        maxReplicaCount: 6
         cpuPercentageUsage: 90
-      requestedCpu: 10m
-      requestedMemory: 200Mi
+      requestedCpu: 100m
+      requestedMemory: 300Mi
       indexerStorageConfigurationRef: postgresqlIndexerStorageConfiguration
       journalWriterConfigurationRef: indexerJournalWriterConfiguration
       hosts:
