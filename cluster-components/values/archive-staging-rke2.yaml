@@ -433,6 +433,17 @@ cloudnativePg:
         connectionLimit: -1
         passwordSecret:
           name: swh-postgresql-swhmailmap-secret
+      affinity:
+        # Install the main db on a node with a specific label (staging-metal01
+        # & db1). As this db requires a lot of disks (> 2TB)
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: swh/db-archive
+                operator: In
+                values:
+                - "true"
 
     #############
     # Staging dbs
