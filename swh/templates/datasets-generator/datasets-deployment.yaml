@@ -136,6 +136,8 @@ spec:
               value: {{ $graphSensitiveMountpoint | quote }}
             - name: GRAPH_DATASET_NAME
               value: {{ $datasetGeneratorName | quote }}
+            - name: GRAPH_COMPRESSED_DIRECTORY_PATH
+              value: {{ print $graphDirectoryPath "/compressed" | quote }}
             - name: LUIGI_SCHEDULER_URL
               value: {{ $config.luigiSchedulerUrl | quote }}
             - name: SWH_CONFIG_FILENAME
