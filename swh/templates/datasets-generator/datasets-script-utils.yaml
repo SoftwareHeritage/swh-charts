@@ -45,9 +45,8 @@ data:
     # - SWH_CONFIG_FILENAME
     # - LUIGI_SCHEDULER_URL
     # - GRAPH_MOUNTPOINT
+    # - GRAPH_SENSITIVE_MOUNTPOINT
     # - GRAPH_DATASET_NAME
-    # - GRAPH_DIRECTORY_PATH
-    # - GRAPH_DIRECTORY_SENSITIVE_PATH
     # - NB_PROCESSES
     # - LOG_LEVEL
 
@@ -63,12 +62,10 @@ data:
       echo "<LUIGI_SCHEDULER_URL> env variable must be set" && exit 1
     [ -z "${GRAPH_MOUNTPOINT}" ] && \
       echo "<GRAPH_MOUNTPOINT> env variable must be set" && exit 1
+    [ -z "${GRAPH_SENSITIVE_MOUNTPOINT}" ] && \
+      echo "<GRAPH_SENSITIVE_MOUNTPOINT> env variable must be set" && exit 1
     [ -z "${GRAPH_DATASET_NAME}" ] && \
       echo "<GRAPH_DATASET_NAME> env variable must be set" && exit 1
-    [ -z "${GRAPH_DIRECTORY_PATH}" ] && \
-      echo "<GRAPH_DIRECTORY_PATH> env variable must be set" && exit 1
-    [ -z "${GRAPH_DIRECTORY_SENSITIVE_PATH}" ] && \
-      echo "<GRAPH_DIRECTORY_SENSITIVE_PATH> env variable must be set" && exit 1
     [ -z "${NB_PROCESSES}" ] && \
       echo "<NB_PROCESSES> env variable must be set" && exit 1
     [ -z "${LOG_LEVEL}" ] && \
@@ -79,20 +76,15 @@ data:
     /opt/swh/entrypoint.sh \
        swh datasets luigi \
           --base-directory "${GRAPH_MOUNTPOINT}" \
+          --base-sensitive-directory "${GRAPH_SENSITIVE_MOUNTPOINT}" \
           --dataset-name "${GRAPH_DATASET_NAME}" \
           CompressGraph \
           -- \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \
           --LocalExport-export-task-type ExportGraph \
-          --LocalExport-local-sensitive-export-path "${GRAPH_DIRECTORY_SENSITIVE_PATH}" \
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
-          --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
-          --ExportGraph-local-sensitive-export-path "${GRAPH_DIRECTORY_SENSITIVE_PATH}" \
-          --CompressGraph-local-export-path "${GRAPH_DIRECTORY_PATH}" \
-          --CompressGraph-local-graph-path "${GRAPH_COMPRESSED_DIRECTORY_PATH}" \
           --CompressGraph-rust-executable-dir /usr/local/bin \
-          --CompressGraph-local-sensitive-export-path "${GRAPH_DIRECTORY_SENSITIVE_PATH}" \
           --CompressGraph-test-flavor "none" \
           --log-level "${LOG_LEVEL}" \
           --Llp-gammas=-1,-2,-3,-4

@@ -19,7 +19,8 @@
 {{- $toolbox := $config.toolbox -}}
 {{- $graphMountpoint := $config.graphMountpoint -}}
 {{- $graphDirectoryPath := $config.graphDirectoryPath -}}
-{{- $graphDirectorySensitivePath := $config.graphDirectorySensitivePath -}}
+{{- $graphSensitiveMountpoint := $config.graphSensitiveMountpoint -}}
+{{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
 {{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
@@ -130,20 +131,16 @@ spec:
             {{- end }}
             - name: GRAPH_MOUNTPOINT
               value: {{ $graphMountpoint | quote }}
+            - name: GRAPH_SENSITIVE_MOUNTPOINT
+              value: {{ $graphSensitiveMountpoint | quote }}
             - name: GRAPH_DATASET_NAME
               value: {{ $datasetGeneratorName | quote }}
             - name: LUIGI_SCHEDULER_URL
               value: {{ $config.luigiSchedulerUrl | quote }}
-            - name: GRAPH_DIRECTORY_PATH
-              value: {{ $graphDirectoryPath | quote }}
-            - name: GRAPH_DIRECTORY_SENSITIVE_PATH
-              value: {{ $graphDirectorySensitivePath | quote }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
             - name: NB_PROCESSES
               value: {{ $config.nbProcesses | quote }}
-            - name: GRAPH_COMPRESSED_DIRECTORY_PATH
-              value: {{ print $graphDirectoryPath "/compressed" | quote }}
             - name: LOG_LEVEL
               value: {{ $logLevel }}
             - name: LUIGI_CONFIG_PATH
@@ -158,10 +155,11 @@ spec:
           - name: datasets-script-utils
             mountPath: /script
           {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
+          {{ $mountPath := eq "sensitive" $volumeName | ternary $graphSensitiveDirectoryPath $graphDirectoryPath }}
           - name: {{ $volumeName }}
-            mountPath: {{ $volumeConfig.mountPath | default $graphDirectoryPath }}
+            mountPath: {{ $volumeConfig.mountPath | default $mountPath }}
             readOnly: {{ $volumeConfig.readOnly | default "false" }}
-          {{ end }}
+          {{- end }}
       volumes:
       - name: dataset-configuration
         emptyDir: {}

@@ -16,7 +16,7 @@
 {{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
                                                   "Values" $.Values) -}}
 {{- $batchSize := $config.batchSize -}}
-{{- $graphDirectorySensitivePath := $config.graphDirectorySensitivePath -}}
+{{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -32,8 +32,8 @@ data:
     {{- if $batchSize }}
     batch_size: {{ $batchSize | int }}
     {{- end }}
-    {{- if $graphDirectorySensitivePath }}
-    sensitive_in_dir: {{ $graphDirectorySensitivePath }}
+    {{- if $graphSensitiveDirectoryPath }}
+    sensitive_in_dir: {{ $graphSensitiveDirectoryPath }}
     {{- end }}
 {{ end }}
 {{ end }}

@@ -21,7 +21,8 @@
 {{- $graphDirectoryPathRef := required (print "Required graph directory path reference.") $graphPathRef -}}
 {{- $graphMountpoint := required (print "Invalid <graphDirectoryPathRef> configuration key.") (get .Values $graphDirectoryPathRef) -}}
 {{- $graphDirectoryPath := print $graphMountpoint "/" .datasetGeneratorName -}}
-{{- $graphDirectorySensitivePath := print $graphDirectoryPath "/sensitive" -}}
+{{- $graphSensitiveMountpoint :=  print $graphMountpoint "-sensitive" -}}
+{{- $graphSensitiveDirectoryPath := print $graphSensitiveMountpoint "/" .datasetGeneratorName -}}
 {{- $requestedMemory := $config.requestedMemory | default $topLevelConfig.requestedMemory | default $datasetsConfig.requestedMemory | default "512Mi" -}}
 {{- $requestedCpu := $config.requestedCpu | default $topLevelConfig.requestedCpu | default $datasetsConfig.requestedCpu | default "500m" -}}
 {{- $limitedMemory := $config.limitedMemory | default $topLevelConfig.limitedMemory | default $datasetsConfig.limitedMemory -}}
@@ -40,7 +41,8 @@
          "luigiSchedulerUrl" $luigiSchedulerUrl
          "graphMountpoint"   $graphMountpoint
          "graphDirectoryPath" $graphDirectoryPath
-         "graphDirectorySensitivePath" $graphDirectorySensitivePath
+         "graphSensitiveMountpoint" $graphSensitiveMountpoint
+         "graphSensitiveDirectoryPath" $graphSensitiveDirectoryPath
          "configPath"        $configPath
          "nbProcesses"       $nbProcesses
          "batchSize"         $batchSize

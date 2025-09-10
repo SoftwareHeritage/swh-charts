@@ -2731,6 +2731,16 @@ volumes:
         volumeMode: Filesystem
         volumeName: graph-20250520-generated-persistent-pv
         storageClassName: local-persistent
+    graph-sensitive-20250520-generated-persistent-pvc:
+      appName: datasets-2025-05-20
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        storageClassName: local-persistent
     graph-20250612-persistent-local-pvc:
       appName: datasets-2025-06-12
       spec:
@@ -2741,6 +2751,16 @@ volumes:
         - ReadWriteOnce
         volumeMode: Filesystem
         volumeName: graph-20250612-persistent-local-pv
+        storageClassName: local-persistent
+    graph-sensitive-20250612-persistent-local-pvc:
+      appName: datasets-2025-06-12
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
         storageClassName: local-persistent
 
 graph:
@@ -2874,9 +2894,6 @@ graph:
 # Luigi's scheduler url to access
 luigiSchedulerUrl: http://luigi-scheduler-ingress:80
 
-# Graph directory path to write or read graph data from
-graphDirectoryPath: /srv/dataset
-
 datasetsJournalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
   group_id: swh-datasets-journal-export-graph
@@ -2928,6 +2945,11 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250520-generated-persistent-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-sensitive-20250520-generated-persistent-pvc
       2025-06-12:
         enabled: true
         # So we can trigger the dataset generation manually
@@ -2939,3 +2961,8 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250612-persistent-local-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-sensitive-20250612-persistent-local-pvc

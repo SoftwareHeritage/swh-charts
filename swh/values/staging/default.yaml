@@ -2,6 +2,12 @@ environment: staging
 sentry:
   environment: staging
 
+# Graph main directory path to write or read graph data from (can be published in s3
+# without sensitive data). It will be the main folder onto which dataset named folder
+# (/srv/dataset/YYYY-MM-DD/) will be created with the data. The sensitive data will be on
+# another folder (/srv/dataset-sensitive/YYYY-MM-DD)
+graphDirectoryPath: /srv/dataset
+
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16

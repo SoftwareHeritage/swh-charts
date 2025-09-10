@@ -1534,9 +1534,6 @@ graph:
 # Luigi's scheduler url to access
 luigiSchedulerUrl: http://luigi-scheduler-next-version-ingress:80
 
-# Graph directory path to write or read graph data from
-graphDirectoryPath: /srv/dataset
-
 datasetsGenerator:
   enabled: true
   logLevel: DEBUG
