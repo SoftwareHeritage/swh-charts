@@ -146,7 +146,7 @@ spec:
               value: {{ $logLevel }}
             {{- if $batchSize }}
             - name: BATCH_SIZE
-              value: {{ $batchSize | int }}
+              value: {{ $batchSize | quote }}
             {{- end }}
             - name: LUIGI_CONFIG_PATH
               value: {{ $luigiConfigPath | quote }}
