@@ -93,7 +93,6 @@ data:
           --LocalExport-export-task-type ExportGraph \
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
-          --CompressGraph-rust-executable-dir /usr/local/bin \
           --CompressGraph-test-flavor "none" \
           --log-level "${LOG_LEVEL}" \
           --Llp-gammas=-1,-2,-3,-4
