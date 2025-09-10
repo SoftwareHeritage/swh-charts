@@ -88,6 +88,7 @@ data:
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
           --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
+          --ExportGraph-local-sensitive-export-path "${GRAPH_DIRECTORY_SENSITIVE_PATH}" \
           --CompressGraph-local-export-path "${GRAPH_DIRECTORY_PATH}" \
           --CompressGraph-local-graph-path "${GRAPH_COMPRESSED_DIRECTORY_PATH}" \
           --CompressGraph-rust-executable-dir /usr/local/bin \
