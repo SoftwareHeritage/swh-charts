@@ -41,7 +41,7 @@ data:
 
   generate-compressed-graph.sh: |
     #!/usr/bin/env bash
-    # Uses env variables:
+    # Uses mandatory env variables:
     # - SWH_CONFIG_FILENAME
     # - LUIGI_SCHEDULER_URL
     # - GRAPH_MOUNTPOINT
@@ -49,6 +49,9 @@ data:
     # - GRAPH_DATASET_NAME
     # - NB_PROCESSES
     # - LOG_LEVEL
+    # Uses optional env variables:
+    # - SWH_DEBUG_ENTRYPOINT
+    # - BATCH_SIZE
 
     set -e
 
@@ -71,6 +74,11 @@ data:
     [ -z "${LOG_LEVEL}" ] && \
       echo "<LOG_LEVEL> env variable must be set" && exit 1
 
+    EXTRA_CLI_FLAGS=()
+    if [ -n "${BATCH_SIZE}" ]; then
+      EXTRA_CLI_FLAGS+=('--batch-size' "${BATCH_SIZE}")
+    fi
+
     set -x
 
     /opt/swh/entrypoint.sh \
@@ -78,6 +86,7 @@ data:
           --base-directory "${GRAPH_MOUNTPOINT}" \
           --base-sensitive-directory "${GRAPH_SENSITIVE_MOUNTPOINT}" \
           --dataset-name "${GRAPH_DATASET_NAME}" \
+          "${EXTRA_CLI_FLAGS[@]}" \
           CompressGraph \
           -- \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \

@@ -15,7 +15,6 @@
 {{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}
 {{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
                                                   "Values" $.Values) -}}
-{{- $batchSize := $config.batchSize -}}
 {{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
 ---
 apiVersion: v1
@@ -28,13 +27,6 @@ data:
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
-    profile: release
-    {{- if $batchSize }}
-    batch_size: {{ $batchSize | int }}
-    {{- end }}
-    {{- if $graphSensitiveDirectoryPath }}
-    sensitive_in_dir: {{ $graphSensitiveDirectoryPath }}
-    {{- end }}
 {{ end }}
 {{ end }}
 {{ end }}

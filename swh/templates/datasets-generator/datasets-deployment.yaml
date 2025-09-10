@@ -21,6 +21,7 @@
 {{- $graphDirectoryPath := $config.graphDirectoryPath -}}
 {{- $graphSensitiveMountpoint := $config.graphSensitiveMountpoint -}}
 {{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
+{{- $batchSize := $config.batchSize -}}
 {{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
@@ -143,6 +144,10 @@ spec:
               value: {{ $config.nbProcesses | quote }}
             - name: LOG_LEVEL
               value: {{ $logLevel }}
+            {{- if $batchSize }}
+            - name: BATCH_SIZE
+              value: {{ $batchSize | int }}
+            {{- end }}
             - name: LUIGI_CONFIG_PATH
               value: {{ $luigiConfigPath | quote }}
             - name: LUIGI_CONFIG_PARSER
