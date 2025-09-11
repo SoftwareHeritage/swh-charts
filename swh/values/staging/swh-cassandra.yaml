@@ -2937,7 +2937,7 @@ datasetsGenerator:
     deployments:
       2025-05-20:
         enabled: true
-        imageVersion: '20250905.4'
+        imageVersion: '20250911.1'
         # So we can trigger the dataset generation manually
         toolbox: true
         extraVolumes:
