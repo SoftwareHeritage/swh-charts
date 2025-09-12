@@ -2076,7 +2076,7 @@ loaders:
       queues:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
-        maxReplicaCount: 12
+        maxReplicaCount: 4
     content:
       enabled: true
       requestedCpu: 350m
@@ -2167,7 +2167,7 @@ loaders:
       queues:
         - swh.loader.core.tasks.LoadTarballDirectory
       autoScaling:
-        maxReplicaCount: 12
+        maxReplicaCount: 4
       image: swh_loader_package_image
     git:
       enabled: true
@@ -2195,7 +2195,7 @@ loaders:
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
       autoScaling:
-        maxReplicaCount: 6
+        maxReplicaCount: 4
       requestedMemory: 256Mi
       requestedCpu: 500m
       tmpEphemeralStorage:
