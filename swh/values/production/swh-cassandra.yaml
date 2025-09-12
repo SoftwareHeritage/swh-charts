@@ -2215,7 +2215,7 @@ loaders:
         - large_repository:swh.loader.git.tasks.UpdateGitRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 12
+        maxReplicaCount: 8
       extraConfig:
         overrides:
           swh.loader.git.loader.GitLoader:
