@@ -2021,7 +2021,7 @@ loaders:
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 8
+        maxReplicaCount: 6
       extraConfig:
         overrides:
           swh.loader.git.loader.GitLoader:
