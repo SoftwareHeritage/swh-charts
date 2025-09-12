@@ -2319,7 +2319,7 @@ loaders:
         - oneshot:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 32
+        maxReplicaCount: 4
     opam:
       enabled: true
       image: swh_loader_package_image
