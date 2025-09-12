@@ -2384,7 +2384,7 @@ loaders:
           sizeLimit: 30Gi
     save-code-now:
       enabled: true
-      replicas: 10
+      replicas: 8
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 50Gi
