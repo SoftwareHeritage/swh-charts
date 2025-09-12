@@ -2497,7 +2497,7 @@ loaderMetadata:
       - kafka4.internal.softwareheritage.org:9094
     user: swh-archive-prod
   autoScaling:
-    maxReplicaCount: 6
+    maxReplicaCount: 4
 
 objstorageReplayer:
   enabled: true
