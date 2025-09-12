@@ -2409,7 +2409,7 @@ loaders:
     save-code-now-git:
       enabled: true
       image: swh_loader_savecodenow_image
-      replicas: 6
+      replicas: 4
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 50Gi
