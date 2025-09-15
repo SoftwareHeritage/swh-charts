@@ -1574,12 +1574,17 @@ datasetsGenerator:
         enabled: true
         # So we can trigger the dataset generation manually
         toolbox: true
-        # Kind of dataset to generate
+        # Where to mount the datasets
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250507-persistent-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-sensitive-20250507-generated-persistent-pvc
       2025-05-15:
         enabled: true
         toolbox: true
