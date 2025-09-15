@@ -107,6 +107,8 @@ spec:
               value: {{ $graphMountpoint | quote }}
             - name: GRAPH_SENSITIVE_MOUNTPOINT
               value: {{ $graphSensitiveMountpoint | quote }}
+            - name: GRAPH_DIRECTORY_PATH
+              value: {{ $graphDirectoryPath | quote }}
             - name: GRAPH_DATASET_NAME
               value: {{ $datasetGeneratorName | quote }}
             - name: GRAPH_COMPRESSED_DIRECTORY_PATH
