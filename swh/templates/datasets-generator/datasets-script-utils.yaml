@@ -90,6 +90,7 @@ data:
           CompressGraph \
           -- \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \
+          --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
           --LocalExport-export-task-type ExportGraph \
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
