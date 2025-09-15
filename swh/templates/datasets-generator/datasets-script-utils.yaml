@@ -45,13 +45,13 @@ data:
     # - SWH_CONFIG_FILENAME
     # - LUIGI_SCHEDULER_URL
     # - GRAPH_MOUNTPOINT
-    # - GRAPH_SENSITIVE_MOUNTPOINT
     # - GRAPH_DATASET_NAME
     # - NB_PROCESSES
     # - LOG_LEVEL
     # Uses optional env variables:
     # - SWH_DEBUG_ENTRYPOINT
     # - BATCH_SIZE
+    # - GRAPH_SENSITIVE_MOUNTPOINT
 
     set -e
 
@@ -65,8 +65,6 @@ data:
       echo "<LUIGI_SCHEDULER_URL> env variable must be set" && exit 1
     [ -z "${GRAPH_MOUNTPOINT}" ] && \
       echo "<GRAPH_MOUNTPOINT> env variable must be set" && exit 1
-    [ -z "${GRAPH_SENSITIVE_MOUNTPOINT}" ] && \
-      echo "<GRAPH_SENSITIVE_MOUNTPOINT> env variable must be set" && exit 1
     [ -z "${GRAPH_DATASET_NAME}" ] && \
       echo "<GRAPH_DATASET_NAME> env variable must be set" && exit 1
     [ -z "${NB_PROCESSES}" ] && \
@@ -79,13 +77,16 @@ data:
       EXTRA_CLI_FLAGS+=('--batch-size' "${BATCH_SIZE}")
     fi
 
+    if [ -n "${GRAPH_SENSITIVE_MOUNTPOINT}" ]; then
+      EXTRA_CLI_FLAGS+=('--base-sensitive-directory' "${GRAPH_SENSITIVE_MOUNTPOINT}")
+    fi
+
     set -x
 
     /opt/swh/entrypoint.sh \
        swh datasets luigi \
-          --base-directory "${GRAPH_MOUNTPOINT}" \
-          --base-sensitive-directory "${GRAPH_SENSITIVE_MOUNTPOINT}" \
           --dataset-name "${GRAPH_DATASET_NAME}" \
+          --base-directory "${GRAPH_MOUNTPOINT}" \
           "${EXTRA_CLI_FLAGS[@]}" \
           CompressGraph \
           -- \
