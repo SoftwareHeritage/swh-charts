@@ -18,6 +18,7 @@
 {{- $graphSensitiveMountpoint := $config.graphSensitiveMountpoint -}}
 {{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
 {{- $batchSize := $config.batchSize -}}
+{{- $sensitiveEnabled := $config.sensitiveEnabled -}}
 {{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
@@ -105,10 +106,14 @@ spec:
             {{- end }}
             - name: GRAPH_MOUNTPOINT
               value: {{ $graphMountpoint | quote }}
-            - name: GRAPH_SENSITIVE_MOUNTPOINT
-              value: {{ $graphSensitiveMountpoint | quote }}
             - name: GRAPH_DIRECTORY_PATH
               value: {{ $graphDirectoryPath | quote }}
+            {{- if $sensitiveEnabled }}
+            - name: GRAPH_SENSITIVE_MOUNTPOINT
+              value: {{ $graphSensitiveMountpoint | quote }}
+            - name: GRAPH_SENSITIVE_DIRECTORY_PATH
+              value: {{ $graphSensitiveDirectoryPath | quote }}
+            {{- end }}
             - name: GRAPH_DATASET_NAME
               value: {{ $datasetGeneratorName | quote }}
             - name: GRAPH_COMPRESSED_DIRECTORY_PATH

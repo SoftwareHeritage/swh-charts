@@ -1588,6 +1588,8 @@ datasetsGenerator:
       2025-05-15:
         enabled: true
         toolbox: true
+        # Do not separate sensitive data from the public one
+        sensitiveEnabled: false
         nbProcesses: 32
         extraVolumes:
           dataset-persistent:

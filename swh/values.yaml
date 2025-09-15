@@ -2164,6 +2164,9 @@ datasetsGenerator:
   # The datasets to generate
   datasets:
     enabled: false
+    # Take care to separate sensitive information (personal information) from public
+    # data
+    sensitiveEnabled: true
     affinity: {}
     replicas: 1
     # Optional batch size objects for compression steps which supports it (can

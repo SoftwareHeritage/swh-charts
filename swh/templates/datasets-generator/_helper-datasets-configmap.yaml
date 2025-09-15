@@ -31,6 +31,7 @@
 {{- $toolbox := $config.toolbox | default $topLevelConfig.toolbox | default false -}}
 {{- $imageVersion := $config.imageVersion | default $datasetsConfig.imageVersion | default $topLevelConfig.imageVersion | default .Values.swh_datasets_image_version -}}
 {{- $batchSize := $config.batchSize | default $datasetsConfig.batchSize -}}
+{{- $sensitiveEnabled := $config.sensitiveEnabled | default $datasetsConfig.sensitiveEnabled -}}
 
 {{- dict "serviceType"       (print "dataset-" .datasetGeneratorName)
          "logLevel"          $logLevel
@@ -46,6 +47,7 @@
          "configPath"        $configPath
          "nbProcesses"       $nbProcesses
          "batchSize"         $batchSize
+         "sensitiveEnabled"  $sensitiveEnabled
          "requestedMemory"   $requestedMemory
          "requestedCpu"      $requestedCpu
          "limitedMemory"     $limitedMemory

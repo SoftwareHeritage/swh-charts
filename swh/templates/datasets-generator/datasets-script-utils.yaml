@@ -12,6 +12,8 @@ data:
     #!/usr/bin/env bash
     # Uses env variables:
     # - GRAPH_DIRECTORY_PATH
+    # Uses optional env variables:
+    # - GRAPH_SENSITIVE_DIRECTORY_PATH
     set -e
 
     if [ -n "${SWH_DEBUG_ENTRYPOINT}" ]; then
@@ -23,6 +25,11 @@ data:
 
     rm -rf "${GRAPH_DIRECTORY_PATH}"/{.*,*} && \
       echo "Cleanup <${GRAPH_DIRECTORY_PATH}> done"
+
+    if [ -n "${GRAPH_SENSITIVE_DIRECTORY_PATH}" ]; then
+      rm -rf "${GRAPH_SENSITIVE_DIRECTORY_PATH}"/{.*,*} && \
+        echo "Cleanup <${GRAPH_SENSITIVE_DIRECTORY_PATH}> done"
+    fi
 
   display-compressed-graph-logs.sh: |
     #!/usr/bin/env bash
