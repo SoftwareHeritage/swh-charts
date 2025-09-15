@@ -1,13 +1,9 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
 {{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
-{{- $configSchedulerChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-configmap.yaml") . | sha256sum -}}
-{{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-script-utils.yaml") . | sha256sum -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
-{{- $luigiConfigDirpath := "/etc/luigi" -}}
-{{- $luigiConfigPath := print $luigiConfigDirpath "/luigi.cfg" -}}
 
 {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
 {{- if or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
@@ -49,8 +45,6 @@ spec:
         app: {{ $config.serviceType }}
       annotations:
         checksum/config: {{ $configChecksum }}
-        checksum/config-scheduler: {{ $configSchedulerChecksum }}
-        checksum/config-utils: {{ $configUtilsChecksum }}
         checksum/script-utils: {{ $configScriptUtilsChecksum }}
     spec:
       hostname: {{ $config.serviceType }}
@@ -62,27 +56,6 @@ spec:
       priorityClassName: {{ print $config.namespace "-" $config.priorityClassName | quote }}
       {{ end }}
       initContainers:
-        - name: prepare-luigi-configuration
-          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
-          imagePullPolicy: IfNotPresent
-          command:
-          - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig"
-                  (dict "deploymentConfig" $datasetsGeneratorConfig
-                        "Values" $.Values) | nindent 12 }}
-
-            - name: CONFIG_TEMPLATE_PATH
-              value: {{ print $luigiConfigDirpath "/configuration-template/luigi.cfg.template" }}
-            - name: CONFIG_PATH
-              value: {{ $luigiConfigPath }}
-          volumeMounts:
-          - name: luigi-configuration
-            mountPath: {{ $luigiConfigDirpath }}
-          - name: datasets-luigi-config-template
-            mountPath: {{ print $luigiConfigDirpath "/configuration-template" }}
-          - name: luigi-config-utils
-            mountPath: /entrypoints
-            readOnly: true
         - name: {{ $config.serviceType }}-prepare-configuration
           image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
@@ -150,13 +123,7 @@ spec:
             - name: BATCH_SIZE
               value: {{ $batchSize | int | quote }}
             {{- end }}
-            - name: LUIGI_CONFIG_PATH
-              value: {{ $luigiConfigPath | quote }}
-            - name: LUIGI_CONFIG_PARSER
-              value: cfg
           volumeMounts:
-          - name: luigi-configuration
-            mountPath: {{ $luigiConfigDirpath | quote }}
           - name: dataset-configuration
             mountPath: /etc/swh
           - name: datasets-script-utils
@@ -183,18 +150,6 @@ spec:
       - name: config-utils
         configMap:
           name: config-utils
-          defaultMode: 0555
-      - name: luigi-configuration
-        emptyDir: {}
-      - name: datasets-luigi-config-template
-        configMap:
-          name: datasets-luigi-configmap-configuration-template
-          items:
-          - key: "luigi.cfg.template"
-            path: "luigi.cfg.template"
-      - name: luigi-config-utils
-        configMap:
-          name: luigi-config-utils
           defaultMode: 0555
       {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
       - name: {{ $volumeName }}
