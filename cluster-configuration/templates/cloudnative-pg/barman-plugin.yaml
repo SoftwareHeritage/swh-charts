@@ -38,4 +38,5 @@ spec:
     jqPathExpressions:
       - .spec.duration
       - .spec.renewBefore
+      - .spec.isCA
 {{ end }}
