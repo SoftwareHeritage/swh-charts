@@ -32,4 +32,10 @@ spec:
     syncOptions:
     - RespectIgnoreDifferences=true
     - ServerSideApply=true
+    ignoreDifferences:
+    - group: cert-manager.io
+      kind: Certificate
+      jqPathExpressions:
+        - .spec.duration
+        - .spec.renewBefore
 {{ end }}
