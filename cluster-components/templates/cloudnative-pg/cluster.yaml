@@ -110,6 +110,9 @@ spec:
   {{- end }}
   monitoring:
     enablePodMonitor: {{ $monitoringEnabled }}
+    customQueriesConfigMap:
+      - name: {{ print "activity-" $clusterName }}
+        key: activity-queries
     podMonitorRelabelings:
     - sourceLabels:
       - __meta_kubernetes_pod_name
