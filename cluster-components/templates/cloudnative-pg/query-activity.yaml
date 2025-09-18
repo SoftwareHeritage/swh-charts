@@ -3,7 +3,7 @@
 {{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 ---
-apiVersion: monitoring.coreos.com/v1
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: activity-{{ $clusterName }}
