@@ -113,8 +113,8 @@ spec:
     customQueriesConfigMap:
       - key: queries
         name: cnpg-default-monitoring
-      - name: {{ print "activity-" $clusterName }}
-        key: activity-queries
+      - name: {{ print "custom-queries-" $clusterName }}
+        key: custom-queries
     podMonitorRelabelings:
     - sourceLabels:
       - __meta_kubernetes_pod_name
