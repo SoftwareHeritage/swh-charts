@@ -114,6 +114,22 @@ data:
             usage: "GAUGE"
             description: "Current transaction ID"
 
+    prepared_transactions:
+      query: "SELECT
+          datname::text,
+          COUNT(transaction) AS count
+          FROM pg_database d
+          LEFT JOIN pg_prepared_xacts x ON d.datname = x.database
+          WHERE NOT d.datname ~ '^template(0|1)$'
+          GROUP BY datname"
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Name of the database"
+        - count:
+            usage: "GAUGE"
+            description: "Transaction counter"
+
 {{ end }}
 {{- end }}
 {{- end }}
