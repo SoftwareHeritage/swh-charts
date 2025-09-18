@@ -67,6 +67,6 @@ data:
             usage: "GAUGE"
             description: "Maximum duration of a transaction in seconds"
 
-{{- end }}
+{{ end }}
 {{- end }}
 {{- end }}
