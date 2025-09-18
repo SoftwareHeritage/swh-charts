@@ -114,6 +114,29 @@ data:
             usage: "GAUGE"
             description: "Current transaction ID"
 
+    pg_stat_database:
+      query: "SELECT
+          s.datname::text,
+          numbackends::float,
+          age(d.datfrozenxid) AS freeze_age,
+          pg_database_size(s.datname)::float AS dbsize
+          FROM pg_stat_database s
+          LEFT JOIN pg_database d ON d.datname = s.datname
+          WHERE NOT s.datname ~ '^template(0|1)$'"
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Name of the database"
+        - numbackends:
+            usage: "GAUGE"
+            description: "Number of backends"
+        - freeze_age:
+            usage: "GAUGE"
+            description: "Freeze age"
+        - dbsize:
+            usage: "GAUGE"
+            description: "Database size"
+
     prepared_transactions:
       query: "SELECT
           datname::text,
