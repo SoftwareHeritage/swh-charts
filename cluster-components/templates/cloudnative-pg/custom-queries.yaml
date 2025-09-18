@@ -75,9 +75,6 @@ data:
                 current_setting('max_wal_senders')::float AS max_wal_senders,
                 current_setting('max_prepared_transactions')::float AS max_prepared_transactions"
       metrics:
-        - settings:
-            usage: "LABEL"
-            description: "Subset of setting db parameters"
         - max_connections:
             usage: "GAUGE"
             description: Number of connection slots reserved for superusers"
