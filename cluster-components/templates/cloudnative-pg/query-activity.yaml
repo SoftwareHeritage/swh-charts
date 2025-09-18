@@ -10,7 +10,7 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     cnpg.io/reload: "true"
-spec:
+data:
   activity-queries: |
     running_queries:
       query: "SELECT datname::text, coalesce(usename::text, 'UNKNOWN') as usename, COUNT(*)::float AS count
