@@ -9,7 +9,7 @@ metadata:
   name: activity-{{ $clusterName }}
   namespace: {{ $namespace }}
   labels:
-    cnpg.io/reload: true
+    cnpg.io/reload: "true"
 spec:
   activity-queries: |
     running_queries:
