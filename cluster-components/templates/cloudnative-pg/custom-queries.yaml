@@ -91,6 +91,16 @@ data:
             usage: "GAUGE"
             description: "Maximum number of simultaneously prepared transactions"
 
+    pg_locks:
+      query: "SELECT datname, t.mode, count(l.mode) FROM pg_database d CROSS JOIN
+            (VALUES ('AccessShareLock'), ('RowShareLock'), ('RowExclusiveLock'), ('ShareUpdateExclusiveLock'), ('ShareLock'), ('ShareRowExclusiveLock'), ('ExclusiveLock'), ('AccessExclusiveLock')) t(mode)
+            LEFT JOIN pg_locks l ON d.oid = l.database AND t.mode = l.mode AND l.pid <> pg_backend_pid()
+            WHERE datname !~ '^template(0|1)$' GROUP BY 1, 2"
+      metrics:
+        - count:
+            usage: "GAUGE"
+            description: "Locks held"
+
 {{ end }}
 {{- end }}
 {{- end }}
