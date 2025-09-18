@@ -108,7 +108,7 @@ data:
             description: "Locks held"
 
     txid:
-      query: "SELECT CASE WHEN pg_is_in_recovery() THEN 0 ELSE txid_current() END"
+      query: "SELECT CASE WHEN pg_is_in_recovery() THEN 0 ELSE txid_current() END as current"
       metrics:
         - current:
             usage: "GAUGE"
