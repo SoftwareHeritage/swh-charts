@@ -111,6 +111,8 @@ spec:
   monitoring:
     enablePodMonitor: {{ $monitoringEnabled }}
     customQueriesConfigMap:
+      - key: queries
+        name: cnpg-default-monitoring
       - name: {{ print "activity-" $clusterName }}
         key: activity-queries
     podMonitorRelabelings:
