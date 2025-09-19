@@ -130,7 +130,6 @@ storageReplayer:
     db: 1
   deployments:
     content:
-      enabled: false
       journalClientOverrides:
         group_id: swh-cassandra-stg-postgresql-replayer-content
         object_types:
