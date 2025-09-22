@@ -114,6 +114,92 @@ data:
             usage: "GAUGE"
             description: "Current transaction ID"
 
+    pg_stat_database:
+      query: "SELECT
+                s.datname::text,
+                numbackends::float,
+                xact_commit::float,
+                xact_rollback::float,
+                blks_read::float,
+                blks_hit::float,
+                tup_returned::float,
+                tup_fetched::float,
+                tup_inserted::float,
+                tup_updated::float,
+                tup_deleted::float,
+                conflicts::float,
+                temp_files::float,
+                temp_bytes::float,
+                deadlocks::float,
+                blk_read_time,
+                blk_write_time,
+                age(d.datfrozenxid) AS freeze_age,
+                pg_database_size(s.datname)::float AS dbsize
+              FROM pg_stat_database s
+              LEFT JOIN pg_database d ON d.datname = s.datname
+              WHERE NOT s.datname ~ '^template(0|1)$'"
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Name of the database"
+        - numbackends:
+            usage: "GAUGE"
+            description: "Number of backends"
+        - xact_commit:
+            usage: "GAUGE"
+            description: ""
+        - xact_rollback:
+            usage: "GAUGE"
+            description: ""
+        - xact_rollback:
+            usage: "GAUGE"
+            description: ""
+        - blks_read:
+            usage: "GAUGE"
+            description: ""
+        - blks_hit:
+            usage: "GAUGE"
+            description: ""
+        - tup_returned:
+            usage: "GAUGE"
+            description: ""
+        - tup_fetched:
+            usage: "GAUGE"
+            description: ""
+        - tup_inserted:
+            usage: "GAUGE"
+            description: ""
+        - tup_updated:
+            usage: "GAUGE"
+            description: ""
+        - tup_deleted:
+            usage: "GAUGE"
+            description: ""
+        - conflicts:
+            usage: "GAUGE"
+            description: ""
+        - temp_files:
+            usage: "GAUGE"
+            description: ""
+        - temp_bytes:
+            usage: "GAUGE"
+            description: ""
+        - deadlocks:
+            usage: "GAUGE"
+            description: ""
+        - blk_read_timez;
+            usage: "GAUGE"
+            description: ""
+        - blk_write_time:
+            usage: "GAUGE"
+            description: ""
+        - freeze_age:
+            usage: "GAUGE"
+            description: ""
+        - dbsize:
+            usage: "GAUGE"
+            description: "Database size"
+
 {{ end }}
 {{- end }}
 {{- end }}
