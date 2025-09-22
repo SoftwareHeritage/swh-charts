@@ -173,7 +173,7 @@ toolbox:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
 
 scrubber:
-  enabled: false
+  enabled: true
   scrubberDatabaseConfigurationRef: postgresqlScrubberConfiguration
   priorityClassName: background-workload
   objstorageChecker:
