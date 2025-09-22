@@ -267,7 +267,7 @@ data:
         - analyze_count:
             usage: "GAUGE"
             description: ""
-        - autoanalyze_coun:
+        - autoanalyze_count:
             usage: "GAUGE"
             description: ""
 
