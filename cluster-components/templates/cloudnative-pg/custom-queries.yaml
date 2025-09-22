@@ -151,9 +151,6 @@ data:
         - xact_rollback:
             usage: "GAUGE"
             description: ""
-        - xact_rollback:
-            usage: "GAUGE"
-            description: ""
         - blks_read:
             usage: "GAUGE"
             description: ""
@@ -187,7 +184,7 @@ data:
         - deadlocks:
             usage: "GAUGE"
             description: ""
-        - blk_read_timez;
+        - blk_read_time:
             usage: "GAUGE"
             description: ""
         - blk_write_time:
