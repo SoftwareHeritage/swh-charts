@@ -197,6 +197,80 @@ data:
             usage: "GAUGE"
             description: "Database size"
 
+    pg_stat_user_tables:
+      query: "SELECT
+                current_database()::text AS datname,
+                COALESCE(schemaname::text, 'null') AS schemaname,
+                COALESCE(relname::text, 'null') AS relname,
+                COALESCE(seq_scan, 0)::float AS seq_scan,
+                COALESCE(seq_tup_read, 0)::float AS seq_tup_read,
+                COALESCE(idx_scan, 0)::float AS idx_scan,
+                COALESCE(idx_tup_fetch, 0)::float AS idx_tup_fetch,
+                COALESCE(n_tup_ins, 0)::float AS n_tup_ins,
+                COALESCE(n_tup_upd, 0)::float AS n_tup_upd,
+                COALESCE(n_tup_del, 0)::float AS n_tup_del,
+                COALESCE(n_tup_hot_upd, 0)::float AS n_tup_hot_upd,
+                COALESCE(n_live_tup, 0)::float AS n_live_tup,
+                COALESCE(n_dead_tup, 0)::float AS n_dead_tup,
+                COALESCE(vacuum_count, 0)::float AS vacuum_count,
+                COALESCE(autovacuum_count, 0)::float AS autovacuum_count,
+                COALESCE(analyze_count, 0)::float AS analyze_count,
+                COALESCE(autoanalyze_count, 0)::float AS autoanalyze_count
+              FROM pg_stat_user_tables FULL JOIN (VALUES(0)) filler(i) ON TRUE
+              WHERE schemaname not like 'pg_temp%'"
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - schemaname:
+            usage: "LABEL"
+            description: "Schema name"
+        - relname:
+            usage: "LABEL"
+            description: "Table name"
+        - seq_scan:
+            usage: "GAUGE"
+            description: ""
+        - seq_tup_read:
+            usage: "GAUGE"
+            description: ""
+        - idx_scan:
+            usage: "GAUGE"
+            description: ""
+        - idx_tup_fetch:
+            usage: "GAUGE"
+            description: ""
+        - n_tup_ins:
+            usage: "GAUGE"
+            description: ""
+        - n_tup_upd:
+            usage: "GAUGE"
+            description: ""
+        - n_tup_del:
+            usage: "GAUGE"
+            description: ""
+        - n_tup_hot_upd:
+            usage: "GAUGE"
+            description: ""
+        - n_live_tup:
+            usage: "GAUGE"
+            description: ""
+        - n_dead_tup:
+            usage: "GAUGE"
+            description: ""
+        - vacuum_count:
+            usage: "GAUGE"
+            description: ""
+        - autovacuum_count:
+            usage: "GAUGE"
+            description: ""
+        - analyze_count:
+            usage: "GAUGE"
+            description: ""
+        - autoanalyze_coun:
+            usage: "GAUGE"
+            description: ""
+
 {{ end }}
 {{- end }}
 {{- end }}
