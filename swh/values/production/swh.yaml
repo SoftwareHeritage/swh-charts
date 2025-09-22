@@ -505,7 +505,6 @@ storageReplayer:
     db: 1
   deployments:
     content:
-      enabled: false
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-content
         object_types:
