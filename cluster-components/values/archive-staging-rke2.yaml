@@ -165,18 +165,17 @@ scrapeClusterMetrics:
         enabled: true
         port: 9404
 
-# This is slowly being decommissioned as it's using db1 to retrieve data from dbs hosted
-# there
-externalPostgresqlClusters:
-  - name: cluster-pg-staging-db1
-    password:
-      name: cluster-staging-db1-postgres-user-credential
-      key: password
-    connectionParameters:
-      # Use the correct IP or host name for the source database
-      host: db1.internal.staging.swh.network
-      user: postgres
-      port: "5433"
+externalPostgresqlClusters: []
+  # No longer relevant datasource (db1 got decommissionned)
+  # - name: cluster-pg-staging-db1
+  #   password:
+  #     name: cluster-staging-db1-postgres-user-credential
+  #     key: password
+  #   connectionParameters:
+  #     # Use the correct IP or host name for the source database
+  #     host: db1.internal.staging.swh.network
+  #     user: postgres
+  #     port: "5433"
 
 # This is to access already existing dbs running in cnpg clusters
 internalPostgresqlClusters: []
@@ -480,7 +479,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       backup:
         enabled: false
         # This is a huge database relatively to the rest of staging
@@ -587,7 +585,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-indexer-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       backup:
         enabled: true
         # Run once a day at 23:05pm (UTC)
@@ -619,7 +616,6 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-masking-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       backup:
         enabled: true
         # Run once a day at 7:55 (UTC)
@@ -635,7 +631,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       storage:
         size: 1Gi
         storageClass: local-persistent
@@ -657,7 +652,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       storage:
         size: 1Gi
         storageClass: local-persistent
@@ -679,7 +673,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       storage:
         size: 5Gi
         storageClass: local-persistent
@@ -703,7 +696,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
       storage:
         size: 1Gi
         storageClass: local-persistent
