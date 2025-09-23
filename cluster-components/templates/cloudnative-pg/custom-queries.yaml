@@ -271,6 +271,17 @@ data:
             usage: "GAUGE"
             description: ""
 
+    LastCheckpointDistance:
+      query: "SELECT pg_wal_lsn_diff(CASE WHEN pg_is_in_recovery()
+              THEN pg_last_wal_receive_lsn()
+              ELSE pg_current_wal_lsn() END,
+              checkpoint_lsn) \"distance\"
+              FROM pg_control_checkpoint()"
+      metrics:
+        - distance:
+            usage: "GAUGE"
+            description: ""
+
 {{ end }}
 {{- end }}
 {{- end }}
