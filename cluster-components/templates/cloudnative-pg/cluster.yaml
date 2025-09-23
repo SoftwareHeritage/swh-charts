@@ -140,7 +140,7 @@ spec:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
 
-    {{- if and (eq $backup.systemType "in-tree") (not $recovery) $initdb.source }}
+    {{- if and (not $recovery) $initdb.source }}
     {{- $databases := $initdb.databases | default (list $dbName) -}}
       import:
         type: microservice
