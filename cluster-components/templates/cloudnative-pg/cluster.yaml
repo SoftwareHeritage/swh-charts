@@ -124,7 +124,7 @@ spec:
       - cluster
       targetLabel: cnpg_cluster
   bootstrap:
-    {{- if and $initdb $initdb.enabled }}
+    {{- if and $initdb $initdb.enabled (not $recovery) }}
     initdb:
       dataChecksums: true
       database: {{ $dbName }}
@@ -140,7 +140,7 @@ spec:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
 
-    {{- if and (not $recovery) $initdb.source }}
+    {{- if $initdb.source }}
     {{- $databases := $initdb.databases | default (list $dbName) -}}
       import:
         type: microservice
