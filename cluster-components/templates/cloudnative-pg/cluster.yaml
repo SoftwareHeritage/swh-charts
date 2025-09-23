@@ -140,7 +140,7 @@ spec:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
 
-    {{- if and (eq $backup.systemType "in-tree") $initdb.source }}
+    {{- if and (eq $backup.systemType "in-tree") (not $recovery) $initdb.source }}
     {{- $databases := $initdb.databases | default (list $dbName) -}}
       import:
         type: microservice
@@ -148,10 +148,6 @@ spec:
           {{- toYaml $databases | nindent 10 }}
         source:
           externalCluster: {{ $initdb.source }}
-    {{- end }}
-    {{- if and (eq $backup.systemType "plugin") $initdb.source }}
-    recovery:
-      source: {{ $initdb.source }}
     {{- end }}
     {{- end }}
     {{- if $recovery }}
@@ -162,6 +158,9 @@ spec:
       {{- if $database.secretKeyRef }}
       secret:
         name: {{ $database.secretKeyRef }}
+      {{- if and (eq $backup.systemType "plugin") $initdb.source }}
+      source: {{ $initdb.source }}
+      {{- end }}
       {{- end }}
     {{- end }}
 

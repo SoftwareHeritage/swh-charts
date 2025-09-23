@@ -512,6 +512,8 @@ cloudnativePg:
       namespace: cnpg
       instances: 2
       externalClustersRef: internalObjectStores
+      recovery:
+        enabled: true
       storage:
         size: 1Gi
         storageClass: local-persistent
