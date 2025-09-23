@@ -191,6 +191,15 @@ internalPostgresqlClusters: []
   #     user: swh-web
   #     port: "5432"
 
+# This is to access object store for backup recovery
+internalObjectStores:
+  - name: db-swh-blocking-objectstore
+    plugin:
+      name: barman-cloud.cloudnative-pg.io
+      parameters:
+        barmanObjectName: db-swh-blocking-objectstore
+        serverName: db-swh-blocking
+
 # Mandatory recovery backup which will be used when the next-version environment is
 # resetted.
 recoverySwhSchedulerClusters:
@@ -502,7 +511,7 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      externalClustersRef: externalPostgresqlClusters
+      externalClustersRef: internalObjectStores
       storage:
         size: 1Gi
         storageClass: local-persistent
@@ -514,7 +523,7 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-blocking-secret
       initdb:
         enabled: true
-        source: cluster-pg-staging-db1
+        source: db-swh-blocking-objectstore
       backup:
         enabled: true
         # Run once a day at 7:40am (UTC)
