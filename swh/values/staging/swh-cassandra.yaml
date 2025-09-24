@@ -157,7 +157,7 @@ scrubberObjstorageJournalClientConfiguration:
       secretKeyName: BROKER_USER_PASSWORD
 
 loaders:
-  enabled: false
+  enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
@@ -600,7 +600,7 @@ loaders:
           sizeLimit: 15Gi
 
 loaderMetadata:
-  enabled: false
+  enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
