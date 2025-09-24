@@ -284,16 +284,16 @@ data:
             usage: "GAUGE"
             description: ""
 
-    waldistance:
-      query: |
-        SELECT pg_wal_lsn_diff(CASE WHEN pg_is_in_recovery()
-        THEN pg_last_wal_receive_lsn()
-        ELSE pg_current_wal_lsn() END, '0/0') as location
+    # waldistance:
+    #   query: |
+    #     SELECT pg_wal_lsn_diff(CASE WHEN pg_is_in_recovery()
+    #     THEN pg_last_wal_receive_lsn()
+    #     ELSE pg_current_wal_lsn() END, '0/0') as location
 
-      metrics:
-        - location:
-            usage: "GAUGE"
-            description: ""
+    #   metrics:
+    #     - location:
+    #         usage: "GAUGE"
+    #         description: ""
 
 
 {{ end }}
