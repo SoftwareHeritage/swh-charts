@@ -333,6 +333,7 @@ cloudnativePg:
         secretKeyRef: swh-postgresql-swh-masking-secret
       externalClustersRef: recoverySwhMaskingClusters
       recovery:
+        enabled: true
         source: next-version-db-swh-masking
 
     # Specific swh-scheduler database mounted from a backup from swh-scheduler-k8s
@@ -352,6 +353,7 @@ cloudnativePg:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
       recovery:
+        enabled: true
         source: next-version-db-swh-scheduler
 
     next-version-db-swh-svix:
@@ -521,9 +523,11 @@ cloudnativePg:
       database:
         name: swh-blocking
         secretKeyRef: swh-postgresql-swh-blocking-secret
-      initdb:
+      recovery:
         enabled: true
         source: db-swh-blocking-objectstore
+      initdb:
+        enabled: true
       backup:
         enabled: true
         # Run once a day at 7:40am (UTC)

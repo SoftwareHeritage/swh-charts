@@ -162,8 +162,8 @@ spec:
       {{- if $database.secretKeyRef }}
       secret:
         name: {{ $database.secretKeyRef }}
-      {{- if and (eq $backup.systemType "plugin") $initdb.source }}
-      source: {{ $initdb.source }}
+      {{- if and (eq $backup.systemType "plugin") $recovery.source }}
+      source: {{ $recovery.source }}
       {{- end }}
       {{- end }}
     {{- end }}
