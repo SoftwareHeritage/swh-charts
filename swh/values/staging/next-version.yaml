@@ -1590,10 +1590,15 @@ datasetsGenerator:
         enabled: true
         toolbox: true
         # Do not separate sensitive data from the public one
-        sensitiveEnabled: false
+        sensitiveEnabled: true
         nbProcesses: 32
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20250515-persistent-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-sensitive-20250515-generated-persistent-pvc
