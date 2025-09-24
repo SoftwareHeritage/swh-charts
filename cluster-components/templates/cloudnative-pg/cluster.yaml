@@ -26,7 +26,9 @@
 {{- $requestedCpu := $clusterConfig.requestedCpu | default false -}}
 {{- $requestedMemory := $clusterConfig.requestedMemory | default false -}}
 {{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- $recovery := $clusterConfig.recovery | default dict -}}
+{{- $recovery := $clusterConfig.recovery | default (dict "enabled" false) -}}
+{{- $recoveryEnabled := $recovery.enabled -}}
+{{- $recovery = omit (deepCopy $recovery) "enabled" -}}
 {{- $database := mustMerge $clusterConfig.database ($.Values.cloudnativePg.database) | default dict -}}
 {{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $clusterName ">") $database.name -}}
 {{- $dbOwner := $database.owner | default $database.name -}}
@@ -124,7 +126,7 @@ spec:
       - cluster
       targetLabel: cnpg_cluster
   bootstrap:
-    {{- if and $initdb $initdb.enabled (not $recovery) }}
+    {{- if and $initdb $initdb.enabled (not $recoveryEnabled) }}
     initdb:
       dataChecksums: true
       database: {{ $dbName }}
@@ -150,11 +152,13 @@ spec:
           externalCluster: {{ $initdb.source }}
     {{- end }}
     {{- end }}
-    {{- if $recovery }}
+    {{- if $recoveryEnabled }}
     recovery:
       database: {{ $dbName }}
       owner: {{ $dbOwner }}
+      {{- if $recovery }}
       {{- toYaml $recovery | nindent 6 }}
+      {{- end }}
       {{- if $database.secretKeyRef }}
       secret:
         name: {{ $database.secretKeyRef }}
