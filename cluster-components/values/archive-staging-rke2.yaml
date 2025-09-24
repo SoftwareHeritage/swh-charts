@@ -526,8 +526,6 @@ cloudnativePg:
       recovery:
         enabled: true
         source: db-swh-blocking-objectstore
-      initdb:
-        enabled: true
       backup:
         enabled: true
         # Run once a day at 7:40am (UTC)
