@@ -295,6 +295,25 @@ data:
             usage: "GAUGE"
             description: ""
 
+    # This query (or derivative) is failing:
+    # "error_severity":"ERROR","sql_state_code":"42501",
+    # "message":"permission denied for function pg_ls_dir",
+    # "query":"$thisQuery",
+    # "application_name":"cnpg_metrics_exporter",
+    # "backend_type":"client backend","query_id":"0"}}
+    # Simpler derivative fails with the same message:
+    # "query":"SELECT COUNT(*) AS ready FROM pg_ls_dir('pg_wal/archive_status')
+    # WHERE pg_ls_dir like '%ready'"
+    # archive:
+    #   query: |
+    #     SELECT COUNT(*) AS ready
+    #     FROM pg_ls_dir('pg_wal/archive_status')
+    #     WHERE pg_ls_dir ~ '^[0-9a-fA-F]{24}\.ready$'
+    #   metrics:
+    #     - ready:
+    #         usage: "GAUGE"
+    #         description: ""
+
 {{ end }}
 {{- end }}
 {{- end }}
