@@ -314,6 +314,34 @@ data:
     #         usage: "GAUGE"
     #         description: ""
 
+    maintenancecounters:
+      query: |
+        SELECT
+        current_database()::text AS datname,
+        COALESCE(SUM(vacuum_count), 0) vacuum_count,
+        COALESCE(SUM(autovacuum_count), 0) autovacuum_count,
+        COALESCE(SUM(analyze_count), 0) analyze_count,
+        COALESCE(SUM(autoanalyze_count), 0) autoanalyze_count
+        FROM pg_stat_user_tables
+        WHERE schemaname not like 'pg_temp%'
+
+      metrics:
+        - datname:
+            usage: "LABEL"
+            description: "Database name"
+        - vacuum_count:
+            usage: "GAUGE"
+            description: ""
+        - autovacuum_count:
+            usage: "GAUGE"
+            description: ""
+        - analyze_count:
+            usage: "GAUGE"
+            description: ""
+        - autoanalyze_count:
+            usage: "GAUGE"
+            description: ""
+
 {{ end }}
 {{- end }}
 {{- end }}
