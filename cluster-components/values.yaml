@@ -266,20 +266,24 @@ cloudnativePg:
   # secrets must be stored in the same namespace
   # namespace: cnpg
   # Specific postgresql setup (can be overridden per instance)
-  # postgresql:
-  #   parameters:
-  #     # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
-  #     max_worker_processes: "60"
-  #     # max_connections: "400"
-  #     # shared_buffers: "32GB" # min 128kB
-  #     # log_timezone: 'Etc/UTC'
-  #     # timezone: 'Etc/UTC'
-  #     # lc_messages: 'C.UTF-8' # locale for system error message strings
-  #     # lc_monetary: 'C.UTF-8' # locale for monetary formatting
-  #     # lc_numeric: 'C.UTF-8' # locale for number formatting
-  #     # lc_time: 'C.UTF-8' # locale for time formatting
-  #   pg_hba:
-  #   - host all all all md5
+  postgresql:
+    parameters:
+      # Enable pg_stat_statements extension (for query metrics analysis)
+      # https://cloudnative-pg.io/documentation/current/postgresql_conf/#enabling-pg_stat_statements
+      pg_stat_statements.max: "10000"
+      pg_stat_statements.track: all
+      # https://cloudnative-pg.io/documentation/1.23/postgresql_conf/#changing-configuration
+      max_worker_processes: "60"
+      # max_connections: "400"
+      # shared_buffers: "32GB" # min 128kB
+      # log_timezone: 'Etc/UTC'
+      # timezone: 'Etc/UTC'
+      # lc_messages: 'C.UTF-8' # locale for system error message strings
+      # lc_monetary: 'C.UTF-8' # locale for monetary formatting
+      # lc_numeric: 'C.UTF-8' # locale for number formatting
+      # lc_time: 'C.UTF-8' # locale for time formatting
+    pg_hba:
+    - host all all all md5
   # Specific storage to use to persist data (can be overridden per instance)
   # storage:
   #   storageClass: local-persistent
