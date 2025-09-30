@@ -5,7 +5,7 @@ software_stories_image_version: '20230912.1'
 swh_alter_image: container-registry.softwareheritage.org/swh/infra/swh-apps/alter
 swh_alter_image_version: '20250929.1'
 swh_coar_notify_image: container-registry.softwareheritage.org/swh/infra/swh-apps/coar_notify
-swh_coar_notify_image_version: '20250929.1'
+swh_coar_notify_image_version: '20250930.1'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20250918.1'
 swh_datasets_image: container-registry.softwareheritage.org/swh/infra/swh-apps/datasets
