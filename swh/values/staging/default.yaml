@@ -476,6 +476,7 @@ indexerJournalWriterConfiguration:
 elasticsearchInstances:
   - host: search-es-http
     port: 9200
+    scheme: http
 
 elasticsearchConfiguration:
   elasticsearchInstancesRef: elasticsearchInstances

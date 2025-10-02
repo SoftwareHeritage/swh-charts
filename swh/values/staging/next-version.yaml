@@ -1036,6 +1036,7 @@ listers:
 elasticsearchHosts:
   - host: search-next-version-es-http
     port: 9200
+    scheme: http
 
 elasticsearchConfiguration:
   elasticsearchInstancesRef: elasticsearchHosts

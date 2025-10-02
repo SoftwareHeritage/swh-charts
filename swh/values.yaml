@@ -1262,6 +1262,7 @@ scheduler:
 # defaultElasticsearchHosts:
 #   - host: search-esnode0.internal.staging.swh.network
 #     port: 9200
+#     scheme: http
 
 # defaultElasticsearchConfiguration:
 #   elasticsearchInstancesRef: defaultElasticsearchHosts

@@ -138,10 +138,13 @@ memoryNoopStorageConfiguration:
 elasticsearchInstances:
   - host: search-esnode4.internal.softwareheritage.org
     port: 9200
+    scheme: http
   - host: search-esnode5.internal.softwareheritage.org
     port: 9200
+    scheme: http
   - host: search-esnode6.internal.softwareheritage.org
     port: 9200
+    scheme: http
 
 elasticsearchConfiguration:
   elasticsearchInstancesRef: elasticsearchInstances
