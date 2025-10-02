@@ -1561,7 +1561,7 @@ datasetsGenerator:
   # The datasets export to build
   datasets:
     enabled: true
-    imageVersion: '20250918.1'
+    imageVersion: '20251001.1'
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
