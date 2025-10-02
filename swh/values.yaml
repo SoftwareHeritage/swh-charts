@@ -2145,7 +2145,7 @@ coarNotify:
 #           port: 5015
 datasetsGenerator:
   enabled: false
-  imageVersion: '20250915.2'
+  imageVersion: '20251001.1'
   logLevel: INFO
   # Default namespace to use (can be overridden per instance or per scheduler)
   # namespace: swh
