@@ -2679,10 +2679,10 @@ volumes:
 
 graph:
   enabled: true
+  imageVersion: "20251003.1"
   deployments:
     grpc-20250419:
       enabled: true
-      imageVersion: "20250528.1"
       type: grpc
       port: 50091
       requestedMemory: 400Gi
@@ -2723,7 +2723,6 @@ graph:
               - 192.168.101.0/24
     rpc-20250419:
       enabled: true
-      imageVersion: "20250528.1"
       type: rpc
       port: 5009
       graphConfigurationRef: rpcWithRemoteGrpc20250419GraphConfiguration
