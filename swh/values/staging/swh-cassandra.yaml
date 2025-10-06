@@ -2765,6 +2765,8 @@ volumes:
 
 graph:
   enabled: true
+  # Pinned graph version
+  imageVersion: "20251003.1"
   deployments:
     # grpc graph with test dataset
     grpc-python3k:
