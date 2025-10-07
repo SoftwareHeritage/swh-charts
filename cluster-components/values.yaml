@@ -175,8 +175,7 @@ alerting:
   runbookUrl: "https://runbooks.prometheus-operator.dev/runbooks"
   ingress:
     errorRate: 10
-    slowDownRate: 90
-    slowDownPeriod: 10000
+    p90DurationThreshold: 5 # in second
 
 # For internal (to the k8s cluster) metrics to integrate into thanos
 scrapeClusterMetrics:
