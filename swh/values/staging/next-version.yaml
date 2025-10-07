@@ -1604,9 +1604,9 @@ datasetsGenerator:
       2025-10-07:
         enabled: true
         toolbox: true
-        # As a test, do not manage sensitive data outside the remaining part of the
-        # graph data
-        sensitiveEnabled: false
+        # (test) Let the sensitive data be computed with the remain compressed graph
+        # data
+        sensitiveDataMixed: true
         nbProcesses: 32
         extraVolumes:
           dataset-persistent:

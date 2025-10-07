@@ -2166,8 +2166,8 @@ datasetsGenerator:
   datasets:
     enabled: false
     # Take care to separate sensitive information (personal information) from public
-    # data
-    sensitiveEnabled: true
+    # data (can be overridden per instance for testing purposes)
+    sensitiveDataMixed: false
     affinity: {}
     replicas: 1
     # Optional batch size objects for compression steps which supports it (can
