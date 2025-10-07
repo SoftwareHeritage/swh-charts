@@ -11,6 +11,9 @@ KUBE_LOCAL_ENVIRONMENT=${2-kind}
 KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
 HELM="helm --kube-context $CLUSTER_CONTEXT"
 
+CLUSTER_TEMP_TMP=$(mktemp -d)
+trap "rm -rf ${CLUSTER_TEMP_TMP}" EXIT
+
 # Install the helm repo dependencies
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -105,12 +108,14 @@ $HELM upgrade --install keda \
       kedacore/keda \
       -n keda --create-namespace
 
+PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR=$CLUSTER_TEMP_TMP/local-path-provisioner
+
 git clone https://github.com/rancher/local-path-provisioner.git \
     --depth 1 \
-    /tmp/local-path-provisioner
-pushd /tmp/local-path-provisioner
+    $PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR
+pushd $PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR
 
-CONFIG_FILE=/tmp/local-path-provisioner/local-path-values.yaml
+CONFIG_FILE=$PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR/local-path-values.yaml
 cat<<EOF >$CONFIG_FILE
 configmap:
   name: swh-local-path-provisioner
@@ -121,12 +126,18 @@ nodePathMap:
     paths:
       - /tmp/k8s-ephemeral-storage
 EOF
+
+# For idempotency, just in case we call multiple times this script
+$KUBECTL get storageclass local-path && \
+  $HELM uninstall local-path --namespace local-path-storage || \
+    echo "It's fine!"
+
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-path \
       --namespace local-path-storage \
       -f $CONFIG_FILE
 
-CONFIG_FILE2=/tmp/local-path-provisioner/local-persistent-values.yaml
+CONFIG_FILE2=$PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR/local-persistent-values.yaml
 cat<<EOF >$CONFIG_FILE2
 configmap:
   name: swh-local-persistent-provisioner
@@ -142,16 +153,27 @@ storageClass:
   reclaimPolicy: Retain
 EOF
 
+# For idempotency, just in case we call multiple times this script
+$KUBECTL get storageclass local-persistent && \
+  $HELM uninstall local-persistent --namespace local-path-storage || \
+    echo "It's fine!"
+
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-persistent \
       --namespace local-path-storage \
       -f $CONFIG_FILE2
 popd
 
+PGBOUNCER_HELM_CHART_DIR=$CLUSTER_TEMP_TMP/pgbouncer-helm-chart
+
 git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     --depth 1 \
-    /tmp/pgbouncer-helm-chart
-pushd /tmp/pgbouncer-helm-chart
+    $PGBOUNCER_HELM_CHART_DIR
+pushd $PGBOUNCER_HELM_CHART_DIR
+
+$KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
+  $HELM uninstall pgbouncer --namespace pgbouncer || \
+    echo "It's fine!"
 
 $HELM install ./chart \
       --name-template pgbouncer \
@@ -169,6 +191,5 @@ if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
         --namespace ingress-nginx \
         --for=condition=ready pod \
         --selector=app.kubernetes.io/component=controller \
-        --timeout=90s
-
+        --timeout=120s
 fi
