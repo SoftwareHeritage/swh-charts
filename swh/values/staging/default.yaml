@@ -82,7 +82,7 @@ storagePipelineSteps:
   - &bufferStorage
     cls: buffer
     min_batch_size:
-      content: 25
+      content: 10
       content_bytes: 52428800
       directory: 100
       directory_entries: 500
