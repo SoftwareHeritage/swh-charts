@@ -6,6 +6,8 @@
 {{- $lister_name := ( print "lister-" $lister_type ) -}}
 # Set useJsonLogger to false to let the logs be plain text
 {{- $use_json_logger := get $deployment_config "useJsonLogger" | default true }}
+{{- $useTmpfs := or (hasKey $deployment_config "tmpEphemeralStorage") (get $deployment_config "useTmpfs") -}}
+}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -60,6 +62,10 @@ spec:
           - name: lister-credentials-secrets
             mountPath: /etc/credentials/listers
             readOnly: true
+        {{ if $useTmpfs }}
+          - name: tmp
+            mountPath: /tmp
+        {{- end }}
         {{ if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
@@ -153,6 +159,14 @@ spec:
         secret:
           secretName: lister-credentials-secrets
           optional: true
+      {{ if $useTmpfs }}
+      - name: tmp
+        {{- toYaml ( (or
+          $deployment_config.tmpEphemeralStorage
+          $.Values.tmpEphemeralStorage.claimTemplate
+          $.Values.tmpEphemeralStorage.default
+          ) ) | nindent 8 }}
+      {{- end }}
       {{ if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
