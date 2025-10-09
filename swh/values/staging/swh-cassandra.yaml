@@ -1831,7 +1831,7 @@ listers:
         extensions_to_ignore:
           - rock
     npm:
-      enabled: false
+      enabled: true
       queues:
       - swh.lister.npm.tasks.NpmIncrementalListerTask
       autoScaling:
