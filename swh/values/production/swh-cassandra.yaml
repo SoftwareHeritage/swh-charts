@@ -1897,7 +1897,7 @@ listers:
     npm:
       enabled: false
       queues:
-      - swh.lister.npm.tasks.NpmListerTask
+      - swh.lister.npm.tasks.NpmIncrementalListerTask
       autoScaling:
         maxReplicaCount: 1
     nixguix:
