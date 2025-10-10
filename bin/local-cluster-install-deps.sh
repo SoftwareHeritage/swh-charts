@@ -176,7 +176,7 @@ $KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
     echo "It's fine!"
 
 # Disable default values which makes pods fail
-$HELM --kube-context local-cluster-kind install ./chart \
+$HELM install ./chart \
       --name-template pgbouncer \
       --namespace pgbouncer \
       --set userlist.enabled=false \
