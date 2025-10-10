@@ -175,10 +175,14 @@ $KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
   $HELM uninstall pgbouncer --namespace pgbouncer || \
     echo "It's fine!"
 
-$HELM install ./chart \
+# Disable default values which makes pods fail
+$HELM --kube-context local-cluster-kind install ./chart \
       --name-template pgbouncer \
       --namespace pgbouncer \
+      --set userlist.enabled=false \
+      --set pgbouncerExporter.enabled=false \
       --create-namespace
+
 popd
 
 if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
