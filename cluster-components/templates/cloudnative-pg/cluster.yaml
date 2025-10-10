@@ -141,7 +141,7 @@ spec:
       secret:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
-      postInitSQL:
+      postInitTemplate:
       - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest;
 
     {{- if $initdb.source }}
