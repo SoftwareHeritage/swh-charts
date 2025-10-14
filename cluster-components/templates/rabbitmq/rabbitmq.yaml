@@ -15,6 +15,7 @@ metadata:
   name: {{ $name }}
   namespace: {{ $deployment_config.namespace | default $.Values.rabbitmq.namespace }}
 spec:
+  image: rabbitmq:3.10-management
   replicas: {{ $deployment_config.replicas | default $.Values.rabbitmq.replicas | default 1 }}
   rabbitmq:
     additionalConfig: |
