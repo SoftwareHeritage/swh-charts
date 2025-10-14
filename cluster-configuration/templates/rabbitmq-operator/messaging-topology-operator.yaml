@@ -1,5 +1,5 @@
 {{ if .Values.rabbitmq.enabled -}}
-{{- $appName := print .Values.clusterName "-rabbitmq-operator" -}}
+  {{- $appName := print .Values.clusterName "-rabbitmq-operator" -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,11 +9,11 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    repoURL: 'https://github.com/rabbitmq/messaging-topology-operator/'
-    targetRevision: v{{ .Values.rabbitmq.messagingTopologyOperatorVersion }}
-#    path: releases/download/v{{ .Values.rabbitmq.messagingTopologyOperatorVersion }}
+    repoURL: 'https://github.com/rabbitmq/cluster-operator'
+    targetRevision: {{ .Values.rabbitmq.version }}
+    path: .
     directory:
-      include: 'messaging-topology-operator-with-certmanager.yaml'
+      include: 'cluster-operator.yml'
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.rabbitmq.namespace | default "rabbitmq" | quote }}
