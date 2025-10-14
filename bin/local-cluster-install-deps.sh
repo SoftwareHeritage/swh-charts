@@ -35,6 +35,7 @@ popd
 
 function parse_simple_yaml_into_variable {
     # Parse basic yaml files to build variables out of it
+    # FIXME: use yq?
     local prefix=$2
     local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
     sed -ne "s|^\($s\):|\1|" \
@@ -60,9 +61,7 @@ $HELM upgrade --install ingress-nginx ingress-nginx \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
 
-$HELM upgrade --install rabbitmq-operator \
-      --version $conf_rabbitmq_version \
-      bitnami/rabbitmq-cluster-operator
+$KUBECTL apply -f https://github.com/rabbitmq/cluster-operator/releases/download/v${conf_rabbitmq_version}/cluster-operator.yml
 
 $HELM upgrade --install cloudnative-pg \
       --version $conf_cloudnativePg_version \

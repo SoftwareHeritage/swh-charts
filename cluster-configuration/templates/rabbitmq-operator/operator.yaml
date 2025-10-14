@@ -1,5 +1,5 @@
 {{ if .Values.rabbitmq.enabled -}}
-{{- $appName := print .Values.clusterName "-rabbitmq-operator" -}}
+  {{- $appName := print .Values.clusterName "-rabbitmq-operator" -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -9,13 +9,11 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    chart: rabbitmq-cluster-operator
-    repoURL: https://charts.bitnami.com/bitnami
+    repoURL: 'https://github.com/rabbitmq/cluster-operator'
     targetRevision: {{ .Values.rabbitmq.version }}
-    helm:
-      # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
-      releaseName: {{ $appName }}
-
+    path: .
+    directory:
+      include: 'cluster-operator.yml'
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.rabbitmq.namespace | default "rabbitmq" | quote }}
