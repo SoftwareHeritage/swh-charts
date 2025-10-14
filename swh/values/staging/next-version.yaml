@@ -1603,6 +1603,7 @@ datasetsGenerator:
       2025-10-07:
         enabled: true
         toolbox: true
+        imageVersion: "20251013.1"
         # (test) Let the sensitive data be computed with the remain compressed graph
         # data
         sensitiveDataMixed: true
