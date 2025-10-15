@@ -150,7 +150,6 @@ cloudnativePg:
         enabled: true
     deposit:
       enabled: true
-      namespace: cluster-components
       database:
         name: swh-deposit
         secretKeyRef: swh-deposit-swh-postgresql-secret
