@@ -396,6 +396,8 @@ kafka:
     topics: {}
     #   partitions: 32
     #   replicas: 2
+    #   config:
+    #     cleanup.policy: compact
   deployments:
     # cluster-name:
     #   # zookeeper:

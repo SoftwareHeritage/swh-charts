@@ -759,6 +759,8 @@ kafka:
     topics:
       partitions: 32
       replicas: 2
+      config:
+        cleanup.policy: compact
   deployments:
     kafka-cluster:
       enabled: true

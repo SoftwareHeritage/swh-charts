@@ -2,6 +2,9 @@
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
 {{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- range $topicName, $topicConfig := $clusterConfig.topics -}}
+{{- $specificTopicConfig := $topicConfig.config | default dict -}}
+{{- $defaultTopicConfig := $.Values.kafka.default.topics.config | default dict -}}
+{{- $enrichedTopicConfig := mustMerge $specificTopicConfig $defaultTopicConfig -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -14,9 +17,9 @@ spec:
   topicName: {{ $topicName }}
   partitions: {{ get $topicConfig "partitions" | default $.Values.kafka.default.topics.partitions | default 1 }}
   replicas: {{ get $topicConfig "replicas" | default $.Values.kafka.default.topics.replicas | default 1 }}
-  {{- if $topicConfig.config }}
+  {{- if $enrichedTopicConfig }}
   config:
-    {{- toYaml (get $topicConfig "config") | nindent 4 }}
+    {{- toYaml $enrichedTopicConfig | nindent 4 }}
   {{ end }}
 {{ end }}
 {{ end }}
