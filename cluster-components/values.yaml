@@ -390,6 +390,12 @@ kafka:
   # metricsEnabled: false
   # Kafka version (can be overridden per instance)
   version: 4.0.0
+  # Default configuration to avoid duplication at $key (e.g. topics) level
+  # Can be overridden per instance (and $key) level
+  default:
+    topics: {}
+    #   partitions: 32
+    #   replicas: 2
   deployments:
     # cluster-name:
     #   # zookeeper:
