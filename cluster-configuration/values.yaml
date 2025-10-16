@@ -82,6 +82,7 @@ rabbitmq:
 kafka:
   enabled: false
   namespace: kafka-system
+  # supported kafka versions: 3.6.0, 3.6.1, 3.6.2, 3.7.0
   version: 0.41.0
 
 cassandra:
