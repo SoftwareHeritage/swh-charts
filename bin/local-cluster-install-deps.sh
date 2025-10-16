@@ -63,6 +63,8 @@ $HELM upgrade --install ingress-nginx ingress-nginx \
 
 $KUBECTL apply -f https://github.com/rabbitmq/cluster-operator/releases/download/v${conf_rabbitmq_version}/cluster-operator.yml
 
+$KUBECTL apply -f https://github.com/rabbitmq/messaging-topology-operator/releases/download/v${conf_rabbitmq_messagingTopologyOperatorVersion}/messaging-topology-operator-with-certmanager.yaml
+
 $HELM upgrade --install cloudnative-pg \
       --version $conf_cloudnativePg_version \
       --namespace cnpg-system \
