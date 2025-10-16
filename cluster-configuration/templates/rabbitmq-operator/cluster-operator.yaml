@@ -1,0 +1,34 @@
+{{ if .Values.rabbitmq.enabled -}}
+{{- $appName := print .Values.clusterName "-rabbitmq-operator" -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocdNamespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    repoURL: 'https://github.com/rabbitmq/cluster-operator'
+    targetRevision: v{{ .Values.rabbitmq.version }}
+    path: .
+    directory:
+      include: 'cluster-operator.yml'
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.rabbitmq.namespace | default "rabbitmq" | quote }}
+  syncPolicy:
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
+    - kind: Secret
+      name: {{ printf "%s%s" $appName "-rabbitmq-messaging-topology" | trunc 63 }}
+      namespace: {{ .Values.rabbitmq.namespace }}
+      jsonPointers:
+        - /data
+{{ end }}

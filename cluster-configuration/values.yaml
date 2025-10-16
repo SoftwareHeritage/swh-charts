@@ -78,6 +78,7 @@ rabbitmq:
   enabled: false
   namespace: rabbitmq
   version: 2.16.1
+  messagingTopologyOperatorVersion: 1.18.0
 
 kafka:
   enabled: false
