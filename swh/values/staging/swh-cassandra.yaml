@@ -478,7 +478,7 @@ loaders:
       requestedMemory: 124Mi
       requestedCpu: 500m
     npm:
-      enabled: false
+      enabled: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
