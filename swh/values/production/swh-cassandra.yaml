@@ -1900,7 +1900,6 @@ listers:
           medium: Memory
           sizeLimit: 20Gi
     npm:
-      enabled: false
       queues:
       - swh.lister.npm.tasks.NpmIncrementalListerTask
       autoScaling:
