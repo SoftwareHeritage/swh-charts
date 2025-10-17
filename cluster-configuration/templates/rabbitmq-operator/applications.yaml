@@ -9,14 +9,14 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   sources:
-    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts'
+    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts.git/'
       targetRevision: {{ .Values.environment }}
-      path: ./cluster-configuration/rabbitmq-operator
+      path: ./cluster-configuration/template/rabbitmq-operator
       directory:
         include: cluster-operator-{{ .Values.rabbitmq.version }}.yml
-    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts'
+    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts.git/'
       targetRevision: {{ .Values.environment }}
-      path: ./cluster-configuration/rabbitmq-operator
+      path: ./cluster-configuration/template/rabbitmq-operator
       directory:
         include: messaging-topology-operator-with-certmanager-{{ .Values.rabbitmq.messagingTopologyOperatorVersion }}.yml
   destination:
