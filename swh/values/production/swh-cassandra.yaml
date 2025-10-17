@@ -2293,7 +2293,7 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
     npm:
-      enabled: false
+      enabled: true
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
