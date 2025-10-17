@@ -1893,12 +1893,12 @@ listers:
       autoScaling:
         maxReplicaCount: 1
       requestedCpu: 1000m
-      requestedMemory: 40Gi
+      requestedMemory: 60Gi
       useTmpfs: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
-          sizeLimit: 20Gi
+          sizeLimit: 40Gi
     npm:
       queues:
       - swh.lister.npm.tasks.NpmIncrementalListerTask
