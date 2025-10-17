@@ -54,7 +54,7 @@ pgbouncer:
       auth_user: postgres
 
 rabbitmq:
-  enabled: true
+  enabled: false
 
 redis:
   enabled: true
