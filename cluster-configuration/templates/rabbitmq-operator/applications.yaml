@@ -8,12 +8,17 @@ metadata:
 spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
-  source:
-    repoURL: 'https://github.com/rabbitmq/cluster-operator'
-    targetRevision: {{ .Values.rabbitmq.version }}
-    path: .
-    directory:
-      include: 'cluster-operator.yml'
+  sources:
+    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts'
+      targetRevision: {{ .Values.environment }}
+      path: ./cluster-configuration/rabbitmq-operator
+      directory:
+        include: cluster-operator-{{ .Values.rabbitmq.version }}.yml
+    - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts'
+      targetRevision: {{ .Values.environment }}
+      path: ./cluster-configuration/rabbitmq-operator
+      directory:
+        include: messaging-topology-operator-with-certmanager-{{ .Values.rabbitmq.messagingTopologyOperatorVersion }}.yml
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.rabbitmq.namespace | default "rabbitmq" | quote }}
