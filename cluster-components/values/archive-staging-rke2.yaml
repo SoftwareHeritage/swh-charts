@@ -757,7 +757,7 @@ kafka:
   minInSyncReplicas: 1
   default:
     topics:
-      partitions: 32
+      partitions: 4
       replicas: 2
       config:
         cleanup.policy: compact
