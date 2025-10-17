@@ -11,12 +11,12 @@ spec:
   sources:
     - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts.git/'
       targetRevision: {{ .Values.environment }}
-      path: ./cluster-configuration/templates/rabbitmq-operator
+      path: ./external-manifests/rabbitmq
       directory:
         include: cluster-operator-{{ .Values.rabbitmq.version }}.yaml
     - repoURL: 'https://gitlab.softwareheritage.org/swh/infra/ci-cd/swh-charts.git/'
       targetRevision: {{ .Values.environment }}
-      path: ./cluster-configuration/templates/rabbitmq-operator
+      path: ./external-manifests/rabbitmq
       directory:
         include: messaging-topology-operator-with-certmanager-{{ .Values.rabbitmq.messagingTopologyOperatorVersion }}.yaml
   destination:

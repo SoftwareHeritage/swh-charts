@@ -19,7 +19,7 @@ CLUSTER_OPERATOR_URL=https://github.com/rabbitmq/cluster-operator/releases/downl
 MESSAGING_TOPO_OPERATOR_URL=https://github.com/rabbitmq/messaging-topology-operator/releases/download
 
 wget "${CLUSTER_OPERATOR_URL}/v${version}/cluster-operator.yml" \
-    -O ./cluster-configuration/templates/rabbitmq-operator/cluster-operator-${version}.yaml
+    -O ./external-manifests/rabbitmq/cluster-operator-${version}.yaml
 
 wget "${MESSAGING_TOPO_OPERATOR_URL}/v${version_messaging}/messaging-topology-operator-with-certmanager.yaml" \
-    -O ./cluster-configuration/templates/rabbitmq-operator/messaging-topology-operator-with-certmanager-${version_messaging}.yaml
+    -O ./external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-${version_messaging}.yaml

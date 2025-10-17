@@ -35,5 +35,10 @@ It's composed of multiple helm charts:
      kafka operator
    - ...
 
+Additional specific directories exist:
+
+- external-manifests: (Not an helm chart) A directory holding external manifests to
+                      apply conditionally to cluster configuration application specifics
+
 Those charts rely on secrets which are installed through other applications
 (relying on the "k8s-private-data" private repository).
