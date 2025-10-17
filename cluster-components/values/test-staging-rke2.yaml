@@ -100,7 +100,7 @@ cloudnativePg:
         enabled: true
 
 rabbitmq:
-  enabled: true
+  enabled: false
   replicas: 1
   deployments:
     scheduler:
