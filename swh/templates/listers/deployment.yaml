@@ -62,10 +62,6 @@ spec:
           - name: lister-credentials-secrets
             mountPath: /etc/credentials/listers
             readOnly: true
-        {{ if $useTmpfs }}
-          - name: tmp
-            mountPath: /tmp
-        {{- end }}
         {{ if $enable_sentry }}
           - name: sentry-settings-for-celery-tasks
             mountPath: /etc/credentials/sentry-settings
@@ -126,6 +122,10 @@ spec:
             subPath: "pre-stop.sh"
           - name: configuration
             mountPath: /etc/swh
+        {{ if $useTmpfs }}
+          - name: tmp
+            mountPath: /tmp
+        {{- end }}
         {{ if $use_json_logger }}
           - name: configuration-template
             mountPath: /etc/swh/logging-configuration.yml
