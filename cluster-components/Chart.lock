@@ -8,5 +8,8 @@ dependencies:
 - name: prometheus-blackbox-exporter
   repository: https://prometheus-community.github.io/helm-charts
   version: 8.17.0
-digest: sha256:855c9c5b3f6c38bf735be99ad87ae8f31e7435889e6a7c3f48d681c42b5e1e84
-generated: "2024-07-03T10:40:35.420268081+02:00"
+- name: gitlab-runner
+  repository: https://charts.gitlab.io
+  version: 0.82.0
+digest: sha256:620d95a7d87076865c380123657c5a43c22eab0111adaae7b9be7340c016f984
+generated: "2025-10-28T14:46:54.388842267+01:00"

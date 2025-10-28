@@ -43,3 +43,9 @@ dependencies:
   condition: blackboxExporter.enabled
   tags:
     - monitoring
+
+- name: gitlab-runner
+  alias: gitlabRunner
+  version: 0.82.0
+  repository: https://charts.gitlab.io
+  condition: gitlabRunner.enabled

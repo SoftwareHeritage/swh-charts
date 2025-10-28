@@ -15,3 +15,9 @@ alertmanagerConfig:
 
 cloudnativePg:
   enabled: true
+
+gitlabRunner:
+  enabled: true
+  rbac:
+    create: true
+  gitlabUrl: https://gitlab-staging.swh.network
