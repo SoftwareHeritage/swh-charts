@@ -20,4 +20,8 @@ gitlabRunner:
   enabled: true
   rbac:
     create: true
+
+  runners:
+    jobNamespace: gitlab-runner-jobs
+
   gitlabUrl: https://gitlab-staging.swh.network
