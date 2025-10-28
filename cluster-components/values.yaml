@@ -624,4 +624,4 @@ gitlabRunner:
   namespace: gitlab-runner
   runners:
     secret: gitlab-runner
-
+    jobNamespace: gitlab-runner
