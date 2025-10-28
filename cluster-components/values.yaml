@@ -619,6 +619,7 @@ volumes:
 
 gitlabRunner:
   enabled: false
+  nameOverride: gitlab-runner
   # Namespace where to deploy gitlab-runner
   namespace: gitlab-runner
   runners:
