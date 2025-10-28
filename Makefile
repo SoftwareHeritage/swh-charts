@@ -245,6 +245,20 @@ cc-template-admin:
       --values $(CC_CHART)/values/admin-rke2.yaml \
       --debug
 
+cc-template-gitlab-staging:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
+      --values $(CC_CHART)/values/gitlab-staging.yaml \
+      --debug
+
+cc-template-gitlab-production:
+	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(CC_CHART)/values.yaml \
+      --values $(CC_CHART)/values/default.yaml \
+      --values $(CC_CHART)/values/gitlab-production.yaml \
+      --debug
+
 ccf-template:
 	helm template template-$(CCF_CHART) $(CCF_CHART)/ --values values-swh-application-versions.yaml \
       --values $(CCF_CHART)/values.yaml \
