@@ -10,6 +10,11 @@ set -e
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
+if ! command -v yq >/dev/null 2>&1; then
+  echo "Error: yq is not installed." >&2
+  exit 1
+fi
+
 KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
 HELM="helm --kube-context ${CLUSTER_CONTEXT}"
 
@@ -33,53 +38,59 @@ pushd cluster-components
 helm dependency build
 popd
 
-function parse_simple_yaml_into_variable {
-    # Parse basic yaml files to build variables out of it
-    # FIXME: use yq?
-    local prefix=$2
-    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
-    sed -ne "s|^\($s\):|\1|" \
-        -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
-        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
-        awk -F$fs '{
-     indent = length($1)/2;
-     vname[indent] = $2;
-     for (i in vname) {if (i > indent) {delete vname[i]}}
-     if (length($3) > 0) {
-        vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-        printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
-     }
-  }'
+# Retrieve the value from cluster-configuration/values.yaml, given yaml path elements
+values_yaml="cluster-configuration/values.yaml"
+function get_value() {
+  local query='.'
+  for key in "$@"; do
+    query+="[\"${key}\"]"
+  done
+  local value
+  value=$(yq -r "${query}" "${values_yaml}")
+  local status=$?
+  if [[ $status -ne 0 ]]; then
+    echo "Error: yq failed for path '$*' in ${values_yaml}" >&2
+    exit 1
+  fi
+  if [[ "${value}" == "null" || -z "${value}" ]]; then
+    echo "Error: value not found for path '$*' in ${values_yaml}" >&2
+    exit 1
+  fi
+  echo "${value}"
 }
-
-eval $(parse_simple_yaml_into_variable "cluster-configuration/values.yaml" "conf_")
 
 # Now actually installs the various operator dependencies
 
-$HELM upgrade --install ingress-nginx ingress-nginx \
-      --version $conf_ingressNginx_version \
+ingress_version=$(get_value ingressNginx version)
+${HELM} upgrade --install ingress-nginx ingress-nginx \
+      --version "${ingress_version}" \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
 
-$KUBECTL apply -f external-manifests/rabbitmq/cluster-operator-${conf_rabbitmq_version}.yaml
+rabbitmq_version=$(get_value rabbitmq version)
+${KUBECTL} apply -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
 
-$KUBECTL apply -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-${conf_rabbitmq_messagingTopologyOperatorVersion}.yaml
+messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
+${KUBECTL} apply -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
 
+cloudnativepg_version=$(get_value cloudnativePg version)
 $HELM upgrade --install cloudnative-pg \
-      --version $conf_cloudnativePg_version \
+      --version "${cloudnativepg_version}" \
       --namespace cnpg-system \
       --create-namespace \
       cnpg/cloudnative-pg
 
+kafka_version=$(get_value kafka version)
 $HELM upgrade --install kafka-operator \
-      --version $conf_kafka_version \
+      --version "${kafka_version}" \
       --namespace kafka-system \
       --create-namespace \
       strimzi/strimzi-kafka-operator \
       --set watchAnyNamespace=true
 
+certmanager_version=$(get_value certManager version)
 $HELM upgrade --install cert-manager \
-      --version $conf_certManager_version \
+      --version "${certmanager_version}" \
       jetstack/cert-manager \
       --namespace cert-manager --create-namespace \
       --set crds.enabled=true \
@@ -89,19 +100,22 @@ $HELM upgrade --install cert-manager \
       # --set prometheus.enabled=true \
       # --set prometheus.servicemonitor.enabled=true \
 
+cassandra_version=$(get_value cassandra version)
 $HELM upgrade --install k8ssandra-operator \
-      --version $conf_cassandra_version \
+      --version "${cassandra_version}" \
       k8ssandra/k8ssandra-operator \
       -n k8ssandra-operator --create-namespace \
       --set global.clusterScoped=true
 
+elasticsearch_version=$(get_value elasticsearch version)
 $HELM upgrade --install eck-operator \
-      --version $conf_elasticsearch_version \
+      --version "${elasticsearch_version}" \
       elastic/eck-operator \
       -n elastic-system --create-namespace
 
+redis_version=$(get_value redis version)
 $HELM upgrade --install redis-operator \
-      --version $conf_redis_version \
+      --version "${redis_version}" \
       ot-helm/redis-operator \
       -n ot-operators --create-namespace \
 
