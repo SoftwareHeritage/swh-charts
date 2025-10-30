@@ -5,14 +5,16 @@
 # the local cluster installation reflects the version of what's used by actual
 # production cluster.
 
+set -e
+
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
 KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
-HELM="helm --kube-context $CLUSTER_CONTEXT"
+HELM="helm --kube-context ${CLUSTER_CONTEXT}"
 
 CLUSTER_TEMP_TMP=$(mktemp -d)
-trap "rm -rf ${CLUSTER_TEMP_TMP}" EXIT
+trap 'rm -rf ${CLUSTER_TEMP_TMP}' EXIT
 
 # Install the helm repo dependencies
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -30,8 +32,6 @@ helm repo update
 pushd cluster-components
 helm dependency build
 popd
-
-# Retrieve the chart versions to install from cluster-configuration/values.yaml
 
 function parse_simple_yaml_into_variable {
     # Parse basic yaml files to build variables out of it
@@ -109,15 +109,15 @@ $HELM upgrade --install keda \
       kedacore/keda \
       -n keda --create-namespace
 
-PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR=$CLUSTER_TEMP_TMP/local-path-provisioner
+PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
 
 git clone https://github.com/rancher/local-path-provisioner.git \
     --depth 1 \
-    $PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR
-pushd $PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR
+    "${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}"
+pushd "${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}"
 
-CONFIG_FILE=$PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR/local-path-values.yaml
-cat<<EOF >$CONFIG_FILE
+CONFIG_FILE=${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
+cat<<EOF >"${CONFIG_FILE}"
 configmap:
   name: swh-local-path-provisioner
 nameOverride: swh-local-path-provisioner
@@ -136,10 +136,10 @@ $KUBECTL get storageclass local-path && \
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-path \
       --namespace local-path-storage \
-      -f $CONFIG_FILE
+      -f "${CONFIG_FILE}"
 
-CONFIG_FILE2=$PGBOUNCER_LOCAL_PATH_PROVISIONNER_DIR/local-persistent-values.yaml
-cat<<EOF >$CONFIG_FILE2
+CONFIG_FILE2=${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
+cat<<EOF >"${CONFIG_FILE2}"
 configmap:
   name: swh-local-persistent-provisioner
 nameOverride: swh-local-persistent-provisioner
@@ -162,15 +162,15 @@ $KUBECTL get storageclass local-persistent && \
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-persistent \
       --namespace local-path-storage \
-      -f $CONFIG_FILE2
+      -f "${CONFIG_FILE2}"
 popd
 
-PGBOUNCER_HELM_CHART_DIR=$CLUSTER_TEMP_TMP/pgbouncer-helm-chart
+PGBOUNCER_HELM_CHART_DIR=${CLUSTER_TEMP_TMP}/pgbouncer-helm-chart
 
 git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     --depth 1 \
-    $PGBOUNCER_HELM_CHART_DIR
-pushd $PGBOUNCER_HELM_CHART_DIR
+    "${PGBOUNCER_HELM_CHART_DIR}"
+pushd "${PGBOUNCER_HELM_CHART_DIR}"
 
 $KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
   $HELM uninstall pgbouncer --namespace pgbouncer || \
@@ -190,7 +190,7 @@ if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
     # Ingress specific setup for kind
     # TODO: Inline the file deploy.yaml in this repository?
     DEPLOY_FILE=https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-    $KUBECTL apply -f $DEPLOY_FILE
+    $KUBECTL apply -f ${DEPLOY_FILE}
 
     $KUBECTL wait \
         --namespace ingress-nginx \
