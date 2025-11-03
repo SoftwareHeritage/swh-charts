@@ -1589,6 +1589,7 @@ datasetsGenerator:
       2025-05-15:
         enabled: true
         toolbox: true
+        imageVersion: "20251103.1"
         nbProcesses: 32
         extraVolumes:
           dataset-persistent:
@@ -1603,7 +1604,7 @@ datasetsGenerator:
       2025-10-07:
         enabled: true
         toolbox: true
-        imageVersion: "20251013.1"
+        imageVersion: "20251103.1"
         # (test) Let the sensitive data be computed with the remain compressed graph
         # data
         sensitiveDataMixed: true
