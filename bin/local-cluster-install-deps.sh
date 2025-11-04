@@ -31,6 +31,7 @@ helm repo add elastic https://helm.elastic.co
 helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add kedacore https://kedacore.github.io/charts
+helm repo add gitlab-runner https://charts.gitlab.io
 helm repo update
 
 # cluster-components declare some dependencies we need to locally build
