@@ -141,8 +141,17 @@ spec:
       secret:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
+      # The list of queries to be executed just after having configured a new
+      # instance
+      # postInitSQL: []
+      # The list of queries to be executed inside the template1 database just
+      # after having configured a new instance
+      # postInitTemplateSQL: []
+      # The list of queries to be executed just after having the application
+      # database created
       postInitApplicationSQL:
-      - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest;
+      - CREATE ROLE guest
+      - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest
 
     {{- if $initdb.source }}
     {{- $databases := $initdb.databases | default (list $dbName) -}}
