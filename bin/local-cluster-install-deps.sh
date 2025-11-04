@@ -39,26 +39,8 @@ pushd cluster-components
 helm dependency build
 popd
 
-# Retrieve the value from cluster-configuration/values.yaml, given yaml path elements
-values_yaml="cluster-configuration/values.yaml"
-function get_value() {
-  local query='.'
-  for key in "$@"; do
-    query+="[\"${key}\"]"
-  done
-  local value
-  value=$(yq -r "${query}" "${values_yaml}")
-  local status=$?
-  if [[ $status -ne 0 ]]; then
-    echo "Error: yq failed for path '$*' in ${values_yaml}" >&2
-    exit 1
-  fi
-  if [[ "${value}" == "null" || -z "${value}" ]]; then
-    echo "Error: value not found for path '$*' in ${values_yaml}" >&2
-    exit 1
-  fi
-  echo "${value}"
-}
+# Source parse helper function
+source ./bin/_parser-helper.sh
 
 # Now actually installs the various operator dependencies
 
@@ -67,12 +49,6 @@ ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --version "${ingress_version}" \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
-
-rabbitmq_version=$(get_value rabbitmq version)
-${KUBECTL} apply -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
-
-messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
-${KUBECTL} apply -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
 
 cloudnativepg_version=$(get_value cloudnativePg version)
 $HELM upgrade --install cloudnative-pg \
@@ -213,3 +189,9 @@ if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
         --selector=app.kubernetes.io/component=controller \
         --timeout=120s
 fi
+
+rabbitmq_version=$(get_value rabbitmq version)
+${KUBECTL} apply -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
+
+messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
+${KUBECTL} apply -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
