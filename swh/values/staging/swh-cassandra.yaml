@@ -2957,6 +2957,7 @@ datasetsGenerator:
         enabled: true
         # So we can trigger the dataset generation manually
         toolbox: true
+        imageVersion: "20251104.1"
         requestedMemory: 35Gi
         requestedCpu: 20000m
         extraVolumes:
