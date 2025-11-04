@@ -4,7 +4,7 @@
 
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 
-HELM="helm --kube-context $CLUSTER_CONTEXT"
+HELM="helm --kube-context ${CLUSTER_CONTEXT}"
 
 $HELM uninstall -n ingress-nginx ingress-nginx
 
