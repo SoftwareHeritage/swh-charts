@@ -42,7 +42,7 @@ case "$ACTION" in
     install-deps|install)
         bin/local-cluster-install-deps.sh $CLUSTER_CONTEXT
         ;;
-    uninstall-deps|uninstall|cleanup|remove-deps|uninstall-deps)
+    uninstall-deps|uninstall|cleanup|cleanup-deps|remove-deps)
         bin/local-cluster-cleanup-deps.sh $CLUSTER_CONTEXT
         ;;
     delete)
