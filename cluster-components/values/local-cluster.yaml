@@ -100,42 +100,42 @@ cloudnativePg:
         name: swh-guest-postgresql-secret
   deployments:
     archive:
-      enabled: true
+      enabled: false
       database:
         name: swh
         secretKeyRef: swh-swh-postgresql-secret
       initdb:
         enabled: true
     maskingproxy:
-      enabled: true
+      enabled: false
       database:
         name: swhmaskingproxy
         secretKeyRef: swh-maskingproxy-postgresql-secret
       initdb:
         enabled: true
     scheduler:
-      enabled: true
+      enabled: false
       database:
         name: swh-scheduler
         secretKeyRef: swh-scheduler-swh-postgresql-secret
       initdb:
         enabled: true
     vault:
-      enabled: true
+      enabled: false
       database:
         name: swh-vault
         secretKeyRef: swh-vault-swh-postgresql-secret
       initdb:
         enabled: true
     indexer-storage:
-      enabled: true
+      enabled: false
       database:
         name: swh-indexer
         secretKeyRef: swh-indexer-storage-swh-postgresql-secret
       initdb:
         enabled: true
     web:
-      enabled: true
+      enabled: false
       database:
         name: swh-web
         secretKeyRef: swh-web-swh-postgresql-secret
@@ -149,14 +149,14 @@ cloudnativePg:
       initdb:
         enabled: true
     deposit:
-      enabled: true
+      enabled: false
       database:
         name: swh-deposit
         secretKeyRef: swh-deposit-swh-postgresql-secret
       initdb:
         enabled: true
     svix:
-      enabled: true
+      enabled: false
       database:
         name: swh-svix
         secretKeyRef: swh-svix-swh-postgresql-secret
