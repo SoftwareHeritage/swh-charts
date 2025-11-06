@@ -26,11 +26,6 @@ cloudnativePg:
       accessKey: MINIO_ACCESS_KEY
       secretKey: MINIO_SECRET_KEY
   superuserAccessEnabled: false
-  storage:
-    storageClass: local-persistent
-    size: 1Gi
-  walStorage:
-    size: 1Gi
   services:
     disabledDefaultServices:
       - "r"

@@ -257,6 +257,10 @@ cloudnativePg:
     enabled: false
     port: 5432
   nameOverride: cloudnative-pg
+  # Default storage volume (can be overridden per instance)
+  storage: {}
+  # Default wal storage volume (can be overridden per instance)
+  walStorage: {}
   backup:
     # Backup system type is in ("in-tree", "plugin"). Defaults to "in-tree" for now.
     # - in-tree: Deprecated backup system integrated in-tree with cloudnative-pg

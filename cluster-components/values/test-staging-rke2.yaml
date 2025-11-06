@@ -88,6 +88,12 @@ cloudnativePg:
       max_worker_processes: "60"
     pg_hba:
       - host all all all md5
+  storage:
+    size: 1Gi
+    storageClass: local-persistent
+  walStorage:
+    size: 1Gi
+    storageClass: local-persistent
   # Exists as many cluster as we want
   deployments:
     test-db:
