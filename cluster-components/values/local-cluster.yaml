@@ -84,6 +84,11 @@ cloudnativePg:
   superuserAccessEnabled: true
   superUserSecretRef: swh-postgresql-postgres-secret
   storage:
+    # storageClass: local-persistent
+    storageClass: standard
+    size: 1Gi
+  walStorage:
+    # storageClass: local-persistent
     storageClass: standard
     size: 1Gi
   postgresql:
@@ -98,6 +103,15 @@ cloudnativePg:
       inherit: true
       passwordSecret:
         name: swh-guest-postgresql-secret
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "kubernetes.io/hostname"
+            operator: In
+            values:
+            - "local-cluster-worker"
   deployments:
     archive:
       enabled: false
