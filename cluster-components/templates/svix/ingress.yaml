@@ -1,5 +1,6 @@
 {{ if .Values.svix.enabled -}}
 {{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- if or (not (hasKey $svixConfiguration "enabled")) (get $svixConfiguration "enabled") -}}
 {{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
 {{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
 {{- $appName := print $svixName "-ingress" -}}
@@ -43,5 +44,6 @@ spec:
     - {{ $ingressHost }}
     secretName: {{ $svixName }}-crt
   {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}

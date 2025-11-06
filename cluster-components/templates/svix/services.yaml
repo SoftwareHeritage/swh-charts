@@ -1,5 +1,6 @@
 {{ if .Values.svix.enabled -}}
 {{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{- if or (not (hasKey $svixConfiguration "enabled")) (get $svixConfiguration "enabled") -}}
 {{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
 {{- $appName := print $svixName "-server" -}}
 {{ if $svixConfiguration.postgres.enabled -}}
@@ -50,5 +51,6 @@ spec:
     - port: 8071
       targetPort: 8071
       name: svix
+{{- end }}
 {{- end }}
 {{- end }}

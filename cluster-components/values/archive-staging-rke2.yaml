@@ -38,6 +38,7 @@ svix:
   enabled: true
   deployments:
     svix:
+      enabled: true
       ingress:
         host: svix.internal.staging.swh.network
         createTLS: true
@@ -60,6 +61,7 @@ svix:
         enabled: false
         dsn: db-swh-svix-rw.cnpg
     svix-next-version:
+      enabled: true
       ingress:
         host: svix-next-version.internal.staging.swh.network
         createTLS: true
