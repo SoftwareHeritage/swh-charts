@@ -616,7 +616,7 @@ rwCassandraStorage: &rwCassandraStorage
   cls: cassandra
   cassandraSeedsRef: cassandraSeeds
   keyspace: swh
-  initKeyspace: false
+  initKeyspace: true
   upgradeKeyspace: true
   consistencyLevel: LOCAL_QUORUM
   specificOptions:
