@@ -255,9 +255,10 @@ Generate the configuration for a journal writer
   {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " .configurationRef) (get $storageDefinition "storageConfigurationRef") -}}
   {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get .Values $storageConfigurationRef) -}}
   {{- $storageClass := required (print "cls entry mandatory in " $storageConfigurationRef) (get $storageConfiguration "cls") -}}
+  {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
+  {{- $upgradeKeyspace := get $storageConfiguration "upgradeKeyspace" -}}
 
   {{- if eq "cassandra" $storageClass -}}
-    {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
     {{- if $initKeyspace -}}
 - name: init-cassandra-keyspace
   image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
@@ -275,8 +276,7 @@ Generate the configuration for a journal writer
     mountPath: /entrypoints
     readOnly: true
     {{- end -}}
-    {{- $upgradeKeyspace := get $storageConfiguration "upgradeKeyspace" -}}
-    {{- if $upgradeKeyspace -}}
+    {{- if $upgradeKeyspace }}
 - name: upgrade-cassandra-keyspace
   image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
   imagePullPolicy: IfNotPresent
