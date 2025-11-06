@@ -29,6 +29,8 @@ cloudnativePg:
   storage:
     storageClass: local-persistent
     size: 1Gi
+  walStorage:
+    size: 1Gi
   services:
     disabledDefaultServices:
       - "r"

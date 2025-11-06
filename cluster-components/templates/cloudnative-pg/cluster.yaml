@@ -19,7 +19,7 @@
 {{- $superuserAccessEnabled := $clusterConfig.superuserAccessEnabled | default $.Values.cloudnativePg.superuserAccessEnabled -}}
 {{- $delay := $clusterConfig.delay -}}
 {{- $imageCatalogRef := $clusterConfig.imageCatalogRef | default $.Values.cloudnativePg.imageCatalogRef }}
-{{- $walStorage := $clusterConfig.walStorage | default false -}}
+{{- $walStorage := mustMerge ($clusterConfig.walStorage | default (dict)) $.Values.cloudnativePg.walStorage -}}
 {{- $services := $clusterConfig.services | default $.Values.cloudnativePg.services | default false -}}
 {{- $limitedCpu := $clusterConfig.limitedCpu | default false -}}
 {{- $limitedMemory := $clusterConfig.limitedMemory | default false -}}
