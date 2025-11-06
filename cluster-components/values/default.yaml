@@ -8,6 +8,12 @@ cloudnativePg:
     enabled: false
     mode: session
     types: []
+  storage:
+    storageClass: local-persistent
+    size: 1Gi
+  walStorage:
+    storageClass: local-persistent
+    size: 1Gi
   backup:
     compression: gzip
     # Let's use the new barman plugin
