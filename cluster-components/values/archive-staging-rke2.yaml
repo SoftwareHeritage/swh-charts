@@ -430,12 +430,6 @@ cloudnativePg:
         parameters:
           # Setup used in the previous instance (defaulted to 128MB so far)
           shared_buffers: 32GB
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
@@ -474,12 +468,6 @@ cloudnativePg:
       externalClustersRef: internalObjectStores
       recovery:
         enabled: true
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-blocking
         secretKeyRef: swh-postgresql-swh-blocking-secret
@@ -502,10 +490,6 @@ cloudnativePg:
         enabled: true
       storage:
         size: 5Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       backup:
         enabled: true
         # Run once a day at 2:05am (UTC)
@@ -515,12 +499,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
@@ -536,12 +514,6 @@ cloudnativePg:
       namespace: cnpg
       instances: 2
       externalClustersRef: externalPostgresqlClusters
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-indexer-secret
@@ -567,12 +539,6 @@ cloudnativePg:
         connectionLimit: -1
         passwordSecret:
           name: swh-postgresql-swhmailmap-secret
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-masking
         secretKeyRef: swh-postgresql-swh-masking-secret
@@ -593,12 +559,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       backup:
         enabled: true
         # Run once a day at 5:30am (UTC)
@@ -614,12 +574,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       backup:
         enabled: true
         # Run once a day at 3:20am (UTC)
@@ -637,10 +591,8 @@ cloudnativePg:
         enabled: true
       storage:
         size: 5Gi
-        storageClass: local-persistent
       walStorage:
         size: 5Gi
-        storageClass: local-persistent
       backup:
         enabled: true
         # Run once a day at 6:35am (UTC)
@@ -658,12 +610,6 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       backup:
         enabled: true
         # Run once a day at 4:25am (UTC)
@@ -673,12 +619,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      storage:
-        size: 1Gi
-        storageClass: local-persistent
-      walStorage:
-        size: 1Gi
-        storageClass: local-persistent
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
