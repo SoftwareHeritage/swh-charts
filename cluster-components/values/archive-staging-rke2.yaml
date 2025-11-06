@@ -267,10 +267,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
@@ -282,10 +278,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
@@ -297,10 +289,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-indexer-secret
@@ -312,10 +300,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       externalClustersRef: externalPostgresqlClusters
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-masking
         secretKeyRef: swh-postgresql-swh-masking-secret
@@ -331,10 +315,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       # Specific postgresql setup (can be overridden per instance)
       externalClustersRef: recoverySwhSchedulerClusters
       database:
@@ -349,10 +329,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
@@ -364,10 +340,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-vault-secret
@@ -379,10 +351,6 @@ cloudnativePg:
       namespace: cnpg-next-version
       testing: true
       instances: 1
-      storage:
-        size: 1Gi
-      walStorage:
-        size: 1Gi
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
