@@ -283,8 +283,10 @@ cloudnativePg:
       testing: true
       instances: 1
       storage:
+        storageClass: local-persistent
         size: 1Gi
       walStorage:
+        storageClass: local-persistent
         size: 1Gi
       database:
         name: swh-deposit
