@@ -342,6 +342,7 @@ cloudnativePg:
 rabbitmq:
   enabled: false
   namespace: rabbitmq
+  version: 4.1.3
   # Number of replicas per deployment instance (can be overridden per instance config)
   # replicas: 1
   # The storage volumes to use (can be overridden per instance config)
