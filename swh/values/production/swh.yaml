@@ -13,21 +13,10 @@ remoteRpcRWStorageConfiguration:
   storageConfigurationRef: rpcRWStorageConfiguration
 
 storageReplayerPipelineSteps:
-  - &bufferStorage
-    cls: buffer
-    min_batch_size:
-      content: 1000
-      content_bytes: 52428800
-      directory: 1000
-      directory_entries: 6000
-      revision: 1000
-      revision_parents: 2000
-      revision_bytes: 52428800
-      release: 1000
-      release_bytes: 52428800
-      extid: 1000
-  - cls: filter
-  - cls: retry
+  - cls: tenacious
+    error-rate-limit:
+      errors: 3
+      window_size: 1000
 
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storageReplayerPipelineSteps
