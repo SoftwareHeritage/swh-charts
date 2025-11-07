@@ -8,10 +8,6 @@ clusterName: minikube
 # [2] make ccf-helm-diff
 
 rabbitmq:
-  # To match the enabled flag to true, use the following cli:
-  # helm repo add bitnami https://charts.bitnami.com/bitnami
-  # helm --kube-context $CLUSTER_CONTEXT install rabbitmq-operator \
-  #   bitnami/rabbitmq-cluster-operator
   enabled: true
 
 cloudnative-pg:

@@ -22,7 +22,6 @@ CLUSTER_TEMP_TMP=$(mktemp -d)
 trap 'rm -rf ${CLUSTER_TEMP_TMP}' EXIT
 
 # Install the helm repo dependencies
-helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo add cnpg https://cloudnative-pg.github.io/charts
 helm repo add strimzi https://strimzi.io/charts/
 helm repo add k8ssandra https://helm.k8ssandra.io/stable
