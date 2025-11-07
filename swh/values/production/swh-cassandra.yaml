@@ -2587,6 +2587,13 @@ rpcWithRemoteGrpc20250419GraphConfiguration:
   grpc_server:
     port: 80
 
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGrpc20251008GraphConfiguration:
+  cls: remote
+  url: graph-grpc-20251008-ingress:80
+  grpc_server:
+    port: 80
+
 plainGrpcGraphConfiguration:
   max_ram: 500g
 
@@ -2783,6 +2790,65 @@ graph:
         - graph-rpc-20250419-ingress
         - graph-rpc.internal.softwareheritage.org
         - graph-rpc-default-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    grpc-20251008:
+      enabled: true
+      type: grpc
+      port: 50091
+      requestedMemory: 400Gi
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      dataset:
+        name: 2025-10-08
+      startService: true
+      prepareMemoryVolume: true
+      extraVolumes:
+        graph-20251008-persistent:
+          mountPath: /srv/dataset/2025-10-08/compressed
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20251008-persistent-pvc
+        graph-20251008-inmemory:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20251008-inmemory-pvc
+      hosts:
+        - graph-grpc-20251008-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: internalNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    rpc-20251008:
+      enabled: true
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGrpc20251008GraphConfiguration
+      startService: true
+      hosts:
+        - graph-rpc-20251008-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
