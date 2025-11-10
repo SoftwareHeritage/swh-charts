@@ -3013,9 +3013,9 @@ datasetsGenerator:
           dataset-persistent:
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-20251107-persistent-local-pvc
+                claimName: graph-20251107-generated-persistent-local-pvc
           dataset-sensitive-persistent:
             mountPath: /srv/dataset-sensitive
             volumeDefinition:
               persistentVolumeClaim:
-                claimName: graph-sensitive-20251107-persistent-local-pvc
+                claimName: graph-sensitive-20251107-generated-persistent-pvc
