@@ -2987,21 +2987,6 @@ datasetsGenerator:
     nbProcesses: 32
     # Datasets to generate
     deployments:
-      # FIXME: To decommission
-      2025-05-20:
-        enabled: true
-        # So we can trigger the dataset generation manually
-        toolbox: true
-        extraVolumes:
-          dataset-persistent:
-            volumeDefinition:
-              persistentVolumeClaim:
-                claimName: graph-20250520-generated-persistent-pvc
-          dataset-sensitive-persistent:
-            mountPath: /srv/dataset-sensitive
-            volumeDefinition:
-              persistentVolumeClaim:
-                claimName: graph-sensitive-20250520-generated-persistent-pvc
       2025-06-12:
         enabled: true
         # So we can trigger the dataset generation manually
