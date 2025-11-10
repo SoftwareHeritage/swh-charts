@@ -2991,8 +2991,6 @@ datasetsGenerator:
         enabled: true
         # So we can trigger the dataset generation manually
         toolbox: true
-        requestedMemory: 35Gi
-        requestedCpu: 20000m
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
