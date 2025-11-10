@@ -2629,6 +2629,13 @@ rpcWithRemoteGraphGrpc20250520Configuration:
   grpc_server:
     port: 80
 
+# RPC graph instance will communicate with the GRPC instance
+rpcWithRemoteGraphGrpc20251107Configuration:
+  cls: remote
+  url: graph-grpc-20251107-ingress:80
+  grpc_server:
+    port: 80
+
 plainGrpcGraphConfiguration:
   max_ram: 1g
 
@@ -2928,6 +2935,63 @@ graph:
       hosts:
         - graph.internal.staging.swh.network
         - graph-rpc-20250520-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    # grpc graph with staging generated dataset on November 2025
+    20251107-grpc:
+      enabled: true
+      type: grpc
+      port: 50091
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      dataset:
+        name: 2025-11-07
+      startService: true
+      prepareMemoryVolume: false
+      extraVolumes:
+        graph-staging-persistent:
+          mountPath: /srv/graph/2025-11-07
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20251107-generated-persistent-pvc
+      hosts:
+        # - graph-grpc.internal.staging.swh.network
+        - graph-grpc-20251107-ingress
+      ingress:
+        enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+            extraWhitelistSourceRange:
+              # vpn network
+              - 192.168.101.0/24
+    # rpc graph which hit the grpc graph instance declared above ^
+    20251107-rpc:
+      enabled: true
+      type: rpc
+      port: 5009
+      graphConfigurationRef: rpcWithRemoteGraphGrpc20251107Configuration
+      startService: true
+      hosts:
+        # - graph.internal.staging.swh.network
+        - graph-rpc-20251107-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
