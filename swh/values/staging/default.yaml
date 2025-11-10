@@ -621,9 +621,11 @@ externalServices:
     graph-rpc-python3k:
       internalName: graph-rpc-python3k-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    # FIXME: to decommission
     graph-grpc-20250520:
       internalName: graph-grpc-20250520-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    # FIXME: to decommission
     graph-rpc-20250520:
       internalName: graph-rpc-20250520-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local

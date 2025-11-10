@@ -2621,6 +2621,7 @@ rpcWithRemoteGraphGrpcPython3kConfiguration:
   grpc_server:
     port: 80
 
+# FIXME: To decommission
 # The rpc graph instance will communicate with another grpc instance
 rpcWithRemoteGraphGrpc20250520Configuration:
   cls: remote
@@ -2634,6 +2635,7 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumes:
+    # FIXME: To decommission
     graph-20250520-generated-persistent-pv:
       enabled: true
       appName: datasets-2025-05-20
@@ -2724,6 +2726,7 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    # FIXME: To decommission
     graph-20250520-generated-persistent-pvc:
       appName: datasets-2025-05-20
       spec:
@@ -2735,6 +2738,7 @@ volumes:
         volumeMode: Filesystem
         volumeName: graph-20250520-generated-persistent-pv
         storageClassName: local-persistent
+    # FIXME: To decommission
     graph-sensitive-20250520-generated-persistent-pvc:
       appName: datasets-2025-05-20
       spec:
@@ -2837,6 +2841,7 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    # FIXME: To decommission
     # grpc graph with staging generated dataset
     20250520-grpc:
       enabled: true
@@ -2870,6 +2875,7 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    # FIXME: To decommission
     # rpc graph which hit the grpc graph instance declared above ^
     20250520-rpc:
       enabled: true
@@ -2939,6 +2945,7 @@ datasetsGenerator:
     nbProcesses: 32
     # Datasets to generate
     deployments:
+      # FIXME: To decommission
       2025-05-20:
         enabled: true
         # So we can trigger the dataset generation manually
