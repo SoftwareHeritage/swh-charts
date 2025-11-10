@@ -2678,6 +2678,27 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-staging-rke2-metal01
+    graph-20251107-generated-persistent-pv:
+      enabled: true
+      appName: datasets-2025-11-07
+      spec:
+        capacity:
+          storage: 500Gi
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-persistent
+        local:
+          path: /srv/kubernetes/volumes/generated-datasets/2025-11-07
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-staging-rke2-metal01
 
   persistentVolumeClaims:
     # grpc provenance volume
@@ -2762,6 +2783,27 @@ volumes:
         storageClassName: local-persistent
     graph-sensitive-20250612-persistent-local-pvc:
       appName: datasets-2025-06-12
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        storageClassName: local-persistent
+    graph-20251107-generated-persistent-pvc:
+      appName: datasets-2025-11-07
+      spec:
+        resources:
+          requests:
+            storage: 500Gi
+        accessModes:
+        - ReadWriteOnce
+        volumeMode: Filesystem
+        volumeName: graph-20251107-generated-persistent-pv
+        storageClassName: local-persistent
+    graph-sensitive-20251107-generated-persistent-pvc:
+      appName: datasets-2025-11-07
       spec:
         resources:
           requests:
@@ -2964,7 +3006,6 @@ datasetsGenerator:
         enabled: true
         # So we can trigger the dataset generation manually
         toolbox: true
-        imageVersion: "20251104.1"
         requestedMemory: 35Gi
         requestedCpu: 20000m
         extraVolumes:
@@ -2977,3 +3018,19 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-sensitive-20250612-persistent-local-pvc
+      2025-07-11:
+        enabled: true
+        # So we can trigger the dataset generation manually
+        toolbox: true
+        requestedMemory: 35Gi
+        requestedCpu: 20000m
+        extraVolumes:
+          dataset-persistent:
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-20251107-persistent-local-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-sensitive-20251107-persistent-local-pvc
