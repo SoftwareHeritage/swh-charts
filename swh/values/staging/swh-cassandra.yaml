@@ -2375,6 +2375,21 @@ alterGraph20250520Configuration:
   url: http://graph-rpc-20250520-ingress/graph
   timeout: null
 
+# FIXME: To decommission
+# The rpc graph instance will communicate with another grpc instance
+rpcWithRemoteGraphGrpc20250520Configuration:
+  cls: remote
+  url: graph-grpc-20250520-ingress:80
+  grpc_server:
+    port: 80
+
+# RPC graph instance will communicate with the GRPC instance
+rpcWithRemoteGraphGrpc20251107Configuration:
+  cls: remote
+  url: graph-grpc-20251107-ingress:80
+  grpc_server:
+    port: 80
+
 db1DeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-db1-delete-rpc-ingress
@@ -2618,21 +2633,6 @@ rpcLocalRustWithGrpcGraphConfiguration:
 rpcWithRemoteGraphGrpcPython3kConfiguration:
   cls: remote
   url: graph-grpc-python3k-ingress:80
-  grpc_server:
-    port: 80
-
-# FIXME: To decommission
-# The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGraphGrpc20250520Configuration:
-  cls: remote
-  url: graph-grpc-20250520-ingress:80
-  grpc_server:
-    port: 80
-
-# RPC graph instance will communicate with the GRPC instance
-rpcWithRemoteGraphGrpc20251107Configuration:
-  cls: remote
-  url: graph-grpc-20251107-ingress:80
   grpc_server:
     port: 80
 
