@@ -2362,21 +2362,6 @@ cassandraChecks:
         - raw_extrinsic_metadata
         batch_size: 1000
 
-provenanceGraphGrpc20250520Configuration:
-  cls: known_swhid_filter
-  filter_licenses: false
-  provenance:
-    cls: graph
-    url: graph-grpc-20250520-ingress:80
-    max_edges: 100000
-
-vaultGraph20250520Configuration:
-  url: http://graph-rpc-20250520-ingress/graph
-
-alterGraph20250520Configuration:
-  url: http://graph-rpc-20250520-ingress/graph
-  timeout: null
-
 provenanceGraphGrpc20251107Configuration:
   cls: known_swhid_filter
   filter_licenses: false
@@ -2391,14 +2376,6 @@ vaultGraph20251107Configuration:
 alterGraph20251107Configuration:
   url: http://graph-rpc-20251107-ingress/graph
   timeout: null
-
-# FIXME: To decommission
-# The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGraphGrpc20250520Configuration:
-  cls: remote
-  url: graph-grpc-20250520-ingress:80
-  grpc_server:
-    port: 80
 
 # RPC graph instance will communicate with the GRPC instance
 rpcWithRemoteGraphGrpc20251107Configuration:
@@ -2659,28 +2636,6 @@ plainGrpcGraphConfiguration:
 volumes:
   enabled: true
   persistentVolumes:
-    # FIXME: To decommission
-    graph-20250520-generated-persistent-pv:
-      enabled: true
-      appName: datasets-2025-05-20
-      spec:
-        capacity:
-          storage: 500Gi
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        persistentVolumeReclaimPolicy: Retain
-        storageClassName: local-persistent
-        local:
-          path: /srv/kubernetes/volumes/generated-datasets/2025-05-20
-        nodeAffinity:
-          required:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - rancher-node-staging-rke2-metal01
     graph-20250612-persistent-local-pv:
       enabled: true
       appName: datasets-2025-06-12
@@ -2771,29 +2726,6 @@ volumes:
         resources:
           requests:
             storage: 1Gi
-    # FIXME: To decommission
-    graph-20250520-generated-persistent-pvc:
-      appName: datasets-2025-05-20
-      spec:
-        resources:
-          requests:
-            storage: 500Gi
-        accessModes:
-        - ReadWriteOnce
-        volumeMode: Filesystem
-        volumeName: graph-20250520-generated-persistent-pv
-        storageClassName: local-persistent
-    # FIXME: To decommission
-    graph-sensitive-20250520-generated-persistent-pvc:
-      appName: datasets-2025-05-20
-      spec:
-        resources:
-          requests:
-            storage: 10Gi
-        accessModes:
-        - ReadWriteOnce
-        volumeMode: Filesystem
-        storageClassName: local-persistent
     graph-20250612-persistent-local-pvc:
       appName: datasets-2025-06-12
       spec:
@@ -2893,63 +2825,6 @@ graph:
       startService: true
       hosts:
         - graph-rpc-python3k-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: stagingNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
-    # FIXME: To decommission
-    # grpc graph with staging generated dataset
-    20250520-grpc:
-      enabled: true
-      type: grpc
-      port: 50091
-      graphConfigurationRef: plainGrpcGraphConfiguration
-      dataset:
-        name: 2025-05-20
-      startService: true
-      prepareMemoryVolume: false
-      extraVolumes:
-        graph-staging-persistent:
-          mountPath: /srv/graph/2025-05-20
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-20250520-generated-persistent-pvc
-      hosts:
-        - graph-grpc-20250520-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: stagingNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
-    # FIXME: To decommission
-    # rpc graph which hit the grpc graph instance declared above ^
-    20250520-rpc:
-      enabled: true
-      type: rpc
-      port: 5009
-      graphConfigurationRef: rpcWithRemoteGraphGrpc20250520Configuration
-      startService: true
-      hosts:
-        - graph-rpc-20250520-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
