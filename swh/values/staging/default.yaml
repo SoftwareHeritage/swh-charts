@@ -89,12 +89,6 @@ storagePipelineSteps:
   - cls: filter
   - cls: retry
 
-storagePipelineStepsWithRecordReferences:
-  - *bufferStorage
-  - cls: filter
-  - cls: retry
-  - cls: record_references
-
 readOnlyStoragePipelineSteps:
   - cls: retry
 
