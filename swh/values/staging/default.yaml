@@ -89,6 +89,12 @@ storagePipelineSteps:
   - cls: filter
   - cls: retry
 
+journalReplayerPipelineSteps:
+  - cls: tenacious
+    error-rate-limit:
+      errors: 3
+      window_size: 100
+
 readOnlyStoragePipelineSteps:
   - cls: retry
 
