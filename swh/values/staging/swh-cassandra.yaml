@@ -1160,7 +1160,7 @@ cookers:
   storageConfigurationRef: remoteROStorageConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   vaultConfigurationRef: remoteVaultConfiguration
-  graphConfigurationRef: vaultGraph20250520Configuration
+  graphConfigurationRef: vaultGraph20251107Configuration
   threadPoolSize: 4
   deployments:
     simple:
@@ -2375,6 +2375,21 @@ alterGraph20250520Configuration:
   url: http://graph-rpc-20250520-ingress/graph
   timeout: null
 
+provenanceGraphGrpc20251107Configuration:
+  cls: known_swhid_filter
+  filter_licenses: false
+  provenance:
+    cls: graph
+    url: graph-grpc-20251107-ingress:80
+    max_edges: 100000
+
+vaultGraph20251107Configuration:
+  url: http://graph-rpc-20251107-ingress/graph
+
+alterGraph20251107Configuration:
+  url: http://graph-rpc-20251107-ingress/graph
+  timeout: null
+
 # FIXME: To decommission
 # The rpc graph instance will communicate with another grpc instance
 rpcWithRemoteGraphGrpc20250520Configuration:
@@ -2494,7 +2509,7 @@ alter:
         persistentVolumeClaim:
           claimName: alter-recovery-bundles-pvc
   inventoryStorageConfigurationRef: cassandraROStorageNoMaskingConfiguration
-  graphConfigurationRef: alterGraph20250520Configuration
+  graphConfigurationRef: alterGraph20251107Configuration
   restorationStorageConfigurationRef: rpcRWStorageConfiguration
   journalWriterMirrorConfigurationRef: journalWriterMirrorConfiguration
   removalSearches:
@@ -2593,7 +2608,7 @@ provenance:
                 - 192.168.101.0/24 # vpn network
     graph-granet:
       type: rpc
-      graphConfigurationRef: provenanceGraphGrpc20250520Configuration
+      graphConfigurationRef: provenanceGraphGrpc20251107Configuration
       replicas: 2
       gunicorn:
         workers: 4
