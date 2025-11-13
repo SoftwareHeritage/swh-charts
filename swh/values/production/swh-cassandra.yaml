@@ -1455,11 +1455,16 @@ search:
     enabled: true
     priorityClassName: frontend-rpc
     elasticsearchConfigurationRef: elasticsearchConfiguration
-    replicas: 4
     gunicorn:
-      workers: 2
+      workers: 4
       threads: 2
       timeout: 3600
+    autoScaling:
+      type: keda
+      minReplicaCount: 2
+      maxReplicaCount: 6
+      # add margin to avoid errors if there is a peak of requests
+      factor: 1.5
     requestedCpu: 250m
     requestedMemory: 512Mi
     # autoScaling:
