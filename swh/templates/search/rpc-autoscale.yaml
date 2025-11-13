@@ -3,10 +3,13 @@
 {{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
 {{- $config := deepCopy $deploymentConfig | mergeOverwrite $.Values.search.rpc -}}
 {{- if $config.autoScaling -}}
+{{- $autoScalingType := get $config.autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
 {{- $serviceType := print $deploymentName "-rpc" -}}
-{{- include "swh.autoscale" (dict "Values"        $.Values
-                                  "serviceType"   $serviceType
-                                  "configuration" $config) -}}
+{{- include $autoScalerFn
+      (dict "Values"        $.Values
+            "serviceType"   $serviceType
+            "configuration" $config) -}}
 {{ end }}
 {{ end }}
 {{ end }}
