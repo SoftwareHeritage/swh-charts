@@ -2764,8 +2764,6 @@ graph:
               claimName: graph-20250419-inmemory-pvc
       hosts:
         - graph-grpc-20250419-ingress
-        - graph-grpc.internal.softwareheritage.org
-        - graph-grpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -2788,8 +2786,6 @@ graph:
       startService: true
       hosts:
         - graph-rpc-20250419-ingress
-        - graph-rpc.internal.softwareheritage.org
-        - graph-rpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -2827,6 +2823,8 @@ graph:
               claimName: graph-20251008-inmemory-pvc
       hosts:
         - graph-grpc-20251008-ingress
+        - graph-grpc.internal.softwareheritage.org
+        - graph-grpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -2849,6 +2847,8 @@ graph:
       startService: true
       hosts:
         - graph-rpc-20251008-ingress
+        - graph-rpc.internal.softwareheritage.org
+        - graph-rpc-default-ingress
       ingress:
         enabled: true
         whitelistSourceRangeRef: internalNetworkRanges
