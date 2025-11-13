@@ -2070,17 +2070,19 @@ search:
   rpc:
     enabled: true
     priorityClassName: frontend-rpc
-    # replicas: 2
     gunicorn:
-      threads: 5
+      threads: 2
       workers: 4
       timeout: 3600
     requestedCpu: 100m
     requestedMemory: 300Mi
     autoScaling:
+      type: keda
       minReplicaCount: 2
-      maxReplicaCount: 4
-      cpuPercentageUsage: 75
+      maxReplicaCount: 6
+      # add margin to avoid errors if there is a peak of requests
+      factor: 1.5
+
     deployments:
       # instance-name (will be suffixed by -rpc)
       search:
