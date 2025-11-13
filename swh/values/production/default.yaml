@@ -1091,12 +1091,6 @@ externalServices:
     provenance-20241206-grpc:
       internalName: provenance-20241206-grpc-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    graph-grpc-20250419:
-      internalName: graph-grpc-20250419-ingress
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    graph-rpc-20250419:
-      internalName: graph-rpc-20250419-ingress
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     graph-grpc-20251008:
       internalName: graph-grpc-20251008-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
