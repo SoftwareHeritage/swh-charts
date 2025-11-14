@@ -166,6 +166,7 @@ searchJournalClientConfiguration:
 azureObjStorageRWConfiguration: &azure-storage-conf-rw
   cls: azure-prefixed
   name: azure
+  compression: gzip
   accounts:
     '0':
       account_name: ${ACCOUNT_NAME_0}
@@ -338,6 +339,7 @@ azureDeleteObjstorageConfiguration: &azure-storage-conf-delete
 azureObjStorageROConfiguration: &azure-storage-conf-ro
   cls: azure-prefixed
   name: azure
+  compression: gzip
   accounts:
     '0': ${AZURE_RO_URL_0}
     '1': ${AZURE_RO_URL_1}
