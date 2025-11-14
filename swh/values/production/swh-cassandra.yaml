@@ -2542,6 +2542,7 @@ objstorageReplayer:
         group_id: swh-archive-prod-s3-content-replayer
         auto_offset_reset: earliest
         batch_size: 400
+        partition.assignment.strategy: cooperative-sticky
       autoScaling:
         minReplicaCount: 4
         stopWhenNoActivity: false
