@@ -478,7 +478,7 @@ loaders:
           medium: Memory
           sizeLimit: 10Gi
     hackage:
-      enabled: false
+      enabled: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -491,7 +491,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     hex:
-      enabled: false
+      enabled: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -574,7 +574,7 @@ loaders:
       requestedMemory: 1Gi
       requestedCpu: 1300m
     puppet:
-      enabled: false
+      enabled: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -626,7 +626,7 @@ loaders:
       requestedMemory: 3Gi
       requestedCpu: 1000m
     rubygems:
-      enabled: false
+      enabled: true
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
