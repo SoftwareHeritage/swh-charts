@@ -2381,6 +2381,12 @@ scheduler:
       - git-checkout
       - deposit
       - svn
+      - cpan
+      - crates
+      - hackage
+      - hex
+      - puppet
+      - rubygems
 
 journalClientCassandraChecksConfiguration:
   cls: kafka
