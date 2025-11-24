@@ -249,6 +249,19 @@ loaders:
         - swh.loader.bzr.tasks.LoadBazaar
       autoScaling:
         maxReplicaCount: 1
+    cpan:
+      enabled: true
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.cpan.tasks.LoadCpan
+      autoScaling:
+        maxReplicaCount: 1
     cran:
       enabled: false
       tmpEphemeralStorage:
@@ -260,6 +273,19 @@ loaders:
       image: swh_loader_package_image
       queues:
         - swh.loader.package.cran.tasks.LoadCRAN
+      autoScaling:
+        maxReplicaCount: 1
+    crates:
+      enabled: true
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.crates.tasks.LoadCrates
       autoScaling:
         maxReplicaCount: 1
     cvs:
@@ -451,6 +477,32 @@ loaders:
         emptyDir:
           medium: Memory
           sizeLimit: 10Gi
+    hackage:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.hackage.tasks.LoadHackage
+      autoScaling:
+        maxReplicaCount: 1
+    hex:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.hex.tasks.LoadHex
+      autoScaling:
+        maxReplicaCount: 1
     maven:
       enabled: false
       tmpEphemeralStorage:
@@ -521,6 +573,19 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 1Gi
       requestedCpu: 1300m
+    puppet:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.puppet.tasks.LoadPuppet
+      autoScaling:
+        maxReplicaCount: 1
     pypi:
       enabled: false
       tmpEphemeralStorage:
@@ -560,6 +625,19 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 3Gi
       requestedCpu: 1000m
+    rubygems:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.rubygems.tasks.LoadRubyGems
+      autoScaling:
+        maxReplicaCount: 1
     save-bulk:
       image: swh_loader_savecodenow_image
       queues:
