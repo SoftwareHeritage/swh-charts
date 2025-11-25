@@ -42,7 +42,7 @@ dockerCache:
       enabled: true
       clusterIssuer: letsencrypt-production
   imageName: registry
-  imageVersion: "2.8.3"
+  imageVersion: "3.0.0"
   imagePullPolicy: IfNotPresent
   storageRequest: 40Gi
   storageClassName: ceph-rbd
