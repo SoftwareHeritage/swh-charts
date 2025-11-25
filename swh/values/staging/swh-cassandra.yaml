@@ -168,7 +168,7 @@ loaders:
       ackLate: true
       autoScaling:
         queueThreshold: 1
-        maxReplicaCount: 3
+        maxReplicaCount: 1
       requestedMemory: 1Gi
       requestedCpu: 200m
       limitedMemory: 10Gi
