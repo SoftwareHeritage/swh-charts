@@ -1,0 +1,25 @@
+{{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
+{{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
+{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datasets-config-sutils
+  namespace: {{ .Values.namespace }}
+data:
+  prepare-configuration.s: |
+    #!/usr/bin/env bash
+    # Uses env variables:
+    # - AWS_REGION
+    # - CONFIG_TEMPLATE_PATH
+    # - CONFIG_PATH
+
+    set -eu
+
+    echo "Following variables will be replaced:"
+    envsubst -v "$(<${CONFIG_TEMPLATE_PATH})"
+
+    cat "${CONFIG_TEMPLATE_PATH}" | envsubst > "${CONFIG_PATH}"
+
+{{ end }}

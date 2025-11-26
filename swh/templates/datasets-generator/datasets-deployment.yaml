@@ -19,6 +19,7 @@
 {{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
 {{- $batchSize := $config.batchSize -}}
 {{- $sensitiveDataMixed := $config.sensitiveDataMixed -}}
+{{- $publish := $config.publish -}}
 {{- $logLevel := $config.logLevel -}}
 ---
 apiVersion: apps/v1
@@ -73,6 +74,29 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
+        {{- if $publish }}
+        - name: datasets-config-{{ $config.serviceType }}-prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+                  (dict "deploymentConfig" $datasetsGeneratorConfig
+                        "Values" $.Values) | nindent 12 }}
+            - name: CONFIG_TEMPLATE_PATH
+              value: /opt/swh/.aws/configuration-template/aws-config.template
+            - name: CONFIG_PATH
+              value: /opt/swh/.aws/config
+          volumeMounts:
+          - name: publish-configuration
+            mountPath: /opt/swh/.aws/
+          - name: publish-{{ $config.serviceType }}-template
+            mountPath: /opt/swh/.aws/
+          - name: datasets-config-utils
+            mountPath: /entrypoints
+            readOnly: true
+        {{- end }}
+
       containers:
         - name: {{ $config.serviceType }}
           resources:
@@ -130,6 +154,11 @@ spec:
             - name: BATCH_SIZE
               value: {{ $batchSize | int | quote }}
             {{- end }}
+            {{- if $publish }}
+            {{ include "swh.secrets.envFromDeploymentConfig"
+              (dict "deploymentConfig" $datasetsGeneratorConfig
+                    "Values" $.Values) | nindent 12 }}
+            {{- end }}
           volumeMounts:
           - name: dataset-configuration
             mountPath: /etc/swh
@@ -158,6 +187,20 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
+      {{- if $publish }}
+      - name: publish-configuration
+        emptyDir: {}
+      - name: publish-{{ $config.serviceType }}-template
+        configMap:
+          name: publish-{{ $config.serviceType }}-template
+          items:
+          - key: "config.template"
+            path: "config.template"
+      - name: datasets-config-utils
+        configMap:
+          name: datasets-config-utils
+          defaultMode: 0555
+      {{- end }}
       {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
       - name: {{ $volumeName }}
         {{- toYaml $volumeConfig.volumeDefinition | nindent 8 }}

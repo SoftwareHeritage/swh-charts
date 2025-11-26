@@ -27,6 +27,21 @@ data:
     {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
                                                        "Values" $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
+
+{{ if $config.publish }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: publish-{{ $config.serviceType }}-template
+  namespace: {{ $config.namespace }}
+data:
+  aws-config.template: |
+    [default]
+    region = ${AWS_REGION}
+
+{{ end }}
+
 {{ end }}
 {{ end }}
 {{ end }}

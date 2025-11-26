@@ -1535,6 +1535,20 @@ graph:
 # Luigi's scheduler url to access
 luigiSchedulerUrl: http://luigi-scheduler-next-version-ingress:80
 
+# s3 access to bucket for dataset upload
+datasetUploadS3Configuration:
+  region: ${AWS_REGION}
+  secrets:
+    AWS_ACCESS_KEY_ID:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: access-key
+    AWS_ACCESS_ACCESS_KEY:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: secret-key
+    AWS_REGION:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: region
+
 datasetsGenerator:
   enabled: true
   logLevel: DEBUG
@@ -1566,6 +1580,7 @@ datasetsGenerator:
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: roMaskingPostgresqlConfiguration
+    publicationCredentialsRef: datasetUploadS3Configuration
     requestedMemory: 1Gi
     requestedCpu: 1000m
     nbProcesses: 16
@@ -1591,6 +1606,7 @@ datasetsGenerator:
         toolbox: true
         imageVersion: "20251104.1"
         nbProcesses: 32
+        publish: true
         extraVolumes:
           dataset-persistent:
             volumeDefinition:

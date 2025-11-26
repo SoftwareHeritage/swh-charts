@@ -2184,6 +2184,13 @@ datasetsGenerator:
     # Masking db connection access (can be overridden per instance)
     # maskingDbConfigurationRef: maskingDbConfiguration
     # nbProcesses: 1
+    # (optional) The credentials holding the region, access-key & secret-key
+    # to where the dataset is published after the generation (e.g. s3, ...)
+    # publicationCredentialsRef: s3-dataset-upload-secret
+    # # Whether to publish the dataset after its generation, can be overriden
+    # # per instance (false by default). Dataset will only be published with
+    # # sensitiveDataMixed to false.
+    publish: false
     # Datasets to generate
     deployments: {}
     #   # Name of the export (usually timestamp of the export deployment)
