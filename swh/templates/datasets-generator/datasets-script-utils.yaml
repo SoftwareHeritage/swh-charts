@@ -79,13 +79,33 @@ data:
     [ -z "${LOG_LEVEL}" ] && \
       echo "<LOG_LEVEL> env variable must be set" && exit 1
 
+    # The default luigi task to generate the compressed graph
+    graph_generation_task=CompressGraph
+
     EXTRA_CLI_FLAGS=()
+    EXTRA_SUBCMD_FLAGS=()
+
     if [ -n "${BATCH_SIZE}" ]; then
       EXTRA_CLI_FLAGS+=('--batch-size' "${BATCH_SIZE}")
     fi
 
     if [ -n "${GRAPH_SENSITIVE_MOUNTPOINT}" ]; then
       EXTRA_CLI_FLAGS+=('--base-sensitive-directory' "${GRAPH_SENSITIVE_MOUNTPOINT}")
+    fi
+
+    # do we publish to s3?
+    if [ -n "${AWS_ACCESS_ACCESS_KEY}" ]; then
+      # Add extra cli flags so the publication to s3 is possible
+      EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
+      EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
+      EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
+
+      # And also some extra sub command flag
+      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc"')
+
+      # finally, we override the default luigi task to upload the compressed graph to
+      # s3 (it will pull the compressed graph generation)
+      graph_generation_task=UploadExportToS3
     fi
 
     set -x
@@ -95,7 +115,7 @@ data:
           --dataset-name "${GRAPH_DATASET_NAME}" \
           --base-directory "${GRAPH_MOUNTPOINT}" \
           "${EXTRA_CLI_FLAGS[@]}" \
-          CompressGraph \
+          ${graph_generation_task} \
           -- \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \
           --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
