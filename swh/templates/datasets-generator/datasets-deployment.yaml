@@ -194,8 +194,8 @@ spec:
         configMap:
           name: publish-{{ $config.serviceType }}-template
           items:
-          - key: "config.template"
-            path: "config.template"
+          - key: "aws-config.template"
+            path: "aws-config.template"
       - name: datasets-config-utils
         configMap:
           name: datasets-config-utils
