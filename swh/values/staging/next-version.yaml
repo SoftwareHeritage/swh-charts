@@ -1542,7 +1542,7 @@ datasetUploadS3Configuration:
     AWS_ACCESS_KEY_ID:
       secretKeyRef: s3-dataset-upload-secret
       secretKeyName: access-key
-    AWS_ACCESS_ACCESS_KEY:
+    AWS_SECRET_ACCESS_KEY:
       secretKeyRef: s3-dataset-upload-secret
       secretKeyName: secret-key
     AWS_REGION:
