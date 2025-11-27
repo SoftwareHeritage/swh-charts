@@ -101,7 +101,7 @@ data:
       EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
 
       # And also some extra sub command flag
-      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc"')
+      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc")
 
       # finally, we override the default luigi task to upload the compressed graph to
       # s3 (it will pull the compressed graph generation)
