@@ -123,6 +123,7 @@ data:
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
           --CompressGraph-check-flavor "none" \
+          "${EXTRA_SUBCMD_FLAGS[@]}" \
           --log-level "${LOG_LEVEL}"
 
 {{ end }}
