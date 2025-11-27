@@ -8,7 +8,7 @@ metadata:
   name: datasets-config-utils
   namespace: {{ .Values.namespace }}
 data:
-  prepare-configuration.s: |
+  prepare-configuration.sh: |
     #!/usr/bin/env bash
     # Uses env variables:
     # - AWS_REGION
