@@ -46,8 +46,14 @@ data:
       echo
     done
 
-  generate-compressed-graph.sh: |
+  generate-and-publish-compressed-graph-dataset.sh: |
     #!/usr/bin/env bash
+
+    # This script's main goal is to generate the compressed graph dataset.
+    # Optionally, it can also publish the dataset to s3 (with the graph export
+    # out of the journal as orc files). This is all driven through environment
+    # variables.
+
     # Uses mandatory env variables:
     # - SWH_CONFIG_FILENAME
     # - LUIGI_SCHEDULER_URL
@@ -96,29 +102,32 @@ data:
       EXTRA_CLI_FLAGS+=('--base-sensitive-directory' "${GRAPH_SENSITIVE_MOUNTPOINT}")
     fi
 
-    # do we publish to s3?
     if [ -n "${PUBLISH}" ]; then
-      # Ensure required variables are properly set
+      # When publication is enabled
+
+      # Ensure required variables are properly set, if not raise
       [ -z "${AWS_SECRET_ACCESS_KEY}" ] && \
         echo "<AWS_SECRET_ACCESS_KEY> env variable must be set" && exit 1
       [ -z "${AWS_ACCESS_KEY_ID}" ] && \
         echo "<AWS_ACCESS_KEY_ID> env variable must be set" && exit 1
 
-      # Add extra cli flags so the publication to s3 is possible
+      # Add extra cli flags for the s3 publication
       EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
       EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
       EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
 
-      # And also some extra sub command flag
+      # Add some extra sub command flags (require the export to be in orc)
       EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc")
 
-      # finally, we override the default luigi task to upload the compressed graph to
-      # s3 (it will pull the compressed graph generation)
+      # Finally, we override the default luigi task to upload the compressed
+      # graph dataset to s3 (this will trigger the compressed graph generation
+      # first out of the graph export)
       graph_generation_task=UploadGraphToS3
     fi
 
     set -x
 
+    # Trigger the compressed graph dataset (and publish to s3 if publication enabled)
     /opt/swh/entrypoint.sh \
        swh datasets luigi \
           --dataset-name "${GRAPH_DATASET_NAME}" \
@@ -134,5 +143,25 @@ data:
           --CompressGraph-check-flavor "none" \
           "${EXTRA_SUBCMD_FLAGS[@]}" \
           --log-level "${LOG_LEVEL}"
+
+    if [ -n "${PUBLISH}" ]; then
+      # When publication is enabled, this publishes the graph export (as orc
+      # files) to s3
+      /opt/swh/entrypoint.sh \
+         swh datasets luigi \
+            --dataset-name "${GRAPH_DATASET_NAME}" \
+            --base-directory "${GRAPH_MOUNTPOINT}" \
+            "${EXTRA_CLI_FLAGS[@]}" \
+            UploadExportToS3 \
+            -- \
+            --scheduler-url "${LUIGI_SCHEDULER_URL}" \
+            --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
+            --LocalExport-export-task-type ExportGraph \
+            --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
+            --ExportGraph-process "${NB_PROCESSES}" \
+            --CompressGraph-check-flavor "none" \
+            "${EXTRA_SUBCMD_FLAGS[@]}" \
+            --log-level "${LOG_LEVEL}"
+    fi
 
 {{ end }}

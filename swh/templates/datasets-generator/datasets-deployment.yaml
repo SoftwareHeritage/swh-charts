@@ -121,7 +121,7 @@ spec:
           - infinity
           {{- else }}
           command:
-          - /script/generate-compressed-graph.sh
+          - /script/generate-and-publish-compressed-graph-dataset.sh
           {{ end }}
           env:
             {{- if eq $logLevel (quote "DEBUG") }}
