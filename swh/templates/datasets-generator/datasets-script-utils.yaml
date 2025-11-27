@@ -123,7 +123,6 @@ data:
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
           --CompressGraph-check-flavor "none" \
-          --log-level "${LOG_LEVEL}" \
-          --Llp-gammas=-1,-2,-3,-4
+          --log-level "${LOG_LEVEL}"
 
 {{ end }}
