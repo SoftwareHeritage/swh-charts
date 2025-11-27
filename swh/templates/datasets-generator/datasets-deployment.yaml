@@ -89,9 +89,9 @@ spec:
               value: /opt/swh/.aws/config
           volumeMounts:
           - name: publish-configuration
-            mountPath: /opt/swh/.aws/
+            mountPath: /opt/swh/.aws
           - name: publish-{{ $config.serviceType }}-template
-            mountPath: /opt/swh/.aws/
+            mountPath: /opt/swh/.aws/configuration-template
           - name: datasets-config-utils
             mountPath: /entrypoints
             readOnly: true
