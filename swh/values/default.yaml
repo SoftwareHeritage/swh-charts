@@ -513,7 +513,7 @@ datasetsGenerator:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
           - matchExpressions:
-            - key: swh/graph
+            - key: swh/datasets
               operator: In
               values:
               - "true"
