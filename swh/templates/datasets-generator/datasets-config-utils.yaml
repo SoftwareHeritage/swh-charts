@@ -5,7 +5,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: datasets-config-sutils
+  name: datasets-config-utils
   namespace: {{ .Values.namespace }}
 data:
   prepare-configuration.s: |
