@@ -114,7 +114,7 @@ data:
 
       # finally, we override the default luigi task to upload the compressed graph to
       # s3 (it will pull the compressed graph generation)
-      graph_generation_task=UploadExportToS3
+      graph_generation_task=UploadGraphToS3
     fi
 
     set -x
