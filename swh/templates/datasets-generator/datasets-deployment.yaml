@@ -162,6 +162,10 @@ spec:
           volumeMounts:
           - name: dataset-configuration
             mountPath: /etc/swh
+          {{- if $publish }}
+          - name: publish-configuration
+            mountPath: /opt/swh/.aws
+          {{- end }}
           - name: datasets-script-utils
             mountPath: /script
           {{- range $volumeName, $volumeConfig := $datasetGeneratorConfig.extraVolumes }}
