@@ -1601,21 +1601,6 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-sensitive-20250507-generated-persistent-pvc
-      2025-05-15:
-        enabled: true
-        toolbox: true
-        nbProcesses: 32
-        publish: true
-        extraVolumes:
-          dataset-persistent:
-            volumeDefinition:
-              persistentVolumeClaim:
-                claimName: graph-20250515-persistent-pvc
-          dataset-sensitive-persistent:
-            mountPath: /srv/dataset-sensitive
-            volumeDefinition:
-              persistentVolumeClaim:
-                claimName: graph-sensitive-20250515-generated-persistent-pvc
       2025-10-07:
         enabled: true
         toolbox: true
@@ -1628,3 +1613,18 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-next-version-20251007-persistent-pvc
+      2025-11-27:
+        enabled: true
+        toolbox: true
+        nbProcesses: 32
+        publish: true
+        extraVolumes:
+          dataset-persistent:
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-next-version-20251127-persistent-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: graph-next-version-sensitive-20251127-generated-persistent-pvc
