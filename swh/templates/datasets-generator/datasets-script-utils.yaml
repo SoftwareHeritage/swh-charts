@@ -55,10 +55,13 @@ data:
     # - GRAPH_DATASET_NAME
     # - NB_PROCESSES
     # - LOG_LEVEL
+    # - AWS_SECRET_ACCESS_KEY (when PUBLISH is set)
+    # - AWS_ACCESS_KEY_ID (when PUBLISH is set)
     # Uses optional env variables:
     # - SWH_DEBUG_ENTRYPOINT
     # - BATCH_SIZE
     # - GRAPH_SENSITIVE_MOUNTPOINT
+    # - PUBLISH
 
     set -e
 
@@ -94,7 +97,13 @@ data:
     fi
 
     # do we publish to s3?
-    if [ -n "${AWS_ACCESS_ACCESS_KEY}" ]; then
+    if [ -n "${PUBLISH}" ]; then
+      # Ensure required variables are properly set
+      [ -z "${AWS_SECRET_ACCESS_KEY}" ] && \
+        echo "<AWS_SECRET_ACCESS_KEY> env variable must be set" && exit 1
+      [ -z "${AWS_ACCESS_KEY_ID}" ] && \
+        echo "<AWS_ACCESS_KEY_ID> env variable must be set" && exit 1
+
       # Add extra cli flags so the publication to s3 is possible
       EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
       EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")

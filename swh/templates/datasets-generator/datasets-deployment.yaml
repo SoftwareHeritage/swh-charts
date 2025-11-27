@@ -155,6 +155,8 @@ spec:
               value: {{ $batchSize | int | quote }}
             {{- end }}
             {{- if $publish }}
+            - name: PUBLISH
+              value: "1"
             {{ include "swh.secrets.envFromDeploymentConfig"
               (dict "deploymentConfig" $datasetsGeneratorConfig
                     "Values" $.Values) | nindent 12 }}
