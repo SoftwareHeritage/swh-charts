@@ -2870,6 +2870,20 @@ alter:
 # Luigi's scheduler url to access
 luigiSchedulerUrl: http://luigi-scheduler-ingress:80
 
+# s3 access to bucket for dataset upload
+datasetUploadS3Configuration:
+  region: ${AWS_REGION}
+  secrets:
+    AWS_ACCESS_KEY_ID:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: access-key
+    AWS_SECRET_ACCESS_KEY:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: secret-key
+    AWS_REGION:
+      secretKeyRef: s3-dataset-upload-secret
+      secretKeyName: region
+
 datasetsGenerator:
   enabled: true
   logLevel: DEBUG
@@ -2900,6 +2914,7 @@ datasetsGenerator:
     graphDirectoryPathRef: graphDirectoryPath
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
+    publicationCredentialsRef: datasetUploadS3Configuration
     nbProcesses: 32
     # Datasets to generate
     deployments:
