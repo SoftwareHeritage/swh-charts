@@ -526,3 +526,9 @@ webAlter:
     default_from_email: "no-reply@softwareheritage.org"
   alter_settings:
     block_disposable_email_domains: false
+
+# Graph main directory path to write or read graph data from (can be published in s3
+# without sensitive data). It will be the main folder onto which dataset named folder
+# (/srv/dataset/YYYY-MM-DD/) will be created with the data. The sensitive data will be on
+# another folder (/srv/dataset-sensitive/YYYY-MM-DD)
+graphDirectoryPath: /srv/dataset
