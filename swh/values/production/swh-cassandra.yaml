@@ -2915,7 +2915,7 @@ datasetsGenerator:
     journalClientConfigurationRef: datasetsJournalClientConfiguration
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
     publicationCredentialsRef: datasetUploadS3Configuration
-    nbProcesses: 32
+    nbProcesses: 128
     # Datasets to generate
     deployments:
       2025-11-28:
