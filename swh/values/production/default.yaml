@@ -1299,7 +1299,6 @@ datasetsJournalClientConfiguration:
   group_id: swh-datasets-journal-export-graph
   prefix: swh.journal.objects
   privileged: true
-  batch_size: 250
 
 s3RWObjectstorageConfiguration: &s3-rw-configuration
   cls: s3
