@@ -2708,7 +2708,7 @@ volumes:
           requests:
             storage: 1Gi
     comp-graph-dataset-gen-20251128-persistent-local-pvc:
-      enabled: false
+      enabled: true
       appName: datasets-2025-11-28
       spec:
         resources:
@@ -2720,7 +2720,7 @@ volumes:
         volumeName: comp-graph-dataset-gen-20251128-persistent-local-pv
         storageClassName: local-storage
     comp-graph-dataset-gen-sensitive-20251128-persistent-local-pvc:
-      enabled: false
+      enabled: true
       appName: datasets-2025-11-28
       spec:
         resources:
