@@ -2864,3 +2864,55 @@ alter:
           recipient_keys:
             Camille: age1ahuqxgjmvfm65shmwqa7xa703vvcla528swga3zempnxslj3pczqtx6wr8
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
+
+# Luigi's scheduler url to access
+luigiSchedulerUrl: http://luigi-scheduler-ingress:80
+
+datasetsGenerator:
+  enabled: true
+  logLevel: DEBUG
+  # Dedicated scheduler instance
+  scheduler:
+    enabled: true
+    config:
+      recordTaskHistory: false
+      orgRamMb: "1000000"
+    hosts:
+      - luigi-scheduler-ingress
+      - luigi-scheduler.internal.softwareheritage.org
+    ingress:
+      enabled: true
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      endpoints:
+        default:
+          paths:
+            - path: /
+
+  # The datasets export to build
+  datasets:
+    enabled: true
+    luigiSchedulerUrlRef: luigiSchedulerUrl
+    graphDirectoryPathRef: graphDirectoryPath
+    journalClientConfigurationRef: datasetsJournalClientConfiguration
+    maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
+    nbProcesses: 32
+    # Datasets to generate
+    deployments:
+      2025-11-28:
+        enabled: true
+        # So we can trigger the dataset generation manually
+        toolbox: true
+        publish: true
+        extraVolumes:
+          dataset-persistent:
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: comp-graph-dataset-gen-20251128-persistent-local-pvc
+          dataset-sensitive-persistent:
+            mountPath: /srv/dataset-sensitive
+            volumeDefinition:
+              persistentVolumeClaim:
+                claimName: comp-graph-dataset-gen-sensitive-20251128-persistent-local-pvc

@@ -1099,6 +1099,9 @@ externalServices:
     graph-rpc-20251008:
       internalName: graph-rpc-20251008-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    luigi-scheduler:
+      internalName: luigi-scheduler-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 svixConfiguration:
   svix:
@@ -1290,6 +1293,13 @@ storageReplayerJournalClientConfiguration:
     BROKER_USER_PASSWORD:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
+
+datasetsJournalClientConfiguration:
+  brokersConfigurationRef: kafkaBrokers
+  group_id: swh-datasets-journal-export-graph
+  prefix: swh.journal.objects
+  privileged: true
+  batch_size: 250
 
 s3RWObjectstorageConfiguration: &s3-rw-configuration
   cls: s3
