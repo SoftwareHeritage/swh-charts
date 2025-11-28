@@ -2642,7 +2642,7 @@ volumes:
       appName: datasets-2025-11-28
       spec:
         capacity:
-          storage: 1Gi
+          storage: 1Ti
         volumeMode: Filesystem
         accessModes:
         - ReadWriteOnce
