@@ -22,3 +22,6 @@ gitlabRunner:
     create: true
 
   gitlabUrl: https://gitlab-staging.swh.network
+
+gitlabAgent:
+  enabled: true

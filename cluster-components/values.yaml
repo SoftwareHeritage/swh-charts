@@ -638,3 +638,6 @@ gitlabRunner:
   runners:
     secret: gitlab-runner
     jobNamespace: gitlab-runner
+
+gitlabAgent:
+  enabled: false

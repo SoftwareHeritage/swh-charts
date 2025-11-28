@@ -49,3 +49,10 @@ dependencies:
   version: 0.82.0
   repository: https://charts.gitlab.io
   condition: gitlabRunner.enabled
+
+- name: gitlab-agent
+  alias: gitlabAgent
+  version: 2.21.1
+  repository: https://charts.gitlab.io
+  condition: gitlabAgent.enabled
+
