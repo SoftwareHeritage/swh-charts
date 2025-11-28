@@ -440,17 +440,17 @@ roObjstorageBestEffort:
   cls: multiplexer
   readonly: true
   objstorages:
-  # - cls: remote
-  #   name: winery
-  #   url: https://winery-read-only.cea.swh.network
-  #   session_kwargs:
-  #     auth:
-  #     - ${WINERY_RO_USERNAME}
-  #     - ${WINERY_RO_PASSWORD}
-  #   timeout:
-  #     - 0.5  # Connect
-  #     - 10   # Read
-  #   enable_requests_retry: true
+  - cls: remote
+    name: winery
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
+    timeout:
+      - 0.5  # Connect
+      - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
@@ -474,17 +474,17 @@ roObjstorageHighParallelism:
   cls: multiplexer
   readonly: true
   objstorages:
-  # - cls: remote
-  #   name: winery
-  #   url: https://winery-read-only.cea.swh.network
-  #   session_kwargs:
-  #     auth:
-  #     - ${WINERY_RO_USERNAME}
-  #     - ${WINERY_RO_PASSWORD}
-  #   timeout:
-  #     - 0.5  # Connect
-  #     - 10   # Read
-  #   enable_requests_retry: true
+  - cls: remote
+    name: winery
+    url: https://winery-read-only.cea.swh.network
+    session_kwargs:
+      auth:
+      - ${WINERY_RO_USERNAME}
+      - ${WINERY_RO_PASSWORD}
+    timeout:
+      - 0.5  # Connect
+      - 10   # Read
+    enable_requests_retry: true
   - cls: http
     name: s3
     url: https://softwareheritage.s3.amazonaws.com/content/
