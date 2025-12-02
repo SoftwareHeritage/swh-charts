@@ -34,6 +34,7 @@
 {{- $dbOwner := $database.owner | default $database.name -}}
 {{- $initdb := $clusterConfig.initdb | default dict -}}
 {{- $superUserSecretRef := $clusterConfig.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
+{{- $finalizers := $clusterConfig.finalizers | default $.Values.cloudnativePg.finalizers | default dict -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -42,6 +43,10 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     cnpg.io/cluster: {{ $clusterName }}
+  {{- if $finalizers }}
+  finalizers:
+    {{- toYaml $finalizers | nindent 4}}
+  {{- end }}
 spec:
   instances: {{ $clusterConfig.instances | default 1 }}
   {{- if $superUserSecretRef }}

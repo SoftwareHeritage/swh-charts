@@ -261,6 +261,9 @@ cloudnativePg:
   storage: {}
   # Default wal storage volume (can be overridden per instance)
   walStorage: {}
+  # Add extra finalizers, one use case could be to prevent deletion (so we
+  # need to drop it explicitly for the actual cleanup to happen)
+  finalizers: []
   backup:
     # Backup system type is in ("in-tree", "plugin"). Defaults to "in-tree" for now.
     # - in-tree: Deprecated backup system integrated in-tree with cloudnative-pg

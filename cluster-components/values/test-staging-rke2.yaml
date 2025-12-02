@@ -78,6 +78,9 @@ cloudnativePg:
   enabled: true
   testing: true
   namespace: cnpg
+  finalizers:
+    # To prevent immediate deletion
+    - cnpg.finalizer/swh-prevent-deletion
   # Where to store backup (if enabled)
   # barmanobjectstoreRef: minioTestObjectStore
   # Cluster Postgresql to read db to initialize from
