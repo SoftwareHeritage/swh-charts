@@ -100,7 +100,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     test-db:
-      enabled: false
+      enabled: true
       instances: 1
       database:
         name: test-db
