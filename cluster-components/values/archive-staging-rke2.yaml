@@ -36,7 +36,6 @@ podPriority:
 
 svix:
   enabled: true
-  version: v1.82
   deployments:
     svix:
       enabled: true
@@ -63,6 +62,7 @@ svix:
         dsn: db-swh-svix-rw.cnpg
     svix-next-version:
       enabled: true
+      version: v1.82
       ingress:
         host: svix-next-version.internal.staging.swh.network
         createTLS: true
