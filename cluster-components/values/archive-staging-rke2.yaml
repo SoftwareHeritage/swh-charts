@@ -36,7 +36,6 @@ podPriority:
 
 svix:
   enabled: true
-  version: v1.82
   deployments:
     svix:
       enabled: true
