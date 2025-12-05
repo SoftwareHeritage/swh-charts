@@ -2892,7 +2892,7 @@ datasetsGenerator:
     enabled: true
     config:
       recordTaskHistory: false
-      orgRamMb: "1000000"
+      orgRamMb: "4200000"
     hosts:
       - luigi-scheduler-ingress
       - luigi-scheduler.internal.softwareheritage.org
