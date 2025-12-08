@@ -60,6 +60,10 @@ svix:
       postgres:
         enabled: false
         dsn: db-swh-svix-rw.cnpg
+        cleanupExpiredMessages:
+          enabled: false
+          # Every day at 3:30 am
+          cron: "30 3 * * *"
     svix-next-version:
       enabled: true
       ingress:
@@ -83,6 +87,10 @@ svix:
       postgres:
         enabled: false
         dsn: next-version-db-swh-svix-rw.cnpg-next-version
+        cleanupExpiredMessages:
+          enabled: true
+          # Every day at 6 am
+          cron: "0 6 * * *"
 
 alerting:
   enabled: true

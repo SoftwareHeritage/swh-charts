@@ -1,0 +1,90 @@
+{{ if .Values.svix.enabled -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{ $namespace := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- if or (not (hasKey $svixConfiguration "enabled")) (get $svixConfiguration "enabled") -}}
+{{- $postgres := $svixConfiguration.postgres | default $.Values.svix.postgres | default dict -}}
+{{- $cleanupExpiredMessages := $postgres.cleanupExpiredMessages | default (dict "enabled" "false") -}}
+{{- if $cleanupExpiredMessages.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: svix-script-utils
+  namespace: {{ $namespace }}
+data:
+
+  cleanup-expired-messages.sql: |
+    -- Cleanup data from the svix database that are older than now - '14 days'
+
+    select now();
+
+    -- 1. Define the cutoff timestamp (change the interval if need be)
+
+    WITH params AS (
+        SELECT NOW() - INTERVAL '14 days' AS cutoff
+    ),
+
+    -- 2. Delete old messages – cascades to messagecontent and messageattempt
+    deleted_messages AS (
+        DELETE FROM message m
+        USING params
+        WHERE m.created_at < params.cutoff
+        RETURNING id
+    ),
+
+    -- 3. Keep a count for logging / monitoring
+    deleted_counts AS (
+        SELECT
+            (SELECT COUNT(*) FROM deleted_messages) AS msgs_deleted,
+            (SELECT COUNT(*) FROM messagecontent
+             WHERE id NOT IN (SELECT id FROM message)) AS orphan_msgcontent,
+            (SELECT COUNT(*) FROM messagedestination
+             WHERE msg_id NOT IN (SELECT id FROM message)) AS orphan_msgdest,
+            (SELECT COUNT(*) FROM messageattempt
+             WHERE msg_id NOT IN (SELECT id FROM message)) AS orphan_msgattempt
+    )
+    select * from deleted_counts;
+
+    -- 4. Clean up any orphaned rows if any
+    DELETE FROM messagecontent
+    WHERE id NOT IN (SELECT id FROM message);
+
+    DELETE FROM messagedestination
+    WHERE msg_id NOT IN (SELECT id FROM message);
+
+    DELETE FROM messageattempt
+    WHERE msg_id NOT IN (SELECT id FROM message);
+
+    select now();
+
+  cleanup-expired-messages.sh: |
+    #!/bin/bash
+
+    # This ensures the necessary environment variables to access the database
+    # are provided. And then pursues to run the `cleanup-expired-messages.sql`
+    # file to
+    set -e
+
+    [ -z "${SVIX_DB_HOST}" ] && \
+      echo "<SVIX_DB_HOST> env variable must be set" && exit 1
+    [ -z "${SVIX_DB_NAME}" ] && \
+      echo "<SVIX_DB_NAME> env variable must be set" && exit 1
+    [ -z "${SVIX_DB_USER}" ] && \
+      echo "<SVIX_DB_USER> env variable must be set" && exit 1
+    [ -z "${SVIX_DB_PASS}" ] && \
+      echo "<SVIX_DB_PASS> env variable must be set" && exit 1
+
+    SQL_CLEANUP_FILE=cleanup-expired-messages.sql
+
+    cat <<EOF > "${SQL_CLEANUP_FILE}"
+
+    EOF
+
+    connstring="host=$SVIX_DB_HOST user=$SVIX_DB_USER dbname=$SVIX_DB_NAME password=$SVIX_DB_PASS"
+    time psql --no-psqlrc --echo-all --file="/script/cleanup-expired-messages.sql" \
+      --set=ON_ERROR_STOP=1 "${connstring}"
+
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

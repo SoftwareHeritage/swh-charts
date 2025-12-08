@@ -96,6 +96,10 @@ svix:
       postgres:
         enabled: false
         dsn: db.internal.softwareheritage.org
+        cleanupExpiredMessages:
+          enabled: false
+          # Every day at 1:00 am
+          cron: "0 1 * * *"
 
 redis:
   enabled: true

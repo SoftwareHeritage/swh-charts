@@ -1,0 +1,68 @@
+{{ if .Values.svix.enabled -}}
+{{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
+{{ $namespace := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- if or (not (hasKey $svixConfiguration "enabled")) (get $svixConfiguration "enabled") -}}
+{{- $postgres := $svixConfiguration.postgres | default $.Values.svix.postgres | default dict -}}
+{{- $cleanupExpiredMessages := $postgres.cleanupExpiredMessages | default (dict "enabled" "false") -}}
+{{- if $cleanupExpiredMessages.enabled -}}
+{{- $cronPeriod := $cleanupExpiredMessages.cron | quote -}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: svix-{{ $svixName }}-cleanup
+  namespace: {{ $namespace }}
+spec:
+  # By default, at 1am each monday of the week
+  schedule: {{ $cronPeriod }}
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          {{- if $svixConfiguration.affinity }}
+          affinity:
+            {{- toYaml $svixConfiguration.affinity | nindent 12 }}
+          {{- end }}
+          {{- if and $.Values.podPriority.enabled $svixConfiguration.priorityClassName }}
+          priorityClassName: {{ $.Values.namespace }}-{{ $svixConfiguration.priorityClassName }}
+          {{ end }}
+          containers:
+            - name: cleanup-cronjob-{{ $svixName }}
+              image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
+              command:
+              - /script/cleanup-expired-messages.sh
+              env:
+                - name: SVIX_DB_HOST
+                  value: {{ $postgres.dsn }}
+                - name: SVIX_DB_NAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: svix-server-secrets
+                      # Yes, dbname and users are the same
+                      key: APP_DB_USER
+                - name: SVIX_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: svix-server-secrets
+                      key: APP_DB_USER
+                - name: SVIX_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: svix-server-secrets
+                      key: APP_DB_PASS
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: svix-script-utils
+                mountPath: /script
+          volumes:
+          - name: svix-script-utils
+            configMap:
+              name: svix-script-utils
+              defaultMode: 0555
+          restartPolicy: OnFailure
+
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -51,6 +51,9 @@ svix:
         enabled: false
         persistentVolume: false
         dsn: svix-rw.swh
+        cleanupExpiredMessages:
+          enabled: true
+          cron: "0 */2 * * *"
       redis:
         enabled: false
         persistentVolume: false
