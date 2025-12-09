@@ -14,48 +14,27 @@ metadata:
 data:
 
   cleanup-expired-messages.sql: |
-    -- Cleanup data from the svix database that are older than now - '14 days'
+    -- Cleanup svix database message* table rows whose expiration is older
+    -- than a given period (adapt the period according to the need).
 
     select now();
 
-    -- 1. Define the cutoff timestamp (change the interval if need be)
+    -- Cleanup messages older than x days (adapt this if need be). The current
+    -- model has on cascade delete constraints on some tables but not all of
+    -- them
 
-    WITH params AS (
-        SELECT NOW() - INTERVAL '14 days' AS cutoff
-    ),
-
-    -- 2. Delete old messages – cascades to messagecontent and messageattempt
-    deleted_messages AS (
-        DELETE FROM message m
-        USING params
-        WHERE m.created_at < params.cutoff
-        RETURNING id
-    ),
-
-    -- 3. Keep a count for logging / monitoring
-    deleted_counts AS (
-        SELECT
-            (SELECT COUNT(*) FROM deleted_messages) AS msgs_deleted,
-            (SELECT COUNT(*) FROM messagecontent
-             WHERE id NOT IN (SELECT id FROM message)) AS orphan_msgcontent,
-            (SELECT COUNT(*) FROM messagedestination
-             WHERE msg_id NOT IN (SELECT id FROM message)) AS orphan_msgdest,
-            (SELECT COUNT(*) FROM messageattempt
-             WHERE msg_id NOT IN (SELECT id FROM message)) AS orphan_msgattempt
-    )
-    select * from deleted_counts;
-
-    -- 4. Clean up any orphaned rows if any
-    DELETE FROM messagecontent
-    WHERE id NOT IN (SELECT id FROM message);
-
-    DELETE FROM messagedestination
-    WHERE msg_id NOT IN (SELECT id FROM message);
+    DELETE FROM message
+    WHERE created_at < NOW() - INTERVAL '14 days';
 
     DELETE FROM messageattempt
-    WHERE msg_id NOT IN (SELECT id FROM message);
+    WHERE ended_at < NOW() - INTERVAL '14 days';
 
-    select now();
+    SELECT
+      NOW(),
+      (SELECT COUNT(*) FROM message) AS messages,
+      (SELECT COUNT(*) FROM messagecontent) AS messagecontents,
+      (SELECT COUNT(*) FROM messageattempt) AS messageattempts,
+      (SELECT COUNT(*) FROM messagedestination) AS messagedestinations;
 
   cleanup-expired-messages.sh: |
     #!/bin/bash
