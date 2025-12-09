@@ -51,6 +51,8 @@ spec:
                     secretKeyRef:
                       name: svix-server-secrets
                       key: APP_DB_PASS
+                - name: SQL_CLEANUP_FILE
+                  value: /script/cleanup-expired-messages.sql
               imagePullPolicy: IfNotPresent
               volumeMounts:
               - name: svix-script-utils

@@ -40,8 +40,15 @@ data:
     #!/bin/bash
 
     # This ensures the necessary environment variables to access the database
-    # are provided. And then pursues to run the `cleanup-expired-messages.sql`
-    # file to
+    # are provided. And then pursues to run the ${SQL_CLEANUP_FILE}
+
+    # Uses mandatory env variables:
+    # - SVIX_DB_HOST
+    # - SVIX_DB_NAME
+    # - SVIX_DB_USER
+    # - SVIX_DB_PASS
+    # - SQL_CLEANUP_FILE
+
     set -e
 
     [ -z "${SVIX_DB_HOST}" ] && \
@@ -52,16 +59,19 @@ data:
       echo "<SVIX_DB_USER> env variable must be set" && exit 1
     [ -z "${SVIX_DB_PASS}" ] && \
       echo "<SVIX_DB_PASS> env variable must be set" && exit 1
+    [ -z "${SQL_CLEANUP_FILE}" ] && \
+      echo "<SQL_CLEANUP_FILE> env variable must be set" && exit 1
 
-    SQL_CLEANUP_FILE=cleanup-expired-messages.sql
+    [ ! -f "${SQL_CLEANUP_FILE}" ] && \
+      echo "<$SQL_CLEANUP_FILE> filepath does not exist."
 
-    cat <<EOF > "${SQL_CLEANUP_FILE}"
-
-    EOF
-
-    connstring="host=$SVIX_DB_HOST user=$SVIX_DB_USER dbname=$SVIX_DB_NAME password=$SVIX_DB_PASS"
-    time psql --no-psqlrc --echo-all --file="/script/cleanup-expired-messages.sql" \
-      --set=ON_ERROR_STOP=1 "${connstring}"
+    connstring="host=${SVIX_DB_HOST} user=${SVIX_DB_USER} dbname=${SVIX_DB_NAME} password=${SVIX_DB_PASS}"
+    time psql \
+      --no-psqlrc \
+      --echo-all \
+      --file="${SQL_CLEANUP_FILE}" \
+      --set=ON_ERROR_STOP=1 \
+      "${connstring}"
 
 {{- end -}}
 {{- end -}}
