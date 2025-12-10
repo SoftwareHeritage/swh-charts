@@ -2544,7 +2544,7 @@ objstorageReplayer:
         batch_size: 400
         partition.assignment.strategy: cooperative-sticky
       autoScaling:
-        minReplicaCount: 4
+        minReplicaCount: 24
         stopWhenNoActivity: false
         maxReplicaCount: 48
         advancedKedaConfig:
