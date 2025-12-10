@@ -64,7 +64,7 @@ spec:
               defaultMode: 0555
           restartPolicy: OnFailure
 
-{{- end -}}
+{{ end }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
