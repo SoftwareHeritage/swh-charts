@@ -27,7 +27,7 @@ spec:
             {{- toYaml $affinity | nindent 12 }}
           {{- end }}
           {{- if and $.Values.podPriority.enabled $priorityClassName }}
-          priorityClassName: {{ $namespace }}-{{ $priorityClassName }}
+          priorityClassName: {{ $priorityClassName }}
           {{- end }}
           containers:
             - name: cleanup-cronjob-{{ $svixName }}

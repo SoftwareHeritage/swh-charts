@@ -42,7 +42,7 @@ spec:
         {{- toYaml $affinity | nindent 8 }}
       {{- end }}
       {{- if and $.Values.podPriority.enabled $priorityClassName }}
-      priorityClassName: {{ $ns }}-{{ $priorityClassName }}
+      priorityClassName: {{ $priorityClassName }}
       {{- end }}
       containers:
         - name: svix-server
