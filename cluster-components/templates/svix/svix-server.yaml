@@ -13,6 +13,7 @@
 {{ $version := $svixConfiguration.version | default $.Values.svix.version -}}
 {{ $tlsDisable := $svixConfiguration.tlsDisable | default $.Values.svix.tlsDisable -}}
 {{ $whitelistSubnets := $svixConfiguration.whitelistSubnets | default $.Values.svix.whitelistSubnets -}}
+{{- $priorityClassName := $.Values.svix.priorityClassName -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -39,6 +40,9 @@ spec:
       {{- if $affinity }}
       affinity:
         {{- toYaml $affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $priorityClassName }}
+      priorityClassName: {{ $ns }}-{{ $priorityClassName }}
       {{- end }}
       containers:
         - name: svix-server

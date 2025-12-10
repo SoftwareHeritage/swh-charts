@@ -6,6 +6,7 @@
 {{- $cleanupExpiredMessages := $postgres.cleanupExpiredMessages | default (dict "enabled" "false") -}}
 {{- if $cleanupExpiredMessages.enabled -}}
 {{- $cronPeriod := $cleanupExpiredMessages.cron | quote -}}
+{{- $priorityClassName := $.Values.svix.priorityClassName -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -23,9 +24,9 @@ spec:
           affinity:
             {{- toYaml $svixConfiguration.affinity | nindent 12 }}
           {{- end }}
-          {{- if and $.Values.podPriority.enabled $svixConfiguration.priorityClassName }}
-          priorityClassName: {{ $.Values.namespace }}-{{ $svixConfiguration.priorityClassName }}
-          {{ end }}
+          {{- if and $.Values.podPriority.enabled $priorityClassName }}
+          priorityClassName: {{ $.Values.namespace }}-{{ $priorityClassName }}
+          {{- end }}
           containers:
             - name: cleanup-cronjob-{{ $svixName }}
               image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}

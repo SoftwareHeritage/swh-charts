@@ -121,6 +121,7 @@ svix:
   enabled: false
   # Namespace where to run the svix server (can be overridden per instance)
   namespace: svix-server
+  priorityClassName: swh-storages
   # Svix-server version must match the svix python library
   # in the swh-webhooks image's requirements (can be overriden per instance)
   version: v1.82
