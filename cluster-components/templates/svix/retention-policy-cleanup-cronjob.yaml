@@ -7,6 +7,8 @@
 {{- if $cleanupExpiredMessages.enabled -}}
 {{- $cronPeriod := $cleanupExpiredMessages.cron | quote -}}
 {{- $priorityClassName := $.Values.svix.priorityClassName -}}
+{{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
+
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -20,9 +22,9 @@ spec:
     spec:
       template:
         spec:
-          {{- if $svixConfiguration.affinity }}
+          {{- if $affinity }}
           affinity:
-            {{- toYaml $svixConfiguration.affinity | nindent 12 }}
+            {{- toYaml $affinity | nindent 12 }}
           {{- end }}
           {{- if and $.Values.podPriority.enabled $priorityClassName }}
           priorityClassName: {{ $namespace }}-{{ $priorityClassName }}
