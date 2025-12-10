@@ -61,7 +61,7 @@ svix:
         enabled: false
         dsn: db-swh-svix-rw.cnpg
         cleanupExpiredMessages:
-          enabled: false
+          enabled: true
           # Every day at 3:30 am
           cron: "30 3 * * *"
     svix-next-version:
