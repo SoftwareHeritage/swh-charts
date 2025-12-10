@@ -97,7 +97,7 @@ svix:
         enabled: false
         dsn: db.internal.softwareheritage.org
         cleanupExpiredMessages:
-          enabled: false
+          enabled: true
           # Every day at 1:00 am
           cron: "0 1 * * *"
 
