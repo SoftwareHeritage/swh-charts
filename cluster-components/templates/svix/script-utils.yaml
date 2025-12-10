@@ -73,7 +73,7 @@ data:
       --set=ON_ERROR_STOP=1 \
       "${connstring}"
 
-{{- end -}}
+{{ end }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
