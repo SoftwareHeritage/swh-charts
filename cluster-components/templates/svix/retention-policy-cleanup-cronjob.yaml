@@ -25,7 +25,7 @@ spec:
             {{- toYaml $svixConfiguration.affinity | nindent 12 }}
           {{- end }}
           {{- if and $.Values.podPriority.enabled $priorityClassName }}
-          priorityClassName: {{ $.Values.namespace }}-{{ $priorityClassName }}
+          priorityClassName: {{ $namespace }}-{{ $priorityClassName }}
           {{- end }}
           containers:
             - name: cleanup-cronjob-{{ $svixName }}
