@@ -3077,6 +3077,9 @@ datasetsGenerator:
         enabled: true
         # So we can trigger the dataset generation manually
         toolbox: true
+        checks:
+          enabled: true
+          name: staging
         requestedMemory: 35Gi
         requestedCpu: 20000m
         extraVolumes:

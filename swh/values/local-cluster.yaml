@@ -1864,7 +1864,10 @@ datasetsGenerator:
     deployments:
       2025-04-08:
         enabled: true
-        toolbox: false
+        toolbox: true
+        checks:
+          enabled: true
+          name: example
         # Kind of dataset export to build
         generatorTask: CompressGraph
         extraVolumes:

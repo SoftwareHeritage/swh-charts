@@ -68,6 +68,7 @@ data:
     # - BATCH_SIZE
     # - GRAPH_SENSITIVE_MOUNTPOINT
     # - PUBLISH
+    # - GRAPH_CHECK_FLAVOR
 
     set -e
 
@@ -140,7 +141,7 @@ data:
           --LocalExport-export-task-type ExportGraph \
           --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
           --ExportGraph-process "${NB_PROCESSES}" \
-          --CompressGraph-check-flavor "none" \
+          --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
           "${EXTRA_SUBCMD_FLAGS[@]}" \
           --log-level "${LOG_LEVEL}"
 
@@ -159,7 +160,7 @@ data:
             --LocalExport-export-task-type ExportGraph \
             --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
             --ExportGraph-process "${NB_PROCESSES}" \
-            --CompressGraph-check-flavor "none" \
+            --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
             "${EXTRA_SUBCMD_FLAGS[@]}" \
             --log-level "${LOG_LEVEL}"
     fi

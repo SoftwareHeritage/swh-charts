@@ -150,6 +150,8 @@ spec:
               value: {{ $config.nbProcesses | quote }}
             - name: LOG_LEVEL
               value: {{ $logLevel }}
+            - name: GRAPH_CHECK_FLAVOR
+              value: {{ $config.graphCheckFlavor }}
             {{- if $batchSize }}
             - name: BATCH_SIZE
               value: {{ $batchSize | int | quote }}

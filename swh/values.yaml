@@ -2191,6 +2191,11 @@ datasetsGenerator:
     # # per instance (false by default). Dataset will only be published with
     # # sensitiveDataMixed to false.
     publish: false
+    checks:
+      # Whether to enable the checks on the datasets
+      enabled: false
+      # values in (full, history_hosting, staging, example, none]
+      # name: none
     # Datasets to generate
     deployments: {}
     #   # Name of the export (usually timestamp of the export deployment)

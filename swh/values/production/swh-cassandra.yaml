@@ -2919,6 +2919,9 @@ datasetsGenerator:
         # So we can trigger the dataset generation manually
         toolbox: true
         publish: true
+        checks:
+          enabled: true
+          name: full
         extraVolumes:
           dataset-persistent:
             volumeDefinition:
