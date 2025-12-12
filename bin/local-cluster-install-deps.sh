@@ -126,6 +126,7 @@ $KUBECTL get storageclass local-path && \
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-path \
       --namespace local-path-storage \
+      --create-namespace \
       -f "${CONFIG_FILE}"
 
 CONFIG_FILE2=${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
@@ -152,6 +153,7 @@ $KUBECTL get storageclass local-persistent && \
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-persistent \
       --namespace local-path-storage \
+      --create-namespace \
       -f "${CONFIG_FILE2}"
 popd
 
