@@ -159,7 +159,7 @@ cloudnativePg:
       initdb:
         enabled: true
     scrubber:
-      enabled: true
+      enabled: false
       database:
         name: swh-scrubber
         secretKeyRef: swh-scrubber-swh-postgresql-secret
