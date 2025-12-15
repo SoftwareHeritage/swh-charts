@@ -12,7 +12,8 @@ fi
 
 case "$KUBE_LOCAL_ENVIRONMENT" in
     minikube)
-        which minikube && minikube start --memory 9216 --cpus 8 || \
+        export MINIKUBE_IN_STYLE=false
+        which minikube && minikube start --nodes 3 --memory 12288 --cpus 8 || \
             echo "Requires the minikube cli!" && exit 1
         ;;
     kind)
