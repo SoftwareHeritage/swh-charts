@@ -56,6 +56,16 @@ $HELM upgrade --install cloudnative-pg \
       --create-namespace \
       cnpg/cloudnative-pg
 
+barmanplugin_version=$(get_value cloudnativePg barmanPluginVersion)
+barmanplugin_url="https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${barmanplugin_version}/manifest.yaml"
+barmanplugin_manifest="${CLUSTER_TEMP_TMP}/barman-cloud-plugin-manifest-${barmanplugin_version}.yaml"
+wget --output-document="${barmanplugin_manifest}" \
+     "${barmanplugin_url}"
+
+# FIXME: Find a way to determine whether that's already install
+$KUBECTL delete -f "${barmanplugin_manifest}" && \
+  $KUBECTL apply -f "${barmanplugin_manifest}"
+
 kafka_version=$(get_value kafka version)
 $HELM upgrade --install kafka-operator \
       --version "${kafka_version}" \
