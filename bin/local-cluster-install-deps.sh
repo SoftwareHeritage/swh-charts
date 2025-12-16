@@ -62,8 +62,8 @@ barmanplugin_manifest="${CLUSTER_TEMP_TMP}/barman-cloud-plugin-manifest-${barman
 wget --output-document="${barmanplugin_manifest}" \
      "${barmanplugin_url}"
 
-# FIXME: Find a way to determine whether that's already install
-$KUBECTL delete -f "${barmanplugin_manifest}" && \
+# FIXME: Find a way to determine whether that's already installed
+$KUBECTL delete -f "${barmanplugin_manifest}" || \
   $KUBECTL apply -f "${barmanplugin_manifest}"
 
 kafka_version=$(get_value kafka version)
