@@ -147,6 +147,7 @@ spec:
       secret:
         name: {{ $database.secretKeyRef }}
       {{ end -}}
+      {{- if $grantGuestAccess }}
       # The list of queries to be executed just after having configured a new
       # instance
       # postInitSQL: []
@@ -155,21 +156,20 @@ spec:
       # postInitTemplateSQL: []
       # The list of queries to be executed just after having the application
       # database created
-      {{- if $grantGuestAccess }}
       postInitApplicationSQL:
       - CREATE ROLE guest
       - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest
       {{- end -}}
 
-    {{- if $initdb.source }}
-    {{- $databases := $initdb.databases | default (list $dbName) -}}
+      {{- if $initdb.source }}
+      {{- $databases := $initdb.databases | default (list $dbName) -}}
       import:
         type: microservice
         databases:
           {{- toYaml $databases | nindent 10 }}
         source:
           externalCluster: {{ $initdb.source }}
-    {{- end }}
+      {{- end }}
     {{- end }}
     {{- if $recoveryEnabled }}
     recovery:
