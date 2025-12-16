@@ -103,9 +103,8 @@ data:
       EXTRA_CLI_FLAGS+=('--base-sensitive-directory' "${GRAPH_SENSITIVE_MOUNTPOINT}")
     fi
 
+    # When publication is enabled
     if [ -n "${PUBLISH}" ]; then
-      # When publication is enabled
-
       # Ensure required variables are properly set, if not raise
       [ -z "${AWS_SECRET_ACCESS_KEY}" ] && \
         echo "<AWS_SECRET_ACCESS_KEY> env variable must be set" && exit 1
@@ -120,10 +119,10 @@ data:
       # Add some extra sub command flags (require the export to be in orc)
       EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc")
 
-      # Finally, we override the default luigi task to upload the compressed
-      # graph dataset to s3 (this will trigger the compressed graph generation
-      # first out of the graph export)
-      graph_generation_task=UploadGraphToS3
+      # Finally, we override the default luigi task to upload the orc files and the
+      # compressed graph dataset to s3 (this will trigger the compressed graph
+      # generation first out of the graph export)
+      graph_generation_task=UploadExportAndCompressedGraphToS3
     fi
 
     set -x
@@ -144,25 +143,5 @@ data:
           --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
           "${EXTRA_SUBCMD_FLAGS[@]}" \
           --log-level "${LOG_LEVEL}"
-
-    if [ -n "${PUBLISH}" ]; then
-      # When publication is enabled, this publishes the graph export (as orc
-      # files) to s3
-      /opt/swh/entrypoint.sh \
-         swh datasets luigi \
-            --dataset-name "${GRAPH_DATASET_NAME}" \
-            --base-directory "${GRAPH_MOUNTPOINT}" \
-            "${EXTRA_CLI_FLAGS[@]}" \
-            UploadExportToS3 \
-            -- \
-            --scheduler-url "${LUIGI_SCHEDULER_URL}" \
-            --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
-            --LocalExport-export-task-type ExportGraph \
-            --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
-            --ExportGraph-process "${NB_PROCESSES}" \
-            --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
-            "${EXTRA_SUBCMD_FLAGS[@]}" \
-            --log-level "${LOG_LEVEL}"
-    fi
 
 {{ end }}
