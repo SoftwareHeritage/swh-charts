@@ -43,6 +43,18 @@ source ./bin/_parser-helper.sh
 
 # Now actually installs the various operator dependencies
 
+certmanager_version=$(get_value certManager version)
+$HELM upgrade --install cert-manager \
+      --version "${certmanager_version}" \
+      jetstack/cert-manager \
+      --namespace cert-manager --create-namespace \
+      --set crds.enabled=true \
+      --set installCRDs=true
+
+# Cannot have those since prometheus is not necessarily installed yet.
+      # --set prometheus.enabled=true \
+      # --set prometheus.servicemonitor.enabled=true \
+
 ingress_version=$(get_value ingressNginx version)
 ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --version "${ingress_version}" \
@@ -73,18 +85,6 @@ $HELM upgrade --install kafka-operator \
       --create-namespace \
       strimzi/strimzi-kafka-operator \
       --set watchAnyNamespace=true
-
-certmanager_version=$(get_value certManager version)
-$HELM upgrade --install cert-manager \
-      --version "${certmanager_version}" \
-      jetstack/cert-manager \
-      --namespace cert-manager --create-namespace \
-      --set crds.enabled=true \
-      --set installCRDs=true
-
-# Cannot have those since prometheus is not necessarily installed yet.
-      # --set prometheus.enabled=true \
-      # --set prometheus.servicemonitor.enabled=true \
 
 cassandra_version=$(get_value cassandra version)
 $HELM upgrade --install k8ssandra-operator \
