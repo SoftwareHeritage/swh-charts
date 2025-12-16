@@ -193,12 +193,6 @@ if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
     # TODO: Inline the file deploy.yaml in this repository?
     DEPLOY_FILE=https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     $KUBECTL apply -f ${DEPLOY_FILE}
-
-    $KUBECTL wait \
-        --namespace ingress-nginx \
-        --for=condition=ready pod \
-        --selector=app.kubernetes.io/component=controller \
-        --timeout=120s
 fi
 
 rabbitmq_version=$(get_value rabbitmq version)
