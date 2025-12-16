@@ -260,6 +260,7 @@ recoverySwhMaskingClusters:
 cloudnativePg:
   enabled: true
   superUserSecretRef: swh-postgresql-postgres-secret
+  grantGuestAccess: true
   # Postgres credentials to setup (can be overridden per instance)
   # superUserSecretRef: swh-postgresql-postgres-secret
   deployments:
@@ -310,6 +311,7 @@ cloudnativePg:
     next-version-db-swh-masking:
       enabled: true
       namespace: cnpg-next-version
+      grantGuestAccess: false
       testing: true
       externalClustersRef: externalPostgresqlClusters
       database:
@@ -472,6 +474,7 @@ cloudnativePg:
     db-swh-blocking:
       enabled: true
       namespace: cnpg
+      grantGuestAccess: false
       instances: 2
       externalClustersRef: internalObjectStores
       recovery:
@@ -537,6 +540,7 @@ cloudnativePg:
     db-swh-masking:
       enabled: true
       namespace: cnpg
+      grantGuestAccess: false
       instances: 2
       externalClustersRef: externalPostgresqlClusters
       roles:
