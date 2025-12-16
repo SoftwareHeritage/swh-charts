@@ -35,6 +35,7 @@
 {{- $initdb := $clusterConfig.initdb | default dict -}}
 {{- $superUserSecretRef := $clusterConfig.superUserSecretRef | default $.Values.cloudnativePg.superUserSecretRef -}}
 {{- $finalizers := $clusterConfig.finalizers | default $.Values.cloudnativePg.finalizers | default dict -}}
+{{- $grantGuestAccess := $clusterConfig.grantGuestAccess | default $.Values.cloudnativePg.grantGuestAccess -}}
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
@@ -154,9 +155,11 @@ spec:
       # postInitTemplateSQL: []
       # The list of queries to be executed just after having the application
       # database created
+      {{- if $grantGuestAccess }}
       postInitApplicationSQL:
       - CREATE ROLE guest
       - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest
+      {{- end -}}
 
     {{- if $initdb.source }}
     {{- $databases := $initdb.databases | default (list $dbName) -}}

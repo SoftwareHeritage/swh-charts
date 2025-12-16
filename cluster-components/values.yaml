@@ -153,6 +153,8 @@ svix:
       enabled: false
       # Default cron (each monday 1am), can be overridden per instance
       cron: "0 1 * * mon"
+  # Grant guest access at init/bootstrap time (can be overridden per instance)
+  grantGuestAccess: false
   deployments: {}
     # instance-name:
     #   ingress:
