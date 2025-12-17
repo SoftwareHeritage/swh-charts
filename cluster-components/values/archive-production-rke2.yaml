@@ -203,3 +203,36 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+
+externalPostgresqlClusters:
+  - name: cluster-pg-production-albertina
+    password:
+      name: swh-postgresql-postgres-secret
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: altertina.internal.softwaheritage.org
+      user: postgres
+      port: "5433"
+
+cloudnativePg:
+  enabled: true
+  # Postgres credentials to setup (can be overridden per instance)
+  superUserSecretRef: swh-postgresql-postgres-secret
+
+  deployments:
+    db-swh-blocking:
+      enabled: true
+      namespace: cnpg
+      instances: 3
+      externalClustersRef: externalPostgresqlClusters
+      database:
+        name: swh-blocking
+        secretKeyRef: swh-postgresql-swh-blocking-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-production-albertina
+      backup:
+        enabled: true
+        # Run once a day at 1am (UTC)
+        schedule: "0 1 * * * *"
