@@ -259,10 +259,11 @@ recoverySwhMaskingClusters:
 
 cloudnativePg:
   enabled: true
-  superUserSecretRef: swh-postgresql-postgres-secret
-  grantGuestAccess: true
   # Postgres credentials to setup (can be overridden per instance)
-  # superUserSecretRef: swh-postgresql-postgres-secret
+  superUserSecretRef: swh-postgresql-postgres-secret
+  # Enable post hooks to enable guest access (overridden per instance where we do not
+  # want it)
+  grantGuestAccess: true
   deployments:
     # Next-version dbs followed by staging dbs sorted in alphabetical order
     # to look for them more easily
