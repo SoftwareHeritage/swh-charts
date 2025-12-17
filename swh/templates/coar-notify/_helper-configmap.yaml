@@ -4,6 +4,9 @@
                                       "service" "storage"
                                       "configurationRef" .Values.coarNotify.storageConfigurationRef
                                       "Values" .Values) | fromYaml | mustMerge $coarNotifyConfiguration -}}
+{{- $coarNotifyConfiguration = include "swh.schedulerConfiguration" (dict
+                                      "configurationRef" .Values.coarNotify.schedulerConfigurationRef
+                                      "Values" .Values) | fromYaml | mustMerge $coarNotifyConfiguration -}}
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration (dict "allowed_hosts" .Values.coarNotify.allowed_hosts ) -}}
 {{- $extraConfiguration := (dict) -}}
 {{- $extraConfiguration := include "swh.service.fromYaml" (dict "configurationRef" .Values.coarNotify.extraConfigRef
@@ -17,6 +20,25 @@
 {{- $coarNotifyConfiguration = mustMerge $coarNotifyConfiguration $djangoConfiguration -}}
 {{ $coarNotifyConfiguration | toYaml }}
 {{- end -}}
+{{- define "coarNotifyWorker.defaultQueues" -}}
+{{ (list
+      "swh.coarnotify.tasks.ProcessInboundNotificationTask"
+      "swh.coarnotify.tasks.SendOutboundNotificationTask") | toYaml }}
+{{- end -}}
+
+{{- define "coarNotifyWorker.config.fromYaml" -}}
+{{- $coarNotifyWorkerConfig := include "coarNotify.config.fromYaml" (dict "Values" .Values) | fromYaml -}}
+{{- $coarNotifyWorkerConfig = (dict
+    "celery" (dict 
+      "task_acks_late" true
+      "task_modules" (list "swh.coarnotify.tasks")
+      "task_queues" (include "coarNotifyWorker.defaultQueues" (dict) | fromYamlArray))) | mustMerge $coarNotifyWorkerConfig -}}
+{{- $coarNotifyWorkerConfig = include "celery.configuration" (dict
+                               "configurationRef" .Values.coarNotify.worker.celeryConfigurationRef
+                               "Values" .Values) | fromYaml | mustMerge $coarNotifyWorkerConfig -}}
+{{ $coarNotifyWorkerConfig | toYaml }}
+{{- end -}}
+
 {{- define "coarNotify.configmap" -}}
 ---
 apiVersion: v1
@@ -27,4 +49,55 @@ metadata:
 data:
   config.yml.template: |
     {{- include "coarNotify.config.fromYaml" (dict "Values" .Values) | nindent 4 -}}
+{{ end }}
+
+{{- define "coarNotifyWorker.configmap" -}}
+{{- $deployment_config := mustMerge dict .Values.coarNotify.worker (omit .Values.coarNotify "worker") -}}
+{{- $use_json_logger := get $deployment_config "useJsonLogger" | default true -}}
+{{- $log_level := get $deployment_config "logLevel" | default "INFO" | quote -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .serviceType }}-template
+  namespace: {{ .Values.namespace }}
+data:
+  config.yml.template: |
+    {{- include "coarNotifyWorker.config.fromYaml" (dict "Values" .Values) | nindent 4 }}
+  {{- if $use_json_logger }}
+  logging-configuration.yml: |
+    version: 1
+
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: json
+        stream: ext://sys.stdout
+
+    formatters:
+      json:
+        class: pythonjsonlogger.jsonlogger.JsonFormatter
+        # python-json-logger parses the format argument to get the variables it actually expands into the json
+        format: "%(asctime)s:%(threadName)s:%(pathname)s:%(lineno)s:%(funcName)s:%(task_name)s:%(task_id)s:%(name)s:%(levelname)s:%(message)s"
+
+    loggers:
+      celery:
+        level: {{ $log_level }}
+      amqp:
+        level: WARNING
+      urllib3:
+        level: WARNING
+      azure.core.pipeline.policies.http_logging_policy:
+        level: WARNING
+      swh:
+        level: {{ $log_level }}
+      celery.task:
+        level: {{ $log_level }}
+
+    root:
+      level: {{ $log_level }}
+      handlers:
+      - console
+
+  {{- end }}
 {{ end }}

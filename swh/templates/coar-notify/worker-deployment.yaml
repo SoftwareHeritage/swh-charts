@@ -1,16 +1,17 @@
-{{- if .Values.coarNotify.enabled -}}
-{{- $serviceName := "coar-notify" -}}
-{{- $enable_sentry := and .Values.sentry.enabled .Values.coarNotify.sentry.enabled }}
-{{- $configurationChecksum := include "coarNotify.configmap" (dict "serviceType" $serviceName "Values" .Values) | sha256sum -}}
-{{- $affinity := .Values.coarNotify.deployment.affinity -}}
-{{- $nodeSelector := .Values.coarNotify.deployment.nodeSelector | default dict -}}
-{{- $priorityClassName := cat .Values.namespace "-" .Values.coarNotify.deployment.priorityClassName | nospace -}}
-{{- $requestedCpu := get .Values.coarNotify.deployment "requestedCpu" -}}
-{{- $requestedMemory := get .Values.coarNotify.deployment "requestedMemory" -}}
-{{- $limitedCpu := get .Values.coarNotify.deployment "limitedCpu" -}}
-{{- $limitedMemory := get .Values.coarNotify.deployment "limitedMemory" -}}
-{{- $replicas := .Values.coarNotify.replicas | default 1 }}
-
+{{- if and .Values.coarNotify.enabled .Values.coarNotify.worker.enabled -}}
+{{- $deployment_config := mustMerge dict .Values.coarNotify.worker.deployment .Values.coarNotify.deployment -}}
+{{- $workerConfig := mustMerge dict .Values.coarNotify.worker (omit .Values.coarNotify "worker") -}}
+{{- $serviceName := "coar-notify-worker" -}}
+{{- $configurationChecksum := include "coarNotifyWorker.configmap" (dict "serviceType" $serviceName "Values" .Values) | sha256sum -}}
+{{- $affinity := $deployment_config.affinity -}}
+{{- $nodeSelector := $deployment_config.nodeSelector | default dict -}}
+{{- $priorityClassName := cat .Values.namespace "-" ($deployment_config.priorityClassName) | nospace -}}
+{{- $requestedCpu := get $deployment_config "requestedCpu" -}}
+{{- $requestedMemory := get $deployment_config "requestedMemory" -}}
+{{- $limitedCpu := get $deployment_config "limitedCpu" -}}
+{{- $limitedMemory := get $deployment_config "limitedMemory" -}}
+{{- $replicas := $deployment_config.replicas | default 1 -}}
+{{- $use_json_logger := get .Values.coarNotify.worker "useJsonLogger" | default true -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,7 +54,7 @@ spec:
         - name: prepare-configuration
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env:{{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" (omit .Values.coarNotify "worker")
+          env: {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $workerConfig
                                                                       "Values" .Values) | nindent 10 }}
           command:
             - /entrypoints/prepare-configuration.sh
@@ -65,22 +66,6 @@ spec:
               mountPath: /etc/swh
             - name: configuration-template
               mountPath: /etc/swh/configuration-template
-        {{- if .Values.coarNotify.migrationsEnabled }}
-        - name: do-migration
-          image: {{ .Values.swh_coar_notify_image }}:{{ .Values.swh_coar_notify_image_version }}
-          imagePullPolicy: IfNotPresent
-          env:
-            - name: SWH_CONFIG_FILENAME
-              value: /etc/swh/config.yml
-          command:
-            - django-admin
-          args:
-            - migrate
-            - --settings=swh.coarnotify.settings.production
-          volumeMounts:
-            - name: configuration
-              mountPath: /etc/swh
-        {{- end }}
       containers:
         - name: {{ $serviceName }}
           resources:
@@ -98,29 +83,49 @@ spec:
             {{- end }}
           command:
             - /opt/swh/entrypoint.sh
-          image: {{ .Values.swh_coar_notify_image }}:{{ .Values.swh_coar_notify_image_version }}
+          image: {{ .Values.swh_coar_notify_worker_image }}:{{ .Values.swh_coar_notify_worker_image_version }}
           imagePullPolicy: IfNotPresent
           env:
+          - name: STATSD_HOST
+            value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+          - name: STATSD_PORT
+            value: {{ $.Values.statsdPort | default "9125" | quote }}
+          - name: STATSD_TAGS
+            value: deployment:coar-notify-worker
+          - name: MAX_TASKS_PER_CHILD
+            value: {{ get $deployment_config "maxTasksPerChild" | default 1 | quote }}
           - name: SWH_LOG_LEVEL
-            value: {{ .Values.coarNotify.logLevel | default "INFO" }}
+            value: {{ get $deployment_config "logLevel" | default "INFO" | quote }}
           - name: SWH_CONFIG_FILENAME
             value: /etc/swh/config.yml
-          {{- if $enable_sentry }}
+          {{- if $use_json_logger }}
+          - name: SWH_LOG_CONFIG
+            value: /etc/swh/logging-configuration.yml
+          {{- end }}
+          {{- if .Values.sentry.enabled }}
           - name: SWH_SENTRY_ENVIRONMENT
-            value: {{ .Values.sentry.environment }}
+            value: {{ $.Values.sentry.environment }}
+          - name: SWH_MAIN_PACKAGE
+            value: swh.deposit
           - name: SWH_SENTRY_DSN
             valueFrom:
               secretKeyRef:
                 name: {{ .Values.coarNotify.sentry.secretKeyRef }}
                 key: {{ .Values.coarNotify.sentry.secretKeyName }}
-                # if the setting doesn't exist, sentry issue pushes will be disabled
+                # 'name' secret must exist & include key "host"
                 optional: false
+          {{- end }}
           - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
             value: "true"
-          {{- end }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
+          {{ if $use_json_logger }}
+          - name: configuration-template
+            mountPath: /etc/swh/logging-configuration.yml
+            subPath: logging-configuration.yml
+            readOnly: true
+          {{ end }}
       volumes:
         - name: configuration
           emptyDir: {}
@@ -131,8 +136,12 @@ spec:
             items:
             - key: "config.yml.template"
               path: "config.yml.template"
+            {{ if $use_json_logger }}
+            - key: "logging-configuration.yml"
+              path: "logging-configuration.yml"
+            {{ end }}
         - name: config-utils
           configMap:
             name: config-utils
             defaultMode: 0555
-{{ end }}
+{{- end -}}

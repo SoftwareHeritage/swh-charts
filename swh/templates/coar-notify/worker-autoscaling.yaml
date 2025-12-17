@@ -1,0 +1,12 @@
+{{- if (and .Values.coarNotify.enabled .Values.coarNotify.worker.enabled) -}}
+{{- $configuration := .Values.coarNotify.worker -}}
+{{ if and (or (not (hasKey $configuration "enabled"))
+              (get $configuration "enabled"))
+          (hasKey $configuration "autoScaling") }}
+{{- $configuration := set $configuration
+  "queues" (include "coarNotifyWorker.defaultQueues" (dict) | fromYamlArray) -}}
+{{- include "swh.keda.celeryAutoscaler" (dict "name"          "coar-notify-worker"
+                                              "configuration" $configuration
+                                              "Values"        .Values) -}}
+{{ end }}
+{{- end -}}

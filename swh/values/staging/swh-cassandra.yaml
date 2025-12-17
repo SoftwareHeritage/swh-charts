@@ -2553,6 +2553,7 @@ coarNotify:
   migrationsEnabled: true
   type: coar-notify
   storageConfigurationRef: storageRWCoarNotifyConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
   djangoSecretRef: djangoCoarNotifyConfiguration
@@ -2563,6 +2564,14 @@ coarNotify:
   sentry:
     secretKeyRef: common-secrets
     secretKeyName: coarnotify-sentry-dsn
+  worker:
+    enabled: true
+    celeryConfigurationRef: consumerCeleryConfiguration
+    autoScaling:
+      queueThreshold: 1
+      stopWhenNoActivity: false
+      minReplicaCount: 1
+      maxReplicaCount: 4
   ingress:
     enabled: true
     hosts:

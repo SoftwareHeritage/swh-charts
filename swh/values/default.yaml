@@ -485,8 +485,6 @@ graph:
             - "true"
 
 coarNotify:
-  sentry:
-    enabled: false
   deployment:
     affinity:
       nodeAffinity:
@@ -497,7 +495,6 @@ coarNotify:
               operator: In
               values:
               - "true"
-    priorityClassName: frontend-rpc
 
 journalWriterMirrorConfiguration:
   brokersConfigurationRef: kafkaBrokers

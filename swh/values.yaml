@@ -2112,10 +2112,20 @@ graph:
 coarNotify:
   enabled: false
   port: 5015
+  sentry:
+    enabled: true
+  worker:
+    enabled: false
+    deployment:
+      priorityClassName: normal-workload
+  deployment:
+    priorityClassName: frontend-rpc
 # # name of the service port
 # type: coar-notify
 # # storage configuration
-# storageConfigurationRef: scrubberROStorageConfiguration
+# storageConfigurationRef: coarNotifyRWStorageConfiguration
+# # scheduler configuration
+# schedulerConfigurationRef: coarNotifyRWSchedulerConfiguration
 # # database configuration
 # databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
 # # Activate automatic database migration on startup
