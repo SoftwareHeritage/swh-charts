@@ -2147,7 +2147,7 @@ coarNotify:
 datasetsGenerator:
   enabled: false
   # Default image version pinned (can be overridden per environment)
-  imageVersion: "20251217.1"
+  imageVersion: "20251218.2"
   logLevel: INFO
   # Default namespace to use (can be overridden per instance or per scheduler)
   # namespace: swh
