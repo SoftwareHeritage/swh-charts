@@ -14,23 +14,6 @@ cloudnativePg:
   walStorage:
     storageClass: local-persistent
     size: 1Gi
-  backup:
-    compression: gzip
-    # Let's use the new barman plugin
-    # It's required for future cnpg version > 1.26
-    systemType: plugin
-    # 1 week retention for staging
-    retention: 7d
-    s3Config:
-      # path: <bucket-name>/<cluster-name>/<namespace>/<db-name>
-      # Note: Don't let the trailing slash in the path configuration, otherwise, backups
-      # won't get cleaned up
-      # See: https://github.com/EnterpriseDB/barman/issues/944
-      path: s3://backup-cnpg/archive-staging-rke2/cnpg
-      url: https://minio.admin.swh.network
-      secretName: cnpg-minio-secret
-      accessKey: MINIO_ACCESS_KEY
-      secretKey: MINIO_SECRET_KEY
   superuserAccessEnabled: false
   services:
     disabledDefaultServices:
