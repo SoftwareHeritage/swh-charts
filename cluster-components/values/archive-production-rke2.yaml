@@ -219,6 +219,23 @@ cloudnativePg:
   enabled: true
   # Postgres credentials to setup (can be overridden per instance)
   superUserSecretRef: swh-postgresql-postgres-secret
+  backup:
+    compression: gzip
+    # Let's use the new barman plugin
+    # It's required for future cnpg version > 1.26
+    systemType: plugin
+    # 2 weeks retention for staging
+    retention: 14d
+    s3Config:
+      # path: <bucket-name>/<cluster-name>/<namespace>/<db-name>
+      # Note: Don't let the trailing slash in the path configuration, otherwise, backups
+      # won't get cleaned up
+      # See: https://github.com/EnterpriseDB/barman/issues/944
+      path: s3://backup-cnpg/archive-production-rke2/cnpg
+      url: https://minio.admin.swh.network
+      secretName: cnpg-minio-secret
+      accessKey: MINIO_ACCESS_KEY
+      secretKey: MINIO_SECRET_KEY
 
   deployments:
     db-swh-blocking:
