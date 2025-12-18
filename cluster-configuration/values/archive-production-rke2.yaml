@@ -70,3 +70,6 @@ otlpCollector:
 
 redis:
   enabled: true
+
+cloudnativePg:
+  enabled: true
