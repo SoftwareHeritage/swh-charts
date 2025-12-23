@@ -382,6 +382,61 @@ storage:
           logLevel: INFO
           cron: "0 0 1 * *"
 
+extraConfigCoarNotifyConfiguration:
+  coar_notify_client: swh.coarnotify.client.COARNotifyClient
+  serve_assets: true
+
+djangoCoarNotifyConfiguration:
+  secrets:
+    DJANGO_SECRET_KEY:
+      secretKeyRef: coarnotify-django-secret
+      secretKeyName: coarnotify-django-secret-key
+
+postgresqlRWCoarNotifyConfiguration:
+  host: ${POSTGRESQL_HOSTNAME}
+  port: ${POSTGRESQL_PORT}
+  db: ${POSTGRESQL_DBNAME}
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: coarnotify-db-app
+      secretKeyName: username
+    POSTGRESQL_DBNAME:
+      secretKeyRef: coarnotify-db-app
+      secretKeyName: dbname
+    POSTGRESQL_HOSTNAME:
+      secretKeyRef: coarnotify-db-app
+      secretKeyName: host
+    POSTGRESQL_PORT:
+      secretKeyRef: coarnotify-db-app
+      secretKeyName: port
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: coarnotify-db-app
+      secretKeyName: password
+
+coarNotify:
+  enabled: false
+  storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
+  extraConfigRef: extraConfigCoarNotifyConfiguration
+  djangoSecretRef: djangoCoarNotifyConfiguration
+  allowed_hosts:
+    - localhost
+    - coar-notify.swh
+  deployment:
+    replicas: 1
+    affinity: {}
+  sentry:
+    secretKeyRef: common-secrets
+    secretKeyName: coarnotify-sentry-dsn
+  worker:
+    enabled: true
+    celeryConfigurationRef: celeryConfiguration
+  ingress:
+    enabled: false
+
 storageReplayerJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
