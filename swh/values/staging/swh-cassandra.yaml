@@ -2344,6 +2344,7 @@ scheduler:
         - "cook-"
         - "check-"
         - "load-deposit"
+        - "coarnotify-"
     runner-priority:
       enabled: true
       logLevel: INFO
