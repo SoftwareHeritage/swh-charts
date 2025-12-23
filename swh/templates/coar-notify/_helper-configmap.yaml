@@ -27,12 +27,21 @@
 {{- end -}}
 
 {{- define "coarNotifyWorker.config.fromYaml" -}}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.coarNotify.sentry.enabled }}
 {{- $coarNotifyWorkerConfig := include "coarNotify.config.fromYaml" (dict "Values" .Values) | fromYaml -}}
 {{- $coarNotifyWorkerConfig = (dict
-    "celery" (dict 
-      "task_acks_late" true
-      "task_modules" (list "swh.coarnotify.tasks")
-      "task_queues" (include "coarNotifyWorker.defaultQueues" (dict) | fromYamlArray))) | mustMerge $coarNotifyWorkerConfig -}}
+    "celery" (mustMerge
+      (ternary
+        (dict "sentry_settings_for_celery_tasks" (dict
+                "swh" (dict
+                  "main_package" "${SWH_MAIN_PACKAGE}"
+                  "dsn" "${SWH_SENTRY_DSN}")))
+        (dict)
+        $enable_sentry)
+      (dict 
+        "task_acks_late" true
+        "task_modules" (list "swh.coarnotify.tasks")
+        "task_queues" (include "coarNotifyWorker.defaultQueues" (dict) | fromYamlArray)))) | mustMerge $coarNotifyWorkerConfig -}}
 {{- $coarNotifyWorkerConfig = include "celery.configuration" (dict
                                "configurationRef" .Values.coarNotify.worker.celeryConfigurationRef
                                "Values" .Values) | fromYaml | mustMerge $coarNotifyWorkerConfig -}}

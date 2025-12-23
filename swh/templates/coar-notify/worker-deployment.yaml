@@ -1,4 +1,5 @@
 {{- if and .Values.coarNotify.enabled .Values.coarNotify.worker.enabled -}}
+{{- $enable_sentry := and .Values.sentry.enabled .Values.coarNotify.sentry.enabled }}
 {{- $deployment_config := mustMerge dict .Values.coarNotify.worker.deployment .Values.coarNotify.deployment -}}
 {{- $workerConfig := mustMerge dict .Values.coarNotify.worker (omit .Values.coarNotify "worker") -}}
 {{- $serviceName := "coar-notify-worker" -}}
@@ -56,6 +57,17 @@ spec:
           imagePullPolicy: IfNotPresent
           env: {{- include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $workerConfig
                                                                       "Values" .Values) | nindent 10 }}
+          {{- if $enable_sentry }}
+          - name: SWH_MAIN_PACKAGE
+            value: swh.coarnotify
+          - name: SWH_SENTRY_DSN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.coarNotify.sentry.secretKeyRef }}
+                key: {{ .Values.coarNotify.sentry.secretKeyName }}
+                # 'name' secret must exist & include key "host"
+                optional: false
+          {{- end }}
           command:
             - /entrypoints/prepare-configuration.sh
           volumeMounts:
@@ -102,18 +114,9 @@ spec:
           - name: SWH_LOG_CONFIG
             value: /etc/swh/logging-configuration.yml
           {{- end }}
-          {{- if .Values.sentry.enabled }}
+          {{- if $enable_sentry }}
           - name: SWH_SENTRY_ENVIRONMENT
             value: {{ $.Values.sentry.environment }}
-          - name: SWH_MAIN_PACKAGE
-            value: swh.coarnotify
-          - name: SWH_SENTRY_DSN
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.coarNotify.sentry.secretKeyRef }}
-                key: {{ .Values.coarNotify.sentry.secretKeyName }}
-                # 'name' secret must exist & include key "host"
-                optional: false
           {{- end }}
           - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
             value: "true"
