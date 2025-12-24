@@ -1720,6 +1720,7 @@ webhooks:
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
   autoScaling:
+    minReplicaCount: 1
     maxReplicaCount: 2
   deployments:
     origin-visit-status:
