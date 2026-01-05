@@ -927,7 +927,7 @@ scheduler:
         - pypi
         - svn
       extraConfig:
-        schedulerPolicies:
+        scheduling_policy:
           default:
           - policy: never_visited_oldest_update_first
             weight: 50

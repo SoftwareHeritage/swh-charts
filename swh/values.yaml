@@ -1222,7 +1222,7 @@ scheduler:
       enabled: false
       visitTypes: []
       extraConfig:
-        schedulerPolicies:
+        scheduling_policy:
           default:
           - policy: already_visited_order_by_lag
             weight: 40
