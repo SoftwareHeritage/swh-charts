@@ -1251,13 +1251,13 @@ scheduler:
           git:
           - policy: origins_without_last_update
             weight: 5
-            tablesample: 0.1
+            tablesample: 0.05
           - policy: never_visited_oldest_update_first
             weight: 80
-            tablesample: 0.1
+            tablesample: 0.05
           - policy: already_visited_order_by_lag
             weight: 15
-            tablesample: 0.1
+            tablesample: 0.05
 
 # defaultElasticsearchHosts:
 #   - host: search-esnode0.internal.staging.swh.network
