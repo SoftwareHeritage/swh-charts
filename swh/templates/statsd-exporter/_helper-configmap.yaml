@@ -9,6 +9,7 @@ metadata:
 data:
   config.yml: |
     defaults:
+      ttl: 3600s
       timer_type: histogram
       buckets:
         - .005
