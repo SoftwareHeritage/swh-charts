@@ -8,7 +8,7 @@ clusterName: minikube
 # [2] make ccf-helm-diff
 
 rabbitmq:
-  enabled: true
+  enabled: false
 
 cloudnative-pg:
   # To match the enabled flag to true, use the following cli:
@@ -17,7 +17,7 @@ cloudnative-pg:
   #   --namespace cnpg-system \
   #   --create-namespace \
   #   cnpg/cloudnative-pg
-  enabled: true
+  enabled: false
 
 kafka:
   # To match the enabled flag to true, use the following cli:
@@ -27,7 +27,7 @@ kafka:
   #   --create-namespace \
   #   strimzi/strimzi-kafka-operator \
   #   --set watchAnyNamespace=true
-  enabled: true
+  enabled: false
 
 cassandra:
   # To match the enabled flag to true, use the following cli:
@@ -41,7 +41,7 @@ cassandra:
   #   k8ssandra/k8ssandra-operator \
   #   -n k8ssandra-operator --create-namespace \
   #   --set global.clusterScoped=true
-  enabled: true
+  enabled: false
 
 elasticsearch:
   # To match the enabled flag to true, use the following cli:
@@ -49,7 +49,7 @@ elasticsearch:
   # helm --kube-context $CLUSTER_CONTEXT upgrade --install eck-operator \
   #   elastic/eck-operator \
   #   --namespace elastic-system --create-namespace
-  enabled: true
+  enabled: false
 
 redis:
   # To match the enabled flag to true, use the following cli:
@@ -57,7 +57,7 @@ redis:
   # helm --kube-context $CLUSTER_CONTEXT upgrade --install redis-operator \
   #   ot-helm/redis-operator \
   #   --namespace ot-operators --create-namespace
-  enabled: true
+  enabled: false
   namespace: ot-operators
 
 pgbouncer:
