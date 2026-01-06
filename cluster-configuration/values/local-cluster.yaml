@@ -1,5 +1,5 @@
 environment: test
-clusterName: minikube
+clusterName: local
 
 # This activates the operators for tests purposes [1] [2]. We cannot actually use this
 # within the local cluster (e.g. kind or minikube) without an argocd installed.
