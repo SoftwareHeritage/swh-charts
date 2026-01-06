@@ -37,6 +37,21 @@ case $DIFF_COMMAND_TO_USE in
         ;;
 esac
 
+case "${APP}" in
+    cluster-components)
+        override_suffix=cc
+        ;;
+    cluster-configuration)
+        override_suffix=ccf
+        ;;
+    swh)
+        override_suffix=swh
+        ;;
+    *)
+        override_suffix=""
+    ;;
+esac
+
 if [ -z "$DIFF_COMMAND" ]; then
     if command -v dyff >/dev/null; then
         if [ -n "$DYFF_OPTS" ]; then
@@ -64,22 +79,33 @@ files=$(ls $APP/values/*.yaml)
 EXTRA_CMD=""
 [ -f $APP/values/default.yaml ] && EXTRA_CMD="--values $APP/values/default.yaml"
 
-HELM_CMD="helm template test $APP --values values-swh-application-versions.yaml --values $APP/values.yaml $EXTRA_CMD --values"
+HELM_CMD="helm template test $APP --values values-swh-application-versions.yaml --values $APP/values.yaml ${EXTRA_CMD} --values"
 
 # git stash
 git checkout $MAIN_BRANCH
 for f in $files; do
+    filename=$(basename $f)
     echo "[$APP] Generate config in $MAIN_BRANCH branch for $f..."
-    output="$TMPDIR/$(basename $f).before"
-    $HELM_CMD $f > $output
+    EXTRA_CLI_VALUES=()
+    if [ "${filename}" = "local-cluster.yaml" -a -n "${override_suffix}" ]; then
+        EXTRA_CLI_VALUES+=("--values" "./local-cluster-${override_suffix}.override.yaml")
+    fi
+
+    output="$TMPDIR/${filename}.before"
+    $HELM_CMD $f "${EXTRA_CLI_VALUES[@]}" > $output
 done
 
 # git stash pop
 git checkout $BRANCH
 for f in $files; do
-    echo "[$APP] Generate config in ${BRANCH} branch for $f..."
-    output="$TMPDIR/$(basename $f).after"
-    $HELM_CMD $f > $output
+    filename=$(basename $f)
+    echo "[$APP] Generate config in $MAIN_BRANCH branch for $f..."
+    EXTRA_CLI_VALUES=()
+    if [ "${filename}" = "local-cluster.yaml" -a -n "${override_suffix}" ]; then
+        EXTRA_CLI_VALUES+=("--values" "local-cluster-${override_suffix}.override.yaml")
+    fi
+    output="$TMPDIR/${filename}.after"
+    $HELM_CMD $f "${EXTRA_CLI_VALUES[@]}" > $output
 done
 
 for f in $files; do
