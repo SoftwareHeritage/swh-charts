@@ -30,4 +30,3 @@ redis:
 
 cloudnativePg:
   enabled: true
-

@@ -1,0 +1,30 @@
+{{ if .Values.netbox.enabled -}}
+{{- $appName := print .Values.clusterName "-netbox" -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name:  {{ $appName }}
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://charts.netbox.oss.netboxlabs.com/
+    chart: netbox
+    targetRevision: {{ .Values.netbox.version }}
+
+    helm:
+      values: |
+        {{ toYaml .Values.netbox.config | nindent 8 }}
+
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.netbox.namespace | quote }}
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+{{ end }}

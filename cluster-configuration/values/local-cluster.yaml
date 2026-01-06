@@ -1,5 +1,6 @@
 environment: test
 clusterName: local
+clusterUrl: https://kubernetes.default.svc
 
 # This enables the argocd applications for tests purposes [1] [2].
 # [1] make ccf-template
@@ -94,3 +95,27 @@ pgbouncer:
       port: 5432
       auth_user: postgres
 
+netbox:
+  enabled: false
+  namespace: swh
+  config:
+    postgresql:
+      enabled: false
+
+    externalDatabase:
+      host: db-netbox-rw.swh.svc.cluster.local
+      port: 5432
+      database: netbox
+      username: netbox
+      existingSecretName: netbox-postgresql-secret
+      existingSecretKey: password
+    exemptViewPermissions:
+      - "*"
+    email:
+      server: smtp.dummy.org
+      port: 25
+      username: ''
+      from: inventory-bot@dummy.org
+      useTLS: false
+      useSSL: false
+      timeout: 10

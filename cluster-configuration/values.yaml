@@ -166,3 +166,10 @@ pgbouncer:
       repository: prometheuscommunity/pgbouncer-exporter
   # prune: true
   # selfHeal: true
+
+netbox:
+  enabled: false
+  namespace: netbox
+  version: 7.2.24
+  # actual netbox configuration
+  config: {}
