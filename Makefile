@@ -331,3 +331,27 @@ ss-template-production:
 	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/production.yaml
+
+local-cluster-ccf-prepare:
+	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace cluster-configuration 2>&1 >/dev/null || \
+      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-configuration
+
+local-cluster-ccf-prepare-secrets:
+	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+        --namespace cluster-configuration apply -f -
+
+local-cluster-ccf: ccf-local-cluster
+ccf-local-cluster: local-cluster-ccf-prepare local-cluster-ccf-prepare-secrets
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CCF_CHART) $(CCF_CHART)/ \
+      --values values-swh-application-versions.yaml \
+      --values $(CCF_CHART)/values.yaml \
+      --values $(CCF_CHART)/values/local-cluster.yaml \
+      $(CCF_VALUES_OVERRIDE) \
+      --namespace cluster-configuration --create-namespace --debug
+
+ccf-uninstall: ccf-local-cluster-uninstall
+local-cluster-uninstall-ccf: ccf-local-cluster-uninstall
+ccf-local-cluster-uninstall:
+	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CCF_CHART) --namespace cluster-configuration; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-configuration delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-configuration
