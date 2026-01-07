@@ -1,11 +1,30 @@
 environment: test
 clusterName: local
 
-# This activates the operators for tests purposes [1] [2]. We cannot actually use this
-# within the local cluster (e.g. kind or minikube) without an argocd installed.
-
+# This enables the argocd applications for tests purposes [1] [2].
 # [1] make ccf-template
 # [2] make ccf-helm-diff
+
+# This is not used by default as the argocd application might not be installed in your
+# local-cluster (disabled by default to reduce required resources needed to run on your
+# machine).
+
+# This yaml can be used if you add the following to your
+# local-cluster-ccf.override.yaml. Then trigger the deps installation [3] and finally
+# let argocd deploy the argocd applications [4]
+#
+# ```yaml
+# argocd:
+#   enabled: true
+# ```
+# [3] make local-cluster-install-deps
+# [4] make local-cluster-ccf
+
+argocd:
+  # When enabled, this installs a default argocd application
+  # NOT FOR PRODUCTION
+  enabled: false
+  version: v3.2.3
 
 rabbitmq:
   enabled: false

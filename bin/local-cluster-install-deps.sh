@@ -61,6 +61,16 @@ ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
 
+argocd_enabled=$(get_value argocd enabled)
+
+if [ "${argocd_enabled}" = "true" ]; then
+  # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+  argocd_version=$(get_value argocd version)
+  ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
+  $KUBECTL create namespace argocd || true
+  $KUBECTL apply -n argocd -f ${ARGOCD_URL}
+fi
+
 cloudnativepg_version=$(get_value cloudnativePg version)
 $HELM upgrade --install cloudnative-pg \
       --version "${cloudnativepg_version}" \

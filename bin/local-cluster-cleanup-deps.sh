@@ -37,3 +37,7 @@ ${KUBECTL} delete -f external-manifests/rabbitmq/messaging-topology-operator-wit
 
 rabbitmq_version=$(get_value rabbitmq version)
 ${KUBECTL} delete -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
+
+argocd_version=$(get_value argocd version)
+ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
+$KUBECTL delete -n argocd -f ${ARGOCD_URL}
