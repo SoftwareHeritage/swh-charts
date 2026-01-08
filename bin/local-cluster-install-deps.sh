@@ -115,12 +115,17 @@ else
 fi
 
 kafka_version=$(get_value kafka version)
-$HELM upgrade --install kafka-operator \
-      --version "${kafka_version}" \
-      --namespace kafka-system \
-      --create-namespace \
-      strimzi/strimzi-kafka-operator \
-      --set watchAnyNamespace=true
+kafka_enabled=$(get_value kafka enabled)
+if [ "${kafka_enabled}" = "true" ]; then
+  $HELM upgrade --install kafka-operator \
+        --version "${kafka_version}" \
+        --namespace kafka-system \
+        --create-namespace \
+        strimzi/strimzi-kafka-operator \
+        --set watchAnyNamespace=true
+else
+  _helm_uninstall kafka-operator kafka-system
+fi
 
 cassandra_version=$(get_value cassandra version)
 $HELM upgrade --install k8ssandra-operator \
