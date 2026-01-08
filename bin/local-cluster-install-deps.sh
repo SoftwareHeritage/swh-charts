@@ -43,6 +43,8 @@ source ./bin/_parser-helper.sh
 
 # Now actually installs the various operator dependencies
 
+# This is a transversal dependency, we don't actually check to enable it, enabled by
+# default.
 certmanager_version=$(get_value certManager version)
 $HELM upgrade --install cert-manager \
       --version "${certmanager_version}" \
@@ -55,6 +57,7 @@ $HELM upgrade --install cert-manager \
       # --set prometheus.enabled=true \
       # --set prometheus.servicemonitor.enabled=true \
 
+# Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
 ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --version "${ingress_version}" \
