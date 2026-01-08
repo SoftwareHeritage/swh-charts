@@ -165,15 +165,15 @@ $HELM upgrade --install keda \
       kedacore/keda \
       -n keda --create-namespace
 
-PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
+LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
 
 git clone https://github.com/rancher/local-path-provisioner.git \
     --depth 1 \
-    "${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}"
-pushd "${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}"
+    "${LOCAL_PATH_PROVISIONER_DIR}"
+pushd "${LOCAL_PATH_PROVISIONER_DIR}"
 
-CONFIG_FILE=${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
-cat<<EOF >"${CONFIG_FILE}"
+CONFIG_FILE=${LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
+cat <<EOF >"${CONFIG_FILE}"
 configmap:
   name: swh-local-path-provisioner
 nameOverride: swh-local-path-provisioner
@@ -195,8 +195,8 @@ $HELM install ./deploy/chart/local-path-provisioner \
       --create-namespace \
       -f "${CONFIG_FILE}"
 
-CONFIG_FILE2=${PGBOUNCER_LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
-cat<<EOF >"${CONFIG_FILE2}"
+CONFIG_FILE2=${LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
+cat <<EOF >"${CONFIG_FILE2}"
 configmap:
   name: swh-local-persistent-provisioner
 nameOverride: swh-local-persistent-provisioner
