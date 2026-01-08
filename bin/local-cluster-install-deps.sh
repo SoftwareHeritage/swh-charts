@@ -225,20 +225,24 @@ PGBOUNCER_HELM_CHART_DIR=${CLUSTER_TEMP_TMP}/pgbouncer-helm-chart
 git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     --depth 1 \
     "${PGBOUNCER_HELM_CHART_DIR}"
+
+pgbouncer_enabled=$(get_value pgbouncer enabled)
 pushd "${PGBOUNCER_HELM_CHART_DIR}"
+if [ "${pgbouncer_enabled}" = "true" ]; then
+  $KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
+    _helm_uninstall pgbouncer pgbouncer || \
+      echo "It's fine!"
 
-$KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
-  $HELM uninstall pgbouncer --namespace pgbouncer || \
-    echo "It's fine!"
-
-# Disable default values which makes pods fail
-$HELM install ./chart \
-      --name-template pgbouncer \
-      --namespace pgbouncer \
-      --set userlist.enabled=false \
-      --set pgbouncerExporter.enabled=false \
-      --create-namespace
-
+  # Disable default values which makes pods fail
+  $HELM install ./chart \
+        --name-template pgbouncer \
+        --namespace pgbouncer \
+        --set userlist.enabled=false \
+        --set pgbouncerExporter.enabled=false \
+        --create-namespace
+else
+  _helm_uninstall pgbouncer pgbouncer
+fi
 popd
 
 if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
