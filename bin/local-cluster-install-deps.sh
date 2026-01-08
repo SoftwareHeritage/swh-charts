@@ -64,7 +64,6 @@ ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
 
-argocd_enabled=$(get_value argocd enabled)
 function _helm_uninstall {
   helm_chart_name=$1
   ns=$2
@@ -82,12 +81,15 @@ function _kubectl_delete {
       echo "Non critical deletion issue, skipping..."
 }
 
+argocd_enabled=$(get_value argocd enabled)
+argocd_version=$(get_value argocd version)
+ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
 if [ "${argocd_enabled}" = "true" ]; then
   # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-  argocd_version=$(get_value argocd version)
-  ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
   $KUBECTL create namespace argocd || true
   $KUBECTL apply -n argocd -f ${ARGOCD_URL}
+else
+  _kubectl_delete ${ARGOCD_URL} argocd
 fi
 
 cnpg_enabled=$(get_value cloudnativePg enabled)
