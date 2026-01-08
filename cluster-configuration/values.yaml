@@ -4,7 +4,6 @@ clusterUrl: https://cluster/url
 clusterName: changeme
 environment: changeme
 
-argocdNamespace: argocd
 defaultProject: default
 
 defaultPrune: false
@@ -13,6 +12,9 @@ defaultSelfHeal: false
 clusterConfiguration:
   prune: false
   selfHeal: false
+
+argocd:
+  namespace: argocd
 
 keda:
   version: 2.14.2

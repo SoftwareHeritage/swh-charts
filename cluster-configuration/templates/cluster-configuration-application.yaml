@@ -4,7 +4,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .Values.clusterName }}-configuration-application
-  namespace: {{ .Values.argocdNamespace }}
+  namespace: {{ .Values.argocd.namespace }}
 spec:
   project: {{ .Values.defaultProject }}
   source:

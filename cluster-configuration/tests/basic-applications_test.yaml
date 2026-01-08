@@ -33,7 +33,8 @@ tests:
     set:
       clusterUrl: https://other/url
       clusterName: other-name
-      argocdNamespace: other-namespace
+      argocd:
+        namespace: other-namespace
       defaultProject: other-project
       defaultPrune: true
       defaultSelfHeal: true

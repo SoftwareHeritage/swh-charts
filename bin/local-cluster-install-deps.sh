@@ -161,13 +161,14 @@ $KUBECTL get storageclass local-path 2>&1 || install_local_path_provisioner
 
 argocd_enabled=$(get_value argocd enabled)
 argocd_version=$(get_value argocd version)
+argocd_ns=$(get_value argocd namespace)
 ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
 if [ "${argocd_enabled}" = "true" ]; then
   # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-  $KUBECTL create namespace argocd || true
+  $KUBECTL create namespace $argocd_ns || true
   $KUBECTL apply -n argocd -f ${ARGOCD_URL}
 else
-  _kubectl_delete ${ARGOCD_URL} argocd
+  _kubectl_delete ${ARGOCD_URL} $argocd_ns
 fi
 
 metallb_enabled=$(get_value metallb enabled)

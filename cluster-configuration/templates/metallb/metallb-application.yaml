@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ .Values.clusterName }}-metallb-application
-  namespace: {{ .Values.argocdNamespace }}
+  namespace: {{ .Values.argocd.namespace }}
 spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
