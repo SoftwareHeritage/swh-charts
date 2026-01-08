@@ -139,11 +139,16 @@ else
   _helm_uninstall k8ssandra-operator k8ssandra-operator
 fi
 
-elasticsearch_version=$(get_value elasticsearch version)
-$HELM upgrade --install eck-operator \
-      --version "${elasticsearch_version}" \
-      elastic/eck-operator \
-      -n elastic-system --create-namespace
+elastic_version=$(get_value elasticsearch version)
+elastic_enabled=$(get_value elasticsearch enabled)
+if [ "${elastic_enabled}" = "true" ]; then
+  $HELM upgrade --install eck-operator \
+        --version "${elastic_version}" \
+        elastic/eck-operator \
+        -n elastic-system --create-namespace
+else
+  _helm_uninstall eck-operator elastic-system
+fi
 
 redis_version=$(get_value redis version)
 $HELM upgrade --install redis-operator \
