@@ -74,10 +74,11 @@ function _kubectl_delete {
 # Most of other helm chart can implicitely use them
 
 certmanager_version=$(get_value certManager version)
+certmanager_ns=$(get_value certManager namespace)
 $HELM upgrade --install cert-manager \
       --version "${certmanager_version}" \
       jetstack/cert-manager \
-      --namespace cert-manager --create-namespace \
+      --namespace "${certmanager_ns}" --create-namespace \
       --set crds.enabled=true \
       --set installCRDs=true
 
@@ -87,11 +88,12 @@ $HELM upgrade --install cert-manager \
 
 # Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
+ingress_ns=$(get_value ingressNginx namespace)
 $KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
   ${HELM} upgrade --install ingress-nginx ingress-nginx \
         --version "${ingress_version}" \
         --repo https://kubernetes.github.io/ingress-nginx \
-        --namespace ingress-nginx --create-namespace
+        --namespace "${ingress_ns}" --create-namespace
 
 keda_version=$(get_value keda version)
 keda_ns=$(get_value keda namespace)
@@ -186,6 +188,7 @@ else
 fi
 
 cnpg_version=$(get_value cloudnativePg version)
+cnpg_ns=$(get_value cloudnativePg namespace)
 barmanplugin_version=$(get_value cloudnativePg barmanPluginVersion)
 barmanplugin_url="https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v${barmanplugin_version}/manifest.yaml"
 barmanplugin_manifest="${CLUSTER_TEMP_TMP}/barman-cloud-plugin-manifest-${barmanplugin_version}.yaml"
@@ -195,7 +198,7 @@ cnpg_enabled=$(get_value cloudnativePg enabled)
 if [ "${cnpg_enabled}" = "true" ]; then
   $HELM upgrade --install cloudnative-pg \
         --version "${cnpg_version}" \
-        --namespace cnpg-system \
+        --namespace "${cnpg_ns}" \
         --create-namespace \
         cnpg/cloudnative-pg
 
@@ -203,55 +206,59 @@ if [ "${cnpg_enabled}" = "true" ]; then
   _kubectl_delete "${barmanplugin_manifest}" || \
     $KUBECTL apply -f "${barmanplugin_manifest}"
 else
-  _helm_uninstall cloudnative-pg cnpg-system
+  _helm_uninstall cloudnative-pg "${cnpg_ns}"
   _kubectl_delete "${barmanplugin_manifest}"
 fi
 
 kafka_version=$(get_value kafka version)
 kafka_enabled=$(get_value kafka enabled)
+kafka_ns=$(get_value kafka namespace)
 if [ "${kafka_enabled}" = "true" ]; then
   $HELM upgrade --install kafka-operator \
         --version "${kafka_version}" \
-        --namespace kafka-system \
+        --namespace "${kafka_ns}" \
         --create-namespace \
         strimzi/strimzi-kafka-operator \
         --set watchAnyNamespace=true
 else
-  _helm_uninstall kafka-operator kafka-system
+  _helm_uninstall kafka-operator "${kafka_ns}"
 fi
 
 cass_enabled=$(get_value cassandra enabled)
+cass_ns=$(get_value cassandra namespace)
 if [ "${cass_enabled}" = "true" ]; then
   cass_version=$(get_value cassandra version)
   $HELM upgrade --install k8ssandra-operator \
         --version "${cass_version}" \
         k8ssandra/k8ssandra-operator \
-        -n k8ssandra-operator --create-namespace \
+        -n "${cass_ns}" --create-namespace \
         --set global.clusterScoped=true
 else
-  _helm_uninstall k8ssandra-operator k8ssandra-operator
+  _helm_uninstall k8ssandra-operator "${cass_ns}"
 fi
 
 elastic_version=$(get_value elasticsearch version)
 elastic_enabled=$(get_value elasticsearch enabled)
+elastic_ns=$(get_value elasticsearch namespace)
 if [ "${elastic_enabled}" = "true" ]; then
   $HELM upgrade --install eck-operator \
         --version "${elastic_version}" \
         elastic/eck-operator \
-        -n elastic-system --create-namespace
+        -n "${elastic_ns}" --create-namespace
 else
-  _helm_uninstall eck-operator elastic-system
+  _helm_uninstall eck-operator "${elastic_ns}"
 fi
 
 redis_version=$(get_value redis version)
 redis_enabled=$(get_value redis enabled)
+redis_ns=$(get_value redis namespace)
 if [ "${redis_enabled}" = "true" ]; then
   $HELM upgrade --install redis-operator \
         --version "${redis_version}" \
         ot-helm/redis-operator \
-        -n ot-operators --create-namespace
+        -n "${redis_ns}" --create-namespace
 else
-  _helm_uninstall redis-operator ot-operators
+  _helm_uninstall redis-operator "${redis_ns}"
 fi
 
 PGBOUNCER_HELM_CHART_DIR=${CLUSTER_TEMP_TMP}/pgbouncer-helm-chart
@@ -260,16 +267,13 @@ git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     "${PGBOUNCER_HELM_CHART_DIR}"
 
 pgbouncer_enabled=$(get_value pgbouncer enabled)
+pgbouncer_ns=$(get_value pgbouncer namespace)
 pushd "${PGBOUNCER_HELM_CHART_DIR}"
 if [ "${pgbouncer_enabled}" = "true" ]; then
-  $KUBECTL get pods -n pgbouncer -l "app=pgbouncer-pgbouncer" && \
-    _helm_uninstall pgbouncer pgbouncer || \
-      echo "It's fine!"
-
   # Disable default values which makes pods fail
   $HELM install ./chart \
         --name-template pgbouncer \
-        --namespace pgbouncer \
+        --namespace "${pgbouncer_ns}" \
         --set userlist.enabled=false \
         --set pgbouncerExporter.enabled=false \
         --create-namespace
