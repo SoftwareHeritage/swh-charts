@@ -87,21 +87,12 @@ $HELM upgrade --install cert-manager \
 
 # Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
-
 $KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
   ${HELM} upgrade --install ingress-nginx ingress-nginx \
         --version "${ingress_version}" \
         --repo https://kubernetes.github.io/ingress-nginx \
         --namespace ingress-nginx --create-namespace
 
-$HELM upgrade --install keda \
-      kedacore/keda \
-      -n keda --create-namespace
-
-LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
-git clone https://github.com/rancher/local-path-provisioner.git \
-    --depth 1 \
-    "${LOCAL_PATH_PROVISIONER_DIR}"
 keda_version=$(get_value keda version)
 keda_ns=$(get_value keda namespace)
 $KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l helm.sh/chart=keda-${keda_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
@@ -110,10 +101,16 @@ $KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l 
         kedacore/keda \
         -n $keda_ns --create-namespace
 
-pushd "${LOCAL_PATH_PROVISIONER_DIR}"
+function install_local_path_provisioner {
+  LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
+  git clone https://github.com/rancher/local-path-provisioner.git \
+      --depth 1 \
+      "${LOCAL_PATH_PROVISIONER_DIR}"
 
-CONFIG_FILE=${LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
-cat <<EOF >"${CONFIG_FILE}"
+  pushd "${LOCAL_PATH_PROVISIONER_DIR}"
+
+  CONFIG_FILE=${LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
+  cat <<EOF >"${CONFIG_FILE}"
 configmap:
   name: swh-local-path-provisioner
 nameOverride: swh-local-path-provisioner
@@ -124,18 +121,16 @@ nodePathMap:
       - /tmp/k8s-ephemeral-storage
 EOF
 
-# For idempotency, just in case we call multiple times this script
-$KUBECTL get storageclass local-path && \
-_helm_uninstall local-path local-path-storage
+  # For idempotency, just in case we call multiple times this script
+  $KUBECTL get storageclass local-path || \
+    $HELM install ./deploy/chart/local-path-provisioner \
+          --name-template local-path \
+          --namespace local-path-storage \
+          --create-namespace \
+          -f "${CONFIG_FILE}"
 
-$HELM install ./deploy/chart/local-path-provisioner \
-      --name-template local-path \
-      --namespace local-path-storage \
-      --create-namespace \
-      -f "${CONFIG_FILE}"
-
-CONFIG_FILE2=${LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
-cat <<EOF >"${CONFIG_FILE2}"
+  CONFIG_FILE2=${LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
+  cat <<EOF >"${CONFIG_FILE2}"
 configmap:
   name: swh-local-persistent-provisioner
 nameOverride: swh-local-persistent-provisioner
@@ -150,16 +145,15 @@ storageClass:
   reclaimPolicy: Retain
 EOF
 
-# For idempotency, just in case we call multiple times this script
-$KUBECTL get storageclass local-persistent && \
-  _helm_uninstall local-persistent local-path-storage
+  $HELM install ./deploy/chart/local-path-provisioner \
+        --name-template local-persistent \
+        --namespace local-path-storage \
+        --create-namespace \
+        -f "${CONFIG_FILE2}"
+  popd
+}
 
-$HELM install ./deploy/chart/local-path-provisioner \
-      --name-template local-persistent \
-      --namespace local-path-storage \
-      --create-namespace \
-      -f "${CONFIG_FILE2}"
-popd
+$KUBECTL get storageclass local-path 2>&1 || install_local_path_provisioner
 
 ############################################################################
 # Dynamically toggled dependency by local-cluster*.yaml configuration files
