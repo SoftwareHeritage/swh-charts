@@ -65,6 +65,22 @@ ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --namespace ingress-nginx --create-namespace
 
 argocd_enabled=$(get_value argocd enabled)
+function _helm_uninstall {
+  helm_chart_name=$1
+  ns=$2
+  $HELM uninstall $helm_chart_name --namespace $ns || \
+      echo "Non critical helm uninstall issue, skipping..."
+}
+
+function _kubectl_delete {
+  url_or_file=$1
+  extra_args=()
+  if [ -n "${2}" ]; then
+    extra_args+=("--namespace" "${2}")
+  fi
+  $KUBECTL delete "${extra_args[@]}" -f ${url_or_file} || \
+      echo "Non critical deletion issue, skipping..."
+}
 
 if [ "${argocd_enabled}" = "true" ]; then
   # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
