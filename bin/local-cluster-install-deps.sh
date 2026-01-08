@@ -245,15 +245,22 @@ else
 fi
 popd
 
+rabbitmq_version=$(get_value rabbitmq version)
+rabbitmq_file="external-manifests/rabbitmq/cluster-operator-${rabbitmq_version}.yaml"
+messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
+mtv_file="external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-${messaging_topology_version}.yaml"
+rabbitmq_enabled=$(get_value rabbitmq enabled)
+if [ "${rabbitmq_enabled}" = "true" ]; then
+  ${KUBECTL} apply -f $rabbitmq_file
+  ${KUBECTL} apply -f $mtv_file
+else
+  _kubectl_delete $rabbitmq_file
+  _kubectl_delete $mtv_file
+fi
+
 if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
     # Ingress specific setup for kind
     # TODO: Inline the file deploy.yaml in this repository?
     DEPLOY_FILE=https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
     $KUBECTL apply -f ${DEPLOY_FILE}
 fi
-
-rabbitmq_version=$(get_value rabbitmq version)
-${KUBECTL} apply -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
-
-messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
-${KUBECTL} apply -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
