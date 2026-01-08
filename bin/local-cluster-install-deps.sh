@@ -127,12 +127,17 @@ else
   _helm_uninstall kafka-operator kafka-system
 fi
 
-cassandra_version=$(get_value cassandra version)
-$HELM upgrade --install k8ssandra-operator \
-      --version "${cassandra_version}" \
-      k8ssandra/k8ssandra-operator \
-      -n k8ssandra-operator --create-namespace \
-      --set global.clusterScoped=true
+cass_enabled=$(get_value cassandra enabled)
+if [ "${cass_enabled}" = "true" ]; then
+  cass_version=$(get_value cassandra version)
+  $HELM upgrade --install k8ssandra-operator \
+        --version "${cass_version}" \
+        k8ssandra/k8ssandra-operator \
+        -n k8ssandra-operator --create-namespace \
+        --set global.clusterScoped=true
+else
+  _helm_uninstall k8ssandra-operator k8ssandra-operator
+fi
 
 elasticsearch_version=$(get_value elasticsearch version)
 $HELM upgrade --install eck-operator \
