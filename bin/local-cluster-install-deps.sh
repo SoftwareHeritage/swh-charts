@@ -151,10 +151,15 @@ else
 fi
 
 redis_version=$(get_value redis version)
-$HELM upgrade --install redis-operator \
-      --version "${redis_version}" \
-      ot-helm/redis-operator \
-      -n ot-operators --create-namespace \
+redis_enabled=$(get_value redis enabled)
+if [ "${redis_enabled}" = "true" ]; then
+  $HELM upgrade --install redis-operator \
+        --version "${redis_version}" \
+        ot-helm/redis-operator \
+        -n ot-operators --create-namespace
+else
+  _helm_uninstall redis-operator ot-operators
+fi
 
 $HELM upgrade --install keda \
       kedacore/keda \
