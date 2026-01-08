@@ -186,8 +186,7 @@ EOF
 
 # For idempotency, just in case we call multiple times this script
 $KUBECTL get storageclass local-path && \
-  $HELM uninstall local-path --namespace local-path-storage || \
-    echo "It's fine!"
+  _helm_uninstall local-path local-path-storage
 
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-path \
@@ -213,8 +212,7 @@ EOF
 
 # For idempotency, just in case we call multiple times this script
 $KUBECTL get storageclass local-persistent && \
-  $HELM uninstall local-persistent --namespace local-path-storage || \
-    echo "It's fine!"
+  _helm_uninstall local-persistent local-path-storage
 
 $HELM install ./deploy/chart/local-path-provisioner \
       --name-template local-persistent \
@@ -224,7 +222,6 @@ $HELM install ./deploy/chart/local-path-provisioner \
 popd
 
 PGBOUNCER_HELM_CHART_DIR=${CLUSTER_TEMP_TMP}/pgbouncer-helm-chart
-
 git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     --depth 1 \
     "${PGBOUNCER_HELM_CHART_DIR}"
