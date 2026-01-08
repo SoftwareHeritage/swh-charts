@@ -16,6 +16,7 @@ cert-manager:
 # Whether to activate metallb and allocate some ipAddressPool
 metallb:
   enabled: false
+  namespace: metallb
   # ipAddressPool:
   #   - ip1
   #   - ip2

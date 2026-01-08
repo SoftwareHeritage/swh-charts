@@ -26,6 +26,9 @@ argocd:
   enabled: false
   version: v3.2.3
 
+metallb:
+  enabled: false
+
 rabbitmq:
   enabled: false
 

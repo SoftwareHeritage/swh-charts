@@ -1,4 +1,5 @@
 {{- if and .Values.metallb.enabled -}}
+{{- $ns := .Values.metallb.namespace | default "metallb" -}}
 {{- $cluster_name :=
   required
     (print "Cluster name configuration key <.Values.clusterName> required")
@@ -27,7 +28,7 @@ apiVersion: metallb.io/v1beta1
 kind: L2Advertisement
 metadata:
   name: {{ $myAdvertisementName | quote }}
-  namespace: metallb
+  namespace: {{ $ns }}
 spec:
   ipAddressPools:
   - {{ $myAddressPoolName | quote }}
@@ -36,7 +37,7 @@ apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
   name: {{ $myAddressPoolName | quote }}
-  namespace: metallb
+  namespace: {{ $ns }}
 spec:
   addresses:
     {{- toYaml (list $ipAddressPool.ip) | nindent 4 }}

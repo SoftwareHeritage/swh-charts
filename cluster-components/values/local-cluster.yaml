@@ -1,3 +1,5 @@
+clusterName: local
+
 cert-manager:
   enabled: false
 
@@ -7,6 +9,18 @@ alertmanager:
   ircrelay:
     enabled: true
     host: https://alertmanager-irc-relay.admin.swh.network/minikube-swh-sysadm
+
+metallb:
+  enabled: true
+  namespace: metallb
+  # Generic ipAddressPool (e.g. for main cluster ingress)
+  ipAddressPools:
+    - ip: 172.18.255.0/24
+      suffixName: ingress
+      serviceAllocation:
+        priority: 50
+        namespaces:
+          - ingress-nginx
 
 # Activate prometheus as this is not previously done (in contrast with other clusters
 # provisioned by terraform which does the prometheus configuration too)

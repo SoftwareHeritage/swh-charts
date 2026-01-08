@@ -31,6 +31,7 @@ helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo add gitlab-runner https://charts.gitlab.io
+helm repo add metallb https://metallb.github.io/metallb
 helm repo update
 
 # cluster-components declare some dependencies we need to locally build
@@ -164,6 +165,20 @@ if [ "${argocd_enabled}" = "true" ]; then
   $KUBECTL apply -n argocd -f ${ARGOCD_URL}
 else
   _kubectl_delete ${ARGOCD_URL} argocd
+fi
+
+metallb_enabled=$(get_value metallb enabled)
+metallb_version=$(get_value metallb version)
+metallb_ns=$(get_value metallb namespace)
+if [ "${metallb_enabled}" = "true" ]; then
+  # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+  $HELM upgrade --install metallb \
+        --version "${metallb_version}" \
+        --namespace $metallb_ns \
+        --create-namespace \
+        metallb/metallb
+else
+  _helm_uninstall metallb $metallb_ns
 fi
 
 cnpg_version=$(get_value cloudnativePg version)
