@@ -43,8 +43,13 @@ source ./bin/_parser-helper.sh
 
 # Now actually installs the various operator dependencies
 
-# This is a transversal dependency, we don't actually check to enable it, enabled by
-# default.
+############################################
+# Statically hard-coded dependency required
+############################################
+
+# This is the transversal dependencies we don't actually check to
+# Most of other helm chart can implicitely use them
+
 certmanager_version=$(get_value certManager version)
 $HELM upgrade --install cert-manager \
       --version "${certmanager_version}" \
@@ -63,6 +68,70 @@ ${HELM} upgrade --install ingress-nginx ingress-nginx \
       --version "${ingress_version}" \
       --repo https://kubernetes.github.io/ingress-nginx \
       --namespace ingress-nginx --create-namespace
+
+$HELM upgrade --install keda \
+      kedacore/keda \
+      -n keda --create-namespace
+
+LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
+git clone https://github.com/rancher/local-path-provisioner.git \
+    --depth 1 \
+    "${LOCAL_PATH_PROVISIONER_DIR}"
+
+pushd "${LOCAL_PATH_PROVISIONER_DIR}"
+
+CONFIG_FILE=${LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
+cat <<EOF >"${CONFIG_FILE}"
+configmap:
+  name: swh-local-path-provisioner
+nameOverride: swh-local-path-provisioner
+workerThreads: 8
+nodePathMap:
+  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    paths:
+      - /tmp/k8s-ephemeral-storage
+EOF
+
+# For idempotency, just in case we call multiple times this script
+$KUBECTL get storageclass local-path && \
+  _helm_uninstall local-path local-path-storage
+
+$HELM install ./deploy/chart/local-path-provisioner \
+      --name-template local-path \
+      --namespace local-path-storage \
+      --create-namespace \
+      -f "${CONFIG_FILE}"
+
+CONFIG_FILE2=${LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
+cat <<EOF >"${CONFIG_FILE2}"
+configmap:
+  name: swh-local-persistent-provisioner
+nameOverride: swh-local-persistent-provisioner
+nodePathMap:
+  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    paths:
+      - /srv/kubernetes/volumes/
+storageClass:
+  create: true
+  defaultClass: false
+  name: local-persistent
+  reclaimPolicy: Retain
+EOF
+
+# For idempotency, just in case we call multiple times this script
+$KUBECTL get storageclass local-persistent && \
+  _helm_uninstall local-persistent local-path-storage
+
+$HELM install ./deploy/chart/local-path-provisioner \
+      --name-template local-persistent \
+      --namespace local-path-storage \
+      --create-namespace \
+      -f "${CONFIG_FILE2}"
+popd
+
+############################################################################
+# Dynamically toggled dependency by local-cluster*.yaml configuration files
+############################################################################
 
 function _helm_uninstall {
   helm_chart_name=$1
@@ -161,66 +230,6 @@ else
   _helm_uninstall redis-operator ot-operators
 fi
 
-$HELM upgrade --install keda \
-      kedacore/keda \
-      -n keda --create-namespace
-
-LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
-
-git clone https://github.com/rancher/local-path-provisioner.git \
-    --depth 1 \
-    "${LOCAL_PATH_PROVISIONER_DIR}"
-pushd "${LOCAL_PATH_PROVISIONER_DIR}"
-
-CONFIG_FILE=${LOCAL_PATH_PROVISIONER_DIR}/local-path-values.yaml
-cat <<EOF >"${CONFIG_FILE}"
-configmap:
-  name: swh-local-path-provisioner
-nameOverride: swh-local-path-provisioner
-workerThreads: 8
-nodePathMap:
-  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
-    paths:
-      - /tmp/k8s-ephemeral-storage
-EOF
-
-# For idempotency, just in case we call multiple times this script
-$KUBECTL get storageclass local-path && \
-  _helm_uninstall local-path local-path-storage
-
-$HELM install ./deploy/chart/local-path-provisioner \
-      --name-template local-path \
-      --namespace local-path-storage \
-      --create-namespace \
-      -f "${CONFIG_FILE}"
-
-CONFIG_FILE2=${LOCAL_PATH_PROVISIONER_DIR}/local-persistent-values.yaml
-cat <<EOF >"${CONFIG_FILE2}"
-configmap:
-  name: swh-local-persistent-provisioner
-nameOverride: swh-local-persistent-provisioner
-nodePathMap:
-  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
-    paths:
-      - /srv/kubernetes/volumes/
-storageClass:
-  create: true
-  defaultClass: false
-  name: local-persistent
-  reclaimPolicy: Retain
-EOF
-
-# For idempotency, just in case we call multiple times this script
-$KUBECTL get storageclass local-persistent && \
-  _helm_uninstall local-persistent local-path-storage
-
-$HELM install ./deploy/chart/local-path-provisioner \
-      --name-template local-persistent \
-      --namespace local-path-storage \
-      --create-namespace \
-      -f "${CONFIG_FILE2}"
-popd
-
 PGBOUNCER_HELM_CHART_DIR=${CLUSTER_TEMP_TMP}/pgbouncer-helm-chart
 git clone https://gitlab.cern.ch/pgbouncer/pgbouncer-helm-chart \
     --depth 1 \
@@ -257,6 +266,11 @@ else
   _kubectl_delete $rabbitmq_file
   _kubectl_delete $mtv_file
 fi
+
+############################################################
+# Extra specific consideration for the cluster of type kind
+############################################################
+
 
 if [ "${KUBE_LOCAL_ENVIRONMENT}" = "kind" ]; then
     # Ingress specific setup for kind
