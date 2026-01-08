@@ -87,10 +87,12 @@ $HELM upgrade --install cert-manager \
 
 # Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
-${HELM} upgrade --install ingress-nginx ingress-nginx \
-      --version "${ingress_version}" \
-      --repo https://kubernetes.github.io/ingress-nginx \
-      --namespace ingress-nginx --create-namespace
+
+$KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
+  ${HELM} upgrade --install ingress-nginx ingress-nginx \
+        --version "${ingress_version}" \
+        --repo https://kubernetes.github.io/ingress-nginx \
+        --namespace ingress-nginx --create-namespace
 
 $HELM upgrade --install keda \
       kedacore/keda \
