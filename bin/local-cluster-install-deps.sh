@@ -102,6 +102,13 @@ LOCAL_PATH_PROVISIONER_DIR=${CLUSTER_TEMP_TMP}/local-path-provisioner
 git clone https://github.com/rancher/local-path-provisioner.git \
     --depth 1 \
     "${LOCAL_PATH_PROVISIONER_DIR}"
+keda_version=$(get_value keda version)
+keda_ns=$(get_value keda namespace)
+$KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l helm.sh/chart=keda-${keda_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
+  $HELM upgrade --install keda \
+        --version "${keda_version}" \
+        kedacore/keda \
+        -n $keda_ns --create-namespace
 
 pushd "${LOCAL_PATH_PROVISIONER_DIR}"
 

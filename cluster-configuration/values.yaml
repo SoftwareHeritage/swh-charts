@@ -14,6 +14,10 @@ clusterConfiguration:
   prune: false
   selfHeal: false
 
+keda:
+  version: 2.14.2
+  namespace: keda
+
 certManager:
   enabled: false
   namespace: cert-manager
