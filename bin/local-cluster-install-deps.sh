@@ -85,12 +85,13 @@ function _kubectl_delete {
 
 certmanager_version=$(get_value certManager version)
 certmanager_ns=$(get_value certManager namespace)
-$HELM upgrade --install cert-manager \
-      --version "${certmanager_version}" \
-      jetstack/cert-manager \
-      --namespace "${certmanager_ns}" --create-namespace \
-      --set crds.enabled=true \
-      --set installCRDs=true
+$HELM status cert-manager --namespace "${certmanager_ns}" 2>/dev/null || \
+  $HELM upgrade --install cert-manager \
+        --version "${certmanager_version}" \
+        jetstack/cert-manager \
+        --namespace "${certmanager_ns}" --create-namespace \
+        --set crds.enabled=true \
+        --set installCRDs=true
 
 # Cannot have those since prometheus is not necessarily installed yet.
       # --set prometheus.enabled=true \
@@ -99,7 +100,7 @@ $HELM upgrade --install cert-manager \
 # Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
 ingress_ns=$(get_value ingressNginx namespace)
-$KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || \
+$HELM status ingress-nginx --namespace "${ingress_ns}" 2>/dev/null || \
   ${HELM} upgrade --install ingress-nginx ingress-nginx \
         --version "${ingress_version}" \
         --repo https://kubernetes.github.io/ingress-nginx \
@@ -107,7 +108,7 @@ $KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l 
 
 keda_version=$(get_value keda version)
 keda_ns=$(get_value keda namespace)
-$KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l helm.sh/chart=keda-${keda_version} -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || \
+$HELM status keda --namespace "${keda_ns}" 2>/dev/null || \
   $HELM upgrade --install keda \
         --version "${keda_version}" \
         kedacore/keda \
@@ -187,12 +188,12 @@ metallb_enabled=$(get_value metallb enabled)
 metallb_version=$(get_value metallb version)
 metallb_ns=$(get_value metallb namespace)
 if [ "${metallb_enabled}" = "true" ]; then
-  # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-  $HELM upgrade --install metallb \
-        --version "${metallb_version}" \
-        --namespace $metallb_ns \
-        --create-namespace \
-        metallb/metallb
+  $HELM status metallb --namespace "${metallb_ns}" 2>/dev/null || \
+    $HELM upgrade --install metallb \
+          --version "${metallb_version}" \
+          --namespace "${metallb_ns}" \
+          --create-namespace \
+          metallb/metallb
 else
   _helm_uninstall metallb $metallb_ns
 fi
@@ -206,11 +207,12 @@ wget --output-document="${barmanplugin_manifest}" \
      "${barmanplugin_url}"
 cnpg_enabled=$(get_value cloudnativePg enabled)
 if [ "${cnpg_enabled}" = "true" ]; then
-  $HELM upgrade --install cloudnative-pg \
-        --version "${cnpg_version}" \
-        --namespace "${cnpg_ns}" \
-        --create-namespace \
-        cnpg/cloudnative-pg
+  $HELM status cloudnative-pg --namespace "${cnpg_ns}" 2>/dev/null || \
+    $HELM upgrade --install cloudnative-pg \
+          --version "${cnpg_version}" \
+          --namespace "${cnpg_ns}" \
+          --create-namespace \
+          cnpg/cloudnative-pg
 
   # FIXME: Find a way to determine whether that's already installed
   _kubectl_delete "${barmanplugin_manifest}" || \
@@ -224,12 +226,13 @@ kafka_version=$(get_value kafka version)
 kafka_enabled=$(get_value kafka enabled)
 kafka_ns=$(get_value kafka namespace)
 if [ "${kafka_enabled}" = "true" ]; then
-  $HELM upgrade --install kafka-operator \
-        --version "${kafka_version}" \
-        --namespace "${kafka_ns}" \
-        --create-namespace \
-        strimzi/strimzi-kafka-operator \
-        --set watchAnyNamespace=true
+  $HELM status kafka-operator --namespace "${kafka_ns}" 2>/dev/null || \
+    $HELM upgrade --install kafka-operator \
+          --version "${kafka_version}" \
+          --namespace "${kafka_ns}" \
+          --create-namespace \
+          strimzi/strimzi-kafka-operator \
+          --set watchAnyNamespace=true
 else
   _helm_uninstall kafka-operator "${kafka_ns}"
 fi
@@ -238,11 +241,12 @@ cass_enabled=$(get_value cassandra enabled)
 cass_ns=$(get_value cassandra namespace)
 if [ "${cass_enabled}" = "true" ]; then
   cass_version=$(get_value cassandra version)
-  $HELM upgrade --install k8ssandra-operator \
-        --version "${cass_version}" \
-        k8ssandra/k8ssandra-operator \
-        -n "${cass_ns}" --create-namespace \
-        --set global.clusterScoped=true
+  $HELM status k8ssandra-operator --namespace "${cass_ns}" 2>/dev/null || \
+    $HELM upgrade --install k8ssandra-operator \
+          --version "${cass_version}" \
+          k8ssandra/k8ssandra-operator \
+          -n "${cass_ns}" --create-namespace \
+          --set global.clusterScoped=true
 else
   _helm_uninstall k8ssandra-operator "${cass_ns}"
 fi
@@ -251,10 +255,11 @@ elastic_version=$(get_value elasticsearch version)
 elastic_enabled=$(get_value elasticsearch enabled)
 elastic_ns=$(get_value elasticsearch namespace)
 if [ "${elastic_enabled}" = "true" ]; then
-  $HELM upgrade --install eck-operator \
-        --version "${elastic_version}" \
-        elastic/eck-operator \
-        -n "${elastic_ns}" --create-namespace
+  $HELM status eck-operator --namespace "${elastic_ns}" 2>/dev/null || \
+    $HELM upgrade --install eck-operator \
+          --version "${elastic_version}" \
+          elastic/eck-operator \
+          -n "${elastic_ns}" --create-namespace
 else
   _helm_uninstall eck-operator "${elastic_ns}"
 fi
@@ -263,10 +268,11 @@ redis_version=$(get_value redis version)
 redis_enabled=$(get_value redis enabled)
 redis_ns=$(get_value redis namespace)
 if [ "${redis_enabled}" = "true" ]; then
-  $HELM upgrade --install redis-operator \
-        --version "${redis_version}" \
-        ot-helm/redis-operator \
-        -n "${redis_ns}" --create-namespace
+  $HELM status redis-operator --namespace "${redis_ns}" 2>/dev/null || \
+    $HELM upgrade --install redis-operator \
+          --version "${redis_version}" \
+          ot-helm/redis-operator \
+          -n "${redis_ns}" --create-namespace
 else
   _helm_uninstall redis-operator "${redis_ns}"
 fi
@@ -281,12 +287,13 @@ pgbouncer_ns=$(get_value pgbouncer namespace)
 pushd "${PGBOUNCER_HELM_CHART_DIR}"
 if [ "${pgbouncer_enabled}" = "true" ]; then
   # Disable default values which makes pods fail
-  $HELM install ./chart \
-        --name-template pgbouncer \
-        --namespace "${pgbouncer_ns}" \
-        --set userlist.enabled=false \
-        --set pgbouncerExporter.enabled=false \
-        --create-namespace
+  $HELM status pgbouncer --namespace "${pgbouncer_ns}" 2>/dev/null || \
+    $HELM install ./chart \
+          --name-template pgbouncer \
+          --namespace "${pgbouncer_ns}" \
+          --set userlist.enabled=false \
+          --set pgbouncerExporter.enabled=false \
+          --create-namespace
 else
   _helm_uninstall pgbouncer pgbouncer
 fi
