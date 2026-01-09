@@ -10,13 +10,9 @@ KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
 # Source parse helper function
 source ./bin/_parser-helper.sh
 
-$HELM uninstall -n ingress-nginx ingress-nginx
-
 $HELM uninstall -n cnpg-system cloudnative-pg
 
 $HELM uninstall -n kafka-system kafka-operator
-
-$HELM uninstall -n cert-manager cert-manager
 
 $HELM uninstall -n k8ssandra-operator k8ssandra-operator
 
@@ -31,6 +27,14 @@ $HELM uninstall -n elastic-system eck-operator
 $HELM uninstall -n local-path-storage local-path
 
 $HELM uninstall -n local-path-storage local-persistent
+
+$HELM uninstall -n ingress-nginx ingress-nginx
+
+$HELM uninstall -n metallb metallb
+
+$HELM uninstall -n metallb metallb
+
+$HELM uninstall -n cert-manager cert-manager
 
 messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
 ${KUBECTL} delete -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
