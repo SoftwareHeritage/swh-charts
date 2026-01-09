@@ -26,15 +26,15 @@ function get_value() {
   local status=$?
   if [[ $status -ne 0 ]]; then
     echo "Error: yq failed for path '$*' in ${values_yaml}" >&2
-    exit 1
+    return 1
   fi
   for value in $values; do
     if [ "${value}" != "null" ]; then
       echo "${value}"
-      exit 0
+      return 0
     fi
   done
   # If we reach this part, we did not find any value so we fail the call
   echo "Error: value not found for path '$*' in ${values_yaml}" >&2
-  exit 1
+  return 1
 }
