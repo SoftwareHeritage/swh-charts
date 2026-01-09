@@ -30,3 +30,27 @@ redis:
 
 cloudnativePg:
   enabled: true
+
+netbox:
+  enabled: true
+  config:
+    postgresql:
+      enabled: false
+    externalDatabase:
+      host: db-netbox-rw.cnpg
+      port: 5432
+      database: netbox
+      username: netbox
+      existingSecretName: netbox-postgresql-secret
+      existingSecretKey: password
+    exemptViewPermissions:
+      - "*"
+    email:
+      server: smtp.inria.fr
+      port: 25
+      username: ''
+      from: inventory@softwareheritage.org
+      useTLS: false
+      useSSL: false
+      timeout: 10
+
