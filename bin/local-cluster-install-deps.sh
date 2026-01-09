@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
 # This scripts installs the necessary dependencies for the charts to work. It uses the
-# /cluster-configuration/values.yaml to retrieve the version of the charts to use. So
-# the local cluster installation reflects the version of what's used by actual
-# production cluster.
+# configuration files values to retrieve the dependency charts' version, namespace
+# values and its enabled status.
+
+# The configuration files are read in the following order with the usual precedence:
+# - /cluster-configuration/values.yaml
+# - /cluster-configuration/values/local-cluster.yaml
+# - (optional) local-cluster-ccf.override.yaml
+
+# This local cluster installation reflects the way our production cluster are
+# configured. This also allows what chart we want to run locally without the overall swh
+# setup.
 
 set -e
 
