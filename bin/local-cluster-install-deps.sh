@@ -56,26 +56,6 @@ fi
 # Source parse helper function
 source ./bin/_parser-helper.sh
 
-# Now actually installs the various operator dependencies
-
-function _helm_uninstall {
-  helm_chart_name=$1
-  ns=$2
-  $HELM uninstall $helm_chart_name --namespace $ns 2>/dev/null || \
-      echo "Non critical helm uninstall issue, skipping..."
-}
-
-function _kubectl_delete {
-  url_or_file=$1
-  extra_args=()
-  if [ -n "${2}" ]; then
-    extra_args+=("--namespace" "${2}")
-  fi
-  $KUBECTL delete "${extra_args[@]}" -f ${url_or_file} 2>/dev/null || \
-      echo "Non critical deletion issue, skipping..."
-}
-
-
 ############################################
 # Statically hard-coded dependency required
 ############################################
