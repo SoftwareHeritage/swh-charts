@@ -4,44 +4,34 @@
 
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 
-HELM="helm --kube-context ${CLUSTER_CONTEXT}"
-KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
+# Source helper functions used throughout the script
+source ./bin/_helper-functions.sh
 
-# Source parse helper function
-source ./bin/_parser-helper.sh
+#########
+# Script
+#########
 
-$HELM uninstall -n cnpg-system cloudnative-pg
+_init_setup_and_checks
 
-$HELM uninstall -n kafka-system kafka-operator
-
-$HELM uninstall -n k8ssandra-operator k8ssandra-operator
-
-$HELM uninstall -n ot-operators redis-operator
-
-$HELM uninstall -n keda keda
-
-$HELM uninstall -n pgbouncer pgbouncer
-
-$HELM uninstall -n elastic-system eck-operator
-
-$HELM uninstall -n local-path-storage local-path
-
-$HELM uninstall -n local-path-storage local-persistent
-
-$HELM uninstall -n ingress-nginx ingress-nginx
-
-$HELM uninstall -n metallb metallb
-
-$HELM uninstall -n metallb metallb
-
-$HELM uninstall -n cert-manager cert-manager
+_helm_uninstall cloudnative-pg cnpg-system
+_helm_uninstall kafka-operator kafka-system
+_helm_uninstall k8ssandra-operator k8ssandra-operator
+_helm_uninstall redis-operator ot-operators
+_helm_uninstall keda keda
+_helm_uninstall pgbouncer pgbouncer
+_helm_uninstall eck-operator elastic-system
+_helm_uninstall local-path local-path-storage
+_helm_uninstall local-persistent local-path-storage
+_helm_uninstall ingress-nginx ingress-nginx
+_helm_uninstall metallb metallb
+_helm_uninstall cert-manager cert-manager
 
 messaging_topology_version=$(get_value rabbitmq messagingTopologyOperatorVersion)
-${KUBECTL} delete -f external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-"${messaging_topology_version}".yaml
+_kubectl_delete "external-manifests/rabbitmq/messaging-topology-operator-with-certmanager-${messaging_topology_version}.yaml"
 
 rabbitmq_version=$(get_value rabbitmq version)
-${KUBECTL} delete -f external-manifests/rabbitmq/cluster-operator-"${rabbitmq_version}".yaml
+_kubectl_delete "external-manifests/rabbitmq/cluster-operator-${rabbitmq_version}.yaml"
 
 argocd_version=$(get_value argocd version)
 ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
-$KUBECTL delete -n argocd -f ${ARGOCD_URL}
+_kubectl_delete "${ARGOCD_URL}" argocd
