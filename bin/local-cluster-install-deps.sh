@@ -40,12 +40,14 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add kedacore https://kedacore.github.io/charts
 helm repo add gitlab-runner https://charts.gitlab.io
 helm repo add metallb https://metallb.github.io/metallb
-helm repo update
 
-# cluster-components declare some dependencies we need to locally build
-pushd cluster-components
-helm dependency build
-popd
+# Build cluster-components dependencies (if not already built)
+output=$(find cluster-components/charts -maxdepth 0 -empty -exec echo empty \;)
+if [ "${output}" = "empty" ]; then
+    pushd cluster-components
+    helm dependency build
+    popd
+fi
 
 ###################
 # Helper functions
