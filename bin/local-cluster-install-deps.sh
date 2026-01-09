@@ -18,16 +18,19 @@ set -e
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
-if ! command -v yq 2>&1 >/dev/null; then
-  echo "Error: yq is not installed." >&2
-  exit 1
-fi
+# Source helper functions used throughout the script
+source ./bin/_helper-functions.sh
 
-KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
-HELM="helm --kube-context ${CLUSTER_CONTEXT}"
+#########
+# Script
+#########
+
+_init_setup_and_checks
+
 
 CLUSTER_TEMP_TMP=$(mktemp -d)
 trap 'rm -rf ${CLUSTER_TEMP_TMP}' EXIT
+
 
 # Install the helm repo dependencies
 helm repo add cnpg https://cloudnative-pg.github.io/charts
@@ -48,13 +51,6 @@ if [ "${output}" = "empty" ]; then
     helm dependency build
     popd
 fi
-
-###################
-# Helper functions
-###################
-
-# Source parse helper function
-source ./bin/_parser-helper.sh
 
 ############################################
 # Statically hard-coded dependency required
