@@ -27,3 +27,7 @@ certManager:
 
 redis:
   enabled: true
+
+cloudnativePg:
+  enabled: true
+
