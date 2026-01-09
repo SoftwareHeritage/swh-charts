@@ -10,7 +10,7 @@ set -e
 CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
-if ! command -v yq >/dev/null 2>&1; then
+if ! command -v yq 2>&1 >/dev/null; then
   echo "Error: yq is not installed." >&2
   exit 1
 fi
@@ -51,7 +51,7 @@ source ./bin/_parser-helper.sh
 function _helm_uninstall {
   helm_chart_name=$1
   ns=$2
-  $HELM uninstall $helm_chart_name --namespace $ns || \
+  $HELM uninstall $helm_chart_name --namespace $ns 2>/dev/null || \
       echo "Non critical helm uninstall issue, skipping..."
 }
 
@@ -61,7 +61,7 @@ function _kubectl_delete {
   if [ -n "${2}" ]; then
     extra_args+=("--namespace" "${2}")
   fi
-  $KUBECTL delete "${extra_args[@]}" -f ${url_or_file} || \
+  $KUBECTL delete "${extra_args[@]}" -f ${url_or_file} 2>/dev/null || \
       echo "Non critical deletion issue, skipping..."
 }
 
@@ -89,7 +89,7 @@ $HELM upgrade --install cert-manager \
 # Same goes for the ingress
 ingress_version=$(get_value ingressNginx version)
 ingress_ns=$(get_value ingressNginx namespace)
-$KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
+$KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l helm.sh/chart=ingress-nginx-${ingress_version} -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || \
   ${HELM} upgrade --install ingress-nginx ingress-nginx \
         --version "${ingress_version}" \
         --repo https://kubernetes.github.io/ingress-nginx \
@@ -97,7 +97,7 @@ $KUBECTL get pods -n "ingress-nginx" -l app.kubernetes.io/name=ingress-nginx -l 
 
 keda_version=$(get_value keda version)
 keda_ns=$(get_value keda namespace)
-$KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l helm.sh/chart=keda-${keda_version} -o jsonpath="{.items[0].metadata.name}" 2>&1 || \
+$KUBECTL get pods -n "keda-operator" -l app.kubernetes.io/name=keda-operator -l helm.sh/chart=keda-${keda_version} -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || \
   $HELM upgrade --install keda \
         --version "${keda_version}" \
         kedacore/keda \
@@ -155,7 +155,7 @@ EOF
   popd
 }
 
-$KUBECTL get storageclass local-path 2>&1 || install_local_path_provisioner
+$KUBECTL get storageclass local-path 2>/dev/null || install_local_path_provisioner
 
 ############################################################################
 # Dynamically toggled dependency by local-cluster*.yaml configuration files
