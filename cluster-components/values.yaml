@@ -463,7 +463,7 @@ kafka:
 cassandra:
   enabled: false
   # cassandra version to be deployed (can be overriden per instance)
-  version: 5.0.2
+  version: 5.0.6
   # Jvm options (can be overridden per instance)
   # jvmOptions:
   #   heapSize: 8G
