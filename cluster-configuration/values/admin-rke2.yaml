@@ -34,6 +34,8 @@ cloudnativePg:
 netbox:
   enabled: true
   config:
+    global:
+      storageClass: local-persistent
     postgresql:
       enabled: false
     externalDatabase:
