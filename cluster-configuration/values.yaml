@@ -109,7 +109,8 @@ kafka:
 cassandra:
   enabled: false
   namespace: k8ssandra-operator
-  version: 1.20.3
+  # version 1.30.0 has a template bug which prevents validating webhooks of cass-operator to run
+  version: 1.29.0
 
 elasticsearch:
   enabled: false
