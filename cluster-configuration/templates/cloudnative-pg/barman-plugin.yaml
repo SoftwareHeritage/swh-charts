@@ -20,15 +20,9 @@ spec:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
   syncPolicy:
-    {{- if or $prune $selfHeal }}
     automated:
-      {{- if $prune }}
       prune: {{ $prune }}
-      {{- end }}
-      {{- if $selfHeal }}
       selfHeal: {{ $selfHeal }}
-      {{- end }}
-    {{- end }}
     syncOptions:
     - RespectIgnoreDifferences=true
     - ServerSideApply=true
