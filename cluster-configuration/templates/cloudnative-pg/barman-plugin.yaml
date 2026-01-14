@@ -1,7 +1,7 @@
 {{ if .Values.cloudnativePg.enabled -}}
 {{- $appName := print .Values.clusterName "-cnpg-barman-plugin" -}}
-{{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune -}}
-{{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
+{{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune | quote -}}
+{{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal | quote -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
