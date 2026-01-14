@@ -132,6 +132,7 @@ cloudnativePg:
   deployments:
     db-netbox:
       enabled: true
+      instances: 2
       database:
         name: netbox
         secretKeyRef: netbox-postgresql-secret
