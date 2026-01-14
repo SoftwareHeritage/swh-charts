@@ -31,7 +31,7 @@ redis:
 cloudnativePg:
   enabled: true
   version: 0.26.1
-  barmanPluginVersion: 0.8.0
+  barmanPluginVersion: 0.10.0
 
 netbox:
   enabled: true
