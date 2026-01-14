@@ -436,7 +436,6 @@ cloudnativePg:
       # No replica for now, we need to determine where to make it run
       # It's around 2Tb currently
       instances: 2
-      externalClustersRef: externalPostgresqlClusters
       extraPostgresqlConfig:
         parameters:
           # Setup used in the previous instance (defaulted to 128MB so far)
@@ -477,15 +476,11 @@ cloudnativePg:
       namespace: cnpg
       grantGuestAccess: false
       instances: 2
-      externalClustersRef: internalObjectStores
       recovery:
         enabled: true
       database:
         name: swh-blocking
         secretKeyRef: swh-postgresql-swh-blocking-secret
-      recovery:
-        enabled: true
-        source: db-swh-blocking-objectstore
       backup:
         enabled: true
         # Run once a day at 7:40am (UTC)
@@ -525,7 +520,6 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-indexer-secret
@@ -543,7 +537,6 @@ cloudnativePg:
       namespace: cnpg
       grantGuestAccess: false
       instances: 2
-      externalClustersRef: externalPostgresqlClusters
       roles:
       - name: swhmailmap
         ensure: present
@@ -569,7 +562,6 @@ cloudnativePg:
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
-      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
       backup:
@@ -584,7 +576,6 @@ cloudnativePg:
       database:
         name: swh-scrubber
         secretKeyRef: swh-postgresql-swh-scrubber-secret
-      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
       backup:
@@ -599,7 +590,6 @@ cloudnativePg:
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
-      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
       storage:
@@ -620,7 +610,6 @@ cloudnativePg:
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-vault-secret
-      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
       backup:
