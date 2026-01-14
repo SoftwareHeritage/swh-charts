@@ -1,5 +1,7 @@
 {{ if .Values.cloudnativePg.enabled -}}
 {{- $appName := print .Values.clusterName "-cnpg-operator" -}}
+{{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune -}}
+{{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -22,10 +24,17 @@ spec:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
   syncPolicy:
+    {{- if or $prune $selfHeal }}
     automated:
-      prune: {{ .Values.defaultPrune }}
-      selfHeal: {{ .Values.defaultSelfHeal }}
+      {{- if $prune }}
+      prune: {{ $prune }}
+      {{- end }}
+      {{- if $selfHeal }}
+      selfHeal: {{ $selfHeal }}
+      {{- end }}
+    {{- end }}
     syncOptions:
+    - RespectIgnoreDifferences=true
     - ServerSideApply=true
   ignoreDifferences:
     - group: admissionregistration.k8s.io
