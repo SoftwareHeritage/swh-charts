@@ -47,6 +47,11 @@ netbox:
       existingSecretKey: password
     exemptViewPermissions:
       - "*"
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - netbox.inventory.admin.swh.network
     email:
       server: smtp.inria.fr
       port: 25
