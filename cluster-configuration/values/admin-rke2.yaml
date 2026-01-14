@@ -51,7 +51,7 @@ netbox:
       enabled: true
       className: nginx
       hosts:
-        - host: netbox.inventory.admin.swh.network
+        - host: netbox.internal.admin.swh.network
           paths:
             - /
     email:
