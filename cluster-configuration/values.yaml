@@ -128,11 +128,14 @@ cloudnativePg:
   enabled: false
   namespace: cnpg-system
   # https://cloudnative-pg.io/documentation/current/installation_upgrade/#upgrades
-  # cnpg/cloudnative-pg  0.26.0  1.27.0  CloudNativePG Operator Helm Chart <- latest
-  # cnpg/cloudnative-pg  0.25.0  1.26.1  CloudNativePG Operator Helm Chart <- current
-  version: 0.25.0
-  # Out-of-tree plugin to manage backup
-  barmanPluginVersion: 0.6.0
+  # $ helm search repo -l cnpg | grep -C1 0.26.1
+  # cnpg/cloudnative-pg  0.27.0  1.28.0  CloudNativePG Operator Helm Chart <- latest
+  # cnpg/cloudnative-pg  0.26.1  1.27.1  CloudNativePG Operator Helm Chart <- current
+  # cnpg/cloudnative-pg  0.26.0  1.27.0  CloudNativePG Operator Helm Chart
+  # cnpg/cloudnative-pg  0.25.0  1.26.1  CloudNativePG Operator Helm Chart <- previous
+  version: 0.26.1
+  # Out-of-tree plugin to manage backup (not an helm chart currently)
+  barmanPluginVersion: 0.10.0
   argocdApplication:
     selfHeal: true
     prune: false
