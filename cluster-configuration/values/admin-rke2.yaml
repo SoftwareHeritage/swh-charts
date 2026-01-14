@@ -54,6 +54,15 @@ netbox:
         - host: netbox.internal.admin.swh.network
           paths:
             - /
+      annotations:
+        kubernetes.io/tls-acme: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+      tls:
+      - secretName: admin-rke2-netbox-tls
+        hosts:
+          - netbox.internal.admin.swh.network
     email:
       server: smtp.inria.fr
       port: 25
