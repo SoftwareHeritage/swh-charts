@@ -134,7 +134,7 @@ cloudnativePg:
   # Out-of-tree plugin to manage backup
   barmanPluginVersion: 0.6.0
   argocdApplication:
-    selfHeal: false
+    selfHeal: true
     prune: false
 
 pgbouncer:
