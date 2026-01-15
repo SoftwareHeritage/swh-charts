@@ -5,6 +5,8 @@
 
 CLUSTER_CONTEXT=${1-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
+WITH_INGRESS=${3-true}
+
 
 if [ "${CLUSTER_CONTEXT}" = "minikube" ]; then
    KUBE_LOCAL_TECHNOLOGY=minikube
@@ -26,8 +28,10 @@ case "$KUBE_LOCAL_ENVIRONMENT" in
 
         trap "rm -f ${CLUSTER_TEMP_CONFIG_FILE}" EXIT
 
-        # 4 nodes (1 control-plane, 3 workers) cluster config
-        cat<<EOF >$CLUSTER_TEMP_CONFIG_FILE
+        if [ "$WITH_INGRESS" = "ingress" ]; then
+            # Install the ingress controller after cluster creation
+            # 4 nodes (1 control-plane, 3 workers) cluster config
+            cat<<EOF >$CLUSTER_TEMP_CONFIG_FILE
 ---
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -50,6 +54,17 @@ nodes:
 - role: worker
 - role: worker
 EOF
+        else
+            # 4 nodes (1 control-plane, 3 workers) cluster config
+            cat<<EOF >$CLUSTER_TEMP_CONFIG_FILE
+---
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+- role: worker
+EOF
+        fi
 
         [ -f $CLUSTER_TEMP_CONFIG_FILE ] && cat $CLUSTER_TEMP_CONFIG_FILE
 
