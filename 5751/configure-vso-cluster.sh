@@ -19,19 +19,6 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
-CLUSTER_NAME_OPENBAO="${CLUSTER_NAME_OPENBAO:-openbao}"
-CLUSTER_CONTEXT_OPENBAO="kind-local-cluster-${CLUSTER_NAME_OPENBAO}"
-KUBECTL_OPENBAO="kubectl --context ${CLUSTER_CONTEXT_OPENBAO}"
-
-CLUSTER_NAME_VSO="${CLUSTER_NAME_VSO:-vso}"
-CLUSTER_CONTEXT_VSO="kind-local-cluster-${CLUSTER_NAME_VSO}"
-HELM_VSO="helm --kube-context ${CLUSTER_CONTEXT_VSO}"
-KUBECTL_VSO="kubectl --context ${CLUSTER_CONTEXT_VSO}"
-
-NS_OPENBAO="${NS_OPENBAO:-openbao}"
-NS_VSO="${NS_VSO:-vso}"
-NS_APP="${NS_APP:-app}"
-
 if [[ "$1" == "--reset" ]]; then
   WITH_INGRESS="false"
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
@@ -49,8 +36,6 @@ $HELM_VSO upgrade \
   --set "controller.hostAliases[0].hostnames[0]=${OPENBAO_INGRESS_HOSTNAME}" \
   -n "${NS_VSO}" \
   --create-namespace
-
-exit 0
 
 VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
 VAULT_CONNECTION_NAME="connection-${CLUSTER_NAME_VSO}"
@@ -85,12 +70,15 @@ spec:
     role: ${ROLE}
     serviceAccount: ${SERVICE_ACCOUNT_NAME}
   vaultConnectionRef: ${VAULT_CONNECTION_NAME}
+  allowedNamespaces:
+    - "*"
 EOF
 
 $KUBECTL_VSO apply -f "${VAULT_AUTH_FILE}"
-$KUBECTL_VSO create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
-  --clusterrole=system:auth-delegator \
-  --serviceaccount="${NS_VSO}:${SERVICE_ACCOUNT_NAME}"
+$KUBECTL_VSO get clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" > /dev/null 2>&1 || \
+  $KUBECTL_VSO create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
+    --clusterrole=system:auth-delegator \
+    --serviceaccount="${NS_VSO}:${SERVICE_ACCOUNT_NAME}"
 
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
@@ -115,8 +103,11 @@ POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
 cat > "${POD_SCRIPT_FILE}" << EOF
 #!/usr/bin/env sh
 
-${POD_VAULT_CMD} secrets enable -path="${MOUNT}" kv-v2
-${POD_VAULT_CMD} auth enable -path "${MOUNT}" kubernetes
+${POD_VAULT_CMD} secrets list | grep "${MOUNT}/" || \
+  ${POD_VAULT_CMD} secrets enable -path="${MOUNT}" kv-v2
+
+${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
+  ${POD_VAULT_CMD} auth enable -path "${MOUNT}" kubernetes
 
 # read CA cert content and replace line breaks with \n
 # see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
@@ -135,16 +126,9 @@ ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
-POD_NAME=""
-while [ -z "${POD_NAME}" ]; do
-  POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
-  sleep 2
-done
-
+${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
 POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
-
-# sleep until container is ready
-$KUBECTL_OPENBAO wait --for=condition=Ready pod/"${POD_NAME}" -n "${NS_OPENBAO}" --timeout=120s
 
 $KUBECTL_OPENBAO cp "${POLICY_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO cp "${KUBERNETES_CA_FILE}" "${POD_DEST_PATH}"

@@ -18,12 +18,6 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
-CLUSTER_CONTEXT_OPENBAO="${CLUSTER_CONTEXT_OPENBAO:-kind-local-cluster-openbao}"
-HELM_OPENBAO="helm --kube-context ${CLUSTER_CONTEXT_OPENBAO}"
-KUBECTL_OPENBAO="kubectl --context ${CLUSTER_CONTEXT_OPENBAO}"
-
-NS_OPENBAO="${NS_OPENBAO:-openbao}"
-
 if [[ "$1" == "--reset" ]]; then
   WITH_INGRESS="true"
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
