@@ -213,7 +213,7 @@ externalPostgresqlClusters:
       # Use the correct IP or host name for the source database
       host: albertina.internal.softwareheritage.org
       user: postgres
-      port: "5433"
+      port: "5432"
 
 cloudnativePg:
   enabled: true
