@@ -207,7 +207,7 @@ redis:
 externalPostgresqlClusters:
   - name: cluster-pg-production-albertina
     password:
-      name: swh-postgresql-postgres-secret
+      name: cluster-production-albertina-postgres-user-credential
       key: password
     connectionParameters:
       # Use the correct IP or host name for the source database
