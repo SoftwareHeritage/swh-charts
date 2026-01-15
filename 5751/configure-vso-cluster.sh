@@ -97,7 +97,6 @@ KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
 KUBERNETES_CA_CONTENT=$($KUBECTL_OPENBAO config view --raw --minify --flatten --output 'jsonpath={.clusters[].cluster.certificate-authority-data}')
 echo "${KUBERNETES_CA_CONTENT}" | base64 --decode > "${KUBERNETES_CA_FILE}"
 
-POD_VAULT_CMD="bao"
 POD_SCRIPT_FILENAME="configure-bao.sh"
 POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
 cat > "${POD_SCRIPT_FILE}" << EOF
