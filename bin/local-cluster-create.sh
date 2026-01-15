@@ -28,7 +28,7 @@ case "$KUBE_LOCAL_ENVIRONMENT" in
 
         trap "rm -f ${CLUSTER_TEMP_CONFIG_FILE}" EXIT
 
-        if [ "$WITH_INGRESS" = "ingress" ]; then
+        if [ "$WITH_INGRESS" = "true" ]; then
             # Install the ingress controller after cluster creation
             # 4 nodes (1 control-plane, 3 workers) cluster config
             cat<<EOF >$CLUSTER_TEMP_CONFIG_FILE
