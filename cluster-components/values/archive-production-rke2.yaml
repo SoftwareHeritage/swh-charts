@@ -211,7 +211,7 @@ externalPostgresqlClusters:
       key: password
     connectionParameters:
       # Use the correct IP or host name for the source database
-      host: altertina.internal.softwaheritage.org
+      host: albertina.internal.softwareheritage.org
       user: postgres
       port: "5433"
 
