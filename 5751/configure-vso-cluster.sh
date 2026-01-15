@@ -26,7 +26,7 @@ if [[ "$1" == "--reset" ]]; then
 elif [[ "$1" == "--cleanup" ]]; then
   # If --cleanup is set, remove existing resources
   $HELM_VSO uninstall vault-secrets-operator || true
-#  $KUBECTL_VSO delete namespace "${NS_VSO}" || true
+#  ${KUBECTL_VSO} delete namespace "${NS_VSO}" || true
 fi
 
 # TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
@@ -61,7 +61,7 @@ spec:
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  namespace: ${NS_VSO}
+  namespace: ${NS_APP}
   name: ${VAULT_AUTH_NAME}
 spec:
   method: kubernetes
@@ -69,16 +69,19 @@ spec:
   kubernetes:
     role: ${ROLE}
     serviceAccount: ${SERVICE_ACCOUNT_NAME}
-  vaultConnectionRef: ${VAULT_CONNECTION_NAME}
+  vaultConnectionRef: ${NS_VSO}/${VAULT_CONNECTION_NAME}
   allowedNamespaces:
     - "*"
 EOF
 
-$KUBECTL_VSO apply -f "${VAULT_AUTH_FILE}"
-$KUBECTL_VSO get clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" > /dev/null 2>&1 || \
-  $KUBECTL_VSO create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
+${KUBECTL_VSO} get namespace "${NS_APP}" || \
+  ${KUBECTL_VSO} create namespace "${NS_APP}"
+
+${KUBECTL_VSO} apply -f "${VAULT_AUTH_FILE}"
+${KUBECTL_VSO} get clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" > /dev/null 2>&1 || \
+  ${KUBECTL_VSO} create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
     --clusterrole=system:auth-delegator \
-    --serviceaccount="${NS_VSO}:${SERVICE_ACCOUNT_NAME}"
+    --serviceaccount="${NS_APP}:${SERVICE_ACCOUNT_NAME}"
 
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
@@ -92,10 +95,34 @@ path "${MOUNT}/metadata/*" {
 }
 EOF
 
+# Define a service account token secret that is used by openbao to authenticate to
+# Kubernetes.
+SERVICE_ACCOUNT_NAME_SECRET=${SERVICE_ACCOUNT_NAME}-secret
+cat <<EOF > "${TEMP_DIR}/openbao-secret.yaml"
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${SERVICE_ACCOUNT_NAME_SECRET}
+  namespace: ${NS_APP}
+  annotations:
+    kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
+type: kubernetes.io/service-account-token
+EOF
+
+${KUBECTL_VSO} apply -f "${TEMP_DIR}/openbao-secret.yaml"
+
 KUBERNETES_CA_FILENAME="demo-ca.crt"
 KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
-KUBERNETES_CA_CONTENT=$($KUBECTL_OPENBAO config view --raw --minify --flatten --output 'jsonpath={.clusters[].cluster.certificate-authority-data}')
-echo "${KUBERNETES_CA_CONTENT}" | base64 --decode > "${KUBERNETES_CA_FILE}"
+# KUBERNETES_CA_CONTENT=$($KUBECTL_OPENBAO config view --raw --minify --flatten --output 'jsonpath={.clusters[].cluster.certificate-authority-data}')
+# echo "${KUBERNETES_CA_CONTENT}" | base64 --decode > "${KUBERNETES_CA_FILE}"
+
+export SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+                               -o jsonpath="{.data.token}" | base64 --decode)
+export KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+                               -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
+echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
+# export KUBERNETES_URL=$(${KUBECTL_VSO} config view --minify \
+#                                -o jsonpath='{.clusters[0].cluster.server}')
 
 POD_SCRIPT_FILENAME="configure-bao.sh"
 POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
@@ -112,16 +139,18 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 # see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
 CA_CRT_CONTENT=\$(sed ':a;N;$!ba;s/\n/\\n/g' "${POD_TEMP_PATH}/${KUBERNETES_CA_FILENAME}")
 
-${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
+${POD_VAULT_CMD} write  "auth/${MOUNT}/config" \
+  use_annotations_as_alias_metadata=true \
+  token_reviewer_jwt="${SA_TOKEN}" \
   kubernetes_host="https://\${KUBERNETES_PORT_443_TCP_ADDR}:443" \
-  kubernetes_ca_cert="\${CA_CRT_CONTENT}"\
-  disable_local_ca_jwt='true'
+  kubernetes_ca_cert="${CA_CRT_CONTENT}"
 
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
 ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
   bound_service_account_names="${SERVICE_ACCOUNT_NAME}" \
   bound_service_account_namespaces="${NS_APP}" \
-  policies="${POLICY_NAME}"
+  policies="${POLICY_NAME}" \
+
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 

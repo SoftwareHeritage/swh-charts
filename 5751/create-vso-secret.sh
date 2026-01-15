@@ -24,9 +24,6 @@ STATIC_SECRET_NAME="demo-static-secret"
 OPENBAO_SECRET_PATH="demo-app/config"
 K8S_SECRET_NAME="demo-secret"
 
-${KUBECTL_VSO} get namespace "${NS_APP}" || \
-  ${KUBECTL_VSO} create namespace "${NS_APP}"
-
 STATIC_SECRET_FILENAME="${STATIC_SECRET_NAME}.yaml"
 STATIC_SECRET_FILE="${TEMP_DIR}/${STATIC_SECRET_FILENAME}"
 cat > "${STATIC_SECRET_FILE}" << EOF
@@ -37,7 +34,7 @@ metadata:
   namespace: ${NS_APP}
   name: ${STATIC_SECRET_NAME}
 spec:
-  vaultAuthRef: ${NS_VSO}/${VAULT_AUTH_NAME}
+  vaultAuthRef: ${VAULT_AUTH_NAME}
   mount: ${MOUNT}
   type: kv-v2
   path: ${OPENBAO_SECRET_PATH}
@@ -56,3 +53,8 @@ POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/nam
 # Write a secret password
 $KUBECTL_OPENBAO exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
 
+# for nowbao
+sleep 10
+
+$KUBECTL_VSO get secret "${K8S_SECRET_NAME}" -n "${NS_APP}" -o json | \
+    jq -r '.data._raw' | base64 --decode | jq '.data'
