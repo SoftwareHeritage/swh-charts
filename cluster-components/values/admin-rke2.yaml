@@ -112,7 +112,6 @@ cloudnativePg:
   # Postgres credentials to setup (can be overridden per instance)
   superUserSecretRef: swh-postgresql-postgres-secret
   backup:
-    enabled: true
     compression: gzip
     # Let's use the new barman plugin
     # It's required for future cnpg version > 1.26
@@ -140,3 +139,7 @@ cloudnativePg:
       initdb:
         enabled: true
         source: cluster-pg-admin-dali
+      backup:
+        enabled: true
+        # Run once a day at 10:05pm (UTC)
+        schedule: "0 5 10 * * *"
