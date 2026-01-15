@@ -32,6 +32,7 @@ fi
 # TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
 $HELM_VSO upgrade \
   --install vault-secrets-operator hashicorp/vault-secrets-operator \
+  --set "controller.manager.logging.level=trace" \
   --set "controller.hostAliases[0].ip=${OPENBAO_INGRESS_IP}" \
   --set "controller.hostAliases[0].hostnames[0]=${OPENBAO_INGRESS_HOSTNAME}" \
   -n "${NS_VSO}" \
@@ -142,7 +143,7 @@ CA_CRT_CONTENT=\$(sed ':a;N;$!ba;s/\n/\\n/g' "${POD_TEMP_PATH}/${KUBERNETES_CA_F
 ${POD_VAULT_CMD} write  "auth/${MOUNT}/config" \
   use_annotations_as_alias_metadata=true \
   token_reviewer_jwt="${SA_TOKEN}" \
-  kubernetes_host="https://\${KUBERNETES_PORT_443_TCP_ADDR}:443" \
+  kubernetes_host="https://\${KUBERNETES_PORT_443_TCP_ADDR}" \
   kubernetes_ca_cert="${CA_CRT_CONTENT}"
 
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"

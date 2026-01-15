@@ -67,7 +67,8 @@ EOF
 
 ${HELM_OPENBAO} upgrade \
   --install openbao openbao/openbao \
-  --set "global.logLevel=trace" \
+  --set "injector.logLevel=trace" \
+  --set "server.logLevel=trace" \
   --set "server.dev.enabled=true" \
   --set "server.ingress.enabled=true" \
   --set "server.ingress.ingressClassName=nginx" \
