@@ -47,3 +47,12 @@ spec:
     name: ${K8S_SECRET_NAME}
 EOF
 ${KUBECTL_VSO} apply -f "${STATIC_SECRET_FILE}"
+
+# Let's create a secret in the vso cluster
+
+${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
+
+# Write a secret password
+$KUBECTL_OPENBAO exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
+
