@@ -877,28 +877,34 @@ maskingQueryPostgresqlConfiguration:
       secretKeyName: postgres-guest-password
 
 blockingAdminPostgresqlConfiguration:
-  host: postgresql-blocking-rw.internal.softwareheritage.org
+  host: db-swh-blocking-rw.cnpg
   port: '5432'
   db: swh-blocking
-  user: swh-blocking
+  user: ${BLOCKING_ADMIN_PGUSERNAME}
   pass: ${BLOCKING_ADMIN_PGPASSWORD}
   secrets:
    BLOCKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-postgresql-blocking-secret
-      secretKeyName: postgres-swh-blocking-password
+      secretKeyRef: swh-postgresql-swh-blocking-secret
+      secretKeyName: password
+   BLOCKING_ADMIN_PGUSERNAME:
+      secretKeyRef: swh-postgresql-swh-blocking-secret
+      secretKeyName: username
 
 blockingQueryPostgresqlConfiguration:
-  host: postgresql-blocking-rw.internal.softwareheritage.org
+  host: db-swh-blocking-rw.cnpg
   port: '5432'
   db: swh-blocking
   # The blocking proxy writes to a log table (blocked_origin_log)
   # It needs write credentials
-  user: swh-blocking
+  user: ${BLOCKING_ADMIN_PGUSERNAME}
   pass: ${BLOCKING_ADMIN_PGPASSWORD}
   secrets:
-    BLOCKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-postgresql-blocking-secret
-      secretKeyName: postgres-swh-blocking-password
+   BLOCKING_ADMIN_PGPASSWORD:
+      secretKeyRef: swh-postgresql-swh-blocking-secret
+      secretKeyName: password
+   BLOCKING_ADMIN_PGUSERNAME:
+      secretKeyRef: swh-postgresql-swh-blocking-secret
+      secretKeyName: username
 
 djangoWebConfiguration:
   secrets:
