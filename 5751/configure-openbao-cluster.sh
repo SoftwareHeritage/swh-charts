@@ -75,6 +75,8 @@ ${HELM_OPENBAO} upgrade \
   --set "server.ingress.enabled=true" \
   --set "server.ingress.ingressClassName=nginx" \
   --set "server.ingress.hosts[0].host=${OPENBAO_INGRESS_HOSTNAME}" \
+  --set "server.hostAliases[0].ip=${VSO_INGRESS_IP}" \
+  --set "server.hostAliases[0].hostnames[0]=${VSO_INGRESS_HOSTNAME}" \
   -n "${NS_OPENBAO}" \
   --create-namespace
 

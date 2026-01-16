@@ -83,7 +83,6 @@ VAULT_CONNECTION_NAME="connection-${CLUSTER_NAME_VSO}"
 MOUNT="mount-${CLUSTER_NAME_VSO}"
 POLICY_NAME="policy-${CLUSTER_NAME_VSO}"
 CLUSTER_ROLE_BINDING_NAME="auth-delegator"
-OPENBAO_SECRET_PATH="demo-app/config"
 
 VAULT_AUTH_FILENAME="auth-${VAULT_AUTH_NAME}.yaml"
 VAULT_AUTH_FILE="${TEMP_DIR}/${VAULT_AUTH_FILENAME}"
@@ -137,7 +136,8 @@ EOF
 # Define a service account token secret that is used by openbao to authenticate to
 # Kubernetes.
 SERVICE_ACCOUNT_NAME_SECRET=${SERVICE_ACCOUNT_NAME}-secret
-cat <<EOF > "${TEMP_DIR}/openbao-secret.yaml"
+
+${KUBECTL_VSO} apply -f - <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
@@ -145,10 +145,36 @@ metadata:
   namespace: ${NS_APP}
   annotations:
     kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
+    kubernetes.io/service-account.hostname: ${VSO_INGRESS_HOSTNAME}
 type: kubernetes.io/service-account-token
 EOF
 
-${KUBECTL_VSO} apply -f "${TEMP_DIR}/openbao-secret.yaml"
+${KUBECTL_VSO} apply -f - <<EOF
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubeapi
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "${VSO_INGRESS_HOSTNAME}"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: kubernetes
+            port:
+              number: 443
+
+EOF
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"
 KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
@@ -158,8 +184,6 @@ SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP}
 KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
                                -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
 
-# FIXME: hardcoded kubernetes service IP for kind cluster
-# KUBERNETES_VSO_HOST="172.18.255.1"
 
 echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
 
@@ -180,7 +204,7 @@ ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
   use_annotations_as_alias_metadata=true \
   disable_local_ca_jwt=true \
   token_reviewer_jwt="${SA_TOKEN}" \
-  kubernetes_host="https://\${KUBERNETES_PORT_443_TCP_ADDR}" \
+  kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${KUBERNETES_CA_FILENAME}"
 
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
