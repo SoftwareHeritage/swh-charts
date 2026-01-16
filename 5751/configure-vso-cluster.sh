@@ -113,16 +113,12 @@ ${KUBECTL_VSO} apply -f "${TEMP_DIR}/openbao-secret.yaml"
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"
 KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
-# KUBERNETES_CA_CONTENT=$($KUBECTL_OPENBAO config view --raw --minify --flatten --output 'jsonpath={.clusters[].cluster.certificate-authority-data}')
-# echo "${KUBERNETES_CA_CONTENT}" | base64 --decode > "${KUBERNETES_CA_FILE}"
 
-export SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
                                -o jsonpath="{.data.token}" | base64 --decode)
-export KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
                                -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
 echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
-# export KUBERNETES_URL=$(${KUBECTL_VSO} config view --minify \
-#                                -o jsonpath='{.clusters[0].cluster.server}')
 
 POD_SCRIPT_FILENAME="configure-bao.sh"
 POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
@@ -137,13 +133,12 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 
 # read CA cert content and replace line breaks with \n
 # see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
-CA_CRT_CONTENT=\$(sed ':a;N;$!ba;s/\n/\\n/g' "${POD_TEMP_PATH}/${KUBERNETES_CA_FILENAME}")
-
-${POD_VAULT_CMD} write  "auth/${MOUNT}/config" \
+${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
   use_annotations_as_alias_metadata=true \
+  disable_local_ca_jwt=true \
   token_reviewer_jwt="${SA_TOKEN}" \
   kubernetes_host="https://\${KUBERNETES_PORT_443_TCP_ADDR}" \
-  kubernetes_ca_cert="${CA_CRT_CONTENT}"
+  kubernetes_ca_cert=@"${POD_TEMP_PATH}/${KUBERNETES_CA_FILENAME}"
 
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
 ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
