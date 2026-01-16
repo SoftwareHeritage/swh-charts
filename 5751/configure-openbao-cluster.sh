@@ -32,8 +32,8 @@ ${HELM_OPENBAO} repo add metallb https://metallb.github.io/metallb
 ${HELM_OPENBAO} repo add openbao https://openbao.github.io/openbao-helm
 ${HELM_OPENBAO} repo update metallb openbao
 
-${HELM_OPENBAO} upgrade --install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace
-${HELM_OPENBAO} upgrade --install metallb --namespace metallb --create-namespace metallb/metallb
+${HELM_OPENBAO} install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace 2>&1 >/dev/null || echo "<ingress-nginx> already installed!"
+${HELM_OPENBAO} install metallb --namespace metallb --create-namespace metallb/metallb 2>&1 >/dev/null || echo "<metallb> already installed!"
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
