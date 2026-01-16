@@ -4,7 +4,7 @@
 # * create `openbao` namespace
 # * install openbao helm chart inside `openbao` namespace
 
-set -e
+set -xe
 
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
@@ -19,26 +19,28 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 
 if [[ "$1" == "--reset" ]]; then
-  WITH_INGRESS="true"
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_OPENBAO}" kind "${WITH_INGRESS}"
+  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_OPENBAO}" kind
 elif [[ "$1" == "--cleanup" ]]; then
   # If --cleanup is set, remove existing resources
   ${HELM_OPENBAO} uninstall openbao || true
 #  $KUBECTL_OPENBAO delete namespace "${NS_OPENBAO}" || true
 fi
 
+${HELM_OPENBAO} repo add jetstack https://charts.jetstack.io
 ${HELM_OPENBAO} repo add metallb https://metallb.github.io/metallb
+${HELM_OPENBAO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ${HELM_OPENBAO} repo add openbao https://openbao.github.io/openbao-helm
-${HELM_OPENBAO} repo update metallb openbao
+${HELM_OPENBAO} repo update jetstack metallb ingress-nginx openbao
 
-${HELM_OPENBAO} install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx --namespace ingress-nginx --create-namespace 2>&1 >/dev/null || echo "<ingress-nginx> already installed!"
-${HELM_OPENBAO} install metallb --namespace metallb --create-namespace metallb/metallb 2>&1 >/dev/null || echo "<metallb> already installed!"
+${HELM_OPENBAO} install cert-manager jetstack/cert-manager --namespace "cert-manager" --create-namespace --set crds.enabled=true --set installCRDs=true > /dev/null 2>&1 || echo "<cert-manager> already installed!"
+${HELM_OPENBAO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
+${HELM_OPENBAO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
 
-${KUBECTL_OPENBAO} --context "${CLUSTER_CONTEXT_OPENBAO}" apply -f - <<EOF
+${KUBECTL_OPENBAO} apply -f - <<EOF
 ---
 # Source: cluster-config/templates/metallb/ipaddresspools.yaml
 apiVersion: metallb.io/v1beta1

@@ -6,7 +6,8 @@
 CLUSTER_CONTEXT=${1-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 WITH_INGRESS=${3-true}
-
+INGRESS_HTTP_PORT=${4-80}
+INGRESS_HTTPS_PORT=${5-443}
 
 if [ "${CLUSTER_CONTEXT}" = "minikube" ]; then
    KUBE_LOCAL_TECHNOLOGY=minikube
@@ -45,10 +46,10 @@ nodes:
         node-labels: "ingress-ready=true"
   extraPortMappings:
   - containerPort: 80
-    hostPort: 80
+    hostPort: ${INGRESS_HTTP_PORT}
     protocol: TCP
   - containerPort: 443
-    hostPort: 443
+    hostPort: ${INGRESS_HTTPS_PORT}
     protocol: TCP
 - role: worker
 - role: worker

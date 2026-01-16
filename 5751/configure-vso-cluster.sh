@@ -20,17 +20,56 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 
 if [[ "$1" == "--reset" ]]; then
-  WITH_INGRESS="false"
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_VSO}" kind "${WITH_INGRESS}"
+  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_VSO}" kind "true" 8080 8443
 elif [[ "$1" == "--cleanup" ]]; then
   # If --cleanup is set, remove existing resources
-  $HELM_VSO uninstall vault-secrets-operator || true
+  ${HELM_VSO} uninstall vault-secrets-operator || true
 #  ${KUBECTL_VSO} delete namespace "${NS_VSO}" || true
 fi
 
+${HELM_VSO} repo add jetstack https://charts.jetstack.io
+${HELM_VSO} repo add metallb https://metallb.github.io/metallb
+${HELM_VSO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+${HELM_VSO} repo update jetstack metallb ingress-nginx
+
+${HELM_VSO} install cert-manager jetstack/cert-manager --namespace "cert-manager" --create-namespace --set crds.enabled=true --set installCRDs=true > /dev/null 2>&1 || echo "<cert-manager> already installed!"
+${HELM_VSO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
+${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
+
+# Enable ingress controller load balancer IP allocation through metallb
+${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
+
+${KUBECTL_VSO} apply -f - <<EOF
+---
+# Source: cluster-config/templates/metallb/ipaddresspools.yaml
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: "local-metallb-pool-ingress"
+  namespace: metallb
+spec:
+  addresses:
+    - ${VSO_INGRESS_IP}/32
+  serviceAllocation:
+    namespaces:
+    - ingress-nginx
+    priority: 50
+---
+# Source: cluster-config/templates/metallb/ipaddresspools.yaml
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: "l2-advertisement-ingress"
+  namespace: metallb
+spec:
+  ipAddressPools:
+  - "local-metallb-pool-ingress"
+EOF
+
+
 # TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
-$HELM_VSO upgrade \
+${HELM_VSO} upgrade \
   --install vault-secrets-operator hashicorp/vault-secrets-operator \
   --set "controller.manager.logging.level=trace" \
   --set "controller.hostAliases[0].ip=${OPENBAO_INGRESS_IP}" \
@@ -118,6 +157,10 @@ SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP}
                                -o jsonpath="{.data.token}" | base64 --decode)
 KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
                                -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
+
+# FIXME: hardcoded kubernetes service IP for kind cluster
+# KUBERNETES_VSO_HOST="172.18.255.1"
+
 echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
 
 POD_SCRIPT_FILENAME="configure-bao.sh"
@@ -144,8 +187,7 @@ ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENA
 ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
   bound_service_account_names="${SERVICE_ACCOUNT_NAME}" \
   bound_service_account_namespaces="${NS_APP}" \
-  policies="${POLICY_NAME}" \
-
+  policies="${POLICY_NAME}"
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
