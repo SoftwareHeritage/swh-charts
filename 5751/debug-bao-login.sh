@@ -37,13 +37,13 @@ SA_JWT=$($KUBECTL_VSO -n "${NS_APP}" get secret "${SA_SECRET}" \
 # -------------------------------------------------
 # 3. Build the JSON payload
 # -------------------------------------------------
-read -r -d '' PAYLOAD <<EOF
+PAYLOAD_FILE="${TEMP_DIR}/login-payload.json"
+cat <<EOF > "${PAYLOAD_FILE}"
 {
   "jwt": "${SA_JWT}",
   "role": "${ROLE}"
 }
 EOF
-echo $?
 
 # -------------------------------------------------
 # 4. Perform the request (http or https)
@@ -52,12 +52,12 @@ URL="http://${OPENBAO_INGRESS_HOSTNAME}/v1/auth/${MOUNT}/login"
 
 echo "Sending request to ${URL}"
 echo "Payload:"
-echo "${PAYLOAD}" | jq .
+cat "${PAYLOAD_FILE}" | jq .
 
 # Use curl – show request/response details
 curl -i -s -X PUT "${URL}" \
   -H "Content-Type: application/json" \
-  -d "${PAYLOAD}" \
+  -d @"${PAYLOAD_FILE}" \
   -o /tmp/bao_login_response.json
 
 # -------------------------------------------------
