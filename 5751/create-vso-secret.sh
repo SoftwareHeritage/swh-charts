@@ -18,7 +18,6 @@ if [ -f "${ENV_FILE}" ]; then
 fi
 
 VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
-MOUNT="mount-${CLUSTER_NAME_VSO}"
 
 STATIC_SECRET_NAME="demo-static-secret"
 OPENBAO_SECRET_PATH="demo-app/config"
