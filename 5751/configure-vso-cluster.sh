@@ -149,6 +149,25 @@ metadata:
 type: kubernetes.io/service-account-token
 EOF
 
+# TODO add variables for email, pk name, etc.
+${KUBECTL_VSO} apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: sysop+k8sstaging@softwareheritage.org
+    profile: tlsserver
+    privateKeySecretRef:
+      name: letsencrypt-staging-key
+    solvers:
+    - http01:
+        ingress:
+          ingressClassName: nginx
+EOF
+
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
 apiVersion: networking.k8s.io/v1
@@ -160,8 +179,13 @@ metadata:
     nginx.ingress.kubernetes.io/secure-backends: "true"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-staging"
 spec:
   ingressClassName: nginx
+  tls:
+  - hosts:
+    - "${VSO_INGRESS_HOSTNAME}"
+    secretName: vso-ingress-tls
   rules:
   - host: "${VSO_INGRESS_HOSTNAME}"
     http:
@@ -173,7 +197,6 @@ spec:
             name: kubernetes
             port:
               number: 443
-
 EOF
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"
