@@ -33,7 +33,13 @@ ${HELM_VSO} repo add metallb https://metallb.github.io/metallb
 ${HELM_VSO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ${HELM_VSO} repo update jetstack metallb ingress-nginx
 
-${HELM_VSO} install cert-manager jetstack/cert-manager --namespace "cert-manager" --create-namespace --set crds.enabled=true --set installCRDs=true > /dev/null 2>&1 || echo "<cert-manager> already installed!"
+${HELM_VSO} install cert-manager jetstack/cert-manager \
+  --namespace "cert-manager" --create-namespace \
+  --set crds.enabled=true \
+  --set installCRDs=true \
+  --set "hostAliases[0].ip=${VSO_INGRESS_IP}" \
+  --set "hostAliases[0].hostnames[0]=${VSO_INGRESS_HOSTNAME}" \
+  > /dev/null 2>&1 || echo "<cert-manager> already installed!"
 ${HELM_VSO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
 ${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
 
@@ -176,16 +182,16 @@ metadata:
   name: kubeapi
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/secure-backends: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # nginx.ingress.kubernetes.io/secure-backends: "true"
+    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     cert-manager.io/cluster-issuer: "letsencrypt-staging"
+    # kubernetes.io/tls-acme: "true"
+    cert-manager.io/acme-challenge-type: http01
+    # acme.cert-manager.io/http01-ingress-class: nginx
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
   ingressClassName: nginx
-  tls:
-  - hosts:
-    - "${VSO_INGRESS_HOSTNAME}"
-    secretName: vso-ingress-tls
   rules:
   - host: "${VSO_INGRESS_HOSTNAME}"
     http:
@@ -197,6 +203,10 @@ spec:
             name: kubernetes
             port:
               number: 443
+  tls:
+  - hosts:
+    - "${VSO_INGRESS_HOSTNAME}"
+    secretName: vso-ingress-tls
 EOF
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"
