@@ -219,6 +219,10 @@ cloudnativePg:
   enabled: true
   # Postgres credentials to setup (can be overridden per instance)
   superUserSecretRef: swh-postgresql-postgres-secret
+  services:
+    # Disable only the "r" service, this will enable the "ro" service
+    disabledDefaultServices:
+      - "r"
   backup:
     compression: gzip
     # Let's use the new barman plugin
