@@ -891,7 +891,7 @@ blockingAdminPostgresqlConfiguration:
       secretKeyName: username
 
 blockingQueryPostgresqlConfiguration:
-  host: db-swh-blocking-rw.cnpg
+  host: db-swh-blocking-ro.cnpg
   port: '5432'
   db: swh-blocking
   # The blocking proxy writes to a log table (blocked_origin_log)
