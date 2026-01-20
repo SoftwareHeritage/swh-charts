@@ -11,7 +11,6 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BIN_DIR="${SCRIPT_DIR}/../bin"
 
 ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
@@ -48,6 +47,9 @@ if [ ! -d $CA_CERT_DIR ]; then
     [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
 fi
 
+${KUBECTL_VSO} get namespace "${NS_VSO}" || \
+  ${KUBECTL_VSO} create namespace "${NS_VSO}"
+
 ${HELM_VSO} repo add jetstack https://charts.jetstack.io
 ${HELM_VSO} repo add metallb https://metallb.github.io/metallb
 ${HELM_VSO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -60,16 +62,45 @@ ${HELM_VSO} install cert-manager jetstack/cert-manager \
   --set "hostAliases[0].ip=${VSO_INGRESS_IP}" \
   --set "hostAliases[0].hostnames[0]=${VSO_INGRESS_HOSTNAME}" \
   > /dev/null 2>&1 || echo "<cert-manager> already installed!"
-${HELM_VSO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
-${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
-
-${KUBECTL_VSO} get namespace "${NS_VSO}" || \
-  ${KUBECTL_VSO} create namespace "${NS_VSO}"
+${HELM_VSO} install metallb metallb/metallb \
+  --namespace "metallb" --create-namespace \
+  > /dev/null 2>&1 || echo "<metallb> already installed!"
 
 # Inject shared ca
 ${KUBECTL_VSO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
 ${KUBECTL_VSO} create secret tls shared-ca --namespace "${NS_VSO}" --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
 ${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
+
+${KUBECTL_VSO} apply -f - <<EOF
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: shared-ca-issuer
+spec:
+  ca:
+    secretName: shared-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vso-tls-cert
+spec:
+  secretName: vso-tls-secret   # will contain tls.crt & tls.key
+  commonName: ${VSO_INGRESS_HOSTNAME}
+  dnsNames:
+  - ${VSO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
+  issuerRef:
+    name: shared-ca-issuer
+    kind: ClusterIssuer
+EOF
+
+# TODO copy vso-tls-secret secret into vso & default namespaces, temporary workaround obviously
+
+${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace "ingress-nginx" --create-namespace \
+  --set "controller.defaultTLS.secret=default/vso-tls-secret" \
+  > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
@@ -99,30 +130,6 @@ metadata:
 spec:
   ipAddressPools:
   - "local-metallb-pool-ingress"
-EOF
-
-${KUBECTL_VSO} apply -f - <<EOF
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: shared-ca-issuer
-spec:
-  ca:
-    secretName: shared-ca
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: vso-tls-cert
-  namespace: vso   # Helm release namespace
-spec:
-  secretName: vso-tls-secret   # will contain tls.crt & tls.key
-  dnsNames:
-  - ${VSO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
-  issuerRef:
-    name: shared-ca-issuer
-    kind: ClusterIssuer
 EOF
 
 VSO_VALUES_FILE=$TEMP_DIR/vso-values.yaml
@@ -232,7 +239,7 @@ spec:
           service:
             name: kubernetes
             port:
-              number: 443
+              number: 80
   tls:
   - hosts:
     - "${VSO_INGRESS_HOSTNAME}"
@@ -242,13 +249,15 @@ EOF
 KUBERNETES_CA_FILENAME="demo-ca.crt"
 KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
 
-KUBERNETES_CA=$(${KUBECTL_VSO} get secret shared-ca -n cert-manager \
-                               -o jsonpath="{.data['tls\.crt']}" | base64 --decode)
+#KUBERNETES_CA=$(${KUBECTL_VSO} get secret vso-tls-secret \
+#                               -o jsonpath="{.data['tls\.crt']}" | base64 --decode)
+##SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+##                               -o jsonpath="{.data.token}" | base64 --decode)
 
-#SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
-#                               -o jsonpath="{.data.token}" | base64 --decode)
-
-
+KUBERNETES_CA=$(${KUBECTL_VSO} get secret sa-token -n app \
+                               -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
+SA_TOKEN=$(${KUBECTL_VSO} get secret sa-token -n app \
+                               -o jsonpath="{.data.token}" | base64 --decode)
 
 echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
 
