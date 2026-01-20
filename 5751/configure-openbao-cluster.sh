@@ -47,10 +47,6 @@ if [ ! -d $CA_CERT_DIR ]; then
     [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
 fi
 
-# Inject shared ca
-${KUBECTL_OPENBAO} create secret tls shared-ca \
-  --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-
 ${HELM_OPENBAO} repo add jetstack https://charts.jetstack.io
 ${HELM_OPENBAO} repo add metallb https://metallb.github.io/metallb
 ${HELM_OPENBAO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -60,6 +56,13 @@ ${HELM_OPENBAO} repo update jetstack metallb ingress-nginx openbao
 ${HELM_OPENBAO} install cert-manager jetstack/cert-manager --namespace "cert-manager" --create-namespace --set crds.enabled=true --set installCRDs=true > /dev/null 2>&1 || echo "<cert-manager> already installed!"
 ${HELM_OPENBAO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
 ${HELM_OPENBAO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
+
+${KUBECTL_OPENBAO} get namespace "${NS_OPENBAO}" || \
+  ${KUBECTL_OPENBAO} create namespace "${NS_OPENBAO}"
+
+# Inject shared ca
+${KUBECTL_OPENBAO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+${KUBECTL_OPENBAO} create configmap  --namespace openbao shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
@@ -139,8 +142,6 @@ ${HELM_OPENBAO} upgrade \
   --namespace "${NS_OPENBAO}" \
   --create-namespace
 
-${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
-
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
 ${KUBECTL_OPENBAO} apply -f - <<EOF
 ---
@@ -166,9 +167,7 @@ spec:
     kind: ClusterIssuer
 EOF
 
-${KUBECTL_OPENBAO} create configmap \
-  --namespace openbao shared-ca \
-  --from-file=ca.crt="${CA_CERT_FILECRT}"
+${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
 cat <<EOF
 ##############################################
