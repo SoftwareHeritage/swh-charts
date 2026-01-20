@@ -68,6 +68,7 @@ ${KUBECTL_VSO} get namespace "${NS_VSO}" || \
 
 # Inject shared ca
 ${KUBECTL_VSO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+${KUBECTL_VSO} create secret tls shared-ca --namespace "${NS_VSO}" --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
 ${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
@@ -100,13 +101,52 @@ spec:
   - "local-metallb-pool-ingress"
 EOF
 
+# TODO add variables for email, pk name, etc.
+${KUBECTL_VSO} apply -f - <<EOF
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: shared-ca-issuer
+spec:
+  ca:
+    secretName: shared-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vso-tls-cert
+  namespace: vso   # Helm release namespace
+spec:
+  secretName: vso-tls-secret   # will contain tls.crt & tls.key
+  dnsNames:
+  - ${VSO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
+  issuerRef:
+    name: shared-ca-issuer
+    kind: ClusterIssuer
+EOF
+
+VSO_VALUES_FILE=$TEMP_DIR/vso-values.yaml
+cat > "${VSO_VALUES_FILE}" << EOF
+controller:
+  manager:
+    logging:
+      level:  trace
+  hostAliases:
+    # Make openbao ingress hostname resolvable
+    - ip: ${OPENBAO_INGRESS_IP}
+      hostnames:
+      - ${OPENBAO_INGRESS_HOSTNAME}
+defaultVaultConnection:
+  enabled: true
+  address: https://${OPENBAO_INGRESS_HOSTNAME}
+  caCertSecret: shared-ca
+EOF
 
 # TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
 ${HELM_VSO} upgrade \
   --install vault-secrets-operator hashicorp/vault-secrets-operator \
-  --set "controller.manager.logging.level=trace" \
-  --set "controller.hostAliases[0].ip=${OPENBAO_INGRESS_IP}" \
-  --set "controller.hostAliases[0].hostnames[0]=${OPENBAO_INGRESS_HOSTNAME}" \
+  --values "${VSO_VALUES_FILE}" \
   -n "${NS_VSO}" \
   --create-namespace
 
@@ -122,14 +162,6 @@ VAULT_AUTH_FILE="${TEMP_DIR}/${VAULT_AUTH_FILENAME}"
 cat > "${VAULT_AUTH_FILE}" << EOF
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultConnection
-metadata:
-  namespace: ${NS_VSO}
-  name: ${VAULT_CONNECTION_NAME}
-spec:
-  address: https://${OPENBAO_INGRESS_HOSTNAME}
----
-apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
   namespace: ${NS_APP}
@@ -140,7 +172,6 @@ spec:
   kubernetes:
     role: ${ROLE}
     serviceAccount: ${SERVICE_ACCOUNT_NAME}
-  vaultConnectionRef: ${NS_VSO}/${VAULT_CONNECTION_NAME}
   allowedNamespaces:
     - "*"
 EOF
@@ -182,31 +213,6 @@ metadata:
 type: kubernetes.io/service-account-token
 EOF
 
-# TODO add variables for email, pk name, etc.
-${KUBECTL_VSO} apply -f - <<EOF
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: shared-ca-issuer
-spec:
-  ca:
-    secretName: shared-ca
----
-apiVersion: cert-manager.io/v1
-kind: Certificate
-metadata:
-  name: vso-tls
-  namespace: vso   # Helm release namespace
-spec:
-  secretName: vso-tls   # will contain tls.crt & tls.key
-  dnsNames:
-  - ${VSO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
-  issuerRef:
-    name: shared-ca-issuer
-    kind: ClusterIssuer
-EOF
-
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
 apiVersion: networking.k8s.io/v1
@@ -232,7 +238,7 @@ spec:
   tls:
   - hosts:
     - "${VSO_INGRESS_HOSTNAME}"
-    secretName: vso-tls
+    secretName: vso-tls-secret
 EOF
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"

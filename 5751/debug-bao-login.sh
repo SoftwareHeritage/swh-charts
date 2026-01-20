@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
+set -ex
 
 # -------------------------------------------------
 # 1. Variables – adjust only if you renamed them
@@ -48,7 +48,7 @@ EOF
 # -------------------------------------------------
 # 4. Perform the request (http or https)
 # -------------------------------------------------
-URL="http://${OPENBAO_INGRESS_HOSTNAME}/v1/auth/${MOUNT}/login"
+URL="https://${OPENBAO_INGRESS_HOSTNAME}/v1/auth/${MOUNT}/login"
 
 echo "Sending request to ${URL}"
 echo "Payload:"
@@ -57,13 +57,5 @@ cat "${PAYLOAD_FILE}" | jq .
 # Use curl – show request/response details
 curl -i -s -X PUT "${URL}" \
   -H "Content-Type: application/json" \
-  -d @"${PAYLOAD_FILE}" \
-  -o /tmp/bao_login_response.json
-
-# -------------------------------------------------
-# 5. Show the result
-# -------------------------------------------------
-echo -e "\n--- Response headers & status ---"
-cat /tmp/bao_login_response.json | head -n 1
-echo -e "\n--- Response body ---"
-cat /tmp/bao_login_response.json | tail -n +2 | jq .
+  --cacert "${CA_CERT_FILECRT}" \
+  -d @"${PAYLOAD_FILE}"
