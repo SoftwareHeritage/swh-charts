@@ -19,7 +19,10 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
-if [[ "$1" == "--reset" ]]; then
+if [[ "$1" == "--delete" ]]; then
+  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
+  exit 0
+elif [[ "$1" == "--reset" ]]; then
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
   "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_VSO}" kind "true" 8080 8443
 elif [[ "$1" == "--cleanup" ]]; then

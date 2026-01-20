@@ -18,7 +18,10 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
-if [[ "$1" == "--reset" ]]; then
+if [[ "$1" == "--delete" ]]; then
+  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
+  exit 0
+elif [[ "$1" == "--reset" ]]; then
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
   "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_OPENBAO}" kind
 elif [[ "$1" == "--cleanup" ]]; then
