@@ -101,7 +101,6 @@ spec:
   - "local-metallb-pool-ingress"
 EOF
 
-# TODO add variables for email, pk name, etc.
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
 apiVersion: cert-manager.io/v1
@@ -151,7 +150,6 @@ ${HELM_VSO} upgrade \
   --create-namespace
 
 VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
-VAULT_CONNECTION_NAME="connection-${CLUSTER_NAME_VSO}"
 
 MOUNT="mount-${CLUSTER_NAME_VSO}"
 POLICY_NAME="policy-${CLUSTER_NAME_VSO}"
