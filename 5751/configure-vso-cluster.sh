@@ -31,6 +31,23 @@ elif [[ "$1" == "--cleanup" ]]; then
 #  ${KUBECTL_VSO} delete namespace "${NS_VSO}" || true
 fi
 
+if [ ! -d $CA_CERT_DIR ]; then
+    mkdir -p $CA_CERT_DIR
+    # Generate private rsa key
+    openssl genrsa -out $CA_CERT_FILEKEY 4096
+
+    # Ensure no issues occurred
+    [ ! -f $CA_CERT_FILEKEY ] && echo "<$CA_CERT_FILEKEY> must exist!" && exit 1
+
+    # Self-signed shared root certificate in between kind clusters
+    openssl req -x509 -new -nodes -key $CA_CERT_FILEKEY \
+            -sha256 -days 3650 \
+            -subj "/CN=shared-local-clusters-ca" \
+            -out $CA_CERT_FILECRT
+    # Ensure no issues occurred
+    [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
+fi
+
 ${HELM_VSO} repo add jetstack https://charts.jetstack.io
 ${HELM_VSO} repo add metallb https://metallb.github.io/metallb
 ${HELM_VSO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
@@ -45,6 +62,13 @@ ${HELM_VSO} install cert-manager jetstack/cert-manager \
   > /dev/null 2>&1 || echo "<cert-manager> already installed!"
 ${HELM_VSO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
 ${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
+
+${KUBECTL_VSO} get namespace "${NS_VSO}" || \
+  ${KUBECTL_VSO} create namespace "${NS_VSO}"
+
+# Inject shared ca
+${KUBECTL_VSO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
@@ -103,7 +127,7 @@ metadata:
   namespace: ${NS_VSO}
   name: ${VAULT_CONNECTION_NAME}
 spec:
-  address: http://${OPENBAO_INGRESS_HOSTNAME}
+  address: https://${OPENBAO_INGRESS_HOSTNAME}
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
@@ -160,21 +184,27 @@ EOF
 
 # TODO add variables for email, pk name, etc.
 ${KUBECTL_VSO} apply -f - <<EOF
+---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-staging
+  name: shared-ca-issuer
 spec:
-  acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: sysop+k8sstaging@softwareheritage.org
-    profile: tlsserver
-    privateKeySecretRef:
-      name: letsencrypt-staging-key
-    solvers:
-    - http01:
-        ingress:
-          ingressClassName: nginx
+  ca:
+    secretName: shared-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vso-tls
+  namespace: vso   # Helm release namespace
+spec:
+  secretName: vso-tls   # will contain tls.crt & tls.key
+  dnsNames:
+  - ${VSO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
+  issuerRef:
+    name: shared-ca-issuer
+    kind: ClusterIssuer
 EOF
 
 ${KUBECTL_VSO} apply -f - <<EOF
@@ -185,14 +215,7 @@ metadata:
   name: kubeapi
   namespace: default
   annotations:
-    # nginx.ingress.kubernetes.io/secure-backends: "true"
-    # nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    cert-manager.io/cluster-issuer: "letsencrypt-staging"
-    # kubernetes.io/tls-acme: "true"
-    cert-manager.io/acme-challenge-type: http01
-    # acme.cert-manager.io/http01-ingress-class: nginx
-    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -209,16 +232,18 @@ spec:
   tls:
   - hosts:
     - "${VSO_INGRESS_HOSTNAME}"
-    secretName: vso-ingress-tls
+    secretName: vso-tls
 EOF
 
 KUBERNETES_CA_FILENAME="demo-ca.crt"
 KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
 
-SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
-                               -o jsonpath="{.data.token}" | base64 --decode)
-KUBERNETES_CA=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
-                               -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
+KUBERNETES_CA=$(${KUBECTL_VSO} get secret shared-ca -n cert-manager \
+                               -o jsonpath="{.data['tls\.crt']}" | base64 --decode)
+
+#SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
+#                               -o jsonpath="{.data.token}" | base64 --decode)
+
 
 
 echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
@@ -252,6 +277,7 @@ EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+
 POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
 POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
 

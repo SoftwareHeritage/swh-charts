@@ -62,7 +62,7 @@ ${KUBECTL_OPENBAO} get namespace "${NS_OPENBAO}" || \
 
 # Inject shared ca
 ${KUBECTL_OPENBAO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-${KUBECTL_OPENBAO} create configmap  --namespace openbao shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
+${KUBECTL_OPENBAO} create configmap  --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
