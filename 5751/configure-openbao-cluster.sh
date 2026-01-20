@@ -144,7 +144,7 @@ ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_O
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
 ${KUBECTL_OPENBAO} apply -f - <<EOF
 ---
-ApiVersion: cert-manager.io/v1
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: shared-ca-issuer
