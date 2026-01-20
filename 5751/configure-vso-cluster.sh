@@ -139,7 +139,7 @@ controller:
 defaultVaultConnection:
   enabled: true
   address: https://${OPENBAO_INGRESS_HOSTNAME}
-  caCertSecret: shared-ca
+  caCertSecret: vso-tls-secret
 EOF
 
 # TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
