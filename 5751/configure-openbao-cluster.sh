@@ -4,7 +4,8 @@
 # * create `openbao` namespace
 # * install openbao helm chart inside `openbao` namespace
 
-set -xe
+set -e
+set -x
 
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
@@ -16,6 +17,9 @@ ENV_FILE="${SCRIPT_DIR}/.env"
 if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
+
+# To configure properly the install_or_skip function
+HELM=$HELM_OPENBAO
 
 if [[ "$1" == "--delete" ]]; then
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
@@ -52,16 +56,19 @@ ${HELM_OPENBAO} repo add ingress-nginx https://kubernetes.github.io/ingress-ngin
 ${HELM_OPENBAO} repo add openbao https://openbao.github.io/openbao-helm
 ${HELM_OPENBAO} repo update jetstack metallb ingress-nginx openbao
 
-${HELM_OPENBAO} install cert-manager jetstack/cert-manager --namespace "cert-manager" --create-namespace --set crds.enabled=true --set installCRDs=true > /dev/null 2>&1 || echo "<cert-manager> already installed!"
-${HELM_OPENBAO} install metallb metallb/metallb --namespace metallb --create-namespace > /dev/null 2>&1 || echo "<metallb> already installed!"
-${HELM_OPENBAO} install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
+install_or_skip cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --set crds.enabled=true --set installCRDs=true
+install_or_skip metallb metallb/metallb --namespace metallb
+install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
-${KUBECTL_OPENBAO} get namespace "${NS_OPENBAO}" || \
-  ${KUBECTL_OPENBAO} create namespace "${NS_OPENBAO}"
+execute_or_skip ${KUBECTL_OPENBAO} create namespace "${NS_OPENBAO}"
 
 # Inject shared ca
-${KUBECTL_OPENBAO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-${KUBECTL_OPENBAO} create configmap  --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
+execute_or_skip ${KUBECTL_OPENBAO} create secret tls shared-ca \
+  --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+execute_or_skip ${KUBECTL_OPENBAO} create configmap \
+  --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
@@ -135,11 +142,9 @@ server:
     caBundle: /etc/openbao/ca/ca.crt
 EOF
 
-${HELM_OPENBAO} upgrade \
-  --install openbao openbao/openbao \
-  --values "${OPENBAO_VALUES_FILE}" \
-  --namespace "${NS_OPENBAO}" \
-  --create-namespace
+install_or_skip openbao openbao/openbao \
+  --namespace ${NS_OPENBAO} \
+  --values "${OPENBAO_VALUES_FILE}"
 
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
 ${KUBECTL_OPENBAO} apply -f - <<EOF

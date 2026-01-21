@@ -18,6 +18,9 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
+# To configure properly the install_or_skip function
+HELM=$HELM_VSO
+
 if [[ "$1" == "--delete" ]]; then
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
   exit 0
@@ -47,29 +50,29 @@ if [ ! -d $CA_CERT_DIR ]; then
     [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
 fi
 
-${KUBECTL_VSO} get namespace "${NS_VSO}" || \
-  ${KUBECTL_VSO} create namespace "${NS_VSO}"
+execute_or_skip ${KUBECTL_VSO} create namespace "${NS_VSO}"
+execute_or_skip ${KUBECTL_VSO} create namespace "${NS_APP}"
 
 ${HELM_VSO} repo add jetstack https://charts.jetstack.io
 ${HELM_VSO} repo add metallb https://metallb.github.io/metallb
 ${HELM_VSO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ${HELM_VSO} repo update jetstack metallb ingress-nginx
 
-${HELM_VSO} install cert-manager jetstack/cert-manager \
-  --namespace "cert-manager" --create-namespace \
+install_or_skip cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
   --set crds.enabled=true \
   --set installCRDs=true \
   --set "hostAliases[0].ip=${VSO_INGRESS_IP}" \
-  --set "hostAliases[0].hostnames[0]=${VSO_INGRESS_HOSTNAME}" \
-  > /dev/null 2>&1 || echo "<cert-manager> already installed!"
-${HELM_VSO} install metallb metallb/metallb \
-  --namespace "metallb" --create-namespace \
-  > /dev/null 2>&1 || echo "<metallb> already installed!"
+  --set "hostAliases[0].hostnames[0]=${VSO_INGRESS_HOSTNAME}"
+install_or_skip metallb metallb/metallb --namespace metallb
 
 # Inject shared ca
-${KUBECTL_VSO} create secret tls shared-ca --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-${KUBECTL_VSO} create secret tls shared-ca --namespace "${NS_VSO}" --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
+execute_or_skip ${KUBECTL_VSO} create secret tls shared-ca --namespace cert-manager \
+  --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+execute_or_skip ${KUBECTL_VSO} create secret tls shared-ca --namespace "${NS_VSO}" \
+  --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+execute_or_skip ${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca \
+  --from-file=ca.crt=$CA_CERT_FILECRT
 
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
@@ -95,12 +98,11 @@ spec:
     kind: ClusterIssuer
 EOF
 
-# TODO copy vso-tls-secret secret into vso & default namespaces, temporary workaround obviously
-
-${HELM_VSO} install ingress-nginx ingress-nginx/ingress-nginx \
-  --namespace "ingress-nginx" --create-namespace \
-  --set "controller.defaultTLS.secret=default/vso-tls-secret" \
-  > /dev/null 2>&1 || echo "<ingress-nginx> already installed!"
+# TODO copy vso-tls-secret secret into vso & default namespaces, temporary workaround
+# obviously
+install_or_skip ingress-nginx ingress-nginx/ingress-nginx \
+  --namespace ingress-nginx \
+  --set "controller.defaultTLS.secret=default/vso-tls-secret"
 
 # Enable ingress controller load balancer IP allocation through metallb
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
@@ -149,12 +151,11 @@ defaultVaultConnection:
   caCertSecret: vso-tls-secret
 EOF
 
-# TODO configure values as needed, see https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
-${HELM_VSO} upgrade \
-  --install vault-secrets-operator hashicorp/vault-secrets-operator \
-  --values "${VSO_VALUES_FILE}" \
-  -n "${NS_VSO}" \
-  --create-namespace
+# TODO configure values as needed, see
+# https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
+install_or_skip vault-secrets-operator hashicorp/vault-secrets-operator \
+  --namespace "${NS_VSO}" \
+  --values "${VSO_VALUES_FILE}"
 
 VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
 
@@ -181,12 +182,10 @@ spec:
     - "*"
 EOF
 
-${KUBECTL_VSO} get namespace "${NS_APP}" || \
-  ${KUBECTL_VSO} create namespace "${NS_APP}"
+execute_or_skip ${KUBECTL_VSO} create namespace "${NS_APP}"
 
 ${KUBECTL_VSO} apply -f "${VAULT_AUTH_FILE}"
-${KUBECTL_VSO} get clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" > /dev/null 2>&1 || \
-  ${KUBECTL_VSO} create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
+execute_or_skip ${KUBECTL_VSO} create clusterrolebinding "${CLUSTER_ROLE_BINDING_NAME}" \
     --clusterrole=system:auth-delegator \
     --serviceaccount="${NS_APP}:${SERVICE_ACCOUNT_NAME}"
 
