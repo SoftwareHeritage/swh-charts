@@ -2955,6 +2955,7 @@ datasetsGenerator:
     maskingDbConfigurationRef: maskingQueryPostgresqlConfiguration
     publicationCredentialsRef: datasetUploadS3Configuration
     nbProcesses: 128
+    nbWorkers: 2
     # Datasets to generate
     deployments:
       2025-11-28:

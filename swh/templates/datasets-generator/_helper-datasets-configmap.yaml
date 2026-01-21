@@ -14,6 +14,7 @@
 {{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
 {{- $priorityClassName := $config.priorityClassName | default $datasetsConfig.priorityClassName -}}
 {{- $nbProcesses := $config.nbProcesses | default $datasetsConfig.nbProcesses | default 1 -}}
+{{- $nbWorkers := $config.nbWorkers | default $datasetsConfig.nbWorkers | default 1 -}}
 {{- $urlRef := $config.luigiSchedulerUrlRef | default $datasetsConfig.luigiSchedulerUrlRef -}}
 {{- $luigiSchedulerUrlRef := required (print "Required luigi scheduler url reference.") $urlRef -}}
 {{- $luigiSchedulerUrl := required (print "Invalid <luigiSchedulerUrlRef> configuration key.") (get .Values $luigiSchedulerUrlRef) -}}
@@ -50,6 +51,7 @@
          "graphCheckFlavor"  $graphCheckFlavor
          "configPath"        $configPath
          "nbProcesses"       $nbProcesses
+         "nbWorkers"         $nbWorkers
          "batchSize"         $batchSize
          "sensitiveDataMixed" $sensitiveDataMixed
          "publish"           $publish

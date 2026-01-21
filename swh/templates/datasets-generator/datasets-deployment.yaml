@@ -148,6 +148,8 @@ spec:
               value: /etc/swh/config.yml
             - name: NB_PROCESSES
               value: {{ $config.nbProcesses | quote }}
+            - name: NB_WORKERS
+              value: {{ $config.nbWorkers | quote }}
             - name: LOG_LEVEL
               value: {{ $logLevel }}
             - name: GRAPH_CHECK_FLAVOR

@@ -60,6 +60,7 @@ data:
     # - GRAPH_MOUNTPOINT
     # - GRAPH_DATASET_NAME
     # - NB_PROCESSES
+    # - NB_WORKERS
     # - LOG_LEVEL
     # - AWS_SECRET_ACCESS_KEY (when PUBLISH is set)
     # - AWS_ACCESS_KEY_ID (when PUBLISH is set)
@@ -86,6 +87,8 @@ data:
       echo "<GRAPH_DATASET_NAME> env variable must be set" && exit 1
     [ -z "${NB_PROCESSES}" ] && \
       echo "<NB_PROCESSES> env variable must be set" && exit 1
+    [ -z "${NB_WORKERS}" ] && \
+      echo "<NB_WORKERS> env variable must be set" && exit 1
     [ -z "${LOG_LEVEL}" ] && \
       echo "<LOG_LEVEL> env variable must be set" && exit 1
 
@@ -135,6 +138,7 @@ data:
           "${EXTRA_CLI_FLAGS[@]}" \
           ${graph_generation_task} \
           -- \
+          --workers ${NB_WORKERS} \
           --scheduler-url "${LUIGI_SCHEDULER_URL}" \
           --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
           --LocalExport-export-task-type ExportGraph \
