@@ -94,9 +94,9 @@ data:
 
     # The default luigi task to generate the compressed graph
     graph_generation_task=CompressGraph
+    format="orc"
 
     EXTRA_CLI_FLAGS=()
-    EXTRA_PUBLISH_CLI_FLAGS=()
     EXTRA_SUBCMD_FLAGS=()
 
     if [ -n "${BATCH_SIZE}" ]; then
@@ -116,12 +116,12 @@ data:
         echo "<AWS_ACCESS_KEY_ID> env variable must be set" && exit 1
 
       # Add extra cli flags for the s3 publication
-      EXTRA_PUBLISH_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
-      EXTRA_PUBLISH_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
-      EXTRA_PUBLISH_CLI_FLAGS+=('--athena-prefix' "swh")
+      EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
+      EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
+      EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
 
       # Add some extra sub command flags (require the export to be in orc)
-      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc")
+      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "${format}")
 
       # Finally, we override the default luigi task to upload the orc files and the
       # compressed graph dataset to s3 (this will trigger the compressed graph
@@ -129,43 +129,46 @@ data:
       graph_generation_task=UploadExportAndCompressedGraphToS3
     fi
 
+    # Execute the pipeline with some specific arguments
+    function execute_pipeline {
+      # Luigi task is passed
+      luigi_task=$1
+      # Number of workers issued from NB_WORKERS
+      if [ "${luigi_task}" = "ExportGraph" ]; then
+        # except for the nb_wo
+        nb_workers=1
+      else
+        nb_workers=${NB_WORKERS}
+      fi
+
+      /opt/swh/entrypoint.sh \
+         swh datasets luigi \
+            --dataset-name "${GRAPH_DATASET_NAME}" \
+            --base-directory "${GRAPH_MOUNTPOINT}" \
+            "${EXTRA_CLI_FLAGS[@]}" \
+            "${EXTRA_PUBLISH_CLI_FLAGS[@]}" \
+            "${luigi_task}" \
+            -- \
+            --workers ${nb_workers} \
+            --scheduler-url "${LUIGI_SCHEDULER_URL}" \
+            --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
+            --ExportGraph-formats "${format}" \
+            --LocalExport-export-task-type ExportGraph \
+            --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
+            --ExportGraph-process "${NB_PROCESSES}" \
+            --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
+            "${EXTRA_SUBCMD_FLAGS[@]}" \
+            --log-level "${LOG_LEVEL}"
+    }
+
     set -x
 
     # 1. First trigger the graph export from kafka topics (only 1 worker to avoid
     # hard-to-track buggy behavior with multiple workers)
-    /opt/swh/entrypoint.sh \
-       swh datasets luigi \
-          --dataset-name "${GRAPH_DATASET_NAME}" \
-          --base-directory "${GRAPH_MOUNTPOINT}" \
-          "${EXTRA CLI_FLAGS[@]}" \
-          ExportGraph \
-          -- \
-          --workers 1 \
-          --scheduler-url "${LUIGI_SCHEDULER_URL}" \
-          --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
-          --LocalExport-export-task-type ExportGraph \
-          --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
-          --ExportGraph-process "${NB_PROCESSES}" \
-          --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
-          --log-level "${LOG_LEVEL}"
+    # https://gitlab.softwareheritage.org/swh/devel/swh-export/-/issues/4765
+    execute_pipeline ExportGraph
 
     # 2. Trigger compressed graph dataset generation (with s3 publication if enabled)
-    /opt/swh/entrypoint.sh \
-       swh datasets luigi \
-          --dataset-name "${GRAPH_DATASET_NAME}" \
-          --base-directory "${GRAPH_MOUNTPOINT}" \
-          "${EXTRA_CLI_FLAGS[@]}" \
-          "${EXTRA_PUBLISH_CLI_FLAGS[@]}" \
-          ${graph_generation_task} \
-          -- \
-          --workers ${NB_WORKERS} \
-          --scheduler-url "${LUIGI_SCHEDULER_URL}" \
-          --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
-          --LocalExport-export-task-type ExportGraph \
-          --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
-          --ExportGraph-process "${NB_PROCESSES}" \
-          --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
-          "${EXTRA_SUBCMD_FLAGS[@]}" \
-          --log-level "${LOG_LEVEL}"
+    execute_pipeline ${graph_generation_task}
 
 {{ end }}
