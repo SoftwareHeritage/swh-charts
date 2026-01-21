@@ -96,6 +96,7 @@ data:
     graph_generation_task=CompressGraph
 
     EXTRA_CLI_FLAGS=()
+    EXTRA_PUBLISH_CLI_FLAGS=()
     EXTRA_SUBCMD_FLAGS=()
 
     if [ -n "${BATCH_SIZE}" ]; then
@@ -115,9 +116,9 @@ data:
         echo "<AWS_ACCESS_KEY_ID> env variable must be set" && exit 1
 
       # Add extra cli flags for the s3 publication
-      EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
-      EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
-      EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
+      EXTRA_PUBLISH_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
+      EXTRA_PUBLISH_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
+      EXTRA_PUBLISH_CLI_FLAGS+=('--athena-prefix' "swh")
 
       # Add some extra sub command flags (require the export to be in orc)
       EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "orc")
@@ -130,12 +131,31 @@ data:
 
     set -x
 
-    # Trigger the compressed graph dataset (and publish to s3 if publication enabled)
+    # 1. First trigger the graph export from kafka topics (only 1 worker to avoid
+    # hard-to-track buggy behavior with multiple workers)
+    /opt/swh/entrypoint.sh \
+       swh datasets luigi \
+          --dataset-name "${GRAPH_DATASET_NAME}" \
+          --base-directory "${GRAPH_MOUNTPOINT}" \
+          "${EXTRA CLI_FLAGS[@]}" \
+          ExportGraph \
+          -- \
+          --workers 1 \
+          --scheduler-url "${LUIGI_SCHEDULER_URL}" \
+          --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
+          --LocalExport-export-task-type ExportGraph \
+          --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
+          --ExportGraph-process "${NB_PROCESSES}" \
+          --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
+          --log-level "${LOG_LEVEL}"
+
+    # 2. Trigger compressed graph dataset generation (with s3 publication if enabled)
     /opt/swh/entrypoint.sh \
        swh datasets luigi \
           --dataset-name "${GRAPH_DATASET_NAME}" \
           --base-directory "${GRAPH_MOUNTPOINT}" \
           "${EXTRA_CLI_FLAGS[@]}" \
+          "${EXTRA_PUBLISH_CLI_FLAGS[@]}" \
           ${graph_generation_task} \
           -- \
           --workers ${NB_WORKERS} \
