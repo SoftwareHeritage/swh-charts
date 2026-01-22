@@ -11,6 +11,7 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BIN_DIR="${SCRIPT_DIR}/../bin"
 
 ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
@@ -71,8 +72,8 @@ execute_or_skip ${KUBECTL_VSO} create secret tls shared-ca --namespace cert-mana
   --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
 execute_or_skip ${KUBECTL_VSO} create secret tls shared-ca --namespace "${NS_VSO}" \
   --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-execute_or_skip ${KUBECTL_VSO} create configmap  --namespace "${NS_VSO}" shared-ca \
-  --from-file=ca.crt=$CA_CERT_FILECRT
+execute_or_skip ${KUBECTL_VSO} create configmap shared-ca  \
+  --namespace "${NS_VSO}" --from-file=ca.crt=$CA_CERT_FILECRT
 
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
@@ -98,8 +99,12 @@ spec:
     kind: ClusterIssuer
 EOF
 
-# TODO copy vso-tls-secret secret into vso & default namespaces, temporary workaround
-# obviously
+${KUBECTL_VSO} wait certificate vso-tls-cert --for=condition=Ready --timeout=60s
+
+# TODO copy vso-tls-secret secret into vso & default namespaces, temporary workaround obviously
+execute_or_skip ${KUBECTL_VSO} delete secret vso-tls-secret -n "${NS_VSO}"
+${KUBECTL_VSO} get secret vso-tls-secret -o yaml | sed 's/namespace: default/namespace: vso/' | ${KUBECTL_VSO} apply -f -
+
 install_or_skip ingress-nginx ingress-nginx/ingress-nginx \
   --namespace ingress-nginx \
   --set "controller.defaultTLS.secret=default/vso-tls-secret"
@@ -204,6 +209,7 @@ EOF
 # Define a service account token secret that is used by openbao to authenticate to
 # Kubernetes.
 SERVICE_ACCOUNT_NAME_SECRET=${SERVICE_ACCOUNT_NAME}-secret
+execute_or_skip ${KUBECTL_VSO} delete secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}"
 
 ${KUBECTL_VSO} apply -f - <<EOF
 apiVersion: v1
@@ -216,6 +222,8 @@ metadata:
     kubernetes.io/service-account.hostname: ${VSO_INGRESS_HOSTNAME}
 type: kubernetes.io/service-account-token
 EOF
+
+${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n ingress-nginx
 
 ${KUBECTL_VSO} apply -f - <<EOF
 ---
@@ -245,20 +253,42 @@ spec:
     secretName: vso-tls-secret
 EOF
 
-KUBERNETES_CA_FILENAME="demo-ca.crt"
-KUBERNETES_CA_FILE="${TEMP_DIR}/${KUBERNETES_CA_FILENAME}"
+#VSO_TLS_CA_CRT_FILE="${TEMP_DIR}/vso-ca.crt"
+#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['ca\.crt']}" | base64 --decode > "${VSO_TLS_CA_CRT_FILE}"
+#
+#VSO_TLS_CRT_FILE="${TEMP_DIR}/vso-tls.crt"
+#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode > "${VSO_TLS_CRT_FILE}"
+#
+#VSO_TLS_KEY_FILE="${TEMP_DIR}/vso-tls.key"
+#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.key']}" | base64 --decode > "${VSO_TLS_KEY_FILE}"
+#
+#${KUBECTL_VSO} create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
+#  --bound-object-kind Secret \
+#  --bound-object-name default-secret \
+#  --certificate-authority "${VSO_TLS_CA_CRT_FILE}" \
+#  --client-certificate "${VSO_TLS_CRT_FILE}" \
+#  --client-key "${VSO_TLS_KEY_FILE}"
+#
+#echo "Stop now"
+#exit 1
 
-#KUBERNETES_CA=$(${KUBECTL_VSO} get secret vso-tls-secret \
-#                               -o jsonpath="{.data['tls\.crt']}" | base64 --decode)
-##SA_TOKEN=$(${KUBECTL_VSO} get secret ${SERVICE_ACCOUNT_NAME_SECRET} -n ${NS_APP} \
-##                               -o jsonpath="{.data.token}" | base64 --decode)
+TLS_CRT_FILENAME="tls.crt"
+TLS_CRT_FILE="${TEMP_DIR}/${TLS_CRT_FILENAME}"
 
-KUBERNETES_CA=$(${KUBECTL_VSO} get secret sa-token -n app \
-                               -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
-SA_TOKEN=$(${KUBECTL_VSO} get secret sa-token -n app \
-                               -o jsonpath="{.data.token}" | base64 --decode)
+CA_CRT_FILENAME="ca.crt"
+CA_CRT_FILE="${TEMP_DIR}/${CA_CRT_FILENAME}"
 
-echo "${KUBERNETES_CA}" > "${KUBERNETES_CA_FILE}"
+${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode | tee "${TLS_CRT_FILE}"
+echo "TLS_CRT_FILE: $(cat ${TLS_CRT_FILE})"
+
+${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data['ca\.crt']}" | base64 --decode | tee "${CA_CRT_FILE}"
+echo "CA_CRT_FILE: $(cat ${CA_CRT_FILE})"
+
+SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
+echo "SA_TOKEN: ${SA_TOKEN}"
+
+SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
+echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
 
 POD_SCRIPT_FILENAME="configure-bao.sh"
 POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
@@ -276,15 +306,32 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
   use_annotations_as_alias_metadata=true \
   disable_local_ca_jwt=true \
-  token_reviewer_jwt="${SA_TOKEN}" \
+  token_reviewer_jwt="${SA_TOKEN_DECODED}" \
   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
-  kubernetes_ca_cert=@"${POD_TEMP_PATH}/${KUBERNETES_CA_FILENAME}"
+  kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
+  pem_keys=@"${POD_TEMP_PATH}/${CA_CRT_FILENAME}"
+#  -ca-cert
+#  -client-cert
+#  -client-key
+
+echo "### Mounted Vault Kubernetes auth config:"
+${POD_VAULT_CMD} read "auth/${MOUNT}/config"
+echo "#########################################"
 
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
+
+echo "### Created Vault policy:"
+${POD_VAULT_CMD} policy read "${POLICY_NAME}"
+echo "#########################"
+
 ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
   bound_service_account_names="${SERVICE_ACCOUNT_NAME}" \
   bound_service_account_namespaces="${NS_APP}" \
   policies="${POLICY_NAME}"
+
+echo "### Created Vault Kubernetes auth role:"
+${POD_VAULT_CMD} read "auth/${MOUNT}/role/${ROLE}"
+echo "#######################################"
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
@@ -294,6 +341,7 @@ POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/nam
 POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
 
 $KUBECTL_OPENBAO cp "${POLICY_FILE}" "${POD_DEST_PATH}"
-$KUBECTL_OPENBAO cp "${KUBERNETES_CA_FILE}" "${POD_DEST_PATH}"
+$KUBECTL_OPENBAO cp "${TLS_CRT_FILE}" "${POD_DEST_PATH}"
+$KUBECTL_OPENBAO cp "${CA_CRT_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"

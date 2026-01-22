@@ -11,6 +11,7 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BIN_DIR="${SCRIPT_DIR}/../bin"
 
 ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
