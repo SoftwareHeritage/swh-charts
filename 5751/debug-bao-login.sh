@@ -29,7 +29,6 @@ fi
 # fi
 SA_SECRET=default-secret
 SA_JWT=$($KUBECTL_VSO -n "${NS_APP}" get secret "${SA_SECRET}" -o jsonpath='{.data.token}' | base64 --decode)
-# SA_JWT=$($KUBECTL_OPENBAO -n "${NS_APP}" get secret "${SA_SECRET}" -o jsonpath='{.data.token}' | base64 --decode)
 
 # echo $SA_JWT
 # echo $ROLE
