@@ -27,9 +27,10 @@ fi
 #   echo "Could not find a secret for ServiceAccount ${SERVICE_ACCOUNT_NAME} in ${NS_APP}"
 #   exit 1
 # fi
-#SA_SECRET=default-secret
-#SA_JWT=$($KUBECTL_VSO -n "${NS_APP}" get secret "${SA_SECRET}" -o jsonpath='{.data.token}' | base64 --decode)
-SA_JWT="eyJhbGciOiJSUzI1NiIsImtpZCI6Im1UeG1BVnZ6RnNuaUJWTjF5MTE0N3NaNmNxdlBPREFFZ3FSWnZocU0xUkEifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJhcHAiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiZGVmYXVsdC1zZWNyZXQiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImMzYmRjZjNmLTRjNWUtNDQyZi05ZWMzLWI0ZDQ1MDg2YWU1NSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDphcHA6ZGVmYXVsdCJ9.DQ1L4_n0A1S2kSvxoqjTrkwbNk8TkNemPdTkbZSUwUYhHCcK-fIN2b9L3Qpr066JpbNETccyiFCPAT5Pyvhio6qbu1dfNCig2X7zYHkiDzrK9GWdEDfropAXdCQZ7fmHNQknONYcieRseTRPJtHT8r1Bsh2CUOVh6KCX40HXfCPHcLxViqAZgT7vCIdqc3lWfjuhQjqDKk4FFf1Dy5wbUZ8smC1KbMdi5uCQrx6m1buTZo_ML6frytM7orCeua8xXjHXRitiBfLRnhJ0X6ZMvMX4klbowmv2Gmk5QTxDPFRzinQoW3pgQ8WZmezIJIkzneMkm-QZ-7FeNKDlAj0zOQ"
+SA_SECRET=default-secret
+SA_JWT=$($KUBECTL_VSO -n "${NS_APP}" get secret "${SA_SECRET}" -o jsonpath='{.data.token}' | base64 --decode)
+# SA_JWT=$($KUBECTL_OPENBAO -n "${NS_APP}" get secret "${SA_SECRET}" -o jsonpath='{.data.token}' | base64 --decode)
+
 # echo $SA_JWT
 # echo $ROLE
 
@@ -53,8 +54,8 @@ echo "Sending request to ${URL}"
 echo "Payload:"
 cat "${PAYLOAD_FILE}" | jq .
 
-# Use curl – show request/response details
-curl -i -s -X PUT "${URL}" \
+# Use curl - show request/response details
+curl -i -X POST "${URL}" \
   -H "Content-Type: application/json" \
   --cacert "${CA_CERT_FILECRT}" \
   -d @"${PAYLOAD_FILE}"
