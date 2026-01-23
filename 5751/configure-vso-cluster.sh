@@ -190,12 +190,17 @@ execute_or_skip ${KUBECTL_VSO} create clusterrolebinding "${CLUSTER_ROLE_BINDING
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
 cat > "${POLICY_FILE}" << EOF
-path "${MOUNT}/data/*" {
-  capabilities = ["list", "read"]
+
+path "auth/${MOUNT}/login" {
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
 
-path "${MOUNT}/metadata/*" {
-  capabilities = ["list", "read"]
+path "${MOUNT}/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+
+path "${MOUNT}/login" {
+  capabilities = ["create", "read", "update", "delete", "list"]
 }
 EOF
 
@@ -203,17 +208,20 @@ EOF
 # Kubernetes.
 execute_or_skip ${KUBECTL_VSO} delete secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}"
 
-${KUBECTL_VSO} apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${SERVICE_ACCOUNT_NAME_SECRET}
-  namespace: ${NS_APP}
-  annotations:
-    kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
-    kubernetes.io/service-account.hostname: ${VSO_INGRESS_HOSTNAME}
-type: kubernetes.io/service-account-token
-EOF
+# TODO: Drop completely the secret type service-account-token as it's definitely not
+# working. The jwt token generated hardcodes an irrelevant issuer from the kubernetes
+# `kubeapi` (kubernetes/serviceaccount while it should use the `
+# --service-account-issuer=https://kubernetes.default.svc.cluster.local`
+# ${KUBECTL_VSO} apply -f - <<EOF
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: ${SERVICE_ACCOUNT_NAME_SECRET}
+#   namespace: ${NS_APP}
+#   annotations:
+#     kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
+# type: kubernetes.io/service-account-token
+# EOF
 
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n ingress-nginx
 
@@ -270,7 +278,8 @@ TLS_CRT_FILE="${TEMP_DIR}/${TLS_CRT_FILENAME}"
 SA_PUB_FILENAME="sa.pub"
 SA_PUB_FILE="${TEMP_DIR}/${SA_PUB_FILENAME}"
 # TODO temporary workaround (sa.pub comes from docker cp local-cluster-vso-control-plane:/etc/kubernetes/pki/sa.pub).
-cp "${SCRIPT_DIR}/sa.pub" "${SA_PUB_FILE}"
+set -x
+cp -v "${SCRIPT_DIR}/sa.pub" "${SA_PUB_FILE}"
 
 CA_CRT_FILENAME="ca.crt"
 CA_CRT_FILE="${TEMP_DIR}/${CA_CRT_FILENAME}"
@@ -281,11 +290,63 @@ echo "TLS_CRT_FILE: $(cat ${TLS_CRT_FILE})"
 ${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data['ca\.crt']}" | base64 --decode | tee "${CA_CRT_FILE}"
 echo "CA_CRT_FILE: $(cat ${CA_CRT_FILE})"
 
-SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
-echo "SA_TOKEN: ${SA_TOKEN}"
+# SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
+# echo "SA_TOKEN: ${SA_TOKEN}"
 
-SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
+# SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
+# echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
+
+TOKEN_TTL=1h
+AUDIENCE="https://kubernetes.default.svc.cluster.local"
+
+TOKEN_GENERATED_FILE=${TEMP_DIR}/token-request.yaml
+
+# TODO: Require a token from openbao instead?
+
+$KUBECTL_VSO create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
+  --audience $AUDIENCE \
+  --duration $TOKEN_TTL \
+  -o jsonpath='{.status.token}' > "${TOKEN_GENERATED_FILE}"
+
+SA_TOKEN_DECODED=$(cat "${TOKEN_GENERATED_FILE}")
 echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
+
+set -x
+
+$KUBECTL_VSO create secret generic "${SERVICE_ACCOUNT_NAME_SECRET}" \
+  --namespace "${NS_APP}" \
+  --from-file=sa.pub="${SA_PUB_FILE}" \
+  --from-literal=token="${SA_TOKEN_DECODED}"
+
+# # Create secret with the token generated so we can use it in other parts
+# $KUBECTL_VSO apply -f - <<EOF
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: ${SERVICE_ACCOUNT_NAME_SECRET}
+#   namespace: ${NS_APP}
+# type: kubernetes.io/tls
+# stringData:
+#   sa.pub: $(cat $SA_PUB_FILE | base64 -w0)
+#   token: ${SA_TOKEN_DECODED}
+# EOF
+
+# Make it readable a bit
+JWT_JSON=$(echo "$SA_TOKEN_DECODED" | cut -d. -f2 | base64 -d 2>/dev/null | jq .)
+echo "jwt payload: $(echo $JWT_JSON | jq .)"
+
+# Retrieve the jwt token issuer
+#ISSUER=$($KUBECTL_VSO get --raw /.well-known/openid-configuration | jq -r .issuer)
+ISSUER=$(echo $JWT_JSON | jq .iss | tr -d '"')
+echo "Token Issuer: ${ISSUER}"
+
+# validation test -> does not work somehow
+# curl -H "Authorization: Bearer ${SA_TOKEN_DECODED}" \
+#      --cacert "${CA_CERT_FILECRT}" \
+#      https://${VSO_INGRESS_HOSTNAME}/api/v1/pods
+
+# TODO: How to attach this generated token to the service account?
 
 POD_SCRIPT_FILENAME="configure-bao.sh"
 POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
@@ -306,8 +367,24 @@ ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
-  issuer="kubernetes/serviceaccount" \
+  issuer="${ISSUER}" \
   disable_iss_validation=false
+
+# Deactivate "iss"uer validation when using service-account-token secret as there is an
+# inconsistent behavior in kind(kubernetes?) regarding the issuer set in the generated
+# service-account-token jwt. The kubeapi is set to use
+# 'https://kubernetes.default.svc.cluster.local' but the jwt
+# token when decoded has an iss set to kubernetes/serviceaccount which makes the
+# openbao/vault-secret-operators refuse to communicate properly... (between the hammer
+# and the anvil kind of situation)
+
+# ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
+#   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
+#   disable_local_ca_jwt=true \
+#   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
+#   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
+#   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
+#   disable_iss_validation=true
 
 echo "### Mounted Vault Kubernetes auth config:"
 ${POD_VAULT_CMD} read "auth/${MOUNT}/config"
@@ -322,7 +399,8 @@ echo "#########################"
 ${POD_VAULT_CMD} write "auth/${MOUNT}/role/${ROLE}" \
   bound_service_account_names="${SERVICE_ACCOUNT_NAME}" \
   bound_service_account_namespaces="${NS_APP}" \
-  policies="${POLICY_NAME}"
+  policies="${POLICY_NAME}" \
+  audience="${AUDIENCE}"
 
 echo "### Created Vault Kubernetes auth role:"
 ${POD_VAULT_CMD} read "auth/${MOUNT}/role/${ROLE}"
