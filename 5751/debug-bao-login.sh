@@ -55,7 +55,7 @@ echo "Payload:"
 cat "${PAYLOAD_FILE}" | jq .
 
 # Use curl - show request/response details
-curl -i -X POST "${URL}" \
+curl -i -X PUT "${URL}" \
   -H "Content-Type: application/json" \
   --cacert "${CA_CERT_FILECRT}" \
   -d @"${PAYLOAD_FILE}"

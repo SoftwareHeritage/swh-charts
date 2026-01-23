@@ -8,7 +8,7 @@
 set -xe
 
 TEMP_DIR=$(mktemp -d)
-trap "rm -rf ${TEMP_DIR}" EXIT
+#trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -267,6 +267,11 @@ EOF
 TLS_CRT_FILENAME="tls.crt"
 TLS_CRT_FILE="${TEMP_DIR}/${TLS_CRT_FILENAME}"
 
+SA_PUB_FILENAME="sa.pub"
+SA_PUB_FILE="${TEMP_DIR}/${SA_PUB_FILENAME}"
+# TODO temporary workaround (sa.pub comes from docker cp local-cluster-vso-control-plane:/etc/kubernetes/pki/sa.pub).
+cp "${SCRIPT_DIR}/sa.pub" "${SA_PUB_FILE}"
+
 CA_CRT_FILENAME="ca.crt"
 CA_CRT_FILE="${TEMP_DIR}/${CA_CRT_FILENAME}"
 
@@ -296,15 +301,13 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 # read CA cert content and replace line breaks with \n
 # see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
 ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
-  use_annotations_as_alias_metadata=true \
+  kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
   disable_local_ca_jwt=true \
   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
-  kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
+  pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
-  pem_keys=@"${POD_TEMP_PATH}/${CA_CRT_FILENAME}"
-#  -ca-cert
-#  -client-cert
-#  -client-key
+  issuer="kubernetes/serviceaccount" \
+  disable_iss_validation=false
 
 echo "### Mounted Vault Kubernetes auth config:"
 ${POD_VAULT_CMD} read "auth/${MOUNT}/config"
@@ -335,5 +338,6 @@ POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
 $KUBECTL_OPENBAO cp "${POLICY_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO cp "${TLS_CRT_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO cp "${CA_CRT_FILE}" "${POD_DEST_PATH}"
+$KUBECTL_OPENBAO cp "${SA_PUB_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
 $KUBECTL_OPENBAO exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
