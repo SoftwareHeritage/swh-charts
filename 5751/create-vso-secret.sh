@@ -17,21 +17,14 @@ if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
 fi
 
-VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
-
-STATIC_SECRET_NAME="demo-static-secret"
-OPENBAO_SECRET_PATH="demo-app/config"
-K8S_SECRET_NAME="demo-secret"
-
-STATIC_SECRET_FILENAME="${STATIC_SECRET_NAME}.yaml"
 STATIC_SECRET_FILE="${TEMP_DIR}/${STATIC_SECRET_FILENAME}"
 cat > "${STATIC_SECRET_FILE}" << EOF
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultStaticSecret
 metadata:
-  namespace: ${NS_APP}
   name: ${STATIC_SECRET_NAME}
+  namespace: ${NS_APP}
 spec:
   vaultAuthRef: ${VAULT_AUTH_NAME}
   mount: ${MOUNT}

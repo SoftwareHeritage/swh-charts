@@ -11,7 +11,6 @@ TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BIN_DIR="${SCRIPT_DIR}/../bin"
 
 ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
@@ -162,21 +161,15 @@ install_or_skip vault-secrets-operator hashicorp/vault-secrets-operator \
   --namespace "${NS_VSO}" \
   --values "${VSO_VALUES_FILE}"
 
-VAULT_AUTH_NAME="auth-${CLUSTER_NAME_VSO}"
-
-MOUNT="mount-${CLUSTER_NAME_VSO}"
-POLICY_NAME="policy-${CLUSTER_NAME_VSO}"
-CLUSTER_ROLE_BINDING_NAME="auth-delegator"
-
-VAULT_AUTH_FILENAME="auth-${VAULT_AUTH_NAME}.yaml"
+VAULT_AUTH_FILENAME="${VAULT_AUTH_NAME}.yaml"
 VAULT_AUTH_FILE="${TEMP_DIR}/${VAULT_AUTH_FILENAME}"
 cat > "${VAULT_AUTH_FILE}" << EOF
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  namespace: ${NS_APP}
   name: ${VAULT_AUTH_NAME}
+  namespace: ${NS_APP}
 spec:
   method: kubernetes
   mount: ${MOUNT}
@@ -208,7 +201,6 @@ EOF
 
 # Define a service account token secret that is used by openbao to authenticate to
 # Kubernetes.
-SERVICE_ACCOUNT_NAME_SECRET=${SERVICE_ACCOUNT_NAME}-secret
 execute_or_skip ${KUBECTL_VSO} delete secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}"
 
 ${KUBECTL_VSO} apply -f - <<EOF
