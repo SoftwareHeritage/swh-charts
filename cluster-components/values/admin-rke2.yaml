@@ -159,14 +159,9 @@ cloudnativePg:
         schedule: "0 5 10 * * *"
 
 renovate:
-  enabled: true
-  # Nom du Secret Kubernetes contenant les variables sensibles
+  enabled: false
+  # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-env
   gitlab:
-    # URL du staging
+    # Gitlab endpoint
     endpoint: https://gitlab-staging.swh.network/api/v4
-
-    # Regex de filtrage des repos
-    # "^swh/" → tous les repos du groupe swhde
-    # à voir si necessaire et à activer
-    #autodiscoverFilter: "^swh/"
