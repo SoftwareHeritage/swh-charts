@@ -34,8 +34,15 @@ cloudnativePg:
 netbox:
   enabled: true
   config:
+    ## @param replicaCount Number of replicas to deploy
+    ## NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
+    replicaCount: 1
     global:
+      # Global StorageClass for Persistent Volume(s)
       storageClass: cephfs
+    persistence:
+      # To adapt to ReadWriteMany if replicaCount > 1
+      accessMode: ReadWriteOnce
     valkey:
       enabled: false
     postgresql:
