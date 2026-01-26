@@ -208,22 +208,6 @@ EOF
 # Kubernetes.
 execute_or_skip ${KUBECTL_VSO} delete secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}"
 
-# Note: the secret type service-account-token is definitely not working. The jwt token
-# generated hardcodes an irrelevant issuer from the kubernetes `kubeapi`
-# (`kubernetes/serviceaccount` while it should use the `
-# --service-account-issuer=https://kubernetes.default.svc.cluster.local` which is the
-# value configured for the kubeapi
-${KUBECTL_VSO} apply -f - <<EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${SERVICE_ACCOUNT_NAME_SECRET}
-  namespace: ${NS_APP}
-  annotations:
-    kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
-type: kubernetes.io/service-account-token
-EOF
-
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n ingress-nginx
 
 ${KUBECTL_VSO} apply -f - <<EOF
@@ -254,31 +238,13 @@ spec:
     secretName: vso-tls-secret
 EOF
 
-#VSO_TLS_CA_CRT_FILE="${TEMP_DIR}/vso-ca.crt"
-#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['ca\.crt']}" | base64 --decode > "${VSO_TLS_CA_CRT_FILE}"
-#
-#VSO_TLS_CRT_FILE="${TEMP_DIR}/vso-tls.crt"
-#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode > "${VSO_TLS_CRT_FILE}"
-#
-#VSO_TLS_KEY_FILE="${TEMP_DIR}/vso-tls.key"
-#${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.key']}" | base64 --decode > "${VSO_TLS_KEY_FILE}"
-#
-#${KUBECTL_VSO} create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
-#  --bound-object-kind Secret \
-#  --bound-object-name default-secret \
-#  --certificate-authority "${VSO_TLS_CA_CRT_FILE}" \
-#  --client-certificate "${VSO_TLS_CRT_FILE}" \
-#  --client-key "${VSO_TLS_KEY_FILE}"
-#
-#echo "Stop now"
-#exit 1
-
 TLS_CRT_FILENAME="tls.crt"
 TLS_CRT_FILE="${TEMP_DIR}/${TLS_CRT_FILENAME}"
 
 SA_PUB_FILENAME="sa.pub"
 SA_PUB_FILE="${TEMP_DIR}/${SA_PUB_FILENAME}"
 CONTROL_PLANE_NODE="local-cluster-${CLUSTER_NAME_VSO}-control-plane"
+
 # (workaround) Retrieve sa.pub from the control plane node
 docker cp "${CONTROL_PLANE_NODE}:/etc/kubernetes/pki/${SA_PUB_FILENAME}" "${SA_PUB_FILE}"
 # Copy locally to help
@@ -287,68 +253,50 @@ docker cp "${CONTROL_PLANE_NODE}:/etc/kubernetes/pki/${SA_PUB_FILENAME}" "${SA_P
 CA_CRT_FILENAME="ca.crt"
 CA_CRT_FILE="${TEMP_DIR}/${CA_CRT_FILENAME}"
 
+# (workaround) Retrieve ca.crt from the control plane node
+docker cp "${CONTROL_PLANE_NODE}:/etc/kubernetes/pki/ca.crt" "${CA_CRT_FILE}"
+
+echo "### CA_CRT_FILE (from control plane node file):"
+cat "${CA_CRT_FILE}"
+
 ${KUBECTL_VSO} get secret vso-tls-secret -o jsonpath="{.data['tls\.crt']}" | base64 --decode | tee "${TLS_CRT_FILE}"
-echo "TLS_CRT_FILE: $(cat ${TLS_CRT_FILE})"
+echo "### TLS_CRT_FILE (from secret): $(cat ${TLS_CRT_FILE})"
 
-${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data['ca\.crt']}" | base64 --decode | tee "${CA_CRT_FILE}"
-echo "CA_CRT_FILE: $(cat ${CA_CRT_FILE})"
+TOKEN_TTL=1h
+AUDIENCE="https://kubernetes.default.svc.cluster.local"
+TOKEN_GENERATED_FILE=${TEMP_DIR}/token-request.yaml
 
-SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
-echo "SA_TOKEN: ${SA_TOKEN}"
+# TODO: Require a token from openbao instead?
 
-SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
+$KUBECTL_VSO create token "${SERVICE_ACCOUNT_NAME}" \
+  --namespace "${NS_APP}" \
+  --audience $AUDIENCE \
+  --duration $TOKEN_TTL \
+  -o jsonpath='{.status.token}' > "${TOKEN_GENERATED_FILE}"
+
+SA_TOKEN_DECODED=$(cat "${TOKEN_GENERATED_FILE}")
 echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
 
-# TOKEN_TTL=1h
-# AUDIENCE="https://kubernetes.default.svc.cluster.local"
+$KUBECTL_VSO create secret generic "${SERVICE_ACCOUNT_NAME_SECRET}" \
+  --namespace "${NS_APP}" \
+  --from-file=ca.crt=${CA_CRT_FILE} \
+  --from-literal=namespace="${NS_APP}" \
+  --from-literal=token="${SA_TOKEN_DECODED}"
 
-# TOKEN_GENERATED_FILE=${TEMP_DIR}/token-request.yaml
+# For debug purposes
+echo "ca.crt (from secret):"
+echo $(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data['ca\.crt']}" | base64 --decode)
 
-# # TODO: Require a token from openbao instead?
-
-# $KUBECTL_VSO create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
-#   --audience $AUDIENCE \
-#   --duration $TOKEN_TTL \
-#   -o jsonpath='{.status.token}' > "${TOKEN_GENERATED_FILE}"
-
-# SA_TOKEN_DECODED=$(cat "${TOKEN_GENERATED_FILE}")
-# echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
-
-# set -x
-
-# $KUBECTL_VSO create secret generic "${SERVICE_ACCOUNT_NAME_SECRET}" \
-#   --namespace "${NS_APP}" \
-#   --from-file=sa.pub="${SA_PUB_FILE}" \
-#   --from-literal=token="${SA_TOKEN_DECODED}"
-
-# # Create secret with the token generated so we can use it in other parts
-# $KUBECTL_VSO apply -f - <<EOF
-# ---
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: ${SERVICE_ACCOUNT_NAME_SECRET}
-#   namespace: ${NS_APP}
-# type: kubernetes.io/tls
-# stringData:
-#   sa.pub: $(cat $SA_PUB_FILE | base64 -w0)
-#   token: ${SA_TOKEN_DECODED}
-# EOF
+echo "token (from secret):"
+echo $(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}" | base64 --decode)
 
 # Make it readable a bit
 JWT_JSON=$(echo "$SA_TOKEN_DECODED" | cut -d. -f2 | base64 -d 2>/dev/null | jq .)
 echo "jwt payload: $(echo $JWT_JSON | jq .)"
 
 # Retrieve the jwt token issuer
-#ISSUER=$($KUBECTL_VSO get --raw /.well-known/openid-configuration | jq -r .issuer)
-ISSUER="kubernetes/serviceacccount"
-# ISSUER=$(echo $JWT_JSON | jq .iss | tr -d '"')
+ISSUER=$(echo $JWT_JSON | jq -r .iss)
 echo "Token Issuer: ${ISSUER}"
-
-# validation test -> does not work somehow
-# curl -H "Authorization: Bearer ${SA_TOKEN_DECODED}" \
-#      --cacert "${CA_CERT_FILECRT}" \
-#      https://${VSO_INGRESS_HOSTNAME}/api/v1/pods
 
 # TODO: How to attach this generated token to the service account?
 
@@ -363,32 +311,14 @@ ${POD_VAULT_CMD} secrets list | grep "${MOUNT}/" || \
 ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
   ${POD_VAULT_CMD} auth enable -path "${MOUNT}" kubernetes
 
-# read CA cert content and replace line breaks with \n
-# see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
-# ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
-#   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
-#   disable_local_ca_jwt=true \
-#   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
-#   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
-#   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
-#   issuer="${ISSUER}" \
-#   disable_iss_validation=false
-
-# Deactivate "iss"uer validation when using service-account-token secret as there is an
-# inconsistent behavior in kind(kubernetes?) regarding the issuer set in the generated
-# service-account-token jwt. The kubeapi is set to use
-# 'https://kubernetes.default.svc.cluster.local' but the jwt
-# token when decoded has an iss set to kubernetes/serviceaccount which makes the
-# openbao/vault-secret-operators refuse to communicate properly... (between the hammer
-# and the anvil kind of situation)
-
 ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
+  disable_local_ca_jwt=true \
   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
-  disable_local_ca_jwt=true \
-  disable_iss_validation=true
+  issuer="${ISSUER}" \
+  disable_iss_validation=false
 
 echo "### Mounted Vault Kubernetes auth config:"
 ${POD_VAULT_CMD} read "auth/${MOUNT}/config"
