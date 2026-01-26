@@ -35,7 +35,7 @@ netbox:
   enabled: true
   config:
     global:
-      storageClass: local-persistent
+      storageClass: cephfs
     postgresql:
       enabled: false
     externalDatabase:
