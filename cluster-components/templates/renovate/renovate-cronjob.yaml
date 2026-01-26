@@ -9,12 +9,12 @@ metadata:
     app.kubernetes.io/name: renovate
     app.kubernetes.io/instance: {{ $appName }}
 spec:
-  # Fréquence d’exécution (à weekly par défaut)
+  # Execution frequency (default: weekly)
   schedule: {{ .Values.renovate.schedule | quote }}
 
-  # Empêche deux exécutions simultanées
+  # Prevents two simultaneous executions
   concurrencyPolicy: Forbid
-  # Historique des jobs
+  # Jobs history
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3
 
@@ -33,44 +33,44 @@ spec:
               image: {{ .Values.renovate.image.repository }}:{{ .Values.renovate.image.tag }}
               imagePullPolicy: IfNotPresent
 
-              # Les variables d’environnement
+              # Environment variables
               env:
-                # Niveau de logs
+                # Logs levels
                 - name: RENOVATE_LOG_LEVEL
                   value: {{ .Values.renovate.logLevel | quote }}
 
-                # Plateforme cible (gitlab staging dans notre cas)
+                # Target platform
                 - name: RENOVATE_PLATFORM
                   value: gitlab
 
-                # Endpoint GitLab
+                # GitLab endpoint (URL)
                 - name: RENOVATE_ENDPOINT
                   value: {{ .Values.renovate.gitlab.endpoint | quote }}
 
-                # Auto-discovery des repos (groupes)
+                # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
                   value: "false"
                 
-                # Eviter les MàJ majeur et mineur 
+                # Avoid major and minor updates
                 - name: RENOVATE_SEPARATE_MAJOR_MINOR
                   value: "true"
                 - name: RENOVATE_SEPARATE_MULTIPLE_MAJOR
                   value: "true"
 
-                # Filtre sur les groupes GitLab
+                # Filter on GitLab groups
                 - name: RENOVATE_AUTODISCOVER_FILTER
                   value: {{ .Values.renovate.gitlab.autodiscoverFilter | quote }}
 
-                # Mode non-interactif
+                # no-interactif mode
                 - name: RENOVATE_REQUIRE_CONFIG
                   value: "required"
 
-                # Optimisation
+                # Optimization
                 - name: RENOVATE_ONBOARDING
                   value: "false"
 
               envFrom:
-                # Les Secrets (PAT et licence)
+                # Secrets (PAT and licence)
                 - secretRef:
                     name: {{ .Values.renovate.secretName }}
 
