@@ -44,7 +44,7 @@ netbox:
       # To adapt to ReadWriteMany if replicaCount > 1
       accessMode: ReadWriteOnce
     valkey:
-      enabled: false
+      enabled: true
     postgresql:
       enabled: false
     externalDatabase:
