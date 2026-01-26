@@ -36,6 +36,8 @@ netbox:
   config:
     global:
       storageClass: cephfs
+    valkey:
+      enabled: false
     postgresql:
       enabled: false
     externalDatabase:
