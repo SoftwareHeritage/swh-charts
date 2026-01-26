@@ -659,21 +659,16 @@ gitlabRunner:
 
 renovate:
   enabled: false
-  # Fréquence d'exécution
+  # Frequency
   schedule: "@weekly"
-  # L'image docker de renovate
+  # renovate docker image
   image:
     repository: renovate/renovate
     tag: 42.78-full
-  # niveau et option de debug | info | warn | error
+  # level and debug option | info | warn | error
   logLevel: info
-  # Nom du Secret Kubernetes contenant les variables sensibles
+  # Name of the Kubernetes Secret containing sensitive variables
   # secretName: renovate-env
   gitlab:
-    # URL du staging
+    # Endpoint url
     endpoint: "dummy.gitlab.fr/api/v4"
-
-    # Regex de filtrage des repos
-    # "^swh/" → tous les repos du groupe swhde
-    # à voir si necessaire et à activer
-    #autodiscoverFilter: "^swh/
