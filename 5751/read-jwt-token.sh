@@ -60,22 +60,31 @@ b64url_decode "$signature" | hexdump -C
 
 #set -x
 
-VSO_SA_PUBKEY_FILE="${TEMP_DIR}/sa.pub"
+VSO_SA_PUBKEY_FILENAME=sa.pub
+VSO_CA_CRT_FILE="${TEMP_DIR}/ca.crt"
+VSO_SA_PUBKEY_FILE="${TEMP_DIR}/${VSO_SA_PUBKEY_FILENAME}"
 
-$KUBECTL_VSO get secret "${SERVICE_ACCOUNT_NAME_SECRET}" --namespace "${NS_APP}" \
-  -o jsonpath="{.data['sa\.pub']}" | base64 --decode > "${VSO_SA_PUBKEY_FILE}"
+# $KUBECTL_VSO get secret "${SERVICE_ACCOUNT_NAME_SECRET}" --namespace "${NS_APP}" \
+#   -o jsonpath="{.data['ca\.crt']}" | base64 --decode > "${VSO_CA_CRT_FILE}"
 
-echo "######"
-echo "api pubkey file: ${VSO_SA_PUBKEY_FILE}"
-cat "${VSO_SA_PUBKEY_FILE}"
-echo "######"
+# echo "######"
+# echo "ca crt: ${VSO_CA_CRT_FILE}"
+# cat "${VSO_CA_CRT_FILE}"
+# echo "######"
+
+# openssl x509 -noout -pubkey < "${VSO_CA_CRT_FILE}" > "${VSO_SA_PUBKEY_FILE}"
+
+# echo "######"
+# echo "api pubkey file: ${VSO_SA_PUBKEY_FILE}"
+# cat "${VSO_SA_PUBKEY_FILE}"
+# echo "######"
 
 # The data that was signed is "header.payload" (still base64‑url, not decoded)
 signed_data="${headers}.${payload}"
 
 # Verify with OpenSSL (RS256 = SHA‑256 with RSA PKCS#1 v1.5)
 printf "%s" "$signed_data" | \
-  openssl dgst -sha256 -verify "${VSO_SA_PUBKEY_FILE}" \
+  openssl dgst -sha256 -verify "${VSO_SA_PUBKEY_FILENAME}" \
   -signature <(b64url_decode "${signature}") > /dev/null && \
   echo "Signature verification: OK" || \
   echo "Signature verification: FAILED"

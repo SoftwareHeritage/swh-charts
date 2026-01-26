@@ -208,20 +208,21 @@ EOF
 # Kubernetes.
 execute_or_skip ${KUBECTL_VSO} delete secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}"
 
-# TODO: Drop completely the secret type service-account-token as it's definitely not
-# working. The jwt token generated hardcodes an irrelevant issuer from the kubernetes
-# `kubeapi` (kubernetes/serviceaccount while it should use the `
-# --service-account-issuer=https://kubernetes.default.svc.cluster.local`
-# ${KUBECTL_VSO} apply -f - <<EOF
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: ${SERVICE_ACCOUNT_NAME_SECRET}
-#   namespace: ${NS_APP}
-#   annotations:
-#     kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
-# type: kubernetes.io/service-account-token
-# EOF
+# Note: the secret type service-account-token is definitely not working. The jwt token
+# generated hardcodes an irrelevant issuer from the kubernetes `kubeapi`
+# (`kubernetes/serviceaccount` while it should use the `
+# --service-account-issuer=https://kubernetes.default.svc.cluster.local` which is the
+# value configured for the kubeapi
+${KUBECTL_VSO} apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${SERVICE_ACCOUNT_NAME_SECRET}
+  namespace: ${NS_APP}
+  annotations:
+    kubernetes.io/service-account.name: ${SERVICE_ACCOUNT_NAME}
+type: kubernetes.io/service-account-token
+EOF
 
 ${KUBECTL_VSO} wait pod --all --for=condition=Ready --timeout=60s -n ingress-nginx
 
@@ -277,9 +278,11 @@ TLS_CRT_FILE="${TEMP_DIR}/${TLS_CRT_FILENAME}"
 
 SA_PUB_FILENAME="sa.pub"
 SA_PUB_FILE="${TEMP_DIR}/${SA_PUB_FILENAME}"
-# TODO temporary workaround (sa.pub comes from docker cp local-cluster-vso-control-plane:/etc/kubernetes/pki/sa.pub).
-set -x
-cp -v "${SCRIPT_DIR}/sa.pub" "${SA_PUB_FILE}"
+CONTROL_PLANE_NODE="local-cluster-${CLUSTER_NAME_VSO}-control-plane"
+# (workaround) Retrieve sa.pub from the control plane node
+docker cp "${CONTROL_PLANE_NODE}:/etc/kubernetes/pki/${SA_PUB_FILENAME}" "${SA_PUB_FILE}"
+# Copy locally to help
+docker cp "${CONTROL_PLANE_NODE}:/etc/kubernetes/pki/${SA_PUB_FILENAME}" "${SA_PUB_FILENAME}"
 
 CA_CRT_FILENAME="ca.crt"
 CA_CRT_FILE="${TEMP_DIR}/${CA_CRT_FILENAME}"
@@ -290,33 +293,33 @@ echo "TLS_CRT_FILE: $(cat ${TLS_CRT_FILE})"
 ${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data['ca\.crt']}" | base64 --decode | tee "${CA_CRT_FILE}"
 echo "CA_CRT_FILE: $(cat ${CA_CRT_FILE})"
 
-# SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
-# echo "SA_TOKEN: ${SA_TOKEN}"
+SA_TOKEN=$(${KUBECTL_VSO} get secret "${SERVICE_ACCOUNT_NAME_SECRET}" -n "${NS_APP}" -o jsonpath="{.data.token}")
+echo "SA_TOKEN: ${SA_TOKEN}"
 
-# SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
-# echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
-
-TOKEN_TTL=1h
-AUDIENCE="https://kubernetes.default.svc.cluster.local"
-
-TOKEN_GENERATED_FILE=${TEMP_DIR}/token-request.yaml
-
-# TODO: Require a token from openbao instead?
-
-$KUBECTL_VSO create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
-  --audience $AUDIENCE \
-  --duration $TOKEN_TTL \
-  -o jsonpath='{.status.token}' > "${TOKEN_GENERATED_FILE}"
-
-SA_TOKEN_DECODED=$(cat "${TOKEN_GENERATED_FILE}")
+SA_TOKEN_DECODED=$(echo "${SA_TOKEN}" | base64 --decode)
 echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
 
-set -x
+# TOKEN_TTL=1h
+# AUDIENCE="https://kubernetes.default.svc.cluster.local"
 
-$KUBECTL_VSO create secret generic "${SERVICE_ACCOUNT_NAME_SECRET}" \
-  --namespace "${NS_APP}" \
-  --from-file=sa.pub="${SA_PUB_FILE}" \
-  --from-literal=token="${SA_TOKEN_DECODED}"
+# TOKEN_GENERATED_FILE=${TEMP_DIR}/token-request.yaml
+
+# # TODO: Require a token from openbao instead?
+
+# $KUBECTL_VSO create token "${SERVICE_ACCOUNT_NAME}" --namespace "${NS_APP}" \
+#   --audience $AUDIENCE \
+#   --duration $TOKEN_TTL \
+#   -o jsonpath='{.status.token}' > "${TOKEN_GENERATED_FILE}"
+
+# SA_TOKEN_DECODED=$(cat "${TOKEN_GENERATED_FILE}")
+# echo "SA_TOKEN_DECODED: ${SA_TOKEN_DECODED}"
+
+# set -x
+
+# $KUBECTL_VSO create secret generic "${SERVICE_ACCOUNT_NAME_SECRET}" \
+#   --namespace "${NS_APP}" \
+#   --from-file=sa.pub="${SA_PUB_FILE}" \
+#   --from-literal=token="${SA_TOKEN_DECODED}"
 
 # # Create secret with the token generated so we can use it in other parts
 # $KUBECTL_VSO apply -f - <<EOF
@@ -338,7 +341,8 @@ echo "jwt payload: $(echo $JWT_JSON | jq .)"
 
 # Retrieve the jwt token issuer
 #ISSUER=$($KUBECTL_VSO get --raw /.well-known/openid-configuration | jq -r .issuer)
-ISSUER=$(echo $JWT_JSON | jq .iss | tr -d '"')
+ISSUER="kubernetes/serviceacccount"
+# ISSUER=$(echo $JWT_JSON | jq .iss | tr -d '"')
 echo "Token Issuer: ${ISSUER}"
 
 # validation test -> does not work somehow
@@ -361,14 +365,14 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 
 # read CA cert content and replace line breaks with \n
 # see https://openbao.org/api-docs/next/auth/kubernetes/#parameters
-${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
-  kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
-  disable_local_ca_jwt=true \
-  token_reviewer_jwt="${SA_TOKEN_DECODED}" \
-  pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
-  kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
-  issuer="${ISSUER}" \
-  disable_iss_validation=false
+# ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
+#   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
+#   disable_local_ca_jwt=true \
+#   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
+#   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
+#   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
+#   issuer="${ISSUER}" \
+#   disable_iss_validation=false
 
 # Deactivate "iss"uer validation when using service-account-token secret as there is an
 # inconsistent behavior in kind(kubernetes?) regarding the issuer set in the generated
@@ -378,13 +382,13 @@ ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
 # openbao/vault-secret-operators refuse to communicate properly... (between the hammer
 # and the anvil kind of situation)
 
-# ${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
-#   kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
-#   disable_local_ca_jwt=true \
-#   token_reviewer_jwt="${SA_TOKEN_DECODED}" \
-#   pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
-#   kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
-#   disable_iss_validation=true
+${POD_VAULT_CMD} write "auth/${MOUNT}/config" \
+  kubernetes_host="https://${VSO_INGRESS_HOSTNAME}:${VSO_INGRESS_PORT}" \
+  kubernetes_ca_cert=@"${POD_TEMP_PATH}/${TLS_CRT_FILENAME}" \
+  token_reviewer_jwt="${SA_TOKEN_DECODED}" \
+  pem_keys=@"${POD_TEMP_PATH}/${SA_PUB_FILENAME}" \
+  disable_local_ca_jwt=true \
+  disable_iss_validation=true
 
 echo "### Mounted Vault Kubernetes auth config:"
 ${POD_VAULT_CMD} read "auth/${MOUNT}/config"

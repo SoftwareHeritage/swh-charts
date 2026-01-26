@@ -4,3 +4,5 @@ charts
 local-cluster-*.override.yaml
 Makefile.local
 
+/5751/tmp/
+/5751/sa.pub
