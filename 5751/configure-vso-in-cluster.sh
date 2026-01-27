@@ -47,8 +47,8 @@ while [[ $# -gt 0 ]]; do
       export DEBUG_INSTRUCTIONS=1
       shift
       ;;
-    -r|--reset)
-      cluster_reset "${CLUSTER_NAME}"
+    -r|--recreate)
+      cluster_recreate "${CLUSTER_NAME}"
       shift
       ;;
     -c|--create)

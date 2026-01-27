@@ -72,11 +72,11 @@ script_usage() {
   echo "Usage: $0 CLUSTER_NAME [OPTIONS]"
   echo -e "\n${description}\n"
   echo "Options:"
-  echo "  -c, --create  Create targeted cluster"
-  echo "  -r, --reset   Reset targeted cluster"
-  echo "  -d, --delete  Delete targeted cluster"
-  echo "  --debug       Enable verbose instructions"
-  echo "  -h, --help    Display this help message"
+  echo "  -c, --create   Create targeted cluster"
+  echo "  -r, --recreate Reset targeted cluster"
+  echo "  -d, --delete   Delete targeted cluster"
+  echo "  --debug        Enable verbose instructions"
+  echo "  -h, --help     Display this help message"
   exit 1
 }
 
