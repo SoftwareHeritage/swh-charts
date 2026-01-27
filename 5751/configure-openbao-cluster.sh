@@ -74,15 +74,13 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-set_variables_for_cluster ${CLUSTER_NAME}
-
 create_shared_ca_files
 
-${HELM_OPENBAO} repo add jetstack https://charts.jetstack.io
-${HELM_OPENBAO} repo add metallb https://metallb.github.io/metallb
-${HELM_OPENBAO} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-${HELM_OPENBAO} repo add openbao https://openbao.github.io/openbao-helm
-${HELM_OPENBAO} repo update jetstack metallb ingress-nginx openbao
+${HELM} repo add jetstack https://charts.jetstack.io
+${HELM} repo add metallb https://metallb.github.io/metallb
+${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+${HELM} repo add openbao https://openbao.github.io/openbao-helm
+${HELM} repo update jetstack metallb ingress-nginx openbao
 
 install_or_skip cert-manager jetstack/cert-manager \
   --namespace cert-manager \
@@ -90,18 +88,18 @@ install_or_skip cert-manager jetstack/cert-manager \
 install_or_skip metallb metallb/metallb --namespace metallb
 install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
-execute_or_skip ${KUBECTL_OPENBAO} create namespace "${NS_OPENBAO}"
+execute_or_skip ${KUBECTL} create namespace "${NS_OPENBAO}"
 
 # Inject shared ca
-execute_or_skip ${KUBECTL_OPENBAO} create secret tls shared-ca \
+execute_or_skip ${KUBECTL} create secret tls shared-ca \
   --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
-execute_or_skip ${KUBECTL_OPENBAO} create configmap \
+execute_or_skip ${KUBECTL} create configmap \
   --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
-${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n metallb
+${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s -n metallb
 
-${KUBECTL_OPENBAO} apply -f - <<EOF
+${KUBECTL} apply -f - <<EOF
 ---
 # Source: cluster-config/templates/metallb/ipaddresspools.yaml
 apiVersion: metallb.io/v1beta1
@@ -175,7 +173,7 @@ install_or_skip openbao openbao/openbao \
   --values "${OPENBAO_VALUES_FILE}"
 
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
-${KUBECTL_OPENBAO} apply -f - <<EOF
+${KUBECTL} apply -f - <<EOF
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -199,7 +197,7 @@ spec:
     kind: ClusterIssuer
 EOF
 
-${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
 cat <<EOF
 ##############################################
