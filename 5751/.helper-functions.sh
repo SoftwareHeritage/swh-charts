@@ -95,6 +95,16 @@ function set_variables_for_cluster {
       KUBECTL=$KUBECTL_OPENBAO
       CLUSTER_CONTEXT=$CLUSTER_CONTEXT_OPENBAO
       ;;
+    admin)
+      HELM=$HELM_ADMIN
+      KUBECTL=$KUBECTL_ADMIN
+      CLUSTER_CONTEXT=$CLUSTER_CONTEXT_ADMIN
+      ;;
+    production)
+      HELM=$HELM_PRODUCTION
+      KUBECTL=$KUBECTL_PRODUCTION
+      CLUSTER_CONTEXT=$CLUSTER_CONTEXT_PRODUCTION
+      ;;
     *)
       echo "Unknown cluster <${CLUSTER_NAME}>";
       exit 1
