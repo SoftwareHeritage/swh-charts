@@ -52,12 +52,19 @@ cluster_delete() {
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT}"
 }
 
+cluster_create() {
+  local cluster_name="$1"
+  echo "Create cluster <$cluster_name>..."
+  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT}"
+}
+
 # Display helm message
 script_usage() {
   description="$1"
   echo "Usage: $0 CLUSTER_NAME [OPTIONS]"
   echo -e "\n${description}\n"
   echo "Options:"
+  echo "  -c, --create  Create targeted cluster"
   echo "  -r, --reset   Reset targeted cluster"
   echo "  -d, --delete  Delete targeted cluster"
   echo "  --debug       Enable verbose instructions"

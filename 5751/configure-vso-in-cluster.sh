@@ -51,6 +51,10 @@ while [[ $# -gt 0 ]]; do
       cluster_reset "${CLUSTER_NAME}"
       shift
       ;;
+    -c|--create)
+      cluster_create "${CLUSTER_NAME}"
+      shift
+      ;;
     -d|--delete)
       cluster_delete "${CLUSTER_NAME}"
       exit 0
