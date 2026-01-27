@@ -89,12 +89,12 @@ controller:
       level: trace
   hostAliases:
     # Make openbao ingress hostname resolvable
-    - ip: ${OPENBAO_INGRESS_IP}
+    - ip: ${ADMIN_INGRESS_IP}
       hostnames:
-      - ${OPENBAO_INGRESS_HOSTNAME}
+      - ${ADMIN_INGRESS_HOSTNAME}
 defaultVaultConnection:
   enabled: true
-  address: https://${OPENBAO_INGRESS_HOSTNAME}
+  address: https://${ADMIN_INGRESS_HOSTNAME}
   caCertSecret: shared-ca
 EOF
 
@@ -139,20 +139,20 @@ ${POD_VAULT_CMD} write auth/${MOUNT}/role/${ROLE} \
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
-${KUBECTL_OPENBAO} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
-POD_NAME=$(${KUBECTL_OPENBAO} get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
+POD_NAME=$(${KUBECTL_ADMIN} get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
 POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
 
-${KUBECTL_OPENBAO} cp "${POLICY_FILE}" "${POD_DEST_PATH}"
-${KUBECTL_OPENBAO} cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
-${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
+${KUBECTL_ADMIN} cp "${POLICY_FILE}" "${POD_DEST_PATH}"
+${KUBECTL_ADMIN} cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
+${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
 
-ROLE_ID=$(${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
 )
 
-SECRET_ID=$(${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
 )
 
