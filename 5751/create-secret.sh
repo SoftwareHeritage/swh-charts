@@ -85,20 +85,10 @@ POD_NAME=$($KUBECTL_ADMIN get pods -n "${NS_OPENBAO}" \
 $KUBECTL_ADMIN exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
 
-secret=
-DURATION=10
-START_TIME=$(date +%s)
+timeout 60s bash -c \
+  "until ${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP} &>/dev/null; do echo 'Waiting...'; sleep 1; done"
 
-while [[ $(($(date +%s) - START_TIME)) -lt $DURATION ]]; do
-  secret=$($KUBECTL get secret "${K8S_SECRET_NAME}" -n "${NS_APP}" -o json | \
-             jq -r '.data._raw' | base64 --decode | jq '.data')
-  if [ ! -z "$secret" ]; then
-    echo "Secret found in targeted cluster <$CLUSTER_NAME>"
-    echo "$secret"
-    exit 0
-  else
-    sleep 1;
-  fi
-done
+([ $? -ne 0 ] && echo "ohoh! We did not find the secret, check your setup!" && exit 1
 
-exit 1
+ SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
+ echo "Secret: $SECRET"
