@@ -46,7 +46,7 @@ POD_NAME=$($KUBECTL_OPENBAO get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/nam
 $KUBECTL_OPENBAO exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
 
 # for nowbao
-sleep 10
+sleep 30
 
 $KUBECTL_VSO get secret "${K8S_SECRET_NAME}" -n "${NS_APP}" -o json | \
     jq -r '.data._raw' | base64 --decode | jq '.data'
