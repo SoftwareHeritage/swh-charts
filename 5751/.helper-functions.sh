@@ -38,24 +38,32 @@ function execute_or_skip {
   fi
 }
 
-# Fonctions dédiées
-cluster_reset() {
+# Recreate cluster from scratch
+cluster_recreate() {
   local cluster_name="$1"
-  echo "Reset cluster <$cluster_name>..."
-  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT}"
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT}" kind "true" 8080 8443
+  cluster_delete "${cluster_name}"
+  cluster_create "${cluster_name}"
 }
 
+# Delete existing cluster
 cluster_delete() {
   local cluster_name="$1"
   echo "Delete cluster <$cluster_name>..."
   "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT}"
 }
 
+# Create inexistant cluster
 cluster_create() {
   local cluster_name="$1"
   echo "Create cluster <$cluster_name>..."
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT}"
+  case "${cluster_name}" in
+    admin|openbao)
+      "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT}" kind "true" 80 443
+    ;;
+    *)
+      "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT}" kind "false"
+    ;;
+  esac
 }
 
 # Display helm message
