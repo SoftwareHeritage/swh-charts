@@ -37,8 +37,22 @@ if [ "${1}" = "-h" -o "${1}" = "--help" ]; then
   exit 1
 fi
 
-CLUSTER_NAME=openbao
-DEBUG_INSTRUCTIONS=
+CLUSTER_NAME=$1
+if [ -z "${CLUSTER_NAME}" ]; then
+  CLUSTER_NAME=admin
+else
+  shift
+fi
+
+case "${CLUSTER_NAME}" in
+  admin|openbao)
+    # Ok, nothing to do
+  ;;
+  *)
+    echo "Unsupported cluster name <$CLUSTER_NAME>! Must be one of {admin, openbao}"
+    exit 1
+  ;;
+esac
 
 set_variables_for_cluster ${CLUSTER_NAME}
 
