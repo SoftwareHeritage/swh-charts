@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
+# -*- eval: (setq-default sh-indentation 2) -*-
 
-# This script configures the environment cluster for VSO deployment:
+# This script configures the targeted local cluster with vault-secrets-operator:
 # * create `vso` and `app` namespaces
 # * install vso helm chart inside `vso` namespace
-# * configure vault auth from vso cluster
+# * configure vault auth from the targeted cluster in the openbao cluster
 
-set -xe
+# This script does not create any secrets yet (see create-secret.sh)
+
+set -e
 
 TEMP_DIR=$(mktemp -d)
 #trap "rm -rf ${TEMP_DIR}" EXIT
@@ -16,53 +19,70 @@ ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
 if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
+  source "${SCRIPT_DIR}/.helper-functions.sh"
+else
+  echo "<${ENV_FILE}> is required, failing."
+  exit 1
 fi
 
-# To configure properly the install_or_skip function
-HELM=$HELM_VSO
+DESCRIPTION="Configure the vault-secret-operator in targeted CLUSTER_NAME"
 
-if [[ "$1" == "--delete" ]]; then
-  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
-  exit 0
-elif [[ "$1" == "--reset" ]]; then
-  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_VSO}"
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_VSO}" kind "true" 8080 8443
-elif [[ "$1" == "--cleanup" ]]; then
-  # If --cleanup is set, remove existing resources
-  ${HELM_VSO} uninstall vault-secrets-operator || true
-#  ${KUBECTL_VSO} delete namespace "${NS_VSO}" || true
+CLUSTER_NAME=$1
+shift
+
+if [ -z "${CLUSTER_NAME}" -o "${CLUSTER_NAME}" = "-h" -o "${CLUSTER_NAME}" = "--help" ]; then
+  echo "Error: Targeted cluster name is mandatory."
+  script_usage "${DESCRIPTION}"
+  exit 1
 fi
 
-if [ ! -d $CA_CERT_DIR ]; then
-    mkdir -p $CA_CERT_DIR
-    # Generate private rsa key
-    openssl genrsa -out $CA_CERT_FILEKEY 4096
+set_variables_for_cluster ${CLUSTER_NAME}
+DEBUG_INSTRUCTIONS=
 
-    # Ensure no issues occurred
-    [ ! -f $CA_CERT_FILEKEY ] && echo "<$CA_CERT_FILEKEY> must exist!" && exit 1
+# Parse options
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --debug)
+      set -x
+      export DEBUG_INSTRUCTIONS=1
+      shift
+      ;;
+    -r|--reset)
+      cluster_reset "${CLUSTER_NAME}"
+      shift
+      ;;
+    -d|--delete)
+      cluster_delete "${CLUSTER_NAME}"
+      exit 0
+      ;;
+    -h|--help)
+      script_usage "${DESCRIPTION}"
+      shift
+      ;;
+    *)
+      echo "Unknown option <$1>"
+      script_usage "${DESCRIPTION}"
+      exit 1
+      ;;
+  esac
+done
 
-    # Self-signed shared root certificate in between kind clusters
-    openssl req -x509 -new -nodes -key $CA_CERT_FILEKEY \
-            -sha256 -days 3650 \
-            -subj "/CN=shared-local-clusters-ca" \
-            -out $CA_CERT_FILECRT
-    # Ensure no issues occurred
-    [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
-fi
+create_shared_ca_files
 
-execute_or_skip ${KUBECTL_VSO} create namespace "${NS_VSO}"
-execute_or_skip ${KUBECTL_VSO} create namespace "${NS_APP}"
+execute_or_skip ${KUBECTL} create namespace "${NS_VSO}"
+execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
 # Inject shared ca
-execute_or_skip ${KUBECTL_VSO} delete secret shared-ca --namespace "${NS_VSO}"
-${KUBECTL_VSO} create secret generic shared-ca --namespace "${NS_VSO}" --from-file=ca.crt=$CA_CERT_FILECRT
+execute_or_skip ${KUBECTL} delete secret shared-ca --namespace "${NS_VSO}"
+${KUBECTL} create secret generic shared-ca --namespace "${NS_VSO}" \
+           --from-file=ca.crt=$CA_CERT_FILECRT
 
 VSO_VALUES_FILE=$TEMP_DIR/vso-values.yaml
 cat > "${VSO_VALUES_FILE}" << EOF
 controller:
   manager:
     logging:
-      level:  trace
+      level: trace
   hostAliases:
     # Make openbao ingress hostname resolvable
     - ip: ${OPENBAO_INGRESS_IP}
@@ -76,10 +96,10 @@ EOF
 
 # https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
 install_or_skip vault-secrets-operator hashicorp/vault-secrets-operator \
-  --namespace "${NS_VSO}" \
-  --values "${VSO_VALUES_FILE}"
+                --namespace "${NS_VSO}" \
+                --values "${VSO_VALUES_FILE}"
 
-execute_or_skip ${KUBECTL_VSO} create namespace "${NS_APP}"
+execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
@@ -125,7 +145,7 @@ ${KUBECTL_OPENBAO} cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
 ${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
 
 ROLE_ID=$(${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
- "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
+  "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
 )
 
 SECRET_ID=$(${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
@@ -134,9 +154,9 @@ SECRET_ID=$(${KUBECTL_OPENBAO} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh 
 
 ROLE_SECRET_NAME="${ROLE}-secret"
 
-execute_or_skip ${KUBECTL_VSO} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_APP}"
-${KUBECTL_VSO} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
-  --from-literal=id="${SECRET_ID}"
+execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_APP}"
+${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
+               --from-literal=id="${SECRET_ID}"
 
 VAULT_AUTH_FILENAME="${VAULT_AUTH_NAME}.yaml"
 VAULT_AUTH_FILE="${TEMP_DIR}/${VAULT_AUTH_FILENAME}"
@@ -156,4 +176,4 @@ spec:
   allowedNamespaces:
     - "*"
 EOF
-${KUBECTL_VSO} apply -f "${VAULT_AUTH_FILE}"
+${KUBECTL} apply -f "${VAULT_AUTH_FILE}"

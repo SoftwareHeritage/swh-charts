@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
+# -*- eval: (setq-default sh-indentation 2) -*-
 
 # This script configures the admin cluster for OpenBAO deployment:
 # * create `openbao` namespace
 # * install openbao helm chart inside `openbao` namespace
 
 set -e
-set -x
 
 TEMP_DIR=$(mktemp -d)
 trap "rm -rf ${TEMP_DIR}" EXIT
@@ -17,39 +17,62 @@ ENV_FILE="${SCRIPT_DIR}/.env"
 # load .env file if present
 if [ -f "${ENV_FILE}" ]; then
   source "${ENV_FILE}"
+  source "${SCRIPT_DIR}/.helper-functions.sh"
 fi
 
-# To configure properly the install_or_skip function
-HELM=$HELM_OPENBAO
-
-if [[ "$1" == "--delete" ]]; then
-  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
-  exit 0
-elif [[ "$1" == "--reset" ]]; then
-  "${BIN_DIR}/local-cluster-delete.sh" "${CLUSTER_CONTEXT_OPENBAO}"
-  "${BIN_DIR}/local-cluster-create.sh" "${CLUSTER_CONTEXT_OPENBAO}" kind
-elif [[ "$1" == "--cleanup" ]]; then
-  # If --cleanup is set, remove existing resources
-  ${HELM_OPENBAO} uninstall openbao || true
-#  $KUBECTL_OPENBAO delete namespace "${NS_OPENBAO}" || true
+ENV_FILE="${SCRIPT_DIR}/.env"
+# load .env file if present
+if [ -f "${ENV_FILE}" ]; then
+  source "${ENV_FILE}"
+  source "${SCRIPT_DIR}/.helper-functions.sh"
+else
+  echo "<${ENV_FILE}> is required, failing."
+  exit 1
 fi
 
-if [ ! -d $CA_CERT_DIR ]; then
-    mkdir -p $CA_CERT_DIR
-    # Generate private rsa key
-    openssl genrsa -out $CA_CERT_FILEKEY 4096
+DESCRIPTION="Configure openbao in admin cluster"
 
-    # Ensure no issues occurred
-    [ ! -f $CA_CERT_FILEKEY ] && echo "<$CA_CERT_FILEKEY> must exist!" && exit 1
-
-    # Self-signed shared root certificate in between kind clusters
-    openssl req -x509 -new -nodes -key $CA_CERT_FILEKEY \
-            -sha256 -days 3650 \
-            -subj "/CN=shared-local-clusters-ca" \
-            -out $CA_CERT_FILECRT
-    # Ensure no issues occurred
-    [ ! -f $CA_CERT_FILECRT ] && echo "<$CA_CERT_FILECRT> must exist!" && exit 1
+if [ "${1}" = "-h" -o "${1}" = "--help" ]; then
+  script_usage "${DESCRIPTION}"
+  exit 1
 fi
+
+CLUSTER_NAME=openbao
+DEBUG_INSTRUCTIONS=
+
+set_variables_for_cluster ${CLUSTER_NAME}
+
+# Parse options
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --debug)
+      set -x
+      export DEBUG_INSTRUCTIONS=1
+      shift
+      ;;
+    -r|--reset)
+      cluster_reset "${CLUSTER_NAME}"
+      shift
+      ;;
+    -d|--delete)
+      cluster_delete "${CLUSTER_NAME}"
+      exit 0
+      ;;
+    -h|--help)
+      script_usage "${DESCRIPTION}"
+      shift
+      ;;
+    *)
+      echo "Unknown option <$1>"
+      script_usage "${DESCRIPTION}"
+      exit 1
+      ;;
+  esac
+done
+
+set_variables_for_cluster ${CLUSTER_NAME}
+
+create_shared_ca_files
 
 ${HELM_OPENBAO} repo add jetstack https://charts.jetstack.io
 ${HELM_OPENBAO} repo add metallb https://metallb.github.io/metallb
