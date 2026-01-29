@@ -49,17 +49,13 @@ spec:
 
                 # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
-                  value: "false"
+                  value: "true"
                 
                 # Avoid major and minor updates
                 - name: RENOVATE_SEPARATE_MAJOR_MINOR
                   value: "true"
                 - name: RENOVATE_SEPARATE_MULTIPLE_MAJOR
                   value: "true"
-
-                # Filter on GitLab groups
-                - name: RENOVATE_AUTODISCOVER_FILTER
-                  value: {{ .Values.renovate.gitlab.autodiscoverFilter | quote }}
 
                 # no-interactif mode
                 - name: RENOVATE_REQUIRE_CONFIG

@@ -3,4 +3,4 @@ __snapshot__
 charts
 local-cluster-*.override.yaml
 Makefile.local
-
+swh/fake-secrets/renovate-secret.yaml
