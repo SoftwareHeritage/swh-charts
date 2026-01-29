@@ -95,6 +95,20 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+    # netbox's default 'netbox-kv' redis service expected when valkey is disabled
+    # see cluster-configuration/values/admin-rke2.yaml, key netbox.config.valkey.
+    netbox-kv:
+      enabled: true
+      namespace: netbox
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 5Gi
 
 externalPostgresqlClusters:
   - name: cluster-pg-admin-dali
