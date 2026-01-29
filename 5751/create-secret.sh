@@ -65,7 +65,7 @@ function _title {
     args=("${status}: ")
   fi
 
-  echo -e "\n### ${args[@]}${prefix_msg} ###\n"
+  echo -e "\n### ${args[@]}${msg} ###\n"
 }
 
 prefix_msg="Synchronization with authorized mount path"
