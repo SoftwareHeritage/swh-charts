@@ -56,7 +56,20 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-echo "### Synchronization with authorized mount path should be ok ###"
+function _title {
+  msg=$1
+  status=$2
+
+  args=()
+  if [ ! -z "${status}" ]; then
+    args=("${status}: ")
+  fi
+
+  echo -e "\n### ${args[@]}${prefix_msg} ###\n"
+}
+
+prefix_msg="Synchronization with authorized mount path"
+_title "${prefix_msg} should be ok"
 
 echo "Write a secret in openbao in authorized (in openbao policy) mount path <$MOUNT>."
 echo "This secret should be synchronized correctly in cluster <$CLUSTER_NAME>."
@@ -97,10 +110,10 @@ timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_
 SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
 echo "Secret: $SECRET"
 
-echo "### Synchronization with authorized mount path IS ok! ###"
-echo
+_title "${prefix_msg} is OK!" "SUCCESS"
 
-echo "### Synchronization with unauthorized mount path should be unauthorized access."
+prefix_msg="Synchronization with unauthorized mount path"
+_title "${prefix_msg} should result in unauthorized access."
 
 echo "1. First, create a VaultStaticSecret to define the secret to synchronize."
 
@@ -127,12 +140,14 @@ echo "2. Try to synchronize that secret from unauthorized mount point"
   grep -iq "not found" && \
   echo "Expectedly the secret <$UNAUTHORIZED_K8S_SECRET_NAME> does not exist.") || \
   ( echo "uhoh! The secret <$UNAUTHORIZED_K8S_SECRET_NAME> exist, it should not." && \
+    _title "${prefix_msg} is authorized access while it should not!" "FAILURE"
     exit 2 )
 
 ( $KUBECTL describe VaultStaticSecret -n $NS_APP | \
   grep -iq "permission denied\|403" && \
   echo "Expectedly the VaultStaticSecret <${UNAUTHORIZED_STATIC_SECRET_NAME}> is denied access by openbao." ) || \
   ( echo "uhoh! The VaultStaticSecret <${UNAUTHORIZED_STATIC_SECRET_NAME}> got granted access!" && \
+    _title "${prefix_msg} is authorized access while it should not!" "FAILURE"
     exit 2 )
 
-echo "### Synchronization with unauthorized mount path IS indeed unauthorized access! ###"
+_title "${prefix_msg} is indeed unauthorized access!" "SUCCESS"
