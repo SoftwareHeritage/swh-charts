@@ -366,3 +366,11 @@ redis:
           save 60 500
           appendonly yes
           appendfsync everysec
+
+renovate:
+  enabled: false
+  # Name of the Kubernetes Secret containing sensitive variables
+  secretName: renovate-env
+  gitlab:
+    # Gitlab endpoint
+    endpoint: https://gitlab-staging.swh.network/api/v4
