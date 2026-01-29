@@ -11,7 +11,7 @@ alertmanager:
     host: https://alertmanager-irc-relay.admin.swh.network/minikube-swh-sysadm
 
 metallb:
-  enabled: true
+  enabled: false
   namespace: metallb
   # Generic ipAddressPool (e.g. for main cluster ingress)
   ipAddressPools:
