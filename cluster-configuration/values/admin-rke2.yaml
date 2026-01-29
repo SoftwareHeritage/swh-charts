@@ -43,8 +43,15 @@ netbox:
     persistence:
       # To adapt to ReadWriteMany if replicaCount > 1
       accessMode: ReadWriteOnce
+    # Disable valkey which is a dependency on a bitnami chart (we avoid to deploy those)
+    # This requires to enable a dedicated redis instance (named redis-netbox-kv)
     valkey:
-      enabled: true
+      enabled: false
+    tasksDatabase:
+      host: redis-netbox-kv
+    cachingDatabase:
+      host: redis-netbox-kv
+    # We deploy the postgresql instance through the cluster-component chart
     postgresql:
       enabled: false
     externalDatabase:
