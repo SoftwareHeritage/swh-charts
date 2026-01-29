@@ -105,7 +105,8 @@ echo "2. Check the secret is synchronized correctly in the cluster <$CLUSTER_NAM
 echo "Waiting for the synchronization to be ok"
 timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_APP &>/dev/null; do printf \".\"; sleep 0.2; done"
 
-[ $? -ne 0 ] && echo "ohoh! We did not find the secret, check your setup!" && exit 1
+[ $? -ne 0 ] && echo "uhoh! We did not find the secret, check your setup!" && \
+  _title "${prefix_msg} failed" "FAILURE" && exit 1
 
 SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
 echo "Secret: $SECRET"
@@ -161,7 +162,7 @@ echo "1. First, create another namespace ${NS_SECONDARY}."
 
 execute_or_skip ${KUBECTL} create namespace "${NS_SECONDARY}"
 
-echo "2. Then create another Vault* configuration to define sync secrets in ${NS_SECONDARY}."
+echo "2. Then create another Vault* configuration to define sync secrets in ns <${NS_SECONDARY}>."
 
 ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
  "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
@@ -212,7 +213,8 @@ echo "3. Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>.
 echo "Waiting for the synchronization to be ok"
 timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_SECONDARY &>/dev/null; do printf \".\"; sleep 0.2; done"
 
-[ $? -ne 0 ] && echo "ohoh! We did not find the secret, check your setup!" && exit 1
+[ $? -ne 0 ] && echo "uhoh! We did not find the secret, check your setup!" && \
+  _title "${prefix_msg} did not work" "FAILURE" && exit 1
 
 SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
 echo "Secret: $SECRET"
