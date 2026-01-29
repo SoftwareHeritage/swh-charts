@@ -151,3 +151,70 @@ echo "2. Try to synchronize that secret from unauthorized mount point"
     exit 2 )
 
 _title "${prefix_msg} is indeed unauthorized access!" "SUCCESS"
+
+prefix_msg="Secret synchronization in another targeted namespace"
+_title "${prefix_msg} should be ok"
+
+NS_SECONDARY="app2"
+
+echo "1. First, create another namespace ${NS_SECONDARY}."
+
+execute_or_skip ${KUBECTL} create namespace "${NS_SECONDARY}"
+
+echo "2. Then create another Vault* configuration to define sync secrets in ${NS_SECONDARY}."
+
+ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+ "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
+)
+SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+  "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
+)
+ROLE_SECRET_NAME="${ROLE}-secret"
+
+execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_SECONDARY}"
+${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_SECONDARY}" \
+  --from-literal=id="${SECRET_ID}"
+
+$KUBECTL apply -f - <<EOF
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: ${VAULT_AUTH_NAME}
+  namespace: ${NS_SECONDARY}
+spec:
+  method: appRole
+  mount: ${MOUNT}
+  appRole:
+    roleId: ${ROLE_ID}
+    secretRef: ${ROLE_SECRET_NAME}
+  allowedNamespaces:
+    - "*"
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: ${STATIC_SECRET_NAME}
+  namespace: ${NS_SECONDARY}
+spec:
+  vaultAuthRef: ${VAULT_AUTH_NAME}
+  mount: ${MOUNT}
+  type: kv-v2
+  path: ${OPENBAO_SECRET_PATH}
+  refreshAfter: 10s
+  destination:
+    create: true
+    name: ${K8S_SECRET_NAME}
+EOF
+
+echo "3. Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>."
+
+echo "Waiting for the synchronization to be ok"
+timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_SECONDARY &>/dev/null; do printf \".\"; sleep 0.2; done"
+
+[ $? -ne 0 ] && echo "ohoh! We did not find the secret, check your setup!" && exit 1
+
+SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
+echo "Secret: $SECRET"
+
+_title "${prefix_msg} is ok" "SUCCESS"
