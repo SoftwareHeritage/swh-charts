@@ -162,9 +162,7 @@ execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS
 ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
                --from-literal=id="${SECRET_ID}"
 
-VAULT_AUTH_FILENAME="${VAULT_AUTH_NAME}.yaml"
-VAULT_AUTH_FILE="${TEMP_DIR}/${VAULT_AUTH_FILENAME}"
-cat > "${VAULT_AUTH_FILE}" << EOF
+${KUBECTL} apply -f - << EOF
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
@@ -180,4 +178,3 @@ spec:
   allowedNamespaces:
     - "*"
 EOF
-${KUBECTL} apply -f "${VAULT_AUTH_FILE}"
