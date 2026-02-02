@@ -131,11 +131,12 @@ ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
 ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
 ${POD_VAULT_CMD} policy read "${POLICY_NAME}"
 
+# https://openbao.org/api-docs/auth/approle/#createupdate-approle
 ${POD_VAULT_CMD} write auth/${MOUNT}/role/${ROLE} \
   secret_id_ttl=0 \
   token_ttl=1h \
   token_max_ttl=4h \
-  policies="${POLICY_NAME}"
+  token_policies="${POLICY_NAME}"
 EOF
 chmod +x "${POD_SCRIPT_FILE}"
 
