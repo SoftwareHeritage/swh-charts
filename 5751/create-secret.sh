@@ -68,11 +68,11 @@ function _title {
   echo -e "\n### ${args[@]}${msg} ###\n"
 }
 
-prefix_msg="Synchronization with authorized mount path"
+prefix_msg="1. Synchronization with authorized mount path"
 _title "${prefix_msg} should be ok"
 
-echo "Write a secret in openbao in authorized (in openbao policy) mount path <$MOUNT>."
-echo "This secret should be synchronized correctly in cluster <$CLUSTER_NAME>."
+echo "- Write a secret in openbao in authorized (in openbao policy) mount path <$MOUNT>."
+echo "- This secret should be synchronized correctly in cluster <$CLUSTER_NAME>."
 
 $KUBECTL_ADMIN wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 POD_NAME=$($KUBECTL_ADMIN get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
@@ -80,7 +80,7 @@ POD_NAME=$($KUBECTL_ADMIN get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=
 $KUBECTL_ADMIN exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
 
-echo "1. First, create a VaultStaticSecret to define the secret to synchronize in vso."
+echo "- Create a VaultStaticSecret to define the secret to synchronize in vso."
 
 $KUBECTL apply -f - <<EOF
 ---
@@ -100,9 +100,9 @@ spec:
     name: ${K8S_SECRET_NAME}
 EOF
 
-echo "2. Check the secret is synchronized correctly in the cluster <$CLUSTER_NAME>."
+echo "- Secondly, check secret is synchronized correctly in cluster <$CLUSTER_NAME>."
 
-echo "Waiting for the synchronization to be ok"
+echo "- Waiting for the synchronization to be ok"
 timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_APP &>/dev/null; do printf \".\"; sleep 0.2; done"
 
 [ $? -ne 0 ] && echo "uhoh! We did not find the secret, check your setup!" && \
@@ -113,10 +113,10 @@ echo "Secret: $SECRET"
 
 _title "${prefix_msg} is OK!" "SUCCESS"
 
-prefix_msg="Synchronization with unauthorized mount path"
+prefix_msg="2. Synchronization with unauthorized mount path"
 _title "${prefix_msg} should result in unauthorized access."
 
-echo "1. First, create a VaultStaticSecret to define the secret to synchronize."
+echo "- First, create a VaultStaticSecret to define the secret to synchronize."
 
 $KUBECTL apply -f - <<EOF
 ---
@@ -136,7 +136,7 @@ spec:
     name: ${UNAUTHORIZED_K8S_SECRET_NAME}
 EOF
 
-echo "2. Try to synchronize that secret from unauthorized mount point"
+echo "- Try to synchronize that secret from unauthorized mount point"
 ( $KUBECTL get secret $UNAUTHORIZED_K8S_SECRET_NAME --namespace=$NS_APP 2>&1 | \
   grep -iq "not found" && \
   echo "Expectedly the secret <$UNAUTHORIZED_K8S_SECRET_NAME> does not exist.") || \
@@ -153,16 +153,16 @@ echo "2. Try to synchronize that secret from unauthorized mount point"
 
 _title "${prefix_msg} is indeed unauthorized access!" "SUCCESS"
 
-prefix_msg="Secret synchronization in another targeted namespace"
+prefix_msg="3. Secret synchronization in another targeted namespace"
 _title "${prefix_msg} should be ok"
 
 NS_SECONDARY="app2"
 
-echo "1. First, create another namespace ${NS_SECONDARY}."
+echo "- First, create another namespace ${NS_SECONDARY}."
 
 execute_or_skip ${KUBECTL} create namespace "${NS_SECONDARY}"
 
-echo "2. Then create another Vault* configuration to define sync secrets in ns <${NS_SECONDARY}>."
+echo "- Then create another Vault* configuration to define sync secrets in ns <${NS_SECONDARY}>."
 
 ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
  "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
@@ -208,7 +208,7 @@ spec:
     name: ${K8S_SECRET_NAME}
 EOF
 
-echo "3. Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>."
+echo "- Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>."
 
 echo "Waiting for the synchronization to be ok"
 timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_SECONDARY &>/dev/null; do printf \".\"; sleep 0.2; done"
