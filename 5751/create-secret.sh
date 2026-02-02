@@ -210,7 +210,45 @@ EOF
 
 echo "- Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>."
 
-echo "Waiting for the synchronization to be ok"
+echo "- Waiting for the synchronization to be ok"
+timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_SECONDARY &>/dev/null; do printf \".\"; sleep 0.2; done"
+
+[ $? -ne 0 ] && echo "uhoh! We did not find the secret, check your setup!" && \
+  _title "${prefix_msg} did not work" "FAILURE" && exit 1
+
+SECRET=$(${KUBECTL} get secret ${K8S_SECRET_NAME} --namespace=${NS_APP})
+echo "Secret: $SECRET"
+
+_title "${prefix_msg} is ok" "SUCCESS"
+
+prefix_msg="4. Secret synchronization in another targeted namespace with same VaultAuth"
+_title "${prefix_msg} should be ok"
+echo "- Then create another Vault* configuration to define sync secrets in ns <${NS_SECONDARY}>."
+
+STATIC_SECRET_NAME2="demo2-static-secret"
+K8S_SECRET_NAME2="demo2-secret"
+
+$KUBECTL apply -f - <<EOF
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultStaticSecret
+metadata:
+  name: ${STATIC_SECRET_NAME2}
+  namespace: ${NS_SECONDARY}
+spec:
+  vaultAuthRef: ${NS_APP}/${VAULT_AUTH_NAME}
+  mount: ${MOUNT}
+  type: kv-v2
+  path: ${OPENBAO_SECRET_PATH}
+  refreshAfter: 10s
+  destination:
+    create: true
+    name: ${K8S_SECRET_NAME2}
+EOF
+
+echo "- Check the secret synchronizes correctly in the cluster <$CLUSTER_NAME>."
+
+echo "- Waiting for the synchronization to be ok"
 timeout 20s bash -c "until $KUBECTL get secret $K8S_SECRET_NAME --namespace=$NS_SECONDARY &>/dev/null; do printf \".\"; sleep 0.2; done"
 
 [ $? -ne 0 ] && echo "uhoh! We did not find the secret, check your setup!" && \
