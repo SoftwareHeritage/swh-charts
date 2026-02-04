@@ -2907,7 +2907,10 @@ alter:
             Dlique: age1qwu50kncctmpky7gg5s0v4mt4fzc4wjwj6mfjzhtk3wn6pspkyksmsmhze
 
 # Luigi's scheduler url to access
-luigiSchedulerUrl: http://luigi-scheduler-ingress:80
+# luigi scheduler kubernetes service
+luigiSchedulerUrl: http://luigi-scheduler:8082
+# luigi scheduler ingress
+# luigiSchedulerUrl: http://luigi-scheduler-ingress:80
 
 # s3 access to bucket for dataset upload
 datasetUploadS3Configuration:
