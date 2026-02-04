@@ -123,7 +123,7 @@ metadata:
   namespace: metallb
 spec:
   addresses:
-    - ${OPENBAO_INGRESS_IP}/24
+    - ${ADMIN_INGRESS_IP}/24
   serviceAllocation:
     namespaces:
     - ingress-nginx
@@ -149,9 +149,9 @@ server:
   # Add some extra dns records so we don't need an extra dns
   hostAliases:
   # Make openbao ingress hostname resolvable in-cluster too
-  - ip: ${OPENBAO_INGRESS_IP}
+  - ip: ${ADMIN_INGRESS_IP}
     hostnames:
-    - ${OPENBAO_INGRESS_HOSTNAME}
+    - ${ADMIN_INGRESS_HOSTNAME}
   # Enable the dev mode (in-memory)
   dev:
     enabled: true
@@ -160,11 +160,11 @@ server:
     enabled: true
     ingressClassName: nginx
     hosts:
-    - host: ${OPENBAO_INGRESS_HOSTNAME}
+    - host: ${ADMIN_INGRESS_HOSTNAME}
     tls:
     - secretName: openbao-tls
       hosts:
-      - ${OPENBAO_INGRESS_HOSTNAME}
+      - ${ADMIN_INGRESS_HOSTNAME}
   volumes:
   - name: ca
     configMap:
@@ -201,7 +201,7 @@ metadata:
 spec:
   secretName: openbao-tls   # will contain tls.crt & tls.key
   dnsNames:
-  - ${OPENBAO_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
+  - ${ADMIN_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
   issuerRef:
     name: shared-ca-issuer
     kind: ClusterIssuer
@@ -214,9 +214,9 @@ cat <<EOF
 ## OpenBAO cluster configured successfully! ##
 
 Configure your local /etc/hosts to access OpenBAO instance through ingress load balancer IP
-echo "${OPENBAO_INGRESS_IP} ${OPENBAO_INGRESS_HOSTNAME}" | sudo tee -a /etc/hosts
+echo "${ADMIN_INGRESS_IP} ${ADMIN_INGRESS_HOSTNAME}" | sudo tee -a /etc/hosts
 
-Access ui at: http://${OPENBAO_INGRESS_HOSTNAME} (token=root)
+Access ui at: http://${ADMIN_INGRESS_HOSTNAME} (token=root)
 
 ##############################################
 EOF
