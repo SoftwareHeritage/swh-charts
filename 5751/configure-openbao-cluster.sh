@@ -148,10 +148,6 @@ server:
   logLevel: trace
   # Add some extra dns records so we don't need an extra dns
   hostAliases:
-  # Make vso ingress hostname resolvable
-  - ip: ${VSO_INGRESS_IP}
-    hostnames:
-    - ${VSO_INGRESS_HOSTNAME}
   # Make openbao ingress hostname resolvable in-cluster too
   - ip: ${OPENBAO_INGRESS_IP}
     hostnames:
