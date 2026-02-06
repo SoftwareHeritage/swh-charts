@@ -321,7 +321,7 @@ storage:
         threads: 4
       autoScaling:
         type: keda
-        minReplicaCount: 2
+        minReplicaCount: 10
         maxReplicaCount: 10
         # add margin to avoid any error if there is a peak of requests
         factor: 1.5
@@ -408,7 +408,7 @@ web:
         timeout: 110
       autoScaling:
         type: keda
-        minReplicaCount: 2
+        minReplicaCount: 8
         maxReplicaCount: 15
         # more is better than less
         # given the 2 threads, 1 should be enough, but more margin is better
@@ -1062,7 +1062,7 @@ objstorage:
         timeout: 60
       autoScaling:
         type: keda
-        minReplicaCount: 2
+        minReplicaCount: 8
         maxReplicaCount: 32
         # more is better than less
         # given the 4 threads, 1 should be enough
@@ -1104,7 +1104,7 @@ objstorage:
       enabled: true
       requestedCpu: 250m
       requestedMemory: 1Gi
-      replicas: 2
+      replicas: 4
       gunicorn:
         workers: 4
         threads: 2
@@ -1173,7 +1173,7 @@ objstorage:
       enabled: true
       requestedCpu: 250m
       requestedMemory: 1Gi
-      replicas: 2
+      replicas: 4
       gunicorn:
         workers: 8
         threads: 1
