@@ -1903,7 +1903,7 @@ listers:
         maxReplicaCount: 1
     forgejo:
       queues:
-      - swh.lister.forgejo.tasks.ForgejoLister
+      - swh.lister.forgejo.tasks.FullForgejoRelister
       autoScaling:
         maxReplicaCount: 1
     hackage:
