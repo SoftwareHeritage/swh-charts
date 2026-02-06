@@ -1906,6 +1906,11 @@ listers:
       - swh.lister.hackage.tasks.HackageListerTask
       autoScaling:
         maxReplicaCount: 1
+    heptapod:
+      queues:
+      - swh.lister.heptapod.tasks.HeptapodLister
+      autoScaling:
+        maxReplicaCount: 1
     hex:
       queues:
       - swh.lister.hex.tasks.HexListerTask
