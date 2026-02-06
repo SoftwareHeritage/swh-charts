@@ -1913,7 +1913,8 @@ listers:
         maxReplicaCount: 1
     heptapod:
       queues:
-      - swh.lister.heptapod.tasks.HeptapodLister
+      - swh.lister.heptapod.tasks.IncrementalHeptapodLister
+      - swh.lister.heptapod.tasks.FullHeptapodRelister
       autoScaling:
         maxReplicaCount: 1
     hex:
