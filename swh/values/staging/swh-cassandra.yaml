@@ -1901,6 +1901,11 @@ listers:
       - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
         maxReplicaCount: 1
+    forgejo:
+      queues:
+      - swh.lister.forgejo.tasks.ForgejoLister
+      autoScaling:
+        maxReplicaCount: 1
     hackage:
       queues:
       - swh.lister.hackage.tasks.HackageListerTask
