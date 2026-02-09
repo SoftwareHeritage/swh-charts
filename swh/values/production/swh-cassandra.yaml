@@ -1807,6 +1807,22 @@ listers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
+    arch:
+      queues:
+        - swh.lister.arch.tasks.ArchListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    aur:
+      queues:
+        - swh.lister.aur.tasks.AurListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    bioconductor:
+      queues:
+        - swh.lister.bioconductor.tasks.BioconductorListerTask
+        - swh.lister.bioconductor.tasks.BioconductorIncrementalListerTask
+      autoScaling:
+        maxReplicaCount: 1
     bower:
       queues:
       - swh.lister.bower.tasks.BowerListerTask
@@ -1825,14 +1841,39 @@ listers:
         - swh.lister.cgit.tasks.CGitListerTask
       autoScaling:
         maxReplicaCount: 2
+    cpan:
+      queues:
+        - swh.lister.cpan.tasks.CpanListerTask
+      autoScaling:
+        maxReplicaCount: 1
     cran:
       queues:
       - swh.lister.cran.tasks.CRANListerTask
       autoScaling:
         maxReplicaCount: 1
+    crates:
+      queues:
+      - swh.lister.crates.tasks.CratesListerTask
+      autoScaling:
+        maxReplicaCount: 1
     debian:
       queues:
         - swh.lister.debian.tasks.DebianListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    dlang:
+      queues:
+      - swh.lister.dlang.tasks.DlangListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    elm:
+      queues:
+      - swh.lister.elm.tasks.ElmListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    forgejo:
+      queues:
+      - swh.lister.forgejo.tasks.FullForgejoRelister
       autoScaling:
         maxReplicaCount: 1
     gitea:
@@ -1883,6 +1924,27 @@ listers:
       queues:
       - swh.lister.golang.tasks.FullGolangLister
       - swh.lister.golang.tasks.IncrementalGolangLister
+      autoScaling:
+        maxReplicaCount: 1
+    hackage:
+      queues:
+      - swh.lister.hackage.tasks.HackageListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    heptapod:
+      queues:
+      - swh.lister.heptapod.tasks.IncrementalHeptapodLister
+      - swh.lister.heptapod.tasks.FullHeptapodRelister
+      autoScaling:
+        maxReplicaCount: 1
+    hex:
+      queues:
+      - swh.lister.hex.tasks.HexListerTask
+      autoScaling:
+        maxReplicaCount: 1
+    julia:
+      queues:
+      - swh.lister.julia.tasks.JuliaListerTask
       autoScaling:
         maxReplicaCount: 1
     launchpad:
@@ -1943,6 +2005,11 @@ listers:
         - swh.lister.pubdev.tasks.PubDevListerTask
       autoScaling:
         maxReplicaCount: 1
+    puppet:
+      queues:
+      - swh.lister.puppet.tasks.PuppetListerTask
+      autoScaling:
+        maxReplicaCount: 1
     pypi:
       queues:
       - swh.lister.pypi.tasks.PyPIListerTask
@@ -1952,6 +2019,11 @@ listers:
       queues:
         - swh.lister.rpm.tasks.FullRPMLister
         - swh.lister.rpm.tasks.IncrementalRPMLister
+      autoScaling:
+        maxReplicaCount: 1
+    rubygems:
+      queues:
+      - swh.lister.rubygems.tasks.RubyGemsListerTask
       autoScaling:
         maxReplicaCount: 1
     save-bulk:
