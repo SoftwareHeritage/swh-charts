@@ -1142,7 +1142,7 @@ scheduler:
       #   adminSecret: scheduler-superuser
       #   database: swh-scheduler
       # When true, check db & code versions and do not start if they diverge
-      check: false
+      check: true
       # When true, migrate or initialize db model
       migrate: false
       # When true, register the scheduler task types
