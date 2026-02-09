@@ -146,7 +146,6 @@ namespaceOverride: ${NS_ARGOCD}
 global:
   domain: ${ARGOCD_HOSTNAME}
 server:
-  insecure: true
   certificate:
     enabled: true
     issuer:
