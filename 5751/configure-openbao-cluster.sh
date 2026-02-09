@@ -94,7 +94,8 @@ ${HELM} repo add jetstack https://charts.jetstack.io
 ${HELM} repo add metallb https://metallb.github.io/metallb
 ${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ${HELM} repo add openbao https://openbao.github.io/openbao-helm
-${HELM} repo update jetstack metallb ingress-nginx openbao
+${HELM} repo add argo https://argoproj.github.io/argo-helm
+${HELM} repo update jetstack metallb ingress-nginx openbao argo
 
 install_or_skip cert-manager jetstack/cert-manager \
   --namespace cert-manager \
@@ -102,18 +103,83 @@ install_or_skip cert-manager jetstack/cert-manager \
 install_or_skip metallb metallb/metallb --namespace metallb
 install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
-argocd_version=v3.2.3
-argocd_ns=argocd
-ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
-# ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-execute_or_skip $KUBECTL create namespace ${argocd_ns}
-execute_or_skip $KUBECTL apply -n ${argocd_ns} -f ${ARGOCD_URL}
-
-execute_or_skip ${KUBECTL} create namespace "${NS_OPENBAO}"
+ARGOCD_HOSTNAME=argocd.local
+NS_ARGOCD=argocd
+execute_or_skip $KUBECTL create namespace ${NS_ARGOCD}
 
 # Inject shared ca
 execute_or_skip ${KUBECTL} create secret tls shared-ca \
   --namespace cert-manager --cert=$CA_CERT_FILECRT --key=$CA_CERT_FILEKEY
+
+# Create shared-ca cluster issuer for local certificate generation
+${KUBECTL} apply -f - <<EOF
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: shared-ca-issuer
+spec:
+  ca:
+    secretName: shared-ca
+EOF
+
+# Create certificate for the argocd ingress
+# $KUBECTL apply -f - <<EOF
+# ---
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: argocd-server-tls
+#   namespace: ${NS_ARGOCD}
+# spec:
+#   secretName: argocd-server-tls
+#   dnsNames:
+#   - ${ARGOCD_HOSTNAME}
+#   issuerRef:
+#     name: shared-ca-issuer
+#     kind: ClusterIssuer
+# EOF
+
+ARGOCD_VALUES_FILE=$TEMP_DIR/argocd-values.yaml
+cat > "${ARGOCD_VALUES_FILE}" << EOF
+namespaceOverride: ${NS_ARGOCD}
+global:
+  domain: ${ARGOCD_HOSTNAME}
+server:
+  insecure: true
+  certificate:
+    enabled: true
+    issuer:
+      kind: ClusterIssuer
+      name: shared-ca-issuer
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    tls: true
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      # If you encounter a redirect loop or are getting a 307 response code
+      # then you need to force the nginx ingress to connect to the backend
+      # using HTTPS.
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+EOF
+
+# Install argocd
+install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
+      --create-namespace
+
+${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s \
+  -n "${NS_ARGOCD}" \
+  --selector "app.kubernetes.io/name=argocd-server"
+
+ARGOCD_ADMIN_PASS=$($KUBECTL \
+  -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d)
+
+execute_or_skip ${KUBECTL} create namespace "${NS_OPENBAO}"
+
+# Copy into bao ns
 execute_or_skip ${KUBECTL} create configmap \
   --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
@@ -193,14 +259,6 @@ install_or_skip openbao openbao/openbao \
 ${KUBECTL} apply -f - <<EOF
 ---
 apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: shared-ca-issuer
-spec:
-  ca:
-    secretName: shared-ca
----
-apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: openbao-tls
@@ -222,8 +280,10 @@ cat <<EOF
 
 Configure your local /etc/hosts to access OpenBAO instance through ingress load balancer IP
 echo "${ADMIN_INGRESS_IP} ${ADMIN_INGRESS_HOSTNAME}" | sudo tee -a /etc/hosts
+echo "${ADMIN_INGRESS_IP} ${ARGOCD_HOSTNAME}" | sudo tee -a /etc/hosts
 
-Access ui at: http://${ADMIN_INGRESS_HOSTNAME} (token=root)
+Access openbao ui at: http://${ADMIN_INGRESS_HOSTNAME} -> token=root
+Access argocd ui at: http://${ARGOCD_HOSTNAME} -> login/pass: admin/${ARGOCD_ADMIN_PASS}
 
 ##############################################
 EOF
