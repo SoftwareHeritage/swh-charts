@@ -1904,11 +1904,6 @@ listers:
         emptyDir:
           medium: Memory
           sizeLimit: 40Gi
-    npm:
-      queues:
-      - swh.lister.npm.tasks.NpmIncrementalListerTask
-      autoScaling:
-        maxReplicaCount: 1
     nixguix:
       queues:
       - swh.lister.nixguix.tasks.NixGuixListerTask
@@ -1918,6 +1913,11 @@ listers:
         # extra extensions to ignore
         extensions_to_ignore:
           - rock
+    npm:
+      queues:
+      - swh.lister.npm.tasks.NpmIncrementalListerTask
+      autoScaling:
+        maxReplicaCount: 1
     opam:
       queues:
       - swh.lister.opam.tasks.OpamListerTask

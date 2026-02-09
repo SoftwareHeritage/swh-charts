@@ -1861,6 +1861,11 @@ listers:
       - swh.lister.elm.tasks.ElmListerTask
       autoScaling:
         maxReplicaCount: 1
+    forgejo:
+      queues:
+      - swh.lister.forgejo.tasks.FullForgejoRelister
+      autoScaling:
+        maxReplicaCount: 1
     gitea:
       queues:
       - swh.lister.gitea.tasks.IncrementalGiteaLister
@@ -1899,11 +1904,6 @@ listers:
       queues:
       - swh.lister.golang.tasks.FullGolangLister
       - swh.lister.golang.tasks.IncrementalGolangLister
-      autoScaling:
-        maxReplicaCount: 1
-    forgejo:
-      queues:
-      - swh.lister.forgejo.tasks.FullForgejoRelister
       autoScaling:
         maxReplicaCount: 1
     hackage:
