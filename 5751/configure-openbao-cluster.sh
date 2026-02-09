@@ -93,7 +93,6 @@ create_shared_ca_files
 ${HELM} repo add jetstack https://charts.jetstack.io
 ${HELM} repo add metallb https://metallb.github.io/metallb
 ${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-${HELM} repo add openbao https://openbao.github.io/openbao-helm
 ${HELM} repo add argo https://argoproj.github.io/argo-helm
 ${HELM} repo update jetstack metallb ingress-nginx openbao argo
 
@@ -212,47 +211,67 @@ spec:
   - "local-metallb-pool-ingress"
 EOF
 
-OPENBAO_VALUES_FILE=$TEMP_DIR/openbao-values.yaml
-cat > "${OPENBAO_VALUES_FILE}" << EOF
-injector:
-  logLevel: trace
-server:
-  logLevel: trace
-  # Add some extra dns records so we don't need an extra dns
-  hostAliases:
-  # Make openbao ingress hostname resolvable in-cluster too
-  - ip: ${ADMIN_INGRESS_IP}
-    hostnames:
-    - ${ADMIN_INGRESS_HOSTNAME}
-  # Enable the dev mode (in-memory)
-  dev:
-    enabled: true
-  # Enable ingress so openbao is reachable from outside the cluster too
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    hosts:
-    - host: ${ADMIN_INGRESS_HOSTNAME}
-    tls:
-    - secretName: openbao-tls
-      hosts:
-      - ${ADMIN_INGRESS_HOSTNAME}
-  volumes:
-  - name: ca
-    configMap:
-      name: shared-ca
-  volumeMounts:
-  - name: ca
-    mountPath: /etc/openbao/ca
-    readOnly: true
-  certs:
-    secretName: openbao-tls
-    caBundle: /etc/openbao/ca/ca.crt
-EOF
+OPENBAO_VERSION=0.25.0
 
-install_or_skip openbao openbao/openbao \
-  --namespace ${NS_OPENBAO} \
-  --values "${OPENBAO_VALUES_FILE}"
+# Let's make argocd install openbao through an argocd application
+$KUBECTL apply -f - <<EOF
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-cluster-openbao
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://openbao.github.io/openbao-helm
+    chart: openbao
+    targetRevision: v${OPENBAO_VERSION}
+    helm:
+      releaseName: openbao
+      values: |
+        injector:
+          logLevel: trace
+        server:
+          # TODO: Use a more resilient and persistent server implementation
+          dev:  # in-memory
+            enabled: true
+          logLevel: trace
+          # Add some extra dns records so we don't need an extra dns
+          hostAliases:
+          # Make openbao ingress hostname resolvable in-cluster too
+          - ip: ${ADMIN_INGRESS_IP}
+            hostnames:
+            - ${ADMIN_INGRESS_HOSTNAME}
+          # Enable ingress so openbao is reachable from outside the cluster too
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+            - host: ${ADMIN_INGRESS_HOSTNAME}
+            tls:
+            - secretName: openbao-tls
+              hosts:
+              - ${ADMIN_INGRESS_HOSTNAME}
+          volumes:
+          - name: ca
+            configMap:
+              name: shared-ca
+          volumeMounts:
+          - name: ca
+            mountPath: /etc/openbao/ca
+            readOnly: true
+          certs:
+            secretName: openbao-tls
+            caBundle: /etc/openbao/ca/ca.crt
+  destination:
+    server: ${CLUSTER_URL}
+    namespace: ${NS_OPENBAO}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+EOF
 
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
 ${KUBECTL} apply -f - <<EOF
