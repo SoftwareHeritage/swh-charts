@@ -2410,19 +2410,6 @@ loaders:
         emptyDir:
           medium: Memory
           sizeLimit: 10Gi
-    pypi:
-      enabled: true
-      requestedMemory: 256Mi
-      requestedCpu: 200m
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 15Gi
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.pypi.tasks.LoadPyPI
-      autoScaling:
-        maxReplicaCount: 1
     pubdev:
       enabled: true
       requestedMemory: 256Mi
@@ -2434,6 +2421,19 @@ loaders:
       image: swh_loader_package_image
       queues:
         - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        maxReplicaCount: 1
+    pypi:
+      enabled: true
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 15Gi
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
         maxReplicaCount: 1
     save-bulk:

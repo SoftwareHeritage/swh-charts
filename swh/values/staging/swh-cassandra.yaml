@@ -202,17 +202,6 @@ loaders:
         - swh.loader.package.arch.tasks.LoadArch
       autoScaling:
         maxReplicaCount: 1
-    aur:
-      enabled: false
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 5Gi
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.aur.tasks.LoadAur
-      autoScaling:
-        maxReplicaCount: 1
     archive:
       enabled: false
       tmpEphemeralStorage:
@@ -224,6 +213,17 @@ loaders:
       image: swh_loader_package_image
       queues:
         - swh.loader.package.archive.tasks.LoadTarball
+      autoScaling:
+        maxReplicaCount: 1
+    aur:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.aur.tasks.LoadAur
       autoScaling:
         maxReplicaCount: 1
     bioconductor:
@@ -262,6 +262,19 @@ loaders:
         - swh.loader.package.cpan.tasks.LoadCpan
       autoScaling:
         maxReplicaCount: 1
+    content:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedCpu: 350m
+      requestedMemory: 150Mi
+      queues:
+        - swh.loader.core.tasks.LoadContent
+      autoScaling:
+        maxReplicaCount: 1
+      image: swh_loader_package_image
     cran:
       enabled: false
       tmpEphemeralStorage:
@@ -300,19 +313,6 @@ loaders:
         emptyDir:
           medium: Memory
           sizeLimit: 5Gi
-    content:
-      enabled: false
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 5Gi
-      requestedCpu: 350m
-      requestedMemory: 150Mi
-      queues:
-        - swh.loader.core.tasks.LoadContent
-      autoScaling:
-        maxReplicaCount: 1
-      image: swh_loader_package_image
     directory:
       enabled: false
       tmpEphemeralStorage:
@@ -452,31 +452,6 @@ loaders:
         - swh.loader.package.golang.tasks.LoadGolang
       autoScaling:
         maxReplicaCount: 1
-    save-code-now:
-      queues:
-        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
-        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
-        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
-        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
-        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
-        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
-        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
-        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
-        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
-        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
-        - save_code_now:swh.loader.core.tasks.LoadTarballDirectory
-      ackLate: true
-      replicas: 2
-      # low profile as there is no autoscaling
-      # and they are doing nothing most of the time
-      requestedMemory: 200Mi
-      requestedCpu: 50m
-      limitedMemory: 15Gi
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 10Gi
     hackage:
       enabled: true
       tmpEphemeralStorage:
@@ -573,6 +548,19 @@ loaders:
         maxReplicaCount: 1
       requestedMemory: 1Gi
       requestedCpu: 1300m
+    pubdev:
+      enabled: false
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.pubdev.tasks.LoadPubDev
+      autoScaling:
+        maxReplicaCount: 1
+      requestedMemory: 256Mi
+      requestedCpu: 800m
     puppet:
       enabled: true
       tmpEphemeralStorage:
@@ -599,19 +587,6 @@ loaders:
         - swh.loader.package.pypi.tasks.LoadPyPI
       autoScaling:
         maxReplicaCount: 1
-    pubdev:
-      enabled: false
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 5Gi
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.pubdev.tasks.LoadPubDev
-      autoScaling:
-        maxReplicaCount: 1
-      requestedMemory: 256Mi
-      requestedCpu: 800m
     rpm:
       enabled: false
       tmpEphemeralStorage:
@@ -655,6 +630,31 @@ loaders:
       ackLate: true
       autoScaling:
         maxReplicaCount: 1
+      requestedMemory: 200Mi
+      requestedCpu: 50m
+      limitedMemory: 15Gi
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 10Gi
+    save-code-now:
+      queues:
+        - save_code_now:swh.loader.bzr.tasks.LoadBazaar
+        - save_code_now:swh.loader.cvs.tasks.LoadCvsRepository
+        - save_code_now:swh.loader.git.tasks.UpdateGitRepository
+        - save_code_now:swh.loader.git.tasks.LoadDiskGitRepository
+        - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
+        - save_code_now:swh.loader.mercurial.tasks.LoadArchiveMercurial
+        - save_code_now:swh.loader.mercurial.tasks.LoadMercurial
+        - save_code_now:swh.loader.svn.tasks.LoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.MountAndLoadSvnRepository
+        - save_code_now:swh.loader.svn.tasks.DumpMountAndLoadSvnRepository
+        - save_code_now:swh.loader.package.archive.tasks.LoadTarball
+        - save_code_now:swh.loader.core.tasks.LoadTarballDirectory
+      ackLate: true
+      replicas: 2
+      # low profile as there is no autoscaling
+      # and they are doing nothing most of the time
       requestedMemory: 200Mi
       requestedCpu: 50m
       limitedMemory: 15Gi
