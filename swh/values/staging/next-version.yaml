@@ -917,12 +917,8 @@ scheduler:
     enabled: true
     schedulerConfigurationRef: postgresqlSchedulerConfiguration
     backend:
-      # check db version with latest code?
-      check: true
       # migrate db?
       migrate: false
-      # register task types?
-      register: true
       # For test or sandboxed environment
       registerListingTask:
         forgeType: list-gitlab-incremental
