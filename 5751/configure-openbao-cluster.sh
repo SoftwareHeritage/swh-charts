@@ -152,7 +152,7 @@ server:
 EOF
 
 # Install argocd
-$HELM upgrade --install argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
+install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
   --namespace ${NS_ARGOCD} \
   --create-namespace
 
