@@ -122,22 +122,10 @@ spec:
     secretName: shared-ca
 EOF
 
-# Create certificate for the argocd ingress
-# $KUBECTL apply -f - <<EOF
-# ---
-# apiVersion: cert-manager.io/v1
-# kind: Certificate
-# metadata:
-#   name: argocd-server-tls
-#   namespace: ${NS_ARGOCD}
-# spec:
-#   secretName: argocd-server-tls
-#   dnsNames:
-#   - ${ARGOCD_HOSTNAME}
-#   issuerRef:
-#     name: shared-ca-issuer
-#     kind: ClusterIssuer
-# EOF
+# Let's wait for the ingress stack to be installed (required for argocd
+# ingress to deploy)
+${KUBECTL} wait deployment --all --for=condition=Available --timeout=60s \
+   -n ingress-nginx
 
 ARGOCD_VALUES_FILE=$TEMP_DIR/argocd-values.yaml
 cat > "${ARGOCD_VALUES_FILE}" << EOF
@@ -164,12 +152,15 @@ server:
 EOF
 
 # Install argocd
-install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
-      --create-namespace
+$HELM upgrade --install argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
+  --namespace ${NS_ARGOCD} \
+  --create-namespace
 
-${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s \
-  -n "${NS_ARGOCD}" \
-  --selector "app.kubernetes.io/name=argocd-server"
+${KUBECTL} wait deployment -n "${NS_ARGOCD}" --all --for=condition=Available \
+  --timeout=60s
+# ${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s \
+#   -n "${NS_ARGOCD}" \
+#   --selector "app.kubernetes.io/name=argocd-server"
 
 ARGOCD_ADMIN_PASS=$($KUBECTL \
   -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
@@ -182,7 +173,9 @@ execute_or_skip ${KUBECTL} create configmap \
   --namespace "${NS_OPENBAO}" shared-ca --from-file=ca.crt=$CA_CERT_FILECRT
 
 # Enable ingress controller load balancer IP allocation through metallb
-${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s -n metallb
+# Let's wait for the various cogs to be installed though
+${KUBECTL} wait deployment --all --for=condition=Available --timeout=60s \
+   -n metallb
 
 ${KUBECTL} apply -f - <<EOF
 ---
@@ -220,7 +213,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: local-cluster-openbao
-  namespace: argocd
+  namespace: ${NS_ARGOCD}
 spec:
   project: default
   source:
@@ -273,6 +266,16 @@ spec:
       selfHeal: true
 EOF
 
+# Wait for argocd sync window to kick in
+${KUBECTL} wait deployment -n "${NS_OPENBAO}" --all --for=condition=Available \
+  --timeout=60s || \
+  ( echo "Waiting with argocd ns failed... " && \
+    echo "Let's fallback to sleep to give some time for argocd sync window to kick in." \
+    && sleep 5 )
+
+${KUBECTL} wait deployment -n "${NS_OPENBAO}" --all --for=condition=Available \
+  --timeout=60s
+
 # Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
 ${KUBECTL} apply -f - <<EOF
 ---
@@ -280,17 +283,17 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: openbao-tls
-  namespace: openbao   # Helm release namespace
+  namespace: ${NS_OPENBAO}
 spec:
-  secretName: openbao-tls   # will contain tls.crt & tls.key
+  # will contain tls.crt & tls.key
+  secretName: openbao-tls
   dnsNames:
-  - ${ADMIN_INGRESS_HOSTNAME}   # FQDN that the vso pod will use
+  # FQDN that vso pods will use to communicate with openbao
+  - ${ADMIN_INGRESS_HOSTNAME}
   issuerRef:
     name: shared-ca-issuer
     kind: ClusterIssuer
 EOF
-
-${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
 cat <<EOF
 ##############################################
