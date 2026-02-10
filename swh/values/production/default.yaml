@@ -983,6 +983,8 @@ addForgeNowConfiguration:
       secretKeyRef: common-secrets
       secretKeyName: gitlab_afn_token
 
+# Web application common configuration
+esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
 web:
   # Due to the number of cpus on the production nodes
   # nginx starts a lot of workers by default which consumes more memory than the default
@@ -1257,8 +1259,6 @@ remoteROCassandraIngressStorageConfiguration:
 provenanceGrpcConfiguration:
   cls: grpc
   url: provenance-20241206-grpc-ingress:80
-
-esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
 
 depositDynamicConfiguration:
   scheme: http
