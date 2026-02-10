@@ -158,13 +158,6 @@ install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
 
 ${KUBECTL} wait deployment -n "${NS_ARGOCD}" --all --for=condition=Available \
   --timeout=60s
-# ${KUBECTL} wait pod --all --for=condition=Ready --timeout=60s \
-#   -n "${NS_ARGOCD}" \
-#   --selector "app.kubernetes.io/name=argocd-server"
-
-ARGOCD_ADMIN_PASS=$($KUBECTL \
-  -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
-  -o jsonpath="{.data.password}" | base64 -d)
 
 execute_or_skip ${KUBECTL} create namespace "${NS_OPENBAO}"
 
@@ -294,6 +287,29 @@ spec:
     name: shared-ca-issuer
     kind: ClusterIssuer
 EOF
+
+# Manipulate argocd to configure its password to a basic one to ease local
+# manipulation
+ARGOCD_ADMIN_PASS=rootroot
+ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
+  -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d)
+
+# Assuming the login the first time around is ok, we will update the password
+# after that, we will ignore the error
+execute_or_skip \
+  argocd login ${ARGOCD_HOSTNAME} \
+    --grpc-web \
+    --insecure \
+    --username admin \
+    --password "${ARGOCD_ADMIN_INITIAL_PWD}" && \
+    execute_or_skip \
+      argocd account update-password \
+        --server ${ARGOCD_HOSTNAME} \
+        --insecure \
+        --account admin \
+        --current-password "${ARGOCD_ADMIN_INITIAL_PWD}" \
+        --new-password "${ARGOCD_ADMIN_PASS}"
 
 cat <<EOF
 ##############################################
