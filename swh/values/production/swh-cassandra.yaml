@@ -488,7 +488,6 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
-      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -569,7 +568,6 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
-      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
@@ -640,7 +638,6 @@ web:
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
       historyCountersUrlRef: historyCountersUrl
-      esWorkersIndexUrlRef: esWorkersIndexUrl
       djangoConfigurationRef: djangoWebConfiguration
       giveConfigurationRef: giveConfiguration
       throttlingConfigurationRef: webThrottling
