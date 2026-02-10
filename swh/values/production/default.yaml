@@ -985,6 +985,8 @@ addForgeNowConfiguration:
 
 # Web application common configuration
 esWorkersIndexUrl: http://esnode1.internal.softwareheritage.org:9200/swh_workers-*
+historyCountersUrl: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
+
 web:
   # Due to the number of cpus on the production nodes
   # nginx starts a lot of workers by default which consumes more memory than the default

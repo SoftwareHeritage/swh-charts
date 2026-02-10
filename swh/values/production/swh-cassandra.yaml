@@ -394,8 +394,6 @@ postgresqlWebConfiguration:
       secretKeyRef: swh-postgresql-web-secrets
       secretKeyName: postgres-swh-web-password
 
-historyCountersUrl: http://counters-rpc-ingress-swh-cassandra/counters_history/history.json#
-
 web:
   enabled: true
   logLevel: INFO
