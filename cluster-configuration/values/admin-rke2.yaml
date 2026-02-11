@@ -70,6 +70,9 @@ netbox:
         - host: netbox.internal.admin.swh.network
           paths:
             - /
+        - host: inventory.internal.admin.swh.network
+          paths:
+            - /
       annotations:
         kubernetes.io/tls-acme: "true"
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -79,6 +82,7 @@ netbox:
       - secretName: admin-rke2-netbox-tls
         hosts:
           - netbox.internal.admin.swh.network
+          - inventory.internal.admin.swh.network
     email:
       server: smtp.inria.fr
       port: 25
