@@ -94,6 +94,7 @@ ${HELM} repo add jetstack https://charts.jetstack.io
 ${HELM} repo add metallb https://metallb.github.io/metallb
 ${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 ${HELM} repo add argo https://argoproj.github.io/argo-helm
+${HELM} repo add openbao https://openbao.github.io/openbao-helm
 ${HELM} repo update jetstack metallb ingress-nginx openbao argo
 
 install_or_skip cert-manager jetstack/cert-manager \
