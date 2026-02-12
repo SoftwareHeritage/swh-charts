@@ -42,3 +42,17 @@ Additional specific directories exist:
 
 Those charts rely on secrets which are installed through other applications
 (relying on the "k8s-private-data" private repository).
+
+Dependency tools
+----------------
+
+- kubectl: https://kubernetes.io/docs/tasks/tools/#kubectl
+- helm: https://helm.sh/
+- (Optional) k9s: https://k9scli.io/
+
+local-cluster
+^^^^^^^^^^^^^
+
+For the local-cluster deployment, either one of the following is necessary:
+- kind: https://kind.sigs.k8s.io/
+- minikube: https://minikube.sigs.k8s.io/docs/
