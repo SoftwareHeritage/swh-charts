@@ -762,6 +762,8 @@ toolbox:
       storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
+    web:
+      webDbConfigurationRef: postgresqlWebConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
 
