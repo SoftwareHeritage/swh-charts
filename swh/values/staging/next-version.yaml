@@ -1399,7 +1399,7 @@ volumes:
 graph:
   enabled: true
   # Version used to generate the latest compressed graph
-  imageVersion: "20251003.1"
+  imageVersion: "20260212.1"
   deployments:
     # grpc graph with test dataset
     grpc-example:
