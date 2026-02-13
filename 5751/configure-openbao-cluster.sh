@@ -153,8 +153,10 @@ server:
 EOF
 
 # Install argocd
+ARGOCD_VERSION=9.4.1
 install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
   --namespace ${NS_ARGOCD} \
+  --version ${ARGOCD_VERSION} \
   --create-namespace
 
 ${KUBECTL} wait deployment -n "${NS_ARGOCD}" --all --for=condition=Available \

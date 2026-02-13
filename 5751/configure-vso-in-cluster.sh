@@ -76,10 +76,98 @@ create_shared_ca_files
 execute_or_skip ${KUBECTL} create namespace "${NS_VSO}"
 execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
+${HELM} repo add metallb https://metallb.github.io/metallb
+${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+${HELM} repo update jetstack metallb ingress-nginx openbao argo
+
+install_or_skip cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --set crds.enabled=true --set installCRDs=true
+install_or_skip metallb metallb/metallb --namespace metallb
+install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
+
 # Inject shared ca
 execute_or_skip ${KUBECTL} delete secret shared-ca --namespace "${NS_VSO}"
 ${KUBECTL} create secret generic shared-ca --namespace "${NS_VSO}" \
            --from-file=ca.crt=$CA_CERT_FILECRT
+
+# Let's wait for the ingress stack to be installed (required for argocd
+# ingress to deploy)
+${KUBECTL} wait pods --all --for=condition=Ready --timeout=60s \
+   -n metallb
+
+${KUBECTL} wait pods --all --for=condition=Ready --timeout=60s \
+   -n ingress-nginx
+
+${KUBECTL} apply -f - <<EOF
+---
+# Source: cluster-config/templates/metallb/ipaddresspools.yaml
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: "local-metallb-pool-ingress"
+  namespace: metallb
+spec:
+  addresses:
+    - ${PRODUCTION_INGRESS_IP}/32
+  serviceAllocation:
+    namespaces:
+    - ingress-nginx
+    priority: 50
+---
+# Source: cluster-config/templates/metallb/ipaddresspools.yaml
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: "l2-advertisement-ingress"
+  namespace: metallb
+spec:
+  ipAddressPools:
+  - "local-metallb-pool-ingress"
+EOF
+
+# Create a cluster issuer shared-ca-issuer and generate a certificate for openbao
+${KUBECTL} apply -f - <<EOF
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: shared-ca-issuer
+spec:
+  ca:
+    secretName: shared-ca
+EOF
+
+${KUBECTL} apply -f - <<EOF
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubeapi
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    cert-manager.io/cluster-issuer: "shared-ca-issuer"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - "${PRODUCTION_INGRESS_HOSTNAME}"
+    secretName: production-ingress-tls
+  rules:
+  - host: "${PRODUCTION_INGRESS_HOSTNAME}"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: kubernetes
+            port:
+              number: 443
+EOF
 
 VSO_VALUES_FILE=$TEMP_DIR/vso-values.yaml
 cat > "${VSO_VALUES_FILE}" << EOF
@@ -92,6 +180,9 @@ controller:
     - ip: ${ADMIN_INGRESS_IP}
       hostnames:
       - ${ADMIN_INGRESS_HOSTNAME}
+    - ip: ${PRODUCTION_INGRESS_IP}
+      hostnames:
+      - ${PRODUCTION_INGRESS_HOSTNAME}
 defaultVaultConnection:
   enabled: true
   address: https://${ADMIN_INGRESS_HOSTNAME}
