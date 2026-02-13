@@ -128,8 +128,6 @@ spec:
             {{- end }}
             - name: LUIGI_PATH_TO_PIDFILE
               value: {{ $path }}/pid
-            - name: LUIGI_PATH_TO_LOGDIR
-              value: {{ $path }}/log
             - name: LUIGI_PATH_TO_STATEFILE
               value: {{ $path }}/state
             - name: LUIGI_CONFIG_PATH
