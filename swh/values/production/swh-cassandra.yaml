@@ -1789,6 +1789,8 @@ cookers:
       autoScaling:
         minReplicaCount: 1
         maxReplicaCount: 10
+      requestedMemory: 2Gi
+      limitedMemory: 10Gi
     # According to current data, only the previous cooking task are running, hence the
     # lower number of pods
     batch:
