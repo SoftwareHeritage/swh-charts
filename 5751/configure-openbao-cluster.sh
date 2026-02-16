@@ -104,7 +104,6 @@ install_or_skip metallb metallb/metallb --namespace metallb
 install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
 ARGOCD_HOSTNAME=argocd.local
-NS_ARGOCD=argocd
 execute_or_skip $KUBECTL create namespace ${NS_ARGOCD}
 
 # Inject shared ca
@@ -141,6 +140,11 @@ global:
   - ip: ${PRODUCTION_INGRESS_IP}
     hostnames:
     - ${PRODUCTION_INGRESS_HOSTNAME}
+crds:
+  # Install and upgrade CRDs
+  install: true
+  # Drop CRDs on chart uninstall
+  keep: false
 server:
   certificate:
     enabled: true
@@ -158,6 +162,10 @@ server:
       # then you need to force the nginx ingress to connect to the backend
       # using HTTPS.
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+secret:
+  # htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/
+  # rootroot
+  argocdServerAdminPassword: "$2a$10$nsKk.wfDSNLY3b5sOPFCAej5BPt7fboVeOjLCHPaVAZ8wqdmc8xty"
 EOF
 
 # Install argocd
@@ -302,25 +310,25 @@ EOF
 # Manipulate argocd to configure its password to a basic one to ease local
 # manipulation
 ARGOCD_ADMIN_PASS=rootroot
-ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
-  -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
-  -o jsonpath="{.data.password}" | base64 -d)
+# ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
+#   -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
+#   -o jsonpath="{.data.password}" | base64 -d)
 
 # Assuming the login the first time around is ok, we will update the password
 # after that, we will ignore the error
-execute_or_skip \
-  argocd login ${ARGOCD_HOSTNAME} \
-    --grpc-web \
-    --insecure \
-    --username admin \
-    --password "${ARGOCD_ADMIN_INITIAL_PWD}" && \
-    execute_or_skip \
-      argocd account update-password \
-        --server ${ARGOCD_HOSTNAME} \
-        --insecure \
-        --account admin \
-        --current-password "${ARGOCD_ADMIN_INITIAL_PWD}" \
-        --new-password "${ARGOCD_ADMIN_PASS}"
+# execute_or_skip \
+#   argocd login ${ARGOCD_HOSTNAME} \
+#     --grpc-web \
+#     --insecure \
+#     --username admin \
+#     --password "${ARGOCD_ADMIN_INITIAL_PWD}" && \
+#     execute_or_skip \
+#       argocd account update-password \
+#         --server ${ARGOCD_HOSTNAME} \
+#         --insecure \
+#         --account admin \
+#         --current-password "${ARGOCD_ADMIN_INITIAL_PWD}" \
+#         --new-password "${ARGOCD_ADMIN_PASS}"
 
 cat <<EOF
 ##############################################

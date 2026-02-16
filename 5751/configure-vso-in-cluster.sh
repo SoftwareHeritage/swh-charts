@@ -270,3 +270,51 @@ spec:
   allowedNamespaces:
     - "*"
 EOF
+
+
+if [ "${CLUSTER_NAME}" != "admin" ]; then
+  KUBECFG_PRODFILE=$TEMP_DIR/local-cluster-production.yaml
+  # Retrieve the kind configuration for that cluster
+  kind get kubeconfig --name $CLUSTER_CONTEXT_PRODUCTION > ${KUBECFG_PRODFILE}
+  # Then adapt to use the kubernetes ingress api instead of the host related
+  # access (which is not possible from the "admin" cluster)
+  URL_TO_REPLACE=$(awk '/server: /{print $2}' ${KUBECFG_PRODFILE})
+  CLUSTER_PROD_FQDN="https://${PRODUCTION_INGRESS_HOSTNAME}"
+  sed -i "s#${URL_TO_REPLACE}#${CLUSTER_PROD_FQDN}#gi" ${KUBECFG_PRODFILE}
+
+  CLUSTER_REFNAME="kind-local-production-cluster"
+  SECRET_REFNAME="${CLUSTER_REFNAME}-secret"
+
+  execute_or_skip $KUBECTL_ADMIN delete secret -n ${NS_ARGOCD} \
+    ${SECRET_REFNAME}
+
+  # FIXME: Call argocd cluster add even though it's not fully finishing with
+  # success It's specific to the local cluster and won't be used that way in
+  # production any ways.  This cli call will create a service account, cluster
+  # role and cluster role binding in the argocd-manager namespace with the
+  # sufficient privileges (possibly!?)
+
+  TOKEN_ACCESS=$($KUBECTL_PRODUCTION create token argocd-manager -n kube-system)
+
+  ${KUBECTL_ADMIN} apply -f - << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${SECRET_REFNAME}
+  namespace: ${NS_ARGOCD}
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: ${CLUSTER_REFNAME}
+  server: ${CLUSTER_PROD_FQDN}
+  config: |
+    {
+      "bearerToken": "${TOKEN_ACCESS}",
+      "tlsClientConfig": {
+        "insecure": true
+      }
+    }
+EOF
+
+fi
