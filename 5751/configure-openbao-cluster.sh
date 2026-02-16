@@ -183,7 +183,7 @@ metadata:
   namespace: metallb
 spec:
   addresses:
-    - ${ADMIN_INGRESS_IP}/24
+    - ${ADMIN_INGRESS_IP}/32
   serviceAllocation:
     namespaces:
     - ingress-nginx
