@@ -76,9 +76,11 @@ create_shared_ca_files
 execute_or_skip ${KUBECTL} create namespace "${NS_VSO}"
 execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
+${HELM} repo add jetstack https://charts.jetstack.io
 ${HELM} repo add metallb https://metallb.github.io/metallb
 ${HELM} repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-${HELM} repo update jetstack metallb ingress-nginx openbao argo
+# ${HELM} repo add hashicorp https://helm.releases.hashicorp.com/
+${HELM} repo update jetstack metallb ingress-nginx
 
 install_or_skip cert-manager jetstack/cert-manager \
   --namespace cert-manager \
