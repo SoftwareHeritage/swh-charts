@@ -171,30 +171,99 @@ spec:
               number: 443
 EOF
 
-VSO_VALUES_FILE=$TEMP_DIR/vso-values.yaml
-cat > "${VSO_VALUES_FILE}" << EOF
-controller:
-  manager:
-    logging:
-      level: trace
-  hostAliases:
-    # Make openbao ingress hostname resolvable
-    - ip: ${ADMIN_INGRESS_IP}
-      hostnames:
-      - ${ADMIN_INGRESS_HOSTNAME}
-    - ip: ${PRODUCTION_INGRESS_IP}
-      hostnames:
-      - ${PRODUCTION_INGRESS_HOSTNAME}
-defaultVaultConnection:
-  enabled: true
-  address: https://${ADMIN_INGRESS_HOSTNAME}
-  caCertSecret: shared-ca
+CLUSTER_FQDN="https://kubernetes.default.svc"
+if [ "${CLUSTER_NAME}" != "admin" ]; then
+  KUBECFG_PRODFILE=$TEMP_DIR/local-cluster-production.yaml
+  # Retrieve the kind configuration for that cluster
+  kind get kubeconfig --name $CLUSTER_CONTEXT_PRODUCTION > ${KUBECFG_PRODFILE}
+  # Then adapt to use the kubernetes ingress api instead of the host related
+  # access (which is not possible from the "admin" cluster)
+  URL_TO_REPLACE=$(awk '/server: /{print $2}' ${KUBECFG_PRODFILE})
+  CLUSTER_FQDN="https://${PRODUCTION_INGRESS_HOSTNAME}"
+  sed -i "s#${URL_TO_REPLACE}#${CLUSTER_FQDN}#gi" ${KUBECFG_PRODFILE}
+
+  CLUSTER_REFNAME="kind-local-production-cluster"
+  SECRET_REFNAME="${CLUSTER_REFNAME}-secret"
+
+  execute_or_skip $KUBECTL_ADMIN delete secret -n ${NS_ARGOCD} \
+    ${SECRET_REFNAME}
+
+  # FIXME: Call argocd cluster add even though it's not fully finishing with
+  # success It's specific to the local cluster and won't be used that way in
+  # production any ways.  This cli call will create a service account, cluster
+  # role and cluster role binding in the argocd-manager namespace with the
+  # sufficient privileges (possibly!?)
+
+  TOKEN_ACCESS=$($KUBECTL_PRODUCTION create token argocd-manager -n kube-system)
+
+  ${KUBECTL_ADMIN} apply -f - << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ${SECRET_REFNAME}
+  namespace: ${NS_ARGOCD}
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: ${CLUSTER_REFNAME}
+  server: ${CLUSTER_FQDN}
+  config: |
+    {
+      "bearerToken": "${TOKEN_ACCESS}",
+      "tlsClientConfig": {
+        "insecure": true
+      }
+    }
 EOF
 
-# https://github.com/hashicorp/vault-secrets-operator/blob/main/chart/values.yaml
-install_or_skip vault-secrets-operator hashicorp/vault-secrets-operator \
-                --namespace "${NS_VSO}" \
-                --values "${VSO_VALUES_FILE}"
+fi
+
+VSO_VERSION=1.1.0
+# Now that argocd is configured properly to deal with the other cluster, let's
+# install vso with argocd!
+$KUBECTL_ADMIN apply -f - <<EOF
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: local-cluster-vso
+  namespace: ${NS_ARGOCD}
+spec:
+  project: default
+  source:
+    repoURL: https://helm.releases.hashicorp.com/
+    chart: vault-secrets-operator
+    targetRevision: v${VSO_VERSION}
+    helm:
+      releaseName: vso
+      values: |
+        controller:
+          manager:
+            logging:
+              level: trace
+          hostAliases:
+            - ip: ${ADMIN_INGRESS_IP}
+              hostnames:
+              - ${ADMIN_INGRESS_HOSTNAME}
+            - ip: ${PRODUCTION_INGRESS_IP}
+              hostnames:
+              - ${PRODUCTION_INGRESS_HOSTNAME}
+        defaultVaultConnection:
+          enabled: true
+          address: https://${ADMIN_INGRESS_HOSTNAME}
+          caCertSecret: shared-ca
+  destination:
+    server: ${CLUSTER_FQDN}
+    namespace: ${NS_VSO}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+EOF
+
+${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
+  --timeout=60s
 
 execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
@@ -272,51 +341,3 @@ spec:
   allowedNamespaces:
     - "*"
 EOF
-
-
-if [ "${CLUSTER_NAME}" != "admin" ]; then
-  KUBECFG_PRODFILE=$TEMP_DIR/local-cluster-production.yaml
-  # Retrieve the kind configuration for that cluster
-  kind get kubeconfig --name $CLUSTER_CONTEXT_PRODUCTION > ${KUBECFG_PRODFILE}
-  # Then adapt to use the kubernetes ingress api instead of the host related
-  # access (which is not possible from the "admin" cluster)
-  URL_TO_REPLACE=$(awk '/server: /{print $2}' ${KUBECFG_PRODFILE})
-  CLUSTER_PROD_FQDN="https://${PRODUCTION_INGRESS_HOSTNAME}"
-  sed -i "s#${URL_TO_REPLACE}#${CLUSTER_PROD_FQDN}#gi" ${KUBECFG_PRODFILE}
-
-  CLUSTER_REFNAME="kind-local-production-cluster"
-  SECRET_REFNAME="${CLUSTER_REFNAME}-secret"
-
-  execute_or_skip $KUBECTL_ADMIN delete secret -n ${NS_ARGOCD} \
-    ${SECRET_REFNAME}
-
-  # FIXME: Call argocd cluster add even though it's not fully finishing with
-  # success It's specific to the local cluster and won't be used that way in
-  # production any ways.  This cli call will create a service account, cluster
-  # role and cluster role binding in the argocd-manager namespace with the
-  # sufficient privileges (possibly!?)
-
-  TOKEN_ACCESS=$($KUBECTL_PRODUCTION create token argocd-manager -n kube-system)
-
-  ${KUBECTL_ADMIN} apply -f - << EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: ${SECRET_REFNAME}
-  namespace: ${NS_ARGOCD}
-  labels:
-    argocd.argoproj.io/secret-type: cluster
-type: Opaque
-stringData:
-  name: ${CLUSTER_REFNAME}
-  server: ${CLUSTER_PROD_FQDN}
-  config: |
-    {
-      "bearerToken": "${TOKEN_ACCESS}",
-      "tlsClientConfig": {
-        "insecure": true
-      }
-    }
-EOF
-
-fi
