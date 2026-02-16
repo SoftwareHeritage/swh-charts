@@ -133,6 +133,14 @@ cat > "${ARGOCD_VALUES_FILE}" << EOF
 namespaceOverride: ${NS_ARGOCD}
 global:
   domain: ${ARGOCD_HOSTNAME}
+  hostAliases:
+  # Make openbao ingress hostname resolvable in-cluster too
+  - ip: ${ADMIN_INGRESS_IP}
+    hostnames:
+    - ${ADMIN_INGRESS_HOSTNAME}
+  - ip: ${PRODUCTION_INGRESS_IP}
+    hostnames:
+    - ${PRODUCTION_INGRESS_HOSTNAME}
 server:
   certificate:
     enabled: true
@@ -154,7 +162,7 @@ EOF
 
 # Install argocd
 ARGOCD_VERSION=9.4.1
-install_or_skip argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
+$HELM upgrade --install argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
   --namespace ${NS_ARGOCD} \
   --version ${ARGOCD_VERSION} \
   --create-namespace
