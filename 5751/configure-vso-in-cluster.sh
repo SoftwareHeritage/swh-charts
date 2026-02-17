@@ -276,26 +276,32 @@ ${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
 ${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
   --timeout=60s
 
-execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
+echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 
-### BEGIN tests ###
+# See documentation and examples here:
+# https://developer.hashicorp.com/vault/api-docs/system/mounts
+# https://support.hashicorp.com/hc/en-us/articles/4412233931667-Translate-Vault-CLI-commands-to-HTTP-API
+# https://gist.github.com/exAspArk/e210523a4bcb988cdfb24a114d46ddf0
 
 PAYLOAD_FILE="${TEMP_DIR}/payload.json"
 cat > "${PAYLOAD_FILE}" << EOF
 {
-  "max_versions": 0
+  "type":"kv-v2",
+  "options": {
+    "version": "2"
+  }
 }
 EOF
 
+# TODO remove '-k' ?
 curl \
     --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+    --header "X-Vault-Request: true" \
     --request POST \
     --data "@${PAYLOAD_FILE}" -k \
-    "https://${ADMIN_INGRESS_HOSTNAME}/v1/${MOUNT}-2/config"
+    "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}"
 
 exit 0
-### END tests ###
-
 
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
