@@ -286,7 +286,7 @@ echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 PAYLOAD_FILE="${TEMP_DIR}/payload.json"
 cat > "${PAYLOAD_FILE}" << EOF
 {
-  "type":"kv-v2",
+  "type":"kv",
   "options": {
     "version": "2"
   }
@@ -294,14 +294,38 @@ cat > "${PAYLOAD_FILE}" << EOF
 EOF
 
 # TODO remove '-k' ?
-curl \
+
+echo "GET /v1/sys/mounts/${MOUNT}"
+GET_MOUNT=$(curl \
     --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
     --header "X-Vault-Request: true" \
-    --request POST \
-    --data "@${PAYLOAD_FILE}" -k \
-    "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}"
+    --request GET \
+    -k \
+    "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}")
 
-exit 0
+ERRORS_COUNT=$(echo "${GET_MOUNT}" | jq '.errors | length')
+if [ "${ERRORS_COUNT}" = "0" ]; then
+  echo "PUT /v1/sys/mounts/${MOUNT}/tune"
+  curl \
+      --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+      --header "X-Vault-Request: true" \
+      --request PUT \
+      -k \
+      "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}/tune"
+else
+  echo "POST /v1/sys/mounts/${MOUNT}"
+  curl \
+      --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+      --header "X-Vault-Request: true" \
+      --request POST \
+      --data "@${PAYLOAD_FILE}" -k \
+      "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}"
+fi
+
+
+
+
+
 
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
