@@ -326,7 +326,7 @@ ${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPE
 # Create secret engine
 ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
                       --token ${OPENBAO_DEFAULT_TOKEN} \
-                      enable-secrets-engine ${MOUNT}
+                      enable-secrets-engine ${MOUNT} 2>/dev/null
 
 # Then we create the policy for the future approle to create
 POLICY_FILENAME="${POLICY_NAME}.hcl"
@@ -343,7 +343,7 @@ EOF
 
 ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
                       --token ${OPENBAO_DEFAULT_TOKEN} \
-                      create-policy ${POLICY_NAME} ${POLICY_FILE}
+                      create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
 
 # Finally we attach that policy to the new AppRole we create
 ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
@@ -351,7 +351,7 @@ EOF
                       create-approle \
                         --mount ${MOUNT} \
                         --policy-name ${POLICY_NAME} \
-                        ${ROLE}
+                        ${ROLE} 2>/dev/null
 
 # POD_SCRIPT_FILENAME="configure-bao.sh"
 # POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
@@ -385,7 +385,9 @@ EOF
 
 ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
                                 --token ${OPENBAO_DEFAULT_TOKEN} \
-                                get-approle-id ${ROLE})
+                                get-approle-id ${ROLE} \
+                                --mount ${MOUNT} \
+                                2>/dev/null)
 
 # ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
 #   "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
@@ -393,7 +395,9 @@ ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
 
 SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
                                   --token ${OPENBAO_DEFAULT_TOKEN} \
-                                  create-approle-secret-id ${ROLE})
+                                  create-approle-secret-id ${ROLE} \
+                                  --mount ${MOUNT} \
+                                  2>/dev/null)
 
 # SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
 #   "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
