@@ -11,7 +11,7 @@ swh_coar_notify_worker_image_version: '20251217.1'
 swh_counters_image: container-registry.softwareheritage.org/swh/infra/swh-apps/counters
 swh_counters_image_version: '20251028.1'
 swh_datasets_image: container-registry.softwareheritage.org/swh/infra/swh-apps/datasets
-swh_datasets_image_version: '20260213.2'
+swh_datasets_image_version: '20260217.1'
 swh_deposit_checkers_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit_checkers
 swh_deposit_checkers_image_version: '20251210.1'
 swh_deposit_image: container-registry.softwareheritage.org/swh/infra/swh-apps/deposit
@@ -49,7 +49,7 @@ swh_objstorage_image_version: '20251210.1'
 swh_objstorage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_replayer
 swh_objstorage_replayer_image_version: '20251210.1'
 swh_provenance_image: container-registry.softwareheritage.org/swh/infra/swh-apps/provenance
-swh_provenance_image_version: '20260212.1'
+swh_provenance_image_version: '20260217.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
 swh_scheduler_image_version: '20251210.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
@@ -69,6 +69,6 @@ swh_vault_cookers_image_version: '20260217.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20260217.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20260212.1'
+swh_web_image_version: '20260217.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20251028.1'
