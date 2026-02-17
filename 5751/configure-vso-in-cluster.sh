@@ -11,7 +11,7 @@
 set -e
 
 TEMP_DIR=$(mktemp -d)
-#trap "rm -rf ${TEMP_DIR}" EXIT
+trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -254,7 +254,7 @@ spec:
               - ${PRODUCTION_INGRESS_HOSTNAME}
         defaultVaultConnection:
           enabled: true
-          address: https://${ADMIN_INGRESS_HOSTNAME}
+          address: ${OPENBAO_ENDPOINT}
           caCertSecret: shared-ca
   destination:
     server: ${CLUSTER_FQDN}
@@ -283,50 +283,52 @@ echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 # https://support.hashicorp.com/hc/en-us/articles/4412233931667-Translate-Vault-CLI-commands-to-HTTP-API
 # https://gist.github.com/exAspArk/e210523a4bcb988cdfb24a114d46ddf0
 
-PAYLOAD_FILE="${TEMP_DIR}/payload.json"
-cat > "${PAYLOAD_FILE}" << EOF
-{
-  "type":"kv",
-  "options": {
-    "version": "2"
-  }
-}
-EOF
+# PAYLOAD_FILE="${TEMP_DIR}/payload.json"
+# cat > "${PAYLOAD_FILE}" << EOF
+# {
+#   "type":"kv",
+#   "options": {
+#     "version": "2"
+#   }
+# }
+# EOF
 
 # TODO remove '-k' ?
+# echo "GET /v1/sys/mounts/${MOUNT}"
+# GET_MOUNT=$(curl \
+#     --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+#     --header "X-Vault-Request: true" \
+#     --request GET \
+#     -k \
+#     "${OPENBAO_ENDPOINT}/v1/sys/mounts/${MOUNT}")
 
-echo "GET /v1/sys/mounts/${MOUNT}"
-GET_MOUNT=$(curl \
-    --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
-    --header "X-Vault-Request: true" \
-    --request GET \
-    -k \
-    "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}")
+# ERRORS_COUNT=$(echo "${GET_MOUNT}" | jq '.errors | length')
+# if [ "${ERRORS_COUNT}" = "0" ]; then
+#   echo "PUT /v1/sys/mounts/${MOUNT}/tune"
+#   curl \
+#       --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+#       --header "X-Vault-Request: true" \
+#       --request PUT \
+#       -k \
+#       "${OPENBAO_ENDPOINT}/v1/sys/mounts/${MOUNT}/tune"
+# else
+#   echo "POST /v1/sys/mounts/${MOUNT}"
+#   curl \
+#       --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+#       --header "X-Vault-Request: true" \
+#       --request POST \
+#       --data "@${PAYLOAD_FILE}" -k \
+#       "${OPENBAO_ENDPOINT}/v1/sys/mounts/${MOUNT}"
+# fi
 
-ERRORS_COUNT=$(echo "${GET_MOUNT}" | jq '.errors | length')
-if [ "${ERRORS_COUNT}" = "0" ]; then
-  echo "PUT /v1/sys/mounts/${MOUNT}/tune"
-  curl \
-      --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
-      --header "X-Vault-Request: true" \
-      --request PUT \
-      -k \
-      "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}/tune"
-else
-  echo "POST /v1/sys/mounts/${MOUNT}"
-  curl \
-      --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
-      --header "X-Vault-Request: true" \
-      --request POST \
-      --data "@${PAYLOAD_FILE}" -k \
-      "https://${ADMIN_INGRESS_HOSTNAME}/v1/sys/mounts/${MOUNT}"
-fi
+${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
+# Create secret engine
+./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+                      --token ${OPENBAO_DEFAULT_TOKEN} \
+                      enable-secrets-engine ${MOUNT}
 
-
-
-
-
+# Then we create the policy for the future approle to create
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
 cat > "${POLICY_FILE}" << EOF
@@ -339,45 +341,63 @@ path "${MOUNT}/metadata/*" {
 }
 EOF
 
-POD_SCRIPT_FILENAME="configure-bao.sh"
-POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
-cat > "${POD_SCRIPT_FILE}" << EOF
-#!/usr/bin/env sh
+./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+                      --token ${OPENBAO_DEFAULT_TOKEN} \
+                      create-policy ${POLICY_NAME} ${POLICY_FILE}
 
-${POD_VAULT_CMD} secrets list | grep "${MOUNT}/" || \
-  ${POD_VAULT_CMD} secrets enable -path="${MOUNT}" kv-v2
+# Finally we attach that policy to the new AppRole we create
+./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+                      --token ${OPENBAO_DEFAULT_TOKEN} \
+                      create-approle \
+                        --mount ${MOUNT} \
+                        --policy-name ${POLICY_NAME} \
+                        ${ROLE}
 
-${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
-  ${POD_VAULT_CMD} auth enable -path "${MOUNT}" approle
+# POD_SCRIPT_FILENAME="configure-bao.sh"
+# POD_SCRIPT_FILE="${TEMP_DIR}/${POD_SCRIPT_FILENAME}"
+# cat > "${POD_SCRIPT_FILE}" << EOF
+# #!/usr/bin/env sh
 
-${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
-${POD_VAULT_CMD} policy read "${POLICY_NAME}"
+# ${POD_VAULT_CMD} secrets list | grep "${MOUNT}/" || \
+#   ${POD_VAULT_CMD} secrets enable -path="${MOUNT}" kv-v2
 
-# https://openbao.org/api-docs/auth/approle/#createupdate-approle
-${POD_VAULT_CMD} write auth/${MOUNT}/role/${ROLE} \
-  secret_id_ttl=0 \
-  token_ttl=1h \
-  token_max_ttl=4h \
-  token_policies="${POLICY_NAME}"
-EOF
-chmod +x "${POD_SCRIPT_FILE}"
+# ${POD_VAULT_CMD} auth list | grep "${MOUNT}/" || \
+#   ${POD_VAULT_CMD} auth enable -path "${MOUNT}" approle
 
-${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+# ${POD_VAULT_CMD} policy write "${POLICY_NAME}" "${POD_TEMP_PATH}/${POLICY_FILENAME}"
+# ${POD_VAULT_CMD} policy read "${POLICY_NAME}"
 
-POD_NAME=$(${KUBECTL_ADMIN} get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
-POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
+# # https://openbao.org/api-docs/auth/approle/#createupdate-approle
+# ${POD_VAULT_CMD} write auth/${MOUNT}/role/${ROLE} \
+#   secret_id_ttl=0 \
+#   token_ttl=1h \
+#   token_max_ttl=4h \
+#   token_policies="${POLICY_NAME}"
+# EOF
+# chmod +x "${POD_SCRIPT_FILE}"
 
-${KUBECTL_ADMIN} cp "${POLICY_FILE}" "${POD_DEST_PATH}"
-${KUBECTL_ADMIN} cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
-${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
+# POD_NAME=$(${KUBECTL_ADMIN} get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
+# POD_DEST_PATH="${NS_OPENBAO}/${POD_NAME}":"${POD_TEMP_PATH}"
 
-ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
-  "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
-)
+# ${KUBECTL_ADMIN} cp "${POLICY_FILE}" "${POD_DEST_PATH}"
+# ${KUBECTL_ADMIN} cp "${POD_SCRIPT_FILE}" "${POD_DEST_PATH}"
+# ${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c "${POD_TEMP_PATH}/${POD_SCRIPT_FILENAME}"
 
-SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
-  "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
-)
+ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+                                --token ${OPENBAO_DEFAULT_TOKEN} \
+                                get-approle-id ${ROLE})
+
+# ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+#   "${POD_VAULT_CMD} read -field=role_id auth/${MOUNT}/role/${ROLE}/role-id" \
+# )
+
+SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+                                  --token ${OPENBAO_DEFAULT_TOKEN} \
+                                  create-approle-secret-id ${ROLE})
+
+# SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+#   "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
+# )
 
 ROLE_SECRET_NAME="${ROLE}-secret"
 
