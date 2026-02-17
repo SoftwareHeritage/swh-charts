@@ -182,7 +182,7 @@ if [ "${CLUSTER_NAME}" != "admin" ]; then
   CLUSTER_FQDN="https://${PRODUCTION_INGRESS_HOSTNAME}"
   sed -i "s#${URL_TO_REPLACE}#${CLUSTER_FQDN}#gi" ${KUBECFG_PRODFILE}
 
-  CLUSTER_REFNAME="kind-local-production-cluster"
+  CLUSTER_REFNAME="kind-local-cluster-production"
   SECRET_REFNAME="${CLUSTER_REFNAME}-secret"
 
   execute_or_skip $KUBECTL_ADMIN delete secret -n ${NS_ARGOCD} \
@@ -193,6 +193,9 @@ if [ "${CLUSTER_NAME}" != "admin" ]; then
   # production any ways.  This cli call will create a service account, cluster
   # role and cluster role binding in the argocd-manager namespace with the
   # sufficient privileges (possibly!?)
+
+  argocd cluster add "${CLUSTER_REFNAME}" -y || \
+    echo "argocd cluster add failed, but ServiceAccount, ClusterRole and ClusterRoleBinding should exist now."
 
   TOKEN_ACCESS=$($KUBECTL_PRODUCTION create token argocd-manager -n kube-system)
 
@@ -261,6 +264,14 @@ spec:
       prune: true
       selfHeal: true
 EOF
+
+
+# Wait for argocd sync window to kick in
+${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
+  --timeout=60s || \
+  ( echo "Waiting with argocd ns failed... " && \
+    echo "Let's fallback to sleep to give some time for argocd sync window to kick in." \
+    && sleep 5 )
 
 ${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
   --timeout=60s
