@@ -238,7 +238,7 @@ spec:
         injector:
           logLevel: trace
         server:
-          # TODO: Use a more resilient and persistent server implementation
+          # TODO: Use a more resilient and persistent server implementation (default token: "root")
           dev:  # in-memory
             enabled: true
           logLevel: trace
@@ -338,7 +338,7 @@ Configure your local /etc/hosts to access OpenBAO instance through ingress load 
 echo "${ADMIN_INGRESS_IP} ${ADMIN_INGRESS_HOSTNAME}" | sudo tee -a /etc/hosts
 echo "${ADMIN_INGRESS_IP} ${ARGOCD_HOSTNAME}" | sudo tee -a /etc/hosts
 
-Access openbao ui at: http://${ADMIN_INGRESS_HOSTNAME} -> token=root
+Access openbao ui at: http://${ADMIN_INGRESS_HOSTNAME} -> token=${OPENBAO_DEFAULT_TOKEN}
 Access argocd ui at: http://${ARGOCD_HOSTNAME} -> login/pass: admin/${ARGOCD_ADMIN_PASS}
 
 ##############################################

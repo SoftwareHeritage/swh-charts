@@ -278,6 +278,25 @@ ${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
 
 execute_or_skip ${KUBECTL} create namespace "${NS_APP}"
 
+### BEGIN tests ###
+
+PAYLOAD_FILE="${TEMP_DIR}/payload.json"
+cat > "${PAYLOAD_FILE}" << EOF
+{
+  "max_versions": 0
+}
+EOF
+
+curl \
+    --header "X-Vault-Token: ${OPENBAO_DEFAULT_TOKEN}" \
+    --request POST \
+    --data "@${PAYLOAD_FILE}" -k \
+    "https://${ADMIN_INGRESS_HOSTNAME}/v1/${MOUNT}-2/config"
+
+exit 0
+### END tests ###
+
+
 POLICY_FILENAME="${POLICY_NAME}.hcl"
 POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
 cat > "${POLICY_FILE}" << EOF
