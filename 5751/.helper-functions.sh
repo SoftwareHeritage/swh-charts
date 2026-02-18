@@ -1,3 +1,9 @@
+function check_for_command_or_raise {
+  cmd=$1
+
+  which $cmd >/dev/null || echo "Requires the <$cmd> cli!"
+}
+
 function install_or_skip {
   helm_name=$1; shift
   helm_repo=$1; shift

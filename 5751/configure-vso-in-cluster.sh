@@ -25,6 +25,12 @@ else
   exit 1
 fi
 
+# Ensure the necessary commands are present on machine
+check_for_command_or_raise kubectl || exit 1
+check_for_command_or_raise helm || exit 1
+check_for_command_or_raise kind || exit 1
+check_for_command_or_raise uv || exit 1
+
 DESCRIPTION="Configure the vault-secret-operator in targeted CLUSTER_NAME"
 
 CLUSTER_NAME=$1
