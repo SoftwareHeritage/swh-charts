@@ -1,5 +1,5 @@
 apiVersion: v2
-appVersion: 596
+appVersion: 597
 description: A Helm chart to deploy the softwareheritage stack
 name: swh
 type: application
