@@ -167,10 +167,11 @@ server:
       # then you need to force the nginx ingress to connect to the backend
       # using HTTPS.
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-secret:
-  # htpasswd -nbBC 10 "" $ARGO_PWD | tr -d ':\n' | sed 's/$2y/$2a/
-  # rootroot
-  argocdServerAdminPassword: "$2a$10$nsKk.wfDSNLY3b5sOPFCAej5BPt7fboVeOjLCHPaVAZ8wqdmc8xty"
+configs:
+  secret:
+    # htpasswd -nbBC 10 "" "rootroot" | tr -d ':\n' | sed 's/$2y/$2a/'
+    argocdServerAdminPassword: "$2a$10$s1OuriofJFm3f10N82NE1uNLcl8x6nA0ChTpG3mPnrJ3kFkHaXR/O"
+    argocdServerAdminPasswordMtime: "2026-02-18T16:23:42Z"
 EOF
 
 # Install argocd
