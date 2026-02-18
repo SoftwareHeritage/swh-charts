@@ -11,7 +11,6 @@
 set -e
 
 TEMP_DIR=$(mktemp -d)
-trap "rm -rf ${TEMP_DIR}" EXIT
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -30,6 +29,22 @@ check_for_command_or_raise kubectl || exit 1
 check_for_command_or_raise helm || exit 1
 check_for_command_or_raise kind || exit 1
 check_for_command_or_raise uv || exit 1
+
+# Let's activate the venv
+( [ ! -d "${VENV_DIR}" ] && uv venv "${VENV_DIR}" --python 3.11 ) || \
+  source "${VENV_DIR}/bin/activate"
+
+# Synchronize from the uv.lock
+uv sync
+
+trap _cleanup EXIT
+
+function _cleanup {
+  # Cleanup temporary work directory
+  rm -rf "${TEMP_DIR}"
+  # Deactivate the venv
+  source deactivate
+}
 
 DESCRIPTION="Configure the vault-secret-operator in targeted CLUSTER_NAME"
 
