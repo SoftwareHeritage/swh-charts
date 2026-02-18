@@ -167,11 +167,12 @@ server:
       # then you need to force the nginx ingress to connect to the backend
       # using HTTPS.
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-configs:
-  secret:
-    # htpasswd -nbBC 10 "" "rootroot" | tr -d ':\n' | sed 's/$2y/$2a/'
-    argocdServerAdminPassword: "$2a$10$s1OuriofJFm3f10N82NE1uNLcl8x6nA0ChTpG3mPnrJ3kFkHaXR/O"
-    argocdServerAdminPasswordMtime: "2026-02-18T16:23:42Z"
+# The following should configure the admin password but that just does not work
+# configs:
+#   secret:
+#     # htpasswd -nbBC 10 "" "rootroot" | tr -d ':\n' | sed 's/$2y/$2a/'
+#     argocdServerAdminPassword: "$2a$10$s1OuriofJFm3f10N82NE1uNLcl8x6nA0ChTpG3mPnrJ3kFkHaXR/O"
+#     argocdServerAdminPasswordMtime: "2026-02-18T16:23:42Z"
 EOF
 
 # Install argocd
@@ -316,25 +317,25 @@ EOF
 # Manipulate argocd to configure its password to a basic one to ease local
 # manipulation
 ARGOCD_ADMIN_PASS=rootroot
-# ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
-#   -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
-#   -o jsonpath="{.data.password}" | base64 -d)
+ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
+  -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d)
 
 # Assuming the login the first time around is ok, we will update the password
 # after that, we will ignore the error
-# execute_or_skip \
-#   argocd login ${ARGOCD_HOSTNAME} \
-#     --grpc-web \
-#     --insecure \
-#     --username admin \
-#     --password "${ARGOCD_ADMIN_INITIAL_PWD}" && \
-#     execute_or_skip \
-#       argocd account update-password \
-#         --server ${ARGOCD_HOSTNAME} \
-#         --insecure \
-#         --account admin \
-#         --current-password "${ARGOCD_ADMIN_INITIAL_PWD}" \
-#         --new-password "${ARGOCD_ADMIN_PASS}"
+execute_or_skip \
+  argocd login ${ARGOCD_HOSTNAME} \
+    --grpc-web \
+    --insecure \
+    --username admin \
+    --password "${ARGOCD_ADMIN_INITIAL_PWD}" && \
+    execute_or_skip \
+      argocd account update-password \
+        --server ${ARGOCD_HOSTNAME} \
+        --insecure \
+        --account admin \
+        --current-password "${ARGOCD_ADMIN_INITIAL_PWD}" \
+        --new-password "${ARGOCD_ADMIN_PASS}"
 
 cat <<EOF
 ##############################################
