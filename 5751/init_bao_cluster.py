@@ -6,6 +6,11 @@
 # - write policy access (for an approle)
 # - create said approle
 
+# See documentation and examples here:
+# https://developer.hashicorp.com/vault/api-docs/system/mounts
+# https://support.hashicorp.com/hc/en-us/articles/4412233931667-Translate-Vault-CLI-commands-to-HTTP-API
+# https://gist.github.com/exAspArk/e210523a4bcb988cdfb24a114d46ddf0
+
 import click
 import hvac
 from typing import Optional
