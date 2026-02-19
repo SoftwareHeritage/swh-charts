@@ -306,53 +306,55 @@ echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 
 ${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
-# Create secret engine
-./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-                      --token ${OPENBAO_DEFAULT_TOKEN} \
-                      enable-secrets-engine ${MOUNT} 2>/dev/null
+# # Create secret engine
+# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+#                       --token ${OPENBAO_DEFAULT_TOKEN} \
+#                       enable-secrets-engine ${MOUNT} 2>/dev/null
 
-# Then we create the policy for the future approle to create
-POLICY_FILENAME="${POLICY_NAME}.hcl"
-POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
-cat > "${POLICY_FILE}" << EOF
-path "${MOUNT}/data/*" {
-  capabilities = ["list", "read"]
-}
+# # Then we create the policy for the future approle to create
+# POLICY_FILENAME="${POLICY_NAME}.hcl"
+# POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
+# cat > "${POLICY_FILE}" << EOF
+# path "${MOUNT}/data/*" {
+#   capabilities = ["list", "read"]
+# }
 
-path "${MOUNT}/metadata/*" {
-  capabilities = ["list", "read"]
-}
-EOF
+# path "${MOUNT}/metadata/*" {
+#   capabilities = ["list", "read"]
+# }
+# EOF
 
-./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-                      --token ${OPENBAO_DEFAULT_TOKEN} \
-                      create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
+# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+#                       --token ${OPENBAO_DEFAULT_TOKEN} \
+#                       create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
 
-# Finally we attach that policy to the new AppRole we create
-./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-                      --token ${OPENBAO_DEFAULT_TOKEN} \
-                      create-approle \
-                        --mount ${MOUNT} \
-                        --policy-name ${POLICY_NAME} \
-                        ${ROLE} 2>/dev/null
+# # Finally we attach that policy to the new AppRole we create
+# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+#                       --token ${OPENBAO_DEFAULT_TOKEN} \
+#                       create-approle \
+#                         --mount ${MOUNT} \
+#                         --policy-name ${POLICY_NAME} \
+#                         ${ROLE} 2>/dev/null
 
-ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-                                --token ${OPENBAO_DEFAULT_TOKEN} \
-                                get-approle-id ${ROLE} \
-                                --mount ${MOUNT} \
-                                2>/dev/null)
+# ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+#                                 --token ${OPENBAO_DEFAULT_TOKEN} \
+#                                 get-approle-id ${ROLE} \
+#                                 --mount ${MOUNT} \
+#                                 2>/dev/null)
 
-SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-                                  --token ${OPENBAO_DEFAULT_TOKEN} \
-                                  create-approle-secret-id ${ROLE} \
-                                  --mount ${MOUNT} \
-                                  2>/dev/null)
+# SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+#                                   --token ${OPENBAO_DEFAULT_TOKEN} \
+#                                   create-approle-secret-id ${ROLE} \
+#                                   --mount ${MOUNT} \
+#                                   2>/dev/null)
 
-ROLE_SECRET_NAME="${ROLE}-secret"
+# ROLE_SECRET_NAME="${ROLE}-secret"
 
-execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_APP}"
-${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
-               --from-literal=id="${SECRET_ID}"
+# execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_APP}"
+# ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
+#                --from-literal=id="${SECRET_ID}"
+
+${KUBECTL} apply -f ./bao-init-cluster.yaml --namespace ${NS_VSO}
 
 ${KUBECTL} apply -f - << EOF
 ---
