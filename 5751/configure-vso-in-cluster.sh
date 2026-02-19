@@ -35,7 +35,7 @@ check_for_command_or_raise uv || exit 1
   source "${VENV_DIR}/bin/activate"
 
 # Synchronize from the uv.lock
-uv sync
+uv sync --extra dev
 
 trap _cleanup EXIT
 
