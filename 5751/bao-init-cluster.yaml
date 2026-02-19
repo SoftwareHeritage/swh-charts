@@ -169,7 +169,7 @@ data:
 
     TEMP_DIR=$(mktemp -d)
 
-    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
       enable-secrets-engine ${MOUNT} 2>/dev/null
 
@@ -186,25 +186,25 @@ data:
     }
     EOF
 
-    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
       create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
 
     # Finally we attach that policy to the new AppRole we create
-    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
       create-approle \
       --mount ${MOUNT} \
       --policy-name ${POLICY_NAME} \
       ${ROLE} 2>/dev/null
 
-    ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+    ROLE_ID=$($BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
       get-approle-id ${ROLE} \
       --mount ${MOUNT} \
       2>/dev/null)
 
-    SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+    SECRET_ID=$($BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
       create-approle-secret-id ${ROLE} \
       --mount ${MOUNT} \
@@ -212,7 +212,6 @@ data:
 
     echo "Role ID: ${ROLE_ID}"
     echo "Secret ID: ${SECRET_ID}"
-
 
 ---
 apiVersion: batch/v1
@@ -242,6 +241,8 @@ spec:
                   value: mount-production
                 - name: POLICY_NAME
                   value: policy-production
+                - name: BAO_SCRIPT
+                  value: /script/init_bao_cluster.py
               imagePullPolicy: IfNotPresent
               volumeMounts:
               - name: bao-script-utils
