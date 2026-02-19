@@ -74,14 +74,15 @@ def create_policy(ctx, policy_name, policy_rule_filename):
     with open(policy_rule_filename, 'r') as f:
         rules = ''.join(f.readlines())
 
-    if not client.sys.read_policy(policy_name):
+    try:
+        client.sys.read_policy(policy_name)
+        msg = f"Policy '{policy_name}' already exists."
+    except:
         client.sys.create_or_update_policy(
             name=policy_name,
             policy=rules
         )
         msg = f"Policy '{policy_name}' created."
-    else:
-        msg = f"Policy '{policy_name}' already exists."
     click.echo(msg)
 
 @cli.command()
