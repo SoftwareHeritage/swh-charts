@@ -98,21 +98,24 @@ def create_approle(ctx, role_name, mount, policy_name):
     try:
         client.sys.enable_auth_method(
             method_type='approle',
+            path=mount
         )
     except:
         # Already enabled, so we skip that step
         pass
 
-    if not client.auth.approle.read_role(role_name, mount_point=mount):
-        client.auth.approle.create_or_update_app_role(
+    app_role = client.auth.approle
+    try:
+        app_role.read_role(role_name, mount_point=mount)
+        msg = f"AppRole '{role_name}' already exists."
+    except:
+        app_role.create_or_update_approle(
             role_name=role_name,
             mount_point=mount,
-            policies=[policy_name],
+            token_policies=[policy_name],
         )
-        role_id = get_role_id(client, role_name, mount_point=mount)
+        role_id = get_role_id(client, role_name, mount)
         msg = f"AppRole '{role_name}' created with {role_id}"
-    else:
-        msg = f"AppRole '{role_name}' already exists."
     click.echo(msg)
 
 
