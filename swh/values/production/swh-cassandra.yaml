@@ -2132,17 +2132,6 @@ loaders:
             temp_file_cutoff: 10737418240
             # 32Gib
             pack_size_bytes: 34359738368
-    arch:
-      enabled: true
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 5Gi
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.arch.tasks.LoadArch
-      autoScaling:
-        maxReplicaCount: 1
     archive:
       enabled: true
       requestedMemory: 256Mi
@@ -2156,17 +2145,6 @@ loaders:
         - swh.loader.package.archive.tasks.LoadTarball
       autoScaling:
         maxReplicaCount: 4
-    aur:
-      enabled: true
-      tmpEphemeralStorage:
-        emptyDir:
-          medium: Memory
-          sizeLimit: 5Gi
-      image: swh_loader_package_image
-      queues:
-        - swh.loader.package.aur.tasks.LoadAur
-      autoScaling:
-        maxReplicaCount: 1
     bioconductor:
       enabled: true
       tmpEphemeralStorage:
