@@ -162,10 +162,23 @@ data:
   init-bao-cluster.sh: |
     #!/bin/bash
 
-    # TODO add check on env vars
+    set -x
 
-    # TODO uv sync instead?
-    python -m pip install hvac click
+    [ -z "${OPENBAO_ENDPOINT}" ] && \
+      echo "<OPENBAO_ENDPOINT> env variable must be set" && exit 1
+    [ -z "${OPENBAO_DEFAULT_TOKEN}" ] && \
+      echo "<OPENBAO_DEFAULT_TOKEN> env variable must be set" && exit 1
+    [ -z "${POLICY_NAME}" ] && \
+      echo "<POLICY_NAME> env variable must be set" && exit 1
+    [ -z "${MOUNT}" ] && \
+      echo "<MOUNT> env variable must be set" && exit 1
+    [ -z "${ROLE}" ] && \
+      echo "<ROLE> env variable must be set" && exit 1
+    [ -z "${BAO_SCRIPT}" ] && \
+      echo "<BAO_SCRIPT> env variable must be set" && exit 1
+
+    # Install dependencies through uv pip
+    uv pip install hvac click
 
     TEMP_DIR=$(mktemp -d)
 
