@@ -2203,6 +2203,19 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
       image: swh_loader_package_image
+    cpan:
+      enabled: true
+      tmpEphemeralStorage:
+        emptyDir:
+          medium: Memory
+          sizeLimit: 5Gi
+      requestedMemory: 256Mi
+      requestedCpu: 200m
+      image: swh_loader_package_image
+      queues:
+        - swh.loader.package.cpan.tasks.LoadCpan
+      autoScaling:
+        maxReplicaCount: 1
     cran:
       enabled: true
       requestedMemory: 256Mi
