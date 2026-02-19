@@ -85,6 +85,7 @@ def create_policy(ctx, policy_name, policy_rule_filename):
         msg = f"Policy '{policy_name}' created."
     click.echo(msg)
 
+
 @cli.command()
 @click.argument('role_name')
 @click.option('--mount', required=True, help="AppRole mount path")
