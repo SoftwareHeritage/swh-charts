@@ -354,7 +354,7 @@ ${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPE
 # ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
 #                --from-literal=id="${SECRET_ID}"
 
-${KUBECTL} apply -f ./bao-init-cluster.yaml --namespace ${NS_VSO}
+${KUBECTL} apply -f ./init-bao-cluster.yaml --namespace ${NS_VSO}
 
 ${KUBECTL} apply -f - << EOF
 ---
