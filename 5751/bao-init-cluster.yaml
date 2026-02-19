@@ -1,0 +1,244 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bao-script-utils
+  namespace: openbao
+data:
+  init_bao_cluster.py: |
+    #!/usr/bin/env python3
+    
+    # Script in charge to manage the bao cluster initialization
+    # - enable kv-v2 secret
+    # - enable approle authentication
+    # - write policy access (for an approle)
+    # - create said approle
+    
+    # See documentation and examples here:
+    # https://developer.hashicorp.com/vault/api-docs/system/mounts
+    # https://support.hashicorp.com/hc/en-us/articles/4412233931667-Translate-Vault-CLI-commands-to-HTTP-API
+    # https://gist.github.com/exAspArk/e210523a4bcb988cdfb24a114d46ddf0
+    
+    import click
+    import hvac
+    from typing import Optional
+    
+    def get_client(url: str, token: Optional[str] = None) -> hvac.Client:
+        """Client HVAC Initialization"""
+        # TODO: Turn off the verify to True (for tls authentication)
+        client = hvac.Client(url=url, token=token, verify=False)
+        if not client.is_authenticated():
+            raise ValueError("Impossible to authenticate with Vault/OpenBao.")
+        return client
+    
+    @click.group()
+    @click.option('--url', required=True, help="Vault/OpenBao URL")
+    @click.option('--token', required=True, help="Vault/OpenBao Access Token")
+    @click.pass_context
+    def cli(ctx, url, token):
+        """Mount initialization"""
+        
+        ctx.ensure_object(dict)
+        ctx.obj['client'] = get_client(url, token)
+        
+    @cli.command()
+    @click.argument('path')
+    @click.argument('backend_type', default='kv')
+    @click.pass_context
+    def enable_secrets_engine(ctx, path, backend_type):
+        """Vault/OpenBao initialization"""
+        client = ctx.obj['client']
+        
+        # FIXME: Improve creation without try/except pattern
+        try:
+            client.sys.enable_secrets_engine(
+                backend_type=backend_type,
+                path=path,
+                options={'version': '2'}
+            )
+            msg = f"Mount '{path}' with type '{backend_type}' created."
+            click.echo()
+        except:
+            msg = f"Mount '{path}' with type '{backend_type}' already exists."
+        finally:
+            click.echo(msg)
+            
+    def read_app_role(client, role_name, mount):
+        """Retrieve app role"""
+        return client.auth.approle.read_role_id(role_name, mount_point=mount)
+    
+    @cli.command()
+    @click.argument('policy_name')
+    @click.argument('policy_rule_filename', type=click.Path(exists=True))
+    @click.pass_context
+    def create_policy(ctx, policy_name, policy_rule_filename):
+        """Create policy in Vault/OpenBao."""
+        client = ctx.obj['client']
+        with open(policy_rule_filename, 'r') as f:
+            rules = ''.join(f.readlines())
+            
+        if not client.sys.read_policy(policy_name):
+            client.sys.create_or_update_policy(
+                name=policy_name,
+                policy=rules
+            )
+            msg = f"Policy '{policy_name}' created."
+        else:
+            msg = f"Policy '{policy_name}' already exists."
+        click.echo(msg)
+    
+    
+    @cli.command()
+    @click.argument('role_name')
+    @click.option('--mount', required=True, help="AppRole mount path")
+    @click.option('--policy-name', required=True, help="Policy for that appRole")
+    @click.pass_context
+    def create_approle(ctx, role_name, mount, policy_name):
+        """Create AppRole in Vault/OpenBao."""
+        client = ctx.obj['client']
+        # Enable approle authentication
+        try:
+            client.sys.enable_auth_method(
+                method_type='approle',
+            )
+        except:
+            # Already enabled, so we skip that step
+            pass
+        
+        if not client.auth.approle.read_role(role_name, mount_point=mount):
+            client.auth.approle.create_or_update_app_role(
+                role_name=role_name,
+                mount_point=mount,
+                policies=[policy_name],
+            )
+            role_id = get_role_id(client, role_name, mount_point=mount)
+            msg = f"AppRole '{role_name}' created with {role_id}"
+        else:
+            msg = f"AppRole '{role_name}' already exists."
+        click.echo(msg)
+        
+    def get_role_id(client, role_name, mount):
+        """Retrieve the role id from the role name mounted in the path mount."""
+        client.auth.approle.read_role_id(role_name, mount_point=mount)
+        app_role_d = client.auth.approle.read_role_id(role_name, mount_point=mount)
+        return app_role_d['data']['role_id']
+    
+    @cli.command()
+    @click.argument('role_name')
+    @click.option('--mount', required=True, help="AppRole mount path")
+    @click.pass_context
+    def get_approle_id(ctx, role_name, mount):
+        """Retrieve the role id from the role_name."""
+        client = ctx.obj['client']
+        role_id = get_role_id(client, role_name, mount)
+        click.echo(role_id)
+        
+    @cli.command()
+    @click.argument('role_name')
+    @click.option('--mount', required=True, help="AppRole mount path")
+    @click.pass_context
+    def create_approle_secret_id(ctx, role_name, mount):
+        """Create an approle's secret id from the role_name."""
+        client = ctx.obj['client']
+        secret_id_d = client.auth.approle.generate_secret_id(role_name, mount_point=mount)
+        secret_id = secret_id_d['data']['secret_id']
+        click.echo(secret_id)
+        
+    if __name__ == '__main__':
+        cli()
+
+  init-bao-cluster.sh: |
+    #!/bin/bash
+    
+    # TODO add check on env vars
+    
+    # TODO uv sync instead?
+    python -m pip install hvac click
+    
+    TEMP_DIR=$(mktemp -d)
+    
+    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+      --token ${OPENBAO_DEFAULT_TOKEN} \
+      enable-secrets-engine ${MOUNT} 2>/dev/null
+    
+    # Then we create the policy for the future approle to create
+    POLICY_FILENAME="${POLICY_NAME}.hcl"
+    POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
+    cat > "${POLICY_FILE}" << EOF
+      path "${MOUNT}/data/*" {
+      capabilities = ["list", "read"]
+    }
+    
+    path "${MOUNT}/metadata/*" {
+      capabilities = ["list", "read"]
+    }
+    EOF
+    
+    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+      --token ${OPENBAO_DEFAULT_TOKEN} \
+      create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
+    
+    # Finally we attach that policy to the new AppRole we create
+    ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+      --token ${OPENBAO_DEFAULT_TOKEN} \
+      create-approle \
+      --mount ${MOUNT} \
+      --policy-name ${POLICY_NAME} \
+      ${ROLE} 2>/dev/null
+      
+    ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+      --token ${OPENBAO_DEFAULT_TOKEN} \
+      get-approle-id ${ROLE} \
+      --mount ${MOUNT} \
+      2>/dev/null)
+      
+    SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+      --token ${OPENBAO_DEFAULT_TOKEN} \
+      create-approle-secret-id ${ROLE} \
+      --mount ${MOUNT} \
+      2>/dev/null)
+      
+    echo "Role ID: ${ROLE_ID}"
+    echo "Secret ID: ${SECRET_ID}"
+    
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: init-bao-cluster
+  namespace: openbao
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: init-bao-cluster
+              image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox:20260206.3
+              command:
+              - /script/init-bao-cluster.sh
+              env:
+                - name: OPENBAO_ENDPOINT
+                  value: https://openbao.local
+                - name: OPENBAO_DEFAULT_TOKEN
+                  value: root
+                - name: ROLE
+                  value: role-production
+                - name: MOUNT
+                  value: mount-production
+                - name: POLICY_NAME
+                  value: policy-production
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: bao-script-utils
+                mountPath: /script
+          volumes:
+          - name: bao-script-utils
+            configMap:
+              name: bao-script-utils
+              defaultMode: 0555
+          restartPolicy: OnFailure
+
