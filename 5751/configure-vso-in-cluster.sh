@@ -476,80 +476,80 @@ data:
 
     set -x
 
-    [ -z "${OPENBAO_ENDPOINT}" ] && \
+    [ -z "\${OPENBAO_ENDPOINT}" ] && \
       echo "<OPENBAO_ENDPOINT> env variable must be set" && exit 1
-    [ -z "${OPENBAO_DEFAULT_TOKEN}" ] && \
+    [ -z "\${OPENBAO_DEFAULT_TOKEN}" ] && \
       echo "<OPENBAO_DEFAULT_TOKEN> env variable must be set" && exit 1
-    [ -z "${POLICY_NAME}" ] && \
+    [ -z "\${POLICY_NAME}" ] && \
       echo "<POLICY_NAME> env variable must be set" && exit 1
-    [ -z "${MOUNT}" ] && \
+    [ -z "\${MOUNT}" ] && \
       echo "<MOUNT> env variable must be set" && exit 1
-    [ -z "${ROLE}" ] && \
+    [ -z "\${ROLE}" ] && \
       echo "<ROLE> env variable must be set" && exit 1
-    [ -z "${BAO_SCRIPT}" ] && \
+    [ -z "\${BAO_SCRIPT}" ] && \
       echo "<BAO_SCRIPT> env variable must be set" && exit 1
-    [ -z "${NS_CLUSTER_TARGET}" ] && \
+    [ -z "\${NS_CLUSTER_TARGET}" ] && \
       echo "<NS_CLUSTER_TARGET> env variable must be set" && exit 1
 
-    TEMP_DIR=$(mktemp -d)
+    TEMP_DIR=\$(mktemp -d)
 
     uv pip install hvac click ipython kubernetes
 
-    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      enable-secrets-engine ${MOUNT} 2>/dev/null
+    \${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+      --token \${OPENBAO_DEFAULT_TOKEN} \
+      enable-secrets-engine \${MOUNT} 2>/dev/null
 
     # Then we create the policy for the future approle to create
-    POLICY_FILENAME="${POLICY_NAME}.hcl"
-    POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
-    cat > "${POLICY_FILE}" << EOF
-      path "${MOUNT}/data/*" {
+    POLICY_FILENAME="\${POLICY_NAME}.hcl"
+    POLICY_FILE="\${TEMP_DIR}/\${POLICY_FILENAME}"
+    cat > "\${POLICY_FILE}" << EOF
+      path "\${MOUNT}/data/*" {
       capabilities = ["list", "read"]
     }
 
-    path "${MOUNT}/metadata/*" {
+    path "\${MOUNT}/metadata/*" {
       capabilities = ["list", "read"]
     }
     EOF
 
-    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
+    \${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+      --token \${OPENBAO_DEFAULT_TOKEN} \
+      create-policy \${POLICY_NAME} \${POLICY_FILE} 2>/dev/null
 
     # Finally we attach that policy to the new AppRole we create
-    $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
+    \${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+      --token \${OPENBAO_DEFAULT_TOKEN} \
       create-approle \
-      --mount ${MOUNT} \
-      --policy-name ${POLICY_NAME} \
-      ${ROLE} 2>/dev/null
+      --mount \${MOUNT} \
+      --policy-name \${POLICY_NAME} \
+      \${ROLE} 2>/dev/null
 
-    ROLE_ID=$($BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      get-approle-id ${ROLE} \
-      --mount ${MOUNT} \
+    ROLE_ID=\$(\${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+      --token \${OPENBAO_DEFAULT_TOKEN} \
+      get-approle-id \${ROLE} \
+      --mount \${MOUNT} \
       2>/dev/null)
 
-    SECRET_ID=$($BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      create-approle-secret-id ${ROLE} \
-      --mount ${MOUNT} \
+    SECRET_ID=\$(\${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+      --token \${OPENBAO_DEFAULT_TOKEN} \
+      create-approle-secret-id \${ROLE} \
+      --mount \${MOUNT} \
       2>/dev/null)
 
-    echo "Role ID: ${ROLE_ID}"
-    echo "Secret ID: ${SECRET_ID}"
+    echo "Role ID: \${ROLE_ID}"
+    echo "Secret ID: \${SECRET_ID}"
 
     sleep infinity
 
     # # Build the approle's role-id/secret-id authentication in the targetted cluster
-    # ROLE_SECRET_NAME="${ROLE}-secret"
+    # ROLE_SECRET_NAME="\${ROLE}-secret"
 
     # # This should be idempotent so we can drop and recreate
-    # ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_CLUSTER_TARGET}" || \
-    #   echo "Secret ${ROLE_SECRET_NAME} does not exist, skipping."
-    # ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" \
-    #   --namespace "${NS_CLUSTER_TARGET}" \
-    #   --from-literal=id="${SECRET_ID}"
+    # \${KUBECTL} delete secret "\${ROLE_SECRET_NAME}" --namespace "\${NS_CLUSTER_TARGET}" || \
+    #   echo "Secret \${ROLE_SECRET_NAME} does not exist, skipping."
+    # \${KUBECTL} create secret generic "\${ROLE_SECRET_NAME}" \
+    #   --namespace "\${NS_CLUSTER_TARGET}" \
+    #   --from-literal=id="\${SECRET_ID}"
 
 ---
 apiVersion: batch/v1
