@@ -209,23 +209,21 @@ if [ "${CLUSTER_NAME}" != "admin" ]; then
   execute_or_skip $KUBECTL_ADMIN delete secret -n ${NS_ARGOCD} \
     ${SECRET_REFNAME}
 
-  # FIXME: Call argocd cluster add even though it's not fully finishing with
-  # success It's specific to the local cluster and won't be used that way in
-  # production any ways.  This cli call will create a service account, cluster
-  # role and cluster role binding in the argocd-manager namespace with the
-  # sufficient privileges (possibly!?)
-
+  # Call argocd cluster add even though it's not fully finishing with success. It's a
+  # workaround specific to the local cluster and won't be used that way in production
+  # any ways. This cli call will create a service account, cluster role and cluster role
+  # binding in the argocd-manager namespace with the sufficient privileges
   argocd cluster add "${CLUSTER_REFNAME}" -y || \
     echo "argocd cluster add failed, but ServiceAccount, ClusterRole and ClusterRoleBinding should exist now."
 
   TOKEN_ACCESS=$($KUBECTL_PRODUCTION create token argocd-manager -n kube-system)
 
-  ${KUBECTL_ADMIN} apply -f - << EOF
+  for ns in ${NS_ARGOCD} ${NS_OPENBAO}; do
+    ${KUBECTL_ADMIN} apply --namespace $ns -f - << EOF
 apiVersion: v1
 kind: Secret
 metadata:
   name: ${SECRET_REFNAME}
-  namespace: ${NS_ARGOCD}
   labels:
     argocd.argoproj.io/secret-type: cluster
 type: Opaque
@@ -240,7 +238,7 @@ stringData:
       }
     }
 EOF
-
+    done
 fi
 
 VSO_VERSION=1.1.0
@@ -440,9 +438,14 @@ data:
 
     def get_role_id(client, role_name, mount):
         """Retrieve the role id from the role name mounted in the path mount."""
-        client.auth.approle.read_role_id(role_name, mount_point=mount)
         app_role_d = client.auth.approle.read_role_id(role_name, mount_point=mount)
         return app_role_d['data']['role_id']
+
+
+    def generate_secret_id(client, role_name, mount):
+        """Generate a secret id from the role name mounted in the path mount."""
+        secret_id_d = client.auth.approle.generate_secret_id(role_name, mount_point=mount)
+        return secret_id_d['data']['secret_id']
 
 
     @cli.command()
@@ -463,10 +466,53 @@ data:
     def create_approle_secret_id(ctx, role_name, mount):
         """Create an approle's secret id from the role_name."""
         client = ctx.obj['client']
-        secret_id_d = client.auth.approle.generate_secret_id(role_name, mount_point=mount)
-        secret_id = secret_id_d['data']['secret_id']
+        secret_id = generate_secret_id(client, role_name, mount)
         click.echo(secret_id)
 
+
+    @cli.command()
+    @click.option('--role-name', required=True, help="AppRole name")
+    @click.option('--mount', required=True, help="AppRole mount path")
+    @click.option('--targeted-cluster-url', required=True,
+                  help="Ingress targeted cluster url")
+    @click.option('--secret-name', required=True,
+                  help="Name of the secret in the target cluster")
+    @click.option('--secret-namespace', required=True,
+                  help="Namespace of the secret in the targeted cluster")
+    @click.pass_context
+    def create_secret_in_targeted_cluster(
+        ctx, role_name, mount, targeted_cluster_url, secret_name, secret_namespace
+    ):
+        """Create the secret with approle id/secret-id in the targeted cluster'."""
+        hvac_client = ctx.obj['client']
+        secret_id = generate_secret_id(hvac_client, role_name, mount)
+
+        from kubernetes import client, config
+        from kubernetes.client.configuration import Configuration
+        from json import loads
+        from base64 import b64encode
+
+        # Initialize connection to targeted kubernetes cluster
+        client_config = Configuration()
+        # For local clusters, no need
+        client_config.verify_ssl = False
+
+        # FIXME: Make it a bit more parametric?
+        # Configuration file holding the bearer token
+        with open("/opt/swh/.kube/config", "r") as f: data = loads(f.read())
+        client_config.api_key['authorization'] = data['bearerToken']
+        client_config.api_key_prefix['authorization'] = 'Bearer'
+        client_config.host = targeted_cluster_url
+
+        # Create the approle secret structure (a simple key/value: id/secret-id)
+        secret = client.V1Secret()
+        secret.metadata = client.V1ObjectMeta(name=secret_name)
+        secret.type = "Opaque"
+        secret.data = {"id": b64encode(secret_id.encode()).decode()}
+
+        # Actually create the secret in the targeted cluster
+        api_instance = client.CoreV1Api(api_client=client.ApiClient(configuration=client_config))
+        api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
 
     if __name__ == '__main__':
         cli()
@@ -488,12 +534,16 @@ data:
       echo "<ROLE> env variable must be set" && exit 1
     [ -z "\${BAO_SCRIPT}" ] && \
       echo "<BAO_SCRIPT> env variable must be set" && exit 1
-    [ -z "\${NS_CLUSTER_TARGET}" ] && \
-      echo "<NS_CLUSTER_TARGET> env variable must be set" && exit 1
+    [ -z "\${CLUSTER_TARGET_URL}" ] && \
+      echo "<CLUSTER_TARGET_URL> env variable must be set" && exit 1
+    [ -z "\${CLUSTER_TARGET_SECRET_NAME}" ] && \
+      echo "<CLUSTER_TARGET_SECRET_NAME> env variable must be set" && exit 1
+    [ -z "\${CLUSTER_TARGET_SECRET_NAMESPACE}" ] && \
+      echo "<CLUSTER_TARGET_SECRET_NAMESPACE> env variable must be set" && exit 1
 
     TEMP_DIR=\$(mktemp -d)
 
-    uv pip install hvac click ipython kubernetes
+    uv pip install hvac click kubernetes
 
     \${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
       --token \${OPENBAO_DEFAULT_TOKEN} \
@@ -524,32 +574,15 @@ data:
       --policy-name \${POLICY_NAME} \
       \${ROLE} 2>/dev/null
 
-    ROLE_ID=\$(\${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
+    \${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
       --token \${OPENBAO_DEFAULT_TOKEN} \
-      get-approle-id \${ROLE} \
+      create-secret-in-targeted-cluster \
+      --role-name \${ROLE} \
       --mount \${MOUNT} \
-      2>/dev/null)
-
-    SECRET_ID=\$(\${BAO_SCRIPT} --url \${OPENBAO_ENDPOINT} \
-      --token \${OPENBAO_DEFAULT_TOKEN} \
-      create-approle-secret-id \${ROLE} \
-      --mount \${MOUNT} \
-      2>/dev/null)
-
-    echo "Role ID: \${ROLE_ID}"
-    echo "Secret ID: \${SECRET_ID}"
-
-    sleep infinity
-
-    # # Build the approle's role-id/secret-id authentication in the targetted cluster
-    # ROLE_SECRET_NAME="\${ROLE}-secret"
-
-    # # This should be idempotent so we can drop and recreate
-    # \${KUBECTL} delete secret "\${ROLE_SECRET_NAME}" --namespace "\${NS_CLUSTER_TARGET}" || \
-    #   echo "Secret \${ROLE_SECRET_NAME} does not exist, skipping."
-    # \${KUBECTL} create secret generic "\${ROLE_SECRET_NAME}" \
-    #   --namespace "\${NS_CLUSTER_TARGET}" \
-    #   --from-literal=id="\${SECRET_ID}"
+      --targeted-cluster-url \${CLUSTER_TARGET_URL} \
+      --secret-name \${CLUSTER_TARGET_SECRET_NAME} \
+      --secret-namespace \${CLUSTER_TARGET_SECRET_NAMESPACE} \
+      2>/dev/null
 
 ---
 apiVersion: batch/v1
@@ -582,23 +615,46 @@ spec:
                   value: ${POLICY_NAME}
                 - name: BAO_SCRIPT
                   value: /script/init_bao_cluster.py
-                - name: NS_CLUSTER_TARGET
+                - name: CLUSTER_TARGET_URL
+                  value: ${CLUSTER_FQDN}
+                - name: CLUSTER_TARGET_SECRET_NAME
+                  value: ${VAULT_AUTH_NAME}
+                - name: CLUSTER_TARGET_SECRET_NAMESPACE
                   value: ${NS_APP}
               imagePullPolicy: IfNotPresent
               volumeMounts:
               - name: bao-script-utils
                 mountPath: /script
+              - name: kubeconfig
+                mountPath: "/opt/swh/.kube/config"
+                subPath: config
+                readOnly: true
+
           volumes:
           - name: bao-script-utils
             configMap:
               name: bao-script-utils
               defaultMode: 0555
+          - name: kubeconfig
+            secret:
+              secretName: ${SECRET_REFNAME}
           restartPolicy: OnFailure
 
 EOF
 
-# FIXME: Trigger execution of the cronjob immediately
+# FIXME: Trigger execution of the cronjob immediately with kubectl (to avoid waiting)
 
+# Wait for the secret created by the cronjob executed in the admin cluster
+echo "- Waiting for the synchronization to be ok"
+timeout 20s bash -c "until $KUBECTL get secret ${ROLE_SECRET_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
+
+ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
+  --token ${OPENBAO_DEFAULT_TOKEN} \
+  get-approle-id ${ROLE} \
+  --mount ${MOUNT} \
+  2>/dev/null)
+
+# Finally configure VaultAuth to allow vso to synchronize kubernetes secret from bao
 ${KUBECTL} apply -f - << EOF
 ---
 apiVersion: secrets.hashicorp.com/v1beta1
