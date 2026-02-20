@@ -74,7 +74,7 @@ _title "${prefix_msg} should be ok"
 echo "- Write a secret in openbao in authorized (in openbao policy) mount path <$MOUNT>."
 echo "- This secret should be synchronized correctly in cluster <$CLUSTER_NAME>."
 
-$KUBECTL_ADMIN wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+$KUBECTL_ADMIN wait pod openbao-0 --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 POD_NAME=$($KUBECTL_ADMIN get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
 
 $KUBECTL_ADMIN exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
