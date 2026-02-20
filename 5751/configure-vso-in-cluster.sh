@@ -306,55 +306,12 @@ echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 
 ${KUBECTL_ADMIN} wait pod openbao-0 --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
-# # Create secret engine
-# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-#                       --token ${OPENBAO_DEFAULT_TOKEN} \
-#                       enable-secrets-engine ${MOUNT} 2>/dev/null
+# Installs a cronjob which triggers the approle configuration in openbao for the
+# targeted cluster.
 
-# # Then we create the policy for the future approle to create
-# POLICY_FILENAME="${POLICY_NAME}.hcl"
-# POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
-# cat > "${POLICY_FILE}" << EOF
-# path "${MOUNT}/data/*" {
-#   capabilities = ["list", "read"]
-# }
+${KUBECTL_ADMIN} apply -f ./init-bao-cluster.yaml --namespace ${NS_OPENBAO}
 
-# path "${MOUNT}/metadata/*" {
-#   capabilities = ["list", "read"]
-# }
-# EOF
-
-# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-#                       --token ${OPENBAO_DEFAULT_TOKEN} \
-#                       create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
-
-# # Finally we attach that policy to the new AppRole we create
-# ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-#                       --token ${OPENBAO_DEFAULT_TOKEN} \
-#                       create-approle \
-#                         --mount ${MOUNT} \
-#                         --policy-name ${POLICY_NAME} \
-#                         ${ROLE} 2>/dev/null
-
-# ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-#                                 --token ${OPENBAO_DEFAULT_TOKEN} \
-#                                 get-approle-id ${ROLE} \
-#                                 --mount ${MOUNT} \
-#                                 2>/dev/null)
-
-# SECRET_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
-#                                   --token ${OPENBAO_DEFAULT_TOKEN} \
-#                                   create-approle-secret-id ${ROLE} \
-#                                   --mount ${MOUNT} \
-#                                   2>/dev/null)
-
-# ROLE_SECRET_NAME="${ROLE}-secret"
-
-# execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_APP}"
-# ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_APP}" \
-#                --from-literal=id="${SECRET_ID}"
-
-${KUBECTL} apply -f ./init-bao-cluster.yaml --namespace ${NS_VSO}
+# FIXME: Trigger execution of the cronjob immediately
 
 ${KUBECTL} apply -f - << EOF
 ---

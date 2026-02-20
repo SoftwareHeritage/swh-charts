@@ -226,6 +226,16 @@ data:
     echo "Role ID: ${ROLE_ID}"
     echo "Secret ID: ${SECRET_ID}"
 
+    # # Build the approle's role-id/secret-id authentication in the targetted cluster
+    # ROLE_SECRET_NAME="${ROLE}-secret"
+
+    # # This should be idempotent so we can drop and recreate
+    # ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_CLUSTER_TARGET}" || \
+    #   echo "Secret ${ROLE_SECRET_NAME} does not exist, skipping."
+    # ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" \
+    #   --namespace "${NS_CLUSTER_TARGET}" \
+    #   --from-literal=id="${SECRET_ID}"
+
 ---
 apiVersion: batch/v1
 kind: CronJob
