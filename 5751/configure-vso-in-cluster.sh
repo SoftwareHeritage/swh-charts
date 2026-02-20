@@ -642,10 +642,11 @@ spec:
 
 EOF
 
-# FIXME: Trigger execution of the cronjob immediately with kubectl (to avoid waiting)
+$KUBECTL_ADMIN create job --from=cronjob/init-bao-cluster --namespace ${NS_OPENBAO} \
+  manual-init-bao-cluster-job
 
 # Wait for the secret created by the cronjob executed in the admin cluster
-echo "- Waiting for the synchronization to be ok"
+echo "# Waiting for the secret ${ROLE_SECRET_NAME} -in namespace ${NS_APP}"
 timeout 20s bash -c "until $KUBECTL get secret ${ROLE_SECRET_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
 
 ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
