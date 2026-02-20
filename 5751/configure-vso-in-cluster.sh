@@ -304,7 +304,7 @@ echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 # https://support.hashicorp.com/hc/en-us/articles/4412233931667-Translate-Vault-CLI-commands-to-HTTP-API
 # https://gist.github.com/exAspArk/e210523a4bcb988cdfb24a114d46ddf0
 
-${KUBECTL_ADMIN} wait pod --all --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
+${KUBECTL_ADMIN} wait pod openbao-0 --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 
 # # Create secret engine
 # ./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
