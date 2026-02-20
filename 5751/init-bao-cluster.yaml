@@ -176,11 +176,12 @@ data:
       echo "<ROLE> env variable must be set" && exit 1
     [ -z "${BAO_SCRIPT}" ] && \
       echo "<BAO_SCRIPT> env variable must be set" && exit 1
-
-    # Install dependencies through uv pip
-    uv pip install hvac click
+    [ -z "${NS_CLUSTER_TARGET}" ] && \
+      echo "<NS_CLUSTER_TARGET> env variable must be set" && exit 1
 
     TEMP_DIR=$(mktemp -d)
+
+    uv pip install hvac click ipython kubernetes
 
     $BAO_SCRIPT --url ${OPENBAO_ENDPOINT} \
       --token ${OPENBAO_DEFAULT_TOKEN} \
@@ -250,6 +251,7 @@ spec:
         spec:
           containers:
             - name: init-bao-cluster
+              # FIXME: Use a dedicated docker image for this bao configuration
               image: container-registry.softwareheritage.org/swh/infra/swh-apps/toolbox:20260206.3
               command:
               - /script/init-bao-cluster.sh
@@ -266,6 +268,8 @@ spec:
                   value: policy-production
                 - name: BAO_SCRIPT
                   value: /script/init_bao_cluster.py
+                - name: NS_CLUSTER_TARGET
+                  value: openbao
               imagePullPolicy: IfNotPresent
               volumeMounts:
               - name: bao-script-utils
