@@ -672,3 +672,5 @@ renovate:
   gitlab:
     # Endpoint url
     endpoint: "dummy.gitlab.fr/api/v4"
+  # Override some default configuration from the values
+  extraConfig: {}
