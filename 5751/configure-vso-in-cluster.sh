@@ -43,7 +43,7 @@ function _cleanup {
   # Cleanup temporary work directory
   rm -rf "${TEMP_DIR}"
   # Deactivate the venv
-  source deactivate
+  deactivate
 }
 
 DESCRIPTION="Configure the vault-secret-operator in targeted CLUSTER_NAME"
@@ -284,16 +284,17 @@ spec:
       selfHeal: true
 EOF
 
+argocd login argocd.local --grpc-web --insecure --username admin --password "${ARGOCD_ADMIN_PASS}"
+argocd app sync argocd/local-cluster-vso
 
+# TODO wait returns 'error: no matching resources found', we probably need an additional wait for the argocd application to be in Synced and Healthy state before waiting for the deployment to be available.
 # Wait for argocd sync window to kick in
-${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
-  --timeout=60s || \
-  ( echo "Waiting with argocd ns failed... " && \
-    echo "Let's fallback to sleep to give some time for argocd sync window to kick in." \
-    && sleep 5 )
+${KUBECTL} wait pods -n "${NS_VSO}" --all --for=condition=Ready --timeout=300s || \
+  ( echo "Waiting with vso ns failed... " && \
+    echo "Let's fallback to sleep to give some time for vso sync window to kick in." && \
+    sleep 5 )
 
-${KUBECTL} wait deployment -n "${NS_VSO}" --all --for=condition=Available \
-  --timeout=60s
+${KUBECTL} wait pods -n "${NS_VSO}" --all --for=condition=Ready --timeout=300s
 
 echo "Start configuring BAO resources in cluster <${CLUSTER_REFNAME}>..."
 
@@ -641,6 +642,9 @@ spec:
           restartPolicy: OnFailure
 
 EOF
+
+execute_or_skip $KUBECTL_ADMIN delete job --namespace ${NS_OPENBAO} \
+  manual-init-bao-cluster-job
 
 $KUBECTL_ADMIN create job --from=cronjob/init-bao-cluster --namespace ${NS_OPENBAO} \
   manual-init-bao-cluster-job

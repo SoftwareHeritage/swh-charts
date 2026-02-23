@@ -170,7 +170,6 @@ ROLE_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
 SECRET_ID=$(${KUBECTL_ADMIN} exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} write -field=secret_id -f auth/${MOUNT}/role/${ROLE}/secret-id"
 )
-ROLE_SECRET_NAME="${ROLE}-secret"
 
 execute_or_skip ${KUBECTL} delete secret "${ROLE_SECRET_NAME}" --namespace "${NS_SECONDARY}"
 ${KUBECTL} create secret generic "${ROLE_SECRET_NAME}" --namespace "${NS_SECONDARY}" \

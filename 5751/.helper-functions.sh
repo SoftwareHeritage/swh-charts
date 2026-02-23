@@ -117,6 +117,7 @@ function set_variables_for_cluster {
       ;;
   esac
   ROLE="role-${CLUSTER_NAME}"
+  ROLE_SECRET_NAME="${ROLE}-secret"
   MOUNT="mount-${CLUSTER_NAME}"
   POLICY_NAME="policy-${CLUSTER_NAME}"
   VAULT_AUTH_NAME="auth-${CLUSTER_NAME}"

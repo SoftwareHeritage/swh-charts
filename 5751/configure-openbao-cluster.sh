@@ -316,7 +316,6 @@ EOF
 
 # Manipulate argocd to configure its password to a basic one to ease local
 # manipulation
-ARGOCD_ADMIN_PASS=rootroot
 ARGOCD_ADMIN_INITIAL_PWD=$($KUBECTL \
   -n ${NS_ARGOCD} get secret argocd-initial-admin-secret \
   -o jsonpath="{.data.password}" | base64 -d)
