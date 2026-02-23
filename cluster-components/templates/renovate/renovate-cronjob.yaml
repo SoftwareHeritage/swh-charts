@@ -1,5 +1,7 @@
 {{ if .Values.renovate.enabled }}
 {{ $appName := print .Values.clusterName "-renovate" }}
+{{ $autodiscover := .Values.renovate.extraConfig.autodiscover "-renovate" | default false }}
+
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -41,7 +43,7 @@ spec:
 
                 # Target platform
                 - name: RENOVATE_PLATFORM
-                  value: gitlab
+                  value: "gitlab"
 
                 # GitLab endpoint (URL)
                 - name: RENOVATE_ENDPOINT
@@ -49,25 +51,34 @@ spec:
 
                 # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
-                  value: "true"
+                  value: {{ $autodiscover | quote }}
                 
-                # Avoid major and minor updates
-                - name: RENOVATE_SEPARATE_MAJOR_MINOR
-                  value: "true"
-                - name: RENOVATE_SEPARATE_MULTIPLE_MAJOR
-                  value: "true"
-
                 # no-interactif mode
                 - name: RENOVATE_REQUIRE_CONFIG
                   value: "required"
 
-                # Optimization
+                # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
-                  value: "false"
+                  value: "true"
+                
+                # Repositories to scan
+                - name: RENOVATE_REPOSITORIES
+                  value: "amadouth/renovate-update, amadouth/renovate"
+                
+                # Cachedir
+                - name: RENOVATE_CACHE_DIR
+                  value: /tmp/renovate/cache
 
               envFrom:
                 # Secrets (PAT and licence)
                 - secretRef:
                     name: {{ .Values.renovate.secretName }}
-
+              volumeMounts:
+              - name: cachedir
+                mountPath: /tmp/renovate/cache
+          volumes:
+          - name: cachedir
+            persistentVolumeClaim:
+              claimName: renovate-cache-pvc
+          
 {{ end }}

@@ -374,3 +374,18 @@ renovate:
   gitlab:
     # Gitlab endpoint
     endpoint: https://gitlab-staging.swh.network/api/v4
+
+volumes:
+  enabled: true
+  persistentVolumeClaims:
+    renovate-cache-pvc:
+      enabled: true
+      appName: renovate-cache-pvc
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

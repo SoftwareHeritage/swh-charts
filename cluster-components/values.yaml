@@ -664,9 +664,9 @@ renovate:
   # renovate docker image
   image:
     repository: renovate/renovate
-    tag: 42.78-full
+    tag: 43.31-full
   # level and debug option | info | warn | error
-  logLevel: info
+  logLevel: "debug"
   # Name of the Kubernetes Secret containing sensitive variables
   # secretName: renovate-env
   gitlab:
