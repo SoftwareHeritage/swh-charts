@@ -1,7 +1,6 @@
 {{ if .Values.renovate.enabled }}
 {{ $appName := print .Values.clusterName "-renovate" }}
 {{ $autodiscover := .Values.renovate.extraConfig.autodiscover "-renovate" | default false }}
-
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -13,13 +12,11 @@ metadata:
 spec:
   # Execution frequency (default: weekly)
   schedule: {{ .Values.renovate.schedule | quote }}
-
   # Prevents two simultaneous executions
   concurrencyPolicy: Forbid
   # Jobs history
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 3
-
   jobTemplate:
     spec:
       backoffLimit: 1
@@ -29,46 +26,36 @@ spec:
             app.kubernetes.io/name: renovate
         spec:
           restartPolicy: Never
-
           containers:
             - name: renovate
               image: {{ .Values.renovate.image.repository }}:{{ .Values.renovate.image.tag }}
               imagePullPolicy: IfNotPresent
-
               # Environment variables
               env:
                 # Logs levels
                 - name: RENOVATE_LOG_LEVEL
                   value: {{ .Values.renovate.logLevel | quote }}
-
                 # Target platform
                 - name: RENOVATE_PLATFORM
                   value: "gitlab"
-
                 # GitLab endpoint (URL)
                 - name: RENOVATE_ENDPOINT
                   value: {{ .Values.renovate.gitlab.endpoint | quote }}
-
                 # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
                   value: {{ $autodiscover | quote }}
-                
                 # no-interactif mode
                 - name: RENOVATE_REQUIRE_CONFIG
                   value: "required"
-
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
                   value: "true"
-                
                 # Repositories to scan
                 - name: RENOVATE_REPOSITORIES
                   value: "amadouth/renovate-update, amadouth/renovate"
-                
                 # Cachedir
                 - name: RENOVATE_CACHE_DIR
                   value: /tmp/renovate/cache
-
               envFrom:
                 # Secrets (PAT and licence)
                 - secretRef:
@@ -80,5 +67,4 @@ spec:
           - name: cachedir
             persistentVolumeClaim:
               claimName: renovate-cache-pvc
-          
 {{ end }}
