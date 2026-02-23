@@ -374,6 +374,8 @@ renovate:
   gitlab:
     # Gitlab endpoint
     endpoint: https://gitlab-staging.swh.network/api/v4
+  extraConfig:
+    autodiscover: true
 
 volumes:
   enabled: true

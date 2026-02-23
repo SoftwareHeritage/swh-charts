@@ -1,6 +1,6 @@
 {{ if .Values.renovate.enabled }}
 {{ $appName := print .Values.clusterName "-renovate" }}
-{{ $autodiscover := .Values.renovate.extraConfig.autodiscover "-renovate" | default false }}
+{{ $autodiscover := .Values.renovate.extraConfig.autodiscover | default false }}
 ---
 apiVersion: batch/v1
 kind: CronJob
