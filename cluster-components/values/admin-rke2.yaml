@@ -159,9 +159,29 @@ cloudnativePg:
         schedule: "0 5 10 * * *"
 
 renovate:
-  enabled: false
+  enabled: true
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-env
   gitlab:
     # Gitlab endpoint
-    endpoint: https://gitlab-staging.swh.network/api/v4
+    endpoint: https://gitlab.softwareheritage.org/api/v4
+  extraConfig:
+    cachedir:
+      enabled: true
+    repositories:
+      - swh/infra/swh-apps
+
+volumes:
+  enabled: true
+  persistentVolumeClaims:
+    renovate-cache-pvc:
+      enabled: true
+      appName: renovate-cache-pvc
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
