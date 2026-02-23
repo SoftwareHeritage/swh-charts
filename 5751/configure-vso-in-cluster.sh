@@ -284,14 +284,20 @@ spec:
       selfHeal: true
 EOF
 
-argocd login argocd.local --grpc-web --insecure --username admin --password "${ARGOCD_ADMIN_PASS}"
+# beurk
+sleep 5
+
+argocd login ${ARGOCD_HOSTNAME} --grpc-web --insecure --username admin \
+  --password "${ARGOCD_ADMIN_PASS}"
 argocd app sync argocd/local-cluster-vso
 
-# TODO wait returns 'error: no matching resources found', we probably need an additional wait for the argocd application to be in Synced and Healthy state before waiting for the deployment to be available.
+# TODO wait returns 'error: no matching resources found', we probably need an additional
+# wait for the argocd application to be in Synced and Healthy state before waiting for
+# the deployment to be available.
+
 # Wait for argocd sync window to kick in
 ${KUBECTL} wait pods -n "${NS_VSO}" --all --for=condition=Ready --timeout=300s || \
-  ( echo "Waiting with vso ns failed... " && \
-    echo "Let's fallback to sleep to give some time for vso sync window to kick in." && \
+  ( echo -e "Waiting with vso ns failed...\nLet's fallback to sleep to give some time for vso sync window to kick in." && \
     sleep 5 )
 
 ${KUBECTL} wait pods -n "${NS_VSO}" --all --for=condition=Ready --timeout=300s
@@ -513,7 +519,14 @@ data:
 
         # Actually create the secret in the targeted cluster
         api_instance = client.CoreV1Api(api_client=client.ApiClient(configuration=client_config))
-        api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+        try:
+            # We try to delete the actual secret so we can create anew
+            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
+        except:
+            pass
+        finally:
+            # It does not exist, we create it
+            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
 
     if __name__ == '__main__':
         cli()
@@ -650,8 +663,8 @@ $KUBECTL_ADMIN create job --from=cronjob/init-bao-cluster --namespace ${NS_OPENB
   manual-init-bao-cluster-job
 
 # Wait for the secret created by the cronjob executed in the admin cluster
-echo "# Waiting for the secret ${ROLE_SECRET_NAME} -in namespace ${NS_APP}"
-timeout 20s bash -c "until $KUBECTL get secret ${ROLE_SECRET_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
+echo "# Waiting for the secret ${VAULT_AUTH_NAME} -in namespace ${NS_APP}"
+timeout 20s bash -c "until $KUBECTL get secret ${VAULT_AUTH_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
 
 ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
   --token ${OPENBAO_DEFAULT_TOKEN} \
@@ -672,7 +685,7 @@ spec:
   mount: ${MOUNT}
   appRole:
     roleId: ${ROLE_ID}
-    secretRef: ${ROLE_SECRET_NAME}
+    secretRef: ${VAULT_AUTH_NAME}
   allowedNamespaces:
     - "*"
 EOF

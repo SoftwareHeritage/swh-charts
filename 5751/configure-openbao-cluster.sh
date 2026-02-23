@@ -108,7 +108,6 @@ install_or_skip cert-manager jetstack/cert-manager \
 install_or_skip metallb metallb/metallb --namespace metallb
 install_or_skip ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx
 
-ARGOCD_HOSTNAME=argocd.local
 execute_or_skip $KUBECTL create namespace ${NS_ARGOCD}
 
 # Inject shared ca
