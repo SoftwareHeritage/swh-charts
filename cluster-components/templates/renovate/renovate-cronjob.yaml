@@ -1,6 +1,8 @@
 {{ if .Values.renovate.enabled }}
-{{ $appName := print .Values.clusterName "-renovate" }}
-{{ $autodiscover := .Values.renovate.extraConfig.autodiscover | default false }}
+{{- $appName := print .Values.clusterName "-renovate" -}}
+{{- $autodiscover := .Values.renovate.extraConfig.autodiscover | default false -}}
+{{- $renovateCachedir := .Values.renovate.extraConfig.cachedir | default (dict "enabled" false) -}}
+{{- $repositories := .Values.renovate.extraConfig.repositories | default list -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -50,21 +52,30 @@ spec:
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
                   value: "true"
+                {{- if $repositories }}
                 # Repositories to scan
                 - name: RENOVATE_REPOSITORIES
-                  value: "amadouth/renovate-update, amadouth/renovate"
+                  value:
+                    {{- toYaml $repositories | nindent 20 }}
+                {{- end }}
+                {{- if $renovateCachedir.enabled }}
                 # Cachedir
                 - name: RENOVATE_CACHE_DIR
-                  value: /tmp/renovate/cache
+                  value: {{ $renovateCachedir.mountpath }}
+                {{- end }}
               envFrom:
                 # Secrets (PAT and licence)
                 - secretRef:
                     name: {{ .Values.renovate.secretName }}
               volumeMounts:
+              {{- if $renovateCachedir.enabled }}
               - name: cachedir
-                mountPath: /tmp/renovate/cache
+                mountPath: {{ $renovateCachedir.mountpath }}
+              {{- end }}
           volumes:
+          {{- if $renovateCachedir.enabled }}
           - name: cachedir
             persistentVolumeClaim:
-              claimName: renovate-cache-pvc
+              claimName: {{ $renovateCachedir.pvcName }}
+          {{- end }}
 {{ end }}

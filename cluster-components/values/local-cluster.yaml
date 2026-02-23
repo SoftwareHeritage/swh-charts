@@ -376,6 +376,11 @@ renovate:
     endpoint: https://gitlab-staging.swh.network/api/v4
   extraConfig:
     autodiscover: true
+    cachedir:
+      enabled: true
+    repositories:
+      - amadouth/renovate-update
+      - amadouth/renovate
 
 volumes:
   enabled: true

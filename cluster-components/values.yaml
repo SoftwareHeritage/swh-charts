@@ -672,5 +672,17 @@ renovate:
   gitlab:
     # Endpoint url
     endpoint: "dummy.gitlab.fr/api/v4"
-  # Override some default configuration from the values
-  extraConfig: {}
+  # Allow to add some extra configuration from the values
+  extraConfig:
+    # Whether to autodiscover updates on repositories
+    autodiscover: false
+    # Whether to enable the cache directory option
+    cachedir:
+      enabled: false
+      # Ensure this pvc exists
+      pvcName: renovate-cache-pvc
+      # Where to mount such cache in the cronjob's pod container
+      mountpath: /tmp/renovate/cache
+    # List of repositories to scan for updates
+    repositories: []
+
