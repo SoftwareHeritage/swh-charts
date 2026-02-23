@@ -659,6 +659,7 @@ gitlabRunner:
 
 renovate:
   enabled: false
+  namespace: renovate
   # Frequency
   schedule: "@weekly"
   # (required) The secret referencing accesses to the forges to scan for updates, this

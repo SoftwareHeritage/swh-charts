@@ -3,11 +3,13 @@
 {{- $autodiscover := .Values.renovate.extraConfig.autodiscover | default false -}}
 {{- $renovateCachedir := .Values.renovate.extraConfig.cachedir | default (dict "enabled" false) -}}
 {{- $repositories := .Values.renovate.extraConfig.repositories | default list -}}
+{{- $namespace := $.Values.renovate.namespace -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ $appName }}
+  name: {{ $namespace }}
   labels:
     app.kubernetes.io/name: renovate
     app.kubernetes.io/instance: {{ $appName }}
