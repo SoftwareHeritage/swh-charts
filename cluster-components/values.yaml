@@ -661,6 +661,19 @@ renovate:
   enabled: false
   # Frequency
   schedule: "@weekly"
+  # (required) The secret referencing accesses to the forges to scan for updates, this
+  # secretName: renovate-env
+  # This secret ^ requires the following key entries:
+  # # Gitlab API URL
+  # RENOVATE_ENDPOINT: "redacted"
+  # # Gitlab Personal Access Token with permissions api, read_user
+  # RENOVATE_TOKEN: "redacted"
+  # # Acceptance of the TOS (Terms of Service) Mend
+  # MEND_RNV_ACCEPT_TOS: "y"
+  # # Public license (limited to 10 copies) or a personal license
+  # MEND_RNV_LICENSE_KEY: "redacted"
+  # # Personal user token for github for fetching changelogs
+  # GITHUB_COM_TOKEN: "redacted"
   # renovate docker image
   image:
     repository: renovate/renovate
