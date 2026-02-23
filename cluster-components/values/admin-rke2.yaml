@@ -176,6 +176,7 @@ volumes:
   persistentVolumeClaims:
     renovate-cache-pvc:
       enabled: true
+      namespace: renovate
       appName: renovate-cache-pvc
       spec:
         storageClassName: local-persistent
