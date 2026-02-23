@@ -1788,7 +1788,7 @@ cookers:
         - swh.vault.cooking_tasks.SWHCookingTask
       autoScaling:
         minReplicaCount: 1
-        maxReplicaCount: 20
+        maxReplicaCount: 30
       requestedMemory: 2Gi
       limitedMemory: 10Gi
     # According to current data, only the previous cooking task are running, hence the
