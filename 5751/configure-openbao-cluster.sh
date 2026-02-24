@@ -244,9 +244,17 @@ spec:
         injector:
           logLevel: trace
         server:
-          # TODO: Use a more resilient and persistent server implementation (default token: "root")
-          dev:  # in-memory
+          dataStorage:
+            # TODO use dedicated storage class (standard already exists and has RECLAIM POLICY set to "Delete")
+            storageClass: standard
+          persistentVolumeClaimRetentionPolicy:
+            whenDeleted: Retain
+            whenScaled: Retain
+          ha:
             enabled: true
+            raft:
+              enabled: true
+
           logLevel: trace
           # Add some extra dns records so we don't need an extra dns
           hostAliases:

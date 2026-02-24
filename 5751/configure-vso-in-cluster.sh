@@ -604,7 +604,7 @@ kind: CronJob
 metadata:
   name: init-bao-cluster
 spec:
-  schedule: "*/5 * * * *"
+  schedule: "0 * * * *"
   concurrencyPolicy: "Forbid"
   jobTemplate:
     spec:
@@ -664,7 +664,7 @@ $KUBECTL_ADMIN create job --from=cronjob/init-bao-cluster --namespace ${NS_OPENB
 
 # Wait for the secret created by the cronjob executed in the admin cluster
 echo "# Waiting for the secret ${VAULT_AUTH_NAME} -in namespace ${NS_APP}"
-timeout 20s bash -c "until $KUBECTL get secret ${VAULT_AUTH_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
+timeout 300s bash -c "until $KUBECTL get secret ${VAULT_AUTH_NAME} -n ${NS_APP} &>/dev/null; do printf \".\"; sleep 0.2; done"
 
 ROLE_ID=$(./init_bao_cluster.py --url ${OPENBAO_ENDPOINT} \
   --token ${OPENBAO_DEFAULT_TOKEN} \
