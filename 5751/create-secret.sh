@@ -77,6 +77,10 @@ echo "- This secret should be synchronized correctly in cluster <$CLUSTER_NAME>.
 $KUBECTL_ADMIN wait pod openbao-0 --for=condition=Ready --timeout=60s -n "${NS_OPENBAO}"
 POD_NAME=$($KUBECTL_ADMIN get pods -n "${NS_OPENBAO}" -l app.kubernetes.io/name=openbao -o jsonpath="{.items[0].metadata.name}")
 
+# Log inside bao pod prior to actually (in ha mode, this is required)
+$KUBECTL_ADMIN exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
+  "${POD_VAULT_CMD} login username=${OPENBAO_DEFAULT_USER} token=${OPENBAO_DEFAULT_TOKEN}"
+
 $KUBECTL_ADMIN exec "${POD_NAME}" -n "${NS_OPENBAO}" -- /bin/sh -c \
   "${POD_VAULT_CMD} kv put -mount=${MOUNT} ${OPENBAO_SECRET_PATH} username='demo-user' password='demo-pass'"
 
