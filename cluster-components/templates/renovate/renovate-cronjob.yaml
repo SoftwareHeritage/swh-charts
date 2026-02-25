@@ -63,6 +63,8 @@ spec:
                 # Cachedir
                 - name: RENOVATE_CACHE_DIR
                   value: {{ $renovateCachedir.mountpath }}
+                - name: RENOVATE_REPOSITORY_CACHE
+                  value: "true"
                 {{- end }}
               envFrom:
                 # Secrets (PAT and licence)
