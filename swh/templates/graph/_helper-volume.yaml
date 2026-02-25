@@ -48,10 +48,8 @@
    * mounted.
    */}}
 {{- define "swh.graph.prepareMemoryVolume" -}}
-{{- $imageVersion := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
-        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
 - name: graph-prepare-memory-volume
-  image: {{ get .Values .imagePrefixName }}:{{ $imageVersion }}
+  image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
   imagePullPolicy: IfNotPresent
   command:
   - /entrypoints/graph-prepare-memory-volume.sh

@@ -44,8 +44,20 @@ data:
     mkdir -p "${DATASET_LOCATION}"
 
     graph_stats="${GRAPH_NAME}.stats"
-    # Copy *.graph and *.ef, and symlink other files
-    swh graph link "${DATASET_SOURCE}" "${DATASET_LOCATION}"
+    # Symlink all files from dataset source to the destination (including the *.graph)
+    [ -L "${DATASET_LOCATION}/${graph_stats}" ] || \
+      ln -sf "${DATASET_SOURCE}"/* "${DATASET_LOCATION}/"
+
+    graph_name="${GRAPH_NAME}.graph"
+    # We hard-copy the *.graph file
+    if [ -L "${DATASET_LOCATION}/${graph_name}" ] || ! [ -f "${DATASET_LOCATION}/${graph_name}" ]; then
+      cp -v --remove-destination "${DATASET_SOURCE}/${graph_name}" "${DATASET_LOCATION}/";
+    fi
+
+    graph_transposed_name="${GRAPH_NAME}-transposed.graph"
+    if [ -L "${DATASET_LOCATION}/${graph_transposed_name}" ] || ! [ -f "${DATASET_LOCATION}/${graph_transposed_name}" ]; then
+      cp -v --remove-destination "${DATASET_SOURCE}/${graph_transposed_name}" "${DATASET_LOCATION}/";
+    fi
 
     # Finally, we make explicit the graph is ready
     touch "${WITNESS_FILE}"
