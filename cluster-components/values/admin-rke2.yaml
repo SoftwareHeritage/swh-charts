@@ -161,7 +161,7 @@ cloudnativePg:
 renovate:
   enabled: true
   # Name of the Kubernetes Secret containing sensitive variables
-  secretName: renovate-env
+  secretName: renovate-cronjob-secret
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
   cachedir:
     enabled: true
