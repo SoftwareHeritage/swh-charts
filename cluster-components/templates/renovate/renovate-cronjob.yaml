@@ -54,7 +54,7 @@ spec:
                   value: "ignored"
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
-                  value: "true"
+                  value: "false"
                 {{- if $renovateExtends }}
                 # Extend preset to use across various
                 # https://docs.renovatebot.com/configuration-options/#extends
