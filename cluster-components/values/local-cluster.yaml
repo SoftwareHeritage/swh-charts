@@ -371,17 +371,15 @@ renovate:
   enabled: false
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-env
-  gitlab:
-    # Gitlab endpoint
-    endpoint: https://gitlab-staging.swh.network/api/v4
-  extraConfig:
-    autodiscover: true
-    cachedir:
-      enabled: true
-    repositories:
-      - amadouth/renovate-update
-      - amadouth/renovate
-    renovateExtends: "local>amadouth/renovate-config:default.json"
+  # Gitlab endpoint
+  gitlabEndpoint: https://gitlab-staging.swh.network/api/v4
+  autodiscover: true
+  cachedir:
+    enabled: true
+  repositories:
+    - amadouth/renovate-update
+    - amadouth/renovate
+  renovateExtends: "local>amadouth/renovate-config:default.json"
 
 volumes:
   enabled: true

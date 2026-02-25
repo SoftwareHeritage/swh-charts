@@ -679,22 +679,20 @@ renovate:
     tag: 43.31-full
   # level and debug option | info | warn | error
   logLevel: "debug"
-  # Name of the Kubernetes Secret containing sensitive variables
+  # (required) Name of the Kubernetes Secret containing sensitive variables
   # secretName: renovate-env
-  gitlab:
-    # Endpoint url
-    endpoint: "dummy.gitlab.fr/api/v4"
+  # (required) Endpoint to scan repositories from
+  gitlabEndpoint: "dummy.gitlab.fr/api/v4"
   # Allow to add some extra configuration from the values
-  extraConfig:
-    # Whether to autodiscover updates on repositories
-    autodiscover: false
-    # Whether to enable the cache directory option
-    cachedir:
-      enabled: false
-      # Ensure this pvc exists
-      pvcName: renovate-cache-pvc
-      # Where to mount such cache in the cronjob's pod container
-      mountpath: /tmp/renovate/cache
-    # List of repositories to scan for updates
-    repositories: []
+  # Whether to autodiscover updates on repositories
+  autodiscover: false
+  # Whether to enable the cache directory option
+  cachedir:
+    enabled: false
+    # Ensure this pvc exists
+    pvcName: renovate-cache-pvc
+    # Where to mount such cache in the cronjob's pod container
+    mountpath: /tmp/renovate/cache
+  # List of repositories to scan for updates
+  repositories: []
 

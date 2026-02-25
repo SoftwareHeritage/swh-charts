@@ -1,11 +1,10 @@
 {{ if .Values.renovate.enabled }}
 {{- $appName := print .Values.clusterName "-renovate" -}}
-{{- $autodiscover := .Values.renovate.extraConfig.autodiscover | default false -}}
-{{- $renovateCachedir := .Values.renovate.extraConfig.cachedir | default (dict "enabled" false) -}}
-{{- $repositories := .Values.renovate.extraConfig.repositories | default list -}}
+{{- $autodiscover := .Values.renovate.autodiscover | default false -}}
+{{- $renovateCachedir := .Values.renovate.cachedir | default (dict "enabled" false) -}}
+{{- $repositories := .Values.renovate.repositories | default list -}}
 {{- $namespace := .Values.renovate.namespace -}}
-{{- $renovateExtends := .Values.renovate.extraConfig.renovateExtends -}}
-
+{{- $renovateExtends := .Values.renovate.renovateExtends -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -46,7 +45,7 @@ spec:
                   value: "gitlab"
                 # GitLab endpoint (URL)
                 - name: RENOVATE_ENDPOINT
-                  value: {{ .Values.renovate.gitlab.endpoint | quote }}
+                  value: {{ .Values.renovate.gitlabEndpoint | quote }}
                 # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
                   value: {{ $autodiscover | quote }}

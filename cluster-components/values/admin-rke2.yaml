@@ -162,15 +162,12 @@ renovate:
   enabled: true
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-env
-  gitlab:
-    # Gitlab endpoint
-    endpoint: https://gitlab.softwareheritage.org/api/v4
-  extraConfig:
-    cachedir:
-      enabled: true
-    repositories:
-      - swh/infra/swh-apps
-    renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
+  gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
+  cachedir:
+    enabled: true
+  repositories:
+    - swh/infra/swh-apps
+  renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
 
 volumes:
   enabled: true
