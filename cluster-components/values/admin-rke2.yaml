@@ -165,9 +165,11 @@ renovate:
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
   cachedir:
     enabled: true
+  # Where is stored the centralized renovate configuration
+  renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
+  # Repositories to scan for updates
   repositories:
     - swh/infra/swh-apps
-  renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
 
 volumes:
   enabled: true

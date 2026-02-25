@@ -373,13 +373,14 @@ renovate:
   secretName: renovate-env
   # Gitlab endpoint
   gitlabEndpoint: https://gitlab-staging.swh.network/api/v4
-  autodiscover: true
   cachedir:
     enabled: true
+  # Where is stored the centralized renovate configuration
+  renovateExtends: "local>amadouth/renovate-config:default.json"
+  # Repositories to scan for updates
   repositories:
     - amadouth/renovate-update
     - amadouth/renovate
-  renovateExtends: "local>amadouth/renovate-config:default.json"
 
 volumes:
   enabled: true
