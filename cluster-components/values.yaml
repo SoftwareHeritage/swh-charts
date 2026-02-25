@@ -665,8 +665,6 @@ renovate:
   # (required) The secret referencing accesses to the forges to scan for updates, this
   # secretName: renovate-env
   # This secret ^ requires the following key entries:
-  # # Gitlab API URL
-  # RENOVATE_ENDPOINT: "redacted"
   # # Gitlab Personal Access Token with permissions api, read_user
   # RENOVATE_TOKEN: "redacted"
   # # Acceptance of the TOS (Terms of Service) Mend
