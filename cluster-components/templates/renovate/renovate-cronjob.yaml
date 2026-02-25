@@ -51,7 +51,7 @@ spec:
                   value: {{ $autodiscover | quote }}
                 # no-interactif mode
                 - name: RENOVATE_REQUIRE_CONFIG
-                  value: "required"
+                  value: "ignored"
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
                   value: "true"
