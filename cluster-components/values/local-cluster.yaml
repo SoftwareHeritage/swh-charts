@@ -381,6 +381,7 @@ renovate:
     repositories:
       - amadouth/renovate-update
       - amadouth/renovate
+    renovateExtends: "local>amadouth/renovate-config:default.json"
 
 volumes:
   enabled: true

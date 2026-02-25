@@ -170,6 +170,7 @@ renovate:
       enabled: true
     repositories:
       - swh/infra/swh-apps
+    renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
 
 volumes:
   enabled: true

@@ -4,6 +4,8 @@
 {{- $renovateCachedir := .Values.renovate.extraConfig.cachedir | default (dict "enabled" false) -}}
 {{- $repositories := .Values.renovate.extraConfig.repositories | default list -}}
 {{- $namespace := .Values.renovate.namespace -}}
+{{- $renovateExtends := .Values.renovate.extraConfig.renovateExtends -}}
+
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -54,6 +56,12 @@ spec:
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
                   value: "true"
+                {{- if $renovateExtends }}
+                # Extend preset to use across various
+                # https://docs.renovatebot.com/configuration-options/#extends
+                - name: RENOVATE_EXTENDS
+                  value: {{ $renovateExtends }}
+                {{- end }}
                 {{- if $repositories }}
                 # Repositories to scan
                 - name: RENOVATE_REPOSITORIES
