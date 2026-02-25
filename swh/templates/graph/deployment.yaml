@@ -94,6 +94,8 @@ spec:
         {{ end }}
         {{- if $prepareMemoryVolume }}
         {{ include "swh.graph.prepareMemoryVolume" (dict "Values" $.Values
+                                                         "imagePrefixName" "swh_graph_image"
+                                                         "imageVersion" $graphImageVersion
                                                          "graphName" $graphName
                                                          "pathDatasetSource" $graphSourcePath
                                                          "pathDatasetDestination" $graphPath
