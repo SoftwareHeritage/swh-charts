@@ -166,7 +166,7 @@ renovate:
   cachedir:
     enabled: true
   # Where is stored the centralized renovate configuration
-  renovateExtends: "local>swh/infra/sysadm-environment:renovate/renovate.json"
+  renovateExtends: "local>swh/infra/sysadm-environment:renovate.json"
   # Repositories to scan for updates
   repositories:
     - swh/infra/swh-apps
