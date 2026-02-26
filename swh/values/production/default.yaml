@@ -624,11 +624,6 @@ rwObjstorageWineryAndAzure:
   - *winery-objstorage-conf-rw
   - *azure-storage-conf-rw
 
-rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps:
-  - cls: blocking
-    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
-  - cls: record_references
-
 rwStoragePipelineBlockingSteps:
   - cls: blocking
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
@@ -658,7 +653,7 @@ rwStoragePostgresqlWithWineryObjstorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
   objstorageConfigurationRef: rwObjstorageWineryAndAzure
-  pipelineStepsRef: rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps
+  pipelineStepsRef: rwStoragePipelineBlockingSteps
   secrets: *objstorage-secrets-rw
 
 postgresqlRWNoObjstorageStorageConfiguration:
@@ -875,20 +870,6 @@ maskingQueryPostgresqlConfiguration:
     MASKING_GUEST_PGPASSWORD:
       secretKeyRef: swh-storage-postgresql-common-secret
       secretKeyName: postgres-guest-password
-
-blockingAdminPostgresqlConfiguration:
-  host: db-swh-blocking-rw.cnpg
-  port: '5432'
-  db: swh-blocking
-  user: ${BLOCKING_ADMIN_PGUSERNAME}
-  pass: ${BLOCKING_ADMIN_PGPASSWORD}
-  secrets:
-   BLOCKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-postgresql-swh-blocking-secret
-      secretKeyName: password
-   BLOCKING_ADMIN_PGUSERNAME:
-      secretKeyRef: swh-postgresql-swh-blocking-secret
-      secretKeyName: username
 
 blockingQueryPostgresqlConfiguration:
   host: db-swh-blocking-rw.cnpg

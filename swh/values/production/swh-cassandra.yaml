@@ -729,7 +729,7 @@ toolbox:
     blocking:
       moduleName: storage.proxies.blocking
       moduleConfigKey: blocking_admin
-      blockingAdminConfigurationRef: blockingAdminPostgresqlConfiguration
+      blockingAdminConfigurationRef: blockingQueryPostgresqlConfiguration
       # needed for the `swh storage` cli to work...
       storageConfigurationRef: memoryNoopStorageConfiguration
     deposit:
