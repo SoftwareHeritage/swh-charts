@@ -134,7 +134,7 @@ cloudnativePg:
   # cnpg/cloudnative-pg  0.26.1  1.27.1  CloudNativePG Operator Helm Chart  <- previous
   version: 0.27.1
   # Out-of-tree plugin to manage backup (not an helm chart currently)
-  barmanPluginVersion: 0.10.0
+  barmanPluginVersion: 0.11.0
   argocdApplication:
     selfHeal: true
     prune: false
