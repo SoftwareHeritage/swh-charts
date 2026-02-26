@@ -217,6 +217,7 @@ externalPostgresqlClusters:
 
 cloudnativePg:
   enabled: true
+  namespace: cnpg
   # Postgres credentials to setup (can be overridden per instance)
   superUserSecretRef: swh-postgresql-postgres-secret
   services:
@@ -240,11 +241,9 @@ cloudnativePg:
       secretName: cnpg-minio-secret
       accessKey: MINIO_ACCESS_KEY
       secretKey: MINIO_SECRET_KEY
-
   deployments:
     db-swh-blocking:
       enabled: true
-      namespace: cnpg
       instances: 3
       externalClustersRef: externalPostgresqlClusters
       database:
@@ -257,4 +256,17 @@ cloudnativePg:
         enabled: true
         # Run once a day at 1am (UTC)
         schedule: "0 0 1 * * *"
-
+    db-swh-masking:
+      enabled: true
+      instances: 3
+      externalClustersRef: externalPostgresqlClusters
+      database:
+        name: swh-masking
+        secretKeyRef: swh-postgresql-swh-masking-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-production-albertina
+      backup:
+        enabled: true
+        # Run once a day at 1:30am (UTC)
+        schedule: "0 30 1 * * *"
