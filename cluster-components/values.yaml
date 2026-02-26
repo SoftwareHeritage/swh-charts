@@ -678,7 +678,7 @@ renovate:
     repository: renovate/renovate
     tag: 43.31-full
   # level and debug option | info | warn | error
-  logLevel: "debug"
+  logLevel: "info"
   # (required) Name of the Kubernetes Secret containing sensitive variables
   # secretName: renovate-env
   # (required) Endpoint to scan repositories from

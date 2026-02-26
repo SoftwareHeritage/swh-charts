@@ -371,6 +371,7 @@ renovate:
   enabled: false
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-env
+  logLevel: "debug"
   # Gitlab endpoint
   gitlabEndpoint: https://gitlab-staging.swh.network/api/v4
   cachedir:
