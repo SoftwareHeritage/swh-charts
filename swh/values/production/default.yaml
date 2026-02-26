@@ -629,6 +629,11 @@ rwStoragePostgresqlPipelineBlockingAndRecordReferencesSteps:
     postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
   - cls: record_references
 
+rwStoragePipelineBlockingSteps:
+  - cls: blocking
+    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
+  - cls: record_references
+
 storageJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   prefix: swh.journal.objects
@@ -660,11 +665,6 @@ postgresqlRWNoObjstorageStorageConfiguration:
   storageConfigurationRef: postgresqlRWStorageConfiguration
   pipelineStepsRef: emptyStoragePipelineSteps
   objstorageConfigurationRef: noopObjstorageConfiguration
-
-rwStoragePipelineBlockingSteps:
-  - cls: blocking
-    postgresqlConfigurationRef: blockingQueryPostgresqlConfiguration
-  - cls: record_references
 
 rwStorageCassandraWithWineryObjstorageConfiguration:
   storageConfigurationRef: cassandraStorage
@@ -891,7 +891,7 @@ blockingAdminPostgresqlConfiguration:
       secretKeyName: username
 
 blockingQueryPostgresqlConfiguration:
-  host: db-swh-blocking-ro.cnpg
+  host: db-swh-blocking-rw.cnpg
   port: '5432'
   db: swh-blocking
   # The blocking proxy writes to a log table (blocked_origin_log)
