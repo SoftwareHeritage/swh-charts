@@ -4,18 +4,24 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
 metadata:
   name: postgresql
+  labels:
+    images.cnpg.io/family: postgresql
+    images.cnpg.io/type: system
+    images.cnpg.io/os: bookworm
+    images.cnpg.io/date: '20260224'
+    images.cnpg.io/publisher: cnpg.io
 spec:
   images:
     - major: 13
-      image: ghcr.io/cloudnative-pg/postgresql:13.21-21-bookworm@sha256:14edefad7d7c317a8d72ce29dc00d25c1272e2d9fefee53db5a5118092398899
+      image: ghcr.io/cloudnative-pg/postgresql:13.22-202511100817-system-bookworm@sha256:9a87084ccdc4c51742b861177c4924e2a13a7dd3731782dc20d355b12bab8bcd
     - major: 14
-      image: ghcr.io/cloudnative-pg/postgresql:14.18-21-bookworm@sha256:b10c13ba9f5482d8473624ceecebe5891b65a86de0c35d20c3b4f4f8af1b2fca
+      image: ghcr.io/cloudnative-pg/postgresql:14.21-202602230816-system-bookworm@sha256:4b7b880d996091c696af7842ed93274429c02ebae6b397b93740817e53b3c481
     - major: 15
-      image: ghcr.io/cloudnative-pg/postgresql:15.13-21-bookworm@sha256:2ec3a6a5b90aa343a89de7e9d5e5ded421f7bdfa605fe189714fa13f87925257
+      image: ghcr.io/cloudnative-pg/postgresql:15.16-202602230816-system-bookworm@sha256:1c27aa6ef53297352520d95914b8ebf93243f52304af366333e1d970e870008e
     - major: 16
-      image: ghcr.io/cloudnative-pg/postgresql:16.9-21-bookworm@sha256:d06ee3c28929b5ce93f0691ee6eb5a1ea4f3b7b99c08972c66dcf02191e4aa84
+      image: ghcr.io/cloudnative-pg/postgresql:16.12-202602241232-system-bookworm@sha256:ab60296bf566c5881e647f965e9641079431a828269a6e2bcc3957fc91e4028d
     - major: 17
-      image: ghcr.io/cloudnative-pg/postgresql:17.5-21-bookworm@sha256:e78e34030d2ad6743f4709a27de485684508eb155cea3c5192a978125cd37fdb
+      image: ghcr.io/cloudnative-pg/postgresql:17.8-202602230816-system-bookworm@sha256:9714cbca68836d0a4f5e455d8078afafd60e0751d28944935309be90d9c4ec98
     - major: 18
-      image: ghcr.io/cloudnative-pg/postgresql:18beta2-3-bookworm@sha256:c58f3a1079167829e2ce94d31768b6f1af2aa5b93a751d133e78dbc56a045c26
+      image: ghcr.io/cloudnative-pg/postgresql:18.2-202602230816-system-bookworm@sha256:727b1b3971eb684577f6e063f8afda57a0b66ce61172efbb345b53118113dbdb
 {{ end }}
