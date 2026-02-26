@@ -1547,7 +1547,6 @@ datasetUploadS3Configuration:
 
 datasetsGenerator:
   enabled: true
-  imageVersion: "20260225.1"
   logLevel: DEBUG
   # Dedicated scheduler instance
   scheduler:
