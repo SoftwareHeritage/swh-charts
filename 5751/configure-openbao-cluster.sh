@@ -242,8 +242,9 @@ spec:
       releaseName: openbao
       values: |
         injector:
-          logLevel: trace
+          logLevel: info
         server:
+          logLevel: info
           dataStorage:
             # TODO use dedicated storage class (standard already exists and has RECLAIM POLICY set to "Delete")
             storageClass: standard
@@ -252,10 +253,9 @@ spec:
             whenScaled: Retain
           ha:
             enabled: true
+            replicas: 3
             raft:
               enabled: true
-
-          logLevel: trace
           # Add some extra dns records so we don't need an extra dns
           hostAliases:
           # Make openbao ingress hostname resolvable in-cluster too
