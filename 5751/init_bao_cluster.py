@@ -162,9 +162,11 @@ def create_approle_secret_id(ctx, role_name, mount):
               help="Name of the secret in the target cluster")
 @click.option('--secret-namespace', required=True,
               help="Namespace of the secret in the targeted cluster")
+@click.option('--kubeconfig', 'kubeconfig_path', type=click.Path(exists=True))
 @click.pass_context
 def create_secret_in_targeted_cluster(
-    ctx, role_name, mount, targeted_cluster_url, secret_name, secret_namespace
+    ctx, role_name, mount, targeted_cluster_url, secret_name, secret_namespace,
+    kubeconfig_path
 ):
     """Create the secret with approle id/secret-id in the targeted cluster'."""
     hvac_client = ctx.obj['client']
@@ -180,9 +182,8 @@ def create_secret_in_targeted_cluster(
     # For local clusters, no need
     client_config.verify_ssl = False
 
-    # FIXME: Make it a bit more parametric?
-    # Configuration file holding the bearer token
-    with open("/opt/swh/.kube/config", "r") as f: data = loads(f.read())
+        # Configuration file holding the bearer token
+    with open(kubeconfig_path, "r") as f: data = loads(f.read())
     client_config.api_key['authorization'] = data['bearerToken']
     client_config.api_key_prefix['authorization'] = 'Bearer'
     client_config.host = targeted_cluster_url
