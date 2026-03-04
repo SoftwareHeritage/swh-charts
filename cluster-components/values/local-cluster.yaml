@@ -381,6 +381,26 @@ renovate:
     - amadouth/renovate-update
     - amadouth/renovate
 
+kafkabackup:
+  enabled: false
+  namespace: cluster-components
+  bootstrapServer: kafka1.internal.softwareheritage.org
+  kafkaHosts:
+    # Vagrant hosts
+    kafka1.internal.softwareheritage.org: 10.168.100.201
+    kafka2.internal.softwareheritage.org: 10.168.100.202
+    kafka3.internal.softwareheritage.org: 10.168.100.203
+    kafka4.internal.softwareheritage.org: 10.168.100.204
+  s3:
+    bucket: kafkabackup-local-cluster
+    # Don't forget to setup a S3-compatible objstorage /somewhere/ and
+    # configure it in your local-cluster-cc.override.yaml -- it is not included
+    # in the local cluster. Garage is easy to setup for local tests.
+  ssh:
+    # Gather your Vagrant VMs host keys (ssh-keyscan) and add them to this list
+    knownHosts: []
+
+
 volumes:
   enabled: false
   persistentVolumeClaims:

@@ -1,0 +1,16 @@
+{{ if .Values.kafkabackup.enabled }}
+{{- $name := "kafkabackup" -}}
+{{- $appName := print .Values.clusterName "-" $name -}}
+{{- $cmName := print $appName "-configmap" -}}
+{{- $namespace := .Values.kafkabackup.namespace -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $cmName }}
+data:
+  ssh_known_hosts: |
+    {{- range .Values.kafkabackup.ssh.knownHosts }}
+    {{ . }}
+    {{- end }}
+{{ end }}

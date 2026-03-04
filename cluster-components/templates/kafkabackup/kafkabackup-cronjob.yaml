@@ -1,0 +1,78 @@
+{{ if .Values.kafkabackup.enabled }}
+{{- $name := "kafkabackup" -}}
+{{- $appName := print .Values.clusterName "-" $name -}}
+{{- $namespace := .Values.kafkabackup.namespace -}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $appName }}
+  namespace: {{ $namespace }}
+  labels:
+    app.kubernetes.io/name: {{ $name }}
+    app.kubernetes.io/instance: {{ $appName }}
+spec:
+  schedule: {{ .Values.kafkabackup.schedule | quote }}
+  concurrencyPolicy: Forbid
+  # Jobs history
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: {{ $name }}
+        spec:
+          restartPolicy: Never
+          volumes:
+            - name: ssh-secrets
+              secret:
+                secretName: {{ .Values.kafkabackup.ssh.secretKeyName }}
+            - name: configmap
+              configMap:
+                name: "{{ $appName }}-configmap"
+          containers:
+            - name: {{ $name }}
+              image: {{ .Values.kafkabackup.image.repository }}:{{ .Values.kafkabackup.image.tag }}
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+                - name: ssh-secrets
+                  readOnly: true
+                  mountPath: /ssh
+                - name: configmap
+                  readOnly: true
+                  mountPath: /config
+              env:
+                - name: KAFKABACKUP_BOOTSTRAP
+                  value: {{ .Values.kafkabackup.bootstrapServer | quote }}
+                - name: KAFKABACKUP_USER
+                  value: {{ .Values.kafkabackup.backupUser | quote }}
+                - name: KAFKABACKUP_REMOTE_VENV
+                  value: {{ .Values.kafkabackup.remoteVenv | quote }}
+                - name: KAFKABACKUP_DATASET
+                  value: {{ .Values.kafkabackup.zfsDataset | quote }}
+                - name: KAFKABACKUP_S3_HOST
+                  value: {{ .Values.kafkabackup.s3.host | quote }}
+                - name: KAFKABACKUP_S3_REGION
+                  value: {{ .Values.kafkabackup.s3.region | quote }}
+                - name: KAFKABACKUP_S3_BUCKET
+                  value: {{ .Values.kafkabackup.s3.bucket | quote }}
+                - name: KAFKABACKUP_S3_SSL
+                  value: {{ .Values.kafkabackup.s3.ssl | quote }}
+                - name: KAFKABACKUP_SSH_KNOWN_HOSTS
+                  value: /config/ssh_known_hosts
+                - name: KAFKABACKUP_SSH_KEYFILE
+                  value: /ssh/ssh-privatekey
+              envFrom:
+                - secretRef:
+                    name: {{ .Values.kafkabackup.s3.credsName }}
+          {{ if .Values.kafkabackup.kafkaHosts -}}
+          hostAliases:
+          {{- range $host, $ip := .Values.kafkabackup.kafkaHosts }}
+            - ip: {{ $ip }}
+              hostnames: [ "{{ $host }}" ]
+          {{- end }}
+          {{ end }}
+{{ end }}

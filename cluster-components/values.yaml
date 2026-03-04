@@ -713,3 +713,26 @@ openbao:
     enabled: false
   # Deploy cronjobs instance per cluster
   deployments: {}
+
+kafkabackup:
+  enabled: false
+  namespace: kafkabackup
+  # Frequency
+  schedule: "@daily"
+  image:
+    repository: 'container-registry.softwareheritage.org/swh/infra/swh-apps/kafkabackup'
+    tag:  '20260309.1'
+  # bootstrapServer: one of the kafka brokers
+  backupUser: "kafkabackup"
+  remoteVenv: "/var/lib/kafkabackup/venv"
+  zfsDataset: "data/kafka"
+  s3:
+    # host: s3 hostname (possibly with :port)
+    # region: s3 region
+    # bucket: s3 bucket name
+    credsName: "kafkabackup-s3-auth"
+    ssl: true
+  ssh:
+    secretKeyName: "kafkabackup-ssh-key"
+    knownHosts: [] # list of strings, one for each known_hosts line
+  kafkaHosts: {}  # Specify /etc/hosts overrides for kafka brokers
