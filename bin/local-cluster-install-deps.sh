@@ -45,8 +45,7 @@ helm repo add gitlab-runner https://charts.gitlab.io
 helm repo add metallb https://metallb.github.io/metallb
 
 # Build cluster-components dependencies (if not already built)
-output=$(find cluster-components/charts -maxdepth 0 -empty -exec echo empty \;)
-if [ "${output}" = "empty" ]; then
+if ! [ -d cluster-components/charts ]; then
     pushd cluster-components
     helm dependency build
     popd
