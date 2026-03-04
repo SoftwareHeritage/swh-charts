@@ -846,30 +846,36 @@ postgresqlScrubberConfiguration:
       secretKeyName: postgres-swh-scrubber-password
 
 maskingAdminPostgresqlConfiguration:
-  host: postgresql-masking-rw.internal.softwareheritage.org
+  host: db-swh-masking-rw.cnpg
   port: '5432'
   db: swh-masking
-  user: swh-masking
+  user: ${MASKING_ADMIN_PGUSERNAME}
   pass: ${MASKING_ADMIN_PGPASSWORD}
   secrets:
+    MASKING_ADMIN_PGUSERNAME:
+      secretKeyRef: swh-postgresql-swh-masking-secret
+      secretKeyName: username
     MASKING_ADMIN_PGPASSWORD:
-      secretKeyRef: swh-postgresql-masking-secret
-      secretKeyName: postgres-swh-masking-password
+      secretKeyRef: swh-postgresql-swh-masking-secret
+      secretKeyName: password
 
 maskingStoragePipelineSteps:
   - cls: masking
     postgresqlConfigurationRef: maskingQueryPostgresqlConfiguration
 
 maskingQueryPostgresqlConfiguration:
-  host: postgresql-masking-rw.internal.softwareheritage.org
+  host: db-swh-masking-ro.cnpg
   port: '5432'
   db: swh-masking
-  user: guest
+  user: ${MASKING_GUEST_PGUSERNAME}
   pass: ${MASKING_GUEST_PGPASSWORD}
   secrets:
+    MASKING_GUEST_PGUSERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
     MASKING_GUEST_PGPASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-guest-password
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
 
 blockingQueryPostgresqlConfiguration:
   host: db-swh-blocking-rw.cnpg
@@ -1196,15 +1202,18 @@ azureDepositConfiguration:
 
 postgresqlSyncMaskingProxyMailmapsConfiguration:
   cls: postgresql
-  host: postgresql-masking-rw.internal.softwareheritage.org
+  host: db-swh-masking-rw.cnpg
   port: '5432'
   db: swh-masking
-  user: swhmailmap
+  user: ${PGUSERNAME}
   pass: ${PGPASSWORD}
   secrets:
+    PGUSERNAME:
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: username
     PGPASSWORD:
-      secretKeyRef: swh-postgresql-syncmailmap-secret
-      secretKeyName: postgres-syncmailmap-password
+      secretKeyRef: swh-postgresql-swhmailmap-secret
+      secretKeyName: password
 
 authenticatedJournalClientConfiguration:
   cls: kafka
