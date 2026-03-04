@@ -256,4 +256,5 @@ cloudnativePg:
       backup:
         enabled: true
         # Run once a day at 1am (UTC)
-        schedule: "0 1 * * * *"
+        schedule: "0 0 1 * * *"
+
