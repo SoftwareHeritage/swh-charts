@@ -384,7 +384,7 @@ renovate:
     - amadouth/renovate
 
 volumes:
-  enabled: true
+  enabled: false
   persistentVolumeClaims:
     renovate-cache-pvc:
       enabled: true
