@@ -278,13 +278,11 @@ cloudnativePg:
       enabled: true
       instances: 3
       grantGuestAccess: true
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-vault-secret
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         # Run once a day at 2am (UTC)
