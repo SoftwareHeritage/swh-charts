@@ -159,7 +159,7 @@ spec:
       postInitApplicationSQL:
       - CREATE ROLE guest
       - GRANT SELECT ON ALL TABLES IN SCHEMA PUBLIC TO guest
-      {{- end -}}
+      {{ end -}}
 
       {{- if $initdb.source }}
       {{- $databases := $initdb.databases | default (list $dbName) -}}
