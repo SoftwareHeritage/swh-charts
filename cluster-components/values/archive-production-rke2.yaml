@@ -274,3 +274,18 @@ cloudnativePg:
         enabled: true
         # Run once a day at 1:30am (UTC)
         schedule: "0 30 1 * * *"
+    db-swh-vault:
+      enabled: true
+      instances: 3
+      grantGuestAccess: true
+      externalClustersRef: externalPostgresqlClusters
+      database:
+        name: swh-vault
+        secretKeyRef: swh-postgresql-swh-vault-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-production-albertina
+      backup:
+        enabled: true
+        # Run once a day at 2am (UTC)
+        schedule: "0 0 2 * * *"
