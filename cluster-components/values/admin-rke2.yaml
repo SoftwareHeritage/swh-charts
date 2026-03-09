@@ -149,10 +149,8 @@ cloudnativePg:
       database:
         name: netbox
         secretKeyRef: netbox-postgresql-secret
-      externalClustersRef: externalPostgresqlClusters
       initdb:
         enabled: true
-        source: cluster-pg-admin-dali
       backup:
         enabled: true
         # Run once a day at 10:05pm (UTC)
