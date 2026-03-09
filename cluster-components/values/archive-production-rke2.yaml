@@ -259,7 +259,6 @@ cloudnativePg:
     db-swh-masking:
       enabled: true
       instances: 3
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-masking
         secretKeyRef: swh-postgresql-swh-masking-secret
@@ -273,7 +272,6 @@ cloudnativePg:
           name: swh-postgresql-swhmailmap-secret
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         # Run once a day at 1:30am (UTC)
