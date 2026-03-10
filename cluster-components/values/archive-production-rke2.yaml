@@ -291,13 +291,11 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 3
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         # Run once a day at 2:30am (UTC)
