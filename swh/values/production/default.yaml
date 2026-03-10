@@ -1177,15 +1177,18 @@ countersHistoryConfiguration:
     environment: production
 
 postgresqlDepositConfiguration:
-  host: postgresql-deposit-rw.internal.softwareheritage.org
+  host: db-swh-deposit-rw.cnpg
   port: 5432
-  db: softwareheritage-deposit
-  user: swhstorage
+  db: swh-deposit
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-deposit-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-deposit-secrets
-      secretKeyName: postgres-swh-deposit-password
+      secretKeyRef: swh-postgresql-swh-deposit-secret
+      secretKeyName: password
 
 djangoDepositConfiguration:
   secrets:
