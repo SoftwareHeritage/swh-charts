@@ -287,3 +287,18 @@ cloudnativePg:
         enabled: true
         # Run once a day at 2am (UTC)
         schedule: "0 0 2 * * *"
+    db-swh-deposit:
+      enabled: true
+      namespace: cnpg
+      instances: 3
+      externalClustersRef: externalPostgresqlClusters
+      database:
+        name: swh-deposit
+        secretKeyRef: swh-postgresql-swh-deposit-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-production-albertina
+      backup:
+        enabled: true
+        # Run once a day at 2:30am (UTC)
+        schedule: "0 30 2 * * *"
