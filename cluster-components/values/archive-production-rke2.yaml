@@ -289,7 +289,6 @@ cloudnativePg:
         schedule: "0 0 2 * * *"
     db-swh-deposit:
       enabled: true
-      namespace: cnpg
       instances: 3
       database:
         name: swh-deposit
@@ -302,7 +301,6 @@ cloudnativePg:
         schedule: "0 30 2 * * *"
     db-swh-web:
       enabled: true
-      namespace: cnpg
       instances: 3
       database:
         name: swh-web
