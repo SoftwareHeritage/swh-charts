@@ -302,11 +302,13 @@ cloudnativePg:
     db-swh-web:
       enabled: true
       instances: 3
+      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
       initdb:
         enabled: true
+        source: cluster-pg-production-albertina
       backup:
         enabled: true
         # Run once a day at 3:30am (UTC)
