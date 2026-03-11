@@ -328,4 +328,4 @@ cloudnativePg:
         schedule: "0 30 5 * * *"
       extraPostgresqlConfig:
         parameters:
-          max_wal_size: 2G
+          max_wal_size: 2GB
