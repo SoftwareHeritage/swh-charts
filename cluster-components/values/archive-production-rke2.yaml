@@ -300,3 +300,16 @@ cloudnativePg:
         enabled: true
         # Run once a day at 2:30am (UTC)
         schedule: "0 30 2 * * *"
+    db-swh-web:
+      enabled: true
+      namespace: cnpg
+      instances: 3
+      database:
+        name: swh-web
+        secretKeyRef: swh-postgresql-swh-web-secret
+      initdb:
+        enabled: true
+      backup:
+        enabled: true
+        # Run once a day at 3:30am (UTC)
+        schedule: "0 30 3 * * *"
