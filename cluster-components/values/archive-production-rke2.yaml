@@ -229,7 +229,7 @@ cloudnativePg:
     # Let's use the new barman plugin
     # It's required for future cnpg version > 1.26
     systemType: plugin
-    # 2 weeks retention for staging
+    # 2 weeks retention for production
     retention: 14d
     s3Config:
       # path: <bucket-name>/<cluster-name>/<namespace>/<db-name>
