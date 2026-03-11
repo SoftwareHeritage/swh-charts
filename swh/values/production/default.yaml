@@ -893,6 +893,17 @@ blockingQueryPostgresqlConfiguration:
       secretKeyRef: swh-postgresql-swh-blocking-secret
       secretKeyName: username
 
+postgresqlWebConfiguration:
+  host: postgresql-web-rw.internal.softwareheritage.org
+  port: 5432
+  db: swh-web
+  user: swh-web
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-web-secrets
+      secretKeyName: postgres-swh-web-password
+
 djangoWebConfiguration:
   secrets:
     DJANGO_SECRET_KEY:

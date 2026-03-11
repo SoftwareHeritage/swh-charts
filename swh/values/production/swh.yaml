@@ -43,17 +43,6 @@ readOnlyPostgresqlStorageConfiguration:
   storageConfigurationRef: primaryPostgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
 
-postgresqlWebConfiguration:
-  host: postgresql-web-rw.internal.softwareheritage.org
-  port: 5432
-  db: swh-web
-  user: swh-web
-  pass: ${POSTGRESQL_PASSWORD}
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-postgresql-web-secrets
-      secretKeyName: postgres-swh-web-password
-
 primaryPostgresqlROStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
