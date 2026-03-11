@@ -326,3 +326,6 @@ cloudnativePg:
         retention: 7d
         # Run once a day at 5:30am (UTC)
         schedule: "0 30 5 * * *"
+      extraPostgresqlConfig:
+        parameters:
+          max_wal_size: 2G
