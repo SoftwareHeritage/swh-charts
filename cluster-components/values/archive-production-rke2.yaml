@@ -315,10 +315,8 @@ cloudnativePg:
       externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-svix
-        secretKeyRef: swh-postgresql-swh-svix-secret
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         retention: 7d
