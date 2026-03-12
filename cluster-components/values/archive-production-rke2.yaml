@@ -314,13 +314,11 @@ cloudnativePg:
     db-swh-scrubber:
       enabled: true
       instances: 3
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-scrubber
         secretKeyRef: swh-postgresql-swh-scrubber-secret
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         retention: 7d
