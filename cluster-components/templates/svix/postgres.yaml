@@ -4,7 +4,8 @@
 {{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
 {{- $appName := print $svixName "-postgres" -}}
 {{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
-{{ if $svixConfiguration.postgres.enabled -}}
+{{- $deployPostgres := $svixConfiguration.postgres.enabled | default false -}}
+{{ if $deployPostgres -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

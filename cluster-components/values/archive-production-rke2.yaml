@@ -104,7 +104,6 @@ svix:
         enabled: false
         dsn: redis-svix.svix-server
       postgres:
-        enabled: false
         dsn: db.internal.softwareheritage.org
         cleanupExpiredMessages:
           enabled: true

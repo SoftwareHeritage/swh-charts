@@ -62,7 +62,6 @@ svix:
       requestedMemory: 100Mi
       requestedCpu: 100m
       postgres:
-        enabled: false
         persistentVolume: false
         dsn: svix-rw.swh
         cleanupExpiredMessages:
