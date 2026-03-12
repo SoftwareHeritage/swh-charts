@@ -793,7 +793,7 @@ postgresqlSchedulerConfiguration:
   pass: ${POSTGRESQL_PASSWORD}
   db: swh-scheduler
   secrets:
-    POSTGRESQL_username:
+    POSTGRESQL_USERNAME:
       secretKeyRef: swh-postgresql-swh-scheduler-secret
       secretKeyName: username
     POSTGRESQL_PASSWORD:
