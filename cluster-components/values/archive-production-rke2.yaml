@@ -321,6 +321,7 @@ cloudnativePg:
         source: cluster-pg-production-albertina
       backup:
         enabled: true
+        retention: 7d
         # Run once a day at 4:30am (UTC)
         schedule: "0 30 4 * * *"
     db-swh-scrubber:
