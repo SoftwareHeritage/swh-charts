@@ -787,15 +787,18 @@ depositConfiguration:
 
 postgresqlSchedulerConfiguration:
   cls: postgresql
-  host: postgresql-scheduler-rw.internal.softwareheritage.org
+  host: db-swh-scheduler-rw.cnpg
   port: 5432
-  user: swhscheduler
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   db: swh-scheduler
   secrets:
+    POSTGRESQL_username:
+      secretKeyRef: swh-postgresql-swh-scheduler-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-scheduler-postgresql-common-secret
-      secretKeyName: postgres-swh-scheduler-password
+      secretKeyRef: swh-postgresql-swh-scheduler-secret
+      secretKeyName: password
 
 postgresqlROStorageConfiguration:
   cls: postgresql
