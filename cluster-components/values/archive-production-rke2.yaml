@@ -335,3 +335,18 @@ cloudnativePg:
         retention: 7d
         # Run once a day at 5:30am (UTC)
         schedule: "0 30 5 * * *"
+    db-swh-scheduler:
+      enabled: true
+      instances: 3
+      externalClustersRef: externalPostgresqlClusters
+      database:
+        name: swh-scheduler
+        secretKeyRef: swh-postgresql-swh-scheduler-secret
+      initdb:
+        enabled: true
+        source: cluster-pg-production-albertina
+      backup:
+        enabled: true
+        retention: 3d
+        # Run once a day at 6:30am (UTC)
+        schedule: "0 30 6 * * *"
