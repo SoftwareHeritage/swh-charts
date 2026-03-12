@@ -101,7 +101,6 @@ svix:
       requestedMemory: 1Gi
       requestedCpu: 100m
       redis:
-        enabled: false
         dsn: redis-svix.svix-server
       postgres:
         dsn: db.internal.softwareheritage.org

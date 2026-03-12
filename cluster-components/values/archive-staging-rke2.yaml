@@ -55,7 +55,6 @@ svix:
       requestedMemory: 100Mi
       requestedCpu: 100m
       redis:
-        enabled: false
         dsn: redis-svix.svix-server
       postgres:
         dsn: db-swh-svix-rw.cnpg
@@ -81,7 +80,6 @@ svix:
       requestedMemory: 100Mi
       requestedCpu: 100m
       redis:
-        enabled: false
         dsn: redis-svix-next-version.swh-cassandra-next-version
       postgres:
         dsn: next-version-db-swh-svix-rw.cnpg-next-version

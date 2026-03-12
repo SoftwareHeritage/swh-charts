@@ -68,7 +68,6 @@ svix:
           enabled: true
           cron: "0 */2 * * *"
       redis:
-        enabled: false
         persistentVolume: false
         dsn: redis-svix.cluster-components
 

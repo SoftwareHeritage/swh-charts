@@ -20,7 +20,8 @@ spec:
       targetPort: 5432
       name: postgres
 {{- end }}
-{{ if $svixConfiguration.redis.enabled -}}
+{{ $deployRedis := $svixConfiguration.redis.enabled | default false -}}
+{{ if $deployRedis -}}
 {{- $appRedisName := print $svixName "-redis" -}}
 ---
 apiVersion: v1
