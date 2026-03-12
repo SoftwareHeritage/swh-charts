@@ -103,7 +103,7 @@ svix:
       redis:
         dsn: redis-svix.svix-server
       postgres:
-        dsn: db.internal.softwareheritage.org
+        dsn: db-swh-svix-rw.cnpg
         cleanupExpiredMessages:
           enabled: true
           # Every day at 1:00 am
