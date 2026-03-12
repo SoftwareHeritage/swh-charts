@@ -791,7 +791,7 @@ postgresqlSchedulerConfiguration:
   port: 5432
   user: swhscheduler
   pass: ${POSTGRESQL_PASSWORD}
-  db: softwareheritage-scheduler
+  db: swh-scheduler
   secrets:
     POSTGRESQL_PASSWORD:
       secretKeyRef: swh-scheduler-postgresql-common-secret
