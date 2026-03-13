@@ -362,6 +362,9 @@ cloudnativePg:
         retention: 3d
         # Run once a day at 6:30am (UTC)
         schedule: "0 30 6 * * *"
+      extraWalConfigurationParameters:
+        archiveAdditionalCommandArgs:
+          - "--max-concurrency=2"
       extraPostgresqlConfig:
         # Scheduler requires fine tuning regarding its current use
         parameters:
