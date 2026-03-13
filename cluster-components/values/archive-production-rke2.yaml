@@ -375,3 +375,5 @@ cloudnativePg:
           max_connections: 200
           # Maximum size to let the WAL grow during automatic checkpoints
           max_wal_size: 2GB
+          # Shared Caching data setup
+          shared_buffers: 8GB
