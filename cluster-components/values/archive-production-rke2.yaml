@@ -365,8 +365,13 @@ cloudnativePg:
       extraWalConfigurationParameters:
         archiveAdditionalCommandArgs:
           - "--max-concurrency=2"
+      walStorage:
+        storageClass: local-persistent
+        size: 4Gi
       extraPostgresqlConfig:
         # Scheduler requires fine tuning regarding its current use
         parameters:
           # Double the default connections nb (the default of 100 is already reached)
           max_connections: 200
+          # Maximum size to let the WAL grow during automatic checkpoints
+          max_wal_size: 2GB
