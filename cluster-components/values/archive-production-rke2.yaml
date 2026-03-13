@@ -377,3 +377,7 @@ cloudnativePg:
           max_wal_size: 2GB
           # Shared Caching data setup
           shared_buffers: 8GB
+          # Amount of memory allocated for each query
+          work_mem: 1GB
+          # Amount of memory allocated for maintenance operations (vacuum, etc...)
+          maintenance_work_mem: 4GB
