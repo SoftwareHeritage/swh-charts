@@ -312,7 +312,6 @@ cloudnativePg:
     db-swh-svix:
       enabled: true
       instances: 3
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
