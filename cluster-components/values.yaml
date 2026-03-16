@@ -281,9 +281,9 @@ cloudnativePg:
   finalizers: []
   backup:
     # Backup system type is in ("in-tree", "plugin"). Defaults to "in-tree" for now.
+    # - plugin: Dedicated backup system implemented out-of cloudnative-pg's tree
     # - in-tree: Deprecated backup system integrated in-tree with cloudnative-pg
-    # - plugin: Newly dedicated backup system implemented out-of cloudnative-pg's tree
-    systemType: in-tree
+    systemType: plugin
   # secrets must be stored in the same namespace
   # namespace: cnpg
   # Specific postgresql setup (can be overridden per instance)
