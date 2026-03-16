@@ -92,3 +92,15 @@ netbox:
       useSSL: false
       timeout: 10
 
+otlpCollector:
+  enabled: true
+  debug: false
+  resources:
+    cpu: 1024m
+    memory: 8Gi
+    batch: 10
+    timeout: 10s
+  endpoints:
+    - http://esnode7.internal.softwareheritage.org:9200
+    - http://esnode8.internal.softwareheritage.org:9200
+    - http://esnode9.internal.softwareheritage.org:9200
