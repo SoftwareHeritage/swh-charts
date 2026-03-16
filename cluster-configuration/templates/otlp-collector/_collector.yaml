@@ -97,10 +97,6 @@ config:
       timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
 
   extensions:
-    # with port-forward, allows to display the pipeline status to see what's been
-    # deployed
-    zpages:
-      endpoint: "0.0.0.0:8889"
     # The health_check extension is mandatory for this chart. Without the health_check
     # extension the collector will fail the readiness and liveliness probes. The
     # health_check extension can be modified, but should never be removed.
