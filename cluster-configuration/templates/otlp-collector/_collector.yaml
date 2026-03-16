@@ -52,6 +52,13 @@ resources:
     cpu: {{ .Values.otlpCollector.resources.cpu | default "256m" }}
     memory: {{ .Values.otlpCollector.resources.memory | default "2Gi" }}
 
+# Deploy opentelemetry on all nodes, including control plane
+tolerations:
+  - effect: NoSchedule
+    operator: Exists
+  - effect: NoExecute
+    operator: Exists
+
 # The pod monitor by default scrapes the metrics port.
 # The metrics port needs to be enabled as well.
 podMonitor:
