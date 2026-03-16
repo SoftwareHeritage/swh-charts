@@ -79,25 +79,13 @@ config:
     logging/debug:
       loglevel: debug
     {{- end }}
-    elasticsearch/swh-log:
+    elasticsearch/swh:
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ print $logs_swh "-" }}
-      logs_dynamic_index:
-        enabled: true
-      # Contrary to documentation, this does not work. It fails to parse the configmap
-      # error with it enabled
-      # retry_on_failure:
-      #   enabled: true
       timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
-    elasticsearch/system-log:
-      # can be replaced by using the env variable ELASTICSEARCH_URL
-      endpoints:
-        {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
-      logs_index: {{ print $logs_system "-" }}
-      logs_dynamic_index:
+      logstash_format:
         enabled: true
-      timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
+        date_format: "%Y-%m-%d"
 
   extensions:
     # The health_check extension is mandatory for this chart. Without the health_check
@@ -251,9 +239,15 @@ config:
       - key: cluster
         value: {{ .Values.clusterName }}
         action: insert
-      # for dynamic indexation, the environment is the index prefix
-      - key: elasticsearch.index.prefix
-        value: {{ print $environment "-" }}
+    attributes/index_for_swh:
+      actions:
+      - key: elasticsearch.index
+        value: {{ print $environment "-" $logs_swh }}
+        action: insert
+    attributes/index_for_systemlogs:
+      actions:
+      - key: elasticsearch.index
+        value: {{ print $environment "-" $logs_system }}
         action: insert
     attributes/regexp_insert:
       actions:
@@ -307,10 +301,11 @@ config:
           - resource
           - k8sattributes
           - attributes/insert
+          - attributes/index_for_systemlogs
           - attributes/regexp_insert
           - attributes/clean-records
         exporters:
-          - elasticsearch/system-log
+          - elasticsearch/swh
       logs/swh:
         receivers:
           - filelog/swh
@@ -319,10 +314,11 @@ config:
           - resource
           - k8sattributes
           - attributes/insert
+          - attributes/index_for_swh
           - attributes/regexp_insert
           - attributes/clean-records
         exporters:
-          - elasticsearch/swh-log
+          - elasticsearch/swh
       # inhibit pipelines
       logs: null
       metrics: null
