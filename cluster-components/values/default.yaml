@@ -32,6 +32,12 @@ cloudnativePg:
     # Let's use the new barman plugin
     # It's required for future cnpg version > 1.26
     systemType: plugin
+    # Extra backup configuration option to pass along barman backup command
+    extraDataConfiguration:
+      additionalCommandArgs:
+      - "--min-chunk-size=5MB"
+      - "--read-timeout=60"
+      - "-vv"
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

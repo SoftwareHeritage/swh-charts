@@ -3,7 +3,8 @@
 {{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
-{{- $extraWalConfigurationParameters := $clusterConfig.extraWalConfigurationParameters | default dict -}}
+{{- $extraWalConfiguration := $backup.extraWalConfiguration | default dict -}}
+{{- $extraDataConfiguration := $backup.extraDataConfiguration | default dict -}}
 {{- if and $backup $backup.enabled (eq $backup.systemType "plugin") }}
 ---
 apiVersion: barmancloud.cnpg.io/v1
@@ -25,15 +26,14 @@ spec:
         key: {{ $backup.s3Config.secretKey }}
     wal:
       compression: {{ $backup.compression }}
-      {{- if $backup.extraWalConfigurationParameters }}
-      {{- toYaml $backup.extraWalConfigurationParameters | nindent 6 }}
+      {{- if $extraWalConfiguration }}
+      {{- toYaml $extraWalConfiguration | nindent 6 }}
       {{- end }}
     data:
       compression: {{ $backup.compression }}
-      additionalCommandArgs:
-        - "--min-chunk-size=5MB"
-        - "--read-timeout=60"
-        - "-vv"
+      {{- if $extraDataConfiguration }}
+      {{- toYaml $extraDataConfiguration | nindent 6 }}
+      {{- end }}
 {{ end }}
 {{ end }}
 {{ end }}

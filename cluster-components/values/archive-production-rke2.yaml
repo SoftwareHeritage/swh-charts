@@ -358,9 +358,10 @@ cloudnativePg:
         retention: 3d
         # Run once a day at 6:30am (UTC)
         schedule: "0 30 6 * * *"
-        extraWalConfigurationParameters:
+        extraWalConfiguration:
           archiveAdditionalCommandArgs:
             - "--max-concurrency=2"
+          maxParallel: 32
       walStorage:
         storageClass: local-persistent
         size: 4Gi
