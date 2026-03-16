@@ -8,6 +8,9 @@
 {{- $activate_debug := .Values.otlpCollector.debug -}}
 ---
 mode: daemonset
+image:
+  repository: "otel/opentelemetry-collector-contrib"
+
 presets:
   # Configures the collector to collect logs.
   # Adds the filelog receiver to the logs pipeline
@@ -294,7 +297,6 @@ config:
       {{- end }}
     extensions:
       - health_check
-      - memory_ballast
 
     pipelines:
       logs/system:

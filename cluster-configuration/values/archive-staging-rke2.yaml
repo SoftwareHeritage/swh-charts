@@ -34,6 +34,7 @@ certManager:
   useGandiDNS: true
 
 otlpCollector:
+  version: 0.147.0
   enabled: true
   debug: false
   resources:
