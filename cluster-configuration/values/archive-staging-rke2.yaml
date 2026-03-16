@@ -42,10 +42,9 @@ otlpCollector:
     batch: 10
     timeout: 10s
   endpoints:
-    - http://esnode1.internal.softwareheritage.org:9200
-    - http://esnode2.internal.softwareheritage.org:9200
-    - http://esnode3.internal.softwareheritage.org:9200
     - http://esnode7.internal.softwareheritage.org:9200
+    - http://esnode8.internal.softwareheritage.org:9200
+    - http://esnode9.internal.softwareheritage.org:9200
 
 rabbitmq:
   enabled: true
