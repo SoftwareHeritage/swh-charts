@@ -27,6 +27,11 @@ cloudnativePg:
     connectionLimit: -1
     passwordSecret:
       name: swh-postgresql-guest-secret
+  backup:
+    compression: gzip
+    # Let's use the new barman plugin
+    # It's required for future cnpg version > 1.26
+    systemType: plugin
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
