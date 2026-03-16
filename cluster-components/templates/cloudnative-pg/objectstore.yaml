@@ -25,8 +25,8 @@ spec:
         key: {{ $backup.s3Config.secretKey }}
     wal:
       compression: {{ $backup.compression }}
-      {{- if $extraWalConfigurationParameters }}
-      {{- toYaml $extraWalConfigurationParameters | nindent 6 }}
+      {{- if $backup.extraWalConfigurationParameters }}
+      {{- toYaml $backup.extraWalConfigurationParameters | nindent 6 }}
       {{- end }}
     data:
       compression: {{ $backup.compression }}
