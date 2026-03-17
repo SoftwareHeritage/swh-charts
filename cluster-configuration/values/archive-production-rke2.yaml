@@ -59,8 +59,8 @@ otlpCollector:
   debug: false
   resources:
     cpu: 1024m
-    memory: 16Gi
-    batch: 10
+    memory: 8Gi
+    batch: 50
     timeout: 10s
   endpoints:
     - http://esnode7.internal.softwareheritage.org:9200
