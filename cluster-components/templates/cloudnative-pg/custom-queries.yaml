@@ -404,7 +404,7 @@ data:
         - shared_blks_dirtied:
             usage: "GAUGE"
             description: ""
-        - shared_blks_writte:
+        - shared_blks_written:
             usage: "GAUGE"
             description: ""
         - local_blks_hit:
@@ -416,7 +416,7 @@ data:
         - local_blks_dirtied:
             usage: "GAUGE"
             description: ""
-        - local_blks_writte:
+        - local_blks_written:
             usage: "GAUGE"
             description: ""
         - temp_blks_read:
