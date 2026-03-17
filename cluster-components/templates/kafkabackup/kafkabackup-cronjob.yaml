@@ -67,7 +67,7 @@ spec:
                   value: /ssh/ssh-privatekey
               envFrom:
                 - secretRef:
-                    name: {{ .Values.kafkabackup.s3.credsName }}
+                    name: {{ .Values.kafkabackup.s3.secretsName }}
           {{ if .Values.kafkabackup.kafkaHosts -}}
           hostAliases:
           {{- range $host, $ip := .Values.kafkabackup.kafkaHosts }}

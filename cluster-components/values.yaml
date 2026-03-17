@@ -721,7 +721,7 @@ kafkabackup:
   schedule: "@daily"
   image:
     repository: 'container-registry.softwareheritage.org/swh/infra/swh-apps/kafkabackup'
-    tag:  '20260309.1'
+    tag:  '20260317.3'
   # bootstrapServer: one of the kafka brokers
   backupUser: "kafkabackup"
   remoteVenv: "/var/lib/kafkabackup/venv"
@@ -730,7 +730,7 @@ kafkabackup:
     # host: s3 hostname (possibly with :port)
     # region: s3 region
     # bucket: s3 bucket name
-    credsName: "kafkabackup-s3-auth"
+    secretsName: "kafkabackup-s3-secrets"
     ssl: true
   ssh:
     secretKeyName: "kafkabackup-ssh-key"

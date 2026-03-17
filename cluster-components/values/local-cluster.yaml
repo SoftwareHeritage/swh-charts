@@ -405,7 +405,7 @@ volumes:
   enabled: false
   persistentVolumeClaims:
     renovate-cache-pvc:
-      enabled: true
+      enabled: false
       namespace: renovate
       appName: renovate-cache-pvc
       spec:
