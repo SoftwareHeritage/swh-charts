@@ -10,12 +10,26 @@ spec:
   groups:
   - name: cnpg-{{ .environment }}.rules
     rules:
+{{- range $instance, $threshold := .cnpg.transactionThresholds }}
+{{- $humanReadable := $threshold | toString | duration }}
+    - alert: Long_Running_Transaction_In_{{ $.Values.alerting.environment | title }}
+      annotations:
+        description: "Pod {{"{{"}} $labels.namespace {{"}}"}}/{{"{{"}} $labels.pod {{"}}"}} is taking more than {{$humanReadable}} for a query."
+        summary: A query is taking longer than {{$humanReadable}}.
+      expr: |-
+        cnpg_backends_max_tx_duration_seconds{instance=~"^{{$instance}}-"} > {{$threshold}}
+      for: 1m
+      labels:
+        severity: warning
+{{- end }}
+{{- $instanceFilter := print "^(" (join "|" (keys .cnpg.transactionThresholds)) ")-"}}
+{{- $humanReadableThreshold := .cnpg.transactionThresholdDefault | toString | duration}}
     - alert: Long_Running_Transaction_In_{{ .environment | title }}
       annotations:
-        description: "Pod {{"{{"}} $labels.pod {{"}}"}} is taking more than 5 minutes (300 seconds) for a query."
-        summary: A query is taking longer than 5 minutes.
+        description: "Pod {{"{{"}} $labels.namespace {{"}}"}}/{{"{{"}} $labels.pod {{"}}"}} is taking more than {{$humanReadableThreshold}} for a query."
+        summary: A query is taking longer than {{$humanReadableThreshold}}.
       expr: |-
-        cnpg_backends_max_tx_duration_seconds > 300
+        cnpg_backends_max_tx_duration_seconds{instance!~"{{$instanceFilter}}"} > {{.cnpg.transactionThresholdDefault}}
       for: 1m
       labels:
         severity: warning

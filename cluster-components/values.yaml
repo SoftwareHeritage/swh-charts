@@ -190,6 +190,10 @@ alerting:
   ingress:
     errorRate: 10
     p90DurationThreshold: 5 # in second
+  cnpg:
+    transactionThresholds:
+      swh-scheduler: 1200
+    transactionThresholdDefault: 300
 
 # For internal (to the k8s cluster) metrics to integrate into thanos
 scrapeClusterMetrics:
