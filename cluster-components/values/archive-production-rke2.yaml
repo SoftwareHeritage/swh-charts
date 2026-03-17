@@ -362,14 +362,14 @@ cloudnativePg:
           maxParallel: 32
       walStorage:
         storageClass: local-persistent
-        size: 4Gi
+        size: 8Gi
       extraPostgresqlConfig:
         # Scheduler requires fine tuning regarding its current use
         parameters:
           # Maximum size to let the WAL grow during automatic checkpoints
-          max_wal_size: 2GB
+          max_wal_size: 4GB
           # Shared Caching data setup
-          shared_buffers: 8GB
+          shared_buffers: 16GB
           # Amount of memory allocated for each query
           work_mem: 1GB
           # Amount of memory allocated for maintenance operations (vacuum, etc...)
