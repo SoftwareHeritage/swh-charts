@@ -14,6 +14,18 @@ metallb:
   enabled: true
   ipAddressPools:
     - ip: 192.168.100.139/32
+    - ip: 192.168.100.138/32
+      suffixName: pooler
+      serviceAllocation:
+        priority: 50
+        namespaces:
+          - cnpg
+        serviceSelectors:
+          - matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - archive-production-rke2-pgbouncer-pgbouncer
 
 scrapeExternalMetrics:
   enabled: true
