@@ -359,6 +359,8 @@ cloudnativePg:
         # Run once a day at 6:30am (UTC)
         schedule: "0 30 6 * * *"
         extraWalConfiguration:
+          archiveAdditionalCommandArgs:
+          - --max-block-size=16MB
           maxParallel: 32
       walStorage:
         storageClass: local-persistent
