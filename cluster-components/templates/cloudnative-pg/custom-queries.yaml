@@ -2,6 +2,11 @@
 {{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
 {{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
+{{- $customQueries := (dict) -}}
+{{- if hasKey $clusterConfig "customQueriesRef" -}}
+{{- $customQueries = required (print "customQueriesRef '" $clusterConfig.customQueriesRef "' not found") (get $.Values $clusterConfig.customQueriesRef) -}}
+{{- end -}}
+{{- $customQueries = mustMergeOverwrite $customQueries (get $clusterConfig "customQueries" | default dict) -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -12,6 +17,9 @@ metadata:
     cnpg.io/reload: "true"
 data:
   custom-queries: |
+    {{- if $customQueries }}
+    {{- $customQueries | toYaml | nindent 4 }}
+    {{- end }}
     running_queries:
       query: "SELECT datname::text, coalesce(usename::text, 'UNKNOWN') as usename, COUNT(*)::float AS count
               FROM pg_stat_activity

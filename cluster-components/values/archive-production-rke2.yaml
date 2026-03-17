@@ -357,6 +357,7 @@ cloudnativePg:
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
+      customQueriesRef: customQueriesSwhScheduler
       initdb:
         enabled: true
         source: cluster-pg-production-albertina

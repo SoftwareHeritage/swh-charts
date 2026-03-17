@@ -361,6 +361,49 @@ cloudnativePg:
     #     # every day at midnight
     #     cron: "0 0 0 * * *"
 
+customQueriesSwhScheduler:
+  swh_scheduler_origins:
+    primary: true
+    target_databases: swh-scheduler
+    query: |
+      select l.name, l.instance_name, sm.visit_type,
+        extract(epoch from sm.last_update) as last_update,
+        sm.origins_known as known,
+        sm.origins_enabled as enabled,
+        sm.origins_never_visited as never_visited,
+        sm.origins_with_pending_changes as with_pending_changes
+      from scheduler_metrics sm
+        inner join listers l on sm.lister_id=l.id
+      order by l.name, l.instance_name
+    metrics:
+      - name:
+          usage: "LABEL"
+          description: "Lister type"
+      - instance_name:
+          usage: "LABEL"
+          description: "Lister instance name"
+      - visit_type:
+          usage: "LABEL"
+          description: "Origin visit type"
+      - last_update:
+          usage: "GAUGE"
+          description: "Timestamp of the last update of this metric"
+      - known:
+          usage: "GAUGE"
+          description: "Number of origins known"
+      - known:
+          usage: "GAUGE"
+          description: "Number of origins known"
+      - enabled:
+          usage: "GAUGE"
+          description: "Number of origins enabled"
+      - never_visited:
+          usage: "GAUGE"
+          description: "Number of origins never visited"
+      - with_pending_changes:
+          usage: "GAUGE"
+          description: "Number of origins with known pending changes"
+
 rabbitmq:
   enabled: false
   namespace: rabbitmq
