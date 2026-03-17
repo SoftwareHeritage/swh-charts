@@ -1,0 +1,8 @@
+{{- if .Values.openbao.enabled }}
+{{- $namespace := .Values.openbao.namespace -}}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+{{- end }}
