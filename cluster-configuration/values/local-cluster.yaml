@@ -122,3 +122,6 @@ netbox:
 
 openbao:
   enabled: false
+  # Declare the host ingress by which openbao clients will connect
+  hostIngress: openbao.local
+  serverType: dev

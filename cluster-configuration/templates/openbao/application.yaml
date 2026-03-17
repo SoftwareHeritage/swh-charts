@@ -2,8 +2,12 @@
 {{- $namespace := .Values.openbao.namespace -}}
 {{- $appName := print .Values.clusterName "-openbao" -}}
 {{- $version := .Values.openbao.version -}}
-{{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune -}}
-{{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
+{{- $prune := .Values.openbao.argocdApplication.prune | default .Values.defaultPrune -}}
+{{- $selfHeal := .Values.openbao.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
+{{- $logLevel := .Values.openbao.logLevel | default "info" -}}
+{{- $hostIngress := .Values.openbao.hostIngress -}}
+{{- $openbaoServerType := .Values.openbao.serverType | default "ha" -}}
+{{- $openbaoReplicas := .Values.openbao.replicas | default 3 -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -20,51 +24,38 @@ spec:
       releaseName: openbao
       values: |
         injector:
-          logLevel: info
+          logLevel: {{ $logLevel }}
         server:
-          logLevel: info
+          logLevel: {{ $logLevel }}
+          {{- if eq $openbaoServerType "ha" }}
+          ha:
+            enabled: true
+            replicas: {{ $openbaoReplicas }}
+            raft:
+              enabled: true
           dataStorage:
-            # TODO use dedicated storage class (standard already exists and has RECLAIM POLICY set to "Delete")
-            storageClass: standard
+            storageClass: local-persistent
           persistentVolumeClaimRetentionPolicy:
             whenDeleted: Retain
             whenScaled: Retain
-          ha:
+          {{- else }}
+          dev:
             enabled: true
-            replicas: 3
-            raft:
-              enabled: true
-          # Add some extra dns records so we don't need an extra dns
-          hostAliases:
-          # Make openbao ingress hostname resolvable in-cluster too
-          - ip: ${ADMIN_INGRESS_IP}
-            hostnames:
-            - ${ADMIN_INGRESS_HOSTNAME}
+          {{- end }}
           # Enable ingress so openbao is reachable from outside the cluster too
           ingress:
             enabled: true
             ingressClassName: nginx
             hosts:
-            - host: ${ADMIN_INGRESS_HOSTNAME}
+            - host: {{ $hostIngress }}
             tls:
             - secretName: openbao-tls
               hosts:
-              - ${ADMIN_INGRESS_HOSTNAME}
-          volumes:
-          - name: ca
-            configMap:
-              name: shared-ca
-          volumeMounts:
-          - name: ca
-            mountPath: /etc/openbao/ca
-            readOnly: true
-          certs:
-            secretName: openbao-tls
-            caBundle: /etc/openbao/ca/ca.crt
+              - {{ $hostIngress }}
+
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ $namespace }}
-
   syncPolicy:
     automated:
       prune: {{ $prune }}

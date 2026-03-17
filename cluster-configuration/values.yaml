@@ -182,3 +182,13 @@ openbao:
   # helm search repo openbao -l
   # openbao/openbao 0.26.1 v2.5.1 Official OpenBao Chart
   version: 0.26.1
+  # Declare the host ingress by which openbao clients will connect
+  # hostIngress: openbao.host
+  # Default openbao server mode (ha or dev)
+  serverType: ha
+  # Default log level for various openbao services
+  logLevel: info
+  # Argocd related configuration
+  argocdApplication:
+    selfHeal: true
+    prune: false
