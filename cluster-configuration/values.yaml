@@ -175,3 +175,10 @@ netbox:
   version: 7.2.24
   # actual netbox configuration
   config: {}
+
+openbao:
+  enabled: false
+  namespace: openbao
+  # helm search repo openbao -l
+  # openbao/openbao 0.26.1 v2.5.1 Official OpenBao Chart
+  version: 0.26.1

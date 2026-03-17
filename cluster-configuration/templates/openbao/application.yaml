@@ -1,0 +1,72 @@
+{{ if .Values.openbao.enabled }}
+{{- $namespace := .Values.openbao.namespace -}}
+{{- $appName := print .Values.clusterName "-openbao" -}}
+{{- $version := .Values.openbao.version -}}
+{{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune -}}
+{{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocd.namespace }}
+spec:
+  project: default
+  source:
+    repoURL: https://openbao.github.io/openbao-helm
+    chart: openbao
+    targetRevision: v{{ $version }}
+    helm:
+      releaseName: openbao
+      values: |
+        injector:
+          logLevel: info
+        server:
+          logLevel: info
+          dataStorage:
+            # TODO use dedicated storage class (standard already exists and has RECLAIM POLICY set to "Delete")
+            storageClass: standard
+          persistentVolumeClaimRetentionPolicy:
+            whenDeleted: Retain
+            whenScaled: Retain
+          ha:
+            enabled: true
+            replicas: 3
+            raft:
+              enabled: true
+          # Add some extra dns records so we don't need an extra dns
+          hostAliases:
+          # Make openbao ingress hostname resolvable in-cluster too
+          - ip: ${ADMIN_INGRESS_IP}
+            hostnames:
+            - ${ADMIN_INGRESS_HOSTNAME}
+          # Enable ingress so openbao is reachable from outside the cluster too
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+            - host: ${ADMIN_INGRESS_HOSTNAME}
+            tls:
+            - secretName: openbao-tls
+              hosts:
+              - ${ADMIN_INGRESS_HOSTNAME}
+          volumes:
+          - name: ca
+            configMap:
+              name: shared-ca
+          volumeMounts:
+          - name: ca
+            mountPath: /etc/openbao/ca
+            readOnly: true
+          certs:
+            secretName: openbao-tls
+            caBundle: /etc/openbao/ca/ca.crt
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ $namespace }}
+
+  syncPolicy:
+    automated:
+      prune: {{ $prune }}
+      selfHeal: {{ $selfHeal }}
+{{ end }}

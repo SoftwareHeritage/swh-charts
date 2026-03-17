@@ -119,3 +119,6 @@ netbox:
       useTLS: false
       useSSL: false
       timeout: 10
+
+openbao:
+  enabled: false
