@@ -823,24 +823,30 @@ postgresqlIndexerStorageConfiguration:
   host: postgresql-indexer-rw.internal.softwareheritage.org
   db: softwareheritage-indexer
   port: 5432
-  user: swhstorage
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-indexer-storage-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-indexer-storage-postgresql-secret
-      secretKeyName: postgres-swh-indexer-password
+      secretKeyRef: swh-postgresql-swh-indexer-storage-secret
+      secretKeyName: password
 
 postgresqlReadOnlyIndexerStorageConfiguration:
   cls: postgresql
   host: postgresql-indexer-rw.internal.softwareheritage.org
   db: softwareheritage-indexer
   port: 5432
-  user: guest
+  user: ${POSTGRESQL_GUEST_USERNAME}
   pass: ${POSTGRESQL_GUEST_PASSWORD}
   secrets:
+    POSTGRESQL_GUEST_USERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
     POSTGRESQL_GUEST_PASSWORD:
-      secretKeyRef: swh-indexer-storage-postgresql-secret
-      secretKeyName: postgres-guest-password
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
 
 postgresqlScrubberConfiguration:
   cls: postgresql
