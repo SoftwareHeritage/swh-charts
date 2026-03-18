@@ -355,9 +355,10 @@ cloudnativePg:
         source: cluster-pg-production-albertina
       backup:
         enabled: true
-        retention: 3d
-        # Run once a day at 6:30am (UTC)
-        schedule: "0 30 6 * * *"
+        # 3 backups (3 weeks * 1 backup)
+        retention: 21d
+        # Run once a week at 6:30am (UTC)
+        schedule: "0 30 6 * * 1"
         extraWalConfiguration:
           archiveAdditionalCommandArgs:
           - --max-block-size=16MB
