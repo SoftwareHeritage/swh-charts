@@ -641,13 +641,16 @@ postgresqlRWStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
-  user: swhstorage
+  user: ${POSTGRESQL_USERNAME}
   pass: ${POSTGRESQL_PASSWORD}
   db: softwareheritage
   secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-storage-secret
+      secretKeyName: username
     POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
+      secretKeyRef: swh-postgresql-swh-storage-secret
+      secretKeyName: password
 
 rwStoragePostgresqlWithWineryObjstorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
@@ -804,13 +807,16 @@ postgresqlROStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-rw.internal.softwareheritage.org
   port: 5432
-  user: guest
+  user: ${POSTGRESQL_GUEST_USERNAME}
   pass: ${POSTGRESQL_GUEST_PASSWORD}
   db: softwareheritage
   secrets:
+    POSTGRESQL_GUEST_USERNAME:
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: username
     POSTGRESQL_GUEST_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-guest-password
+      secretKeyRef: swh-postgresql-guest-secret
+      secretKeyName: password
 
 postgresqlIndexerStorageConfiguration:
   cls: postgresql
