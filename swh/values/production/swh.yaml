@@ -40,20 +40,9 @@ rwStoragePostgresqlConfiguration:
 
 readOnlyPostgresqlStorageConfiguration:
   pipelineStepsRef: maskingStoragePipelineSteps
-  storageConfigurationRef: primaryPostgresqlROStorageConfiguration
+  storageConfigurationRef: postgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
 
-primaryPostgresqlROStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-rw.internal.softwareheritage.org
-  port: 5432
-  user: guest
-  pass: ${POSTGRESQL_GUEST_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_GUEST_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-guest-password
 
 secondaryPostgresqlRWStorageConfiguration:
   cls: postgresql
