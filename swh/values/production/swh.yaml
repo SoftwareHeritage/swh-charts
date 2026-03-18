@@ -43,18 +43,6 @@ readOnlyPostgresqlStorageConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
 
-secondaryPostgresqlRWStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-replica.internal.softwareheritage.org
-  port: 5432
-  user: swhstorage
-  pass: ${POSTGRESQL_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-swh-storage-password
-
 secondaryPostgresqlROStorageConfiguration:
   cls: postgresql
   host: postgresql-storage-replica.internal.softwareheritage.org
@@ -111,9 +99,6 @@ toolbox:
   configs:
     storage:
       storageDbConfigurationRef: postgresqlRWStorageConfiguration
-    storage-secondary:
-      moduleName: storage
-      storageDbConfigurationRef: secondaryPostgresqlRWStorageConfiguration
     scheduler:
       schedulerDbConfigurationRef: postgresqlSchedulerConfiguration
       celeryConfigurationRef: producerCeleryConfiguration
