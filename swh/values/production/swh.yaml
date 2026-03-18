@@ -43,25 +43,9 @@ readOnlyPostgresqlStorageConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
 
-secondaryPostgresqlROStorageConfiguration:
-  cls: postgresql
-  host: postgresql-storage-replica.internal.softwareheritage.org
-  port: 5432
-  user: guest
-  pass: ${POSTGRESQL_GUEST_PASSWORD}
-  db: softwareheritage
-  secrets:
-    POSTGRESQL_GUEST_PASSWORD:
-      secretKeyRef: swh-storage-postgresql-common-secret
-      secretKeyName: postgres-guest-password
-
 ## Direct postgresql connection without any filter or objstorage
 scrubberROStoragePrimaryConfiguration:
   storageConfigurationRef: postgresqlROStorageConfiguration
-
-## Direct postgresql connection without any filter or objstorage
-scrubberROStorageSecondaryConfiguration:
-  storageConfigurationRef: secondaryPostgresqlROStorageConfiguration
 
 graphql:
   enabled: true
@@ -109,10 +93,6 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStoragePrimaryConfiguration
-    scrubber-storage-secondary:
-      moduleName: scrubber
-      scrubberDbConfigurationRef: postgresqlScrubberConfiguration
-      storageConfigurationRef: scrubberROStorageSecondaryConfiguration
     indexer-storage:
       moduleName: indexer
       moduleConfigKey: indexer_storage
@@ -230,66 +210,6 @@ scrubber:
         enabled: false
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-hashes-snapshot
-        replicas: 2
-        object: snapshot
-        requestedCpu: 150m
-        requestedMemory: 128Mi
-      secondary-directory-references:
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-references-directory
-        object: directory
-        replicas: 2
-        requestedCpu: 100m
-        requestedMemory: 100Mi
-      secondary-directory-hashes:
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-hashes-directory
-        object: directory
-        replicas: 2
-        requestedCpu: 100m
-        requestedMemory: 100Mi
-      secondary-release-references:
-        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-references-release
-        object: release
-        replicas: 2
-      secondary-release-hashes:
-        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-hashes-release
-        object: release
-        replicas: 2
-      secondary-revision-references:
-        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-references-revision
-        replicas: 2
-        object: revision
-      secondary-revision-hashes:
-        # until https://gitlab.softwareheritage.org/swh/devel/swh-scrubber/-/issues/4699 fix
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-hashes-revision
-        replicas: 2
-        object: revision
-      secondary-snapshot-references:
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-references-snapshot
-        replicas: 2
-        object: snapshot
-        requestedCpu: 150m
-        requestedMemory: 128Mi
-      secondary-snapshot-hashes:
-        enabled: false
-        storageConfigurationRef: scrubberROStorageSecondaryConfiguration
-        configName: storage-secondary-hashes-snapshot
         replicas: 2
         object: snapshot
         requestedCpu: 150m
