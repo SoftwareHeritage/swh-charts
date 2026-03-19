@@ -32,6 +32,8 @@ spec:
     server: {{ .Values.clusterUrl }}
     namespace: {{ $namespace }}
   syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
     automated:
       prune: {{ $prune }}
       selfHeal: {{ $selfHeal }}
