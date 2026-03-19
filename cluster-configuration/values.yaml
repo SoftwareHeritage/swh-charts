@@ -188,6 +188,12 @@ openbao:
   serverType: ha
   # Default log level for various openbao services
   logLevel: info
+  ingress:
+    enabled: false
+    # Default host to reach the openbao from outside the cluster (if enabled)
+    # host: ""
+    # Optional ingress annotations
+    annotations: {}
   # Argocd related configuration
   argocdApplication:
     selfHeal: true

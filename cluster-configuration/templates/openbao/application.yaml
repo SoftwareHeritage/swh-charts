@@ -5,7 +5,10 @@
 {{- $prune := .Values.openbao.argocdApplication.prune | default .Values.defaultPrune -}}
 {{- $selfHeal := .Values.openbao.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
 {{- $logLevel := .Values.openbao.logLevel | default "info" -}}
-{{- $hostIngress := .Values.openbao.hostIngress -}}
+{{- $ingress := .Values.openbao.ingress -}}
+{{- $ingressEnabled := $ingress.enabled | default false -}}
+{{- $ingressHost := $ingress.host -}}
+{{- $ingressAnnotations := $ingress.annotations -}}
 {{- $openbaoServerType := .Values.openbao.serverType | default "ha" -}}
 {{- $openbaoReplicas := .Values.openbao.replicas | default 3 -}}
 ---
@@ -42,16 +45,21 @@ spec:
           dev:
             enabled: true
           {{- end }}
-          # Enable ingress so openbao is reachable from outside the cluster too
+          {{- if $ingressEnabled }}
           ingress:
             enabled: true
             ingressClassName: nginx
+            {{- if $ingressAnnotations }}
+            annotations:
+              {{- toYaml $ingressAnnotations | nindent 14 }}
+            {{- end }}
             hosts:
-            - host: {{ $hostIngress }}
+            - host: {{ $ingressHost }}
             tls:
             - secretName: openbao-tls
               hosts:
-              - {{ $hostIngress }}
+              - {{ $ingressHost }}
+          {{- end }}
 
   destination:
     server: {{ .Values.clusterUrl }}

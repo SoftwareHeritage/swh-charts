@@ -108,4 +108,8 @@ otlpCollector:
 openbao:
   enabled: true
   serverType: ha
-  hostIngress: openbao.internal.admin.swh.network
+  ingress:
+    enabled: true
+    host: openbao.internal.admin.swh.network
+    annotations:
+      hostcert-manager.io/cluster-issuer: letsencrypt-production
