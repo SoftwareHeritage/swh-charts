@@ -1,0 +1,38 @@
+{{ if .Values.vaultSecretsOperator.enabled }}
+{{- $namespace := .Values.vaultSecretsOperator.namespace -}}
+{{- $appName := print .Values.clusterName "-vault-secrets-operator" -}}
+{{- $version := .Values.vaultSecretsOperator.version -}}
+{{- $prune := .Values.vaultSecretsOperator.argocdApplication.prune | default .Values.defaultPrune -}}
+{{- $selfHeal := .Values.vaultSecretsOperator.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
+{{- $logLevel := .Values.vaultSecretsOperator.logLevel | default "info" -}}
+{{- $openbaoEndpoint := .Values.vaultSecretsOperator.openbaoEndpoint -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocd.namespace }}
+spec:
+  project: default
+  source:
+    repoURL: https://helm.releases.hashicorp.com/
+    chart: vault-secrets-operator
+    targetRevision: v{{ $version }}
+    helm:
+      releaseName: vso
+      values: |
+        controller:
+          manager:
+            logging:
+              level: {{ $logLevel }}
+        defaultVaultConnection:
+          enabled: true
+          address: {{ $openbaoEndpoint }}
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ $namespace }}
+  syncPolicy:
+    automated:
+      prune: {{ $prune }}
+      selfHeal: {{ $selfHeal }}
+{{ end }}

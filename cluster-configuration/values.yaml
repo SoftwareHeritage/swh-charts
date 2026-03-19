@@ -198,3 +198,14 @@ openbao:
   argocdApplication:
     selfHeal: true
     prune: false
+
+vaultSecretsOperator:
+  enabled: false
+  namespace: vso
+  # hashicorp/vault-secrets-operator 1.3.0 1.3.0 Official Vault Secrets Operator Chart
+  # hashicorp/vault-secrets-operator 1.2.0 1.2.0 Official Vault Secrets Operator Chart
+  version: 1.3.0
+  # Argocd related configuration
+  argocdApplication:
+    selfHeal: true
+    prune: false

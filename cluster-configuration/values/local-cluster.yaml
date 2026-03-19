@@ -127,3 +127,7 @@ openbao:
     enabled: true
     host: openbao.local
   serverType: dev
+
+vaultSecretsOperator:
+  enabled: false
+  openbaoEndpoint: https://openbao.local
