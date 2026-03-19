@@ -61,3 +61,7 @@ redis:
 
 elasticsearch:
   enabled: true
+
+vaultSecretsOperator:
+  enabled: true
+  openbaoEndpoint: https://openbao.internal.admin.swh.network
