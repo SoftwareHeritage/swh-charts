@@ -908,6 +908,7 @@ redis:
                 storage: 1Gi
 
 volumes:
+  enabled: true
   persistentVolumes:
     database-db1-persistent-local-pv:
       enabled: true
