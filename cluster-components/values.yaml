@@ -696,3 +696,14 @@ renovate:
   # List of repositories to scan for updates
   repositories: []
 
+openbao:
+  enabled: false
+  namespace: openbao
+  endpoint: https://openbao.internal.admin.swh.network
+  secretNameRef: openbao-initial-secrets
+  # Enable the role/rolebinding necessary setup in the cluster client so the secrets to
+  # access openbao can be written by the process in charge
+  rbac:
+    enabled: false
+  # Deploy cronjobs instance per cluster
+  deployments: {}

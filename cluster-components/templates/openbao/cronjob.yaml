@@ -1,0 +1,76 @@
+{{- if .Values.openbao.enabled }}
+{{- $namespace := .Values.openbao.namespace -}}
+{{- $endpoint := .Values.openbao.endpoint -}}
+{{- range $clusterTargetName, $clusterTargetConfig := .Values.openbao.deployments -}}
+{{- $clusterUrl := $clusterTargetConfig.url -}}
+{{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: init-bao-cluster-{{ $clusterTargetName }}
+  namespace: {{ $namespace }}
+spec:
+  schedule: "0 * * * *"
+  concurrencyPolicy: "Forbid"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: init-bao-cluster
+              # FIXME: Use a dedicated docker image for this bao configuration, we do
+              # not need the overall swh dependencies this image pulls
+              image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
+              command:
+              - /script/init-bao-cluster.sh
+              env:
+                - name: OPENBAO_ENDPOINT
+                  value: {{ $endpoint }}
+                - name: OPENBAO_NAMESPACE
+                  value: {{ $clusterTargetName }}
+                - name: ROLE
+                  value: role-{{ $clusterTargetName }}
+                - name: MOUNT
+                  value: mount-{{ $clusterTargetName }}
+                - name: POLICY_NAME
+                  value: openbao-policy
+                - name: CLUSTER_TARGET_URL
+                  value: {{ $clusterTargetConfig.url }}
+                - name: CLUSTER_TARGET_SECRET_NAME
+                  value: openbao-vso-auth
+                - name: CLUSTER_TARGET_SECRET_NAMESPACE
+                  value: vso
+                {{- if not $inCluster }}
+                - name: CLUSTER_TARGET_KUBECONFIG
+                  value: /opt/swh/.kube/config
+                {{- end }}
+                - name: BAO_SCRIPT
+                  value: /script/init_bao_cluster.py
+              envFrom:
+                # Secrets (OPENBAO_DEFAULT_TOKEN)
+                - secretRef:
+                    name: {{ $.Values.openbao.secretNameRef }}
+              imagePullPolicy: IfNotPresent
+              volumeMounts:
+              - name: bao-script-utils
+                mountPath: /script
+              {{- if not $inCluster }}
+              - name: kubeconfig
+                mountPath: "/opt/swh/.kube/config"
+                subPath: config
+                readOnly: true
+              {{- end }}
+          volumes:
+          - name: bao-script-utils
+            configMap:
+              name: bao-script-utils
+              defaultMode: 0555
+          {{- if not $inCluster }}
+          - name: kubeconfig
+            secret:
+              secretName: {{ $clusterTargetName }}-config
+          {{- end }}
+          restartPolicy: OnFailure
+{{- end }}
+{{- end }}

@@ -396,3 +396,13 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+
+openbao:
+  enabled: false
+  endpoint: https://openbao.local
+  rbac:
+    enabled: true
+  deployments:
+    local-cluster:
+      url: https://kubernetes.default.svc
+      inCluster: true

@@ -164,3 +164,7 @@ elasticsearch:
           accessModes:
             - ReadWriteMany
           volumeMode: Filesystem
+
+openbao:
+  rbac:
+    enabled: true
