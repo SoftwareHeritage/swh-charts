@@ -130,3 +130,7 @@ openbao:
 vaultSecretsOperator:
   enabled: false
   openbaoEndpoint: https://openbao.local
+  hostAliases:
+  - ip: 172.18.255.0
+    hostnames:
+    - openbao.local

@@ -6,6 +6,7 @@
 {{- $selfHeal := .Values.vaultSecretsOperator.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
 {{- $logLevel := .Values.vaultSecretsOperator.logLevel | default "info" -}}
 {{- $openbaoEndpoint := .Values.vaultSecretsOperator.openbaoEndpoint -}}
+{{- $hostAliases := .Values.vaultSecretsOperator.hostAliases | default list -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -25,6 +26,10 @@ spec:
           manager:
             logging:
               level: {{ $logLevel }}
+          {{- if $hostAliases }}
+          hostAliases:
+            {{- toYaml $hostAliases | nindent 12 }}
+          {{- end }}
         defaultVaultConnection:
           enabled: true
           address: {{ $openbaoEndpoint }}
