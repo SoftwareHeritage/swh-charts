@@ -2511,7 +2511,7 @@ alterGraph20251107Configuration:
 # RPC graph instance will communicate with the GRPC instance
 rpcWithRemoteGraphGrpc20251107Configuration:
   cls: remote
-  url: graph-grpc-20251107:90051
+  url: graph-20251107-grpc:90051
   grpc_server:
     port: 80
 
