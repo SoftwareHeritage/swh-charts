@@ -13,6 +13,7 @@ SS_CHART=software-stories
 
 DIFF_COMMAND=auto
 SECRET_FILES='$(SWH_CHART)/fake-secrets'
+CC_SECRET_FILES='$(CC_CHART)/local-cluster-secrets/'
 
 # For sandboxed environment
 LOCAL_CLUSTER_ENVIRONMENT=kind
@@ -185,6 +186,8 @@ local-cluster-cc-prepare:
 local-cluster-cc-prepare-secrets:
 	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
         --namespace cluster-components apply -f -
+	cat $(CC_SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+        apply -f -
 
 cc-minikube: cc-local-cluster
 local-cluster-cc: cc-local-cluster
