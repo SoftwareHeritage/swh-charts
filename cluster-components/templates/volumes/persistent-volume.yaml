@@ -1,3 +1,4 @@
+{{ if .Values.volumes.enabled }}
 {{- range $pvName, $pvConfig := .Values.volumes.persistentVolumes }}
 {{- if or (not (hasKey $pvConfig "enabled")) (get $pvConfig "enabled") -}}
 {{- $appName := $pvConfig.appName -}}
@@ -12,5 +13,6 @@ metadata:
   {{- end }}
 spec:
   {{- toYaml $pvConfig.spec | nindent 2 }}
+{{ end }}
 {{ end }}
 {{ end }}
