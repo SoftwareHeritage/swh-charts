@@ -150,13 +150,45 @@ $KUBECTL get storageclass local-path 2>/dev/null || install_local_path_provision
 argocd_enabled=$(get_value argocd enabled)
 argocd_version=$(get_value argocd version)
 argocd_ns=$(get_value argocd namespace)
-ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${argocd_version}/manifests/install.yaml"
 if [ "${argocd_enabled}" = "true" ]; then
   # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
-  $KUBECTL create namespace $argocd_ns || true
-  $KUBECTL apply -n argocd -f ${ARGOCD_URL}
+  ADMIN_INGRESS_IP=172.18.255.0
+  ARGOCD_VALUES_FILE=$CLUSTER_TEMP_TMP/argocd-values.yaml
+cat > "${ARGOCD_VALUES_FILE}" << EOF
+namespaceOverride: ${argocd_ns}
+global:
+  domain: argocd.local
+  hostAliases:
+  # Make openbao ingress hostname resolvable in-cluster too
+  - ip: ${ADMIN_INGRESS_IP}
+    hostnames:
+    - openbao.local
+crds:
+  # Install and upgrade CRDs
+  install: true
+  # Drop CRDs on chart uninstall
+  keep: false
+server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    # tls: true
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      # If you encounter a redirect loop or are getting a 307 response code
+      # then you need to force the nginx ingress to connect to the backend
+      # using HTTPS.
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+EOF
+
+  $HELM upgrade --install argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
+    --namespace $argocd_ns \
+    --version $argocd_version \
+    --create-namespace
+
 else
-  _kubectl_delete ${ARGOCD_URL} $argocd_ns
+  _helm_uninstall argocd $argocd_ns
 fi
 
 metallb_enabled=$(get_value metallb enabled)

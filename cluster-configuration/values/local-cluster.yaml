@@ -25,7 +25,6 @@ argocd:
   # When enabled, this installs a default argocd application
   # NOT FOR PRODUCTION
   enabled: false
-  version: v3.2.3
 
 metallb:
   enabled: false
