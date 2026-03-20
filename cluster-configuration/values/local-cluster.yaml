@@ -129,8 +129,12 @@ openbao:
 
 vaultSecretsOperator:
   enabled: false
-  openbaoEndpoint: https://openbao.local
+  defaultVaultConnection:
+    enabled: true
+    address: https://openbao.local
+    skipTLSVerify: true
   hostAliases:
   - ip: 172.18.255.0
     hostnames:
     - openbao.local
+

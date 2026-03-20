@@ -64,4 +64,6 @@ elasticsearch:
 
 vaultSecretsOperator:
   enabled: true
-  openbaoEndpoint: https://openbao.internal.admin.swh.network
+  defaultVaultConnection:
+    enabled: true
+    address: https://openbao.internal.admin.swh.network

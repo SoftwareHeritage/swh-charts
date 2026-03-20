@@ -5,8 +5,8 @@
 {{- $prune := .Values.vaultSecretsOperator.argocdApplication.prune | default .Values.defaultPrune -}}
 {{- $selfHeal := .Values.vaultSecretsOperator.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
 {{- $logLevel := .Values.vaultSecretsOperator.logLevel | default "info" -}}
-{{- $openbaoEndpoint := .Values.vaultSecretsOperator.openbaoEndpoint -}}
 {{- $hostAliases := .Values.vaultSecretsOperator.hostAliases | default list -}}
+{{- $defaultVaultConnection := .Values.vaultSecretsOperator.defaultVaultConnection -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -30,9 +30,10 @@ spec:
           hostAliases:
             {{- toYaml $hostAliases | nindent 12 }}
           {{- end }}
+        {{- if $defaultVaultConnection.enabled }}
         defaultVaultConnection:
-          enabled: true
-          address: {{ $openbaoEndpoint }}
+          {{- toYaml $defaultVaultConnection | nindent 10 }}
+        {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ $namespace }}
