@@ -155,6 +155,10 @@ argocd_enabled=$(get_value argocd enabled)
 argocd_version=$(get_value argocd version)
 argocd_ns=$(get_value argocd namespace)
 if [ "${argocd_enabled}" = "true" ]; then
+
+  helm repo add argo https://argoproj.github.io/argo-helm
+  helm repo update argo
+
   # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
   ADMIN_INGRESS_IP=172.18.255.0
   ARGOCD_VALUES_FILE=$CLUSTER_TEMP_TMP/argocd-values.yaml
