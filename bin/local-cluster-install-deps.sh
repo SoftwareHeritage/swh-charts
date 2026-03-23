@@ -46,6 +46,10 @@ helm repo add metallb https://metallb.github.io/metallb
 
 # Build cluster-components dependencies (if not already built)
 if ! [ -d cluster-components/charts ]; then
+    helm repo update \
+         cnpg strimzi k8ssandra jetstack elastic ot-helm \
+         prometheus-community kedacore gitlab-runner metallb
+
     pushd cluster-components
     helm dependency build
     popd
