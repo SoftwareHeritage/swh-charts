@@ -26,10 +26,12 @@ data:
     from typing import Optional
 
 
-    def get_client(url: str, token: Optional[str] = None) -> hvac.Client:
+    def get_client(
+        url: str, token: Optional[str] = None, no_verify_ssl: bool = False
+    ) -> hvac.Client:
         """Client HVAC Initialization"""
         # TODO: Turn off the verify to True (for tls authentication)
-        client = hvac.Client(url=url, token=token, verify=False)
+        client = hvac.Client(url=url, token=token, verify=not no_verify_ssl)
         if not client.is_authenticated():
             raise ValueError("Impossible to authenticate with Vault/OpenBao.")
         return client
@@ -38,12 +40,13 @@ data:
     @click.group()
     @click.option('--url', required=True, help="Vault/OpenBao URL")
     @click.option('--token', required=True, help="Vault/OpenBao Access Token")
+    @click.option('--no-verify-ssl', is_flag=True, default=False, help="Allow to disable ssl check")
     @click.pass_context
-    def cli(ctx, url, token):
+    def cli(ctx, url, token, no_verify_ssl):
         """Mount initialization"""
 
         ctx.ensure_object(dict)
-        ctx.obj['client'] = get_client(url, token)
+        ctx.obj['client'] = get_client(url, token, no_verify_ssl)
 
 
     @cli.command()
@@ -267,9 +270,16 @@ data:
 
     uv pip install hvac click kubernetes ipython
 
-    ${BAO_SCRIPT} --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      enable-secrets-engine ${MOUNT} --ns ${OPENBAO_NAMESPACE} 2>/dev/null
+    SCRIPT_ARGS=()
+    SCRIPT_ARGS+=("--url" "${OPENBAO_ENDPOINT}")
+    SCRIPT_ARGS+=("--token" "${OPENBAO_DEFAULT_TOKEN}")
+
+    if [ ! -z "${NO_VERIFY_SSL}" ]; then
+      SCRIPT_ARGS+=(--no-verify-ssl)
+    fi
+
+    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
+      enable-secrets-engine ${MOUNT} --ns ${OPENBAO_NAMESPACE}
 
     # Then we create the policy for the future approle to create
     POLICY_FILENAME="${POLICY_NAME}.hcl"
@@ -284,31 +294,27 @@ data:
     }
     EOF
 
-    ${BAO_SCRIPT} --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
-      create-policy ${POLICY_NAME} ${POLICY_FILE} 2>/dev/null
+    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
+      create-policy ${POLICY_NAME} ${POLICY_FILE}
 
     # Finally we attach that policy to the new AppRole we create
-    ${BAO_SCRIPT} --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
+    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-approle \
       --mount ${MOUNT} \
       --policy-name ${POLICY_NAME} \
-      ${ROLE} 2>/dev/null
+      ${ROLE}
 
     extra_args=()
     if [ ! -z ${CLUSTER_TARGET_KUBECONFIG} ]; then
       extra_args+=("--kubeconfig" "${CLUSTER_TARGET_KUBECONFIG}")
     fi
 
-    ${BAO_SCRIPT} --url ${OPENBAO_ENDPOINT} \
-      --token ${OPENBAO_DEFAULT_TOKEN} \
+    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-secret-in-targeted-cluster \
       --role-name ${ROLE} \
       --mount ${MOUNT} \
       --targeted-cluster-url ${CLUSTER_TARGET_URL} \
       --secret-name ${CLUSTER_TARGET_SECRET_NAME} \
       --secret-namespace ${CLUSTER_TARGET_SECRET_NAMESPACE} \
-      "${extra_args[@]}" \
-      2>/dev/null
+      "${extra_args[@]}"
 {{- end }}

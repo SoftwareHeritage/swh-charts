@@ -41,6 +41,10 @@ spec:
                   value: openbao-vso-auth
                 - name: CLUSTER_TARGET_SECRET_NAMESPACE
                   value: vso
+                {{- if $clusterTargetConfig.noVerifySSL }}
+                - name: NO_VERIFY_SSL
+                  value: "1"
+                {{- end }}
                 {{- if not $inCluster }}
                 - name: CLUSTER_TARGET_KUBECONFIG
                   value: /opt/swh/.kube/config
