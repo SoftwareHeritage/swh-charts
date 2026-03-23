@@ -32,4 +32,22 @@ roleRef:
   kind: Role
   name: openbao-secret-writer
   apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: secrets.hashicorp.com/v1beta1
+kind: VaultAuth
+metadata:
+  name: open-vso-auth
+spec:
+  method: appRole
+  mount: secrets-{{ .Values.clusterName }}
+  appRole:
+    roleIdSecretRef:
+      name: openbao-vso-auth-role-id-secret
+      key: id
+    secretIdSecretRef:
+      name: openbao-vso-auth-role-secret-id-secret
+      key: id
+  allowedNamespaces:
+    - "*"
+
 {{- end }}
