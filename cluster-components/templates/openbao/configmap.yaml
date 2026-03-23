@@ -268,7 +268,9 @@ data:
 
     TEMP_DIR=$(mktemp -d)
 
-    uv pip install hvac click kubernetes ipython
+    # FIXME: Move this part inside the dedicated swh-apps image (currently toolbox is
+    # used)
+    uv pip install hvac click kubernetes
 
     SCRIPT_ARGS=()
     SCRIPT_ARGS+=("--url" "${OPENBAO_ENDPOINT}")
