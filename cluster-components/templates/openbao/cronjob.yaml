@@ -32,7 +32,7 @@ spec:
                 - name: ROLE
                   value: role-{{ $clusterTargetName }}
                 - name: MOUNT
-                  value: mount-{{ $clusterTargetName }}
+                  value: secrets-{{ $clusterTargetName }}
                 - name: POLICY_NAME
                   value: openbao-policy
                 - name: CLUSTER_TARGET_URL
