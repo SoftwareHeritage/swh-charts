@@ -285,13 +285,15 @@ data:
     # Then we create the policy for the future approle to create
     POLICY_FILENAME="${POLICY_NAME}.hcl"
     POLICY_FILE="${TEMP_DIR}/${POLICY_FILENAME}"
+    # FIXME: For the migration period, let's add the create/update permissions.
+    # Tol remove once the migration is done.
     cat > "${POLICY_FILE}" << EOF
       path "${MOUNT}/data/*" {
-      capabilities = ["list", "read"]
+      capabilities = ["list", "read", "create", "update"]
     }
 
     path "${MOUNT}/metadata/*" {
-      capabilities = ["list", "read"]
+      capabilities = ["list", "read", "create", "update"]
     }
     EOF
 
