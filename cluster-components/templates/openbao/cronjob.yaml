@@ -73,7 +73,7 @@ spec:
           {{- if not $inCluster }}
           - name: kubeconfig
             secret:
-              secretName: {{ $clusterTargetName }}-config
+              secretName: {{ $clusterTargetName }}-cluster-config
           {{- end }}
           restartPolicy: OnFailure
 {{- end }}
