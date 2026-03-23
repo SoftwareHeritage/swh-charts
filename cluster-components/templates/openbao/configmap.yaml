@@ -122,16 +122,17 @@ data:
         app_role = client.auth.approle
         try:
             app_role.read_role(role_name, mount_point=mount)
-            msg = f"AppRole '{role_name}' already exists."
+            msg = f"AppRole '{role_name}' already exists with role-id"
         except:
             app_role.create_or_update_approle(
                 role_name=role_name,
                 mount_point=mount,
                 token_policies=[policy_name],
             )
-            role_id = get_role_id(client, role_name, mount)
-            msg = f"AppRole '{role_name}' created with {role_id}"
-        click.echo(msg)
+            msg = f"AppRole '{role_name}' created with role-id"
+
+        role_id = get_role_id(client, role_name, mount)
+        click.echo(f"{msg} {role_id}")
 
 
     def get_role_id(client, role_name, mount):
