@@ -167,11 +167,37 @@ data:
         click.echo(secret_id)
 
 
+    def create_secret_object(client, secret_name: str, secret_data: str):
+        """Create a basic kubernetes secret object ready to be sent to the api."""
+        from base64 import b64encode
+
+        secret = client.V1Secret()
+        secret.metadata = client.V1ObjectMeta(name=secret_name)
+        secret.type = "Opaque"
+        secret.data = {"id": b64encode(secret_data.encode()).decode()}
+
+        return secret
+
+
+    def create_secret(client, api_client, secret_name, secret_namespace, secret):
+        api_instance = client.CoreV1Api(api_client=api_client)
+        try:
+            # We try to create the actual secret
+            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+        except:
+            # it can raise a conflict if it already exist, so we try to delete it first
+            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
+            # Then we try to create it again
+            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+
+
     @cli.command()
     @click.option('--role-name', required=True, help="AppRole name")
     @click.option('--mount', required=True, help="AppRole mount path")
     @click.option('--targeted-cluster-url', required=True,
                   help="Ingress targeted cluster url")
+    @click.option('--role-id-secret-name', required=True,
+                  help="Name of the secret for the role id in the target cluster")
     @click.option('--secret-name', required=True,
                   help="Name of the secret in the target cluster")
     @click.option('--secret-namespace', required=True,
@@ -179,17 +205,17 @@ data:
     @click.option('--kubeconfig', "kubeconfig_path", default=None, type=click.Path(exists=True))
     @click.pass_context
     def create_secret_in_targeted_cluster(
-        ctx, role_name, mount, targeted_cluster_url, secret_name, secret_namespace,
-        kubeconfig_path
+        ctx, role_name, mount, targeted_cluster_url, role_id_secret_name, secret_name,
+        secret_namespace, kubeconfig_path
     ):
         """Create the secret with approle id/secret-id in the targeted cluster'."""
         hvac_client = ctx.obj['client']
+        role_id = get_role_id(hvac_client, role_name, mount)
         secret_id = generate_secret_id(hvac_client, role_name, mount)
 
         from kubernetes import client, config
         from kubernetes.client.configuration import Configuration
         from json import loads
-        from base64 import b64encode
 
         # Initialize connection to targeted kubernetes cluster
         client_config = Configuration()
@@ -219,22 +245,14 @@ data:
 
         api_client = client.ApiClient(configuration=client_config)
 
-        # Create the approle secret structure (a simple key/value: id/secret-id)
-        secret = client.V1Secret()
-        secret.metadata = client.V1ObjectMeta(name=secret_name)
-        secret.type = "Opaque"
-        secret.data = {"id": b64encode(secret_id.encode()).decode()}
+        # Create the approle id secret structure (a simple key/value:
+        # "role_id"/actual_role_id)
+        role_id_secret = create_secret_object(client, role_id_secret_name, role_id)
+        create_secret(client, api_client, role_id_secret_name, secret_namespace, role_id_secret)
 
-        # Actually create the secret in the targeted cluster
-        api_instance = client.CoreV1Api(api_client=api_client)
-        try:
-            # We try to create the actual secret
-            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
-        except:
-            # it can raise a conflict if it already exist, so we try to delete it first
-            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
-            # Then we try to create it again
-            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+        # Create the approle secret structure (a simple key/value: id/secret-id)
+        secret_id_secret = create_secret_object(client, secret_name, secret_id)
+        create_secret(client, api_client, secret_name, secret_namespace, secret_id_secret)
 
 
     if __name__ == '__main__':
@@ -261,6 +279,8 @@ data:
       echo "<BAO_SCRIPT> env variable must be set" && exit 1
     [ -z "${CLUSTER_TARGET_URL}" ] && \
       echo "<CLUSTER_TARGET_URL> env variable must be set" && exit 1
+    [ -z "${CLUSTER_TARGET_ROLE_ID_SECRET_NAME}" ] && \
+      echo "<CLUSTER_TARGET_ROLE_ID_SECRET_NAME> env variable must be set" && exit 1
     [ -z "${CLUSTER_TARGET_SECRET_NAME}" ] && \
       echo "<CLUSTER_TARGET_SECRET_NAME> env variable must be set" && exit 1
     [ -z "${CLUSTER_TARGET_SECRET_NAMESPACE}" ] && \
@@ -320,6 +340,7 @@ data:
       --role-name ${ROLE} \
       --mount ${MOUNT} \
       --targeted-cluster-url ${CLUSTER_TARGET_URL} \
+      --role-id-secret-name ${CLUSTER_TARGET_ROLE_ID_SECRET_NAME} \
       --secret-name ${CLUSTER_TARGET_SECRET_NAME} \
       --secret-namespace ${CLUSTER_TARGET_SECRET_NAMESPACE} \
       "${extra_args[@]}"

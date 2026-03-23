@@ -38,7 +38,9 @@ spec:
                 - name: CLUSTER_TARGET_URL
                   value: {{ $clusterTargetConfig.url }}
                 - name: CLUSTER_TARGET_SECRET_NAME
-                  value: openbao-vso-auth
+                  value: openbao-vso-auth-role-secret-id-secret
+                - name: CLUSTER_TARGET_ROLE_ID_SECRET_NAME
+                  value: openbao-vso-auth-role-id-secret
                 - name: CLUSTER_TARGET_SECRET_NAMESPACE
                   value: vso
                 {{- if $clusterTargetConfig.noVerifySSL }}
