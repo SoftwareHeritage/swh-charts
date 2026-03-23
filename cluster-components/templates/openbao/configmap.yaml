@@ -52,10 +52,8 @@ data:
     @cli.command()
     @click.argument('path')
     @click.argument('backend_type', default='kv')
-    @click.option('-n', '--ns', 'namespace', default='/',
-                  help="Openbao namespace to install secrets")
     @click.pass_context
-    def enable_secrets_engine(ctx, path, backend_type, namespace):
+    def enable_secrets_engine(ctx, path, backend_type):
         """Vault/OpenBao initialization"""
         client = ctx.obj['client']
 
@@ -64,7 +62,7 @@ data:
             client.sys.enable_secrets_engine(
                 backend_type=backend_type,
                 path=path,
-                options={'version': '2', 'namespace': namespace}
+                options={'version': '2'}
             )
             msg = f"Mount '{path}' with type '{backend_type}' created."
             click.echo()
@@ -282,8 +280,7 @@ data:
       SCRIPT_ARGS+=(--no-verify-ssl)
     fi
 
-    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
-      enable-secrets-engine ${MOUNT} --ns ${OPENBAO_NAMESPACE}
+    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" enable-secrets-engine ${MOUNT}
 
     # Then we create the policy for the future approle to create
     POLICY_FILENAME="${POLICY_NAME}.hcl"
