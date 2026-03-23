@@ -229,13 +229,14 @@ data:
         # Actually create the secret in the targeted cluster
         api_instance = client.CoreV1Api(api_client=api_client)
         try:
-            # We try to delete the actual secret so we can create anew
-            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
-        except:
-            pass
-        finally:
-            # It does not exist, we create it
+            # We try to create the actual secret
             api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+        except:
+            # it can raise a conflict if it already exist, so we try to delete it first
+            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
+            # Then we try to create it again
+            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+
 
     if __name__ == '__main__':
         cli()
