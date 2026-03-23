@@ -298,6 +298,9 @@ data:
     ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-policy ${POLICY_NAME} ${POLICY_FILE}
 
+    echo "Policy created:"
+    cat "${POLICY_FILE}"
+
     # Finally we attach that policy to the new AppRole we create
     ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-approle \
