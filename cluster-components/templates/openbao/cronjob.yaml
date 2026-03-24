@@ -4,6 +4,7 @@
 {{- range $clusterTargetName, $clusterTargetConfig := .Values.openbao.deployments -}}
 {{- $clusterUrl := $clusterTargetConfig.url -}}
 {{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
+{{- $debug := $clusterTargetConfig.debug | default $.Values.openbao.debug | default false -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -43,6 +44,10 @@ spec:
                   value: openbao-vso-auth-role-id-secret
                 - name: CLUSTER_TARGET_SECRET_NAMESPACE
                   value: vso
+                {{- if $debug }}
+                - name: DEBUG
+                  value: "1"
+                {{- end }}
                 {{- if $clusterTargetConfig.noVerifySSL }}
                 - name: NO_VERIFY_SSL
                   value: "1"

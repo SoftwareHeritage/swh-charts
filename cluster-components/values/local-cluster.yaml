@@ -400,6 +400,7 @@ volumes:
 openbao:
   enabled: false
   endpoint: https://openbao.local
+  debug: false
   rbac:
     enabled: false
   deployments:

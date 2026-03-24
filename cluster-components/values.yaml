@@ -701,6 +701,8 @@ openbao:
   namespace: openbao
   endpoint: https://openbao.internal.admin.swh.network
   secretNameRef: openbao-initial-secrets
+  # To allow extra verbosity in output
+  debug: false
   # Enable the role/rolebinding necessary setup in the cluster client so the secrets to
   # access openbao can be written by the process in charge
   rbac:

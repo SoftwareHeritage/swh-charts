@@ -270,8 +270,9 @@ data:
   init-bao-cluster.sh: |
     #!/bin/bash
 
-    set -x
-
+    if [ ! -z "${DEBUG}" ]; then
+      set -x
+    fi
     [ -z "${OPENBAO_ENDPOINT}" ] && \
       echo "<OPENBAO_ENDPOINT> env variable must be set" && exit 1
     [ -z "${OPENBAO_DEFAULT_TOKEN}" ] && \
@@ -309,7 +310,21 @@ data:
       SCRIPT_ARGS+=(--no-verify-ssl)
     fi
 
-    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" enable-secrets-engine ${MOUNT}
+    function do_execute {
+        # Execute command with or without redirection of warning/error to /dev/null The
+        # behavior depends on the DEBUG environment variable set. When unset, the
+        # default, this redirects warnings/errors to /dev/null (so output is readable)
+        # If there is any issues, toggle the DEBUG on to see the potential errors (set
+        # the template's value "debug" to true for this)
+      if [ ! -z ${DEBUG} ]; then
+        "$@"
+      else
+        "$@" 2>/dev/null
+      fi
+    }
+
+    # Enable the secret engine on the MOUNT value
+    do_execute ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" enable-secrets-engine ${MOUNT}
 
     # Then we create the policy for the future approle to create
     POLICY_FILENAME="${POLICY_NAME}.hcl"
@@ -326,14 +341,17 @@ data:
     }
     EOF
 
-    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
-      create-policy ${POLICY_NAME} ${POLICY_FILE}
-
-    echo "Policy created:"
+    echo "Policy to create:"
     cat "${POLICY_FILE}"
 
-    # Finally we attach that policy to the new AppRole we create
-    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
+    # Create the policy to allow read access (and temporarily write access, for the time
+    # of the migration, see previous comment)
+    do_execute ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
+      create-policy ${POLICY_NAME} ${POLICY_FILE}
+
+    # Then, attach that policy to the new AppRole we create to allow the cluster's
+    # VaultAuth to connect to the openbao instance in the admin cluster
+    do_execute ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-approle \
       --mount ${MOUNT} \
       --policy-name ${POLICY_NAME} \
@@ -344,7 +362,9 @@ data:
       extra_args+=("--kubeconfig" "${CLUSTER_TARGET_KUBECONFIG}")
     fi
 
-    ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
+    # Finally, generate the appRole's secret id and reference the appRole and secret id
+    # in the cluster client of the openbao instance.
+    do_execute ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
       create-secret-in-targeted-cluster \
       --role-name ${ROLE} \
       --mount ${MOUNT} \
