@@ -36,7 +36,7 @@ roleRef:
 apiVersion: secrets.hashicorp.com/v1beta1
 kind: VaultAuth
 metadata:
-  name: open-vso-auth
+  name: openbao-vso-auth
 spec:
   method: appRole
   mount: secrets-{{ .Values.clusterName }}
