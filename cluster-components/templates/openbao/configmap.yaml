@@ -167,8 +167,13 @@ data:
         click.echo(secret_id)
 
 
-    def create_secret_object(client, secret_name: str, secret_data: str):
-        """Create a basic kubernetes secret object ready to be sent to the api."""
+    def build_secret(client, secret_name: str, secret_data: str):
+        """Create a basic kubernetes secret object ready to be sent to the api.
+
+        Return
+            The dict created for the secret with the form {id: b64encode(secret_data)}.
+
+        """
         from base64 import b64encode
 
         secret = client.V1Secret()
@@ -179,7 +184,10 @@ data:
         return secret
 
 
-    def create_secret(client, api_client, secret_name, secret_namespace, secret):
+    def create_secret_in_kube(client, api_client, secret_name, secret_namespace, secret):
+        """Actually call the creation  of the secret object ready to be sent to the api.
+
+        """
         api_instance = client.CoreV1Api(api_client=api_client)
         try:
             # We try to create the actual secret
@@ -209,51 +217,52 @@ data:
         secret_namespace, kubeconfig_path
     ):
         """Create the secret with approle id/secret-id in the targeted cluster'."""
+        from os import environ
+
         hvac_client = ctx.obj['client']
         role_id = get_role_id(hvac_client, role_name, mount)
         secret_id = generate_secret_id(hvac_client, role_name, mount)
 
         from kubernetes import client, config
         from kubernetes.client.configuration import Configuration
-        from json import loads
 
         # Initialize connection to targeted kubernetes cluster
         client_config = Configuration()
         client_config.host = targeted_cluster_url
+        # Typically for local clusters, we cannot easily check this so it's disabled
+        client_config.verify_ssl = not environ.get('NO_VERIFY_SSL')
+        # Bearer token api authentication
+        client_config.api_key_prefix['authorization'] = 'Bearer'
 
         # If kubeconfig is passed around we use it
         if kubeconfig_path:
-            # For local clusters, no need
-            client_config.verify_ssl = True
-
+            from json import loads
             # Configuration file holding the bearer token
             with open(kubeconfig_path, "r") as f:
                 data = loads(f.read())
             client_config.api_key['authorization'] = data['bearerToken']
-            client_config.api_key_prefix['authorization'] = 'Bearer'
         else:
-            # otherwise, we assume we are working in the same cluster (e.g. local or
-            # admin) as where this is running
-            from os import environ
-
-            # For local clusters, no need
-            client_config.verify_ssl = False
             token_path = '/var/run/secrets/kubernetes.io/serviceaccount/token'
             with open(token_path, "r") as f:
                 client_config.api_key['authorization'] = f.read()
-            client_config.api_key_prefix['authorization'] = 'Bearer'
 
         api_client = client.ApiClient(configuration=client_config)
 
-        # Create the approle id secret structure (a simple key/value:
-        # "role_id"/actual_role_id)
-        role_id_secret = create_secret_object(client, role_id_secret_name, role_id)
-        create_secret(client, api_client, role_id_secret_name, secret_namespace, role_id_secret)
+        # Create the approle id secret (key/value: "id"/role-id)
+        role_id_secret = build_secret(client, role_id_secret_name, role_id)
+        create_secret_in_kube(
+            client, api_client, role_id_secret_name, secret_namespace, role_id_secret
+        )
 
-        # Create the approle secret structure (a simple key/value: id/secret-id)
-        secret_id_secret = create_secret_object(client, secret_name, secret_id)
-        create_secret(client, api_client, secret_name, secret_namespace, secret_id_secret)
+        click.echo(f"AppRole {role_id} stored in kubernetes client cluster as secret")
 
+        # Create the approle's secret (key/value: "id"/secret-id)
+        secret_id_secret = build_secret(client, secret_name, secret_id)
+        create_secret_in_kube(
+            client, api_client, secret_name, secret_namespace, secret_id_secret
+        )
+
+        click.echo(f"Associated AppRole {role_id}'s secret-id stored in kubernetes client cluster as secret")
 
     if __name__ == '__main__':
         cli()
