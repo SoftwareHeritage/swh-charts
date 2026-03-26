@@ -1453,7 +1453,6 @@ scrubber:
         # logLevel: INFO
         # Supported object: snapshot, revision, release, directory
         # object: directory
-        # batchSize: 1000
         # replicas: 1
         # requestedCpu: 500m
         # requestedMemory: 512Mi
@@ -2181,9 +2180,6 @@ datasetsGenerator:
     sensitiveDataMixed: false
     affinity: {}
     replicas: 1
-    # Optional batch size objects for compression steps which supports it (can
-    # be overridden per instance)
-    # batchSize: 1000000
     # namespace: swh
     priorityClassName: normal-workload
     # # Luigi url instance to use (can be overridden per instance)

@@ -17,7 +17,6 @@
 {{- $graphDirectoryPath := $config.graphDirectoryPath -}}
 {{- $graphSensitiveMountpoint := $config.graphSensitiveMountpoint -}}
 {{- $graphSensitiveDirectoryPath := $config.graphSensitiveDirectoryPath -}}
-{{- $batchSize := $config.batchSize -}}
 {{- $sensitiveDataMixed := $config.sensitiveDataMixed -}}
 {{- $publish := $config.publish -}}
 {{- $logLevel := $config.logLevel -}}
@@ -154,10 +153,6 @@ spec:
               value: {{ $logLevel }}
             - name: GRAPH_CHECK_FLAVOR
               value: {{ $config.graphCheckFlavor }}
-            {{- if $batchSize }}
-            - name: BATCH_SIZE
-              value: {{ $batchSize | int | quote }}
-            {{- end }}
             {{- if $publish }}
             - name: PUBLISH
               value: "1"

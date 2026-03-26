@@ -33,7 +33,6 @@
 {{- $configPath := "/etc/swh/config.yml" -}}
 {{- $toolbox := $config.toolbox | default $topLevelConfig.toolbox | default false -}}
 {{- $imageVersion := $config.imageVersion | default $datasetsConfig.imageVersion | default $topLevelConfig.imageVersion | default .Values.swh_datasets_image_version -}}
-{{- $batchSize := $config.batchSize | default $datasetsConfig.batchSize -}}
 {{- $sensitiveDataMixed := $config.sensitiveDataMixed | default $datasetsConfig.sensitiveDataMixed -}}
 {{- $publish := $config.publish | default $datasetsConfig.publish -}}
 {{- $publish := and $publish (not $sensitiveDataMixed) -}}
@@ -52,7 +51,6 @@
          "configPath"        $configPath
          "nbProcesses"       $nbProcesses
          "nbWorkers"         $nbWorkers
-         "batchSize"         $batchSize
          "sensitiveDataMixed" $sensitiveDataMixed
          "publish"           $publish
          "requestedMemory"   $requestedMemory
