@@ -1,6 +1,6 @@
 {{ if .Values.storage.enabled -}}
 {{ range $storageType, $deploymentConfig := .Values.storage.deployments }}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $argsDict := dict "serviceType" (print "storage-" $storageType)
                       "configuration" $deploymentConfig
                       "Values" $.Values -}}

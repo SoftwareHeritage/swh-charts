@@ -1,6 +1,6 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
-{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- if (ne false $clusterConfig.enabled) -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $backup := mustMerge (get $clusterConfig "backup" | default dict) ($.Values.cloudnativePg.backup | default dict) -}}
 {{- $extraWalConfiguration := $backup.extraWalConfiguration | default dict -}}

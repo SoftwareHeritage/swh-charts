@@ -1,6 +1,6 @@
 {{ if .Values.graphql.enabled -}}
 {{ range $graphql_name, $graphql_config := .Values.graphql.deployments }}
-{{- if and (or (not (hasKey $graphql_config "enabled")) (get $graphql_config "enabled"))
+{{- if and (ne false $graphql_config.enabled)
            (and (hasKey $graphql_config "ingress") $graphql_config.ingress.enabled) -}}
 {{- include "swh.ingress" (dict "serviceType"   (print "graphql-" $graphql_name)
                                 "configuration" $graphql_config

@@ -1,6 +1,6 @@
 {{- if .Values.redis.enabled -}}
 {{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $externalService := $deploymentConfig.externalService | default $.Values.redis.externalService -}}
 {{- if $externalService -}}
 {{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}

@@ -1,6 +1,6 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
-{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
+{{- if (ne false $datasetsGeneratorConfig.enabled) -}}
 ---
 apiVersion: v1
 kind: ConfigMap

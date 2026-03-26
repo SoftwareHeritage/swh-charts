@@ -2,7 +2,7 @@
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- $backendUtilsChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
 {{ range $provenanceType, $provenanceConfig := .Values.provenance.deployments }}
-{{- if and (or (not (hasKey $provenanceConfig "enabled")) (get $provenanceConfig "enabled"))
+{{- if and (ne false $provenanceConfig.enabled)
            (or (not (hasKey $provenanceConfig "startService")) (get $provenanceConfig "startService")) -}}
 
 {{- $serviceType := ( print "provenance-" $provenanceType ) -}}

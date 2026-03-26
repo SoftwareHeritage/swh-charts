@@ -1,6 +1,6 @@
 {{ if and .Values.scrubber.enabled .Values.scrubber.storageChecker.enabled -}}
 {{- range $deployment, $deployment_config := .Values.scrubber.storageChecker.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $deployment_config = include "swh.scrubber.deploymentConfig" (dict "scrubberType" "storage" "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.scrubber.storageChecker.configmap" (dict "client_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $checkBackendVersion := (and $deployment_config.backend $deployment_config.backend.check) | default $.Values.scrubber.backend.check | default false -}}

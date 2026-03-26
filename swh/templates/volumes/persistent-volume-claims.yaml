@@ -1,6 +1,6 @@
 {{ if .Values.volumes.enabled -}}
 {{- range $pvcName, $pvcConfig := .Values.volumes.persistentVolumeClaims }}
-{{- if or (not (hasKey $pvcConfig "enabled")) (get $pvcConfig "enabled") -}}
+{{- if (ne false $pvcConfig.enabled) -}}
 {{- $namespace := $pvcConfig.namespace | default $.Values.namespace -}}
 {{- $appName := $pvcConfig.appName -}}
 ---

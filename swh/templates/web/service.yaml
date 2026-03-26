@@ -1,6 +1,6 @@
 {{ if .Values.web.enabled -}}
 {{ range $web_type, $web_config := .Values.web.deployments }}
-{{- if or (not (hasKey $web_config "enabled")) (get $web_config "enabled") -}}
+{{- if (ne false $web_config.enabled) -}}
 {{- if not (hasKey $web_config "port") }}
 {{- $web_config := set $web_config "port" $.Values.web.port -}}
 {{- end -}}

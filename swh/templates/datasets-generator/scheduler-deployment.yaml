@@ -2,8 +2,8 @@
 {{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 
-{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
+{{- if (and (ne false $datasetsGeneratorConfig.enabled)
+            (ne false $luigiSchedulerConfig.enabled)) -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-luigi-configmap.yaml") . | sha256sum -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/luigi-config-utils.yaml") . | sha256sum -}}
 {{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/scheduler-script-utils.yaml") . | sha256sum -}}

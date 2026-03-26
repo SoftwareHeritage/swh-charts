@@ -1,6 +1,6 @@
 {{- if .Values.cloudnativePg.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
-{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- if (ne false $clusterConfig.enabled) -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $externalClustersRef := get $clusterConfig "externalClustersRef" | default
       (get $.Values.cloudnativePg "externalClustersRef") -}}

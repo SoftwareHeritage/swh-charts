@@ -1,6 +1,6 @@
 {{ if .Values.storage.enabled -}}
 {{ range $storage_type, $deployment_config := .Values.storage.deployments }}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- if not (hasKey $deployment_config "port") }}
 {{- $deployment_config := set $deployment_config "port" $.Values.storage.port -}}
 {{- end -}}

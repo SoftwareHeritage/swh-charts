@@ -2,7 +2,7 @@
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $storageType, $storageConfig := .Values.storage.deployments }}
-{{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
+{{- if (ne false $storageConfig.enabled) -}}
 {{- $serviceType := ( print "storage-" $storageType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $storageConfig

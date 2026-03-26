@@ -1,6 +1,6 @@
 {{ if .Values.graphql.enabled -}}
 {{ range $graphqlName, $graphqlConfig := .Values.graphql.deployments }}
-{{- if or (not (hasKey $graphqlConfig "enabled")) (get $graphqlConfig "enabled") -}}
+{{- if (ne false $graphqlConfig.enabled) -}}
 {{- $argsDict := dict "serviceType" (print "graphql-" $graphqlName)
                       "configuration" $graphqlConfig
                       "Values" $.Values -}}

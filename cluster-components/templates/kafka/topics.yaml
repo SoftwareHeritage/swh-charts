@@ -1,6 +1,6 @@
 {{ if .Values.kafka.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
-{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- if (ne false $clusterConfig.enabled) -}}
 {{- range $topicName, $topicConfig := $clusterConfig.topics -}}
 {{- $specificTopicConfig := $topicConfig.config | default dict -}}
 {{- $defaultTopicConfig := $.Values.kafka.default.topics.config | default dict -}}

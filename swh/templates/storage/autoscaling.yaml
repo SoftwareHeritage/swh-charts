@@ -1,6 +1,6 @@
 {{- if .Values.storage.enabled }}
 {{- range $storage_type, $deployment_config := .Values.storage.deployments }}
-{{- if and (or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled")) }}
+{{- if and (ne false $deployment_config.enabled) }}
 {{- $autoScaling := get $deployment_config "autoScaling" | default $.Values.storage.autoScaling -}}
 {{- if $autoScaling }}
 {{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}

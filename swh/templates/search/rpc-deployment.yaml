@@ -2,7 +2,7 @@
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- range $deploymentName, $deploymentConfig := .Values.search.rpc.deployments -}}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $serviceType := print $deploymentName "-rpc" -}}
 {{- $configArgsDict := dict "serviceType"   $serviceType
                             "configuration" $deploymentConfig

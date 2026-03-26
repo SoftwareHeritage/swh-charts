@@ -1,9 +1,9 @@
 {{- if .Values.redis.enabled -}}
 {{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
-{{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) -}}
+{{- if (ne false $extraConfig.enabled) -}}
 {{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
 {{- $ns := $deploymentConfig.namespace | default $.Values.redis.namespace -}}
 ---

@@ -1,7 +1,7 @@
 {{- if .Values.cassandraChecks.enabled -}}
 
 {{ range $service_type, $deployment_config := .Values.cassandraChecks.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $service_name := ( print "cassandra-checks-" $service_type ) -}}
 {{- $configurationChecksum := include "cassandra.checks.configmap"
   (dict "serviceType" $service_name

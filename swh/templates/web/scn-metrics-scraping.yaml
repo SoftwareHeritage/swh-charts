@@ -1,6 +1,6 @@
 {{ if .Values.web.enabled -}}
 {{ range $webType, $webConfig := .Values.web.deployments }}
-{{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
+{{- if (ne false $webConfig.enabled) -}}
 {{- if and (hasKey $webConfig "scnMetricsScraping")
            $webConfig.scnMetricsScraping.enabled -}}
 {{- $prometheusConfig := $.Values.prometheus | default dict -}}

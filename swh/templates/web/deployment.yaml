@@ -1,7 +1,7 @@
 {{ if .Values.web.enabled -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $webType, $webConfig := .Values.web.deployments }}
-{{- if or (not (hasKey $webConfig "enabled")) (get $webConfig "enabled") -}}
+{{- if (ne false $webConfig.enabled) -}}
 {{- $serviceType := print "web-" $webType -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $webConfig

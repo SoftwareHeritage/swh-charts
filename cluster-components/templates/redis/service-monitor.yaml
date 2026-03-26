@@ -1,8 +1,8 @@
 {{- if .Values.redis.enabled -}}
 {{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $serviceMonitor := $deploymentConfig.serviceMonitor | default $.Values.redis.serviceMonitor -}}
-{{- if or (not (hasKey $serviceMonitor "enabled")) (get $serviceMonitor "enabled") -}}
+{{- if (ne false $serviceMonitor.enabled) -}}
 {{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
 {{- $ns := $serviceMonitor.namespace | default $deploymentConfig.namespace | default $.Values.redis.namespace -}}

@@ -1,6 +1,6 @@
 {{ if .Values.webhooks.enabled -}}
 {{- range $deployment, $deployment_config := .Values.webhooks.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $configurationChecksum := include "swh.webhooks.configmap" (dict "deployment" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $registerEventTypes := and $deployment_config.backend $deployment_config.backend.registerEventTypes | default $.Values.webhooks.backend.registerEventTypes | default false -}}
 {{- $registerEndpointsConfig := and $deployment_config.backend $deployment_config.backend.registerEndpoints | default $.Values.webhooks.backend.registerEndpoints | default false -}}

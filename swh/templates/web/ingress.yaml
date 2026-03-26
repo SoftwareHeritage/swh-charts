@@ -1,6 +1,6 @@
 {{ if .Values.web.enabled -}}
 {{ range $web_type, $web_config := .Values.web.deployments }}
-{{- if and (or (not (hasKey $web_config "enabled")) (get $web_config "enabled"))
+{{- if and (ne false $web_config.enabled)
            (and (hasKey $web_config "ingress") $web_config.ingress.enabled) -}}
 {{- $ingressConfig := dict -}}
 {{- $ingressConfig = mustMergeOverwrite $ingressConfig (or $.Values.web.ingress dict) -}}

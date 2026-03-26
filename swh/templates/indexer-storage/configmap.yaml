@@ -1,6 +1,6 @@
 {{ if .Values.indexerStorage.enabled -}}
 {{ range $storageType, $storageConfig := .Values.indexerStorage.deployments }}
-{{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
+{{- if (ne false $storageConfig.enabled) -}}
 {{- $argsDict := dict "serviceType" (print "indexer-storage-" $storageType)
                       "configuration" $storageConfig
                       "Values" $.Values -}}

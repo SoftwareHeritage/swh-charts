@@ -1,7 +1,7 @@
 {{ if .Values.indexerStorage.enabled -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
 {{ range $storageType, $storageConfig := .Values.indexerStorage.deployments }}
-{{- if or (not (hasKey $storageConfig "enabled")) (get $storageConfig "enabled") -}}
+{{- if (ne false $storageConfig.enabled) -}}
 {{- $serviceType := ( print "indexer-storage-" $storageType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $storageConfig

@@ -2,7 +2,7 @@
 {{- $enable_sentry := and .Values.sentry.enabled .Values.loaders.sentry.enabled }}
 {{- $default_priority_class_name := .Values.loaders.priorityClassName -}}
 {{- range $loader_type, $deployment_config := .Values.loaders.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{/* Populate default values for these entries for the deployment from the top level loaders values */}}
 {{- $deploymentConfig := mustMerge $deployment_config (pick $.Values.loaders "celeryConfigurationRef" "storageConfigurationRef") -}}
 {{- $configurationChecksum := include "swh.loader.configmap" (dict "loader_type" $loader_type "deployment_config" $deployment_config "Values" $.Values) -}}

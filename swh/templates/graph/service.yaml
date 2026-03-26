@@ -1,6 +1,6 @@
 {{ if .Values.graph.enabled -}}
 {{ range $graphType, $graphConfig := .Values.graph.deployments }}
-{{- if or (not (hasKey $graphConfig "enabled")) (get $graphConfig "enabled") -}}
+{{- if (ne false $graphConfig.enabled) -}}
 {{- if not (hasKey $graphConfig "port") }}
 {{- $graphConfig := set $graphConfig "port" $.Values.graph.port -}}
 {{- end -}}

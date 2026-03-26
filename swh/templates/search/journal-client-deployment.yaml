@@ -1,7 +1,7 @@
 {{ if and .Values.search.enabled .Values.search.journalClients.enabled -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{- range $journalClientType, $journalClientConfig := .Values.search.journalClients.deployments -}}
-{{- if or (not (hasKey $journalClientConfig "enabled")) (get $journalClientConfig "enabled") -}}
+{{- if (ne false $journalClientConfig.enabled) -}}
 {{- $configChecksum := include "swh.journal.client.configmap"
   (dict "journalClientType" $journalClientType
         "configuration"     $journalClientConfig

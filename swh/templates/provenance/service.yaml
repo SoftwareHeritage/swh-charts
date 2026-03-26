@@ -1,6 +1,6 @@
 {{ if .Values.provenance.enabled -}}
 {{ range $provenanceType, $deploymentConfig := .Values.provenance.deployments }}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $configuration := include "swh.provenance.config" (dict "configuration" $deploymentConfig
                                                             "Values" $.Values) | fromYaml -}}
 {{- include "swh.service" (dict "serviceType"   ( print "provenance-" $provenanceType )

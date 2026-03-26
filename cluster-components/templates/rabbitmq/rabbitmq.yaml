@@ -1,6 +1,6 @@
 {{- if .Values.rabbitmq.enabled -}}
 {{- range $deployment_name, $deployment_config := .Values.rabbitmq.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $name := print "rabbitmq-" $deployment_name -}}
 {{- $affinity := $deployment_config.affinity | default $.Values.rabbitmq.affinity | default dict -}}
 {{- $requestedMemory := $deployment_config.requestedMemory | default $.Values.rabbitmq.requestedMemory -}}

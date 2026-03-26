@@ -1,6 +1,6 @@
 {{ if .Values.kafka.enabled -}}
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
-{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- if (ne false $clusterConfig.enabled) -}}
 {{- $replicas := $clusterConfig.replicas | default $.Values.kafka.replicas -}}
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}

@@ -1,12 +1,12 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $datasetsConfig := $datasetsGeneratorConfig.datasets -}}
-{{- if or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled") -}}
+{{- if (ne false $datasetsGeneratorConfig.enabled) -}}
 {{- $configChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-configmap.yaml") . | sha256sum -}}
 {{- $configScriptUtilsChecksum := include (print $.Template.BasePath "/datasets-generator/datasets-script-utils.yaml") . | sha256sum -}}
 {{- $containerImage := .Values.swh_datasets_image -}}
 
 {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
-{{- if or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled") -}}
+{{- if (ne false $datasetGeneratorConfig.enabled) -}}
 {{- $config := include "swh.datasets.generator.config"
       (dict "datasetGeneratorName"           $datasetGeneratorName
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig

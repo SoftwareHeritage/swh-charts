@@ -1,6 +1,6 @@
 {{ if and .Values.alerting.enabled .Values.cloudnativePg.enabled .Values.cloudnativePg.monitoringEnabled -}}
 {{- range $clusterName, $clusterConfig := .Values.cloudnativePg.deployments -}}
-{{- if or (not (hasKey $clusterConfig "enabled")) (get $clusterConfig "enabled") -}}
+{{- if (ne false $clusterConfig.enabled) -}}
 {{- $namespace := get $clusterConfig "namespace" | default $.Values.cloudnativePg.namespace -}}
 {{- $customQueries := (dict) -}}
 {{- if hasKey $clusterConfig "customQueriesRef" -}}

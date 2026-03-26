@@ -1,6 +1,6 @@
 {{ if .Values.volumes.enabled -}}
 {{- range $pvName, $pvConfig := .Values.volumes.persistentVolumes }}
-{{- if or (not (hasKey $pvConfig "enabled")) (get $pvConfig "enabled") -}}
+{{- if (ne false $pvConfig.enabled) -}}
 {{- $appName := $pvConfig.appName -}}
 ---
 apiVersion: v1

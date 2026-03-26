@@ -1,7 +1,7 @@
 {{ if .Values.svix.enabled -}}
 {{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
 {{ $namespace := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
-{{- if or (not (hasKey $svixConfiguration "enabled")) (get $svixConfiguration "enabled") -}}
+{{- if (ne false $svixConfiguration.enabled) -}}
 {{- $postgres := $svixConfiguration.postgres | default $.Values.svix.postgres | default dict -}}
 {{- $cleanupExpiredMessages := $postgres.cleanupExpiredMessages | default (dict "enabled" "false") -}}
 {{- if $cleanupExpiredMessages.enabled -}}

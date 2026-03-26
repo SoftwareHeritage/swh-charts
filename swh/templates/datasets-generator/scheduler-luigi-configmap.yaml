@@ -1,8 +1,8 @@
 {{- $datasetsGeneratorConfig := .Values.datasetsGenerator -}}
 {{- $luigiSchedulerConfig := $datasetsGeneratorConfig.scheduler -}}
 
-{{- if (and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-            (or (not (hasKey $luigiSchedulerConfig "enabled")) (get $luigiSchedulerConfig "enabled"))) -}}
+{{- if (and (ne false $datasetsGeneratorConfig.enabled)
+            (ne false $luigiSchedulerConfig.enabled)) -}}
 {{- $schedulerConfig := include "swh.luigi.scheduler.config"
                                 (dict "luigiSchedulerConfig"    $luigiSchedulerConfig
                                       "datasetsGeneratorConfig" $datasetsGeneratorConfig
@@ -26,8 +26,8 @@
     [resources]
     {{ if $orgRamMb }}
     {{- range $datasetGeneratorName, $datasetGeneratorConfig := $datasetsGeneratorConfig.datasets.deployments -}}
-    {{- if and (or (not (hasKey $datasetsGeneratorConfig "enabled")) (get $datasetsGeneratorConfig "enabled"))
-               (or (not (hasKey $datasetGeneratorConfig "enabled")) (get $datasetGeneratorConfig "enabled")) -}}
+    {{- if and (ne false $datasetsGeneratorConfig.enabled)
+               (ne false $datasetGeneratorConfig.enabled) -}}
       {{- $config := include "swh.datasets.generator.config"
       (dict "datasetGeneratorName"           $datasetGeneratorName
             "datasetGeneratorConfiguration"  $datasetGeneratorConfig

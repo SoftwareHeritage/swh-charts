@@ -1,6 +1,6 @@
 {{- if .Values.redis.enabled -}}
 {{- range $instanceName, $deploymentConfig := .Values.redis.deployments -}}
-{{- if or (not (hasKey $deploymentConfig "enabled")) (get $deploymentConfig "enabled") -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $appName := $deploymentConfig.appName | default (print "redis-" $instanceName) -}}
 {{- $replicas := $deploymentConfig.replicas | default $.Values.redis.replicas | default 1 -}}
 {{- $storage := $deploymentConfig.storage | default $.Values.redis.storage -}}
@@ -60,7 +60,7 @@ spec:
   affinity:
     {{- toYaml $affinity | nindent 4 }}
   {{- end }}
-  {{- if (or (not (hasKey $extraConfig "enabled")) (get $extraConfig "enabled")) }}
+  {{- if (ne false $extraConfig.enabled) }}
   redisConfig:
     additionalRedisConfig: {{ $appName }}-ext-config
   {{ end }}

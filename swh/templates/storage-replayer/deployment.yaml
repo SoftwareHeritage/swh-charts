@@ -1,7 +1,7 @@
 {{ if .Values.storageReplayer.enabled -}}
 {{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . -}}
 {{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $configurationToChecksum := include "swh.storageReplayer.configmap"
   (dict "deployment" $deployment
         "deployment_config" $deployment_config

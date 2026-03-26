@@ -1,7 +1,7 @@
 {{ if .Values.objstorage.enabled -}}
 {{- $configUtilsChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
 {{ range $objstorageType, $objstorageConfig := .Values.objstorage.deployments }}
-{{- if or (not (hasKey $objstorageConfig "enabled")) (get $objstorageConfig "enabled") -}}
+{{- if (ne false $objstorageConfig.enabled) -}}
 {{- $serviceType := ( print "objstorage-" $objstorageType ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $objstorageConfig

@@ -1,6 +1,6 @@
 {{ if .Values.objstorageReplayer.enabled -}}
 {{- range $deployment, $deployment_config := .Values.objstorageReplayer.deployments -}}
-{{- if or (not (hasKey $deployment_config "enabled")) (get $deployment_config "enabled") -}}
+{{- if (ne false $deployment_config.enabled) -}}
 {{- $deployment_config := include "swh.objstorageReplayer.deploymentConfig" (dict "deployment_config" $deployment_config "Values" $.Values) | fromYaml -}}
 {{- $configurationChecksum := include "swh.objstorageReplayer.configmap" (dict "deployment_name" $deployment "deployment_config" $deployment_config "Values" $.Values) -}}
 {{- $extraCliLogLevel := $deployment_config.extraCliLogLevel | default $.Values.objstorageReplayer.extraCliLogLevel }}
