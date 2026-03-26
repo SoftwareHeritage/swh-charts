@@ -96,7 +96,6 @@ data:
     format="orc"
 
     EXTRA_CLI_FLAGS=()
-    EXTRA_SUBCMD_FLAGS=()
 
     if [ -n "${GRAPH_SENSITIVE_MOUNTPOINT}" ]; then
       EXTRA_CLI_FLAGS+=('--base-sensitive-directory' "${GRAPH_SENSITIVE_MOUNTPOINT}")
@@ -109,14 +108,6 @@ data:
         echo "<AWS_SECRET_ACCESS_KEY> env variable must be set" && exit 1
       [ -z "${AWS_ACCESS_KEY_ID}" ] && \
         echo "<AWS_ACCESS_KEY_ID> env variable must be set" && exit 1
-
-      # Add extra cli flags for the s3 publication
-      EXTRA_CLI_FLAGS+=('--s3-prefix' "s3://softwareheritage/graph/")
-      EXTRA_CLI_FLAGS+=('--s3-athena-output-location' "s3://softwareheritage/tmp/athena/")
-      EXTRA_CLI_FLAGS+=('--athena-prefix' "swh")
-
-      # Add some extra sub command flags (require the export to be in orc)
-      EXTRA_SUBCMD_FLAGS=('--UploadExportToS3-formats' "${format}")
 
       # Finally, we override the default luigi task to upload the orc files and the
       # compressed graph dataset to s3 (this will trigger the compressed graph
@@ -140,19 +131,21 @@ data:
          swh datasets luigi \
             --dataset-name "${GRAPH_DATASET_NAME}" \
             --base-directory "${GRAPH_MOUNTPOINT}" \
+            --s3-prefix s3://softwareheritage/graph/ \
+            --s3-athena-output-location s3://softwareheritage/tmp/athena/ \
+            --athena-prefix swh \
             "${EXTRA_CLI_FLAGS[@]}" \
-            "${EXTRA_PUBLISH_CLI_FLAGS[@]}" \
             "${luigi_task}" \
             -- \
             --workers ${nb_workers} \
             --scheduler-url "${LUIGI_SCHEDULER_URL}" \
             --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
             --ExportGraph-formats "${format}" \
+            --UploadExportToS3-formats ${format} \
             --LocalExport-export-task-type ExportGraph \
             --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
             --ExportGraph-process "${NB_PROCESSES}" \
             --CompressGraph-check-flavor "${GRAPH_CHECK_FLAVOR}" \
-            "${EXTRA_SUBCMD_FLAGS[@]}" \
             --log-level "${LOG_LEVEL}"
     }
 
