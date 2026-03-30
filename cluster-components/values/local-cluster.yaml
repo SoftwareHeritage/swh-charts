@@ -400,15 +400,10 @@ volumes:
 openbao:
   enabled: false
   endpoint: https://openbao.local
-  debug: true
+  debug: false
   rbac:
     enabled: false
     namespaces:
-      - cattle-monitoring-system
-      - cert-manager
-      - cnpg
-      - rabbitmq
-      - rook-ceph
       - vso
   deployments:
     local-cluster:
