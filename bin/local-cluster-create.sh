@@ -3,7 +3,7 @@
 # This script triggers the installation of a local cluster (either minikube or
 # kind).
 
-CLUSTER_CONTEXT=${1-local-cluster}
+CLUSTER_CONTEXT=${1-kind-local-cluster}
 KUBE_LOCAL_ENVIRONMENT=${2-kind}
 
 if [ "${CLUSTER_CONTEXT}" = "minikube" ]; then
@@ -58,6 +58,8 @@ EOF
         kind create cluster --kubeconfig ~/.kube/config.d/$CLUSTER_CONTEXT.yaml \
              --config $CLUSTER_TEMP_CONFIG_FILE \
              --name $CLUSTER_CONTEXT
+        # Note: Annoyingly, kind will systematically create the cluster context as
+        # "kind-$yourChosenClusterContext"
 
         ;;
 esac

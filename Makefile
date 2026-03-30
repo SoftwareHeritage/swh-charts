@@ -17,7 +17,8 @@ CC_SECRET_FILES='$(CC_CHART)/local-cluster-secrets/'
 
 # For sandboxed environment
 LOCAL_CLUSTER_ENVIRONMENT=kind
-LOCAL_CLUSTER_CONTEXT=kind-local-cluster
+LOCAL_CLUSTER_CONTEXT=local-cluster
+LOCAL_CLUSTER_CONFIG=$(HOME)/.kube/config.d/$(LOCAL_CLUSTER_CONTEXT).yaml
 # You can chose to use minikube
 # LOCAL_CLUSTER_ENVIRONMENT=minikube
 # LOCAL_CLUSTER_CONTEXT=$(LOCAL_CLUSTER_ENVIRONMENT)
@@ -106,17 +107,17 @@ ss-helm-diff:
 helm-diff: swh-helm-diff ccf-helm-diff cc-helm-diff ss-helm-diff
 
 local-cluster-swh-prepare:
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace swh 2>&1 >/dev/null || \
-      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace swh
+	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace swh 2>&1 >/dev/null || \
+      kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace swh
 
 local-cluster-swh-prepare-secrets:
-	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
         --namespace swh apply -f -
 
 swh-minikube: swh-local-cluster
 local-cluster-swh: swh-local-cluster
 swh-local-cluster: local-cluster-swh-prepare local-cluster-swh-prepare-secrets
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SWH_CHART) $(SWH_CHART) \
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) upgrade --install $(SWH_CHART) $(SWH_CHART) \
       --values values-swh-application-versions.yaml \
       --values $(SWH_CHART)/values.yaml \
       --values $(SWH_CHART)/values/local-cluster.yaml \
@@ -126,9 +127,9 @@ swh-local-cluster: local-cluster-swh-prepare local-cluster-swh-prepare-secrets
 swh-uninstall: swh-local-cluster-uninstall
 local-cluster-uninstall-swh: swh-local-cluster-uninstall
 swh-local-cluster-uninstall:
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SWH_CHART) -n swh ; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace swh
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) uninstall $(SWH_CHART) -n swh ; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) --namespace swh delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) delete namespace swh
 
 swh-template:
 	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
@@ -180,19 +181,19 @@ swh-template-production-cassandra:
       -n swh --create-namespace --debug
 
 local-cluster-cc-prepare:
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace cluster-components 2>&1 >/dev/null || \
-      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-components
+	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace cluster-components 2>&1 >/dev/null || \
+      kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace cluster-components
 
 local-cluster-cc-prepare-secrets:
-	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
         --namespace cluster-components apply -f -
-	cat $(CC_SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+	cat $(CC_SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
         apply -f -
 
 cc-minikube: cc-local-cluster
 local-cluster-cc: cc-local-cluster
 cc-local-cluster: local-cluster-cc-prepare local-cluster-swh-prepare local-cluster-cc-prepare-secrets local-cluster-swh-prepare-secrets
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CC_CHART) $(CC_CHART)/ \
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) upgrade --install $(CC_CHART) $(CC_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/local-cluster.yaml \
@@ -202,9 +203,9 @@ cc-local-cluster: local-cluster-cc-prepare local-cluster-swh-prepare local-clust
 cc-uninstall: cc-local-cluster-uninstall
 local-cluster-uninstall-cc: cc-local-cluster-uninstall
 cc-local-cluster-uninstall:
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CC_CHART) --namespace cluster-components; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-components
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) uninstall $(CC_CHART) --namespace cluster-components; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) --namespace cluster-components delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) delete namespace cluster-components
 
 cc-template:
 	helm template template-$(CC_CHART) $(CC_CHART)/ --values values-swh-application-versions.yaml \
@@ -315,7 +316,7 @@ ccf-template-test-staging-rke2:
 
 ss-minikube: ss-local-cluster
 ss-local-cluster:
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) upgrade --install $(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
       --values $(SS_CHART)/values.yaml \
       --values $(SS_CHART)/values/local-cluster.yaml \
       -n software-stories --create-namespace --debug
@@ -323,7 +324,7 @@ ss-local-cluster:
 ss-uninstall: ss-local-cluster-uninstall
 local-cluster-uninstall-ss: ss-local-cluster-uninstall
 ss-local-cluster-uninstall:
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(SS_CHART) -n software-stories
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) uninstall $(SS_CHART) -n software-stories
 
 ss-template:
 	helm template template-$(SS_CHART) $(SS_CHART)/ --values values-swh-application-versions.yaml \
@@ -342,16 +343,16 @@ ss-template-production:
       --values $(SS_CHART)/values/production.yaml
 
 local-cluster-ccf-prepare:
-	kubectl --context $(LOCAL_CLUSTER_CONTEXT) get namespace cluster-configuration 2>&1 >/dev/null || \
-      kubectl --context $(LOCAL_CLUSTER_CONTEXT) create namespace cluster-configuration
+	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace cluster-configuration 2>&1 >/dev/null || \
+      kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace cluster-configuration
 
 local-cluster-ccf-prepare-secrets:
-	cat $(SECRET_FILES)/*.yaml | kubectl --context $(LOCAL_CLUSTER_CONTEXT) \
+	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
         --namespace cluster-configuration apply -f -
 
 local-cluster-ccf: ccf-local-cluster
 ccf-local-cluster: local-cluster-ccf-prepare local-cluster-ccf-prepare-secrets
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) upgrade --install $(CCF_CHART) $(CCF_CHART)/ \
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) upgrade --install $(CCF_CHART) $(CCF_CHART)/ \
       --values values-swh-application-versions.yaml \
       --values $(CCF_CHART)/values.yaml \
       --values $(CCF_CHART)/values/local-cluster.yaml \
@@ -361,6 +362,6 @@ ccf-local-cluster: local-cluster-ccf-prepare local-cluster-ccf-prepare-secrets
 ccf-uninstall: ccf-local-cluster-uninstall
 local-cluster-uninstall-ccf: ccf-local-cluster-uninstall
 ccf-local-cluster-uninstall:
-	helm --kube-context $(LOCAL_CLUSTER_CONTEXT) uninstall $(CCF_CHART) --namespace cluster-configuration; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) --namespace cluster-configuration delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
-    kubectl --context $(LOCAL_CLUSTER_CONTEXT) delete namespace cluster-configuration
+	helm --kubeconfig $(LOCAL_CLUSTER_CONFIG) uninstall $(CCF_CHART) --namespace cluster-configuration; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) --namespace cluster-configuration delete -f '$(SWH_CHART)/fake-secrets/*.yaml'; \
+    kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) delete namespace cluster-configuration
