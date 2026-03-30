@@ -6,13 +6,12 @@ kind: Namespace
 metadata:
   name: openbao
 {{- end }}
-# To authorize the openbao cronjob orchestration to write secrets in the client cluster
+# To authorize openbao cronjob orchestration to write secrets in the client cluster
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   name: openbao-secret-writer
-  namespace: vso
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
@@ -20,16 +19,15 @@ rules:
   verbs: ["create", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: openbao-secret-writer-binding
-  namespace: vso
 subjects:
 - kind: ServiceAccount
   name: default
   namespace: openbao
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: openbao-secret-writer
   apiGroup: rbac.authorization.k8s.io
 ---
