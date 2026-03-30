@@ -212,15 +212,26 @@ data:
                   help="Namespace of the secret in the targeted cluster")
     @click.option('--kubeconfig', "kubeconfig_path", default=None, type=click.Path(exists=True))
     @click.pass_context
-    def create_secret_in_targeted_cluster(
+    def create_vault_auth_in_targeted_cluster(
         ctx, role_name, mount, targeted_cluster_url, role_id_secret_name, secret_name,
         secret_namespace, kubeconfig_path
     ):
-        """Create the secret with approle id/secret-id in the targeted cluster'."""
+        """Create the VaultAuth object in targeted cluster with approle id/secret-id.
+
+        This requires to first create the secret-id associated to the AppRole. And then
+        create a VaultAuth object that references the AppRole and AppRole's Secret id.
+
+        This then will allow the various VaultStaticSecret mappings to synchronize the
+        secrets from openbao to the kubernetes cluster.
+
+        """
         from os import environ
 
         hvac_client = ctx.obj['client']
         role_id = get_role_id(hvac_client, role_name, mount)
+
+        click.echo(f"AppRole {role_id} for kubernetes client cluster authentication")
+
         secret_id = generate_secret_id(hvac_client, role_name, mount)
 
         from kubernetes import client, config
@@ -262,7 +273,66 @@ data:
             client, api_client, secret_name, secret_namespace, secret_id_secret
         )
 
-        click.echo(f"Associated AppRole {role_id}'s secret-id stored in kubernetes client cluster as secret")
+        click.echo(
+            f"Associated AppRole {role_id}'s secret-id stored in kubernetes client "
+            "cluster as secret"
+        )
+
+        # Discover the VaultAuth resource definition.
+        # The group, version, and plural must match the CRD.
+        group = "secrets.hashicorp.com"
+        version = "v1beta1"
+        api_version = f"{group}/{version}"
+        kindVaultAuth = "VaultAuth"
+        vault_auth_name = "openbao-vso-auth"
+
+        vault_auth_manifest = {
+            "apiVersion": api_version,
+            "kind": kindVaultAuth,
+            "metadata": {
+                "name": vault_auth_name,
+                "namespace": secret_namespace,
+            },
+            "spec": {
+                "method": "appRole",
+                "appRole": {
+                    "roleId": role_id,
+                    "secretRef": secret_name,
+                },
+                "allowedNamespaces": ["*"],
+                "vaultConnectionRef": "default",
+            }
+        }
+
+        from kubernetes import dynamic
+        # For CRDs, use the dynamic client
+        dyn_client = dynamic.DynamicClient(api_client)
+        vault_auth_api = dyn_client.resources.get(
+            api_version=api_version,
+            kind=kindVaultAuth,
+        )
+
+        from yaml import safe_dump
+        try:
+            obj = vault_auth_api.create(
+                body=vault_auth_manifest,
+                namespace=secret_namespace,
+            )
+            msg = "created"
+        except:
+            vault_auth_api.delete(
+               name=vault_auth_name,
+               namespace=secret_namespace,
+               body={}
+            )
+            obj = vault_auth_api.create(
+                body=vault_auth_manifest,
+                namespace=secret_namespace,
+            )
+            msg = "updated"
+
+        click.echo(f"VaultAuth {msg}: {safe_dump(obj.to_dict())}.")
+
 
     if __name__ == '__main__':
         cli()
@@ -365,7 +435,7 @@ data:
     # Finally, generate the appRole's secret id and reference the appRole and secret id
     # in the cluster client of the openbao instance.
     do_execute ${BAO_SCRIPT} "${SCRIPT_ARGS[@]}" \
-      create-secret-in-targeted-cluster \
+      create-vault-auth-in-targeted-cluster \
       --role-name ${ROLE} \
       --mount ${MOUNT} \
       --targeted-cluster-url ${CLUSTER_TARGET_URL} \

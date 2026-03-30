@@ -31,21 +31,28 @@ roleRef:
   name: openbao-secret-writer
   apiGroup: rbac.authorization.k8s.io
 ---
-apiVersion: secrets.hashicorp.com/v1beta1
-kind: VaultAuth
-metadata:
-  name: openbao-vso-auth
-spec:
-  method: appRole
-  mount: secrets-{{ .Values.clusterName }}
-  appRole:
-    roleIdSecretRef:
-      name: openbao-vso-auth-role-id-secret
-      key: id
-    secretIdSecretRef:
-      name: openbao-vso-auth-role-secret-id-secret
-      key: id
-  allowedNamespaces:
-    - "*"
+# To authorize openbao cronjob orchestration to write vaultauths in the client cluster
 
+# vaultauth-clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: vaultauth-writer
+rules:
+- apiGroups: ["secrets.hashicorp.com"]
+  resources: ["vaultauths"]
+  verbs: ["create", "delete", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vaultauth-writer-binding
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: openbao
+roleRef:
+  kind: ClusterRole
+  name: vaultauth-writer
+  apiGroup: rbac.authorization.k8s.io
 {{- end }}
