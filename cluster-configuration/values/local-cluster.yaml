@@ -1,5 +1,5 @@
 environment: test
-clusterName: local
+clusterName: local-cluster
 clusterUrl: https://kubernetes.default.svc
 
 # This enables the argocd applications for tests purposes [1] [2].
