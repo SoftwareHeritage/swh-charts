@@ -42,8 +42,8 @@ spec:
                   value: openbao-vso-auth-role-secret-id-secret
                 - name: CLUSTER_TARGET_ROLE_ID_SECRET_NAME
                   value: openbao-vso-auth-role-id-secret
-                - name: CLUSTER_TARGET_SECRET_NAMESPACE
-                  value: vso
+                - name: CLUSTER_TARGET_NAMESPACES
+                  value: {{ $.Values.openbao.rbac.namespaces | join "," }}
                 {{- if $debug }}
                 - name: DEBUG
                   value: "1"

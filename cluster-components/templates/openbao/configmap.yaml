@@ -184,19 +184,19 @@ data:
         return secret
 
 
-    def create_secret_in_kube(client, api_client, secret_name, secret_namespace, secret):
+    def create_secret_in_kube(client, api_client, secret_name, namespaces, secret):
         """Actually call the creation  of the secret object ready to be sent to the api.
 
         """
         api_instance = client.CoreV1Api(api_client=api_client)
         try:
             # We try to create the actual secret
-            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+            api_instance.create_namespaced_secret(namespace=namespaces, body=secret)
         except:
             # it can raise a conflict if it already exist, so we try to delete it first
-            api_instance.delete_namespaced_secret(secret_name, secret_namespace)
+            api_instance.delete_namespaced_secret(secret_name, namespaces)
             # Then we try to create it again
-            api_instance.create_namespaced_secret(namespace=secret_namespace, body=secret)
+            api_instance.create_namespaced_secret(namespace=namespaces, body=secret)
 
 
     @cli.command()
@@ -208,13 +208,13 @@ data:
                   help="Name of the secret for the role id in the target cluster")
     @click.option('--secret-name', required=True,
                   help="Name of the secret in the target cluster")
-    @click.option('--secret-namespace', required=True,
-                  help="Namespace of the secret in the targeted cluster")
+    @click.option('--namespaces', "all_namespaces", required=True,
+                  help="Namespaces where to write the secret and vault auth objects in the targeted cluster")
     @click.option('--kubeconfig', "kubeconfig_path", default=None, type=click.Path(exists=True))
     @click.pass_context
     def create_vault_auth_in_targeted_cluster(
         ctx, role_name, mount, targeted_cluster_url, role_id_secret_name, secret_name,
-        secret_namespace, kubeconfig_path
+        all_namespaces, kubeconfig_path
     ):
         """Create the VaultAuth object in targeted cluster with approle id/secret-id.
 
@@ -259,24 +259,7 @@ data:
 
         api_client = client.ApiClient(configuration=client_config)
 
-        # Create the approle id secret (key/value: "id"/role-id)
-        role_id_secret = build_secret(client, role_id_secret_name, role_id)
-        create_secret_in_kube(
-            client, api_client, role_id_secret_name, secret_namespace, role_id_secret
-        )
-
-        click.echo(f"AppRole {role_id} stored in kubernetes client cluster as secret")
-
-        # Create the approle's secret (key/value: "id"/secret-id)
-        secret_id_secret = build_secret(client, secret_name, secret_id)
-        create_secret_in_kube(
-            client, api_client, secret_name, secret_namespace, secret_id_secret
-        )
-
-        click.echo(
-            f"Associated AppRole {role_id}'s secret-id stored in kubernetes client "
-            "cluster as secret"
-        )
+        from kubernetes import dynamic
 
         # Discover the VaultAuth resource definition.
         # The group, version, and plural must match the CRD.
@@ -286,25 +269,6 @@ data:
         kindVaultAuth = "VaultAuth"
         vault_auth_name = "openbao-vso-auth"
 
-        vault_auth_manifest = {
-            "apiVersion": api_version,
-            "kind": kindVaultAuth,
-            "metadata": {
-                "name": vault_auth_name,
-                "namespace": secret_namespace,
-            },
-            "spec": {
-                "method": "appRole",
-                "appRole": {
-                    "roleId": role_id,
-                    "secretRef": secret_name,
-                },
-                "allowedNamespaces": ["*"],
-                "vaultConnectionRef": "default",
-            }
-        }
-
-        from kubernetes import dynamic
         # For CRDs, use the dynamic client
         dyn_client = dynamic.DynamicClient(api_client)
         vault_auth_api = dyn_client.resources.get(
@@ -313,25 +277,63 @@ data:
         )
 
         from yaml import safe_dump
-        try:
-            obj = vault_auth_api.create(
-                body=vault_auth_manifest,
-                namespace=secret_namespace,
-            )
-            msg = "created"
-        except:
-            vault_auth_api.delete(
-               name=vault_auth_name,
-               namespace=secret_namespace,
-               body={}
-            )
-            obj = vault_auth_api.create(
-                body=vault_auth_manifest,
-                namespace=secret_namespace,
-            )
-            msg = "updated"
+        from kubernetes.dynamic.exceptions import ConflictError
 
-        click.echo(f"VaultAuth {msg}: {safe_dump(obj.to_dict())}.")
+        namespaces = all_namespaces.split(",")
+        for namespace in namespaces:
+            # Create the approle id secret (key/value: "id"/role-id)
+            role_id_secret = build_secret(client, role_id_secret_name, role_id)
+            create_secret_in_kube(
+                client, api_client, role_id_secret_name, namespace, role_id_secret
+            )
+
+            click.echo(f"AppRole {role_id} stored in kubernetes client cluster as secret")
+
+            # Create the approle's secret (key/value: "id"/secret-id)
+            secret_id_secret = build_secret(client, secret_name, secret_id)
+            create_secret_in_kube(
+                client, api_client, secret_name, namespace, secret_id_secret
+            )
+
+            click.echo(
+                f"Associated AppRole {role_id}'s secret-id stored in kubernetes client "
+                "cluster as secret"
+            )
+
+            vault_auth_manifest = {
+                "apiVersion": api_version,
+                "kind": kindVaultAuth,
+                "metadata": {
+                    "name": vault_auth_name,
+                    "namespace": namespace,
+                },
+                "spec": {
+                    "method": "appRole",
+                    "appRole": {
+                        "roleId": role_id,
+                        "secretRef": secret_name,
+                    },
+                    "allowedNamespaces": ["*"],
+                    "vaultConnectionRef": "vso/default",
+                }
+            }
+
+            try:
+                obj = vault_auth_api.create(
+                    body=vault_auth_manifest,
+                    namespace=namespace,
+                )
+                msg = "created"
+            except (Exception, ConflictError):
+                obj = vault_auth_api.patch(
+                   name=vault_auth_name,
+                   namespace=namespace,
+                   body=vault_auth_manifest,
+                   content_type="application/merge-patch+json",
+                )
+                msg = "updated"
+
+            click.echo(f"VaultAuth {msg}: {safe_dump(obj.to_dict())}.")
 
 
     if __name__ == '__main__':
@@ -363,8 +365,8 @@ data:
       echo "<CLUSTER_TARGET_ROLE_ID_SECRET_NAME> env variable must be set" && exit 1
     [ -z "${CLUSTER_TARGET_SECRET_NAME}" ] && \
       echo "<CLUSTER_TARGET_SECRET_NAME> env variable must be set" && exit 1
-    [ -z "${CLUSTER_TARGET_SECRET_NAMESPACE}" ] && \
-      echo "<CLUSTER_TARGET_SECRET_NAMESPACE> env variable must be set" && exit 1
+    [ -z "${CLUSTER_TARGET_NAMESPACES}" ] && \
+      echo "<CLUSTER_TARGET_NAMESPACES> env variable must be set" && exit 1
 
     TEMP_DIR=$(mktemp -d)
 
@@ -441,6 +443,6 @@ data:
       --targeted-cluster-url ${CLUSTER_TARGET_URL} \
       --role-id-secret-name ${CLUSTER_TARGET_ROLE_ID_SECRET_NAME} \
       --secret-name ${CLUSTER_TARGET_SECRET_NAME} \
-      --secret-namespace ${CLUSTER_TARGET_SECRET_NAMESPACE} \
+      --namespaces ${CLUSTER_TARGET_NAMESPACES} \
       "${extra_args[@]}"
 {{- end }}
