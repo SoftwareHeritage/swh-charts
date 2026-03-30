@@ -309,6 +309,7 @@ data:
                 },
                 "spec": {
                     "method": "appRole",
+                    "mount": mount,
                     "appRole": {
                         "roleId": role_id,
                         "secretRef": secret_name,
