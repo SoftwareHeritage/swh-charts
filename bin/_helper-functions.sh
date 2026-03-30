@@ -15,8 +15,11 @@ function _init_setup_and_checks {
     exit 1
   fi
 
-  export HELM="helm --kube-context ${CLUSTER_CONTEXT}"
-  export KUBECTL="kubectl --context ${CLUSTER_CONTEXT}"
+  CLUSTER_CONTEXT=$(echo $CLUSTER_CONTEXT | sed 's/kind-//g')
+
+  KUBECONFIG_PATH="$HOME/.kube/config.d/${CLUSTER_CONTEXT}.yaml"
+  export HELM="helm --kubeconfig ${KUBECONFIG_PATH}"
+  export KUBECTL="kubectl --kubeconfig ${KUBECONFIG_PATH}"
 }
 
 # Retrieves the value from the following files (in order, latest has precedence):
@@ -93,4 +96,11 @@ function _kubectl_delete {
   fi
   $KUBECTL delete "${extra_args[@]}" -f ${url_or_file} 2>/dev/null || \
       echo "Non critical deletion issue, skipping..."
+}
+
+function _get_cluster_context {
+  # Implementation detail, when providing the cluster-context to the kind command, it
+  # prefixed such context with kind-. So if called from the local-cluster.sh script, this
+  # may happen to provide it fully, so we must drop it.
+  echo "${1}" | sed 's/kind-//g'
 }

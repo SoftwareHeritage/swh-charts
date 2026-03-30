@@ -190,6 +190,10 @@ server:
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 EOF
 
+  # Depend on ingress-nginx, so wait for it before applying argocd install
+  ${KUBECTL} wait deployment --all --for=condition=Available --timeout=60s \
+    -n "${ingress_ns}"
+
   $HELM upgrade --install argocd argo/argo-cd --values "${ARGOCD_VALUES_FILE}" \
     --namespace $argocd_ns \
     --version $argocd_version \

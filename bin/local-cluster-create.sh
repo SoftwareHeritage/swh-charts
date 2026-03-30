@@ -10,6 +10,10 @@ if [ "${CLUSTER_CONTEXT}" = "minikube" ]; then
    KUBE_LOCAL_TECHNOLOGY=minikube
 fi
 
+# Source helper functions used throughout the script
+source ./bin/_helper-functions.sh
+_init_setup_and_checks
+
 case "$KUBE_LOCAL_ENVIRONMENT" in
     minikube)
         export MINIKUBE_IN_STYLE=false
@@ -17,10 +21,7 @@ case "$KUBE_LOCAL_ENVIRONMENT" in
             echo "Requires the minikube cli!" && exit 1
         ;;
     kind)
-        # Implementation detail, when providing the cluster-context to the kind command, it
-        # prefixed such context with kind-. So if called from the local-cluster.sh script, this
-        # may happen to provide it fully, so we must drop it.
-        CLUSTER_CONTEXT=$(echo $CLUSTER_CONTEXT | sed 's/kind-//g')
+        CLUSTER_CONTEXT=$(_get_cluster_context "${CLUSTER_CONTEXT}")
 
         CLUSTER_TEMP_CONFIG_FILE=$(mktemp)
 
