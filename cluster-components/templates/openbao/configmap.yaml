@@ -87,15 +87,11 @@ data:
         with open(policy_rule_filename, 'r') as f:
             rules = ''.join(f.readlines())
 
-        try:
-            client.sys.read_policy(policy_name)
-            msg = f"Policy '{policy_name}' already exists."
-        except:
-            client.sys.create_or_update_policy(
-                name=policy_name,
-                policy=rules
-            )
-            msg = f"Policy '{policy_name}' created."
+        client.sys.create_or_update_policy(
+            name=policy_name,
+            policy=rules
+        )
+        msg = f"Policy '{policy_name}' upserted."
         click.echo(msg)
 
 
