@@ -401,7 +401,7 @@ openbao:
   enabled: false
   endpoint: https://openbao.local
   rbac:
-    enabled: true
+    enabled: false
   deployments:
     local-cluster:
       url: https://kubernetes.default.svc
