@@ -1,5 +1,10 @@
 {{- if .Values.openbao.rbac.enabled -}}
 {{- if not .Values.openbao.enabled }}
+# Create the openbao namespace in cluster client of the main cluster running openbao.
+# Thia also adds additional rbac authorization to allow that main cluster to write
+# secrets (mainly the AppRole id and AppRole's associated secret id) and VaultAuth
+# instances (so the client cluster can run VaultSecretsOperator and sync secrets through
+# the VaultAuth [one per ns]).
 ---
 apiVersion: v1
 kind: Namespace
