@@ -53,6 +53,9 @@ spec:
                   value: {{ .Values.kafkabackup.remoteVenv | quote }}
                 - name: KAFKABACKUP_DATASET
                   value: {{ .Values.kafkabackup.zfsDataset | quote }}
+                - name: KAFKABACKUP_STORAGE
+                  value: {{ .Values.kafkabackup.storageBackend | quote }}
+                {{- if eq .Values.kafkabackup.storageBackend "s3" }}
                 - name: KAFKABACKUP_S3_HOST
                   value: {{ .Values.kafkabackup.s3.host | quote }}
                 - name: KAFKABACKUP_S3_REGION
@@ -61,13 +64,19 @@ spec:
                   value: {{ .Values.kafkabackup.s3.bucket | quote }}
                 - name: KAFKABACKUP_S3_SSL
                   value: {{ .Values.kafkabackup.s3.ssl | quote }}
+                {{- else if eq .Values.kafkabackup.storageBackend "azureblob" }}
+                - name: KAFKABACKUP_AZURE_CONTAINER
+                  value: {{ .Values.kafkabackup.azureblob.container | quote }}
+                {{- else }}
+                  {{- fail "Unexpected value for .Values.kafkabackup.storageBackend" }}
+                {{- end }}
                 - name: KAFKABACKUP_SSH_KNOWN_HOSTS
                   value: /config/ssh_known_hosts
                 - name: KAFKABACKUP_SSH_KEYFILE
                   value: /ssh/ssh-privatekey
               envFrom:
                 - secretRef:
-                    name: {{ .Values.kafkabackup.s3.secretsName }}
+                    name: {{ .Values.kafkabackup.storageSecretsName }}
           {{ if .Values.kafkabackup.kafkaHosts -}}
           hostAliases:
           {{- range $host, $ip := .Values.kafkabackup.kafkaHosts }}
