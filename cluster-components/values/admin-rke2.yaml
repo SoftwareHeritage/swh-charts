@@ -186,3 +186,10 @@ openbao:
   deployments:
     test-staging-rke2:
       url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-hb9j7h5g
+      namespacesToManageInOpenbaoClientCluster:
+        - cattle-monitoring-system
+        - cert-manager
+        - cnpg
+        - rabbitmq
+        - rook-ceph
+

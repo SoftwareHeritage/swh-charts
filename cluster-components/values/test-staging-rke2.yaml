@@ -168,9 +168,3 @@ elasticsearch:
 openbao:
   rbac:
     enabled: true
-    namespaces:
-      - cattle-monitoring-system
-      - cert-manager
-      - cnpg
-      - rabbitmq
-      - rook-ceph

@@ -403,10 +403,10 @@ openbao:
   debug: false
   rbac:
     enabled: false
-    namespaces:
-      - vso
   deployments:
     local-cluster:
       url: https://kubernetes.default.svc
       inCluster: true
       noVerifySSL: true
+      namespacesToManageInOpenbaoClientCluster:
+      - vso

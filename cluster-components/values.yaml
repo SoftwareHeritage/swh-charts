@@ -701,6 +701,9 @@ openbao:
   namespace: openbao
   endpoint: https://openbao.internal.admin.swh.network
   secretNameRef: openbao-initial-secrets
+  # List of namespaces to manage for vault authentication in client cluster (can be
+  # overridden per deployment instance)
+  namespacesToManageInOpenbaoClientCluster: []
   # To allow extra verbosity in output
   debug: false
   # Enable the cluster role/rolebinding's necessary setup in the cluster client so the
@@ -708,7 +711,5 @@ openbao:
   # cluster)
   rbac:
     enabled: false
-    # List of namespaces to manage for vault authentication
-    namespaces:
   # Deploy cronjobs instance per cluster
   deployments: {}
