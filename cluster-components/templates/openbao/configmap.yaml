@@ -211,10 +211,11 @@ data:
     @click.option('--namespaces', "all_namespaces", required=True,
                   help="Namespaces where to write the secret and vault auth objects in the targeted cluster")
     @click.option('--kubeconfig', "kubeconfig_path", default=None, type=click.Path(exists=True))
+    @click.option('--debug', is_flag=True, default=False, help="Allow to enable more information")
     @click.pass_context
     def create_vault_auth_in_targeted_cluster(
         ctx, role_name, mount, targeted_cluster_url, role_id_secret_name, secret_name,
-        all_namespaces, kubeconfig_path
+        all_namespaces, kubeconfig_path, debug
     ):
         """Create the VaultAuth object in targeted cluster with approle id/secret-id.
 
@@ -334,7 +335,9 @@ data:
                 )
                 msg = "updated"
 
-            click.echo(f"VaultAuth {msg}: {safe_dump(obj.to_dict())}.")
+            click.echo(f"VaultAuth {msg}.")
+            if debug:
+                click.echo(safe_dump(obj.to_dict()))
 
 
     if __name__ == '__main__':
@@ -433,6 +436,9 @@ data:
     extra_args=()
     if [ ! -z ${CLUSTER_TARGET_KUBECONFIG} ]; then
       extra_args+=("--kubeconfig" "${CLUSTER_TARGET_KUBECONFIG}")
+    fi
+    if [ ! -z ${DEBUG} ]; then
+      extra_args+=("--debug")
     fi
 
     # Finally, generate the appRole's secret id and reference the appRole and secret id
