@@ -747,6 +747,18 @@ kafka:
         swh.journal.indexed.origin_intrinsic_metadata: {}
         swh.journal.indexed.revision_intrinsic_metadata: {}
 
+kafkabackup:
+  enabled: true
+  bootstrapServer: kafka1.internal.staging.swh.network
+  storageBackend: azureblob
+  azureblob:
+    container: staging
+  ssh:
+    knownHosts:
+      - 'kafka1.internal.staging.swh.network ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO9/bFm53vSYanRCZi+1Ae5EsYS0HecWnY0+uWfrwpO8'
+      - 'kafka3.internal.staging.swh.network ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMHcT30moWEc5B5g62mL8KESkvK8aXcoi9DJkmPPzfJa'
+  kafkaHosts: {}
+
 elasticsearch:
   enabled: true
   # Can be overridden per instance

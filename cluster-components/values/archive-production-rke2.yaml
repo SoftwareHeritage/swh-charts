@@ -121,6 +121,10 @@ svix:
           # Every day at 1:00 am
           cron: "0 1 * * *"
 
+kafkabackup:
+  enabled: false
+  bootstrapServer: kafka1.internal.softwareheritage.org
+
 redis:
   enabled: true
   deployments:
