@@ -264,6 +264,9 @@ cloudnativePg:
         enabled: true
         # Run once a day at 1am (UTC)
         schedule: "0 0 1 * * *"
+      extraPostgresqlConfig:
+        parameters:
+          max_connections: 400
     db-swh-masking:
       enabled: true
       instances: 3
