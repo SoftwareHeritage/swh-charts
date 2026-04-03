@@ -17,12 +17,12 @@ spec:
         description: "Pod {{"{{"}} $labels.namespace {{"}}"}}/{{"{{"}} $labels.pod {{"}}"}} is taking more than {{$humanReadable}} for a query."
         summary: A query is taking longer than {{$humanReadable}}.
       expr: |-
-        cnpg_backends_max_tx_duration_seconds{instance=~"^{{$instance}}-"} > {{$threshold}}
+        cnpg_backends_max_tx_duration_seconds{instance=~"{{$instance}}-.*"} > {{$threshold}}
       for: 1m
       labels:
         severity: warning
 {{- end }}
-{{- $instanceFilter := print "^(" (join "|" (keys .cnpg.transactionThresholds)) ")-"}}
+{{- $instanceFilter := print "(" (join "|" (keys .cnpg.transactionThresholds)) ")-.*"}}
 {{- $humanReadableThreshold := .cnpg.transactionThresholdDefault | toString | duration}}
     - alert: Long_Running_Transaction_In_{{ .environment | title }}
       annotations:
