@@ -1130,6 +1130,12 @@ externalServices:
     luigi-scheduler:
       internalName: luigi-scheduler-ingress
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-grpc-20260302:
+      internalName: graph-grpc-20260302-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
+    graph-rpc-20260302:
+      internalName: graph-rpc-20260302-ingress
+      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
 
 svixConfiguration:
   svix:
