@@ -2823,6 +2823,27 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-highmem04
+    graph-20260302-persistent-local-pv:
+      enabled: true
+      appName: graph-grpc-20260302
+      spec:
+        capacity:
+          storage: 10Ti
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        storageClassName: local-storage
+        local:
+          path: /srv/softwareheritage/ssd/graph/2026-03-02/compressed
+        nodeAffinity:
+          required:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - rancher-node-highmem02
 
   persistentVolumeClaims:
     # grpc provenance volume
@@ -2918,6 +2939,29 @@ volumes:
         - ReadWriteOnce
         volumeMode: Filesystem
         storageClassName: local-persistent
+    graph-20260302-persistent-pvc:
+      enabled: true
+      appName: graph-grpc-20260302
+      spec:
+        resources:
+          requests:
+            storage: 10Ti
+        volumeMode: Filesystem
+        volumeName: graph-20260302-persistent-local-pv
+        storageClassName: local-storage
+        accessModes:
+        - ReadWriteOnce
+    graph-20260302-inmemory-pvc:
+      enabled: true
+      appName: graph-grpc-20260302
+      spec:
+        storageClassName: local-path
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 graph:
   enabled: true
