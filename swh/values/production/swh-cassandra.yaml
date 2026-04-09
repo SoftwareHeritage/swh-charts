@@ -1717,6 +1717,7 @@ indexers:
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     extrinsic:
+      enabled: true
       indexer_type: extrinsic_metadata
       journalClientOverrides:
         group_id: swh-archive-prod-swh.indexer.journal_client.extrinsic_metadata
@@ -1732,6 +1733,7 @@ indexers:
       autoScaling:
         maxReplicaCount: 18
     content-mimetype:
+      enabled: true
       autoScaling:
         maxReplicaCount: 1
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
