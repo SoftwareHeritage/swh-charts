@@ -1750,7 +1750,7 @@ indexers:
             debian-package: python3-magic
         write_batch_size: 1000
     origin-intrinsic:
-      enabled: false
+      enabled: true
       autoScaling:
         maxReplicaCount: 1
       storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
