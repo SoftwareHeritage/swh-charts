@@ -2147,6 +2147,8 @@ indexers:
         batch_size: 200
       requestedCpu: 50m
       requestedMemory: 100Mi
+      limitedCpu: 200m
+      limitedMemory: 256Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
