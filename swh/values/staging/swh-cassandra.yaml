@@ -344,6 +344,7 @@ loaders:
           medium: Memory
           sizeLimit: 15Gi
     git-pypy:
+      enabled: false
       image: swh_loader_git_pypy_image
       priorityClassName: low-workload
       maxTasksPerChild: 1000
