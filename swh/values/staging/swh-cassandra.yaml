@@ -2155,7 +2155,7 @@ indexers:
           version: 0.0.2
           configuration: {}
       autoScaling:
-        maxReplicaCount: 6
+        maxReplicaCount: 4
     extrinsic:
       enabled: true
       indexer_type: extrinsic_metadata
