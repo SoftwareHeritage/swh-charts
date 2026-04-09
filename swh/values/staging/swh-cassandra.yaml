@@ -2109,6 +2109,7 @@ indexers:
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     # content-mimetype:
+    #   enabled: false
     #   indexer_type: content_mimetype
     #   consumerGroup: swh.indexer.journal_client.content_mimetype
     #   prefix: swh.journal.objects
@@ -2124,6 +2125,7 @@ indexers:
     #   autoScaling:
     #     maxReplicaCount: 2
     # content-fossology-license:
+    #   enabled: false
     #   indexer_type: content_fossology_license
     #   consumerGroup: swh.indexer.journal_client.content_fossology_license
     #   prefix: swh.journal.objects
@@ -2138,6 +2140,7 @@ indexers:
     #   autoScaling:
     #     maxReplicaCount: 2
     # origin-extrinsic:
+    #   enabled: false
     #   indexer_type: extrinsic_metadata
     #   consumerGroup: swh.indexer.journal_client.extrinsic_metadata
     #   prefix: swh.journal.objects
@@ -2149,6 +2152,7 @@ indexers:
     #   autoScaling:
     #     maxReplicaCount: 2
     origin-intrinsic:
+      enabled: true
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
@@ -2163,6 +2167,7 @@ indexers:
       autoScaling:
         maxReplicaCount: 6
     extrinsic:
+      enabled: true
       indexer_type: extrinsic_metadata
       journalClientOverrides:
         group_id: swh-archive-stg-swh.indexer.journal_client.extrinsic_metadata
