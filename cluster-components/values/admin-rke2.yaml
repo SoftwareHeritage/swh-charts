@@ -192,4 +192,16 @@ openbao:
         - cnpg
         - rabbitmq
         - rook-ceph
-
+    archive-staging-rke2:
+      url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-9n5h9nrf
+      namespacesToManageInOpenbaoClientCluster:
+        - cattle-monitoring-system
+        - cert-manager
+        - cnpg
+        - cnpg-next-version
+        - metallb
+        - svix-server
+        - swh
+        - swh-cassandra
+        - swh-cassandra-next-version
+        - rook-ceph

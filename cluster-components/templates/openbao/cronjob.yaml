@@ -86,5 +86,5 @@ spec:
               secretName: {{ $clusterTargetName }}-cluster-config
           {{- end }}
           restartPolicy: OnFailure
-{{- end }}
+{{ end }}
 {{- end }}
