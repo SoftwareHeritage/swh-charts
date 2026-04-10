@@ -313,6 +313,8 @@ web:
                 pathType: ImplementationSpecific
                 port: 80
           authenticated:
+            extraAnnotations:
+              nginx.ingress.kubernetes.io/use-regex: "true"
             paths:
               - path: /api/1/entity/
               - path: /api/1/content/[^/]+/symbol/
