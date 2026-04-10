@@ -93,7 +93,6 @@ data:
 
     # The default luigi task to generate the compressed graph
     graph_generation_task=CompressGraph
-    format="orc"
 
     EXTRA_CLI_FLAGS=()
 
@@ -139,9 +138,6 @@ data:
             -- \
             --workers ${nb_workers} \
             --scheduler-url "${LUIGI_SCHEDULER_URL}" \
-            --ExportGraph-export-name "${GRAPH_DATASET_NAME}" \
-            --ExportGraph-formats "${format}" \
-            --UploadExportToS3-formats ${format} \
             --LocalExport-export-task-type ExportGraph \
             --ExportGraph-config-file "${SWH_CONFIG_FILENAME}" \
             --ExportGraph-process "${NB_PROCESSES}" \
