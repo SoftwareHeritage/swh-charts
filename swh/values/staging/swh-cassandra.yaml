@@ -2108,23 +2108,6 @@ indexers:
   objstorageConfigurationRef: remoteReadOnlyObjstorageConfiguration
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
-    origin-intrinsic:
-      enabled: true
-      indexer_type: origin_intrinsic_metadata
-      journalClientOverrides:
-        group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
-        batch_size: 200
-      requestedCpu: 200m
-      requestedMemory: 200Mi
-      limitedCpu: 400m
-      limitedMemory: 512Mi
-      extraConfig:
-        tools:
-          name: swh-metadata-detector
-          version: 0.0.2
-          configuration: {}
-      autoScaling:
-        maxReplicaCount: 4
     extrinsic:
       enabled: true
       indexer_type: extrinsic_metadata
@@ -2143,6 +2126,23 @@ indexers:
           configuration: {}
       autoScaling:
         maxReplicaCount: 6
+    origin-intrinsic:
+      enabled: true
+      indexer_type: origin_intrinsic_metadata
+      journalClientOverrides:
+        group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
+        batch_size: 200
+      requestedCpu: 200m
+      requestedMemory: 200Mi
+      limitedCpu: 400m
+      limitedMemory: 512Mi
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+      autoScaling:
+        maxReplicaCount: 4
 
 checkerDeposit:
   enabled: true
