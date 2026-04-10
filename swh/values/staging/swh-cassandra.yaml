@@ -2132,8 +2132,10 @@ indexers:
         group_id: swh-archive-stg-swh.indexer.journal_client.extrinsic_metadata
         prefix: swh.journal.objects
         batch_size: 200
-      requestedCpu: 50m
-      requestedMemory: 100Mi
+      requestedCpu: 500m
+      requestedMemory: 256Mi
+      limitedCpu: 750m
+      limitedMemory: 512Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
