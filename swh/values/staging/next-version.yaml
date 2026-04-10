@@ -1233,7 +1233,7 @@ azureDepositConfiguration:
   content_encoding: ""
   secrets:
     ACCOUNT_KEY:
-      secretKeyRef: swh-deposit-azure-secret
+      secretKeyRef: swh-deposit-azure-secret-next-version
       secretKeyName: azure-swh-deposit-key
 
 azureCacheConfiguration:
