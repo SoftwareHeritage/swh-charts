@@ -318,6 +318,7 @@ web:
             paths:
               - path: /api/1/entity/
               - path: /api/1/content/[^/]+/symbol/
+                pathType: ImplementationSpecific
             # auth-file with authentication
             authentication: swh/web-auth-secrets
       databaseConfigurationRef: postgresqlWebConfiguration
