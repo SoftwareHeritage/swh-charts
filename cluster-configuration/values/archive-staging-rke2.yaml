@@ -115,3 +115,9 @@ pgbouncer:
       port: 5432
       dbname: swh-web
       auth_user: postgres
+
+vaultSecretsOperator:
+  enabled: true
+  defaultVaultConnection:
+    enabled: true
+    address: https://openbao.internal.admin.swh.network
