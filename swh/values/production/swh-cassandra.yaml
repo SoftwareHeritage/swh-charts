@@ -1761,10 +1761,10 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 200
-      requestedCpu: 200m
+      requestedCpu: 500m
       requestedMemory: 200Mi
-      limitedCpu: 400m
-      limitedMemory: 512Mi
+      limitedCpu: 750m
+      limitedMemory: 768Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
