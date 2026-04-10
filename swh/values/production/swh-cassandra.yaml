@@ -1750,7 +1750,7 @@ indexers:
           version: 0.0.2
           configuration: {}
       autoScaling:
-        maxReplicaCount: 18
+        maxReplicaCount: 12
     origin-intrinsic:
       enabled: true
       autoScaling:
