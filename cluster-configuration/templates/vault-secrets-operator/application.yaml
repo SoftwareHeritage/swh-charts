@@ -31,13 +31,13 @@ spec:
           hostAliases:
             {{- toYaml $hostAliases | nindent 12 }}
           {{- end }}
+          {{- if $affinity }}
+          affinity:
+            {{- toYaml $affinity | nindent 12 }}
+          {{- end }}
         {{- if $defaultVaultConnection.enabled }}
         defaultVaultConnection:
           {{- toYaml $defaultVaultConnection | nindent 10 }}
-        {{- end }}
-        {{- if $affinity }}
-        affinity:
-          {{- toYaml $affinity | nindent 10 }}
         {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
