@@ -7,6 +7,7 @@
 {{- $logLevel := .Values.vaultSecretsOperator.logLevel | default "info" -}}
 {{- $hostAliases := .Values.vaultSecretsOperator.hostAliases | default list -}}
 {{- $defaultVaultConnection := .Values.vaultSecretsOperator.defaultVaultConnection -}}
+{{- $affinity := .Values.vaultSecretsOperator.affinity -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -33,6 +34,10 @@ spec:
         {{- if $defaultVaultConnection.enabled }}
         defaultVaultConnection:
           {{- toYaml $defaultVaultConnection | nindent 10 }}
+        {{- end }}
+        {{- if $affinity }}
+        affinity:
+          {{- toYaml $affinity | nindent 10 }}
         {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
