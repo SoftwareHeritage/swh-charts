@@ -1178,6 +1178,10 @@ indexers:
           name: swh-metadata-detector
           version: 0.0.2
           configuration: {}
+        batch_size:
+          origin: 10
+          revision: 10
+          release: 10
       autoScaling:
         maxReplicaCount: 1
     extrinsic:
