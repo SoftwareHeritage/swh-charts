@@ -1761,6 +1761,10 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 100
+        # To try and resolve warning about "Application maximum poll interval (300000ms)
+        # exceeded by 399ms (adjust max.poll.interval.ms for"
+        # long-running message processing): leaving group
+        max.poll.interval.ms: 600000
       requestedCpu: 1500m
       requestedMemory: 1536Mi
       limitedCpu: 2000m
