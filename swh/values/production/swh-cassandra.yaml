@@ -1762,9 +1762,9 @@ indexers:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 200
       requestedCpu: 500m
-      requestedMemory: 200Mi
-      limitedCpu: 750m
-      limitedMemory: 768Mi
+      requestedMemory: 512Mi
+      limitedCpu: 1500m
+      limitedMemory: 2048Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
