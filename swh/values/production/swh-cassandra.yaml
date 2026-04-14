@@ -1761,9 +1761,9 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 100
-      requestedCpu: 500m
-      requestedMemory: 512Mi
-      limitedCpu: 1500m
+      requestedCpu: 1500m
+      requestedMemory: 1536Mi
+      limitedCpu: 2000m
       limitedMemory: 2048Mi
       extraConfig:
         tools:
