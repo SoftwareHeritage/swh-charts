@@ -1740,9 +1740,9 @@ indexers:
         group_id: swh-archive-prod-swh.indexer.journal_client.extrinsic_metadata
         prefix: swh.journal.objects
         batch_size: 200
-      requestedCpu: 500m
-      requestedMemory: 768Mi
-      limitedCpu: 750m
+      requestedCpu: 750m
+      requestedMemory: 512Mi
+      limitedCpu: 1000m
       limitedMemory: 1024Mi
       extraConfig:
         tools:
