@@ -1760,7 +1760,7 @@ indexers:
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
-        batch_size: 200
+        batch_size: 100
       requestedCpu: 500m
       requestedMemory: 512Mi
       limitedCpu: 1500m
@@ -1771,9 +1771,9 @@ indexers:
           version: 0.0.2
           configuration: {}
         batch_size:
-          origin: 10
-          revision: 10
-          release: 10
+          origin: 100
+          revision: 25
+          release: 25
 
 cookers:
   enabled: true
