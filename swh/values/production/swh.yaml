@@ -58,7 +58,7 @@ graphql:
         threads: 2
         timeout: 3600
       storageConfigurationRef: remoteROStorageConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       introspection: yes
       hosts:
         - webapp-postgresql.internal.softwareheritage.org
@@ -322,7 +322,7 @@ web:
             # auth-file with authentication
             authentication: swh/web-auth-secrets
       databaseConfigurationRef: postgresqlWebConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       storageConfigurationRef: remoteStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration

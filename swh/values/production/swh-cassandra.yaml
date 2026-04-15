@@ -470,7 +470,7 @@ web:
             authentication: swh-cassandra/web-auth-secrets
       statusRef: SwhStatusUrl
       databaseConfigurationRef: postgresqlWebConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       storageConfigurationRef: remoteStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
@@ -550,7 +550,7 @@ web:
               - 192.168.50.0/24 # for blackbox monitoring
               - 192.168.101.0/24 # vpn network
       databaseConfigurationRef: postgresqlWebConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       storageConfigurationRef: rpcROStorageService
       vaultConfigurationRef: remoteVaultConfiguration
@@ -620,7 +620,7 @@ web:
               # svix-server endpoints requires TLS connections
               - 128.93.166.2/32
       databaseConfigurationRef: postgresqlWebConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
       storageConfigurationRef: remoteStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
@@ -660,7 +660,7 @@ graphql:
         workers: 2
         timeout: 3600
       storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       introspection: yes
       hosts:
         - webapp-cassandra.internal.softwareheritage.org
@@ -692,7 +692,7 @@ graphql:
         timeout: 3600
       replicas: 2
       storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchROConfiguration
       introspection: yes
       hosts:
         - archive.softwareheritage.org
@@ -1459,10 +1459,9 @@ search:
     #   cpuPercentageUsage: 100
     deployments:
       # instance-name (will be suffixed by -rpc)
-      search:
+      search-ro:
         hosts:
-          - search-rpc-ingress-swh-cassandra
-          - search.internal.softwareheritage.org
+          - search-ro-rpc-ingress-swh-cassandra
         ingress:
           enabled: true
           # Optional: the ingress classname to use
@@ -1479,7 +1478,34 @@ search:
             default:
               paths:
                 - path: /
-            read-only:
+                  pathType: Exact
+                - path: /origin/search
+                  pathType: Exact
+                - path: /origin/get
+                  pathType: Exact
+                - path: /visit_types_count
+                  pathType: Exact
+                - path: /origin-read/
+              extraWhitelistSourceRange:
+                # vpn access
+                - 192.168.101.0/24
+      search-rw:
+        hosts:
+          - search-rw-rpc-ingress-swh-cassandra
+        ingress:
+          enabled: true
+          # Optional: the ingress classname to use
+          # className: nginx
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+            nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+            nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+            nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+          # Default allowed ip ranges that can be extended per ingress definitions paths
+          whitelistSourceRangeRef: internalNetworkRanges
+          endpoints:
+            default:
               paths:
                 - path: /
                   pathType: Exact
@@ -1497,7 +1523,7 @@ search:
   journalClients:
     enabled: true
     priorityClassName: normal-workload
-    searchConfigurationRef: remoteSearchConfiguration
+    searchConfigurationRef: remoteSearchRWConfiguration
     storageConfigurationRef: remoteStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
@@ -3024,7 +3050,7 @@ alter:
   journalWriterMirrorConfigurationRef: journalWriterMirrorConfiguration
   removalSearches:
     search:
-      searchConfigurationRef: remoteSearchConfiguration
+      searchConfigurationRef: remoteSearchRWConfiguration
   removalStorages:
     cassandra:
       storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration

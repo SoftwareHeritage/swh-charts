@@ -704,9 +704,14 @@ remoteROCassandraRpcIngressStorageConfiguration:
   url: http://storage-cassandra-read-only-rpc-ingress
   enable_requests_retry: true
 
-remoteSearchConfiguration:
+remoteSearchROConfiguration:
   cls: remote
-  url: http://search-rpc-ingress-swh-cassandra
+  url: http://search-rpc-ro-ingress-swh-cassandra
+  enable_requests_retry: true
+
+remoteSearchRWConfiguration:
+  cls: remote
+  url: http://search-rpc-rw-ingress-swh-cassandra
   enable_requests_retry: true
 
 remoteSchedulerConfiguration:
@@ -1025,11 +1030,11 @@ inboundEmailConfiguration:
 externalServices:
   enabled: true
   services:
-    search:
-      internalName: search-rpc-ingress
+    search-swh-ro-cassandra:
+      internalName: search-rpc-ro-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    search-swh-cassandra:
-      internalName: search-rpc-ingress-swh-cassandra
+    search-swh-rw-cassandra:
+      internalName: search-rpc-rw-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-azure-read-only:
       internalName: storage-azure-read-only-rpc-ingress
