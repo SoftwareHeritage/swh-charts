@@ -1769,6 +1769,9 @@ indexers:
         # (300000ms) exceeded by 399ms (adjust max.poll.interval.ms for" long-running
         # message processing): leaving group
         max.poll.interval.ms: 1200000
+        object_types:
+          - origin
+          - origin_visit_status
       requestedCpu: 1500m
       requestedMemory: 1536Mi
       limitedCpu: 2000m
