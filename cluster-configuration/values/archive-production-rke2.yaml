@@ -109,3 +109,18 @@ pgbouncer:
       port: 5432
       dbname: swh-scheduler
       auth_user: postgres
+
+vaultSecretsOperator:
+  enabled: true
+  defaultVaultConnection:
+    enabled: true
+    address: https://openbao.internal.admin.swh.network
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: vault-secrets-operator
+            operator: In
+            values:
+            - "true"
