@@ -207,4 +207,13 @@ openbao:
         - swh-cassandra
         - swh-cassandra-next-version
         - rook-ceph
-
+    archive-production-rke2:
+      url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-75xcg59s
+      namespacesToManageInOpenbaoClientCluster:
+        - cassandra
+        - cattle-monitoring-system
+        - cert-manager
+        - rook-ceph
+        - svix-server
+        - swh
+        - swh-cassandra
