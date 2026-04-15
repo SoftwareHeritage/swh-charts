@@ -2747,12 +2747,6 @@ rpcLocalRustWithGrpcGraphConfiguration:
     port: 50091
 
 # The rpc graph instance will communicate with another grpc instance
-rpcWithRemoteGrpc20251008GraphConfiguration:
-  cls: remote
-  url: graph-grpc-20251008:50091
-  grpc_server:
-    port: 80
-
 rpcWithRemoteGrpc20260302GraphConfiguration:
   cls: remote
   url: graph-grpc-20260302:50091
@@ -2786,27 +2780,6 @@ volumes:
                 operator: In
                 values:
                 - rancher-node-highmem03
-    graph-20251008-persistent-local-pv:
-      enabled: true
-      appName: graph-grpc-20251008
-      spec:
-        capacity:
-          storage: 1Gi
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        persistentVolumeReclaimPolicy: Retain
-        storageClassName: local-storage
-        local:
-          path: /srv/softwareheritage/ssd/datasets/2025-10-08/compressed
-        nodeAffinity:
-          required:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - rancher-node-highmem01
     comp-graph-dataset-gen-20251128-persistent-local-pv:
       enabled: true
       appName: datasets-2025-11-28
@@ -2896,29 +2869,6 @@ volumes:
         resources:
           requests:
             storage: 30Gi
-    graph-20251008-persistent-pvc:
-      enabled: true
-      appName: graph-grpc-20251008
-      spec:
-        resources:
-          requests:
-            storage: 1Gi
-        volumeMode: Filesystem
-        volumeName: graph-20251008-persistent-local-pv
-        storageClassName: local-storage
-        accessModes:
-        - ReadWriteOnce
-    graph-20251008-inmemory-pvc:
-      enabled: true
-      appName: graph-grpc-20251008
-      spec:
-        storageClassName: local-path
-        volumeMode: Filesystem
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
     comp-graph-dataset-gen-20251128-persistent-local-pvc:
       enabled: true
       appName: datasets-2025-11-28
@@ -2993,65 +2943,6 @@ graph:
   enabled: true
   imageVersion: "20260212.1"
   deployments:
-    grpc-20251008:
-      enabled: true
-      type: grpc
-      port: 50091
-      requestedMemory: 400Gi
-      graphConfigurationRef: plainGrpcGraphConfiguration
-      dataset:
-        name: 2025-10-08
-      startService: true
-      prepareMemoryVolume: true
-      extraVolumes:
-        graph-20251008-persistent:
-          mountPath: /srv/dataset/2025-10-08/compressed
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-20251008-persistent-pvc
-        graph-20251008-inmemory:
-          mountPath: /srv/graph
-          volumeDefinition:
-            persistentVolumeClaim:
-              claimName: graph-20251008-inmemory-pvc
-      hosts:
-        - graph-grpc-20251008-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: internalNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
-    rpc-20251008:
-      enabled: true
-      type: rpc
-      port: 5009
-      graphConfigurationRef: rpcWithRemoteGrpc20251008GraphConfiguration
-      startService: true
-      hosts:
-        - graph-rpc-20251008-ingress
-      ingress:
-        enabled: true
-        whitelistSourceRangeRef: internalNetworkRanges
-        extraAnnotations:
-          nginx.ingress.kubernetes.io/proxy-body-size: 4G
-          nginx.ingress.kubernetes.io/proxy-buffering: "on"
-          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-        endpoints:
-          default:
-            paths:
-              - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     grpc-20260302:
       enabled: true
       type: grpc
