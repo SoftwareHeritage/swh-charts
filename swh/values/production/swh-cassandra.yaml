@@ -1768,7 +1768,7 @@ indexers:
         # This is adapted to resolve warning about "Application maximum poll interval
         # (300000ms) exceeded by 399ms (adjust max.poll.interval.ms for" long-running
         # message processing): leaving group
-        max.poll.interval.ms: 600000
+        max.poll.interval.ms: 1200000
       requestedCpu: 1500m
       requestedMemory: 1536Mi
       limitedCpu: 2000m
