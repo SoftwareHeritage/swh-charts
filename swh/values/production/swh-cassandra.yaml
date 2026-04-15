@@ -1769,12 +1769,6 @@ indexers:
         # (300000ms) exceeded by 399ms (adjust max.poll.interval.ms for" long-running
         # message processing): leaving group
         max.poll.interval.ms: 600000
-        # The maximum number of records returned in a single call to poll(). Note, that
-        # max.poll.records does not impact the underlying fetching behavior.
-        # Default is 500.
-        # This is adapted to reduce the amount of work per poll, shortening the
-        # longest-running batch.
-        max.poll.records: 100
       requestedCpu: 1500m
       requestedMemory: 1536Mi
       limitedCpu: 2000m
