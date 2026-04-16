@@ -1760,7 +1760,7 @@ indexers:
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
-        batch_size: 100
+        batch_size: 50
         # The maximum delay between invocations of poll() when using consumer group
         # management. This places an upper bound on the amount of time that the consumer
         # can be idle before fetching more records.
@@ -1782,7 +1782,7 @@ indexers:
           version: 0.0.2
           configuration: {}
         batch_size:
-          origin: 100
+          origin: 50
           revision: 25
           release: 25
 
