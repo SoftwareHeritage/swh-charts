@@ -926,7 +926,7 @@ storage:
     cassandra-read-only:
       autoScaling:
         type: keda
-        minReplicaCount: 3
+        minReplicaCount: 4
         maxReplicaCount: 10
         # add margin to avoid any error if there is a peak of requests
         factor: 1.5
