@@ -275,12 +275,13 @@ storage:
             paths:
               - path: /
             authentication: swh-cassandra/ingress-storage-cassandra-ro-auth-secrets
-    # Use cassandra readonly instance
+    # Use cassandra readonly instance (web-cassandra, graphql instances and indexer
+    # intrinsic use it)
     cassandra-readonly-internal:
       enabled: true
       autoScaling:
-        minReplicaCount: 1
-        maxReplicaCount: 3
+        minReplicaCount: 2
+        maxReplicaCount: 4
         cpuPercentageUsage: 150
       requestedCpu: 500m
       requestedMemory: 1.5Gi
@@ -298,6 +299,7 @@ storage:
           default:
             paths:
               - path: /
+    # Most of other workloads uses this instance (journal client, vault, etc...)
     cassandra-azure-readonly:
       enabled: true
       gunicorn:
