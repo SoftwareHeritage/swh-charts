@@ -65,21 +65,10 @@ scrubberObjstorageJournalClientConfiguration:
       secretKeyRef: swh-archive-broker-secret
       secretKeyName: BROKER_USER_PASSWORD
 
-# (Not so) readonly (namespace local) storage
-# TODO: Use a true read-only storage
-rpcROStorageService:
-  cls: remote
-  url: http://storage-cassandra-read-only-rpc-ingress
-  enable_requests_retry: true
-
 remoteStorageConfiguration:
   cls: remote
   url: http://storage-azure-read-only-rpc-ingress-swh-cassandra
   enable_requests_retry: true
-
-rpcROStorageCassandraWithRetryConfiguration:
-  pipelineStepsRef: retryStoragePipelineSteps
-  storageConfigurationRef: rpcROStorageService
 
 # Replayer kafka -> cassandra will be disabled once we migrate to cassandra
 # as the main backend.
@@ -547,7 +536,7 @@ web:
       databaseConfigurationRef: postgresqlWebConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       schedulerConfigurationRef: remoteSchedulerConfiguration
-      storageConfigurationRef: rpcROStorageService
+      storageConfigurationRef: remoteROCassandraRpcIngressStorageConfiguration
       vaultConfigurationRef: remoteVaultConfiguration
       indexerStorageConfigurationRef: remoteReadOnlyIndexerStorageConfiguration
       countersConfigurationRef: remoteCountersConfiguration
@@ -654,7 +643,7 @@ graphql:
         threads: 4
         workers: 2
         timeout: 3600
-      storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
+      storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
       hosts:
@@ -686,7 +675,7 @@ graphql:
         threads: 4
         timeout: 3600
       replicas: 2
-      storageConfigurationRef: rpcROStorageCassandraWithRetryConfiguration
+      storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
       searchConfigurationRef: remoteSearchConfiguration
       introspection: yes
       hosts:
