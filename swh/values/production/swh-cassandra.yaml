@@ -255,11 +255,6 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
 
-readOnlyCassandraStorageConfiguration:
-  pipelineStepsRef: maskingStoragePipelineSteps
-  storageConfigurationRef: cassandraROStorage
-  objstorageConfigurationRef: roObjstorageBestEffortConfiguration
-
 storage:
   enabled: true
   gunicorn:
@@ -327,7 +322,7 @@ storage:
         factor: 1.5
       requestedCpu: 500m
       requestedMemory: 1.5Gi
-      storageConfigurationRef: readOnlyCassandraStorageConfiguration
+      storageConfigurationRef: cassandraReadOnlyStorageConfiguration
       hosts:
         - storage-azure-read-only-rpc-ingress-swh-cassandra
         - storage-cassandra-ro.internal.softwareheritage.org
