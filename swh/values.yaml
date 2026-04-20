@@ -1595,47 +1595,47 @@ podPriority:
     # deployment). Because priority have a cluster-wide visibility (independently from
     # its namespace).
     system:
-      range: 50000-100000
-      value: 75000
+      range: 50001-55000
+      value: 52500
       description: Highest pod priorities (ingress, operator, collector, controller)
     storages:
-      range: 25000-26000
-      value: 25500
+      range: 45001-50000
+      value: 47500
       description: Backend storages used by other services (memcached, redis, ...)
     frontend-rpc:
-      range: 23000-24000
-      value: 24500
+      range: 40001-45000
+      value: 42500
       description: Frontend or RPC services (swh-web, swh-graphql, swh-storage, ...)
     frontend-rpc-workload:
-      range: 22000-23000
-      value: 22500
+      range: 35000-40000
+      value: 37500
       description: Frontend or RPC services workload (checker-deposit, loader-deposit, swh-search-journalclient, ...)
     high-workload:
-      range: 20000-21000
-      value: 20500
+      range: 30001-35000
+      value: 32500
       description: High priority workload (save-code-now, add-forge-now, graph computations, ...)
     local-workload:
-      range: 10000-15000
-      value: 12500
+      range: 25001-30000
+      value: 27500
     normal-workload:
-      range: 7000-8000
-      value: 6500
+      range: 20001-25000
+      value: 22500
       description: Normal workload (vault cooker workers, listers, most loaders, ...)
     tools:
-      range: 0--100
-      value: -50
+      range: 150001-20000
+      value: 17500
       description: Tooling helper (swh-toolbox)
     low-workload:
-      range: -5000--6000
-      value: -5500
+      range: 10001-15000
+      value: 12500
       description: Normal workload (vault cooker workers, listers, most loaders, ...)
     background-storage:
-      range: -8000--9000
-      value: -8500
+      range: 5001-10000
+      value: 7500
       description: Background storage maintenance (scrubber, ...)
     background-workload:
-      range: -10000--11000
-      value: -10500
+      range: 1-5000
+      value: 2500
       description: Background workload (replayers cassandra & postgres, ...)
 
 webhooks:
