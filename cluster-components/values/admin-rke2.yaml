@@ -218,3 +218,15 @@ openbao:
         - swh
         - swh-cassandra
         - cnpg
+    admin-rke2:
+      url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-682nvssh
+      namespacesToManageInOpenbaoClientCluster:
+       - cattle-monitoring-system
+       - cert-manager
+       - cnpg
+       - minio
+       - netbox
+       - openbao
+       - renovate
+       - rook-ceph
+       - sccache
