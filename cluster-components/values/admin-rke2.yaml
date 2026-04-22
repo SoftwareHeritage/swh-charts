@@ -218,4 +218,3 @@ openbao:
         - swh
         - swh-cassandra
         - cnpg
-        - swh-cassandra
