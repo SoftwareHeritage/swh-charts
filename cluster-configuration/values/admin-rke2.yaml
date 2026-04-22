@@ -113,3 +113,18 @@ openbao:
     host: openbao.internal.admin.swh.network
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
+
+vaultSecretsOperator:
+  enabled: true
+  defaultVaultConnection:
+    enabled: true
+    address: https://openbao.internal.admin.swh.network
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: vault-secrets-operator
+            operator: In
+            values:
+            - "true"
