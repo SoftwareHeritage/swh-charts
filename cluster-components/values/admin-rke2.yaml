@@ -230,3 +230,10 @@ openbao:
        - renovate
        - rook-ceph
        - sccache
+    gitlab-staging:
+      url: https://192.168.200.13
+      namespacesToManageInOpenbaoClientCluster:
+       - cert-manager
+       - gitlab-runner
+       - gitlab-system
+       - monitoring
