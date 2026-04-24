@@ -237,3 +237,4 @@ openbao:
        - gitlab-runner
        - gitlab-system
        - monitoring
+       - cnpg
