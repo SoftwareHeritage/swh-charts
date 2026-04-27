@@ -70,4 +70,9 @@ spec:
     automated:
       prune: {{ $prune }}
       selfHeal: {{ $selfHeal }}
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      jqPathExpressions:
+        - '.webhooks[]?.clientConfig.caBundle'
 {{ end }}
