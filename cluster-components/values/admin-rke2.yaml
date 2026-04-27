@@ -232,6 +232,10 @@ openbao:
        - sccache
     gitlab-staging:
       url: https://192.168.200.13
+      hostAliases:
+        - ip: "192.168.200.13"
+          hostnames:
+            - "euwest-gitlab-staging-89229db0.dd8c7b66-1c78-4e28-9fe3-6f454883861d.privatelink.westeurope.azmk8s.io"
       namespacesToManageInOpenbaoClientCluster:
        - cert-manager
        - gitlab-runner

@@ -1,7 +1,7 @@
 {{- if .Values.openbao.enabled }}
 {{- $namespace := .Values.openbao.namespace -}}
 {{- $endpoint := .Values.openbao.endpoint -}}
-{{- range $clusterTargetName, $clusterTargetConfig := .Values.openbao.deployments -}}
+{{- range $clusterTargetName, $clusterTargetConfig := .Values.openbao.deployments }}
 {{- $clusterUrl := $clusterTargetConfig.url -}}
 {{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
 {{- $debug := $clusterTargetConfig.debug | default $.Values.openbao.debug | default false -}}
@@ -21,13 +21,17 @@ spec:
     spec:
       template:
         spec:
+          {{- if $clusterTargetConfig.hostAliases }}
+          hostAliases:
+{{ toYaml $clusterTargetConfig.hostAliases | nindent 12 }}
+          {{- end }}
           containers:
             - name: init-bao-cluster
               # FIXME: Use a dedicated docker image for this bao configuration, we do
               # not need the overall swh dependencies this image pulls
               image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
               command:
-              - /script/init-bao-cluster.sh
+                - /script/init-bao-cluster.sh
               env:
                 - name: OPENBAO_ENDPOINT
                   value: {{ $endpoint }}
@@ -62,29 +66,28 @@ spec:
                 - name: BAO_SCRIPT
                   value: /script/init_bao_cluster.py
               envFrom:
-                # Secrets (OPENBAO_DEFAULT_TOKEN)
                 - secretRef:
                     name: {{ $.Values.openbao.secretNameRef }}
               imagePullPolicy: IfNotPresent
               volumeMounts:
-              - name: bao-script-utils
-                mountPath: /script
-              {{- if not $inCluster }}
-              - name: kubeconfig
-                mountPath: "/opt/swh/.kube/config"
-                subPath: config
-                readOnly: true
-              {{- end }}
+                - name: bao-script-utils
+                  mountPath: /script
+                {{- if not $inCluster }}
+                - name: kubeconfig
+                  mountPath: "/opt/swh/.kube/config"
+                  subPath: config
+                  readOnly: true
+                {{- end }}
           volumes:
-          - name: bao-script-utils
-            configMap:
-              name: bao-script-utils
-              defaultMode: 0555
-          {{- if not $inCluster }}
-          - name: kubeconfig
-            secret:
-              secretName: {{ $clusterTargetName }}-cluster-config
-          {{- end }}
+            - name: bao-script-utils
+              configMap:
+                name: bao-script-utils
+                defaultMode: 0555
+            {{- if not $inCluster }}
+            - name: kubeconfig
+              secret:
+                secretName: {{ $clusterTargetName }}-cluster-config
+            {{- end }}
           restartPolicy: OnFailure
-{{ end }}
+{{- end }}
 {{- end }}
