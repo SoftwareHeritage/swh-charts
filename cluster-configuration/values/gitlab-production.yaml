@@ -25,7 +25,7 @@ vaultSecretsOperator:
   enabled: true
   defaultVaultConnection:
     enabled: true
-    address: https://openbao.internal.admin.swh.network
+    address: https://openbao.admin.swh.network
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
