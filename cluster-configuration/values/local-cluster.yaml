@@ -139,3 +139,9 @@ vaultSecretsOperator:
     hostnames:
     - openbao.local
 
+victorialogs:
+  storage:
+    retentionPeriod: 30d
+    replicaCount: 2
+    volumes:
+      size: 4G

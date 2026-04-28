@@ -210,3 +210,25 @@ vaultSecretsOperator:
   argocdApplication:
     selfHeal: true
     prune: false
+
+victorialogs:
+  enabled: false
+  namespace: victorialogs
+  version:  0.1.1
+  vmauth:
+    enabled: false
+  insert:
+    name: victorialogs-insert
+  select:
+    name: victorialogs-select
+    ingress:
+      enabled: false
+      # host:
+      # annotations:
+  storage:
+    name: victorialogs-storage
+    # retentionPeriod:
+    # replicaCount:
+    volumes: {}
+      # size:
+      # className:
