@@ -7,7 +7,6 @@
 {{- $logLevel := .Values.openbao.logLevel | default "info" -}}
 {{- $ingress := .Values.openbao.ingress -}}
 {{- $ingressEnabled := $ingress.enabled | default false -}}
-{{- $ingressHost := $ingress.host -}}
 {{- $ingressAnnotations := $ingress.annotations -}}
 {{- $openbaoServerType := .Values.openbao.serverType | default "ha" -}}
 {{- $openbaoReplicas := .Values.openbao.replicas | default 3 -}}
@@ -54,11 +53,17 @@ spec:
               {{- toYaml $ingressAnnotations | nindent 14 }}
             {{- end }}
             hosts:
+            {{- range $ingressHost := $ingress.hosts }}
             - host: {{ $ingressHost }}
+            {{- end }}
+            {{- if $ingress.tls }}
             tls:
             - secretName: openbao-tls
               hosts:
+              {{- range $ingressHost := $ingress.hosts }}
               - {{ $ingressHost }}
+              {{- end }}
+            {{- end }}
           {{- end }}
 
   destination:

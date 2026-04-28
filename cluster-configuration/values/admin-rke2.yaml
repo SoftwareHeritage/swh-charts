@@ -110,9 +110,12 @@ openbao:
   serverType: ha
   ingress:
     enabled: true
-    host: openbao.internal.admin.swh.network
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
+    tls: true
+    hosts:
+      - openbao.internal.admin.swh.network
+      - openbao.admin.swh.network
 
 vaultSecretsOperator:
   enabled: true

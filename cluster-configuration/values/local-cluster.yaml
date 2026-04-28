@@ -124,7 +124,8 @@ openbao:
   # Declare the host ingress by which openbao clients will connect
   ingress:
     enabled: true
-    host: openbao.local
+    hosts:
+      - openbao.local
   serverType: dev
 
 vaultSecretsOperator:
