@@ -232,6 +232,7 @@ openbao:
        - sccache
     gitlab-staging:
       url: https://192.168.200.13
+      endpoint: https://openbao.admin.swh.network
       # TODO: import TLS certificates for the client cluster and provision them in the container
       noVerifySSL: true
       namespacesToManageInOpenbaoClientCluster:

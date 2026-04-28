@@ -1,7 +1,7 @@
 {{- if .Values.openbao.enabled }}
 {{- $namespace := .Values.openbao.namespace -}}
-{{- $endpoint := .Values.openbao.endpoint -}}
 {{- range $clusterTargetName, $clusterTargetConfig := .Values.openbao.deployments -}}
+{{- $endpoint := $clusterTargetConfig.endpoint | default $.Values.openbao.endpoint -}}
 {{- $clusterUrl := $clusterTargetConfig.url -}}
 {{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
 {{- $debug := $clusterTargetConfig.debug | default $.Values.openbao.debug | default false -}}
