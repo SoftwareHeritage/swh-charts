@@ -41,7 +41,7 @@ swh_loader_metadata_image_version: '20260416.1'
 swh_loader_package_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_package
 swh_loader_package_image_version: '20260416.1'
 swh_loader_savecodenow_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_savecodenow
-swh_loader_savecodenow_image_version: '20260416.1'
+swh_loader_savecodenow_image_version: '20260428.1'
 swh_loader_svn_image: container-registry.softwareheritage.org/swh/infra/swh-apps/loader_svn
 swh_loader_svn_image_version: '20260416.1'
 swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage
