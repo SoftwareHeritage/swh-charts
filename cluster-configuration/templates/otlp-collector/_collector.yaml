@@ -6,6 +6,10 @@
 {{- $logs_swh := .Values.otlpCollector.indexes.swh | default "swh-logs" -}}
 {{- $logs_system := .Values.otlpCollector.indexes.system | default "system-logs" -}}
 {{- $activate_debug := .Values.otlpCollector.debug -}}
+{{- $activate_es_export := .Values.otlpCollector.endpoints }}
+{{- $activate_vl_export := .Values.otlpCollector.victorialogsExport }}
+{{- $vl_otlp_endpoint := printf "http://%s.%s.svc.cluster.local:9481/insert/opentelemetry" .Values.victorialogs.insert.name .Values.victorialogs.namespace }}
+
 ---
 mode: daemonset
 presets:
@@ -76,6 +80,7 @@ config:
     logging/debug:
       loglevel: debug
     {{- end }}
+    {{- if $activate_es_export }}
     elasticsearch/swh-log:
       endpoints:
         {{- toYaml .Values.otlpCollector.endpoints | nindent 8 }}
@@ -95,6 +100,15 @@ config:
       logs_dynamic_index:
         enabled: true
       timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
+    {{- end }}
+    {{- if $activate_vl_export }}
+    otlphttp/swh-log-vl:
+      endpoint: {{ $vl_otlp_endpoint }}
+      timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
+    otlphttp/system-log-vl:
+      endpoint: {{ $vl_otlp_endpoint }}
+      timeout: {{ .Values.otlpCollector.resources.timeout | default "10s" }}
+    {{- end }}
 
   extensions:
     # The health_check extension is mandatory for this chart. Without the health_check
@@ -308,7 +322,12 @@ config:
           - attributes/regexp_insert
           - attributes/clean-records
         exporters:
+          {{- if $activate_es_export }}
           - elasticsearch/system-log
+          {{- end }}
+          {{- if $activate_vl_export }}
+          - otlphttp/system-log-vl
+          {{- end }}
       logs/swh:
         receivers:
           - filelog/swh
@@ -320,7 +339,12 @@ config:
           - attributes/regexp_insert
           - attributes/clean-records
         exporters:
+          {{- if $activate_es_export }}
           - elasticsearch/swh-log
+          {{- end }}
+          {{- if $activate_vl_export }}
+          - otlphttp/swh-log-vl
+          {{- end }}
       # inhibit pipelines
       logs: null
       metrics: null

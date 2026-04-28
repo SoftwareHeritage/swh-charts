@@ -75,6 +75,7 @@ otlpCollector:
   #   memory: 2Gi
   #   batch: 10
   #   timeout: 10s
+  victorialogsExport: false  # export to cluster-local victorialogs
   # endpoints:
   #   - http://esnode1.internal.softwareheritage.org:9200
   #   - http://esnode2.internal.softwareheritage.org:9200
