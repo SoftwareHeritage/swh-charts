@@ -38,7 +38,7 @@ spec:
                 - name: MOUNT
                   value: secrets-{{ $clusterTargetName }}
                 - name: POLICY_NAME
-                  value: openbao-policy
+                  value: openbao-policy-{{ $clusterTargetName }}
                 - name: CLUSTER_TARGET_URL
                   value: {{ $clusterTargetConfig.url }}
                 - name: CLUSTER_TARGET_SECRET_NAME

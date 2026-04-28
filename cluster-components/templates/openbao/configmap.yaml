@@ -404,7 +404,7 @@ data:
     # FIXME: For the migration period, let's add the create/update permissions.
     # Tol remove once the migration is done.
     cat > "${POLICY_FILE}" << EOF
-      path "${MOUNT}/data/*" {
+    path "${MOUNT}/data/*" {
       capabilities = ["list", "read", "create", "update"]
     }
 
