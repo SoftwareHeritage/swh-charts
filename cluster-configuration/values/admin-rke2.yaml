@@ -141,3 +141,10 @@ victorialogs:
     volumes:
       size: 50G
       className: ceph-rbd
+  select:
+    ingress:
+      enabled: true
+      host: victorialogs.internal.admin.swh.network
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
+      tls: true

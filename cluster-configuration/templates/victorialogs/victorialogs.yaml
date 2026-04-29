@@ -30,11 +30,16 @@ spec:
               - name: {{ $selectIngress.host }}
                 path:
                   - /select
-                port: http
             ingressClassName: nginx
             {{- if $selectIngress.annotations }}
             annotations:
               {{- toYaml $selectIngress.annotations | nindent 14 }}
+            {{- end }}
+            {{- if $selectIngress.tls }}
+            tls:
+            - secretName: victorialogs-tls
+              hosts:
+              - {{ $selectIngress.host }}
             {{- end }}
           {{- end }}
         vlstorage:
