@@ -104,6 +104,7 @@ otlpCollector:
     - http://esnode7.internal.softwareheritage.org:9200
     - http://esnode8.internal.softwareheritage.org:9200
     - http://esnode9.internal.softwareheritage.org:9200
+  victorialogsExport: true
 
 openbao:
   enabled: true
