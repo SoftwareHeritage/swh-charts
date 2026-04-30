@@ -96,8 +96,8 @@ otlpCollector:
   enabled: true
   debug: false
   resources:
-    cpu: 1024m
-    memory: 8Gi
+    cpu: 256m
+    memory: 4Gi
     batch: 10
     timeout: 10s
   endpoints:
