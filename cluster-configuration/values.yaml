@@ -216,6 +216,7 @@ victorialogs:
   enabled: false
   namespace: victorialogs
   version:  0.1.1
+  serviceMonitor: true
   vmauth:
     enabled: false
   insert:

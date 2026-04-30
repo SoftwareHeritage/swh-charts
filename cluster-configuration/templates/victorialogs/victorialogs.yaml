@@ -2,6 +2,7 @@
 {{- $appName := print .Values.clusterName "-vl" -}}
 {{- $storageVolumes := .Values.victorialogs.storage.volumes }}
 {{- $selectIngress := .Values.victorialogs.select.ingress }}
+{{- $serviceMonitor := .Values.victorialogs.serviceMonitor }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -21,8 +22,18 @@ spec:
       values: |
         vlinsert:
           fullnameOverride: {{ .Values.victorialogs.insert.name }}
+          {{- if $serviceMonitor }}
+          vmServiceScrape:
+            enabled: true
+            useServiceMonitor: true
+          {{- end }}
         vlselect:
           fullnameOverride: {{ .Values.victorialogs.select.name }}
+          {{- if $serviceMonitor }}
+          vmServiceScrape:
+            enabled: true
+            useServiceMonitor: true
+          {{- end }}
           {{- if $selectIngress.enabled }}
           ingress:
             enabled: true
@@ -44,6 +55,11 @@ spec:
           {{- end }}
         vlstorage:
           fullnameOverride: {{ .Values.victorialogs.storage.name }}
+          {{- if $serviceMonitor }}
+          vmServiceScrape:
+            enabled: true
+            useServiceMonitor: true
+          {{- end }}
           retentionPeriod: {{ .Values.victorialogs.storage.retentionPeriod }}
           replicaCount: {{ .Values.victorialogs.storage.replicaCount }}
           persistentVolume:
