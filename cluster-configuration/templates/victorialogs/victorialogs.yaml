@@ -28,6 +28,8 @@ spec:
             enabled: true
             hosts:
               - name: {{ $selectIngress.host }}
+                path:
+                  - /
             ingressClassName: nginx
             {{- if $selectIngress.annotations }}
             annotations:
