@@ -1751,10 +1751,10 @@ indexers:
         object_types:
           - origin
           - origin_visit_status
-      requestedCpu: 1500m
-      requestedMemory: 1536Mi
-      limitedCpu: 2000m
-      limitedMemory: 2048Mi
+      requestedCpu: 300m
+      requestedMemory: 512Mi
+      limitedCpu: 500m
+      limitedMemory: 750Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
