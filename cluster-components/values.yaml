@@ -368,7 +368,8 @@ cloudnativePg:
 customQueriesSwhScheduler:
   swh_scheduler_origins:
     primary: true
-    target_databases: swh-scheduler
+    target_databases:
+      - swh-scheduler
     query: |
       select l.name, l.instance_name, sm.visit_type,
         extract(epoch from sm.last_update) as last_update,
@@ -392,9 +393,6 @@ customQueriesSwhScheduler:
       - last_update:
           usage: "GAUGE"
           description: "Timestamp of the last update of this metric"
-      - known:
-          usage: "GAUGE"
-          description: "Number of origins known"
       - known:
           usage: "GAUGE"
           description: "Number of origins known"
