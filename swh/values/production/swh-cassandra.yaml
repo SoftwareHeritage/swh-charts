@@ -1760,9 +1760,9 @@ indexers:
           version: 0.0.2
           configuration: {}
         batch_size:
-          origin: 50
-          revision: 25
-          release: 25
+          origin: 100
+          revision: 50
+          release: 50
 
 cookers:
   enabled: true
