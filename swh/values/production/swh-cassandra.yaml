@@ -2850,7 +2850,7 @@ volumes:
           - ReadWriteMany
         resources:
           requests:
-            storage: 30Gi
+            storage: 60Gi
     comp-graph-dataset-gen-20251128-persistent-local-pvc:
       enabled: true
       appName: datasets-2025-11-28
