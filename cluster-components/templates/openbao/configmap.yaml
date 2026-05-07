@@ -123,7 +123,7 @@ data:
                 mount_point=mount,
                 token_policies=[policy_name],
                  # Time before the AppRole Secret ID expires.
-                secret_id_ttl='24h'
+                secret_id_ttl='1h'
                 # Lifetime of the token issued after AppRole authentication.
                 #token_ttl='1h'
                 # Maximum lifetime a token can have, even after renewals.
