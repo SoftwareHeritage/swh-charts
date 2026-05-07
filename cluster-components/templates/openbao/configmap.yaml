@@ -122,6 +122,12 @@ data:
                 role_name=role_name,
                 mount_point=mount,
                 token_policies=[policy_name],
+                 # Time before the AppRole Secret ID expires.
+                secret_id_ttl='24h'
+                # Lifetime of the token issued after AppRole authentication.
+                token_ttl='1hm'
+                # Maximum lifetime a token can have, even after renewals.
+                token_max_ttl='4hm'
             )
             msg = f"AppRole '{role_name}' created with role-id"
 
