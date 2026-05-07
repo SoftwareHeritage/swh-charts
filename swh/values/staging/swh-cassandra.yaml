@@ -2816,7 +2816,7 @@ volumes:
           - ReadWriteMany
         resources:
           requests:
-            storage: 30Gi
+            storage: 40Gi
     graph-python3k-persistent-pvc:
       enabled: true
       appName: graph-grpc-python3k
