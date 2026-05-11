@@ -187,7 +187,9 @@ data:
 
 
     def create_secret_in_kube(client, api_client, secret_name, namespaces, secret):
-        """Actually call the creation  of the secret object ready to be sent to the api.
+        """Actually call the secret object creation to be sent to the api.
+
+        If the object already exists, we patch it with the new secret value.
 
         """
         api_instance = client.CoreV1Api(api_client=api_client)
@@ -195,11 +197,11 @@ data:
             # We try to create the actual secret if not already present
             api_instance.create_namespaced_secret(namespace=namespaces, body=secret)
         except:
-            # If it already exists, this raises. We catch it and we try to patch the
-            # existing secret instead.
+            # If it already exists, this raises. We catch the conflict and we replace
+            # the existing secret with the new secret's value.
             # Note: This used to delete and recreate but this had side-effects during
             # synchronization which made VaultStaticSecrets go definitely out-of-sync
-            api_instance.patch_namespaced_secret(namespace=namespaces, body=secret)
+            api_instance.replace_namespaced_secret(secret_name, namespaces, secret)
 
 
     @cli.command()
