@@ -199,7 +199,7 @@ data:
             # existing secret instead.
             # Note: This used to delete and recreate but this had side-effects during
             # synchronization which made VaultStaticSecrets go definitely out-of-sync
-            api_instance.patch_secret(namespace=namespaces, body=secret)
+            api_instance.patch_namespaced_secret(namespace=namespaces, body=secret)
 
 
     @cli.command()
