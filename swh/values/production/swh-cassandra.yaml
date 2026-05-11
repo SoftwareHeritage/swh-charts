@@ -1747,9 +1747,6 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 200
-        object_types:
-          - origin
-          - origin_visit_status
       requestedCpu: 300m
       requestedMemory: 512Mi
       limitedCpu: 500m
