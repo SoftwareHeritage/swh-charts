@@ -192,13 +192,14 @@ data:
         """
         api_instance = client.CoreV1Api(api_client=api_client)
         try:
-            # We try to create the actual secret
+            # We try to create the actual secret if not already present
             api_instance.create_namespaced_secret(namespace=namespaces, body=secret)
         except:
-            # it can raise a conflict if it already exist, so we try to delete it first
-            api_instance.delete_namespaced_secret(secret_name, namespaces)
-            # Then we try to create it again
-            api_instance.create_namespaced_secret(namespace=namespaces, body=secret)
+            # If it already exists, this raises. We catch it and we try to patch the
+            # existing secret instead.
+            # Note: This used to delete and recreate but this had side-effects during
+            # synchronization which made VaultStaticSecrets go definitely out-of-sync
+            api_instance.patch_secret(namespace=namespaces, body=secret)
 
 
     @cli.command()
