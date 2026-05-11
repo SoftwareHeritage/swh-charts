@@ -421,6 +421,7 @@ openbao:
   enabled: false
   endpoint: https://openbao.local
   debug: false
+  period: "* * * * *"
   rbac:
     enabled: false
   deployments:

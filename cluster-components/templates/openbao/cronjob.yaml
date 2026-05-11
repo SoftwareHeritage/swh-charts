@@ -8,6 +8,7 @@
 {{- $namespaces := $clusterTargetConfig.namespacesToManageInOpenbaoClientCluster |
                      default $.Values.openbao.namespacesToManageInOpenbaoClientCluster |
                      default list -}}
+{{- $cronPeriod := $clusterTargetConfig.period | default $.Values.openbao.period -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -15,7 +16,7 @@ metadata:
   name: init-bao-cluster-{{ $clusterTargetName }}
   namespace: {{ $namespace }}
 spec:
-  schedule: "0 * * * *"
+  schedule: {{ $cronPeriod | quote }}
   concurrencyPolicy: "Forbid"
   jobTemplate:
     spec:
