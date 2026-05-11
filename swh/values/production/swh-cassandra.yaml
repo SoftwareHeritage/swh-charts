@@ -1726,10 +1726,10 @@ indexers:
         group_id: swh-archive-prod-swh.indexer.journal_client.extrinsic_metadata
         prefix: swh.journal.objects
         batch_size: 200
-      requestedCpu: 25m
-      requestedMemory: 100Mi
-      limitedCpu: 50m
-      limitedMemory: 200Mi
+      requestedCpu: 40m
+      requestedMemory: 125Mi
+      limitedCpu: 75m
+      limitedMemory: 250Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
