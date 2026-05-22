@@ -2074,7 +2074,7 @@ loaders:
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
     add-forge-now:
-      enabled: true
+      enabled: false
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 500m
@@ -2097,7 +2097,7 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     add-forge-now-slow:
-      enabled: true
+      enabled: false
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 500m
@@ -2120,7 +2120,7 @@ loaders:
             # 32Gib
             pack_size_bytes: 34359738368
     archive:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2133,7 +2133,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     bioconductor:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2144,7 +2144,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     bzr:
-      enabled: true
+      enabled: false
       requestedMemory: 1Gi
       requestedCpu: 1000m
       tmpEphemeralStorage:
@@ -2156,7 +2156,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     content:
-      enabled: true
+      enabled: false
       requestedCpu: 350m
       requestedMemory: 150Mi
       tmpEphemeralStorage:
@@ -2169,7 +2169,7 @@ loaders:
         maxReplicaCount: 1
       image: swh_loader_package_image
     cpan:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2182,7 +2182,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cran:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2195,7 +2195,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     crates:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2208,7 +2208,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     cvs:
-      enabled: true
+      enabled: false
       requestedCpu: 1000m
       requestedMemory: 2Gi
       tmpEphemeralStorage:
@@ -2220,7 +2220,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 2
     debian:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2261,7 +2261,7 @@ loaders:
             password: "${DEPOSIT_PASSWORD}"
         default_filename: archive.tar
     directory:
-      enabled: true
+      enabled: false
       requestedMemory: 768Mi
       requestedCpu: 1000m
       tmpEphemeralStorage:
@@ -2274,7 +2274,7 @@ loaders:
         maxReplicaCount: 4
       image: swh_loader_package_image
     git:
-      enabled: true
+      enabled: false
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
@@ -2290,7 +2290,7 @@ loaders:
       sysctls:
         net.ipv4.tcp_dsack: 0
     git-checkout:
-      enabled: true
+      enabled: false
       image: swh_loader_git_image
       queues:
         - swh.loader.git.tasks.LoadGitCheckout
@@ -2303,7 +2303,7 @@ loaders:
           medium: Memory
           sizeLimit: 15Gi
     git-large-repository:
-      enabled: true
+      enabled: false
       image: swh_loader_git_image
       requestedMemory: 1Gi
       requestedCpu: 800m
@@ -2337,7 +2337,7 @@ loaders:
                 values:
                 - "true"
     golang:
-      enabled: true
+      enabled: false
       image: swh_loader_package_image
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -2350,7 +2350,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     hackage:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2363,7 +2363,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     hex:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2376,7 +2376,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     hg-checkout:
-      enabled: true
+      enabled: false
       image: swh_loader_mercurial_image
       queues:
         - swh.loader.mercurial.tasks.LoadMercurialCheckout
@@ -2389,7 +2389,7 @@ loaders:
           medium: Memory
           sizeLimit: 10Gi
     maven:
-      enabled: true
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.maven.tasks.LoadMaven
@@ -2402,7 +2402,7 @@ loaders:
           medium: Memory
           sizeLimit: 10Gi
     mercurial:
-      enabled: true
+      enabled: false
       queues:
         - swh.loader.mercurial.tasks.LoadArchiveMercurial
         - swh.loader.mercurial.tasks.LoadMercurial
@@ -2415,7 +2415,7 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
     npm:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2428,7 +2428,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 4
     oneshot:
-      enabled: true
+      enabled: false
       image: swh_loader_savecodenow_image
       requestedMemory: 768Mi
       requestedCpu: 200m
@@ -2447,7 +2447,7 @@ loaders:
         queueThreshold: 1
         maxReplicaCount: 4
     opam:
-      enabled: true
+      enabled: false
       image: swh_loader_package_image
       queues:
         - swh.loader.package.opam.tasks.LoadOpam
@@ -2460,7 +2460,7 @@ loaders:
           medium: Memory
           sizeLimit: 10Gi
     pubdev:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2473,7 +2473,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     puppet:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2486,7 +2486,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     pypi:
-      enabled: true
+      enabled: false
       requestedMemory: 256Mi
       requestedCpu: 200m
       tmpEphemeralStorage:
@@ -2499,7 +2499,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     rubygems:
-      enabled: true
+      enabled: false
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
@@ -2575,7 +2575,7 @@ loaders:
         - save_code_now:swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       ackLate: true
     svn:
-      enabled: true
+      enabled: false
       queues:
         - swh.loader.svn.tasks.LoadSvnRepository
         - swh.loader.svn.tasks.MountAndLoadSvnRepository
@@ -2590,7 +2590,7 @@ loaders:
           medium: Memory
           sizeLimit: 25Gi
     svn-large-repository:
-      enabled: true
+      enabled: false
       image: swh_loader_svn_image
       requestedMemory: 50Gi
       requestedCpu: 1
@@ -2619,7 +2619,7 @@ loaders:
                 values:
                 - "true"
     svn-export:
-      enabled: true
+      enabled: false
       requestedMemory: 768Mi
       requestedCpu: 1000m
       limitedMemory: 11Gi
