@@ -353,6 +353,7 @@ web:
         matomo:
           url: https://piwik.inria.fr/
           site_id: 59
+        display_banner: true
 
 # Replayer kafka -> postgresql to keep in sync with the main cassandra backend
 storageReplayer:
