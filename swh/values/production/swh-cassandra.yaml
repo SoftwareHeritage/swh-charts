@@ -1703,7 +1703,7 @@ indexers:
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   deployments:
     content-mimetype:
-      enabled: true
+      enabled: false
       autoScaling:
         maxReplicaCount: 1
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
@@ -2069,7 +2069,7 @@ webhooks:
           - origin_visit_status
 
 loaders:
-  enabled: true
+  enabled: false
   storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
@@ -2635,7 +2635,7 @@ loaders:
       image: swh_loader_svn_image
 
 loaderMetadata:
-  enabled: true
+  enabled: false
   storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   consumerGroup: loader_metadata.journal_client
@@ -2652,7 +2652,7 @@ loaderMetadata:
     maxReplicaCount: 4
 
 objstorageReplayer:
-  enabled: true
+  enabled: false
   journalClientConfigurationRef: authenticatedJournalClientConfiguration
   extraCliLogLevel: "--log-level azure.core.pipeline.policies.http_logging_policy:WARNING"
   deployments:
