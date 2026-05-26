@@ -2070,7 +2070,7 @@ webhooks:
           - origin_visit_status
 
 loaders:
-  enabled: false
+  enabled: true
   storageConfigurationRef: rpcWriterWorkloadStorageCassandraConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
   deployments:
@@ -2234,7 +2234,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     deposit:
-      enabled: true
+      enabled: false
       priorityClassName: frontend-rpc-workload
       requestedMemory: 256Mi
       requestedCpu: 200m
@@ -2513,6 +2513,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     save-bulk:
+      enabled: false
       image: swh_loader_savecodenow_image
       queues:
         - save_bulk:swh.loader.bzr.tasks.LoadBazaar
@@ -2536,7 +2537,7 @@ loaders:
           medium: Memory
           sizeLimit: 30Gi
     save-code-now:
-      enabled: true
+      enabled: false
       replicas: 8
       requestedMemory: 2Gi
       requestedCpu: 200m
@@ -2562,7 +2563,7 @@ loaders:
     save-code-now-git:
       enabled: true
       image: swh_loader_savecodenow_image
-      replicas: 4
+      replicas: 1
       requestedMemory: 2Gi
       requestedCpu: 200m
       limitedMemory: 50Gi
