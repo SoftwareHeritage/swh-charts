@@ -2234,7 +2234,7 @@ loaders:
       autoScaling:
         maxReplicaCount: 1
     deposit:
-      enabled: false
+      enabled: true
       priorityClassName: frontend-rpc-workload
       requestedMemory: 256Mi
       requestedCpu: 200m
