@@ -334,10 +334,7 @@ storage:
       enabled: true
       requestedCpu: 3000m
       requestedMemory: 6Gi
-      autoScaling:
-        minReplicaCount: 4
-        maxReplicaCount: 12
-        cpuPercentageUsage: 50
+      replicas: 12
       gunicorn:
         workers: 16
         threads: 1
