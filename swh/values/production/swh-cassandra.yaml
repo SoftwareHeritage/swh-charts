@@ -1761,7 +1761,7 @@ indexers:
           revision: 50
           release: 50
     # Scope consume most recent offsets
-    origin-intrinsic-earliest:
+    origin-intrinsic-latest:
       enabled: true
       autoScaling:
         maxReplicaCount: 4
