@@ -2132,6 +2132,10 @@ indexers:
       journalClientOverrides:
         group_id: swh-archive-stg-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 200
+        error_reporter:
+          host: redis.redis
+          port: 6379
+          db: 2
       requestedCpu: 200m
       requestedMemory: 200Mi
       limitedCpu: 400m
@@ -2145,10 +2149,6 @@ indexers:
           origin: 10
           revision: 10
           release: 10
-        error_reporter:
-          host: redis.redis
-          port: 6379
-          db: 2
       autoScaling:
         maxReplicaCount: 4
 

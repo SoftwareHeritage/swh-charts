@@ -1744,6 +1744,10 @@ indexers:
       journalClientOverrides:
         group_id: swh-indexer-prod-01-swh.indexer.journal_client.origin_intrinsic_metadata
         batch_size: 200
+        error_reporter:
+          host: journal-client-errors.redis
+          port: 6379
+          db: 1
       requestedCpu: 300m
       requestedMemory: 512Mi
       limitedCpu: 500m
@@ -1757,10 +1761,6 @@ indexers:
           origin: 100
           revision: 50
           release: 50
-        error_reporter:
-          host: journal-client-errors.redis
-          port: 6379
-          db: 1
 
 cookers:
   enabled: true
