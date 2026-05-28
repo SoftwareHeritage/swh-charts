@@ -21,7 +21,7 @@
 {{- $recordTaskHistory := dig "config" "recordTaskHistory" false $config  -}}
 {{- $orgRamMb := dig "config" "orgRamMb" 1024 $config -}}
 {{- $imageVersion := $config.imageVersion | default $topLevelConfig.imageVersion  | default .Values.swh_datasets_image_version -}}
-
+{{- $affinity := $config.affinity | default $topLevelConfig.affinity -}}
 {{- dict "serviceType"        "luigi-scheduler"
          "luigiConfigDirpath" $luigiConfigDirpath
          "luigiConfigPath"    $luigiConfigPath
@@ -36,6 +36,7 @@
          "recordTaskHistory"  $recordTaskHistory
          "orgRamMb"           $orgRamMb
          "imageVersion"       $imageVersion
+         "affinity"           $affinity
          "toolbox"            $toolbox | mustMergeOverwrite $config | toYaml -}}
 
 {{- end -}}
