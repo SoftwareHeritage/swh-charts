@@ -504,16 +504,15 @@ journalWriterMirrorConfiguration:
     message.max.bytes: 1000000000
 
 datasetsGenerator:
-  datasets:
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-          - matchExpressions:
-            - key: swh/datasets
-              operator: In
-              values:
-              - "true"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: swh/datasets
+            operator: In
+            values:
+            - "true"
 
 webAlter:
   email_setup:
