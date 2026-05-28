@@ -217,6 +217,25 @@ redis:
             resources:
               requests:
                 storage: 1Gi
+    journal-client-errors:
+      enabled: true
+      namespace: redis
+      priorityClassName: swh-storages
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      nodeSelector:
+        kubernetes.io/hostname: rancher-node-metal02
+      storage:
+        volumeClaimTemplate:
+          spec:
+            storageClassName: local-persistent
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
 
 externalPostgresqlClusters:
   - name: cluster-pg-production-albertina
