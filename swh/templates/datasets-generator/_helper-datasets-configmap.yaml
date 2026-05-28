@@ -11,7 +11,7 @@
 {{- $logLevel := $config.logLevel | default $datasetsConfig.logLevel | default $topLevelConfig.logLevel | upper | quote -}}
 {{- $namespace := $config.namespace | default $datasetsConfig.namespace | default $topLevelConfig.namespace | default .Values.namespace -}}
 {{- $replicas := $config.replicas | default $datasetsConfig.replicas | default 1 -}}
-{{- $affinity := $config.affinity | default $datasetsConfig.affinity | default dict -}}
+{{- $affinity := $config.affinity | default $datasetsConfig.affinity | default $topLevelConfig.affinity | default dict -}}
 {{- $priorityClassName := $config.priorityClassName | default $datasetsConfig.priorityClassName -}}
 {{- $nbProcesses := $config.nbProcesses | default $datasetsConfig.nbProcesses | default 1 -}}
 {{- $nbWorkers := $config.nbWorkers | default $datasetsConfig.nbWorkers | default 1 -}}
