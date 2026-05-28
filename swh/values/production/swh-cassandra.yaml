@@ -1760,6 +1760,34 @@ indexers:
           origin: 100
           revision: 50
           release: 50
+    # Scope consume most recent offsets
+    origin-intrinsic-earliest:
+      enabled: true
+      autoScaling:
+        maxReplicaCount: 4
+      storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
+      journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
+      indexer_type: origin_intrinsic_metadata
+      journalClientOverrides:
+        group_id: swh-indexer-prod-01-indexer.origin-intrinsic-metadata.latest
+        # Start from latest offsets
+        auto_offset_reset: latest
+        batch_size: 200
+        error_reporter:
+          host: redis-journal-client-errors.redis
+          port: 6379
+          db: 1
+      requestedCpu: 300m
+      requestedMemory: 512Mi
+      extraConfig:
+        tools:
+          name: swh-metadata-detector
+          version: 0.0.2
+          configuration: {}
+        batch_size:
+          origin: 100
+          revision: 50
+          release: 50
 
 cookers:
   enabled: true
