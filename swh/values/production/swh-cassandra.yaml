@@ -1734,6 +1734,7 @@ indexers:
           configuration: {}
       autoScaling:
         maxReplicaCount: 8
+    # Scope: consume topics from the earliest to backfill indexer computations
     origin-intrinsic:
       enabled: true
       autoScaling:
@@ -1750,8 +1751,6 @@ indexers:
           db: 1
       requestedCpu: 300m
       requestedMemory: 512Mi
-      limitedCpu: 500m
-      limitedMemory: 750Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
