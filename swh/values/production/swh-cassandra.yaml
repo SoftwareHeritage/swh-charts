@@ -485,7 +485,6 @@ web:
         matomo:
           url: https://piwik.inria.fr/
           site_id: 59
-        display_banner: true
         unauthenticated_api_hosts:
           - archive.internal.softwareheritage.org
         activate_citations_ui: true
