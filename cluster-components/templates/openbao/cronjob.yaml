@@ -4,7 +4,7 @@
 {{- $endpoint := $clusterTargetConfig.endpoint | default $.Values.openbao.endpoint -}}
 {{- $clusterUrl := $clusterTargetConfig.url -}}
 {{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
-{{- $debug := $clusterTargetConfig.debug | default $.Values.openbao.debug | default false -}}
+{{- $verbose := $clusterTargetConfig.verbose | default $.Values.openbao.verbose | default false -}}
 {{- $namespaces := $clusterTargetConfig.namespacesToManageInOpenbaoClientCluster |
                      default $.Values.openbao.namespacesToManageInOpenbaoClientCluster |
                      default list -}}
@@ -48,7 +48,7 @@ spec:
                   value: openbao-vso-auth-role-id-secret
                 - name: CLUSTER_TARGET_NAMESPACES
                   value: {{ $namespaces | join "," }}
-                {{- if $debug }}
+                {{- if $verbose }}
                 - name: DEBUG
                   value: "1"
                 {{- end }}

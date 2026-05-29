@@ -420,7 +420,7 @@ volumes:
 openbao:
   enabled: false
   endpoint: https://openbao.local
-  debug: false
+  verbose: false
   period: "* * * * *"
   rbac:
     enabled: false

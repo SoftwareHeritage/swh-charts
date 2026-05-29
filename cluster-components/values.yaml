@@ -750,7 +750,7 @@ openbao:
   # overridden per deployment instance)
   namespacesToManageInOpenbaoClientCluster: []
   # To allow extra verbosity in output
-  debug: false
+  verbose: false
   # Enable the cluster role/rolebinding's necessary setup in the cluster client so the
   # secrets to access openbao can be written by the process in charge (in the admin
   # cluster)
