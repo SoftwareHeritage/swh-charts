@@ -2302,13 +2302,13 @@ loaders:
         maxReplicaCount: 4
       image: swh_loader_package_image
     git:
-      enabled: false
+      enabled: true
       priorityClassName: low-workload
       queues:
         - swh.loader.git.tasks.UpdateGitRepository
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-      replicas: 64
+      replicas: 8
       requestedMemory: 768Mi
       requestedCpu: 100m
       tmpEphemeralStorage:
