@@ -80,6 +80,7 @@ data:
         labels:
           deployment: "$1"
       - match: "*.gunicorn.workers"
+        ttl: 0
         name: "gunicorn_workers"
         labels:
           deployment: "$1"
