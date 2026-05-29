@@ -25,9 +25,7 @@ spec:
         spec:
           containers:
             - name: init-bao-cluster
-              # FIXME: Use a dedicated docker image for this bao configuration, we do
-              # not need the overall swh dependencies this image pulls
-              image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
+              image: {{ $.Values.swh_openbao_image }}:{{ $.Values.swh_openbao_image_version }}
               command:
               {{- if $debug }}
               - /bin/sleep
