@@ -5,6 +5,7 @@
 {{- $clusterUrl := $clusterTargetConfig.url -}}
 {{- $inCluster := $clusterTargetConfig.inCluster | default false -}}
 {{- $verbose := $clusterTargetConfig.verbose | default $.Values.openbao.verbose | default false -}}
+{{- $debug := $clusterTargetConfig.debug | default $.Values.openbao.debug | default false -}}
 {{- $namespaces := $clusterTargetConfig.namespacesToManageInOpenbaoClientCluster |
                      default $.Values.openbao.namespacesToManageInOpenbaoClientCluster |
                      default list -}}
@@ -28,7 +29,13 @@ spec:
               # not need the overall swh dependencies this image pulls
               image: {{ $.Values.swh_toolbox_image }}:{{ $.Values.swh_toolbox_image_version }}
               command:
+              {{- if $debug }}
+              - /bin/sleep
+              args:
+              - infinity
+              {{- else }}
               - /script/init-bao-cluster.sh
+              {{- end }}
               env:
                 - name: OPENBAO_ENDPOINT
                   value: {{ $endpoint }}
