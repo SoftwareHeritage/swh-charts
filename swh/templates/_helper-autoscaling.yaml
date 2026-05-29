@@ -240,9 +240,21 @@ spec:
       # the number of busy workers is divided by number of workers per pods and multiplied
       # by a factor to have time to scale when the number of requests increase.
       query: |
-        round(sum  by (namespace, deployment) (rate(gunicorn_request_duration_sum{namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}}[{{ $rateInterval}}]))
-        /
-        on(namespace,deployment) gunicorn_workers{namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}}
-        *
-        {{ $factor }})
+        round(
+          sum(
+            rate(
+              gunicorn_request_duration_sum{
+                namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}
+              }[{{ $rateInterval}}]
+            )
+          )
+          /
+          min(
+            gunicorn_workers{
+              namespace={{ .Values.namespace | quote}}, deployment={{ .serviceType | quote }}
+            }
+          )
+          *
+          {{ $factor }}
+        )
 {{- end -}}
