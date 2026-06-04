@@ -109,6 +109,11 @@ pgbouncer:
       port: 5432
       dbname: swh-scheduler
       auth_user: postgres
+    swh-masking:
+      host: db-swh-masking-ro
+      port: 5432
+      dbname: swh-masking
+      auth_user: postgres
 
 vaultSecretsOperator:
   enabled: true
