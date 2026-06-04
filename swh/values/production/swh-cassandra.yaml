@@ -1736,7 +1736,7 @@ indexers:
     origin-intrinsic:
       enabled: true
       autoScaling:
-        maxReplicaCount: 32
+        maxReplicaCount: 40
       storageConfigurationRef: remoteROCassandraIngressStorageConfiguration
       journalClientConfigurationRef: authenticatedIndexerProd01JournalClientConfiguration
       indexer_type: origin_intrinsic_metadata
