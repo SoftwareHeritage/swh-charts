@@ -2291,19 +2291,21 @@ scheduler:
             - path: /
         read-only:
           paths:
-            - path: /scheduler_metrics/get
+            - path: /lister/get
               pathType: Exact
             - path: /listers/get
               pathType: Exact
-            - path: /lister/get
+            - path: /listers/get_by_id
+              pathType: Exact
+            - path: /origins/get
+              pathType: Exact
+            - path: /scheduler_metrics/get
               pathType: Exact
             - path: /task_type/get
               pathType: Exact
             - path: /task_type/get_all
               pathType: Exact
             - path: /visit_stats/get
-              pathType: Exact
-            - path: /origins/get
               pathType: Exact
           extraWhitelistSourceRange:
             # vpn network
