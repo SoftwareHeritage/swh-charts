@@ -372,14 +372,12 @@ cloudnativePg:
     db-swh-scheduler:
       enabled: true
       instances: 3
-      externalClustersRef: externalPostgresqlClusters
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
       customQueriesRef: customQueriesSwhScheduler
       initdb:
         enabled: true
-        source: cluster-pg-production-albertina
       backup:
         enabled: true
         # 3 backups (3 weeks * 1 backup)
