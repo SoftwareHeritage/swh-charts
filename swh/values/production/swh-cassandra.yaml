@@ -1755,7 +1755,8 @@ indexers:
           port: 6379
           db: 1
       requestedCpu: 300m
-      requestedMemory: 512Mi
+      requestedMemory: 576Mi
+      limitedMemory: 896Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
@@ -1783,7 +1784,8 @@ indexers:
           port: 6379
           db: 1
       requestedCpu: 300m
-      requestedMemory: 512Mi
+      requestedMemory: 576Mi
+      limitedMemory: 896Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
