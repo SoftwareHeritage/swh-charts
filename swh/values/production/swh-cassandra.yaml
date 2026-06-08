@@ -765,6 +765,7 @@ scrubber:
             checkReferences: false
             nbPartitions: 65536
       saam:
+        enabled: false
         objstorageConfigurationRef: remoteSaamReadOnlyObjstorageConfiguration
         configName: objstorage-saam-content
         replicas: 4
