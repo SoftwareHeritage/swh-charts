@@ -403,4 +403,4 @@ cloudnativePg:
           # Amount of memory allocated for maintenance operations (vacuum, etc...)
           maintenance_work_mem: 4GB
           # Update nb of connections (this limit can be reached currently)
-          max_connections: 200
+          max_connections: "200"
