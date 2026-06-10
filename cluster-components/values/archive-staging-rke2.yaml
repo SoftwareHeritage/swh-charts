@@ -283,6 +283,10 @@ cloudnativePg:
     # Next-version dbs
     ##################
 
+    # Specifically:
+    # - no backup
+    # - hence no recovery either (mostly except for some justified db, commented below)
+
     next-version-db-swh:
       enabled: true
       namespace: cnpg-next-version
@@ -337,6 +341,7 @@ cloudnativePg:
       database:
         name: swh-masking
         secretKeyRef: swh-postgresql-swh-masking-secret
+      # Except masking (to have some data in there)
       externalClustersRef: recoverySwhMaskingClusters
       recovery:
         enabled: true
@@ -357,6 +362,8 @@ cloudnativePg:
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
+      # Recovery enabled for this scheduler to have a minimal set of listing to do
+      # when the next-version environment is resetted
       recovery:
         enabled: true
         source: next-version-db-swh-scheduler
@@ -451,6 +458,7 @@ cloudnativePg:
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
+      # no recovery on that db either
       initdb:
         enabled: true
       roles:
@@ -493,6 +501,7 @@ cloudnativePg:
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
+      # No backup so no recovery for that instance
       initdb:
         enabled: true
       backup:
@@ -549,7 +558,7 @@ cloudnativePg:
       database:
         name: swh-coar-notify
         secretKeyRef: swh-postgresql-swh-coar-notify-secret
-      initdb:
+      recovery:
         enabled: true
       storage:
         size: 5Gi
@@ -568,7 +577,7 @@ cloudnativePg:
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -585,7 +594,7 @@ cloudnativePg:
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-indexer-secret
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -613,7 +622,7 @@ cloudnativePg:
       database:
         name: swh-masking
         secretKeyRef: swh-postgresql-swh-masking-secret
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -631,7 +640,7 @@ cloudnativePg:
       requestedCpu: '2'
       requestedMemory: 4Gi
       limitedMemory: 8Gi
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -648,7 +657,7 @@ cloudnativePg:
       requestedCpu: 200m
       requestedMemory: 2Gi
       limitedMemory: 4Gi
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -665,7 +674,7 @@ cloudnativePg:
       requestedCpu: 200m
       requestedMemory: 2Gi
       limitedMemory: 4Gi
-      initdb:
+      recovery:
         enabled: true
       storage:
         size: 5Gi
@@ -688,7 +697,7 @@ cloudnativePg:
       requestedCpu: 200m
       requestedMemory: 2Gi
       limitedMemory: 4Gi
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
@@ -705,7 +714,7 @@ cloudnativePg:
       requestedCpu: 200m
       requestedMemory: 2Gi
       limitedMemory: 4Gi
-      initdb:
+      recovery:
         enabled: true
       backup:
         enabled: true
