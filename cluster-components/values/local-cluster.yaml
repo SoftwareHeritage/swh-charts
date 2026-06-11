@@ -441,3 +441,7 @@ openbao:
       noVerifySSL: true
       namespacesToManageInOpenbaoClientCluster:
       - vso
+
+dataportal:
+  enabled: false
+  
