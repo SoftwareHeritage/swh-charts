@@ -2115,10 +2115,9 @@ indexers:
         group_id: swh-archive-stg-swh.indexer.journal_client.extrinsic_metadata
         prefix: swh.journal.objects
         batch_size: 200
-      requestedCpu: 500m
-      requestedMemory: 256Mi
-      limitedCpu: 750m
-      limitedMemory: 512Mi
+      requestedCpu: 300m
+      requestedMemory: 128Mi
+      limitedMemory: 256Mi
       extraConfig:
         tools:
           name: swh-metadata-detector
@@ -2136,9 +2135,8 @@ indexers:
           host: redis.redis
           port: 6379
           db: 2
-      requestedCpu: 200m
-      requestedMemory: 200Mi
-      limitedCpu: 400m
+      requestedCpu: 300m
+      requestedMemory: 256Mi
       limitedMemory: 512Mi
       extraConfig:
         tools:
