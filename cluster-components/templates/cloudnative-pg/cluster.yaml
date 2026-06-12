@@ -29,7 +29,7 @@
 {{- $recovery := $clusterConfig.recovery | default (dict "enabled" false) -}}
 {{- $recoveryEnabled := $recovery.enabled -}}
 {{- $recovery = omit (deepCopy $recovery) "enabled" -}}
-{{- $database := mustMerge $clusterConfig.database ($.Values.cloudnativePg.database) | default dict -}}
+{{- $database := mustMerge ($clusterConfig.database | default dict) ($.Values.cloudnativePg.database | default dict) -}}
 {{- $dbName := required (print "Missing <$cluster_config.database.name> dbname in cluster <" $clusterName ">") $database.name -}}
 {{- $dbOwner := $database.owner | default $database.name -}}
 {{- $initdb := $clusterConfig.initdb | default dict -}}
