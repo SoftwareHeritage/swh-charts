@@ -137,6 +137,9 @@ cloudnativePg:
   version: 0.27.1
   # Out-of-tree plugin to manage backup (not an helm chart currently)
   barmanPluginVersion: 0.11.0
+  valuesOverride:
+    monitoring:
+      podMonitorEnabled: true
   argocdApplication:
     selfHeal: true
     prune: false

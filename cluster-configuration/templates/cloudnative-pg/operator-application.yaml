@@ -1,5 +1,6 @@
 {{ if .Values.cloudnativePg.enabled -}}
 {{- $appName := print .Values.clusterName "-cnpg-operator" -}}
+{{- $valuesOverride := .Values.cloudnativePg.valuesOverride -}}
 {{- $prune := .Values.cloudnativePg.argocdApplication.prune | default .Values.defaultPrune -}}
 {{- $selfHeal := .Values.cloudnativePg.argocdApplication.selfHeal | default .Values.defaultSelfHeal -}}
 apiVersion: argoproj.io/v1alpha1
@@ -17,9 +18,10 @@ spec:
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
       releaseName: {{ $appName }}
+      {{- if $valuesOverride }}
       values: |
-        monitoring:
-          podMonitorEnabled: true
+        {{- toYaml $valuesOverride | nindent 8 }}
+      {{- end }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
