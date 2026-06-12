@@ -22,6 +22,7 @@ metallb:
         namespaces:
           - ingress-nginx
 
+
 # Activate prometheus as this is not previously done (in contrast with other clusters
 # provisioned by terraform which does the prometheus configuration too)
 prometheus:
@@ -183,6 +184,15 @@ cloudnativePg:
         secretKeyRef: swh-svix-swh-postgresql-secret
       initdb:
         enabled: true
+    osporadar:
+      enabled: false
+      namespace: osporadar
+      database:
+        name: osporadar
+        secretKeyRef: swh-osporadar-swh-osporadar-secret
+      initdb:
+        enabled: true
+
 kafka:
   enabled: false
   namespace: swh

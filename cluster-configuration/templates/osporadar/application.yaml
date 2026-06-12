@@ -1,0 +1,33 @@
+{{ if .Values.osporadar.enabled -}}
+{{- $appName := print .Values.clusterName "-osporadar" -}}
+{{- $valuesOverride := .Values.osporadar.valuesOverride -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $appName }}
+  namespace: {{ .Values.argocd.namespace }}
+spec:
+  revisionHistoryLimit: 2
+  project: {{ .Values.defaultProject }}
+  source:
+    repoURL: 'https://gitlab.softwareheritage.org/swh/devel/swh-osporadar-deployment.git'
+    targetRevision: {{ .Values.osporadar.version }}
+    path: ./swh-osporadar
+    helm:
+      # must match the application name
+      # (https://github.com/argoproj/argo-cd/issues/2871)
+      releaseName: {{ $appName }}
+      {{- if $valuesOverride }}
+      values: |
+        {{ toYaml $valuesOverride | nindent 8 }}
+      {{- end }}
+  destination:
+    server: {{ .Values.clusterUrl }}
+    namespace: {{ .Values.osporadar.namespace | quote }}
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: {{ .Values.defaultPrune }}
+      selfHeal: {{ .Values.defaultSelfHeal }}
+{{ end }}

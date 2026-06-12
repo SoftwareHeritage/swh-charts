@@ -148,3 +148,29 @@ victorialogs:
     replicaCount: 2
     volumes:
       size: 4G
+
+osporadar:
+  enabled: false
+  valuesOverride:
+    # Database secret references
+    secretNameRef: swh-osporadar-secret
+    postgres:
+      service:
+        host: osporadar-rw
+    # Enable the ingress
+    ingress:
+      enabled: false
+      hosts:
+        - host: osporadar.local
+          http:
+            paths:
+            - path: /
+              pathType: ImplementationSpecific
+              backend:
+                service:
+                  name: swh-osporadar-django-service
+                  port:
+                    number: 8000
+    development:
+      # For devfixtures to be installed
+      enabled: true

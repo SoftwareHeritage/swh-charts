@@ -237,3 +237,9 @@ victorialogs:
     volumes: {}
       # size:
       # className:
+
+osporadar:
+  enabled: false
+  namespace: osporadar
+  version: main
+  valuesOverride: {}

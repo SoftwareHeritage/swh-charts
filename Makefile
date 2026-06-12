@@ -182,10 +182,17 @@ swh-template-production-cassandra:
 local-cluster-cc-prepare:
 	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace cluster-components 2>&1 >/dev/null || \
       kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace cluster-components
+	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace osporadar 2>&1 >/dev/null || \
+      kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace osporadar
 
 local-cluster-cc-prepare-secrets:
+        # Create non-namespaced secrets in the cluster-components namespace
 	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
-        --namespace cluster-components apply -f -
+          --namespace cluster-components apply -f -
+        # Create specific namespaced secrets
+	cat $(SECRET_FILES)/namespaced-secrets/*.yaml | kubectl \
+         --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
+         apply -f -
 
 cc-minikube: cc-local-cluster
 local-cluster-cc: cc-local-cluster
@@ -342,10 +349,14 @@ ss-template-production:
 local-cluster-ccf-prepare:
 	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace cluster-configuration 2>&1 >/dev/null || \
       kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace cluster-configuration
+	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace osporadar 2>&1 >/dev/null || \
+      kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace osporadar
 
 local-cluster-ccf-prepare-secrets:
 	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
-        --namespace cluster-configuration apply -f -
+          --namespace cluster-configuration apply -f -
+	cat $(SECRET_FILES)/namespaced-secrets/*.yaml | kubectl \
+          --kubeconfig $(LOCAL_CLUSTER_CONFIG) apply -f -
 
 local-cluster-ccf: ccf-local-cluster
 ccf-local-cluster: local-cluster-ccf-prepare local-cluster-ccf-prepare-secrets
