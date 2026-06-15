@@ -137,7 +137,7 @@ vaultSecretsOperator:
             - "true"
 
 osporadar:
-  enabled: true
+  enabled: false
   valuesOverride:
     # Database secret references (created in openbao)
     secretNameRef: swh-osporadar-secret
