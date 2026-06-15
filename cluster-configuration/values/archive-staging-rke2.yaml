@@ -162,3 +162,13 @@ osporadar:
     # We will see later to have a clean environment
     development:
       enabled: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: "swh/osporadar"
+              operator: In
+              values:
+              - "true"
+
