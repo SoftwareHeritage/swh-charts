@@ -179,12 +179,16 @@ swh-template-production-cassandra:
       --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
+# TODO: Extract bin/local-cluster-create-namespace.sh to manage the
+# conditional creation of namespace
 local-cluster-cc-prepare:
 	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace cluster-components 2>&1 >/dev/null || \
       kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace cluster-components
 	kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) get namespace osporadar 2>&1 >/dev/null || \
       kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) create namespace osporadar
 
+# TODO: Extract bin/local-cluster-prepase-secrets.sh to manage the
+# conditional creation of secrets
 local-cluster-cc-prepare-secrets:
         # Create non-namespaced secrets in the cluster-components namespace
 	cat $(SECRET_FILES)/*.yaml | kubectl --kubeconfig $(LOCAL_CLUSTER_CONFIG) \
