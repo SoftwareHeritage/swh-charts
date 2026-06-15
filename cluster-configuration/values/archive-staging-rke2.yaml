@@ -135,3 +135,30 @@ vaultSecretsOperator:
             operator: In
             values:
             - "true"
+
+osporadar:
+  enabled: true
+  valuesOverride:
+    # Database secret references (created in openbao)
+    secretNameRef: swh-osporadar-secret
+    postgres:
+      service:
+        host: swh-osporadar-rw
+    # Enable the ingress
+    ingress:
+      enabled: true
+      hosts:
+        - host: osporadar.internal.staging.swh.network
+          http:
+            paths:
+            - path: /
+              pathType: ImplementationSpecific
+              backend:
+                service:
+                  name: swh-osporadar-django-service
+                  port:
+                    number: 8000
+    # For devfixtures to be installed at least for now
+    # We will see later to have a clean environment
+    development:
+      enabled: true
