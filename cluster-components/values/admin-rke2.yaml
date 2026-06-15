@@ -205,6 +205,7 @@ openbao:
         - cnpg-next-version
         - kafkabackup
         - metallb
+        - osporadar
         - svix-server
         - swh
         - swh-cassandra
