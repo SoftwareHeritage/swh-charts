@@ -1928,3 +1928,9 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-20240408-persistent-pvc
+
+staticWebsites:
+  enabled: false
+  deployments:
+    dataportal:
+      replicas: 2

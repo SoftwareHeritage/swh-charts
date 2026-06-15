@@ -2215,3 +2215,8 @@ datasetsGenerator:
     #     # Type of export to execute (can be one of the luigi tasks defined in
     #     # swh.datasets or swh.export repository)
 
+staticWebsites:
+  enabled: false
+  # namespace: swh-cassandra
+  replicas: 1
+  # deployments: {}
