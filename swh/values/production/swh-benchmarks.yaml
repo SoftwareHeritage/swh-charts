@@ -1,0 +1,42 @@
+namespace: swh-benchmarks
+
+# Objstorage configs
+noopObjstorageConfiguration:
+  cls: noop
+  allow_delete: true
+
+objstorage:
+  enabled: true
+  logLevel: WARN
+  priorityClassName: frontend-rpc
+  autoScaling: false
+  deployments:
+    # Each key will be an objstorage instance to be deployed
+    # The mandatory objstorageConfigurationRef key should target a dict
+    # with the specific objstorage configuration
+    noop-read-write:
+      enabled: true
+      replicas: 1
+      gunicorn:
+        workers: 4
+        threads: 2
+        timeout: 60
+      objstorageConfigurationRef: noopObjstorageConfiguration
+      extraRpcConfiguration:
+        client_max_size: 1073741824
+      hosts:
+        - objstorage-rw-noop
+      ingress:
+        enabled: true
+        # mandatory if ingress is enabled
+        # the hostname on which the objstorage must be reachable
+        # Optional: the ingress classname to use
+        className: nginx
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
