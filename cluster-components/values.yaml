@@ -786,10 +786,4 @@ kafkabackup:
     secretKeyName: "kafkabackup-ssh-key"
     knownHosts: [] # list of strings, one for each known_hosts line
   kafkaHosts: {}  # Specify /etc/hosts overrides for kafka brokers
-
-dataportal:
-  enabled: false
-  namespace: swh-static-websites
-  image:
-    repository: swh-dataportal
-    tag: latest
+  
