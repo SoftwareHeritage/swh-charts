@@ -1,0 +1,17 @@
+{{- if .Values.staticWebsites.enabled }}
+
+{{ range $websiteName, $websiteConfig := .Values.staticWebsites.deployments }}
+{{- if and $websiteConfig.enabled (hasKey $websiteConfig "ingress") $websiteConfig.ingress.enabled -}}
+{{- $ingressConfig := dict -}}
+{{- $ingressConfig = mustMergeOverwrite $ingressConfig (or $.Values.staticWebsites.ingress dict) -}}
+{{- $ingressConfig = mustMergeOverwrite $ingressConfig $websiteConfig.ingress -}}
+{{- $mergedConfig := dict -}}
+{{- $mergedConfig = mustMergeOverwrite $mergedConfig $websiteConfig -}}
+{{- $mergedConfig = mustMergeOverwrite $mergedConfig (dict "ingress" $ingressConfig) -}}
+{{- include "swh.ingress" (dict "serviceType"   ( print "website" $websiteName )
+                                "configuration" $mergedConfig
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+
+{{ end }}
