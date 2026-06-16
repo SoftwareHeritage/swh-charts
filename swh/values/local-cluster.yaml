@@ -1952,6 +1952,7 @@ staticWebsites:
          default:
            paths:
              - path: /
+               port: 80
         #  static:
         #    extraAnnotations:
         #      nginx.ingress.kubernetes.io/use-regex: "true"
