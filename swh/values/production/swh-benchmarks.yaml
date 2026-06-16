@@ -33,7 +33,7 @@ objstorage:
       gunicorn:
         workers: 4
         threads: 2
-        timeout: 300
+        timeout: 310
       objstorageConfigurationRef: noopObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
@@ -49,6 +49,8 @@ objstorage:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
           nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "300"
         endpoints:
           default:
             paths:
@@ -60,7 +62,7 @@ objstorage:
       gunicorn:
         workers: 4
         threads: 2
-        timeout: 300
+        timeout: 310
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: azureTestObjstorageConfiguration
@@ -78,6 +80,8 @@ objstorage:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
           nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "300"
         endpoints:
           default:
             paths:
