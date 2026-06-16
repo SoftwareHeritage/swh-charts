@@ -15,7 +15,8 @@ clusterConfiguration:
 
 argocd:
   namespace: argocd
-  version: v6.5.0
+  # Our current deployed version: argo/argo-cd 9.5.10 v3.3.8
+  version: v9.5.10
 
 keda:
   version: 2.14.2
