@@ -1331,6 +1331,12 @@ scheduler:
               pathType: Exact
             - path: /scheduler_metrics/get
               pathType: Exact
+            - path: /task/get
+              pathType: Exact
+            - path: /task/search
+              pathType: Exact
+            - path: /task_run/get
+              pathType: Exact
             - path: /task_type/get
               pathType: Exact
             - path: /task_type/get_all
