@@ -33,7 +33,7 @@ objstorage:
       gunicorn:
         workers: 4
         threads: 2
-        timeout: 60
+        timeout: 300
       objstorageConfigurationRef: noopObjstorageConfiguration
       extraRpcConfiguration:
         client_max_size: 1073741824
@@ -60,7 +60,7 @@ objstorage:
       gunicorn:
         workers: 4
         threads: 2
-        timeout: 60
+        timeout: 300
       # mandatory
       # check readWriteStorageConfiguration example to configure your storage
       objstorageConfigurationRef: azureTestObjstorageConfiguration
