@@ -143,7 +143,7 @@ osporadar:
     secretNameRef: swh-osporadar-secret
     postgres:
       service:
-        host: swh-osporadar-rw
+        host: db-osporadar-rw
     # Enable the ingress
     ingress:
       enabled: true
