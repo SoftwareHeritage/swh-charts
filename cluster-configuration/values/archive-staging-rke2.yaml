@@ -162,7 +162,7 @@ osporadar:
               pathType: ImplementationSpecific
               backend:
                 service:
-                  name: swh-osporadar-django-service.osporadar
+                  name: swh-osporadar-django-service
                   port:
                     number: 8000
       tls:
