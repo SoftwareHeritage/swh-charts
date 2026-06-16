@@ -1948,10 +1948,10 @@ staticWebsites:
         #   nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
         #   nginx.ingress.kubernetes.io/proxy-body-size: "4G"
         # whitelistSourceRangeRef: internalNetworkRanges
-        #endpoints:
-        #  default:
-        #    paths:
-        #      - path: /
+        endpoints:
+         default:
+           paths:
+             - path: /
         #  static:
         #    extraAnnotations:
         #      nginx.ingress.kubernetes.io/use-regex: "true"
