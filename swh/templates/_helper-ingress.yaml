@@ -10,7 +10,10 @@ Create a Kind Ingress for service .serviceType
 {{- $defaultWhitelistSourceRangeRef := $configuration.ingress.whitelistSourceRangeRef | default "inexistant" -}}
 {{- $defaultWhitelistSourceRange := get .Values $defaultWhitelistSourceRangeRef | default list -}}
 {{- $nameLabel := hasKey . "extraNameLabel" | ternary (print "ingress-" .extraNameLabel) "ingress" -}}
-{{- range $endpoint_definition, $endpoint_config := $configuration.ingress.endpoints -}}
+{{- $endpoints := required
+      (print "swh.ingress: The <ingress.endpoints> property is mandatory in " $configuration)
+      $configuration.ingress.endpoints -}}
+{{- range $endpoint_definition, $endpoint_config := $endpoints -}}
 {{- if $endpoint_config }}
 {{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
