@@ -1,9 +1,9 @@
 {{- if .Values.staticWebsites.enabled }}
-{{ range $instanceName, $instanceConfig := .Values.staticWebsites.deployments }}
-{{- if $instanceConfig.enabled  -}}
-{{ $appName := print "website-" $instanceName }}
-{{ $namespace := $instanceConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace }}
-{{ $replicas := $instanceConfig.replicas | default $.Values.staticWebsites.replicas }}
+{{ range $websiteName, $websiteConfig := .Values.staticWebsites.deployments }}
+{{- if $websiteConfig.enabled  -}}
+{{ $appName := print "website-" $websiteName }}
+{{ $namespace := $websiteConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace }}
+{{ $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas }}
 ---
 apiVersion: apps/v1
 kind: Deployment
