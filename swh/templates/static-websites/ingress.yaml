@@ -8,7 +8,7 @@
 {{- $mergedConfig := dict -}}
 {{- $mergedConfig = mustMergeOverwrite $mergedConfig $websiteConfig -}}
 {{- $mergedConfig = mustMergeOverwrite $mergedConfig (dict "ingress" $ingressConfig) -}}
-{{- include "swh.ingress" (dict "serviceType"   ( print "website" $websiteName )
+{{- include "swh.ingress" (dict "serviceType"   ( print "website-" $websiteName )
                                 "configuration" $mergedConfig
                                 "Values"        $.Values) -}}
 {{- end -}}
