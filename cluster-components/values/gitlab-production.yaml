@@ -15,7 +15,6 @@ alertmanagerConfig:
 
 cloudnativePg:
   enabled: true
-  version: 0.28.2
 
 gitlabRunner:
   enabled: true
