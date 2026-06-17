@@ -152,7 +152,10 @@ osporadar:
         kubernetes.io/tls-acme: "true"
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-        nginx.ingress.kubernetes.io/proxy-body-size: 100M
+        nginx.ingress.kubernetes.io/proxy-body-size: 128K
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+        nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "60"
 
       hosts:
         - host: osporadar.internal.staging.swh.network
