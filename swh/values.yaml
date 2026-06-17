@@ -2220,3 +2220,4 @@ staticWebsites:
   # namespace: swh-cassandra
   replicas: 1
   # deployments: {}
+  port: 80
