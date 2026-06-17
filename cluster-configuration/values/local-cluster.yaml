@@ -159,7 +159,7 @@ osporadar:
         host: osporadar-rw
     # Enable the ingress
     ingress:
-      enabled: false
+      enabled: true
       hosts:
         - host: osporadar.local
           http:
