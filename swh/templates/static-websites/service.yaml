@@ -1,0 +1,12 @@
+{{ if .Values.staticWebsites.enabled -}}
+{{ range $websiteName, $websiteConfig := .Values.staticWebsites.deployments }}
+{{- if $websiteConfig.enabled -}}
+{{- if not (hasKey $websiteConfig "port") }}
+{{- $websiteConfig := set $websiteConfig "port" $.Values.staticWebsites.port -}}
+{{- end -}}
+{{- include "swh.service" (dict "serviceType"   ( print "website-" $websiteName )
+                                "configuration" $websiteConfig
+                                "Values"        $.Values) -}}
+{{- end -}}
+{{ end -}}
+{{- end -}}
