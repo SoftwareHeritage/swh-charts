@@ -165,7 +165,7 @@ osporadar:
           http:
             paths:
             - path: /
-              pathType: ImplementationSpecific
+              pathType: Prefix
               backend:
                 service:
                   name: swh-osporadar-django-service
