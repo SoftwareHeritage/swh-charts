@@ -20,12 +20,17 @@ spec:
       labels:
         app: {{ $appName }}
     spec:
+      {{- if $.Values.staticWebsites.affinity }}
+      affinity:
+        {{- toYaml $.Values.staticWebsites.affinity | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ $appName }}
           image: {{ $.Values.swh_static_websites_image }}:{{ $.Values.swh_static_websites_image_version }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
+  
 {{- end }}
 {{- end }}
 {{- end }}

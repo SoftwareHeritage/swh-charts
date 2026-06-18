@@ -528,3 +528,14 @@ webAlter:
 # (/srv/dataset/YYYY-MM-DD/) will be created with the data. The sensitive data will be on
 # another folder (/srv/dataset-sensitive/YYYY-MM-DD)
 graphDirectoryPath: /srv/dataset
+
+staticWebsites:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/static-websites"
+            operator: In
+            values:
+            - "true"
