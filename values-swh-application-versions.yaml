@@ -58,6 +58,8 @@ swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/s
 swh_scrubber_image_version: '20260529.3'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
 swh_search_image_version: '20260605.1'
+swh_static_websites_image: container-registry.softwareheritage.org/swh/infra/swh-apps/static_websites
+swh_static_websites_image_version: '20260612.1'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
 swh_storage_image_version: '20260529.3'
 swh_storage_replayer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage_replayer
@@ -71,8 +73,6 @@ swh_vault_cookers_image_version: '20260610.1'
 swh_vault_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vault
 swh_vault_image_version: '20260529.3'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20260610.1'
+swh_web_image_version: '20260618.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20260528.1'
-swh_static_websites_image: container-registry.softwareheritage.org/swh/infra/swh-apps/static_websites
-swh_static_websites_image_version: '20260612.1'
