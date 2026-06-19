@@ -86,3 +86,19 @@ objstorage:
           default:
             paths:
               - path: /
+
+
+ingestion_benchmarks:
+  enabled: true
+  requestedMemory: 1Gi
+  requestedCpu: 2000m
+  ingress:
+    enabled: true
+    hosts:
+      - ingestion-benchmarks
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    endpoints:
+      default:
+        paths:
+          - path: /
