@@ -334,6 +334,17 @@ toolbox:
             values:
             - "true"
 
+ingestion_benchmarks:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/toolbox"
+            operator: In
+            values:
+            - "true"
+
 objstorage:
   port: 5003
   sentry:
