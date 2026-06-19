@@ -1,0 +1,8 @@
+{{ if .Values.ingestion_benchmarks.enabled -}}
+{{- $config := .Values.ingestion_benchmarks }}
+{{- if and (hasKey $config "ingress") $config.ingress.enabled -}}
+{{- include "swh.ingress" (dict "serviceType"    "ingestion-benchmarks"
+                                "configuration"  $config
+                                "Values"         $.Values) -}}
+{{- end -}}
+{{- end -}}

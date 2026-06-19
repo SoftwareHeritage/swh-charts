@@ -1,0 +1,6 @@
+{{ if .Values.ingestion_benchmarks.enabled -}}
+{{- $config := .Values.ingestion_benchmarks }}
+{{- include "swh.service" (dict "serviceType"   "ingestion-benchmarks"
+                                "configuration" $config
+                                "Values"        $.Values) -}}
+{{- end -}}

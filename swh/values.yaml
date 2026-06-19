@@ -2212,3 +2212,11 @@ staticWebsites:
   replicas: 1
   # deployments: {}
   port: 80
+
+ingestion_benchmarks:
+  enabled: false
+  port: 8089
+  type: http
+  affinity: {}
+  # requestedMemory: 150Mi
+  # requestedCpu: 50m

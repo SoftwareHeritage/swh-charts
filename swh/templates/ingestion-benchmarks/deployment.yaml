@@ -1,0 +1,45 @@
+{{ if .Values.ingestion_benchmarks.enabled -}}
+{{- $config := .Values.ingestion_benchmarks }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion-benchmarks
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: ingestion-benchmarks
+spec:
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: ingestion-benchmarks
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: ingestion-benchmarks
+    spec:
+      {{- if $config.affinity }}
+      affinity:
+        {{- toYaml $config.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $config.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $config.priorityClassName }}
+      {{ end }}
+      containers:
+      - name: ingestion-benchmarks
+        image: {{ $.Values.swh_ingestion_benchmarks_image }}:{{ $.Values.swh_ingestion_benchmarks_image_version }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: {{ $config.requestedMemory | default "256Mi" }}
+            cpu: {{ $config.requestedCpu | default "250m" }}
+        command:
+        - /bin/bash
+        args:
+        - -c
+        - /opt/swh/entrypoint.sh
+{{ end }}
