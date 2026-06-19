@@ -3104,8 +3104,6 @@ staticWebsites:
         tlsEnabled: true
         secretName: dataportal-swh-cassandra-tls
         extraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
