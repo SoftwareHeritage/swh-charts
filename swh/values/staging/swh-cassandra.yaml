@@ -3095,3 +3095,30 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: graph-sensitive-20251107-generated-persistent-pvc
+
+staticWebsites:
+  enabled: true
+  deployments:
+    dataportal:
+      enabled: true
+      replicas: 1
+      hosts:
+        - dataportal.internal.staging.swh.network
+      ingress:
+        enabled: true
+        className: nginx
+        tlsEnabled: true
+        secretName: dataportal-swh-cassandra-tls
+        extraAnnotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
+          kubernetes.io/tls-acme: "true"
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        endpoints:
+         default:
+           paths:
+             - path: /
+               port: 80
