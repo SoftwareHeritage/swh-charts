@@ -897,9 +897,6 @@ web:
       ingress:
         enabled: false
         # extraAnnotations:
-        #   cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-        #   kubernetes.io/ingress.class: nginx
-        #   kubernetes.io/tls-acme: "true"
         #   nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         # tlsEnabled: true
         # whitelistSourceRangeRef: internalNetworkRanges
@@ -1492,9 +1489,6 @@ deposit:
   ingress:
     enabled: false
   #   extraAnnotations:
-  #     cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-  #     kubernetes.io/ingress.class: nginx
-  #     kubernetes.io/tls-acme: "true"
   #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   #   tlsEnabled: true
   #   whitelistSourceRangeRef: internalNetworkRanges
@@ -2143,9 +2137,6 @@ coarNotify:
 #   - <host_1>
 #   secretName: swh-coar-notify-crt
 #   extraAnnotations:
-#     cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-#     kubernetes.io/ingress.class: nginx
-#     kubernetes.io/tls-acme: "true"
 #     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 #   tlsEnabled: true
 #   endpoints:

@@ -424,8 +424,6 @@ web:
           nginx.ingress.kubernetes.io/proxy-read-timeout: "100"
           nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "100"
         tlsExtraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
         endpoints:
           default:
@@ -505,9 +503,6 @@ web:
         enabled: true
         secretName: swh-web-crt
         extraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/ingress.class: nginx
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         tlsEnabled: true
         whitelistSourceRangeRef: internalNetworkRanges
@@ -581,8 +576,6 @@ web:
         extraAnnotations:
           kubernetes.io/ingress.class: nginx
         tlsExtraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
         endpoints:
           webhooks:

@@ -19,7 +19,7 @@ Create a Kind Ingress for service .serviceType
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
 
-{{- $annotations := (dict) -}}
+{{- $annotations := dict -}}
 
 {{- if or (not (hasKey $configuration.ingress "useEndpointsAsUpstream")) (eq $configuration.ingress.useEndpointsAsUpstream false) -}}
 {{/* undocumented swh's ingress option to configure the upstreams to use the service ip.
@@ -50,8 +50,6 @@ Create a Kind Ingress for service .serviceType
   {{- $annotations = mustMergeOverwrite $annotations (dict "nginx.ingress.kubernetes.io/auth-realm" "Authentication Required") -}}
 {{- end -}}
 
-{{- $annotations = mustMergeOverwrite $annotations ($configuration.ingress.extraAnnotations | default dict) -}}
-{{- $annotations = mustMergeOverwrite $annotations ($endpoint_config.extraAnnotations | default dict) -}}
 {{- $type := $configuration.type | default "rpc" -}}
 {{- if (eq $type "grpc") }}
 {{- $annotations = mustMergeOverwrite $annotations
@@ -59,12 +57,19 @@ Create a Kind Ingress for service .serviceType
                                             "nginx.ingress.kubernetes.io/backend-protocol" "GRPC") -}}
 {{- $_ := set $configuration.ingress "className" "nginx" -}}
 {{- end }}
+{{- $tlsEnabled := and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.secretName -}}
+{{- if $tlsEnabled }}
+{{- $annotations = mustMergeOverwrite $annotations
+                                      (dict "kubernetes.io/tls-acme" "true"
+                                            "cert-manager.io/cluster-issuer" $.Values.certManager.defaultClusterIssuer) -}}
+{{- end }}
+{{- $annotations = mustMergeOverwrite $annotations ($configuration.ingress.extraAnnotations | default dict) -}}
+{{- $annotations = mustMergeOverwrite $annotations ($endpoint_config.extraAnnotations | default dict) -}}
 {{- range $annKey := keys $annotations -}}
 {{- if not (get $annotations $annKey) -}}
 {{- $_ := unset $annotations $annKey -}}
 {{- end -}}
 {{- end -}}
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -99,7 +104,7 @@ spec:
               number: {{ $port }}
       {{ end }}
   {{- end }}
-  {{- if and (or $configuration.ingress.tlsEnabled $endpoint_config.tlsEnabled) $configuration.ingress.secretName }}
+  {{- if $tlsEnabled }}
   tls:
   - hosts:
     {{- range $host := $hosts }}

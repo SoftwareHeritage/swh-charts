@@ -1,5 +1,8 @@
 namespace: swh
 
+certManager:
+  defaultClusterIssuer: letsencrypt-production-gandi
+
 prometheus:
   address: http://prometheus-operated.cattle-monitoring-system:9090
   scrapingConfig:

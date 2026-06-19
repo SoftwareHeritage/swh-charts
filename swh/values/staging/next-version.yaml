@@ -838,9 +838,6 @@ web:
         whitelistSourceRangeRef: stagingNetworkRanges
         secretName: swh-web-crt
         extraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/ingress.class: nginx
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
         tlsEnabled: true
         endpoints:
@@ -1646,8 +1643,6 @@ staticWebsites:
         tlsEnabled: true
         secretName: dataportal-next-version-tls
         extraAnnotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production-gandi
-          kubernetes.io/tls-acme: "true"
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
