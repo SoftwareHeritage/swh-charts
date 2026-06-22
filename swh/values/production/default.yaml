@@ -460,10 +460,6 @@ roObjstorageBestEffort:
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
-  - cls: remote
-    name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
-    enable_requests_retry: true
   - *azure-storage-conf-ro
 
 roObjstorageBestEffortConfiguration:
@@ -494,10 +490,6 @@ roObjstorageHighParallelism:
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
-    enable_requests_retry: true
-  - cls: remote
-    name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
 
 roObjstorageHighParallelismConfiguration:
@@ -537,10 +529,6 @@ roObjstorageForWineryReplayer:
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
-  - cls: remote
-    name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
-    enable_requests_retry: true
   - *azure-storage-conf-ro
 
 roObjstorageForWineryReplayerConfiguration:
@@ -565,10 +553,6 @@ roObjstorageForS3Replayer:
   - cls: remote
     name: saam
     url: http://objstorage-ro-saam-zfs-rpc-ingress-swh-cassandra
-    enable_requests_retry: true
-  - cls: remote
-    name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
   - *azure-storage-conf-ro
 
@@ -604,10 +588,6 @@ multiplexerForLocalStorages:
     timeout:
       - 0.5  # Connect
       - 10   # Read
-    enable_requests_retry: true
-  - cls: remote
-    name: banco
-    url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
     enable_requests_retry: true
   - cls: remote
     name: saam
