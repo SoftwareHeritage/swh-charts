@@ -1,7 +1,8 @@
 namespace: swh-benchmarks
 
 # Override images
-swh_objstorage_image_version: '20260612.1'
+swh_objstorage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_benchmarking
+swh_objstorage_image_version: '20260623.1'
 
 # Objstorage configs
 noopObjstorageConfiguration:
