@@ -2216,7 +2216,15 @@ staticWebsites:
 ingestion_benchmarks:
   enabled: false
   port: 8089
+  extraPorts:
+    locust-ctrl: 5557
   type: http
   affinity: {}
   # requestedMemory: 150Mi
   # requestedCpu: 50m
+  workers:
+    enabled: true  # only if ingestion_benchmarks.enabled also true
+    affinity: {}
+    locust_processes: 10  # processes per pod
+    # requestedMemory: 150Mi
+    # requestedCpu: 50m

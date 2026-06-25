@@ -92,7 +92,11 @@ objstorage:
 ingestion_benchmarks:
   enabled: true
   requestedMemory: 1Gi
-  requestedCpu: 2000m
+  requestedCpu: 1000m
+  workers:
+    replicas: 3
+    requestedMemory: 1Gi
+    requestedCpu: 3000m
   ingress:
     enabled: true
     hosts:

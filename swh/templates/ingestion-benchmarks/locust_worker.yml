@@ -1,0 +1,55 @@
+{{ if and
+  .Values.ingestion_benchmarks.enabled
+  .Values.ingestion_benchmarks.workers.enabled -}}
+{{- $config := .Values.ingestion_benchmarks.workers }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ingestion-benchmarks-locustworker
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: ingestion-benchmarks-locustworker
+spec:
+  revisionHistoryLimit: 2
+  {{ if $config.replicas -}}
+  replicas: {{ $config.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: ingestion-benchmarks-locustworker
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: ingestion-benchmarks-locustworker
+    spec:
+      {{- if $config.affinity }}
+      affinity:
+        {{- toYaml $config.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $config.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $config.priorityClassName }}
+      {{ end }}
+      containers:
+      - name: ingestion-benchmarks-locustworker
+        image: {{ $.Values.swh_ingestion_benchmarks_image }}:{{ $.Values.swh_ingestion_benchmarks_image_version }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: {{ $config.requestedMemory | default "256Mi" }}
+            cpu: {{ $config.requestedCpu | default "250m" }}
+        command:
+        - '/opt/swh/venv/bin/locust'
+        args:
+        - '-f'
+        - '-'
+        - '--worker'
+        - '--processes'
+        - '10'
+        - '--master-host'
+        - 'ingestion-benchmarks'
+{{ end }}
