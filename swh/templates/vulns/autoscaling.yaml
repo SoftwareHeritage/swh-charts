@@ -1,0 +1,11 @@
+{{ if .Values.vulns.enabled -}}
+{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulns.deployments }}
+{{- $serviceType := ( print "vulns-" $vulnsInstanceName ) -}}
+{{- if ne false $vulnsConfig.enabled -}}
+{{- include "swh.autoscale" (dict "Values"        $.Values
+                                  "serviceType"   $serviceType
+                                  "configuration" $vulnsConfig) -}}
+
+{{ end }}
+{{ end }}
+{{- end -}}

@@ -5,6 +5,56 @@ metadata:
   name: backend-utils
   namespace: {{ $.Values.namespace }}
 data:
+  vulns-fetch-dataset.sh: |
+    #!/usr/bin/env bash
+    # Uses env variables WITNESS_FILE, DATASET_URL, DATASET_PATH, WITNESS_DOWNLOADING_FILE
+    [ -z "${DATASET_URL}" ] && \
+      echo "<DATASET_URL> env variable must be set" && exit 1
+    [ -z "${DATASET_PATH}" ] && \
+      echo "<DATASET_PATH> env variable must be set" && exit 1
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${WITNESS_DOWNLOADING_FILE}" ] && \
+      echo "<WITNESS_DOWNLOADING_FILE> env variable must be set" && exit 1
+
+    set -eux
+
+    [ -f "${WITNESS_FILE}" ] && \
+        echo "Dataset <${DATASET_PATH}> already present. Skip." && \
+        exit 0
+
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && \
+        echo "Dataset <${DATASET_PATH}> download is ongoing. Skip." && \
+        exit 0
+
+    # Mark that we start the download
+    mkdir -p $(dirname "${WITNESS_DOWNLOADING_FILE}")
+    touch "${WITNESS_DOWNLOADING_FILE}"
+
+    # FIXME: make it generic
+    for filename in all.sqlite vuln2commit_without_cherrypicks connected_components.wccs; do
+      aws s3 cp ${DATASET_URL}/${filename} ${DATASET_PATH}/${filename}
+    done
+
+    # We are done so we clean up the download witness file
+    [ -f "${WITNESS_DOWNLOADING_FILE}" ] && rm "${WITNESS_DOWNLOADING_FILE}"
+
+    # Make explicit the dataset is ready
+    touch "${WITNESS_FILE}"
+
+  wait-for-dataset.sh: |
+    #!/usr/bin/env bash
+    # Uses env variables WITNESS_FILE
+    [ -z "${WITNESS_FILE}" ] && \
+      echo "<WITNESS_FILE> env variable must be set" && exit 1
+    [ -z "${SERVICE_NAME}" ] && \
+      echo "<SERVICE_NAME> env variable must be set" && exit 1
+
+    while [ ! -f "${WITNESS_FILE}" ]; do
+        echo "${WITNESS_FILE} not present, wait for ${SERVICE_NAME} to start..."
+        sleep ${PERIOD}
+    done
+
   graph-prepare-memory-volume.sh: |
     #!/usr/bin/env bash
     # Uses env variables WITNESS_FILE, DATASET_SOURCE, DATASET_LOCATION, GRAPH_NAME
@@ -61,19 +111,6 @@ data:
 
     # Finally, we make explicit the graph is ready
     touch "${WITNESS_FILE}"
-
-  wait-for-dataset.sh: |
-    #!/usr/bin/env bash
-    # Uses env variables WITNESS_FILE
-    [ -z "${WITNESS_FILE}" ] && \
-      echo "<WITNESS_FILE> env variable must be set" && exit 1
-    [ -z "${SERVICE_NAME}" ] && \
-      echo "<SERVICE_NAME> env variable must be set" && exit 1
-
-    while [ ! -f "${WITNESS_FILE}" ]; do
-        echo "${WITNESS_FILE} not present, wait for ${SERVICE_NAME} to start..."
-        sleep ${PERIOD}
-    done
 
   graph-fetch-dataset.sh: |
     #!/usr/bin/env bash

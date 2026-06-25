@@ -34,7 +34,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-  
+
 {{- end }}
 {{- end }}
 {{- end }}

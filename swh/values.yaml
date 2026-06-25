@@ -2228,3 +2228,22 @@ ingestion_benchmarks:
     locust_processes: 10  # processes per pod
     # requestedMemory: 150Mi
     # requestedCpu: 50m
+
+vulns:
+  enabled: false
+  # namespace: swh-cassandra
+  port: 10161
+  # Number of replicas (can be overridden per instance)
+  replicas: 1
+  # Dataset extra configuration, can be overridden per instance
+  # dataset:
+  #   fetch: true
+  #   name: dataset-name
+  #   graphName: associated-graph-name
+
+  # Sentry configuration
+  sentry: {}
+
+  # Deployments dict of instances
+  deployments: {}
+

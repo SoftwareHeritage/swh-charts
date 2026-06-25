@@ -1,0 +1,14 @@
+{{ if .Values.vulns.enabled -}}
+{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulns.deployments }}
+{{- $serviceType := ( print "vulns-" $vulnsInstanceName ) -}}
+{{- if and (ne false $vulnsConfig.enabled) (hasKey $vulnsConfig "ingress") $vulnsConfig.ingress.enabled -}}
+{{- if not (hasKey $vulnsConfig "port") }}
+{{- $vulnsConfig := set $vulnsConfig "port" $.Values.vulns.port -}}
+{{- end -}}
+{{- include "swh.ingress" (dict "serviceType"   $serviceType
+                                "configuration" $vulnsConfig
+                                "Values"        $.Values) -}}
+{{ end -}}
+{{- end -}}
+{{- end -}}
+

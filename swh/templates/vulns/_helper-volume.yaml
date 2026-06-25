@@ -1,0 +1,56 @@
+{{/* Generate the initialize graph backend container configuration if needed */}}
+{{- define "swh.vulns.volume.witnessfile" -}}
+- name: {{ .witness_file_env_variable_name | default "WITNESS_FILE" }}
+  value: {{ .datasetPath }}/{{ .filename | default ".vulns-is-initialized" }}
+{{- end -}}
+
+{{/* Generate the init container to fetch the dataset when required */}}
+{{- define "swh.vulns.fetchDataset" -}}
+{{- $imageVersion := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
+        required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
+- name: {{ .containerName | default "fetch-vulns-dataset" }}
+  image: {{ get .Values .imagePrefixName }}:{{ $imageVersion }}
+  command:
+  - /entrypoints/vulns-fetch-dataset.sh
+  env:
+  {{- include "swh.vulns.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 2 }}
+  {{- include "swh.vulns.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_DOWNLOADING_FILE"
+                                                   "filename" ".vulns-is-downloading"
+                                                   "datasetPath" .datasetPath) | nindent 2 }}
+  - name: DATASET_URL
+    value: {{ .datasetUrl }}
+  - name: DATASET_PATH
+    value: {{ .datasetPath }}
+  volumeMounts:
+  - name: backend-utils
+    mountPath: /entrypoints
+  {{- range $volumeName, $volumeConfig := .extraVolumes }}
+  - name: {{ $volumeName }}
+    mountPath: {{ $volumeConfig.mountPath }}
+    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+  {{ end }}
+{{- end -}}
+
+{{/* init-container to wait for dataset presence. */}}
+{{- define "swh.vulns.waitForDataset" -}}
+- name: wait-for-dataset
+  image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
+  imagePullPolicy: IfNotPresent
+  command:
+  - /entrypoints/wait-for-dataset.sh
+  env:
+    {{- include "swh.vulns.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 4 }}
+    - name: SERVICE_NAME
+      value: "vulns"
+    - name: PERIOD
+      value: {{ .period | default "3" | quote }}
+  volumeMounts:
+  - name: backend-utils
+    mountPath: /entrypoints
+    readOnly: true
+  {{- range $volumeName, $volumeConfig := .extraVolumes }}
+  - name: {{ $volumeName }}
+    mountPath: {{ $volumeConfig.mountPath }}
+    readOnly: {{ $volumeConfig.readOnly | default "false" }}
+  {{ end }}
+{{- end -}}
