@@ -1738,23 +1738,60 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
+    vulns-grpc-dataset-popular:
+      enabled: true
+      appName: graph-popular
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 vulns:
   enabled: false
+  imageVersion: "20260625.1"
   deployments:
-    popular:
+    2024-08-23-popular-4-shell:
       enabled: true
-      nodeSelector:
-        kubernetes.io/hostname: local-cluster-worker2
       dataset:
         fetch: true
-        url: s3://softwareheritage/derived_datasets/2026-03-02/vulnerabilities
-        graphName: popular
+        # url: s3://softwareheritage/derived_datasets/2026-03-02/vulnerabilities
+        url: s3://softwareheritage/derived_datasets/2024-08-23-popular-4-shell/vulnerabilities
+        name: 2024-08-23
+        graphName: 2024-08-23_popular-4-shell
+      extraVolumes:
+        # Existing pvc mounting point with graph data
+        graph-popular-persistent:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-popular-persistent-pvc
+        # New persistent volume for the vulns dataset
+        vulns-grpc-dataset-popular:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: vulns-grpc-dataset-popular
+      hosts:
+        - vulns-grpc-popular-ingress
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 graph:
   enabled: false
   # Version used to generate the latest compressed graph
-  imageVersion: "20250514.1"
+  imageVersion: "20260625.1"
   # Test dataset uses the "example" name
   deployments:
     # basic grpc graph with sample dataset with sample dataset (cloned out of
@@ -1812,7 +1849,7 @@ graph:
 
     # basic rpc graph which will hit the grpc-example grpc pod
     rpc-full-example:
-      enabled: true
+      enabled: false
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker
       type: rpc
@@ -1872,7 +1909,7 @@ graph:
               - path: /
     # basic rpc graph which will hit the grpc-example grpc pod
     rpc-popular-20240823:
-      enabled: true
+      enabled: false
       nodeSelector:
         kubernetes.io/hostname: local-cluster-worker
       type: rpc
