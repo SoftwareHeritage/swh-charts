@@ -1752,10 +1752,11 @@ volumes:
 
 vulns:
   enabled: false
-  imageVersion: "20260625.1"
   deployments:
     2024-08-23-popular-4-shell:
       enabled: true
+      toolbox:
+        enabled: false
       dataset:
         fetch: true
         # url: s3://softwareheritage/derived_datasets/2026-03-02/vulnerabilities

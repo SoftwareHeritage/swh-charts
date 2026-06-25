@@ -31,9 +31,28 @@ data:
     mkdir -p $(dirname "${WITNESS_DOWNLOADING_FILE}")
     touch "${WITNESS_DOWNLOADING_FILE}"
 
-    # FIXME: make it generic
-    for filename in all.sqlite vuln2commit_without_cherrypicks connected_components.wccs; do
-      aws s3 cp ${DATASET_URL}/${filename} ${DATASET_PATH}/${filename}
+    # FIXME: Does not work, somehow!
+    # aws s3 sync "${DATASET_URL}" "${DATASET_PATH}" \
+    #   --include "commit2vuln*.*" \
+    #   --include "connected_components.wccs" \
+    #   --include "all.sqlite" \
+    #   --exclude "*" \
+    #   --no-sign-request
+
+    # FIXME: make it a tad more generic
+    # FIXME2: Use wget instead with url https://softwareheritage.s3.us-east-1.amazonaws.com/<bucket-path>/
+    for filename in connected_components.wccs \
+                    commit2vuln_using_cherrypicks.ef \
+                    commit2vuln_using_cherrypicks.graph \
+                    commit2vuln_using_cherrypicks.offsets \
+                    commit2vuln_using_cherrypicks.properties \
+                    commit2vuln_without_cherrypicks.ef \
+                    commit2vuln_without_cherrypicks.graph \
+                    commit2vuln_without_cherrypicks.offsets \
+                    commit2vuln_without_cherrypicks.properties \
+                    all.sqlite \
+      ; do
+        aws s3 cp ${DATASET_URL}/${filename} ${DATASET_PATH}/${filename} --no-sign-request
     done
 
     # We are done so we clean up the download witness file

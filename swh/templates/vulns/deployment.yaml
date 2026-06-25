@@ -13,13 +13,14 @@
 {{- $fetchVulnsDataset := dig "dataset" "fetch" false $vulnsConfig -}}
 {{- $vulnsDatasetPath := print "/srv/dataset/" $datasetName -}}
 {{- $vulnDbPath := print $vulnsDatasetPath "/all.sqlite" -}}
-{{- $vulnCommit2VulnPath := print $vulnsDatasetPath "/vuln2commit_without_cherrypicks" -}}
+{{- $vulnCommit2VulnPath := print $vulnsDatasetPath "/commit2vuln_without_cherrypicks" -}}
 {{- $vulnSubgraphWccsPath := print $vulnsDatasetPath "/connected_components.wccs" -}}
-{{- $graphName := get $vulnsConfig "graphName" | default $vulnsInstanceName -}}
+{{- $graphName := dig "dataset" "graphName" "" $vulnsConfig | default $vulnsInstanceName -}}
 {{- $graphDatasetPath := print "/srv/graph/" $graphName "/compressed/graph" -}}
 {{- $vulnsImage := get $vulnsConfig "image" | default $.Values.vulns.image | default $.Values.swh_vulns_image -}}
 {{- $vulnsImageVersion := get $vulnsConfig "imageVersion" | default $.Values.vulns.imageVersion | default $.Values.swh_vulns_image_version -}}
 {{- $logLevel := $vulnsConfig.logLevel | default $.Values.vulns.logLevel | default "INFO" | upper -}}
+{{- $toolbox := and $vulnsConfig.toolbox $vulnsConfig.toolbox.enabled -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -110,10 +111,16 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           command:
+          {{- if $toolbox }}
+          - /bin/sleep
+          args:
+          - infinity
+          {{- else }}
           - /bin/bash
           args:
           - -c
           - /opt/swh/entrypoint.sh
+          {{ end }}
           env:
             - name: PORT
               value: {{ $port | quote }}
