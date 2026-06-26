@@ -2234,7 +2234,10 @@ vulns:
   # namespace: swh-cassandra
   port: 10161
   # Number of replicas (can be overridden per instance)
-  replicas: 1
+  # replicas: 1
+  # Or use autoscaling (can be overridden per instance)
+  # autoscaling:
+  #   enabled: true
   # Dataset extra configuration, can be overridden per instance
   # dataset:
   #   fetch: true
