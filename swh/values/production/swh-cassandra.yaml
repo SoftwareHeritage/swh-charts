@@ -2883,6 +2883,8 @@ vulns:
   deployments:
     grpc-20260302:
       enabled: true
+      toolbox:
+        enabled: true
       dataset:
         fetch: true
         url: s3://softwareheritage/derived_datasets/2026-03-02/vulnerabilities
