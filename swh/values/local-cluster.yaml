@@ -1738,9 +1738,8 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
-    vulns-grpc-dataset-popular:
+    vulns-grpc-dataset-popular-pvc:
       enabled: true
-      appName: graph-popular
       spec:
         storageClassName: local-persistent
         volumeMode: Filesystem
@@ -1759,7 +1758,6 @@ vulns:
         enabled: false
       dataset:
         fetch: true
-        # url: s3://softwareheritage/derived_datasets/2026-03-02/vulnerabilities
         url: s3://softwareheritage/derived_datasets/2024-08-23-popular-4-shell/vulnerabilities
         name: 2024-08-23
         graphName: 2024-08-23_popular-4-shell
@@ -1775,7 +1773,7 @@ vulns:
           mountPath: /srv/dataset
           volumeDefinition:
             persistentVolumeClaim:
-              claimName: vulns-grpc-dataset-popular
+              claimName: vulns-grpc-dataset-popular-pvc
       hosts:
         - vulns-grpc-popular-ingress
       ingress:
