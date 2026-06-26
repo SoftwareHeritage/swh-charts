@@ -2870,7 +2870,6 @@ volumes:
 
 graph:
   enabled: true
-  imageVersion: "20260212.1"
   deployments:
     grpc-20260302:
       enabled: true

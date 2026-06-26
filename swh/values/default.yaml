@@ -495,7 +495,7 @@ provenance:
             - "true"
 
 graph:
-  imageVersion: "20241015.1"
+  imageVersion: "20260625.1"
   sentry:
     enabled: true
   affinity:

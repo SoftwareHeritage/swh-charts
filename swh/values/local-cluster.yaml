@@ -1789,8 +1789,6 @@ vulns:
 
 graph:
   enabled: false
-  # Version used to generate the latest compressed graph
-  imageVersion: "20260625.1"
   # Test dataset uses the "example" name
   deployments:
     # basic grpc graph with sample dataset with sample dataset (cloned out of
