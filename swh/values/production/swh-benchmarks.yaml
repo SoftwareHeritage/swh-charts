@@ -90,8 +90,8 @@ objstorage:
 
     azure-concurrent-test-read-write:
       enabled: true
-      image: {{ $swh_objstorage_concurrent_image }}
-      image_version: {{ $swh_objstorage_concurrent_image_version }}
+      image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_benchmarking
+      image_version: '20260623.2'
       replicas: 1
       gunicorn:
         workers: 4
