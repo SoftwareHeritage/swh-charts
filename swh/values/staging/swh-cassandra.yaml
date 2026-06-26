@@ -2883,6 +2883,17 @@ volumes:
         - ReadWriteOnce
         volumeMode: Filesystem
         storageClassName: local-persistent
+    graph-popular-persistent-pvc:
+      enabled: true
+      appName: graph-popular
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 graph:
   enabled: true
@@ -3009,6 +3020,32 @@ graph:
             extraWhitelistSourceRange:
               # vpn network
               - 192.168.101.0/24
+    # Graph Instance to run the popular-4-shell dataset
+    # Only spawned to prepare the right datafiles in the graph-popular-persistent-pvc
+    # associated volume (see vulns instance using the same files)
+    grpc-popular-20240823:
+      enabled: true
+      type: grpc
+      port: 50091
+      dataset:
+        fetch: true
+        # possible either nothing (implementation-wise, the default a job) or init
+        fetchType: init
+        downloadMethod: s3
+        name: 2024-08-23_popular-4-shell
+      graphConfigurationRef: plainGrpcGraphConfiguration
+      prepareMemoryVolume: false
+      startService: true
+      extraVolumes:
+        graph-popular-persistent:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-popular-persistent-pvc
+      hosts:
+        - graph-grpc-popular-ingress
+      ingress:
+        enabled: false
 
 # Luigi's scheduler url to access
 luigiSchedulerUrl: http://luigi-scheduler-ingress:80
