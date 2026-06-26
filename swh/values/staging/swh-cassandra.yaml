@@ -2894,6 +2894,52 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    vulns-grpc-dataset-popular-pvc:
+      enabled: true
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+
+vulns:
+  enabled: true
+  deployments:
+    python3k:
+      enabled: true
+      dataset:
+        fetch: true
+        url: s3://softwareheritage/derived_datasets/python3k/vulnerabilities
+        name: 2021-03-23
+        graphName: 2021-03-23-popular-3k-python
+      extraVolumes:
+        # Existing pvc mounting point with graph popular dataset data
+        graph-popular-persistent:
+          mountPath: /srv/graph
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-popular-persistent-pvc
+        # New persistent volume for the vulns dataset
+        vulns-grpc-dataset-popular:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: vulns-grpc-dataset-popular-pvc
+      hosts:
+        - vulns.internal.staging.swh.network
+      ingress:
+        enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
 
 graph:
   enabled: true
