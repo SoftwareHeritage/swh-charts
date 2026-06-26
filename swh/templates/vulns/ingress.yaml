@@ -5,6 +5,7 @@
 {{- if not (hasKey $vulnsConfig "port") }}
 {{- $vulnsConfig := set $vulnsConfig "port" $.Values.vulns.port -}}
 {{- end -}}
+{{- $vulnsConfig := set $vulnsConfig "type" "grpc" -}}
 {{- include "swh.ingress" (dict "serviceType"   $serviceType
                                 "configuration" $vulnsConfig
                                 "Values"        $.Values) -}}
