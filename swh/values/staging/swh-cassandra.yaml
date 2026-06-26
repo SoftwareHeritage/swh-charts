@@ -2908,13 +2908,13 @@ volumes:
 vulns:
   enabled: true
   deployments:
-    python3k:
+    popular:
       enabled: true
       dataset:
         fetch: true
-        url: s3://softwareheritage/derived_datasets/python3k/vulnerabilities
-        name: 2021-03-23
-        graphName: 2021-03-23-popular-3k-python
+        url: s3://softwareheritage/derived_datasets/2024-08-23-popular-4-shell/vulnerabilities
+        name: 2024-08-23
+        graphName: 2024-08-23_popular-4-shell
       extraVolumes:
         # Existing pvc mounting point with graph popular dataset data
         graph-popular-persistent:
