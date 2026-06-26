@@ -90,7 +90,11 @@ spec:
               cpu: {{ $objstorageConfig.limitedCpu }}
               {{- end }}
             {{- end }}
+          {{- if and $objstorageConfig.image $objstorageConfig.image_version }}
+          image: {{ $objstorageConfig.image }}:{{ $objstorageConfig.image_version }}
+          {{- else }}
           image: {{ $.Values.swh_objstorage_image }}:{{ $.Values.swh_objstorage_image_version }}
+          {{- end }}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: {{ $objstorageConfig.port | default $.Values.objstorage.port }}
