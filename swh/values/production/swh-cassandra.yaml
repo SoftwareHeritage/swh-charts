@@ -2893,7 +2893,7 @@ vulns:
       extraVolumes:
         # Existing pvc mounting point with graph popular dataset data
         graph-popular-persistent:
-          mountPath: /srv/graph
+          mountPath: /srv/graph/2026-03-02/compressed
           volumeDefinition:
             persistentVolumeClaim:
               claimName: graph-20260302-persistent-pvc
