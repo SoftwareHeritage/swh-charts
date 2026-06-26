@@ -7,7 +7,8 @@
                             "Values" $.Values -}}
 {{- $datasetName := dig "dataset" "name" "graph" $graphConfig -}}
 {{- $fetchGraphDataset := dig "dataset" "fetch" false $graphConfig -}}
-{{- if $fetchGraphDataset }}
+{{- $fetchGraphDatasetType := dig "dataset" "fetchType" "job" $graphConfig -}}
+{{- if and $fetchGraphDataset (eq $fetchGraphDatasetType "job") }}
 {{- $graphPath := print "/srv/graph/" $datasetName "/compressed" -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}

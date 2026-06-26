@@ -14,6 +14,7 @@
 {{- $port := $graphConfig.port | default (ternary $.Values.graph.rpcPort $.Values.graph.grpcPort (eq $type "rpc")) -}}
 {{- $datasetName := dig "dataset" "name" "graph" $graphConfig -}}
 {{- $fetchGraphDataset := dig "dataset" "fetch" false $graphConfig -}}
+{{- $fetchGraphDatasetType := dig "dataset" "fetchType" "job" $graphConfig -}}
 {{- $graphPath := print "/srv/graph/" $datasetName "/compressed" -}}
 {{- $graphName := get $graphConfig "graphName" | default $.Values.graph.graphName -}}
 {{- $prepareMemoryVolume := get $graphConfig "prepareMemoryVolume" | default false -}}
@@ -84,6 +85,15 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
+        {{- if and $fetchGraphDataset (ne $fetchGraphDatasetType "job") }}
+        {{ include "swh.graph.fetchDataset" (dict "Values" $.Values
+                                                  "imagePrefixName" "swh_graph_image"
+                                                  "imageVersion" $graphImageVersion
+                                                  "graphName" $graphName
+                                                  "graphPath" (ne $graphSourcePath "" | ternary $graphSourcePath $graphPath)
+                                                  "config" $graphConfig.dataset
+                                                  "extraVolumes" $graphConfig.extraVolumes) | nindent 8 }}
+        {{ end }}
         {{- if $graphReindexDataset }}
         {{ include "swh.graph.reindexDataset" (dict "Values" $.Values
                                                     "imagePrefixName" "swh_graph_image"

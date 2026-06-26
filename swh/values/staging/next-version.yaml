@@ -1598,6 +1598,8 @@ graph:
       port: 50091
       dataset:
         fetch: true
+        # possible either nothing (implementation-wise, the default a job) or init
+        fetchType: init
         downloadMethod: s3
         name: 2024-08-23_popular-4-shell
       graphConfigurationRef: plainGrpcGraphConfiguration
