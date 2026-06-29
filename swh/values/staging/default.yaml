@@ -689,6 +689,9 @@ webGraphConfiguration:
     user: 100000
     anonymous: 1000
 
+vulnsConfiguration:
+  address: vulns.internal.staging.swh.network
+
 webAlter:
   alter_settings:
     support_mail_alias: alter-staging-support@softwareheritage.org
