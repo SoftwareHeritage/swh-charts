@@ -821,6 +821,7 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       provenanceConfigurationRef: webappProvenanceGrpcConfiguration
       graphConfigurationRef: webGraphConfiguration
+      vulnsConfigurationRef: vulnsConfiguration
       cornerRibbonRef: cornerRibbon
       extraConfig:
         activate_citations_ui: true
@@ -1285,6 +1286,9 @@ webGraphConfiguration:
     staff: 0
     user: 100000
     anonymous: 1000
+
+vulnsConfiguration:
+  address: vulns-next-version.internal.staging.swh.network:80
 
 provenance:
   enabled: true
