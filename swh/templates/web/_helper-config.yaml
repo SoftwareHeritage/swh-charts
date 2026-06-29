@@ -65,6 +65,11 @@ data:
                                              "configurationRef" .configuration.graphConfigurationRef
                                              "Values" $.Values) | nindent 4 }}
     {{- end }}
+    {{- if .configuration.vulnsConfigurationRef }}
+    {{- include "swh.service.fromYaml" (dict "service" "vulns"
+                                             "configurationRef" .configuration.vulnsConfigurationRef
+                                             "Values" $.Values) | nindent 4 }}
+    {{- end }}
     {{- if .configuration.indexerStorageConfigurationRef }}
       {{- include "swh.service.fromYaml" (dict "service" "indexer_storage"
                                                "configurationRef" .configuration.indexerStorageConfigurationRef

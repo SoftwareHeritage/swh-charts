@@ -601,6 +601,7 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       djangoAppsRef: webDjangoApps
       graphConfigurationRef: graphConfiguration
+      vulnsConfigurationRef: vulnsConfiguration
       cornerRibbonRef: cornerRibbon
       # throttlingConfigurationRef: webThrottling
       # keycloakConfigurationRef: fakeKeycloakConfiguration
@@ -1465,6 +1466,9 @@ counters:
 
 graphConfiguration:
   url: http://graph-rpc-python3k:5009/graph
+
+vulnsConfiguration:
+  address: vulns-grpc-popular-ingress:80
 
 noopObjstorageConfiguration:
   cls: noop
