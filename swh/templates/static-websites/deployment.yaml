@@ -4,6 +4,8 @@
 {{ $appName := print "website-" $websiteName }}
 {{ $namespace := $websiteConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace }}
 {{ $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas }}
+{{ $image := $websiteConfig.image | default $.Values.swh_static_websites_image -}}
+{{ $imageVersion := $websiteConfig.imageVersion | default $.Values.swh_static_websites_image_version -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,7 +32,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ $appName }}
-          image: {{ $.Values.swh_static_websites_image }}:{{ $.Values.swh_static_websites_image_version }}
+          image: {{ $image }}:{{ $imageVersion }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
