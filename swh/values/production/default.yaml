@@ -50,6 +50,10 @@ webGraphConfiguration:
     user: 100000
     anonymous: 1000
 
+vulnsConfiguration:
+  address: vulns.internal.softwareheritage.org:80
+  secure: false
+
 alterGraphConfiguration:
   url: http://graph-rpc-default-ingress/graph
   timeout: null
