@@ -837,6 +837,9 @@ web:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         secretName: swh-web-crt
         extraAnnotations:
           nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -845,9 +848,6 @@ web:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
           static:
             extraAnnotations:
               nginx.ingress.kubernetes.io/use-regex: "true"
@@ -859,9 +859,6 @@ web:
               - path: /static(/|$)(.*)
                 pathType: ImplementationSpecific
                 port: 80
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
           authenticated:
             extraAnnotations:
               nginx.ingress.kubernetes.io/use-regex: "true"
@@ -872,9 +869,6 @@ web:
                 pathType: ImplementationSpecific
             # auth-file with authentication
             authentication: swh-cassandra/web-auth-secrets
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
 
 podPriority:
   # This test environment should not impact the real staging environment
@@ -1213,15 +1207,15 @@ graphql:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/rewrite-target: /
         endpoints:
           default:
             paths:
               - path: /graphql/
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
       auth:
         # temporary disable the authentication to avoid a redirect error from keycloak
         enabled: false
@@ -1345,6 +1339,9 @@ provenance:
       ingress:
         enabled: true
         whitelistSourceRangeRef: clusterNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1453,6 +1450,9 @@ vulns:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1499,6 +1499,9 @@ graph:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1507,9 +1510,6 @@ graph:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-example:
       enabled: true
@@ -1524,6 +1524,9 @@ graph:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1532,9 +1535,6 @@ graph:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     grpc-20250507:
       enabled: true
       type: grpc
@@ -1556,6 +1556,9 @@ graph:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1564,9 +1567,6 @@ graph:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
     # rpc graph which hit the grpc graph instance declared above ^
     rpc-20250507:
       enabled: true
@@ -1580,6 +1580,9 @@ graph:
       ingress:
         enabled: true
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1588,9 +1591,6 @@ graph:
           default:
             paths:
               - path: /
-            extraWhitelistSourceRange:
-              # vpn network
-              - 192.168.101.0/24
 
     # Graph Instance to run the popular-4-shell dataset
     # Only spawned to prepare the right datafiles in the graph-popular-persistent-pvc
@@ -1652,6 +1652,9 @@ datasetsGenerator:
     ingress:
       enabled: true
       whitelistSourceRangeRef: stagingNetworkRanges
+      extraWhitelistSourceRange:
+        # vpn network
+        - 192.168.101.0/24
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
         nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1731,6 +1734,9 @@ staticWebsites:
         tlsEnabled: true
         secretName: dataportal-next-version-tls
         whitelistSourceRangeRef: stagingNetworkRanges
+        extraWhitelistSourceRange:
+          # vpn network
+          - 192.168.101.0/24
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "90"

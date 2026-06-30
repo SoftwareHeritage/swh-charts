@@ -15,7 +15,7 @@ Create a Kind Ingress for service .serviceType
       $configuration.ingress.endpoints -}}
 {{- range $endpoint_definition, $endpoint_config := $endpoints -}}
 {{- if $endpoint_config }}
-{{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default list -}}
+{{- $extraWhitelistSourceRange := get $endpoint_config "extraWhitelistSourceRange" | default $configuration.ingress.extraWhitelistSourceRange | default list -}}
 {{- $whitelistSourceRange := join "," (concat $defaultWhitelistSourceRange $extraWhitelistSourceRange | uniq | sortAlpha) | default "" -}}
 {{- $paths := get $endpoint_config "paths" -}}
 
