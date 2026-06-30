@@ -672,6 +672,7 @@ webGraphConfiguration:
 
 vulnsConfiguration:
   address: vulns.internal.staging.swh.network
+  secure: true
 
 webAlter:
   alter_settings:

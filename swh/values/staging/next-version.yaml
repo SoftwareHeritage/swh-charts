@@ -1283,6 +1283,7 @@ webGraphConfiguration:
 
 vulnsConfiguration:
   address: vulns-next-version.internal.staging.swh.network:80
+  secure: true
 
 provenance:
   enabled: true
