@@ -671,7 +671,7 @@ webGraphConfiguration:
     anonymous: 1000
 
 vulnsConfiguration:
-  address: vulns.internal.staging.swh.network
+  address: vulns.internal.staging.swh.network:80
   secure: false
 
 webAlter:
