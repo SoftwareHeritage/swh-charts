@@ -3176,17 +3176,17 @@ staticWebsites:
   enabled: true
   deployments:
     dataportal:
-      image: container-registry.softwareheritage.org/swh/infra/swh-apps/dataportal
+      image: container-registry.softwareheritage.org/swh/devel/swh-dataportal
       imageVersion: latest
       enabled: true
       replicas: 1
       hosts:
-        - dataportal.internal.staging.swh.network
+        - datasets.internal.swh.network
       ingress:
         enabled: true
         className: nginx
         tlsEnabled: true
-        secretName: dataportal-swh-cassandra-tls
+        secretName: datasets-swh-cassandra-tls
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
