@@ -234,6 +234,10 @@ vault:
             values:
             - "true"
 
+# List of minimal django apps necessary for the webhook web instance
+webDjangoAppsMinimal:
+  - swh.web.save_origin_webhooks
+
 web:
   migrations:
     enabled: true

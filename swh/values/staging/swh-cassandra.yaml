@@ -1140,7 +1140,7 @@ web:
       webhooksConfigurationRef: webhooksConfiguration
       keycloakConfigurationRef: keycloakConfiguration
       inboundEmailConfigurationRef: inboundEmailConfiguration
-      djangoAppsRef: webDjangoApps
+      djangoAppsRef: webDjangoAppsMinimal
       graphConfigurationRef: webGraphConfiguration
       extraConfig:
         save_code_now_webhook_secret: ${WEBHOOKS_SECRET}
