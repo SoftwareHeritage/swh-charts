@@ -1469,7 +1469,7 @@ graphConfiguration:
 
 vulnsConfiguration:
   address: vulns-grpc-popular-ingress:80
-  secure: true
+  secure: false
 
 noopObjstorageConfiguration:
   cls: noop
