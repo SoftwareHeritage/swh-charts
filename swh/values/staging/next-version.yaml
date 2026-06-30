@@ -1212,9 +1212,9 @@ graphql:
       searchConfigurationRef: remoteSearchConfiguration
       ingress:
         enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/rewrite-target: /
-        whitelistSourceRangeRef: stagingNetworkRanges
         endpoints:
           default:
             paths:
@@ -1452,6 +1452,7 @@ vulns:
         - vulns-next-version.internal.staging.swh.network
       ingress:
         enabled: true
+        whitelistSourceRangeRef: stagingNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1650,6 +1651,7 @@ datasetsGenerator:
       - luigi-scheduler-next-version.internal.staging.swh.network
     ingress:
       enabled: true
+      whitelistSourceRangeRef: stagingNetworkRanges
       extraAnnotations:
         nginx.ingress.kubernetes.io/proxy-body-size: 4G
         nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -1728,13 +1730,13 @@ staticWebsites:
         className: nginx
         tlsEnabled: true
         secretName: dataportal-next-version-tls
+        whitelistSourceRangeRef: stagingNetworkRanges
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
           nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
           nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
           nginx.ingress.kubernetes.io/proxy-body-size: "4G"
-        # whitelistSourceRangeRef: internalNetworkRanges
         endpoints:
          default:
            paths:
