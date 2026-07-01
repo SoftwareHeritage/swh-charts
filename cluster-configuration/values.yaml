@@ -25,7 +25,7 @@ keda:
 certManager:
   enabled: false
   namespace: cert-manager
-  version: v1.12.17
+  version: v1.17.4
   webhookGandiEnabled: false
   webhookGandiVersion: v0.2.0
   useGandiDNS: false
