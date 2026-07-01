@@ -197,7 +197,7 @@ redis:
               - ReadWriteOnce
             resources:
               requests:
-                storage: 1Gi
+                storage: 10Gi
     postgresql-replayer:
       enabled: true
       namespace: redis
