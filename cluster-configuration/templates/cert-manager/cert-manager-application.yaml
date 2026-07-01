@@ -14,9 +14,6 @@ spec:
     helm:
       # must match the application name (https://github.com/argoproj/argo-cd/issues/2871)
       releaseName: {{ .Values.clusterName }}-certmanager
-      parameters:
-        - name: "installCRDs"
-          value: "true"
       values: |
           {{- if .Values.certManager.useGandiDNS }}
           # this is necessary to not retrieve the SOA fields of internal zones
@@ -29,6 +26,8 @@ spec:
             enabled: true
             servicemonitor:
               enabled: true
+          crds:
+            enabled: true
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.certManager.namespace | default "cert-manager" | quote }}
