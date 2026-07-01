@@ -1728,12 +1728,12 @@ staticWebsites:
       enabled: true
       replicas: 1
       hosts:
-        - dataportal-next-version.internal.staging.swh.network
+        - datasets-next-version.internal.staging.swh.network
       ingress:
         enabled: true
         className: nginx
         tlsEnabled: true
-        secretName: dataportal-next-version-tls
+        secretName: datasets-next-version-tls
         whitelistSourceRangeRef: stagingNetworkRanges
         extraWhitelistSourceRange:
           # vpn network
