@@ -35,6 +35,7 @@ ingressNginx:
 
 certManager:
   enabled: true
+  version: 1.12.17
   webhookGandiEnabled: true
   useGandiDNS: true
 
