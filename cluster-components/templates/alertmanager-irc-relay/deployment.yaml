@@ -36,14 +36,14 @@ spec:
             - name: IRC_USER
               valueFrom:
                 secretKeyRef:
-                  name: alertmanager-irc-relay
-                  key: user
+                  name: {{ .Values.alertmanagerIrcRelay.secretRef }}
+                  key: {{ .Values.alertmanagerIrcRelay.userKeyRef }}
                   optional: true
             - name: IRC_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: alertmanager-irc-relay
-                  key: password
+                  name: {{ .Values.alertmanagerIrcRelay.secretRef }}
+                  key: {{ .Values.alertmanagerIrcRelay.passwordKeyRef }}
                   optional: true
           resources:
             requests:

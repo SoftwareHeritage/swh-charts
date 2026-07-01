@@ -56,6 +56,9 @@ alertmanagerIrcRelay:
   enabled: false
   namespace: cattle-monitoring-system
   priorityClassName: cluster-components-system
+  secretRef: alertmanager-irc-relay
+  userKeyRef: user
+  passwordKeyRef: password
   ingress:
     enabled: true
     hosts:
