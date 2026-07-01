@@ -3181,7 +3181,7 @@ staticWebsites:
       enabled: true
       replicas: 1
       hosts:
-        - datasets.internal.swh.network
+        - datasets.staging.swh.network
       ingress:
         enabled: true
         className: nginx
