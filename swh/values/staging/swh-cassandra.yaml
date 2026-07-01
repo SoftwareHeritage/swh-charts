@@ -3182,6 +3182,7 @@ staticWebsites:
       replicas: 1
       hosts:
         - datasets.staging.swh.network
+        - datasets.internal.staging.swh.network
       ingress:
         enabled: true
         className: nginx
