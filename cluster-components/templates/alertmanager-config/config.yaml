@@ -1,14 +1,15 @@
-{{- if .Values.alertmanagerConfig.enabled }}
+{{- with .Values.alertmanagerConfig }}
+{{- if .enabled }}
 ---
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: irc-relay-config
-  namespace: {{ .Values.alertmanagerConfig.namespace }}
+  namespace: {{ .namespace }}
 spec:
-  {{- if .Values.alertmanagerConfig.inhibitRules }}
+  {{- if .inhibitRules }}
   inhibitRules:
-    {{- toYaml .Values.alertmanagerConfig.inhibitRules | nindent 4 }}
+    {{- toYaml .inhibitRules | nindent 4 }}
   {{- end }}
   route:
     groupBy: ['...']
@@ -30,15 +31,16 @@ spec:
     - name: ircrelay
       webhookConfigs:
         - sendResolved: true
-          url: {{ .Values.alertmanagerConfig.ircRelayHost }}
-          {{ if .Values.alertmanagerConfig.authentication.enabled -}}
+          url: {{ .ircRelayHost }}
+          {{ if .authentication.enabled -}}
           httpConfig:
             basicAuth:
               username:
-                key: {{ .Values.alertmanagerConfig.authentication.userKeyRef }}
-                name: {{ .Values.alertmanagerConfig.authentication.secretRef }}
+                key: {{ .authentication.userKeyRef }}
+                name: {{ .authentication.secretRef }}
               password:
-                key: {{ .Values.alertmanagerConfig.authentication.passwordKeyRef }}
-                name: {{ .Values.alertmanagerConfig.authentication.secretRef }}
+                key: {{ .authentication.passwordKeyRef }}
+                name: {{ .authentication.secretRef }}
           {{- end -}}
-{{ end }}
+{{- end }}
+{{- end }}
