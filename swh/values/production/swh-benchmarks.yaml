@@ -140,3 +140,6 @@ ingestion_benchmarks:
       default:
         paths:
           - path: /
+
+toolbox:
+  enabled: true
