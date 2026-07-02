@@ -1,5 +1,6 @@
 {{- if .Values.rabbitmq.enabled -}}
 {{- range $deployment_name, $deployment_config := .Values.rabbitmq.deployments -}}
+{{- $namespace := $deployment_config.namespace | default $.Values.rabbitmq.namespace -}}
 {{- if (ne false $deployment_config.enabled) -}}
 {{- $name := print "rabbitmq-" $deployment_name -}}
 {{- $affinity := $deployment_config.affinity | default $.Values.rabbitmq.affinity | default dict -}}
@@ -14,7 +15,7 @@ apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
   name: {{ $name }}
-  namespace: {{ $deployment_config.namespace | default $.Values.rabbitmq.namespace }}
+  namespace: {{ $namespace }}
 spec:
   image: rabbitmq:{{ $.Values.rabbitmq.version }}-management
   replicas: {{ $deployment_config.replicas | default $.Values.rabbitmq.replicas | default 1 }}
