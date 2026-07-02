@@ -130,6 +130,12 @@ svix:
   # Namespace where to run the svix server (can be overridden per instance)
   namespace: svix-server
   priorityClassName: cluster-components-storage
+  # The kubernetes secret reference holding the secrets necessary for svix to run
+  # (can be overridden per instance)
+  # - SVIX_JWT_SECRET
+  # - APP_DB_PASS
+  # - APP_DB_USER
+  secretsRef: svix-server-secrets
   # Svix-server version must match the svix python library
   # in the swh-webhooks image's requirements (can be overriden per instance)
   version: v1.82

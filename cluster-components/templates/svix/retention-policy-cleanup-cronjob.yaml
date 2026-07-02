@@ -8,7 +8,7 @@
 {{- $cronPeriod := $cleanupExpiredMessages.cron | quote -}}
 {{- $priorityClassName := $.Values.svix.priorityClassName -}}
 {{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
-
+{{- $secretsRef := $svixConfiguration.secretsRef | default $.Values.svix.secretsRef -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -40,18 +40,18 @@ spec:
                 - name: SVIX_DB_NAME
                   valueFrom:
                     secretKeyRef:
-                      name: svix-server-secrets
+                      name: {{ $secretsRef }}
                       # Yes, dbname and users are the same
                       key: APP_DB_USER
                 - name: SVIX_DB_USER
                   valueFrom:
                     secretKeyRef:
-                      name: svix-server-secrets
+                      name: {{ $secretsRef }}
                       key: APP_DB_USER
                 - name: SVIX_DB_PASS
                   valueFrom:
                     secretKeyRef:
-                      name: svix-server-secrets
+                      name: {{ $secretsRef }}
                       key: APP_DB_PASS
                 - name: SQL_CLEANUP_FILE
                   value: /script/cleanup-expired-messages.sql

@@ -14,6 +14,9 @@
 {{ $tlsDisable := $svixConfiguration.tlsDisable | default $.Values.svix.tlsDisable -}}
 {{ $whitelistSubnets := $svixConfiguration.whitelistSubnets | default $.Values.svix.whitelistSubnets -}}
 {{- $priorityClassName := $.Values.svix.priorityClassName -}}
+{{- $secretsRef := required
+    (print "$configuration.secretsRef must be provided either declare it globally in <.Values.svix.secretsRef> or locally to each instance <$configuration.secretsRef> ")
+  ($svixConfiguration.secretsRef | default $.Values.svix.secretsRef) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -74,17 +77,17 @@ spec:
             - name: SVIX_JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: SVIX_JWT_SECRET
             - name: SVIX_DB_PASS
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: APP_DB_PASS
             - name: SVIX_DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: APP_DB_USER
             - name: WAIT_FOR
               value: "true"  # We want to wait for the default services

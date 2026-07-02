@@ -5,6 +5,7 @@
 {{- $appName := print $svixName "-postgres" -}}
 {{- $affinity := $svixConfiguration.affinity | default $.Values.svix.affinity -}}
 {{- $deployPostgres := $svixConfiguration.postgres.enabled | default false -}}
+{{- $secretsRef := $svixConfiguration.secretsRef | default $.Values.svix.secretsRef -}}
 {{ if $deployPostgres -}}
 ---
 apiVersion: apps/v1
@@ -69,17 +70,17 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: APP_DB_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: APP_DB_PASS
             - name: POSTGRES_DB
               valueFrom:
                 secretKeyRef:
-                  name: svix-server-secrets
+                  name: {{ $secretsRef }}
                   key: APP_DB_NAME
           volumeMounts:
             - name: postgres-data
