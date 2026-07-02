@@ -63,13 +63,11 @@ svix:
       requestedMemory: 100Mi
       requestedCpu: 100m
       postgres:
-        persistentVolume: false
         dsn: svix-rw.swh
         cleanupExpiredMessages:
           enabled: true
           cron: "0 */2 * * *"
       redis:
-        persistentVolume: false
         dsn: redis-svix.cluster-components
 
 dockerCache:

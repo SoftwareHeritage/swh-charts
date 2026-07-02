@@ -149,9 +149,6 @@ svix:
     # dsn: redis.internal.softwareheritage.org
   # Postgres configuration (can be overridden per instance)
   postgres:
-    # (deprecated) When true, this installs and configure a postgres instance. Use the
-    # `cloudnativePg` configuration dict instead.
-    enabled: false
     # The namespace where to install or read postgresql related configuration
     # namespace: cnpg
     # The dsn to access the postgres instance (independent of the enabled above)
