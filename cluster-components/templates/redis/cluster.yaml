@@ -8,7 +8,7 @@
 {{- $nodeSelector := $deploymentConfig.nodeSelector | default $.Values.redis.nodeSelector -}}
 {{- $affinity := $deploymentConfig.affinity | default $.Values.redis.affinity -}}
 {{- $labels := $deploymentConfig.labels | default $.Values.redis.labels -}}
-{{- $redisSecret := $deploymentConfig.redisSecret | default dict -}}
+{{- $redisSecret := $deploymentConfig.redisSecret | default $.Values.redis.redisSecret | default dict -}}
 {{- $priorityClassName := $deploymentConfig.priorityClassName | default $.Values.redis.priorityClassName -}}
 {{- $redisExporter := mustMerge $.Values.redis.redisExporter ($deploymentConfig.redisExporter | default dict) -}}
 {{- $extraConfig := $deploymentConfig.extraConfig | default $.Values.redis.extraConfig -}}
