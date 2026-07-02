@@ -145,9 +145,6 @@ svix:
   tlsDisable: false
   # Redis configuration (can be overridden per instance)
   redis:
-    # (deprecated) When true, this installs and configure a redis instance. Use the
-    # `redis` configuration dict instead.
-    enabled: false
     # The dsn to access the redis instance (independent of the enabled above)
     # dsn: redis.internal.softwareheritage.org
   # Postgres configuration (can be overridden per instance)
