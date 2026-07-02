@@ -64,15 +64,15 @@ podPriority:
 #       - "-vv"
 
 clusterPgStagingDb1:
-  name: cluster-pg-staging-db1
-  password:
-    name: cluster-staging-db1-postgres-user-credential
-    key: password
-  connectionParameters:
-    # Use the correct IP or host name for the source database
-    host: db1.internal.staging.swh.network
-    user: postgres
-    port: "5433"
+  - name: cluster-pg-staging-db1
+    password:
+      name: cluster-staging-db1-postgres-user-credential
+      key: password
+    connectionParameters:
+      # Use the correct IP or host name for the source database
+      host: db1.internal.staging.swh.network
+      user: postgres
+      port: "5433"
 
 cloudnativePg:
   enabled: true
@@ -85,7 +85,7 @@ cloudnativePg:
   # Where to store backup (if enabled)
   # barmanobjectstoreRef: minioTestObjectStore
   # Cluster Postgresql to read db to initialize from
-  externalClusterRef: clusterPgStagingDb1
+  externalClustersRef: clusterPgStagingDb1
   superUserSecretRef: swh-postgresql-postgres-secret
   postgresql:
     parameters:
