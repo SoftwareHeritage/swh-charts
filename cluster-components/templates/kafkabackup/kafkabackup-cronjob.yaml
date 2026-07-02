@@ -2,6 +2,8 @@
 {{- $name := "kafkabackup" -}}
 {{- $appName := print .Values.clusterName "-" $name -}}
 {{- $namespace := .Values.kafkabackup.namespace -}}
+{{- $sshSecretKeyName := .Values.kafkabackup.ssh.secretKeyName -}}
+{{- $storageSecretsName := .Values.kafkabackup.storageSecretsName -}}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -29,7 +31,7 @@ spec:
           volumes:
             - name: ssh-secrets
               secret:
-                secretName: {{ .Values.kafkabackup.ssh.secretKeyName }}
+                secretName: {{ $sshSecretKeyName }}
             - name: configmap
               configMap:
                 name: "{{ $appName }}-configmap"
@@ -76,7 +78,7 @@ spec:
                   value: /ssh/ssh-privatekey
               envFrom:
                 - secretRef:
-                    name: {{ .Values.kafkabackup.storageSecretsName }}
+                    name: {{ $storageSecretsName }}
           {{ if .Values.kafkabackup.kafkaHosts -}}
           hostAliases:
           {{- range $host, $ip := .Values.kafkabackup.kafkaHosts }}
