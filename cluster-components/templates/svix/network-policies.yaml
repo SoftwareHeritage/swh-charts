@@ -3,9 +3,6 @@
 {{- if (ne false $svixConfiguration.enabled) -}}
 {{- $ns := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
 {{- $appName := print $svixName "-server" -}}
-{{- $podSelectorPolicy := $svixConfiguration.redis.podSelectorPolicy
-      | default $.Values.svix.redis.podSelectorPolicy
-      | default dict -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -44,21 +41,12 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-{{- if $podSelectorPolicy }}
-      {{ toYaml $podSelectorPolicy -}}
-{{- else }}
       app: redis-{{ $svixName }}
-{{- end }}
   ingress:
     - from:
         - podSelector:
             matchLabels:
               app: {{ $appName }}
-        {{- if $podSelectorPolicy }}
-        - podSelector:
-            matchLabels:
-              {{- toYaml $podSelectorPolicy | nindent 14 -}}
-        {{- end }}
       ports:
         - protocol: TCP
           port: 6379
