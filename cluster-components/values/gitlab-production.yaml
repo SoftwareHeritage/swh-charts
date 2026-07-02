@@ -1,3 +1,5 @@
+clusterName: gitlab-production
+
 alertmanagerConfig:
   enabled: true
   namespace: monitoring
