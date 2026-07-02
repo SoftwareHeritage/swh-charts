@@ -1825,7 +1825,7 @@ listers:
       - swh.lister.github.tasks.FullGitHubRelister
       - swh.lister.github.tasks.RangeGitHubLister
       autoScaling:
-        maxReplicaCount: 24
+        maxReplicaCount: 12
     github-incremental:
       queues:
       - swh.lister.github.tasks.IncrementalGitHubLister
