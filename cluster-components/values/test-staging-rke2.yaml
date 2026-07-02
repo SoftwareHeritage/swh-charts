@@ -115,6 +115,7 @@ rabbitmq:
   deployments:
     scheduler:
       enabled: true
+      secretRef: rabbitmq-scheduler-secret
 
 redis:
   enabled: true

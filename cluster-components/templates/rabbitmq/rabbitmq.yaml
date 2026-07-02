@@ -8,6 +8,7 @@
 {{- $limitedMemory := $deployment_config.limitedMemory | default $.Values.rabbitmq.limitedMemory -}}
 {{- $limitedCpu := $deployment_config.limitedCpu | default $.Values.rabbitmq.limitedCpu -}}
 {{- $storageVolume := $deployment_config.storageVolume | default $.Values.rabbitmq.storageVolume -}}
+{{- $secretName := $deployment_config.secretRef | default $.Values.rabbitmq.secretRef | default (print $name "-secret") -}}
 ---
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
@@ -25,7 +26,7 @@ spec:
       - rabbitmq_prometheus
   secretBackend:
     externalSecret:
-      name: {{ $name }}-secret
+      name: {{ $secretName }}
   persistence:
     storageClassName: {{ get $storageVolume "class" }}
     storage: {{ $storageVolume.size | default "1Gi" }}

@@ -658,6 +658,7 @@ rabbitmq:
     scheduler:
       enabled: true
       namespace: swh-cassandra-next-version
+      secretRef: rabbitmq-scheduler-secret
 
 cassandra:
   enabled: true
