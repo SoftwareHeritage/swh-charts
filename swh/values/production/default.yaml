@@ -1,5 +1,5 @@
 environment: production
-clusterName: archive-productionx-rke2
+clusterName: archive-production-rke2
 sentry:
   environment: production
 
