@@ -1,15 +1,24 @@
 {{ if .Values.svix.enabled -}}
+{{- $configmaps := list -}}
 {{- range $svixName, $svixConfiguration := .Values.svix.deployments -}}
-{{ $namespace := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
+{{- $namespace := $svixConfiguration.namespace | default $.Values.svix.namespace -}}
 {{- if (ne false $svixConfiguration.enabled) -}}
 {{- $postgres := $svixConfiguration.postgres | default $.Values.svix.postgres | default dict -}}
 {{- $cleanupExpiredMessages := $postgres.cleanupExpiredMessages | default (dict "enabled" "false") -}}
 {{- if $cleanupExpiredMessages.enabled -}}
+{{- $configmaps = append $configmaps (list "svix-script-utils" $namespace) -}}
+{{- end }}
+{{- end }}
+{{- end -}}
+
+{{ range $configmap := uniq $configmaps }}
+{{ $configmapName := first $configmap }}
+{{ $namespace := last $configmap }}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $svixName }}-script-utils
+  name: {{ $configmapName }}
   namespace: {{ $namespace }}
 data:
 
@@ -73,7 +82,5 @@ data:
       --set=ON_ERROR_STOP=1 \
       "${connstring}"
 
-{{ end }}
-{{- end -}}
 {{- end -}}
 {{- end -}}
