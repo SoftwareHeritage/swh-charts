@@ -85,7 +85,7 @@ objstorage:
       extraRpcConfiguration:
         client_max_size: 1073741824
       hosts:
-        - objstorage-rw-azure-benchmarks
+        - objstorage-rw-azure-test-seq-benchmarks
       ingress:
         enabled: true
         # mandatory if ingress is enabled
@@ -118,7 +118,7 @@ objstorage:
       extraRpcConfiguration:
         client_max_size: 1073741824
       hosts:
-        - objstorage-rw-azure-concurrent-benchmarks
+        - objstorage-rw-azure-test-concurrent-benchmarks
       ingress:
         enabled: true
         # mandatory if ingress is enabled
@@ -151,7 +151,7 @@ objstorage:
       extraRpcConfiguration:
         client_max_size: 1073741824
       hosts:
-        - objstorage-rw-azure-concurrent-benchmarks
+        - objstorage-rw-azure-prod-a-concurrent-benchmarks
       ingress:
         enabled: true
         # mandatory if ingress is enabled
