@@ -62,7 +62,7 @@ spec:
           volumes:
           - name: svix-script-utils
             configMap:
-              name: svix-script-utils
+              name: {{ $svixName }}-script-utils
               defaultMode: 0555
           restartPolicy: OnFailure
 
