@@ -1,22 +1,4 @@
 {{/*
-Create a connstring out of a configuration reference.
-*/}}
-{{- define "swh.connstring" -}}
-{{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.yaml:swh.connstring: The <host> property is mandatory in " .configurationRef)
-                    (get $configuration "host") -}}
-{{- $port := required (print "_helpers.yaml:swh.connstring: The <port> property is mandatory in " .configurationRef)
-                    (get $configuration "port") -}}
-{{- $user := required (print "_helpers.yaml:swh.connstring: The <user> property is mandatory in " .configurationRef)
-                    (get $configuration "user") -}}
-{{- $password := required (print "_helpers.yaml:swh.connstring: The <pass> property is mandatory in " .configurationRef)
-                    (get $configuration "pass") -}}
-{{- $db := required (print "_helpers.yaml:swh.connstring: The <db> property is mandatory in " .configurationRef)
-                    (get $configuration "db") -}}
-host={{ $host }} port={{ $port }} user={{ $user }} dbname={{ $db }} password={{ $password }}
-{{- end -}}
-
-{{/*
 Create a global storage configuration based on configuration section aggregation
 */}}
 {{- define "swh.storageConfiguration" -}}
@@ -165,40 +147,6 @@ deposit:
     username: {{ $user }}
     password: {{ $pass }}
 {{- end -}}
-
-{{/* Generate the configuration for a postgresql service (e.g scheduler, storage,
-   * scrubber, ...). It's also able to deal with multiple configuration (e.g. storage
-   * pipeline.
-   */}}
-{{- define "swh.postgresql" -}}
-{{- $connstring := include "swh.connstring"
-                           (dict "configurationRef" .configurationRef
-                                 "Values" .Values) -}}
-{{- $config := (dict "cls" "postgresql" "db" $connstring) -}}
-{{- if .serviceType -}}
-  {{ $config = (dict .serviceType $config) }}
-{{- end -}}
-{{ toYaml $config }}
-{{- end -}}
-
-{{- define "django.postgresql" -}}
-{{- $configuration := get .Values .configurationRef -}}
-{{- $host := required (print "_helpers.yaml:django.postgresql: The <host> property is mandatory in " .configurationRef)
-                    (get $configuration "host") -}}
-{{- $port := required (print "_helpers.yaml:django.postgresql: The <port> property is mandatory in " .configurationRef)
-                    (get $configuration "port") -}}
-{{- $db := required (print "_helpers.yaml:django.postgresql: The <db> property is mandatory in " .configurationRef)
-                    (get $configuration "db") -}}
-{{- $user := required (print "_helpers.yaml:django.postgresql: The <user> property is mandatory in " .configurationRef)
-                    (get $configuration "user") -}}
-{{- $password := required (print "_helpers.yaml:django.postgresql: The <password> property is mandatory in " .configurationRef)
-                    (get $configuration "pass") }}
-  host: {{ $host }}
-  port: {{ $port }}
-  name: {{ $db }}
-  user: {{ $user }}
-  password: {{ $password }}
-{{- end }}
 
 {{/*
 Generate the configuration for a cassandra storage
