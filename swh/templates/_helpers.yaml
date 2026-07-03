@@ -1,97 +1,4 @@
 {{/*
-Create a global storage configuration based on configuration section aggregation
-*/}}
-{{- define "swh.storageConfiguration" -}}
-{{- $storageConfiguration := get .Values .configurationRef -}}
-{{- if not $storageConfiguration -}}
-  {{- fail (print "_helpers.yaml: swh.storageConfiguration: Undeclared <" .configurationRef "> storage configuration") -}}
-{{- end -}}
-{{- $storageServiceConfigurationRef := get $storageConfiguration "storageConfigurationRef" -}}
-{{- if not $storageServiceConfigurationRef -}}
-  {{- fail (print "_helpers.yaml: swh.storageConfiguration: key <storageConfigurationRef> is mandatory in " .configurationRef) -}}
-{{- end -}}
-{{- $storageServiceConfiguration := get .Values $storageServiceConfigurationRef -}}
-{{- $storageType := get $storageServiceConfiguration "cls" -}}
-{{- $storageIncludeArgs := (dict "configurationRef" $storageServiceConfigurationRef "Values" .Values) -}}
-{{- $storageConfig := dict -}}
-{{- if eq $storageType "remote" -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.storage.remote" $storageIncludeArgs | fromYaml) -}}
-{{- else if eq $storageType "cassandra" -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.storage.cassandra" $storageIncludeArgs | fromYaml) -}}
-{{- else if eq $storageType "postgresql" -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig (include "swh.postgresql" $storageIncludeArgs | fromYaml) -}}
-{{- else if eq $storageType "memory" -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig (dict "cls" "memory") -}}
-{{- else -}}
-  {{- fail (print "_helpers.yaml:swh.storageConfiguration: Storage <" $storageType "> not implemented") -}}
-{{- end -}}
-
-{{- $objstorageConfigurationRef :=  get $storageConfiguration "objstorageConfigurationRef" -}}
-{{- if $objstorageConfigurationRef -}}
-  {{- $objstorageConfiguration := get .Values $objstorageConfigurationRef -}}
-  {{- $objectStorageType := get $objstorageConfiguration "cls" -}}
-  {{- $objstorageConfig := include "swh.objstorageConfiguration"
-                                   (dict "configurationRef" $objstorageConfigurationRef
-                                         "Values" .Values) | fromYaml -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig $objstorageConfig -}}
-{{- end -}}
-
-{{- $journalWriterConfigurationRef := get $storageConfiguration "journalWriterConfigurationRef" -}}
-{{- if $journalWriterConfigurationRef -}}
-  {{- $journalWriterConfig := include "swh.journalWriterConfiguration"
-                                      (dict "service_type" "journal_writer"
-                                            "configurationRef" $journalWriterConfigurationRef
-                                            "Values" .Values) | fromYaml -}}
-  {{- $storageConfig = mustMergeOverwrite $storageConfig $journalWriterConfig -}}
-{{- end -}}
-
-{{- $pipelineStepsRef := get $storageConfiguration "pipelineStepsRef" -}}
-{{- if $pipelineStepsRef -}}
-  {{- $pipelineSteps := include "swh.storage.parsePipelineSteps" (dict "Values" .Values "pipelineStepsRef" $pipelineStepsRef) | fromYamlArray -}}
-  {{- $pipelineSteps = mustAppend $pipelineSteps $storageConfig -}}
-  {{- $storageConfig = (dict "cls" "pipeline" "steps" $pipelineSteps) -}}
-{{- end -}}
-{{- dict (get . "service" | default "storage") $storageConfig | toYaml -}}
-{{- end -}}
-
-{{/* Parse a storage pipeline steps definition out of the .pipelineStepsRef key */}}
-{{- define "swh.storage.parsePipelineSteps" -}}
-{{- if not (hasKey .Values .pipelineStepsRef) -}}
-  {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: No pipeline steps configuraton found:" .pipelineStepsRef) -}}
-{{- end -}}
-{{- $Values := .Values -}}
-{{- $pipelineSteps := (list) -}}
-{{- range $pipelineStep := get $Values .pipelineStepsRef -}}
-  {{- if not (hasKey $pipelineStep "cls") -}}
-    {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: Pipeline step in " .pipelineStepsRef " is missing mandatory cls key") -}}
-  {{- end -}}
-  {{- if (or (eq $pipelineStep.cls "masking") (eq $pipelineStep.cls "blocking")) -}}
-    {{- if not (hasKey $pipelineStep "postgresqlConfigurationRef") -}}
-      {{- fail (print "_helpers.yaml:swh.storage.parsePipelineSteps: Masking pipeline step in " .pipelineStepsRef " is missing mandatory postgresqlConfigurationRef key") -}}
-    {{- end -}}
-    {{- $cls := $pipelineStep.cls -}}
-    {{- $keyDb := print $cls "_db" -}}
-    {{- $queryDb := include "swh.connstring"
-                            (dict "configurationRef" $pipelineStep.postgresqlConfigurationRef
-                                  "Values" $Values) -}}
-
-    {{- $pipelineSteps = mustAppend $pipelineSteps (dict "cls" $cls $keyDb $queryDb) -}}
-  {{- else -}}
-    {{- $pipelineSteps = mustAppend $pipelineSteps $pipelineStep -}}
-  {{- end -}}
-{{- end -}}
-{{ $pipelineSteps | toYaml }}
-{{- end -}}
-
-{{/*
-Generate the configuration for a remote storage
-*/}}
-{{- define "swh.storage.remote" }}
-{{- $storageConfiguration := get .Values .configurationRef -}}
-{{ (dict "cls" "remote" "url" (get $storageConfiguration "url")) | toYaml }}
-{{ end -}}
-
-{{/*
 Create a global scheduler configuration based on scheduler section aggregation
 */}}
 {{- define "swh.schedulerConfiguration" -}}
@@ -149,34 +56,6 @@ deposit:
 {{- end -}}
 
 {{/*
-Generate the configuration for a cassandra storage
-*/}}
-{{- define "swh.storage.cassandra" -}}
-{{- $storageConfiguration := get .Values .configurationRef -}}
-{{- $cassandraSeedsRef := get $storageConfiguration "cassandraSeedsRef" -}}
-{{- $cassandraSeeds := get .Values $cassandraSeedsRef -}}
-{{- $keyspace := required (print "The keyspace property is mandatory in " .configurationRef)
-                    (get $storageConfiguration "keyspace") -}}
-
-{{- $config := (dict
-      "cls" "cassandra"
-      "hosts" $cassandraSeeds
-      "keyspace" $keyspace
-      "consistency_level" (get $storageConfiguration "consistencyLevel")) -}}
-
-{{- $authProvider := get $storageConfiguration "authProvider" -}}
-{{- if $authProvider -}}
-  {{- $config = mustMergeOverwrite $config (dict "auth_provider" $authProvider) -}}
-{{- end -}}
-
-{{- $specificOptions := get $storageConfiguration "specificOptions" -}}
-{{- if $specificOptions -}}
-  {{- $config = mustMergeOverwrite $config $specificOptions -}}
-{{- end -}}
-{{- toYaml $config -}}
-{{- end -}}
-
-{{/*
 Generate the configuration for a journal writer
 */}}
 {{- define "swh.journalWriterConfiguration" -}}
@@ -197,52 +76,6 @@ Generate the configuration for a journal writer
 {{- toYaml $config -}}
 {{- end -}}
 
-{{/* Generate the init keyspace container configuration if needed */}}
-{{- define "swh.storage.cassandra.keyspaceManagementContainers" -}}
-  {{- $storageDefinition := required (print "Storage definition " .configurationRef " not found") (get .Values .configurationRef) -}}
-  {{- $storageConfigurationRef := required (print "storageConfigurationRef key needed in " .configurationRef) (get $storageDefinition "storageConfigurationRef") -}}
-  {{- $storageConfiguration := required (print $storageConfigurationRef " declaration not found") (get .Values $storageConfigurationRef) -}}
-  {{- $storageClass := required (print "cls entry mandatory in " $storageConfigurationRef) (get $storageConfiguration "cls") -}}
-  {{- $initKeyspace := get $storageConfiguration "initKeyspace" -}}
-  {{- $upgradeKeyspace := get $storageConfiguration "upgradeKeyspace" -}}
-
-  {{- if eq "cassandra" $storageClass -}}
-    {{- if $initKeyspace -}}
-- name: init-cassandra-keyspace
-  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
-  imagePullPolicy: IfNotPresent
-  env:
-    - name: SWH_CONFIG_FILENAME
-      value: /etc/swh/config.yml
-  command:
-  - /entrypoints/init-cassandra-keyspace.sh
-  volumeMounts:
-  - name: configuration
-    mountPath: /etc/swh
-    readOnly: false
-  - name: backend-utils
-    mountPath: /entrypoints
-    readOnly: true
-    {{- end -}}
-    {{- if $upgradeKeyspace }}
-- name: upgrade-cassandra-keyspace
-  image: {{ get .Values .imagePrefixName }}:{{ get .Values (print .imagePrefixName "_version") }}
-  imagePullPolicy: IfNotPresent
-  env:
-    - name: SWH_CONFIG_FILENAME
-      value: /etc/swh/config.yml
-  command:
-  - /entrypoints/upgrade-cassandra-keyspace.sh
-  volumeMounts:
-  - name: configuration
-    mountPath: /etc/swh
-    readOnly: false
-  - name: backend-utils
-    mountPath: /entrypoints
-    readOnly: true
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
 
 {{/* Merge .newSecrets into .collectedSecrets */}}
 {{- define "swh.secrets.mergeDicts" -}}
