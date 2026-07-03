@@ -100,17 +100,19 @@ spec:
           value: {{ .Values.loaderMetadata.logLevel | default "INFO" | quote }}
         - name: SWH_CONFIG_FILENAME
           value: /etc/swh/config.yml
+        {{- if .Values.loaderMetadata.sentry.enabled }}
         - name: SWH_SENTRY_ENVIRONMENT
           value: {{ .Values.sentry.environment }}
         - name: SWH_MAIN_PACKAGE
-          value: {{ .Values.loaderMetadata.sentrySwhPackage }}
+          value: swh.loader.metadata
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: common-secrets
-              key: loader-metadata-sentry-dsn
+              name: {{ .Values.loaderMetadata.sentry.secretKeyRef }}
+              key: {{ .Values.loaderMetadata.sentry.secretKeyName }}
               # 'name' secret must exist & include key "host"
               optional: true
+        {{- end }}
         volumeMounts:
           - name: loader-metadata-utils
             mountPath: /pre-stop.sh

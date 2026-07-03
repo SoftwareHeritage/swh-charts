@@ -525,9 +525,12 @@ storageReplayer:
 loaderMetadata:
   enabled: false
   priorityClassName: normal-workload
-  sentrySwhPackage: swh.loader.metadata
   requestedMemory: 350Mi
   requestedCpu: 80m
+  sentry:
+    enabled: false
+    # secretKeyRef: loader-metadata-sentry-secret
+    # secretKeyName: loader-metadata-sentry-dsn
   # Override the default dns configuration (ndots, search domains, ...)
   # dnsConfiguration: dnsConfiguration
   # terminationGracePeriodSeconds: 3600

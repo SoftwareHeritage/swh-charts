@@ -132,6 +132,10 @@ cookers:
 
 loaderMetadata:
   dnsConfigurationRef: dnsConfiguration
+  sentry:
+    enabled: true
+    secretKeyRef: loader-metadata-sentry-secret
+    secretKeyName: loader-metadata-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
