@@ -181,6 +181,8 @@ listers:
 graphql:
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: graphql-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -194,6 +196,8 @@ graphql:
 storage:
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: storage-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -207,6 +211,8 @@ storage:
 scheduler:
   sentry:
     enabled: true
+    secretKeyRef: scheduler-sentry-secrets
+    secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -220,6 +226,8 @@ scheduler:
 vault:
   sentry:
     enabled: true
+    secretKeyRef: swh-vault-sentry-secret
+    secretKeyName: sentry-dsn
   extraConfig:
     smtp:
       host: smtp.inria.fr
@@ -263,6 +271,8 @@ web:
     enabled: true
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: web-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -281,6 +291,8 @@ deposit:
     enabled: true
   sentry:
     enabled: true
+    secretKeyRef: deposit-sentry-secret
+    secretKeyName: deposit-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -300,6 +312,8 @@ deposit:
 indexerStorage:
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: indexer-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -313,6 +327,8 @@ indexerStorage:
 search:
   sentry:
     enabled: true
+    secretKeyRef: swh-search-sentry-secret
+    secretKeyName: sentry-dsn
   rpc:
     affinity:
       nodeAffinity:
@@ -383,6 +399,8 @@ objstorage:
   port: 5003
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: objstorage-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -412,6 +430,8 @@ statsd_exporter:
 counters:
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: counters-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -508,6 +528,8 @@ alter:
 provenance:
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: provenance-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -522,6 +544,8 @@ graph:
   imageVersion: "20260625.1"
   sentry:
     enabled: true
+    secretKeyRef: common-secrets
+    secretKeyName: graph-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

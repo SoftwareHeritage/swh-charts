@@ -386,8 +386,8 @@ graphql:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: graphql-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: graphql-sentry-dsn
   deployments:
     instance-name:
       enabled: false
@@ -644,8 +644,8 @@ indexerStorage:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: indexer-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: indexer-sentry-dsn
   backend:
     # When true, initalize the backend, leave it empty to do nothing
     # initialize:
@@ -708,8 +708,8 @@ storage:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: storage-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: storage-sentry-dsn
   #  affinity:
   #    nodeAffinity:
   #      requiredDuringSchedulingIgnoredDuringExecution:
@@ -831,8 +831,8 @@ web:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: web-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: web-sentry-dsn
   deployments:
     instance:
       enabled: false
@@ -1037,8 +1037,8 @@ vault:
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
-    secretKeyRef: swh-vault-sentry-secret
-    secretKeyName: sentry-dsn
+    # secretKeyRef: swh-vault-sentry-secret
+    # secretKeyName: sentry-dsn
   backend:
     # When true, initalize the backend, leave it empty to do nothing
     # initialize:
@@ -1109,8 +1109,8 @@ scheduler:
   logLevel: INFO
   sentry:
     enabled: false
-    secretKeyRef: scheduler-sentry-secrets
-    secretKeyName: sentry-dsn
+    # secretKeyRef: scheduler-sentry-secrets
+    # secretKeyName: sentry-dsn
   alerts:
     enabled: false
     # period: 30m
@@ -1275,8 +1275,8 @@ search:
   logLevel: INFO
   sentry:
     enabled: false
-    secretKeyRef: swh-search-sentry-secret
-    secretKeyName: sentry-dsn
+    # secretKeyRef: swh-search-sentry-secret
+    # secretKeyName: sentry-dsn
   rpc:
     port: 5010
     priorityClassName: frontend-rpc
@@ -1482,8 +1482,8 @@ deposit:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: deposit-sentry-secret
-    secretKeyName: deposit-sentry-dsn
+    # secretKeyRef: deposit-sentry-secret
+    # secretKeyName: deposit-sentry-dsn
   # hosts:
   # - deposit.staging.swh.network
   ingress:
@@ -1528,8 +1528,8 @@ objstorage:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: objstorage-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: objstorage-sentry-dsn
 
   deployments:
     # Each key will be an objstorage instance to be deployed
@@ -1689,8 +1689,8 @@ counters:
   logLevel: INFO
   sentry:
     enabled: false
-    secretKeyRef: common-secrets
-    secretKeyName: counters-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: counters-sentry-dsn
   journalClient:
     enabled: false
     # countersConfigurationRef: remoteCountersConfiguration
@@ -1768,8 +1768,8 @@ objstorageReplayer:
   # destinationObjstorageConfigurationRef: fakeRemoteObjstorageConfiguration
   sentry:
     enabled: false
-    secretKeyRef: my-secret
-    secretKeyName: my-key
+    # secretKeyRef: common-secrets
+    # secretKeyName: objstorage-replayer-sentry-dsn
   # [optional] Add extra cli log level (can be overridden per instance)
   # extraCliLogLevel: ""
   # For example:
@@ -1898,8 +1898,8 @@ provenance:
   priorityClassName: frontend-rpc
   sentry:
     enabled: false
-    secretKeyRef: common-secrets
-    secretKeyName: provenance-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: provenance-sentry-dsn
   deployments: {}
     # instance-rpc:
     #   enabled: false
@@ -2024,8 +2024,8 @@ graph:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
-    secretKeyName: graph-sentry-dsn
+    # secretKeyRef: common-secrets
+    # secretKeyName: graph-sentry-dsn
   # nodeSelector:
   #   kubernetes.io/hostname: local-cluster-worker2
   # affinity:
