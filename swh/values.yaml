@@ -457,6 +457,11 @@ storageReplayer:
   enabled: false
   priorityClassName: background-workload
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
+  sentry:
+    enabled: false
+    secretKeyRef: storage-replayer-sentry-secrets
+    secretKeyName: sentry-dsn
+
   # mandatory
   # check defaultStorageConfiguration example to configure your storage
   storageConfigurationRef: defaultStorageReplayerConfiguration

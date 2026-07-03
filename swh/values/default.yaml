@@ -99,6 +99,8 @@ checkerDeposit:
 storageReplayer:
   sentry:
     enabled: true
+    secretKeyRef: storage-replayer-sentry-secrets
+    secretKeyName: sentry-dsn
   cassandra:
     keySpace: swh
     consistencyLevel: LOCAL_QUORUM
