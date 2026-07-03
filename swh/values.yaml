@@ -589,6 +589,10 @@ cookers:
 
 checkerDeposit:
   enabled: false
+  sentry:
+    enabled: false
+    # secretKeyRef: checker-deposit-sentry-secret
+    # secretKeyName: checker-deposit-sentry-dsn
   priorityClassName: frontend-rpc-workload
   # mandatory
   # check defaultStorageConfiguration example to configure your storage

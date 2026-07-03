@@ -86,6 +86,8 @@ memcached:
 checkerDeposit:
   sentry:
     enabled: true
+    secretKeyRef: checker-deposit-sentry-secret
+    secretKeyName: checker-deposit-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

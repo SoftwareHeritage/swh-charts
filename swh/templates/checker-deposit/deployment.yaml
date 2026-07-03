@@ -102,8 +102,8 @@ spec:
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: common-secrets
-              key: checker-deposit-sentry-dsn
+              name: {{ $.Values.checkerDeposit.sentry.secretKeyRef }}
+              key: {{ $.Values.checkerDeposit.sentry.secretKeyName }}
               # 'name' secret must exist & include key "host"
               optional: false
         {{ end }}
