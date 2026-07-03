@@ -4,6 +4,9 @@ environment: production
 sentry:
   environment: production
 
+# Name of the vault auth used to connect to openbao when enabled
+vaultAuthRef: openbao-vso-auth
+
 # Default logging config dictionary
 defaultLoggingConfig: {}
 
