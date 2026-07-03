@@ -3138,3 +3138,31 @@ datasetsGenerator:
             volumeDefinition:
               persistentVolumeClaim:
                 claimName: comp-graph-dataset-gen-sensitive-20251217-persistent-local-pvc
+
+staticWebsites:
+  enabled: true
+  deployments:
+    dataportal:
+      image: container-registry.softwareheritage.org/swh/devel/swh-dataportal
+      imageVersion: latest
+      enabled: true
+      replicas: 1
+      hosts:
+        - datasets.softwareheritage.org
+        - datasets.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        className: nginx
+        tlsEnabled: true
+        secretName: datasets-swh-tls
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        endpoints:
+         default:
+           paths:
+             - path: /
+               port: 80
