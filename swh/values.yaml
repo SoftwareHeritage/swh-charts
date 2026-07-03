@@ -2122,7 +2122,7 @@ coarNotify:
   port: 5015
   sentry:
     enabled: false
-    # secretKeyRef: common-secrets
+    # secretKeyRef: coarnotify-sentry-secret
     # secretKeyName: coarnotify-sentry-dsn
   worker:
     enabled: false
