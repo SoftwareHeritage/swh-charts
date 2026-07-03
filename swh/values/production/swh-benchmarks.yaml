@@ -9,7 +9,7 @@ noopObjstorageConfiguration:
   cls: noop
   allow_delete: true
 
-azureProdAObjstorageConfigurationSecrets: &azure-prodA-objstorage-secrets
+azureProdAObjstorageConfigurationSecrets: &azure-prod-a-objstorage-secrets
   ACCOUNT_NAME_A:
     secretKeyRef: swh-objstorage-config
     secretKeyName: 10_account_name
@@ -19,7 +19,7 @@ azureProdAObjstorageConfigurationSecrets: &azure-prodA-objstorage-secrets
 azureProdAObjstorageConfiguration:
   cls: azure
   compression: gzip
-  secrets: *azure-prodA-objstorage-secrets
+  secrets: *azure-prod-a-objstorage-secrets
   account_name: ${ACCOUNT_NAME_A}
   api_secret_key: ${API_SECRET_KEY_A}
   container_name: contents
@@ -136,7 +136,7 @@ objstorage:
             paths:
               - path: /
 
-    azure-concurrent-prodA-read-write:
+    azure-concurrent-prod-a-read-write:
       enabled: true
       image: container-registry.softwareheritage.org/swh/infra/swh-apps/objstorage_benchmarking
       image_version: '20260623.2'
