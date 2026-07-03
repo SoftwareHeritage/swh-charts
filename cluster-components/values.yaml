@@ -5,6 +5,9 @@
 # Main common configuration for the chart.
 namespace: cluster-components
 
+# Name of the vault auth used to connect to openbao when enabled
+vaultAuthRef: openbao-vso-auth
+
 # All applications whose 'enabled' flag is false by default are applications that are
 # already installed in the cluster by the main swh provisioning except for the clusters
 # minikube (local dev) and rancher (admin cluster).
