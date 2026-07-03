@@ -2106,7 +2106,9 @@ coarNotify:
   enabled: false
   port: 5015
   sentry:
-    enabled: true
+    enabled: false
+    # secretKeyRef: common-secrets
+    # secretKeyName: coarnotify-sentry-dsn
   worker:
     enabled: false
     deployment:
