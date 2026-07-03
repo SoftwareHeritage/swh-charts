@@ -1482,7 +1482,7 @@ deposit:
     # name of the secret containing the $secretKeyName value
     # it defines the sentry token, host and projet to access
     # like https://token@sentry.host/id
-    secretKeyRef: common-secrets
+    secretKeyRef: deposit-sentry-secret
     secretKeyName: deposit-sentry-dsn
   # hosts:
   # - deposit.staging.swh.network
