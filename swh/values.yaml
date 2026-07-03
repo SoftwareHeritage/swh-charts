@@ -1766,10 +1766,10 @@ objstorageReplayer:
   # journalClientConfigurationRef: journalClientConfiguration
   # sourceObjstorageConfigurationRef: fakeRemoteObjstorageConfiguration
   # destinationObjstorageConfigurationRef: fakeRemoteObjstorageConfiguration
-  # sentry:
-  #   enabled: false
-  #   secretKeyRef: my-secret
-  #   secretKeyName: my-key
+  sentry:
+    enabled: false
+    secretKeyRef: my-secret
+    secretKeyName: my-key
   # [optional] Add extra cli log level (can be overridden per instance)
   # extraCliLogLevel: ""
   # For example:
