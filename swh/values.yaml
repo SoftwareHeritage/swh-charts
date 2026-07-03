@@ -1704,7 +1704,7 @@ counters:
   logLevel: INFO
   sentry:
     enabled: false
-    # secretKeyRef: common-secrets
+    # secretKeyRef: counters-sentry-secret
     # secretKeyName: counters-sentry-dsn
   journalClient:
     enabled: false

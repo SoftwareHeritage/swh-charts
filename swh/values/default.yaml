@@ -438,7 +438,7 @@ statsd_exporter:
 counters:
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
+    secretKeyRef: counters-sentry-secret
     secretKeyName: counters-sentry-dsn
   affinity:
     nodeAffinity:
