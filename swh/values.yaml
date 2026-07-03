@@ -1885,7 +1885,7 @@ cassandraChecks:
   #         - snapshot
   #       batch_size: 1000
 
-storage_backfiller:
+storageBackfiller:
   enabled: false
   # # pin versions to avoid stopping jobs during new deployment
   # imageVersion: '20240603.1'

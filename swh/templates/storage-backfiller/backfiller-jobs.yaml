@@ -1,19 +1,19 @@
-{{ if .Values.storage_backfiller.enabled -}}
+{{ if .Values.storageBackfiller.enabled -}}
 {{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
 {{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
-{{- range $deployment, $deployment_config := .Values.storage_backfiller.deployments -}}
-{{- if (get $deployment_config "enabled") -}}
+{{- range $deployment, $deploymentConfig := .Values.storageBackfiller.deployments -}}
+{{- if (get $deploymentConfig "enabled") -}}
 {{- $serviceType := ( print "storage-" $deployment ) -}}
 {{ $last := "0xFFFFFFFFFFFFFFF" | int64 }}
 {{- $first := 0 | int64 -}}
-{{- $ranges := ( get $deployment_config "ranges" | int ) -}}
-{{- $prefix := ( get $deployment_config "prefix" ) -}}
+{{- $ranges := ( get $deploymentConfig "ranges" | int ) -}}
+{{- $prefix := ( get $deploymentConfig "prefix" ) -}}
 {{- $step := ceil (div (sub $last $first) $ranges)  -}}
 {{ range $i := until $ranges }}
 {{- $pos := add $first (mul $i $step) -}}
 {{- $firstSwhid := printf "%s:%015x%s" $prefix $pos (repeat 25 "0") -}}
 {{- $lastSwhid := printf "%s:%015x%s" $prefix (sub (add $pos $step) 1) (repeat 25 "f") }}
-{{- $objectType := ( get $deployment_config "object_type" ) }}
+{{- $objectType := ( get $deploymentConfig "object_type" ) }}
 {{- $name := ( print "storage-backfiller-" ( $objectType | replace "_" "-" ) "-" $deployment ) }}
 ---
 apiVersion: batch/v1
@@ -31,26 +31,26 @@ spec:
         app: {{ $name }}
       annotations:
         checksum/config: {{ include "swh.storage.configmap" (dict "serviceType" $serviceType
-                                                                  "configuration" $deployment_config
+                                                                  "configuration" $deploymentConfig
                                                                   "Values" $.Values) | sha256sum }}
         checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
         checksum/config-utils: {{ $configUtilsPathChecksum }}
     spec:
       restartPolicy: Never
-      {{- if $.Values.storage_backfiller.affinity }}
+      {{- if $.Values.storageBackfiller.affinity }}
       affinity:
-        {{- toYaml $.Values.storage_backfiller.affinity | nindent 8 }}
+        {{- toYaml $.Values.storageBackfiller.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled $.Values.storage_backfiller.priorityClassName }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.storage_backfiller.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $.Values.storageBackfiller.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.storageBackfiller.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration
-          image: {{ $.Values.swh_utils_image }}:{{ $.Values.storage_backfiller.swhUtilsImageVersion }}
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.storageBackfiller.swhUtilsImageVersion }}
           imagePullPolicy: IfNotPresent
           command:
           - /entrypoints/prepare-configuration.sh
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "Values" $.Values "deploymentConfig" $deployment_config) | nindent 10 }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "Values" $.Values "deploymentConfig" $deploymentConfig) | nindent 10 }}
           volumeMounts:
           - name: configuration
             mountPath: /etc/swh
@@ -59,27 +59,27 @@ spec:
           - name: config-utils
             mountPath: /entrypoints
             readOnly: true
-        {{- if $deployment_config.checkDbVersion }}
+        {{- if $deploymentConfig.checkDbVersion }}
         {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                              "imagePrefixName" "swh_storage_image"
                                                              "module" "storage"
-                                                             "imageVersion" $.Values.storage_backfiller.imageVersion ) | nindent 8 }}
+                                                             "imageVersion" $.Values.storageBackfiller.imageVersion ) | nindent 8 }}
         {{- end }}
       containers:
-        - name: {{ get $deployment_config "object_type" | replace "_" "-" }}-{{ $deployment }}
-          image: {{ $.Values.swh_storage_image }}:{{ $.Values.storage_backfiller.imageVersion }}
+        - name: {{ get $deploymentConfig "object_type" | replace "_" "-" }}-{{ $deployment }}
+          image: {{ $.Values.swh_storage_image }}:{{ $.Values.storageBackfiller.imageVersion }}
           imagePullPolicy: IfNotPresent
           resources:
             requests:
-              memory: {{ $deployment_config.requestedMemory | default "512Mi" }}
-              cpu: {{ $deployment_config.requestedCpu | default "500m" }}
-            {{- if or $deployment_config.limitedMemory $deployment_config.limitedCpu }}
+              memory: {{ $deploymentConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $deploymentConfig.requestedCpu | default "500m" }}
+            {{- if or $deploymentConfig.limitedMemory $deploymentConfig.limitedCpu }}
             limits:
-              {{- if $deployment_config.limitedMemory }}
-              memory: {{ $deployment_config.limitedMemory }}
+              {{- if $deploymentConfig.limitedMemory }}
+              memory: {{ $deploymentConfig.limitedMemory }}
               {{- end }}
-              {{- if $deployment_config.limitedCpu }}
-              cpu: {{ $deployment_config.limitedCpu }}
+              {{- if $deploymentConfig.limitedCpu }}
+              cpu: {{ $deploymentConfig.limitedCpu }}
               {{- end }}
             {{- end }}
           command:
@@ -103,7 +103,7 @@ spec:
             - name: STATSD_TAGS
               value: deployment:{{ $name }}
             - name: SWH_LOG_LEVEL
-              value: {{ $deployment_config.logLevel | default $.Values.storage.logLevel | quote }}
+              value: {{ $deploymentConfig.logLevel | default $.Values.storage.logLevel | quote }}
           {{- if $.Values.storage.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}

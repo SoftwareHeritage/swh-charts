@@ -1,10 +1,10 @@
-{{ if .Values.storage_backfiller.enabled -}}
-{{ range $deployment, $deployment_config := .Values.storage_backfiller.deployments }}
-{{- if (get $deployment_config "enabled") -}}
-{{- $objectType := ( get $deployment_config "object_type" | replace "_" "-" ) }}
+{{ if .Values.storageBackfiller.enabled -}}
+{{ range $deployment, $deploymentConfig := .Values.storageBackfiller.deployments }}
+{{- if (get $deploymentConfig "enabled") -}}
+{{- $objectType := ( get $deploymentConfig "object_type" | replace "_" "-" ) }}
 {{- $serviceType := ( print "storage-backfiller-" $objectType "-" $deployment ) }}
 {{ include "swh.backfiller.configmap" (dict "serviceType" $serviceType
-                                         "configuration" $deployment_config
+                                         "configuration" $deploymentConfig
                                          "Values" $.Values) }}
 {{- end -}}
 {{ end -}}

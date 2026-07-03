@@ -504,7 +504,7 @@ cassandraChecks:
             values:
             - "true"
 
-storage_backfiller:
+storageBackfiller:
   sentry:
     enabled: true
   affinity:
