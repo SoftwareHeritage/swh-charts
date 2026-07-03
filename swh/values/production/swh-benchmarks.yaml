@@ -10,19 +10,14 @@ noopObjstorageConfiguration:
   allow_delete: true
 
 azureProdAObjstorageConfigurationSecrets: &azure-prod-a-objstorage-secrets
-  ACCOUNT_NAME_A:
-    secretKeyRef: swh-objstorage-config
-    secretKeyName: 10_account_name
-  API_SECRET_KEY_A:
-    secretKeyRef: swh-objstorage-config
-    secretKeyName: 10_api_secret_key
+  AZURE_CONTAINER_URL:
+    secretKeyRef: swh-objstorage-test-config
+    secretKeyName: prod_a_container_url
 azureProdAObjstorageConfiguration:
   cls: azure
   compression: gzip
   secrets: *azure-prod-a-objstorage-secrets
-  account_name: ${ACCOUNT_NAME_A}
-  api_secret_key: ${API_SECRET_KEY_A}
-  container_name: contents
+  container_url: ${AZURE_CONTAINER_URL}
 
 azureTestObjstorageConfigurationSecrets: &azure-test-objstorage-secrets
   AZURE_CONTAINER_URL:
