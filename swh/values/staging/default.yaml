@@ -1,4 +1,5 @@
 environment: staging
+clusterName: archive-staging-rke2
 sentry:
   environment: staging
 

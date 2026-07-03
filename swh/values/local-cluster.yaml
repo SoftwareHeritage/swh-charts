@@ -1,4 +1,5 @@
 environment: local-cluster
+clusterName: local-cluster
 sentry:
   enabled: false
   environment: local-cluster
@@ -1254,6 +1255,7 @@ search:
     deployments:
       # instance-name (will be suffixed by -rpc)
       search:
+        enabled: true
         backend:
           initialize: true
 
