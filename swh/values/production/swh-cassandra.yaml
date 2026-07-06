@@ -82,6 +82,7 @@ storageReplayer:
     db: 1
   deployments:
     content:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-content
         object_types:
@@ -91,6 +92,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 64
     directory:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-directory
         object_types:
@@ -104,6 +106,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 10
     extid:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-extid
         object_types:
@@ -117,6 +120,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     metadata:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-metadata
         object_types:
@@ -128,6 +132,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     raw-extrinsic-metadata:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-raw-extrinsic-metadata
         object_types:
@@ -141,6 +146,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-origin
         object_types:
@@ -154,6 +160,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-origin-visit
         object_types:
@@ -168,6 +175,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin-visit-status:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-origin-visit-status
         object_types:
@@ -182,6 +190,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     release:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-release
         object_types:
@@ -195,6 +204,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     revision:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-revision
         object_types:
@@ -209,6 +219,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-skipped-content
         object_types:
@@ -222,6 +233,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     snapshot:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-prod-cassandra-replayer-snapshot
         object_types:

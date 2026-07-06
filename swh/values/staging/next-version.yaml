@@ -506,6 +506,7 @@ storageReplayer:
         # TODO: Support this option
         # stopWhenNoActivity: false
     origin:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-origin
         object_types:

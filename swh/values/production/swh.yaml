@@ -364,6 +364,7 @@ storageReplayer:
     db: 1
   deployments:
     content:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-content
         object_types:
@@ -373,6 +374,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 64
     directory:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-directory
         object_types:
@@ -386,6 +388,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 16
     extid:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-extid
         object_types:
@@ -399,6 +402,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     metadata:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-metadata
         object_types:
@@ -410,6 +414,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     raw-extrinsic-metadata:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-raw-extrinsic-metadata
         object_types:
@@ -423,6 +428,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-origin
         object_types:
@@ -436,6 +442,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin-visit:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-origin-visit
         object_types:
@@ -450,6 +457,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     origin-visit-status:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-origin-visit-status
         object_types:
@@ -464,6 +472,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     release:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-release
         object_types:
@@ -477,6 +486,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     revision:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-revision
         object_types:
@@ -491,6 +501,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     skipped-content:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-skipped-content
         object_types:
@@ -504,6 +515,7 @@ storageReplayer:
       autoScaling:
         maxReplicaCount: 5
     snapshot:
+      enabled: true
       journalClientOverrides:
         group_id: swh-prod-postgresql-replayer-snapshot
         object_types:

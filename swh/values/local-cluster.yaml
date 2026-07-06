@@ -455,6 +455,7 @@ storageReplayer:
   checkDbVersion: false
   deployments:
     origin:
+      enabled: true
       replicas: 1
       journalClientOverrides:
         group_id: postgresql-replayer-origin
@@ -464,6 +465,7 @@ storageReplayer:
           - origin_visit_status
         batch_size: 1000
     # content:
+    #   enabled: false
     #   replicas: 1
     #   journalClientOverrides:
     #     group_id: postgresql-replayer-content
@@ -471,6 +473,7 @@ storageReplayer:
     #     - content
     #     batch_size: 250
     # directory:
+    #   enabled: false
     #   replicas: 1
     #   journalClientOverrides:
     #     group_id: postgresql-replayer-directory
@@ -478,6 +481,7 @@ storageReplayer:
     #       - directory
     #     batch_size: 250
     # revision:
+    #   enabled: false
     #   replicas: 1
     #   group_id: postgresql-replayer-revision
     #   journalClientOverrides:
@@ -486,6 +490,7 @@ storageReplayer:
     #     batch_size: 250
     #     privileged: true
     # release:
+    #   enabled: false
     #   replicas: 1
     #   journalClientOverrides:
     #     group_id: postgresql-replayer-release
