@@ -2002,13 +2002,9 @@ webhooks:
   svixConfigurationRef: svixConfiguration
   journalClientConfigurationRef: journalClientConfiguration
   priorityClassName: frontend-rpc-workload
-  autoScaling:
-    minReplicaCount: 2
-    maxReplicaCount: 5
-    lagThreshold: 2000
   deployments:
     origin-visit-status:
-      replicas: 0
+      replicas: 2
       dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
