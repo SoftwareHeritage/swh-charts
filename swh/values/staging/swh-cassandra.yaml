@@ -1158,6 +1158,7 @@ graphql:
   enabled: true
   deployments:
     cassandra:
+      enabled: true
       logLevel: DEBUG
       debug: yes
       storageConfigurationRef: remoteROStorageConfiguration

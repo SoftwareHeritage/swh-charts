@@ -52,6 +52,7 @@ graphql:
   deployments:
     # Instance to serve https://webapp-postgresql.internal.softwareheritage.org/graphql/
     postgresql:
+      enabled: true
       replicas: 2
       gunicorn:
         workers: 4

@@ -58,6 +58,7 @@ graphql:
   enabled: true
   deployments:
     postgresql:
+      enabled: true
       debug: yes
       logLevel: DEBUG
       introspection: yes

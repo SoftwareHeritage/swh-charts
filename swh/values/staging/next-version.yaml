@@ -1199,6 +1199,7 @@ graphql:
   enabled: true
   deployments:
     cassandra:
+      enabled: true
       replicas: 1
       hosts:
         - webapp-cassandra-next-version.internal.staging.swh.network

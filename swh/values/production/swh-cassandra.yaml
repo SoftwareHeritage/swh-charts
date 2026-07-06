@@ -631,6 +631,7 @@ graphql:
   enabled: true
   deployments:
     cassandra:
+      enabled: true
       replicas: 1
       gunicorn:
         threads: 4
@@ -663,6 +664,7 @@ graphql:
       maxRawContentSize: 10000
     # Main instance to serve https://archive.softwaheritage.org/graphql/
     archive:
+      enabled: true
       gunicorn:
         workers: 2
         threads: 4
