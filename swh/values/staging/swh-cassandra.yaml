@@ -52,7 +52,7 @@ cassandraStorage: &cassandraStorage
     password: ${CASSANDRA_RW_PASSWORD}
   secrets:
     CASSANDRA_RW_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-rw-password
 
 cassandraROStorage:
@@ -68,7 +68,7 @@ cassandraROStorage:
     password: ${CASSANDRA_RO_PASSWORD}
   secrets:
     CASSANDRA_RO_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-ro-password
 
 cassandraChecksROStorage:
@@ -88,7 +88,7 @@ cassandraChecksROStorage:
       cls: noop
   secrets:
     CASSANDRA_RO_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-ro-password
 
 cassandraStorageForReferenceTableJob:

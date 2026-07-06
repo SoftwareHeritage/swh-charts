@@ -13,7 +13,7 @@ cassandraROStorage:
     password: ${CASSANDRA_RO_PASSWORD}
   secrets:
     CASSANDRA_RO_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-ro-password
 
 cassandraChecksROStorage:
@@ -33,7 +33,7 @@ cassandraChecksROStorage:
       cls: noop
   secrets:
     CASSANDRA_RO_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-ro-password
 
 cassandraReplayerStorageConfiguration:

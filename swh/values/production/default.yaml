@@ -115,7 +115,7 @@ cassandraStorage: &cassandraStorage
     password: ${CASSANDRA_RW_PASSWORD}
   secrets:
     CASSANDRA_RW_PASSWORD:
-      secretKeyRef: common-secrets
+      secretKeyRef: cassandra-swh-secrets
       secretKeyName: cassandra-swh-rw-password
 
 cassandraStorageForReferenceTableJob:
