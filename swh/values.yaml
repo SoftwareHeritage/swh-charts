@@ -378,6 +378,10 @@ graphql:
   enabled: false
   port: 5013
   priorityClassName: frontend-rpc
+  sentry:
+    enabled: false
+    # secretKeyRef: graphql-sentry-secret
+    # secretKeyName: graphql-sentry-dsn
   # Those are globally defined but can be overwritten per instance
   logLevel: INFO
   anonymousUserMaxQueryCost: 50
