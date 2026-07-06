@@ -412,8 +412,8 @@ objstorage:
   port: 5003
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: objstorage-sentry-dsn
+    secretKeyRef: objstorage-sentry-secret
+    secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
