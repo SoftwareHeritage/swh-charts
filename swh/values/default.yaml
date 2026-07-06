@@ -209,7 +209,7 @@ graphql:
 storage:
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
+    secretKeyRef: storage-sentry-secret
     secretKeyName: storage-sentry-dsn
   affinity:
     nodeAffinity:
