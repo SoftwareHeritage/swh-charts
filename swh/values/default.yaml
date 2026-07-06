@@ -284,7 +284,7 @@ web:
     enabled: true
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
+    secretKeyRef: web-sentry-secret
     secretKeyName: web-sentry-dsn
   affinity:
     nodeAffinity:
