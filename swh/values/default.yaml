@@ -537,8 +537,8 @@ alter:
 provenance:
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: provenance-sentry-dsn
+    secretKeyRef: provenance-sentry-secret
+    secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
