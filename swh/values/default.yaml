@@ -180,6 +180,7 @@ loaders:
 listers:
   sentry:
     enabled: true
+    secretKeyRef: sentry-settings-for-celery-tasks
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

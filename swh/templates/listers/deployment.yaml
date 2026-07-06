@@ -170,7 +170,7 @@ spec:
       {{ if $enable_sentry }}
       - name: sentry-settings-for-celery-tasks
         secret:
-          secretName: sentry-settings-for-celery-tasks
+          secretName: {{ $.Values.listers.sentry.secretKeyRef }}
           optional: true
       {{- end }}
 {{ end }}

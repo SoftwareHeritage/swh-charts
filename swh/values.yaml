@@ -650,6 +650,10 @@ indexers:
 listers:
   enabled: false
   priorityClassName: normal-workload
+  sentry:
+    enabled: false
+    # secretKeyRef: sentry-settings-for-celery-tasks
+
   # General autoScaling option, this can be overridden per instance
   autoScaling:
     queueThreshold: 1
