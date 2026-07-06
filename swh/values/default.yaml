@@ -110,11 +110,11 @@ storageReplayer:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/etcd
-            operator: NotIn
-            values:
-            - "true"
+          - matchExpressions:
+            - key: "swh/replayer"
+              operator: In
+              values:
+              - "true"
 
 cookers:
   maxBundleSize: 1073741824

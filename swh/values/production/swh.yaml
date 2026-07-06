@@ -357,15 +357,6 @@ storageReplayer:
   enabled: true
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
   storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: "swh/replayer"
-            operator: In
-            values:
-            - "true"
   # Make the replayers fail fast if any issue arise (at first)
   error_reporter:
     host: redis-postgresql-replayer.redis

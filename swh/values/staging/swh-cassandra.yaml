@@ -717,21 +717,13 @@ storageReplayer:
   enabled: true
   storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
   journalClientConfigurationRef: storageReplayerJournalClientConfiguration
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: "swh/replayer"
-            operator: In
-            values:
-            - "true"
   error_reporter:
     host: redis.redis
     port: 6379
     db: 1
   deployments:
     content:
+      enabled: true
       journalClientOverrides:
         group_id: swh-cassandra-stg-cassandra-replayer-content
         object_types:
