@@ -393,8 +393,8 @@ web:
         scrapeTimeout: 120s
       cronJobs:
         refreshSCNStatus:
-          enabled: true
-          cron: "*/10 * * * *"
+          enabled: false
+          cron: "*/2 * * * *"
           command:
             - "refresh_savecodenow_statuses"
           concurrencyPolicy: Forbid
