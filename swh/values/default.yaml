@@ -189,7 +189,7 @@ listers:
 graphql:
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
+    secretKeyRef: graphql-sentry-secret
     secretKeyName: graphql-sentry-dsn
   affinity:
     nodeAffinity:
