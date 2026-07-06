@@ -151,6 +151,8 @@ loaderMetadata:
 indexers:
   sentry:
     enabled: true
+    secretKeyRef: indexer-sentry-secret
+    secretKeyName: indexer-sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

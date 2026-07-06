@@ -619,7 +619,11 @@ checkerDeposit:
 indexers:
   enabled: false
   priorityClassName: frontend-rpc
-  sentrySwhPackage: swh.indexer
+  sentry:
+    enabled: false
+    swhPackage: swh.indexer
+    # secretKeyRef: indexer-sentry-secret
+    # secretKeyName: indexer-sentry-dsn
   # schedulerConfigurationRef: remoteSchedulerConfiguration
   # terminationGracePeriodSeconds: 3600
   # mandatory
