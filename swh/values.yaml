@@ -587,6 +587,10 @@ loaders:
 
 cookers:
   enabled: false
+  sentry:
+    enabled: false
+    # secretKeyRef: sentry-settings-for-celery-tasks
+
   priorityClassName: normal-workload
   # terminationGracePeriodSeconds: 3600
   # mandatory
