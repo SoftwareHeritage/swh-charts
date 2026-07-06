@@ -478,8 +478,8 @@ counters:
 objstorageReplayer:
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: objstorage-replayer-sentry-dsn
+    secretKeyRef: objstorage-replayer-sentry-secret
+    secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
