@@ -523,10 +523,6 @@ storageBackfiller:
             - "true"
 
 alter:
-  sentry:
-    enabled: true
-    # secretKeyRef: common-secrets
-    # secretKeyName: alter-sentry-dsn
   deployment:
     affinity:
       nodeAffinity:
