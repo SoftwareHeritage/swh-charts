@@ -553,8 +553,8 @@ graph:
   imageVersion: "20260625.1"
   sentry:
     enabled: true
-    secretKeyRef: common-secrets
-    secretKeyName: graph-sentry-dsn
+    secretKeyRef: graph-sentry-secret
+    secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
