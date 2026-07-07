@@ -2271,6 +2271,10 @@ ingestion_benchmarks:
 
 vulns:
   enabled: false
+  sentry:
+    enabled: false
+    # secretKeyRef: vulns-sentry-secret
+    # secretKeyName: sentry-dsn
   # namespace: swh-cassandra
   port: 10161
   # Number of replicas (can be overridden per instance)

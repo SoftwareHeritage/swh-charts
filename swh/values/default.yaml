@@ -639,3 +639,10 @@ staticWebsites:
             operator: In
             values:
             - "true"
+
+vulns:
+  sentry:
+    enabled: true
+    secretKeyRef: vulns-sentry-secret
+    secretKeyName: sentry-dsn
+
