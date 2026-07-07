@@ -685,7 +685,7 @@ loaderMetadata:
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
-    secretName: swh-archive-broker-secret
+    secretKeyRef: swh-archive-broker-secret
     hosts:
       - journal2.internal.staging.swh.network:9094
     user: swh-archive-stg

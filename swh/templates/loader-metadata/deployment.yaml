@@ -1,7 +1,7 @@
 {{ if .Values.loaderMetadata.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/loader-metadata/configmap.yaml") . -}}
 {{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
-{{- $secretName := .Values.loaderMetadata.journalBrokers.secretName -}}
+{{- $secretKeyRef := .Values.loaderMetadata.journalBrokers.secretKeyRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,11 +44,11 @@ spec:
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
           env:
-          {{- if and $journalUser $secretName }}
+          {{- if and $journalUser $secretKeyRef }}
           - name: BROKER_USER_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: {{ $secretName }}
+                name: {{ $secretKeyRef }}
                 key: BROKER_USER_PASSWORD
                 optional: true
           {{- end }}

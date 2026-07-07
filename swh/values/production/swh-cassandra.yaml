@@ -2600,7 +2600,7 @@ loaderMetadata:
   consumerGroup: loader_metadata.journal_client
   prefix: swh.journal.objects
   journalBrokers:
-    secretName: swh-archive-broker-secret
+    secretKeyRef: swh-archive-broker-secret
     hosts:
       - kafka1.internal.softwareheritage.org:9094
       - kafka2.internal.softwareheritage.org:9094

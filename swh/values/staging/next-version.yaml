@@ -403,7 +403,7 @@ loaderMetadata:
   prefix: swh.journal.objects
   terminationGracePeriodSeconds: 60
   journalBrokers:
-    secretName: swh-archive-broker-secret
+    secretKeyRef: swh-archive-broker-secret
     hosts:
       - journal2.internal.staging.swh.network:9094
     user: swh-archive-stg
