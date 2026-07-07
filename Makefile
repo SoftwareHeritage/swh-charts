@@ -179,6 +179,13 @@ swh-template-production-cassandra:
       --values $(SWH_CHART)/values/production/swh-cassandra.yaml \
       -n swh --create-namespace --debug
 
+swh-template-benchmarks:
+	helm template template-$(SWH_CHART) $(SWH_CHART)/ --values values-swh-application-versions.yaml \
+      --values $(SWH_CHART)/values.yaml \
+      --values $(SWH_CHART)/values/default.yaml \
+      --values $(SWH_CHART)/values/production/swh-benchmarks.yaml \
+      -n swh --create-namespace --debug
+
 # TODO: Extract bin/local-cluster-create-namespace.sh to manage the
 # conditional creation of namespace
 local-cluster-cc-prepare:
