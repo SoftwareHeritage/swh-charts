@@ -388,6 +388,7 @@ scrubber:
     storageConfigurationRef: scrubberROStorageConfiguration
     deployments:
       directory-references:
+        enabled: true
         configName: storage-references-directory
         object: directory
         replicas: 1
@@ -446,6 +447,7 @@ scrubber:
     journalClientConfigurationRef: scrubberJournalClientConfiguration
     deployments:
       directory:
+        enabled: true
         configName: journal-checker-directory
         journalClientOverrides:
           batch_size: 100
@@ -454,6 +456,7 @@ scrubber:
         requestedMemory: 200Mi
         requestedCpu: 200m
       release:
+        enabled: true
         configName: journal-checker-release
         journalClientOverrides:
           batch_size: 200
@@ -463,6 +466,7 @@ scrubber:
         requestedMemory: 200Mi
         requestedCpu: 500m
       revision:
+        enabled: true
         configName: journal-checker-revision
         journalClientOverrides:
           privileged: true
@@ -471,6 +475,7 @@ scrubber:
         requestedMemory: 250Mi
         requestedCpu: 600m
       snapshot:
+        enabled: true
         configName: journal-checker-snapshot
         object: snapshot
         replicas: 1

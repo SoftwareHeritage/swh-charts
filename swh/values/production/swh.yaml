@@ -126,6 +126,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 200Mi
       release:
+        enabled: true
         configName: journal-checker-release
         journalClientOverrides:
           batch_size: 200
@@ -136,6 +137,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 200Mi
       revision:
+        enabled: true
         configName: journal-checker-revision
         journalClientOverrides:
           privileged: true
@@ -145,6 +147,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 250Mi
       snapshot:
+        enabled: true
         configName: journal-checker-snapshot
         object: snapshot
         journalClientOverrides:
@@ -156,6 +159,7 @@ scrubber:
     enabled: true
     deployments:
       primary-directory-references:
+        enabled: true
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-references-directory
         object: directory
@@ -163,6 +167,7 @@ scrubber:
         requestedCpu: 100m
         requestedMemory: 100Mi
       primary-directory-hashes:
+        enabled: true
         storageConfigurationRef: scrubberROStoragePrimaryConfiguration
         configName: storage-primary-hashes-directory
         object: directory

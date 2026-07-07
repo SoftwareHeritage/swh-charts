@@ -795,6 +795,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 200Mi
       revision:
+        enabled: true
         configName: journal-checker-revision
         journalClientOverrides:
           privileged: true
@@ -804,6 +805,7 @@ scrubber:
         requestedCpu: 1
         requestedMemory: 250Mi
       snapshot:
+        enabled: true
         configName: journal-checker-snapshot
         object: snapshot
         journalClientOverrides:
@@ -816,6 +818,7 @@ scrubber:
     storageConfigurationRef: scrubberROStorageConfiguration
     deployments:
       directory-references:
+        enabled: true
         configName: storage-cassandra-references-directory
         object: directory
         replicas: 8

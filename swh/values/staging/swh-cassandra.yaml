@@ -1316,6 +1316,7 @@ scrubber:
     storageConfigurationRef: scrubberROStorageConfiguration
     deployments:
       directory-references:
+        enabled: true
         configName: storage-cassandra-references-directory
         object: directory
         replicas: 4
@@ -1377,12 +1378,14 @@ scrubber:
     journalClientConfigurationRef: scrubberObjstorageJournalClientConfiguration
     deployments:
       storage1:
+        enabled: true
         objstorageConfigurationRef: remoteStorage1ReadOnlyObjstorageConfiguration
         configName: objstorage-storage1-content
         replicas: 2
         requestedCpu: 400m
         requestedMemory: 200Mi
       db1:
+        enabled: true
         objstorageConfigurationRef: remoteDb1ReadOnlyObjstorageConfiguration
         configName: objstorage-db1-content
         replicas: 2
