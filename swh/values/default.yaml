@@ -16,6 +16,10 @@ SwhStatusUrl:
 sentry:
   enabled: true
 
+kedaAutoscaler:
+  secretKeyRef: rabbitmq-secrets
+  secretKeyName: rabbitmq-http-host
+
 defaultLoggingConfig:
   version: 1
   handlers:

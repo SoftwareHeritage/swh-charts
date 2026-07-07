@@ -10,6 +10,10 @@ vaultAuthRef: openbao-vso-auth
 # Default logging config dictionary
 defaultLoggingConfig: {}
 
+kedaAutoscaler: {}
+  # secretKeyRef: rabbitmq-secrets
+  # secretKeyName: rabbitmq-http-host
+
 # Default scraping additional label
 prometheus:
   # Used access cluster metrics if autoscaling based on prometheus is used
