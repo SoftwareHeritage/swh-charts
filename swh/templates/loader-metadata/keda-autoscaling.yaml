@@ -1,37 +1,19 @@
 {{- if and (ne false .Values.loaderMetadata.enabled)
            (hasKey .Values.loaderMetadata "autoScaling") -}}
 
-{{- $autoscalingConfig := .Values.loaderMetadata.autoScaling -}}
-{{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
-{{- $consumerGroup := .Values.loaderMetadata.consumerGroup -}}
-{{- if $journalUser }}
-{{- $consumerGroup = print $journalUser "-" $consumerGroup -}}
-{{- end }}
----
-# FIXME: Look into autoscaling from prometheus depending on api authentication
-# token use metrics. See: https://keda.sh/docs/2.9/scalers/prometheus/
-# https://docs.softwareheritage.org/devel/statsd.html#outgoing-requests
-# https://grafana.softwareheritage.org/d/FR9JAYhVk/outgoing-api-requests?orgId=1
-apiVersion: keda.sh/v1alpha1
-kind: ScaledObject
-metadata:
-  name: loader-metadata-scaledobject
-  namespace: {{ .Values.namespace }}
-spec:
-  scaleTargetRef:
-    name: loader-metadata
-  pollingInterval: {{ get $autoscalingConfig "pollingInterval" | default 120 }}
-  minReplicaCount: {{ get $autoscalingConfig "minReplicaCount" | default 1 }}
-  maxReplicaCount: {{ get $autoscalingConfig "maxReplicaCount" | default 5 }}
-  triggers:
-  - type: kafka
-    metadata:
-      bootstrapServers: {{ join "," .Values.loaderMetadata.journalBrokers.hosts }}
-      consumerGroup: {{ $consumerGroup }}
-      lagThreshold: {{ get $autoscalingConfig "lagThreshold" | default 1000 | quote }}
-      offsetResetPolicy: earliest
-    {{- if $journalUser }}
-    authenticationRef:
-      name: keda-loader-metadata-trigger-authentication
-    {{- end }}
+{{- $journalClientConfigurationRef := .Values.loaderMetadata.journalClientConfigurationRef -}}
+{{- $journalClientBaseConfiguration := required (print "journalClientConfigurationRef '" $journalClientConfigurationRef "' not found in loaderMetadata configuration") (get .Values $journalClientConfigurationRef) -}}
+{{- $journalClientOverrides := deepCopy (get .Values.loaderMetadata "journalClientOverrides" | default dict) -}}
+{{- $journalClientConfiguration := deepCopy $journalClientBaseConfiguration }}
+{{- $journalClientConfiguration := mustMergeOverwrite $journalClientConfiguration $journalClientOverrides -}}
+{{- $brokersConfigurationRef := $journalClientConfiguration.brokersConfigurationRef -}}
+{{- $brokers := get .Values $brokersConfigurationRef -}}
+{{- $_ := set $journalClientConfiguration "brokers" $brokers -}}
+{{- $_ := unset $journalClientConfiguration "brokersConfigurationRef" -}}
+{{- $_ := required (print "group_id property is mandatory in <" .journalClientConfigurationRef "> map") (get $journalClientConfiguration "group_id") -}}
+{{- include "swh.keda.kafkaAutoscaler"
+            (dict "name"                     "loader-metadata"
+                  "kafkaConfiguration"       $journalClientConfiguration
+                  "autoscalingConfiguration" .Values.loaderMetadata.autoScaling
+                  "Values"                   .Values) -}}
 {{- end -}}

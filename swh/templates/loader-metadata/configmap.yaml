@@ -1,9 +1,6 @@
 {{ if .Values.loaderMetadata.enabled -}}
-{{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
-{{- $consumerGroup := .Values.loaderMetadata.consumerGroup -}}
-{{- if $journalUser }}
-{{- $consumerGroup = print $journalUser "-" $consumerGroup -}}
-{{- end }}
+{{ $journalClientConfigurationRef := .Values.loaderMetadata.journalClientConfigurationRef }}
+{{ $journalClientOverrides := deepCopy (get .Values.loaderMetadata "journalClientOverrides" | default dict) }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -18,17 +15,11 @@ data:
     {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.loaderMetadata.schedulerConfigurationRef
                                                    "Values" .Values) | nindent 4 }}
 
-    journal:
-      brokers: {{ toYaml .Values.loaderMetadata.journalBrokers.hosts | nindent 8 }}
-      group_id: {{ $consumerGroup }}
-      prefix: {{ .Values.loaderMetadata.prefix }}
-      {{- if $journalUser }}
-      sasl.mechanism: SCRAM-SHA-512
-      security.protocol: SASL_SSL
-      sasl.username: {{ $journalUser }}
-      sasl.password: ${BROKER_USER_PASSWORD}
-      {{- end }}
-      on_eof: restart
+    {{- include "swh.journalClientConfiguration"
+                  (dict "serviceType" "journal"
+                        "configurationRef" $journalClientConfigurationRef
+                        "overrides" $journalClientOverrides
+                        "Values" .Values) | nindent 4 }}
     reload_after_days: {{ .Values.loaderMetadata.reload_after_days | default 120 }}
     metadata_fetcher_credentials:
 

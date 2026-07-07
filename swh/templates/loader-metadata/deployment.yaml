@@ -1,7 +1,5 @@
 {{ if .Values.loaderMetadata.enabled -}}
 {{- $configurationChecksum := include (print .Template.BasePath "/loader-metadata/configmap.yaml") . -}}
-{{- $journalUser := .Values.loaderMetadata.journalBrokers.user -}}
-{{- $secretKeyRef := .Values.loaderMetadata.journalBrokers.secretKeyRef -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,15 +41,8 @@ spec:
         - name: prepare-configuration
           image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
           imagePullPolicy: IfNotPresent
-          env:
-          {{- if and $journalUser $secretKeyRef }}
-          - name: BROKER_USER_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ $secretKeyRef }}
-                key: BROKER_USER_PASSWORD
-                optional: true
-          {{- end }}
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" .Values.loaderMetadata
+                                                                      "Values" $.Values) | nindent 10 }}
           command:
             - /entrypoint.sh
           volumeMounts:

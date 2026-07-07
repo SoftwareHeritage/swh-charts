@@ -682,13 +682,11 @@ loaderMetadata:
   enabled: true
   storageConfigurationRef: rpcRWStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  consumerGroup: loader_metadata.journal_client
-  prefix: swh.journal.objects
-  journalBrokers:
-    secretKeyRef: swh-archive-broker-secret
-    hosts:
-      - journal2.internal.staging.swh.network:9094
-    user: swh-archive-stg
+  journalClientConfigurationRef: authenticatedJournalClientConfiguration
+  journalClientOverrides:
+    group_id: swh-archive-stg-loader_metadata.journal_client
+    prefix: swh.journal.objects
+    on_eof: restart
   autoScaling:
     maxReplicaCount: 1
   requestedMemory: 200Mi

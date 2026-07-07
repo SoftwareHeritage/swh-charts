@@ -395,18 +395,18 @@ loaders:
         maxReplicaCount: 1
         stopWhenNoActivity: false
 
+loaderMetadataJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-stg-loader_metadata.journal_client
+  prefix: swh.journal.objects
+
 loaderMetadata:
   enabled: true
   storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  consumerGroup: loader_metadata.journal_client
-  prefix: swh.journal.objects
+  journalClientConfigurationRef: loaderMetadataJournalClientConfiguration
+  journalClientOverrides: {}
   terminationGracePeriodSeconds: 60
-  journalBrokers:
-    secretKeyRef: swh-archive-broker-secret
-    hosts:
-      - journal2.internal.staging.swh.network:9094
-    user: swh-archive-stg
   autoScaling:
     queueThreshold: 1
     maxReplicaCount: 1
