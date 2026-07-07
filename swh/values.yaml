@@ -1408,7 +1408,7 @@ scrubber:
   sentry:
     enabled: false
     # Mandatory if enabled
-    # secretKeyRef: swh-scrubber-sentry-secret
+    # secretKeyRef: scrubber-sentry-secret
     # secretKeyName: sentry-dsn
   backend:
     check: true

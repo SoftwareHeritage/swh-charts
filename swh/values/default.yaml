@@ -366,7 +366,7 @@ search:
 scrubber:
   sentry:
     enabled: true
-    secretKeyRef: swh-scrubber-sentry-secret
+    secretKeyRef: scrubber-sentry-secret
     secretKeyName: sentry-dsn
   affinity:
     nodeAffinity:
