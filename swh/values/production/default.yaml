@@ -972,7 +972,7 @@ addForgeNowConfiguration:
     token: ${GITLAB_AFN_TOKEN}
   secrets:
     GITLAB_AFN_TOKEN:
-      secretKeyRef: common-secrets
+      secretKeyRef: web-secrets
       secretKeyName: gitlab_afn_token
 
 # Web application common configuration
