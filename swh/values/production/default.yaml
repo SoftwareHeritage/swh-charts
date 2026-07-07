@@ -1105,13 +1105,13 @@ svixConfiguration:
   event_retention_period: 7
   secrets:
     SVIX_AUTH_TOKEN:
-      secretKeyRef: common-secrets
+      secretKeyRef: svix-secrets
       secretKeyName: svix-token
 
 webhooksConfiguration:
   secrets:
     WEBHOOKS_SECRET:
-      secretKeyRef: common-secrets
+      secretKeyRef: webhooks-secrets
       secretKeyName: webhooks-secret
 
 ROStorageConfiguration:
