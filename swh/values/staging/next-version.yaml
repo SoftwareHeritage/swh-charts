@@ -1075,6 +1075,7 @@ search:
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
       objects-next-version:
+        enabled: true
         journalClientOverrides:
           group_id: swh-search-next-version.journal-client-origins-v0.11
           prefix: swh.journal.objects
@@ -1083,6 +1084,7 @@ search:
             - origin_visit_status
 
       indexed-next-version:
+        enabled: true
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
