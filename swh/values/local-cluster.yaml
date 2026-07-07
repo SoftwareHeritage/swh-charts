@@ -2023,3 +2023,21 @@ staticWebsites:
         #      - path: /static(/|$)(.*)
         #        pathType: ImplementationSpecific
         #        port: 80
+  
+# docs.swh.org migration into k8s
+    docs-swh:
+      enabled: false
+      image: container-registry.softwareheritage.org/swh/infra/swh-apps/swh-docs
+      imageVersion: "20260707.1"
+      replicas: 1
+      hosts:
+        - docs-swh.local
+      ingress:
+        enabled: false
+        className: nginx
+        endpoints:
+         default:
+           paths:
+             - path: /
+               port: 80
+
