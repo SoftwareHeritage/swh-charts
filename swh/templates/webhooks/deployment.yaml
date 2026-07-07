@@ -106,8 +106,8 @@ spec:
         - name: SWH_SENTRY_DSN
           valueFrom:
             secretKeyRef:
-              name: common-secrets
-              key: webhooks-sentry-dsn
+              name: {{ $.Values.webhooks.sentry.secretKeyRef }}
+              key: {{ $.Values.webhooks.sentry.secretKeyName }}
               # 'name' secret must exist & include key "host"
               optional: false
         {{ end }}

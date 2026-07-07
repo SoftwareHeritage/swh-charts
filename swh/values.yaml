@@ -1667,6 +1667,9 @@ webhooks:
   enabled: false
   sentry:
     enabled: false
+    # secretKeyRef: webhooks-sentry-secret
+    # secretKeyName: sentry-dsn
+
   # Backend initialization which can be overridden per deployment instance
   backend:
     # Whether to register the default swh webhook event types in svix
