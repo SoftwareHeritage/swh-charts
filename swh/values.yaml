@@ -1404,7 +1404,7 @@ search:
 scrubber:
   enabled: false
   # priorityClassName: background-workload
-  scrubberDatabaseConfigurationRef: scrubberDatabaseConfiguration
+  # scrubberDatabaseConfigurationRef: scrubberDatabaseConfiguration
   sentry:
     enabled: false
     # Mandatory if enabled
@@ -1428,7 +1428,7 @@ scrubber:
     # default configuration of the storage
     # it must have a direct access to the database (class postgresql or cassandra)
     # It can be overriden by instance
-    storageConfigurationRef: primaryPostgresqlROStorageConfiguration
+    # storageConfigurationRef: primaryPostgresqlROStorageConfiguration
     deployments:
       # directory:
       #   enabled: false
