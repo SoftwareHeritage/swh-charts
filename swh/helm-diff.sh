@@ -66,7 +66,7 @@ for environment in "staging" "production"; do
 
   git checkout $MAIN_BRANCH
 
-  for namespace in "swh" "swh-cassandra" "next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version" "swh-benchmarks"; do
     echo "[$APP] Generate config in $MAIN_BRANCH branch for environment ${environment}, namespace ${namespace}..."
     output="$TMPDIR/${environment}-${namespace}.before"
 
@@ -78,7 +78,7 @@ for environment in "staging" "production"; do
 
   # git stash pop
   git checkout $BRANCH
-  for namespace in "swh" "swh-cassandra" "next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version" "swh-benchmarks"; do
     echo "[$APP] Generate config in $BRANCH branch for environment ${environment}..."
     output="$TMPDIR/${environment}-${namespace}.after"
 
@@ -89,7 +89,7 @@ for environment in "staging" "production"; do
 done
 
 for environment in "staging" "production"; do
-  for namespace in "swh" "swh-cassandra" "next-version"; do
+  for namespace in "swh" "swh-cassandra" "next-version" "swh-benchmarks"; do
     output="$TMPDIR/${environment}-${namespace}"
 
     if [ ! -f "${output}.before" ]; then
