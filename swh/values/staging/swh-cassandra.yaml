@@ -2270,7 +2270,6 @@ scheduler:
       instances:  # We may have more than one rabbitmq per environment
         scheduler0:
           threshold: 10000
-
   rpc:
     enabled: true
     # The scheduler instance to use for rpc must be a postgresql instance

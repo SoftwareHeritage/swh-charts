@@ -7,6 +7,7 @@
 {{- $sentry := .Values.scheduler.sentry }}
 {{- $affinity := .Values.scheduler.affinity }}
 {{- range $service_type, $deployment_config := .Values.scheduler.extraServices -}}
+
 {{- $deployment_config = include "swh.scheduler.deploymentConfig"
                           (dict "deploymentConfig" $deployment_config
                                 "Values"           $.Values) | fromYaml -}}
