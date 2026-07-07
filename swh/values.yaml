@@ -1311,7 +1311,7 @@ search:
   rpc:
     port: 5010
     priorityClassName: frontend-rpc
-    elasticsearchConfigurationRef: defaultElasticsearchConfiguration
+    # elasticsearchConfigurationRef: defaultElasticsearchConfiguration
     # replicas: 2
     # gunicorn:
     #   threads: 5
