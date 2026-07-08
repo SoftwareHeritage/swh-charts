@@ -1215,7 +1215,6 @@ postgresqlSyncMaskingProxyMailmapsConfiguration:
       secretKeyName: password
 
 authenticatedJournalClientConfiguration:
-  cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
   group_id: swh-archive-prod-journalchecker
   sasl.mechanism: SCRAM-SHA-512
