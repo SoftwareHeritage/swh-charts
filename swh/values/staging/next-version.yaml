@@ -376,8 +376,11 @@ loaderMetadata:
   enabled: true
   storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  journalClientConfigurationRef: loaderMetadataJournalClientConfiguration
-  journalClientOverrides: {}
+  journalClientConfigurationRef: defaultReadJournalClientConfiguration
+  journalClientOverrides:
+    group_id: swh-archive-stg-loader_metadata.journal_client
+    prefix: swh.journal.objects
+
   terminationGracePeriodSeconds: 60
   autoScaling:
     queueThreshold: 1
@@ -999,13 +1002,8 @@ remoteSearchConfiguration:
   enable_requests_retry: true
 
 
-defaultJournalClientConfiguration:
+defaultReadJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
-
-loaderMetadataJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-archive-stg-loader_metadata.journal_client
-  prefix: swh.journal.objects
 
 indexerJournalClientConfiguration:
   cls: kafka
@@ -1039,7 +1037,7 @@ search:
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteROPostgresqlStorageConfiguration
-    journalConfigurationRef: defaultJournalClientConfiguration
+    journalConfigurationRef: defaultReadJournalClientConfiguration
     deployments:
       objects-next-version:
         enabled: true
