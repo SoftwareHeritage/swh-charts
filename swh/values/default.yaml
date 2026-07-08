@@ -51,6 +51,19 @@ vaultStaticSecrets:
       enabled: true
     vulns-sentry-secret:
       enabled: true
+    web-give-secrets:
+      enabled: true
+
+giveConfiguration:
+  public: ${GIVE_PUBLIC_KEY}
+  token: ${GIVE_PRIVATE_TOKEN}
+  secrets:
+    GIVE_PUBLIC_KEY:
+      secretKeyRef: web-give-secrets
+      secretKeyName: public-key
+    GIVE_PRIVATE_TOKEN:
+      secretKeyRef: web-give-secrets
+      secretKeyName: private-token
 
 certManager:
   defaultClusterIssuer: letsencrypt-production-gandi

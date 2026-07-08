@@ -375,16 +375,16 @@ rpcGunicornLoggingConfig: {}
 #   labels:
 #     environment: staging
 
-giveConfiguration:
-  public: ${GIVE_PUBLIC_KEY}
-  token: ${GIVE_PRIVATE_TOKEN}
-  secrets:
-    GIVE_PUBLIC_KEY:
-      secretKeyRef: web-give-secrets
-      secretKeyName: public-key
-    GIVE_PRIVATE_TOKEN:
-      secretKeyRef: web-give-secrets
-      secretKeyName: private-token
+giveConfiguration: {}
+  # public: ${GIVE_PUBLIC_KEY}
+  # token: ${GIVE_PRIVATE_TOKEN}
+  # secrets:
+  #   GIVE_PUBLIC_KEY:
+  #     secretKeyRef: web-give-secrets
+  #     secretKeyName: public-key
+  #   GIVE_PRIVATE_TOKEN:
+  #     secretKeyRef: web-give-secrets
+  #     secretKeyName: private-token
 
 graphql:
   enabled: false
