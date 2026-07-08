@@ -2294,3 +2294,7 @@ vulns:
   # Deployments dict of instances
   deployments: {}
 
+# Enable the mapping of secrets into vault-static-secrets
+vaultStaticSecrets:
+  enabled: false
+  secrets: []
