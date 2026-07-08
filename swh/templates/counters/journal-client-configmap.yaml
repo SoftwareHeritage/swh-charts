@@ -1,4 +1,4 @@
-{{ if and .Values.counters.enabled .Values.counters.journalClient.enabled -}}
+{{- if and .Values.counters.enabled .Values.counters.journalClient.enabled -}}
 {{- with .Values.counters.journalClient }}
 ---
 apiVersion: v1
@@ -9,13 +9,14 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.service.fromYaml"
-      (dict "service" "counters"
+      (dict "service"          "counters"
             "configurationRef" .countersConfigurationRef
-            "Values" $.Values) | nindent 4 }}
+            "Values"           $.Values) | nindent 4 }}
 
     {{- include "swh.journalClientConfiguration"
-      (dict "configurationRef" .journalConfigurationRef
-            "Values" $.Values) | nindent 4 }}
+      (dict "configurationRef" .journalClientConfigurationRef
+            "overrides"        .journalClientOverrides
+            "Values"           $.Values) | nindent 4 }}
 
 {{- end -}}
 {{- end -}}

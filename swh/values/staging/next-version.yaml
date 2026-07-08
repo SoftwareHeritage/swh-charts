@@ -265,7 +265,22 @@ counters:
   journalClient:
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
-    journalConfigurationRef: countersJournalClientConfiguration
+    journalClientConfigurationRef: countersJournalClientConfiguration
+    journalClientOverrides:
+      group_id: swh-counters-journal-client
+      prefix: swh.journal.objects
+      object_types:
+      - content
+      - directory
+      - origin
+      - origin_visit
+      - origin_visit_status
+      - release
+      - revision
+      - skipped_content
+      - snapshot
+      message.max.bytes: 524288000
+
   refreshCountersCache:
     enabled: false
     cron: "0 */1 * * *"
@@ -1081,19 +1096,6 @@ indexerJournalWriterConfiguration:
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-counters-journal-client
-  prefix: swh.journal.objects
-  object_types:
-  - content
-  - directory
-  - origin
-  - origin_visit
-  - origin_visit_status
-  - release
-  - revision
-  - skipped_content
-  - snapshot
-  message.max.bytes: 524288000
 
 datasetsJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers

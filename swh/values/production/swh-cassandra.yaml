@@ -1444,7 +1444,7 @@ counters:
     # TODO: enable when decommissioning the swh namespace
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
-    journalConfigurationRef: journalClientCountersConfiguration
+    journalClientConfigurationRef: journalClientCountersConfiguration
   refreshCountersCache:
     enabled: true
     cron: "0 */1 * * *"
