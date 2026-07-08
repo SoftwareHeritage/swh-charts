@@ -42,7 +42,7 @@ vaultStaticSecrets:
       enabled: true
     objstorage-replayer-sentry-secret:
       enabled: true
-    provenance-sentry-secretxo:
+    provenance-sentry-secret:
       enabled: true
     graph-sentry-secret:
       enabled: true
