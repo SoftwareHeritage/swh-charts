@@ -411,7 +411,7 @@ directPostgresqlReplayerStorageConfiguration:
 storageReplayer:
   enabled: true
   storageConfigurationRef: directPostgresqlReplayerStorageConfiguration
-  journalClientConfigurationRef: storageReplayerJournalClientConfig
+  journalClientConfigurationRef: privilegedReadJournalClientConfiguration
   error_reporter:
     enabled: false
   # Force the deployment of one pod of each type to at least
@@ -1094,7 +1094,7 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
-storageReplayerJournalClientConfig:
+privilegedReadJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
   prefix: swh.journal.objects
