@@ -7,6 +7,14 @@ sentry:
 # Name of the vault auth used to connect to openbao when enabled
 vaultAuthRef: openbao-vso-auth
 
+# Enable the mapping of secrets into vault-static-secrets
+vaultStaticSecrets:
+  enabled: false
+  # secrets to map as vault-static-secrets
+  secrets: {}
+    # amqp-secrets:
+    #   enabled: true
+
 # Default logging config dictionary
 defaultLoggingConfig: {}
 
@@ -2293,11 +2301,3 @@ vulns:
 
   # Deployments dict of instances
   deployments: {}
-
-# Enable the mapping of secrets into vault-static-secrets
-vaultStaticSecrets:
-  enabled: false
-  # common secrets to all environments (e.g. sentry, ...)
-  commonSecrets: []
-  # Extra secrets to be declare per namespace or environments
-  extraSecrets: []

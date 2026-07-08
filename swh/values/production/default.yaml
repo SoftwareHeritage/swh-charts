@@ -31,41 +31,71 @@ externalAuthorizedNetworkRanges:
 
 # Install the secrets references in the namespace as static-vault-secrets
 vaultStaticSecrets:
-  enabled: true
-  extraSecrets:
-    # specific namespaces secret
-    - amqp-secrets
-    - cassandra-swh-secrets
-    - deposit-secrets
-    - web-secrets
-    - svix-secrets
-    - webhooks-secrets
-    - s3-dataset-upload-secret
-    - swh-vault-azure-secret
-    - swh-deposit-django-secret
-    - swh-deposit-azure-secret
-    - swh-archive-broker-secret
-    - swh-indexer-prod-01-broker-secret
-    - swh-archive-broker-secret
-    - swh-objstorage-test-config
-    - swh-objstorage-config
-    - swh-objstorage-azure-ro
-    - swh-objstorage-winery-ro
-    - swh-objstorage-winery-rw
-    - swh-objstorage-s3
-    - swh-webapp-django-secret
-    - swh-archive-broker-secret
-    - swh-postgresql-guest-secret
-    - swh-postgresql-swh-storage-secret
-    - swh-postgresql-swh-scheduler-secret
-    - swh-postgresql-swh-indexer-storage-secret
-    - swh-postgresql-swh-scrubber-secret
-    - swh-postgresql-swh-masking-secret
-    - swh-postgresql-swh-blocking-secret
-    - swh-postgresql-swh-web-secret
-    - swh-postgresql-swh-vault-secret
-    - swh-postgresql-swh-deposit-secret
-    - swh-postgresql-swhmailmap-secret
+  secrets:
+    amqp-secrets:
+      enabled: true
+    cassandra-swh-secrets:
+      enabled: true
+    deposit-secrets:
+      enabled: true
+    web-secrets:
+      enabled: true
+    svix-secrets:
+      enabled: true
+    webhooks-secrets:
+      enabled: true
+    s3-dataset-upload-secret:
+      enabled: true
+    swh-vault-azure-secret:
+      enabled: true
+    swh-deposit-django-secret:
+      enabled: true
+    swh-deposit-azure-secret:
+      enabled: true
+    swh-archive-broker-secret:
+      enabled: true
+    swh-indexer-prod-01-broker-secret:
+      enabled: true
+    swh-archive-broker-secret:
+      enabled: true
+    swh-objstorage-test-config:
+      enabled: true
+    swh-objstorage-config:
+      enabled: true
+    swh-objstorage-azure-ro:
+      enabled: true
+    swh-objstorage-winery-ro:
+      enabled: true
+    swh-objstorage-winery-rw:
+      enabled: true
+    swh-objstorage-s3:
+      enabled: true
+    swh-webapp-django-secret:
+      enabled: true
+    swh-archive-broker-secret:
+      enabled: true
+    swh-postgresql-guest-secret:
+      enabled: true
+    swh-postgresql-swh-storage-secret:
+      enabled: true
+    swh-postgresql-swh-scheduler-secret:
+      enabled: true
+    swh-postgresql-swh-indexer-storage-secret:
+      enabled: true
+    swh-postgresql-swh-scrubber-secret:
+      enabled: true
+    swh-postgresql-swh-masking-secret:
+      enabled: true
+    swh-postgresql-swh-blocking-secret:
+      enabled: true
+    swh-postgresql-swh-web-secret:
+      enabled: true
+    swh-postgresql-swh-vault-secret:
+      enabled: true
+    swh-postgresql-swh-deposit-secret:
+      enabled: true
+    swh-postgresql-swhmailmap-secret:
+      enabled: true
 
 keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/

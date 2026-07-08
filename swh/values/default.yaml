@@ -2,32 +2,54 @@ namespace: swh
 
 vaultStaticSecrets:
   enabled: true
-  commonSecrets:
+  secrets:
     # default secrets
-    - rabbitmq-secrets
-    - checker-deposit-sentry-secret
-    - storage-replayer-sentry-secrets
-    - sentry-settings-for-celery-tasks
-    - loader-metadata-sentry-secret
-    - indexer-sentry-secret
-    - graphql-sentry-secret
-    - storage-sentry-secret
-    - scheduler-sentry-secrets
-    - swh-vault-sentry-secret
-    - web-secrets
-    - web-sentry-secret
-    - indexer-storage-sentry-secret
-    - swh-search-sentry-secret
-    - scrubber-sentry-secret
-    - objstorage-sentry-secret
-    - webhooks-sentry-secret
-    - counters-sentry-secret
-    - objstorage-replayer-sentry-secret
-    - provenance-sentry-secretxo
-    - graph-sentry-secret
-    - coarnotify-sentry-secret
-    - vulns-sentry-secret
-
+    rabbitmq-secrets:
+      enabled: true
+    checker-deposit-sentry-secret:
+      enabled: true
+    storage-replayer-sentry-secrets:
+      enabled: true
+    sentry-settings-for-celery-tasks:
+      enabled: true
+    loader-metadata-sentry-secret:
+      enabled: true
+    indexer-sentry-secret:
+      enabled: true
+    graphql-sentry-secret:
+      enabled: true
+    storage-sentry-secret:
+      enabled: true
+    scheduler-sentry-secrets:
+      enabled: true
+    swh-vault-sentry-secret:
+      enabled: true
+    web-secrets:
+      enabled: true
+    web-sentry-secret:
+      enabled: true
+    indexer-storage-sentry-secret:
+      enabled: true
+    swh-search-sentry-secret:
+      enabled: true
+    scrubber-sentry-secret:
+      enabled: true
+    objstorage-sentry-secret:
+      enabled: true
+    webhooks-sentry-secret:
+      enabled: true
+    counters-sentry-secret:
+      enabled: true
+    objstorage-replayer-sentry-secret:
+      enabled: true
+    provenance-sentry-secretxo:
+      enabled: true
+    graph-sentry-secret:
+      enabled: true
+    coarnotify-sentry-secret:
+      enabled: true
+    vulns-sentry-secret:
+      enabled: true
 
 certManager:
   defaultClusterIssuer: letsencrypt-production-gandi
