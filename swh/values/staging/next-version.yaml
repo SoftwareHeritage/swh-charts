@@ -1,5 +1,11 @@
 namespace: swh-cassandra-next-version
 
+vaultStaticSecrets:
+  secrets:
+    # Already installed by the cluster-components application
+    rabbitmq-scheduler-secret:
+      enabled: false
+
 postgresqlWebConfiguration:
   host: next-version-db-swh-web-rw.cnpg-next-version
   port: 5432
