@@ -29,6 +29,68 @@ externalAuthorizedNetworkRanges:
   - 213.135.60.146
   - 37.187.96.121
 
+# Install the secrets references in the namespace as static-vault-secrets
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    # default secrets
+    - rabbitmq-secrets
+    - checker-deposit-sentry-secret
+    - storage-replayer-sentry-secrets
+    - sentry-settings-for-celery-tasks
+    - loader-metadata-sentry-secret
+    - indexer-sentry-secret
+    - graphql-sentry-secret
+    - storage-sentry-secret
+    - scheduler-sentry-secrets
+    - swh-vault-sentry-secret
+    - web-secrets
+    - web-sentry-secret
+    - indexer-storage-sentry-secret
+    - swh-search-sentry-secret
+    - scrubber-sentry-secret
+    - objstorage-sentry-secret
+    - webhooks-sentry-secret
+    - counters-sentry-secret
+    - objstorage-replayer-sentry-secret
+    - provenance-sentry-secretxo
+    - graph-sentry-secret
+    - coarnotify-sentry-secret
+    - vulns-sentry-secret
+    # specific namespaces secret
+    - amqp-secrets
+    - cassandra-swh-secrets
+    - deposit-secrets
+    - web-secrets
+    - svix-secrets
+    - webhooks-secrets
+    - s3-dataset-upload-secret
+    - swh-vault-azure-secret
+    - swh-deposit-django-secret
+    - swh-deposit-azure-secret
+    - swh-archive-broker-secret
+    - swh-indexer-prod-01-broker-secret
+    - swh-archive-broker-secret
+    - swh-objstorage-test-config
+    - swh-objstorage-config
+    - swh-objstorage-azure-ro
+    - swh-objstorage-winery-ro
+    - swh-objstorage-winery-rw
+    - swh-objstorage-s3
+    - swh-webapp-django-secret
+    - swh-archive-broker-secret
+    - swh-postgresql-guest-secret
+    - swh-postgresql-swh-storage-secret
+    - swh-postgresql-swh-scheduler-secret
+    - swh-postgresql-swh-indexer-storage-secret
+    - swh-postgresql-swh-scrubber-secret
+    - swh-postgresql-swh-masking-secret
+    - swh-postgresql-swh-blocking-secret
+    - swh-postgresql-swh-web-secret
+    - swh-postgresql-swh-vault-secret
+    - swh-postgresql-swh-deposit-secret
+    - swh-postgresql-swhmailmap-secret
+
 keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/
   realm_name: SoftwareHeritage
