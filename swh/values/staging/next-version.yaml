@@ -194,13 +194,6 @@ remoteSchedulerConfiguration:
   # already activated by default (inlined in code)
   # enable_requests_retry: true
 
-datasetsJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-datasets-journal-export-graph
-  prefix: swh.journal.objects
-  privileged: true
-  batch_size: 10
-
 vault:
   enabled: true
   priorityClassName: frontend-rpc
@@ -262,22 +255,6 @@ externalServices:
     luigi-scheduler-next-version:
       internalName: luigi-scheduler-next-version-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-
-countersJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-counters-journal-client
-  prefix: swh.journal.objects
-  object_types:
-  - content
-  - directory
-  - origin
-  - origin_visit
-  - origin_visit_status
-  - release
-  - revision
-  - skipped_content
-  - snapshot
-  message.max.bytes: 524288000
 
 localRedis:
   cls: redis
@@ -395,11 +372,6 @@ loaders:
         maxReplicaCount: 1
         stopWhenNoActivity: false
 
-loaderMetadataJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-archive-stg-loader_metadata.journal_client
-  prefix: swh.journal.objects
-
 loaderMetadata:
   enabled: true
   storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
@@ -417,14 +389,6 @@ directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: postgresqlRWStorageConfiguration
   objstorageConfigurationRef: noopObjstorageConfiguration
-
-storageReplayerJournalClientConfig:
-  cls: kafka
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  prefix: swh.journal.objects
-  message.max.bytes: "524288000"
-  # Both to write some data to privileged topic and use the error_reporter config
-  privileged: true
 
 storageReplayer:
   enabled: true
@@ -896,10 +860,6 @@ podPriority:
     background-workload:
       value: -10900
 
-schedulerJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-scheduler-journal-client
-
 scheduler:
   enabled: true
   schedulerConfigurationRef: remoteSchedulerConfiguration
@@ -968,9 +928,6 @@ toolbox:
       storageConfigurationRef: memoryNoopStorageConfiguration
 
   bulkLoad: null
-
-webhooksJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
 
 webhooks:
   enabled: true
@@ -1045,6 +1002,16 @@ searchJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
   group_id: swh-search
 
+loaderMetadataJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-archive-stg-loader_metadata.journal_client
+  prefix: swh.journal.objects
+
+indexerJournalClientConfiguration:
+  cls: kafka
+  brokersConfigurationRef: readWriteInternalKafkaBrokers
+  group_id: swh-indexer-journal-client
+
 search:
   enabled: true
   logLevel: INFO
@@ -1118,6 +1085,44 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
+schedulerJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-scheduler-journal-client
+
+countersJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-counters-journal-client
+  prefix: swh.journal.objects
+  object_types:
+  - content
+  - directory
+  - origin
+  - origin_visit
+  - origin_visit_status
+  - release
+  - revision
+  - skipped_content
+  - snapshot
+  message.max.bytes: 524288000
+
+datasetsJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  group_id: swh-datasets-journal-export-graph
+  prefix: swh.journal.objects
+  privileged: true
+  batch_size: 10
+
+storageReplayerJournalClientConfig:
+  cls: kafka
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
+  # Both to write some data to privileged topic and use the error_reporter config
+  privileged: true
+
+webhooksJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+
 indexerStorage:
   enabled: true
   deployments:
@@ -1146,11 +1151,6 @@ remoteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-rw:5007
   enable_requests_retry: true
-
-indexerJournalClientConfiguration:
-  cls: kafka
-  brokersConfigurationRef: readWriteInternalKafkaBrokers
-  group_id: swh-indexer-journal-client
 
 indexers:
   enabled: true
