@@ -3,6 +3,12 @@ clusterName: archive-production-rke2
 sentry:
   environment: production
 
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    ingress-storage-cassandra-ro-auth-secrets:
+      enabled: true
+
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16

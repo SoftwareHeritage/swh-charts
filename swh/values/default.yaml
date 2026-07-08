@@ -55,6 +55,16 @@ vaultStaticSecrets:
       enabled: true
     web-give-secrets:
       enabled: true
+    deposit-auth-secrets:
+      enabled: true
+    ingress-objstorage-ro-auth-secrets:
+      enabled: true
+    lister-credentials-secrets:
+      enabled: true
+    metadata-fetcher-credentials:
+      enabled: true
+    web-auth-secrets:
+      enabled: true
 
 giveConfiguration:
   public: ${GIVE_PUBLIC_KEY}
