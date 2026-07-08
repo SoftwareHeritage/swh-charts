@@ -11,6 +11,7 @@
 
 {{- $journalConfigRef := $datasetsGeneratorConfig.journalClientConfigurationRef | default $datasetsConfig.journalClientConfigurationRef -}}
 {{- $journalConfigurationRef := required (print "Mandatory key <journalConfigurationRef> missing.") $journalConfigRef -}}
+{{- $journalConfigOverrides := $datasetsGeneratorConfig.journalClientOverrides | default $datasetsConfig.journalClientOverrides -}}
 {{- $maskingDbConfigRef := $datasetGeneratorConfig.maskingDbConfigurationRef | default $datasetsConfig.maskingDbConfigurationRef -}}
 {{- $maskingDbConfigurationRef := required (print "Mandatory key <maskingDbConfigurationRef> missing.") $maskingDbConfigRef -}}
 {{- $connstring := include "swh.connstring" (dict "configurationRef" $maskingDbConfigurationRef
@@ -24,8 +25,10 @@ metadata:
   namespace: {{ $config.namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalConfigurationRef
-                                                       "Values" $.Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration"
+                  (dict "configurationRef" $journalConfigurationRef
+                        "overrides"        $journalConfigOverrides
+                        "Values"           $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
 
 {{ if $config.publish }}

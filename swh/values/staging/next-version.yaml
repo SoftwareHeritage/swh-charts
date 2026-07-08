@@ -265,7 +265,7 @@ counters:
   journalClient:
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
-    journalClientConfigurationRef: countersJournalClientConfiguration
+    journalClientConfigurationRef: defaultReadJournalClientConfiguration
     journalClientOverrides:
       group_id: swh-counters-journal-client
       prefix: swh.journal.objects
@@ -1094,16 +1094,6 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
-countersJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-
-datasetsJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-datasets-journal-export-graph
-  prefix: swh.journal.objects
-  privileged: true
-  batch_size: 10
-
 storageReplayerJournalClientConfig:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -1666,7 +1656,12 @@ datasetsGenerator:
     enabled: true
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
-    journalClientConfigurationRef: datasetsJournalClientConfiguration
+    journalClientConfigurationRef: defaultReadJournalClientConfiguration
+    journalClientOverrides:
+      group_id: swh-datasets-journal-export-graph
+      prefix: swh.journal.objects
+      privileged: true
+      batch_size: 10
     maskingDbConfigurationRef: roMaskingPostgresqlConfiguration
     publicationCredentialsRef: datasetUploadS3Configuration
     requestedMemory: 1Gi
