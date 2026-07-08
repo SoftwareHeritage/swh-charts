@@ -2297,4 +2297,7 @@ vulns:
 # Enable the mapping of secrets into vault-static-secrets
 vaultStaticSecrets:
   enabled: false
-  secrets: []
+  # common secrets to all environments (e.g. sentry, ...)
+  commonSecrets: []
+  # Extra secrets to be declare per namespace or environments
+  extraSecrets: []

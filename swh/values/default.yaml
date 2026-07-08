@@ -1,5 +1,34 @@
 namespace: swh
 
+vaultStaticSecrets:
+  enabled: true
+  commonSecrets:
+    # default secrets
+    - rabbitmq-secrets
+    - checker-deposit-sentry-secret
+    - storage-replayer-sentry-secrets
+    - sentry-settings-for-celery-tasks
+    - loader-metadata-sentry-secret
+    - indexer-sentry-secret
+    - graphql-sentry-secret
+    - storage-sentry-secret
+    - scheduler-sentry-secrets
+    - swh-vault-sentry-secret
+    - web-secrets
+    - web-sentry-secret
+    - indexer-storage-sentry-secret
+    - swh-search-sentry-secret
+    - scrubber-sentry-secret
+    - objstorage-sentry-secret
+    - webhooks-sentry-secret
+    - counters-sentry-secret
+    - objstorage-replayer-sentry-secret
+    - provenance-sentry-secretxo
+    - graph-sentry-secret
+    - coarnotify-sentry-secret
+    - vulns-sentry-secret
+
+
 certManager:
   defaultClusterIssuer: letsencrypt-production-gandi
 
