@@ -952,7 +952,7 @@ toolbox:
 webhooks:
   enabled: true
   svixConfigurationRef: svixConfiguration
-  journalClientConfigurationRef: webhooksJournalClientConfiguration
+  journalClientConfigurationRef: defaultReadJournalClientConfiguration
   priorityClassName: frontend-rpc-workload
   autoScaling:
     maxReplicaCount: 1
@@ -1101,9 +1101,6 @@ storageReplayerJournalClientConfig:
   message.max.bytes: "524288000"
   # Both to write some data to privileged topic and use the error_reporter config
   privileged: true
-
-webhooksJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
 
 indexerStorage:
   enabled: true
