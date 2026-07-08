@@ -3,9 +3,14 @@ clusterName: archive-production-rke2
 
 namespace: swh-benchmarks
 
+# Install the secrets references in the namespace as static-vault-secrets
+vaultStaticSecrets:
+  secrets:
+    swh-objstorage-test-config:
+      enabled: true
+
 # Override images
 swh_objstorage_image_version: '20260612.1'
-
 
 # Objstorage configs
 noopObjstorageConfiguration:
