@@ -7,6 +7,8 @@ vaultStaticSecrets:
     # default secrets
     rabbitmq-secrets:
       enabled: true
+    deposit-sentry-secret:
+      enabled: true
     checker-deposit-sentry-secret:
       enabled: true
     storage-replayer-sentry-secrets:
