@@ -998,9 +998,9 @@ remoteSearchConfiguration:
   url: http://search-rpc:5010
   enable_requests_retry: true
 
-searchJournalClientConfiguration:
+
+defaultJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-search
 
 loaderMetadataJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
@@ -1039,7 +1039,7 @@ search:
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteROPostgresqlStorageConfiguration
-    journalConfigurationRef: searchJournalClientConfiguration
+    journalConfigurationRef: defaultJournalClientConfiguration
     deployments:
       objects-next-version:
         enabled: true
