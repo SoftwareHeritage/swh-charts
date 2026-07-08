@@ -265,7 +265,7 @@ counters:
   journalClient:
     enabled: true
     countersConfigurationRef: remoteCountersConfiguration
-    journalClientConfigurationRef: defaultReadJournalClientConfiguration
+    journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
     journalClientOverrides:
       group_id: swh-counters-journal-client
       prefix: swh.journal.objects
@@ -391,7 +391,7 @@ loaderMetadata:
   enabled: true
   storageConfigurationRef: remoteRWStorageWithPipelineConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
-  journalClientConfigurationRef: defaultReadJournalClientConfiguration
+  journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
   journalClientOverrides:
     group_id: swh-archive-stg-loader_metadata.journal_client
     prefix: swh.journal.objects
@@ -896,7 +896,7 @@ scheduler:
         forgeUrl: https://gitlab.softwareheritage.org/api/v4
   journalClient:
     enabled: true
-    journalClientConfigurationRef: defaultReadJournalClientConfiguration
+    journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
     journalClientOverrides:
       group_id: swh-scheduler-journal-client
   extraServices:
@@ -952,7 +952,7 @@ toolbox:
 webhooks:
   enabled: true
   svixConfigurationRef: svixConfiguration
-  journalClientConfigurationRef: defaultReadJournalClientConfiguration
+  journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
   priorityClassName: frontend-rpc-workload
   autoScaling:
     maxReplicaCount: 1
@@ -1045,7 +1045,7 @@ search:
     priorityClassName: normal-workload
     searchConfigurationRef: remoteSearchConfiguration
     storageConfigurationRef: remoteROPostgresqlStorageConfiguration
-    journalConfigurationRef: defaultReadJournalClientConfiguration
+    journalConfigurationRef: nonPrivilegedReadJournalClientConfiguration
     deployments:
       objects-next-version:
         enabled: true
@@ -1082,9 +1082,6 @@ postgresqlIndexerStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-indexer-secret
       secretKeyName: password
 
-defaultReadJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
   cls: kafka
@@ -1094,12 +1091,17 @@ indexerJournalWriterConfiguration:
   producer_config:
     message.max.bytes: 1000000000
 
+# Topics read do not contain sensitive information (author, committer are hidden)
+nonPrivilegedReadJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
+
+# Topics read contains sensitive data (author, commiter, ...)
 privilegedReadJournalClientConfiguration:
   cls: kafka
   brokersConfigurationRef: internalSecuredKafkaBrokers
   prefix: swh.journal.objects
   message.max.bytes: "524288000"
-  # Both to write some data to privileged topic and use the error_reporter config
+  # Both to read/write privileged data from topics (revision, release)
   privileged: true
 
 indexerStorage:
@@ -1137,7 +1139,7 @@ indexers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
-  journalClientConfigurationRef: defaultReadJournalClientConfiguration
+  journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
   deployments:
     origin-intrinsic:
       indexer_type: origin_intrinsic_metadata
@@ -1653,7 +1655,7 @@ datasetsGenerator:
     enabled: true
     luigiSchedulerUrlRef: luigiSchedulerUrl
     graphDirectoryPathRef: graphDirectoryPath
-    journalClientConfigurationRef: defaultReadJournalClientConfiguration
+    journalClientConfigurationRef: nonPrivilegedReadJournalClientConfiguration
     journalClientOverrides:
       group_id: swh-datasets-journal-export-graph
       prefix: swh.journal.objects
