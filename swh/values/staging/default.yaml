@@ -3,6 +3,38 @@ clusterName: archive-staging-rke2
 sentry:
   environment: staging
 
+# Install the secrets references in the namespace as static-vault-secrets
+vaultStaticSecrets:
+  enabled: true
+  extraSecrets:
+    - amqp-secrets
+    - cassandra-cluster-superuser
+    - deposit-secrets
+    - swh-archive-broker-secret
+    - swh-postgresql-guest-secret
+    - swh-postgresql-swh-secret
+    - swh-postgresql-swh-indexer-secret
+    - swh-postgresql-swh-scrubber-secret
+    - swh-postgresql-swh-vault-secret
+    - swh-postgresql-swh-scheduler-secret
+    - swh-postgresql-swh-web-secret
+    - swh-postgresql-swh-masking-secret
+    - swh-postgresql-swh-blocking-secret
+    - swh-postgresql-swhmailmap-secret
+    - swh-postgresql-swh-deposit-secret
+    - swh-postgresql-swh-coar-notify-secret
+    - swh-deposit-azure-secret-next-version
+    - swh-deposit-django-secret
+    - swh-deposit-azure-secret
+    - swh-coarnotify-django-secret
+    - swh-webapp-django-secret
+    - rabbitmq-scheduler-secret
+    - svix-secrets
+    - swh-vault-azure-secret
+    - s3-dataset-upload-secret
+    - cassandra-swh-secrets
+    - webhooks-secrets
+
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16
