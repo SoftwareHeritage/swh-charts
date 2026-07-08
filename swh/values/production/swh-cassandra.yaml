@@ -774,6 +774,7 @@ scrubber:
         enabled: false
         configName: journal-checker-directory
         journalClientOverrides:
+          cls: kafka
           batch_size: 100
           on_eof: restart
         object: directory
@@ -787,6 +788,7 @@ scrubber:
         enabled: false
         configName: journal-checker-release
         journalClientOverrides:
+          cls: kafka
           batch_size: 200
           privileged: true
           on_eof: restart
@@ -798,6 +800,7 @@ scrubber:
         enabled: true
         configName: journal-checker-revision
         journalClientOverrides:
+          cls: kafka
           privileged: true
           on_eof: restart
         object: revision
@@ -809,6 +812,7 @@ scrubber:
         configName: journal-checker-snapshot
         object: snapshot
         journalClientOverrides:
+          cls: kafka
           on_eof: restart
         replicas: 2
         requestedCpu: 1
@@ -2636,6 +2640,7 @@ objstorageReplayer:
       staticConsumerGroup: true
       restartOnStallSeconds: 300
       journalClientOverrides:
+        cls: kafka
         group_id: swh-archive-prod-s3-content-replayer
         auto_offset_reset: earliest
         batch_size: 400
