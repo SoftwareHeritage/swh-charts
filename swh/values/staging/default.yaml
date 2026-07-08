@@ -8,7 +8,6 @@ vaultStaticSecrets:
   enabled: true
   extraSecrets:
     - amqp-secrets
-    - cassandra-cluster-superuser
     - deposit-secrets
     - swh-archive-broker-secret
     - swh-postgresql-guest-secret
