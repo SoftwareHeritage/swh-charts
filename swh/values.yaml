@@ -7,7 +7,7 @@ sentry:
 # Name of the vault auth used to connect to openbao when enabled
 vaultAuthRef: openbao-vso-auth
 
-# Enable the mapping of secrets into vault-static-secrets
+# Install the secrets references in the namespace as vault-static-secrets
 vaultStaticSecrets:
   enabled: false
   # secrets to map as vault-static-secrets

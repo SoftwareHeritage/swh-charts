@@ -29,7 +29,7 @@ externalAuthorizedNetworkRanges:
   - 213.135.60.146
   - 37.187.96.121
 
-# Install the secrets references in the namespace as static-vault-secrets
+# Install the secrets references in the namespace as vault-static-secrets
 vaultStaticSecrets:
   secrets:
     amqp-secrets:

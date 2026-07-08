@@ -1,5 +1,6 @@
 namespace: swh
 
+# Install the secrets references in the namespace as vault-static-secrets
 vaultStaticSecrets:
   enabled: true
   secrets:

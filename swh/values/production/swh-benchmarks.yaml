@@ -3,7 +3,7 @@ clusterName: archive-production-rke2
 
 namespace: swh-benchmarks
 
-# Install the secrets references in the namespace as static-vault-secrets
+# Install the secrets references in the namespace as vault-static-secrets
 vaultStaticSecrets:
   secrets:
     swh-objstorage-test-config:
