@@ -1001,15 +1001,6 @@ remoteSearchConfiguration:
   url: http://search-rpc:5010
   enable_requests_retry: true
 
-
-defaultReadJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-
-indexerJournalClientConfiguration:
-  cls: kafka
-  brokersConfigurationRef: readWriteInternalKafkaBrokers
-  group_id: swh-indexer-journal-client
-
 search:
   enabled: true
   logLevel: INFO
@@ -1073,6 +1064,10 @@ postgresqlIndexerStorageConfiguration:
     POSTGRESQL_IDX_PASSWORD:
       secretKeyRef: swh-postgresql-swh-indexer-secret
       secretKeyName: password
+
+
+defaultReadJournalClientConfiguration:
+  brokersConfigurationRef: internalSecuredKafkaBrokers
 
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: readWriteInternalKafkaBrokers
@@ -1156,14 +1151,14 @@ indexers:
   schedulerConfigurationRef: remoteSchedulerConfiguration
   indexerStorageConfigurationRef: remoteIndexerStorageConfiguration
   objstorageConfigurationRef: rpcRWObjstoragePathslicingConfiguration
-  journalClientConfigurationRef: indexerJournalClientConfiguration
+  journalClientConfigurationRef: defaultReadJournalClientConfiguration
   deployments:
     origin-intrinsic:
       indexer_type: origin_intrinsic_metadata
       journalClientOverrides:
         group_id: swh-indexer-journal-client-origin-intrinsic-metadata
-        batch_size: 200
         prefix: swh.journal.objects
+        batch_size: 200
         object_types:
           - origin
           - origin_visit_status
