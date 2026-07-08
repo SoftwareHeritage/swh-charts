@@ -1,5 +1,7 @@
-{{ if and .Values.scheduler.enabled .Values.scheduler.journalClient.enabled -}}
 {{ $namespace := .Values.namespace }}
+{{- with .Values.scheduler }}
+{{- if and .enabled .journalClient.enabled -}}
+{{ $journalClientOverrides := deepCopy (get .journalClient "journalClientOverrides" | default dict) }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -8,13 +10,18 @@ metadata:
   namespace: {{ $namespace }}
 data:
   config.yml.template: |
-    {{- include "swh.schedulerConfiguration" (dict "configurationRef" .Values.scheduler.schedulerConfigurationRef
-                                                   "Values" .Values) | nindent 4 }}
+    {{- include "swh.schedulerConfiguration"
+                  (dict "configurationRef" .schedulerConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
 
-    {{- include "celery.configuration" (dict "configurationRef" .Values.scheduler.celeryConfigurationRef
-                                             "Values" .Values) | nindent 4 }}
+    {{- include "celery.configuration"
+                  (dict "configurationRef" .celeryConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
 
-    {{- include "swh.journalClientConfiguration" (dict "configurationRef" .Values.scheduler.journalClient.journalConfigurationRef
-                                                       "Values" .Values) | nindent 4 }}
+    {{- include "swh.journalClientConfiguration"
+                  (dict "configurationRef" .journalClient.journalClientConfigurationRef
+                        "overrides"        $journalClientOverrides
+                        "Values"           $.Values) | nindent 4 }}
 
-{{- end -}}
+{{- end }}
+{{- end }}

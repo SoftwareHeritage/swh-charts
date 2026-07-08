@@ -881,7 +881,9 @@ scheduler:
         forgeUrl: https://gitlab.softwareheritage.org/api/v4
   journalClient:
     enabled: true
-    journalConfigurationRef: schedulerJournalClientConfiguration
+    journalClientConfigurationRef: defaultReadJournalClientConfiguration
+    journalClientOverrides:
+      group_id: swh-scheduler-journal-client
   extraServices:
     runner:
       enabled: true
@@ -1065,7 +1067,6 @@ postgresqlIndexerStorageConfiguration:
       secretKeyRef: swh-postgresql-swh-indexer-secret
       secretKeyName: password
 
-
 defaultReadJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers
 
@@ -1077,10 +1078,6 @@ indexerJournalWriterConfiguration:
   prefix: swh.journal.indexed
   producer_config:
     message.max.bytes: 1000000000
-
-schedulerJournalClientConfiguration:
-  brokersConfigurationRef: internalSecuredKafkaBrokers
-  group_id: swh-scheduler-journal-client
 
 countersJournalClientConfiguration:
   brokersConfigurationRef: internalSecuredKafkaBrokers

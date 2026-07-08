@@ -1272,7 +1272,7 @@ scheduler:
     cron: "27 3-23/4 * * *"
   journalClient:
     enabled: true
-    journalConfigurationRef: journalClientConfiguration
+    journalClientConfigurationRef: journalClientConfiguration
   extraServices:
     runner:
       enabled: true

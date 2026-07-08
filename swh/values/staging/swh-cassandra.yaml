@@ -2323,7 +2323,7 @@ scheduler:
     cron: "0/10 * * * *"  # at every 10th minute from 0 to 59
   journalClient:
     enabled: true
-    journalConfigurationRef: journalClientConfiguration
+    journalClientConfigurationRef: journalClientConfiguration
     requestedMemory: 100Mi
     requestedCpu: 10m
   extraServices:
