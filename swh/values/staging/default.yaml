@@ -17,6 +17,8 @@ vaultStaticSecrets:
       enabled: true
     swh-postgresql-guest-secret:
       enabled: true
+    swh-postgresql-postgres-secret:
+      enabled: true
     swh-postgresql-swh-secret:
       enabled: true
     swh-postgresql-swh-indexer-secret:
