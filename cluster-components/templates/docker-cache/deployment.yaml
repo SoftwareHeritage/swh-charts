@@ -40,7 +40,7 @@ spec:
               value: {{ $instanceVars.httpPrefix | quote }}
             - name: REGISTRY_PROXY_REMOTEURL
               value: {{ $instanceVars.remoteUrl | quote }}
-            {{- if and $instanceVars.username $instanceVars.password }}
+            {{- if and $instanceVars.authenticationSecretRef $instanceVars.userKeyRef $instanceVars.passwordKeyRef }}
             - name: REGISTRY_PROXY_USERNAME
               valueFrom:
                 secretKeyRef:
