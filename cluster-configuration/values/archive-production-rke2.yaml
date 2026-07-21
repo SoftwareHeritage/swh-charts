@@ -105,7 +105,7 @@ pgbouncer:
       dbname: swh-svix
       auth_user: postgres
     swh-scheduler:
-      host: db-swh-scheduler-ro
+      host: db-swh-scheduler-r
       port: 5432
       dbname: swh-scheduler
       auth_user: postgres
