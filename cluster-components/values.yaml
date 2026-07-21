@@ -251,29 +251,29 @@ dockerCache:
   storageClassName: ceph-rbd
   metrics:
     enabled: true
-  instances:
-    docker.io:
-      enabled: true
-      remoteUrl: https://registry-1.docker.io
-      # httpPrefix: /docker.io/
-      # storageRequest: 5Gi
-      # storageClassName: ceph-cephfs
-      # (Optional) Authentication configuration
-      # authenticationSecretRef: dockerhub-authentication
-      # userKeyRef: username
-      # passwordKeyRef: password
-    swh:
-      enabled: true
-      remoteUrl: https://container-registry.softwareheritage.org
-    registry.k8s.io:
-      enabled: true
-      # metrics:
-      #   enabled:
-      #     false
-    quay.io:
-      enabled: false
-    ghcr.io:
-      enabled: false
+  instances: {}
+    # docker.io:
+    #   enabled: true
+    #   remoteUrl: https://registry-1.docker.io
+    #   # httpPrefix: /docker.io/
+    #   # storageRequest: 5Gi
+    #   # storageClassName: ceph-cephfs
+    #   # (Optional) Authentication configuration
+    #   # authenticationSecretRef: dockerhub-authentication
+    #   # userKeyRef: username
+    #   # passwordKeyRef: password
+    # swh:
+    #   enabled: true
+    #   remoteUrl: https://container-registry.softwareheritage.org
+    # registry.k8s.io:
+    #   enabled: true
+    #   # metrics:
+    #   #   enabled:
+    #   #     false
+    # quay.io:
+    #   enabled: false
+    # ghcr.io:
+    #   enabled: false
 
 cloudnativePg:
   enabled: false
