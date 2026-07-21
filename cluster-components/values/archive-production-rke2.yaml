@@ -372,6 +372,8 @@ cloudnativePg:
     db-swh-scheduler:
       enabled: true
       instances: 3
+      services:
+        disabledDefaultServices: []
       database:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
