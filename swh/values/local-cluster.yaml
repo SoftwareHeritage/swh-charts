@@ -2027,8 +2027,8 @@ staticWebsites:
 # docs.swh.org migration into k8s
     docs-swh:
       enabled: true
-      image: container-registry.softwareheritage.org/swh/infra/swh-apps/swh-docs
-      imageVersion: "20260707.1"
+      image: amadouth/swh-docs
+      imageVersion: latest
       replicas: 1
       hosts:
         - docs-swh.local
