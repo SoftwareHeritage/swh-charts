@@ -50,6 +50,9 @@ dockerCache:
     docker.io:
       enabled: true
       remoteUrl: https://registry-1.docker.io
+      authenticationSecretRef: dockerhub-authentication
+      userKeyRef: username
+      passwordKeyRef: password
     swh:
       enabled: true
       remoteUrl: https://container-registry.softwareheritage.org

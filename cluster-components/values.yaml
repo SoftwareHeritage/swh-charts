@@ -258,6 +258,10 @@ dockerCache:
       # httpPrefix: /docker.io/
       # storageRequest: 5Gi
       # storageClassName: ceph-cephfs
+      # (Optional) Authentication configuration
+      # authenticationSecretRef: dockerhub-authentication
+      # userKeyRef: username
+      # passwordKeyRef: password
     swh:
       enabled: true
       remoteUrl: https://container-registry.softwareheritage.org

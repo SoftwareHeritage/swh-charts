@@ -6,6 +6,9 @@
 {{- $mergedConfig :=  merge (deepCopy .instanceConfig) (deepCopy .Values.dockerCache) }}
 {{- $imageName := get $mergedConfig "imageName" | default "registry" }}
 {{- $imageVersion:= get $mergedConfig "imageVersion" | default "2" }}
+{{- $authenticationSecretRef := get $mergedConfig "authenticationSecretRef" -}}
+{{- $userKeyRef := get $mergedConfig "userKeyRef" -}}
+{{- $passwordKeyRef := get $mergedConfig "passwordKeyRef" -}}
 ---
 serviceName: {{ print "dockercache-" (regexReplaceAll "[^a-z-]+" .instanceName "-") | quote }}
 httpPrefix: {{ get .instanceConfig "httpPrefix" | default (printf "/%s/" .instanceName) | quote }}
@@ -20,4 +23,7 @@ imageSpec: {{ printf "%s:%s" $imageName $imageVersion | quote }}
 imagePullPolicy: {{ get $mergedConfig "imagePullPolicy" | default "IfNotPresent" }}
 priorityClassName: {{ $.Values.podPriority.enabled | ternary (get $mergedConfig "priorityClassName") "" | quote }}
 remoteUrl: {{ get .instanceConfig "remoteUrl" | default (printf "https://%s" .instanceName) | quote }}
+authenticationSecretRef: {{ $authenticationSecretRef }}
+userKeyRef: {{ $userKeyRef }}
+passwordKeyRef: {{ $passwordKeyRef }}
 {{ end -}}
