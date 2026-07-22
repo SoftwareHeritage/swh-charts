@@ -3180,7 +3180,6 @@ staticWebsites:
   deployments:
     dataportal:
       image: container-registry.softwareheritage.org/swh/devel/swh-dataportal
-      imageVersion: latest
       enabled: true
       replicas: 1
       hosts:
