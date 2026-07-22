@@ -681,6 +681,7 @@ journalWriterMirrorConfiguration:
     message.max.bytes: 1000000000
 
 datasetsGenerator:
+  imageVersion: "20260225.1"
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

@@ -2194,8 +2194,8 @@ coarNotify:
 #           port: 5015
 datasetsGenerator:
   enabled: false
-  # Default image version pinned (can be overridden per environment)
-  imageVersion: "20260225.1"
+  # Default image version pinned (can be overridden per environment and per instance)
+  # imageVersion: "20260225.1"
   logLevel: INFO
   # Default namespace to use (can be overridden per instance or per scheduler)
   # namespace: swh
