@@ -1992,6 +1992,7 @@ staticWebsites:
   deployments:
     dataportal:
       enabled: true
+      image: container-registry.softwareheritage.org/swh/devel/swh-dataportal
       replicas: 1
       hosts:
         - dataportal.local
