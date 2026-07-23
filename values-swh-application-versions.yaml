@@ -55,7 +55,7 @@ swh_openbao_image_version: '20260529.1'
 swh_provenance_image: container-registry.softwareheritage.org/swh/infra/swh-apps/provenance
 swh_provenance_image_version: '20260709.1'
 swh_scheduler_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scheduler
-swh_scheduler_image_version: '20260709.1'
+swh_scheduler_image_version: '20260723.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
 swh_scrubber_image_version: '20260709.1'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
