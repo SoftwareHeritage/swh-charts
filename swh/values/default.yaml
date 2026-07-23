@@ -641,7 +641,7 @@ provenance:
             - "true"
 
 graph:
-  imageVersion: "20260722.1"
+  imageVersion: "20260723.1"
   sentry:
     enabled: true
     secretKeyRef: graph-sentry-secret
