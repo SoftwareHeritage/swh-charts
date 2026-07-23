@@ -377,7 +377,7 @@ storageReplayer:
       requestedCpu: 425m
       requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 64
+        maxReplicaCount: 1
     directory:
       enabled: true
       journalClientOverrides:
@@ -391,7 +391,7 @@ storageReplayer:
       # Follow up consumption
       # requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 16
+        maxReplicaCount: 1
     extid:
       enabled: true
       journalClientOverrides:
@@ -405,7 +405,7 @@ storageReplayer:
       # Follow up consumption
       requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     metadata:
       enabled: true
       journalClientOverrides:
@@ -417,7 +417,7 @@ storageReplayer:
       requestedCpu: 50m
       requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     raw-extrinsic-metadata:
       enabled: true
       journalClientOverrides:
@@ -431,7 +431,7 @@ storageReplayer:
       # follow up consumption
       # requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     origin:
       enabled: true
       journalClientOverrides:
@@ -445,7 +445,7 @@ storageReplayer:
       # Follow up consumption
       requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     origin-visit:
       enabled: true
       journalClientOverrides:
@@ -460,7 +460,7 @@ storageReplayer:
       # requestedCpu: 100m
       # requestedMemory: 100Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     origin-visit-status:
       enabled: true
       journalClientOverrides:
@@ -475,7 +475,7 @@ storageReplayer:
       # requestedCpu: 55m
       # requestedMemory: 200Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     release:
       enabled: true
       journalClientOverrides:
@@ -489,7 +489,7 @@ storageReplayer:
       # follow up consumption
       requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     revision:
       enabled: true
       journalClientOverrides:
@@ -504,7 +504,7 @@ storageReplayer:
       requestedCpu: 50m
       requestedMemory: 400Mi
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     skipped-content:
       enabled: true
       journalClientOverrides:
@@ -518,7 +518,7 @@ storageReplayer:
       # follow up consumption
       requestedCpu: 50m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
     snapshot:
       enabled: true
       journalClientOverrides:
@@ -532,4 +532,4 @@ storageReplayer:
       # follow up consumption
       requestedCpu: 80m
       autoScaling:
-        maxReplicaCount: 5
+        maxReplicaCount: 1
