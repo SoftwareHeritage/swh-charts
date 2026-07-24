@@ -2065,6 +2065,12 @@ graph:
   # [optional] Graph image version to use. By default, use the one declared in
   # /values-swh-application-version.yaml. This can be overridden per instance
   # imageVersion: 20240830.1
+  # Whether to enable probes or not (can be overridden per instance)
+  probes:
+    liveness:
+      enabled: true
+    readiness:
+      enabled: true
   sentry:
     enabled: false
     # name of the secret containing the $secretKeyName value
