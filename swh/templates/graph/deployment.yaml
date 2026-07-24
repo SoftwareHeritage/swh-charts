@@ -194,6 +194,8 @@ spec:
             {{ end }}
             - name: SWH_CONFIG_FILENAME
               value: /etc/swh/config.yml
+            - env: DO_NOT_CHECK_MOD_TIMES
+              value: "true"
           {{- if $.Values.graph.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
