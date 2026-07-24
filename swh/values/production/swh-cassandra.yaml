@@ -3047,9 +3047,6 @@ graph:
       port: 50091
       requestedMemory: 400Gi
       graphConfigurationRef: plainGrpcGraphConfiguration
-      probes:
-        liveness:
-          enabled: false
       dataset:
         name: 2026-06-04
       startService: true
