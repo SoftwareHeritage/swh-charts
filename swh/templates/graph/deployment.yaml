@@ -148,7 +148,7 @@ spec:
             tcpSocket:
               port: {{ $type }}
           {{- end }}
-            initialDelaySeconds: 15
+            initialDelaySeconds: 60
             failureThreshold: 30
             periodSeconds: 5
           {{- end }}
@@ -156,7 +156,7 @@ spec:
           livenessProbe:
             tcpSocket:
               port: {{ $type }}
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             periodSeconds: 5
           {{- end }}
           command:
