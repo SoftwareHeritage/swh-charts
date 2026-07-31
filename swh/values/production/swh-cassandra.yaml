@@ -3287,6 +3287,32 @@ staticWebsites:
              - path: /
                port: 80
 
+# docs.swh.org migration into production
+
+    docs:
+      image: container-registry.softwareheritage.org/swh/infra/swh-apps/docs
+      enabled: true
+      replicas: 1
+      hosts:
+        - docs.softwareheritage.org
+        - docs.internal.softwareheritage.org
+      ingress:
+        enabled: true
+        className: nginx
+        tlsEnabled: true
+        secretName: docs-swh-production-tls
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+          nginx.ingress.kubernetes.io/proxy-body-size: "4G"
+        endpoints:
+         default:
+           paths:
+             - path: /
+               port: 80
+
 vaultStaticSecrets:
   enabled: true
   secrets:
