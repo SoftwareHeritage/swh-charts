@@ -250,8 +250,8 @@ storageReplayer:
 storage:
   enabled: true
   gunicorn:
-    workers: 2
-    threads: 4
+    workers: 8
+    threads: 1
     timeout: 3600
   deployments:
     # public facing instance (behind authentication)
@@ -306,8 +306,8 @@ storage:
     cassandra-azure-readonly:
       enabled: true
       gunicorn:
-        workers: 8
-        threads: 4
+        workers: 16
+        threads: 1
       autoScaling:
         type: keda
         minReplicaCount: 10
