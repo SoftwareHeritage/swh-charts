@@ -1201,10 +1201,10 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: remoteROObjstorageConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-  # replicas: 2
+  replicas: 2
   gunicorn:
-    threads: 5
-    workers: 4
+    threads: 1
+    workers: 6
     timeout: 3600
   # RPC services may have different profiles than the rest so they need their specific
   # setup
