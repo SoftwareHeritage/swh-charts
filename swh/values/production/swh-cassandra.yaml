@@ -1322,9 +1322,9 @@ vault:
   storageConfigurationRef: remoteROStorageConfiguration
   objstorageConfigurationRef: roObjstorageBestEffortConfiguration
   cacheConfigurationRef: azureCacheConfiguration
-  replicas: 2
+  replicas: 3
   gunicorn:
-    threads: 5
+    threads: 1
     workers: 4
     timeout: 3600
   # RPC services may have different profiles than the rest so they need their specific
