@@ -42,10 +42,6 @@ data:
     # FIXME: make it a tad more generic
     # FIXME2: Use wget instead with url https://softwareheritage.s3.us-east-1.amazonaws.com/<bucket-path>/
     for filename in connected_components.wccs \
-                    commit2vuln_using_cherrypicks.ef \
-                    commit2vuln_using_cherrypicks.graph \
-                    commit2vuln_using_cherrypicks.offsets \
-                    commit2vuln_using_cherrypicks.properties \
                     commit2vuln_without_cherrypicks.ef \
                     commit2vuln_without_cherrypicks.graph \
                     commit2vuln_without_cherrypicks.offsets \
