@@ -2913,6 +2913,16 @@ volumes:
         resources:
           requests:
             storage: 1Gi
+    vulns-grpc-dataset-20260604-pvc:
+      enabled: true
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
     graph-20260604-persistent-pvc:
       enabled: true
       appName: graph-grpc-20260604
@@ -2966,6 +2976,40 @@ vulns:
         - vulns.internal.softwareheritage.org
       ingress:
         enabled: true
+        extraAnnotations:
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+          nginx.ingress.kubernetes.io/proxy-buffering: "on"
+          nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+        endpoints:
+          default:
+            paths:
+              - path: /
+    grpc-20260604:
+      enabled: true
+      toolbox:
+        enabled: false
+      dataset:
+        fetch: true
+        url: s3://softwareheritage/derived_datasets/2026-06-04/vulnerabilities
+        name: 2026-06-04
+        graphName: 2026-06-04
+      extraVolumes:
+        # Existing pvc mounting point with graph popular dataset data
+        graph-popular-persistent:
+          mountPath: /srv/graph/2026-06-04/compressed
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: graph-20260604-persistent-pvc
+        # New persistent volume for the vulns dataset
+        vulns-grpc-dataset-popular:
+          mountPath: /srv/dataset
+          volumeDefinition:
+            persistentVolumeClaim:
+              claimName: vulns-grpc-dataset-20260604-pvc
+      # hosts:
+      #   - vulns.internal.softwareheritage.org
+      ingress:
+        enabled: false
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
