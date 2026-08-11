@@ -140,6 +140,8 @@ spec:
               value: deployment:{{ $serviceType }}
             - name: STATSD_SERVICE_TYPE
               value: {{ $serviceType }}
+            - name: DO_NOT_CHECK_MOD_TIMES
+              value: "true"
             {{- if (eq (lower $logLevel) "debug") }}
             - name: RUST_LOG
               value: "debug"
