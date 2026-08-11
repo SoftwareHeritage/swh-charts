@@ -2972,10 +2972,10 @@ vulns:
           volumeDefinition:
             persistentVolumeClaim:
               claimName: vulns-grpc-dataset-20260302-pvc
-      hosts:
-        - vulns.internal.softwareheritage.org
+      # hosts:
+      #   - vulns.internal.softwareheritage.org
       ingress:
-        enabled: true
+        enabled: false
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -3006,10 +3006,10 @@ vulns:
           volumeDefinition:
             persistentVolumeClaim:
               claimName: vulns-grpc-dataset-20260604-pvc
-      # hosts:
-      #   - vulns.internal.softwareheritage.org
+      hosts:
+        - vulns.internal.softwareheritage.org
       ingress:
-        enabled: false
+        enabled: true
         extraAnnotations:
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
           nginx.ingress.kubernetes.io/proxy-buffering: "on"
