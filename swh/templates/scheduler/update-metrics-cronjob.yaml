@@ -60,8 +60,6 @@ spec:
               args:
               - swh
               - scheduler
-              - --config-file
-              - /etc/swh/config.yml
               - origin
               - update-metrics
               env:
