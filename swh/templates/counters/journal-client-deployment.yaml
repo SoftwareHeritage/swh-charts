@@ -66,8 +66,6 @@ spec:
           args:
           - swh
           - counters
-          - --config-file
-          - /etc/swh/config.yml
           - journal-client
           env:
             - name: STATSD_HOST
