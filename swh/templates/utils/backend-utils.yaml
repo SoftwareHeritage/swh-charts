@@ -560,7 +560,7 @@ data:
     [ ! -f "${CONFIG_CASSANDRA}" ] && \
         echo "Missing <${CONFIG_CASSANDRA}> file" && exit 1
 
-    swh storage --config-file=${CONFIG_CASSANDRA} cassandra init
+    swh --config-file=${CONFIG_CASSANDRA} storage cassandra init
 
   upgrade-cassandra-keyspace.sh: |
     #!/usr/bin/env bash
@@ -578,8 +578,8 @@ data:
 
     ret=0
 
-    swh storage --config-file=${CONFIG_CASSANDRA} cassandra list-migrations
-    swh storage --config-file=${CONFIG_CASSANDRA} cassandra upgrade || ret=$?
+    swh --config-file=${CONFIG_CASSANDRA} storage cassandra list-migrations
+    swh --config-file=${CONFIG_CASSANDRA} storage cassandra upgrade || ret=$?
 
     case "$ret" in
         0)
