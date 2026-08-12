@@ -80,8 +80,6 @@ spec:
           - --log-level
           - {{ $log_level | default "INFO" }}
           - search
-          - --config-file
-          - /etc/swh/config.yml
           - journal-client
           - objects
           env:
