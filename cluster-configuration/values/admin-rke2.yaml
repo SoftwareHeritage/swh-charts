@@ -42,7 +42,7 @@ netbox:
       storageClass: cephfs
     persistence:
       # To adapt to ReadWriteMany if replicaCount > 1
-      accessMode: ReadWriteOnce
+      accessMode: ReadWriteMany
     # Disable valkey which is a dependency on a bitnami chart (we avoid to deploy those)
     # This requires to enable a dedicated redis instance (named redis-netbox-kv)
     valkey:
