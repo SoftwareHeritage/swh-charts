@@ -69,8 +69,6 @@ spec:
           args:
           - swh
           - scheduler
-          - --config-file
-          - /etc/swh/config.yml
           - journal-client
           env:
             - name: STATSD_HOST
