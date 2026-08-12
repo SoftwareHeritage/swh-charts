@@ -72,7 +72,7 @@ data:
     rm -f "${TEMP_FILE}"
 
     # check the database status into the tempfile
-    swh db --config-file="${CONFIG_FILE}" version "${MODULE_NAME}" \
+    swh --config-file="${CONFIG_FILE}" db version "${MODULE_NAME}" \
       --module-config-key="${CONFIG_KEY}" | tee >&2 /dev/fd/3
 
     # Read the code and db version from the tempfile
@@ -122,7 +122,7 @@ data:
     CONFIG_KEY="${3:-$MODULE_NAME}"
     TO_VERSION="${4:-}"
 
-    exec swh db --config-file="${CONFIG_FILE}" upgrade "${MODULE_NAME}" \
+    exec swh --config-file="${CONFIG_FILE}" db upgrade "${MODULE_NAME}" \
       --module-config-key="${CONFIG_KEY}" \
       ${TO_VERSION:+"--to-version=${TO_VERSION}"}
 

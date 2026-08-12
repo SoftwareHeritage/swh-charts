@@ -658,7 +658,7 @@ data:
     fi
 
     # checking the database status
-    swh db --config-file=$CONFIG_FILE version "${MODULE}" $EXTRA_CMD | \
+    swh --config-file=$CONFIG_FILE db version "${MODULE}" $EXTRA_CMD | \
       tee "${TEMP_FILE}"
 
     CODE_VERSION=$(awk -F':' '/code / {print $2}' ${TEMP_FILE})
@@ -713,7 +713,7 @@ data:
     fi
 
     # checking the database status
-    swh db --config-file=$CONFIG_FILE version "${MODULE}" $EXTRA_CMD | tee "${TEMP_FILE}"
+    swh --config-file=$CONFIG_FILE db version "${MODULE}" $EXTRA_CMD | tee "${TEMP_FILE}"
 
     CODE_VERSION=$(awk -F':' '/code / {print $2}' ${TEMP_FILE})
     # trim
@@ -727,7 +727,7 @@ data:
       echo "The database should be initialized..."
 
     elif [ "$DB_VERSION" != "$CODE_VERSION" ]; then
-      swh db --config-file=$CONFIG_FILE upgrade $EXTRA_CMD "${MODULE_NAME}"
+      swh --config-file=$CONFIG_FILE db upgrade $EXTRA_CMD "${MODULE_NAME}"
 
     else
       echo "The database is initialized and up-to-date, nothing to do!"
@@ -764,7 +764,7 @@ data:
     fi
 
     # checking the database status
-    swh db --config-file=$CONFIG_FILE version "${MODULE}" $EXTRA_CMD | \
+    swh --config-file=$CONFIG_FILE db version "${MODULE}" $EXTRA_CMD | \
       tee "${TEMP_FILE}"
 
     set -x
@@ -781,7 +781,7 @@ data:
       uri=postgresql://postgres:$SWH_PGPASSWORD@$SWH_PGHOST:5432/$SWH_PGDATABASE
       swh db init-admin --db-name=$uri "${MODULE}"
       # This must be run with the owner of the db
-      swh db --config-file=$CONFIG_FILE init $EXTRA_CMD "${MODULE}"
+      swh --config-file=$CONFIG_FILE db init $EXTRA_CMD "${MODULE}"
 
     elif [ "$DB_VERSION" != "$CODE_VERSION" ]; then
       echo "Code and DB versions are different."
