@@ -3,7 +3,7 @@ cassandra_checks_image_version: '20260723.1'
 software_stories_image: container-registry.softwareheritage.org/swh/infra/swh-apps/software_stories
 software_stories_image_version: '20230912.1'
 swh_alter_image: container-registry.softwareheritage.org/swh/infra/swh-apps/alter
-swh_alter_image_version: '20260723.2'
+swh_alter_image_version: '20260813.1'
 swh_coar_notify_image: container-registry.softwareheritage.org/swh/infra/swh-apps/coar_notify
 swh_coar_notify_image_version: '20260812.1'
 swh_coar_notify_worker_image: container-registry.softwareheritage.org/swh/infra/swh-apps/coar_notify_worker
@@ -19,7 +19,7 @@ swh_deposit_image_version: '20260812.1'
 swh_graph_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graph
 swh_graph_image_version: '20260723.1'
 swh_graphql_image: container-registry.softwareheritage.org/swh/infra/swh-apps/graphql
-swh_graphql_image_version: '20260723.1'
+swh_graphql_image_version: '20260813.1'
 swh_indexer_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer
 swh_indexer_image_version: '20260723.1'
 swh_indexer_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/indexer_storage
@@ -59,7 +59,7 @@ swh_scheduler_image_version: '20260812.1'
 swh_scrubber_image: container-registry.softwareheritage.org/swh/infra/swh-apps/scrubber
 swh_scrubber_image_version: '20260812.1'
 swh_search_image: container-registry.softwareheritage.org/swh/infra/swh-apps/search
-swh_search_image_version: '20260723.1'
+swh_search_image_version: '20260813.1'
 swh_static_websites_image: container-registry.softwareheritage.org/swh/infra/swh-apps/static_websites
 swh_static_websites_image_version: '20260612.1'
 swh_storage_image: container-registry.softwareheritage.org/swh/infra/swh-apps/storage
@@ -77,6 +77,6 @@ swh_vault_image_version: '20260812.1'
 swh_vulns_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vulns
 swh_vulns_image_version: '20260811.1'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20260812.2'
+swh_web_image_version: '20260813.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20260707.1'
