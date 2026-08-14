@@ -2,6 +2,7 @@
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
 {{- if (ne false $clusterConfig.enabled) -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
+{{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $topicName, $topicConfig := $clusterConfig.topics -}}
 {{- $specificTopicConfig := $topicConfig.config | default dict -}}
 {{- $defaultTopicConfig := $.Values.kafka.default.topics.config | default dict -}}

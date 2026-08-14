@@ -3,6 +3,7 @@
 {{- if (ne false $clusterConfig.enabled) -}}
 {{ if $clusterConfig.pools }}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
+{{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $poolName, $poolConfig := $clusterConfig.pools -}}
 {{- $replicas := $poolConfig.replicas | default $clusterConfig.replicas | default $.Values.kafka.replicas -}}
 {{- $affinity := $poolConfig.affinity | default $clusterConfig.affinity | default $.Values.kafka.affinity -}}

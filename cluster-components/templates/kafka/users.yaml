@@ -3,6 +3,7 @@
 {{- if (ne false $clusterConfig.enabled) -}}
 {{- $bootstrapServer := print $clusterName "-kafka-bootstrap:9093" -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
+{{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $userName, $userConfig := $clusterConfig.users -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2

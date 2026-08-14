@@ -697,9 +697,10 @@ kafka:
       config:
         cleanup.policy: compact
   deployments:
-    kafka-cluster:
+    kafka-cluster-next-version:
       enabled: true
       namespace: swh-cassandra-next-version
+      clusterName: kafka-cluster
       metricsEnabled: true
       pools:
         pool-a:
