@@ -1,6 +1,6 @@
-{{- if .Values.keycloack.enabled }}
-{{- $appName := printf "%s-keycloack" .Values.clusterName }}
-{{- $namespace := .Values.keycloack.namespace }}
+{{- if .Values.keycloak.enabled }}
+{{- $appName := printf "%s-keycloak" .Values.clusterName }}
+{{- $namespace := .Values.keycloak.namespace }}
 
 apiVersion: v1
 kind: Service
