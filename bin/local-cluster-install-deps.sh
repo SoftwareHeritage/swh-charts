@@ -69,8 +69,7 @@ $HELM status cert-manager --namespace "${certmanager_ns}" 2>/dev/null || \
         --version "${certmanager_version}" \
         jetstack/cert-manager \
         --namespace "${certmanager_ns}" --create-namespace \
-        --set crds.enabled=true \
-        --set installCRDs=true
+        --set crds.enabled=true
 
 # Cannot have those since prometheus is not necessarily installed yet.
       # --set prometheus.enabled=true \
