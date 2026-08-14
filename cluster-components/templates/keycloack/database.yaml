@@ -1,0 +1,25 @@
+{{- if .Values.postgresql.enabled }}
+
+{{- $namespace := .Values.postgresql.namespace }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: {{ $namespace }}
+  labels:
+    app: postgres
+
+spec:
+  type: ClusterIP
+
+  selector:
+    app: postgres
+
+  ports:
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+{{- end }}

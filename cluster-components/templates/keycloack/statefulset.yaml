@@ -13,7 +13,7 @@ metadata:
     app: {{ $appName }}
 
 spec:
-  serviceName: keycloak-discovery
+  serviceName: {{ printf "%s-discovery" $appName }}
   replicas: {{ .Values.keycloack.replicas | default 2 }}
 
   selector:
