@@ -1,8 +1,8 @@
-{{- if .Values.keycloack.enabled }}
-{{- $appName := printf "%s-keycloack" .Values.clusterName }}
-{{- $namespace := .Values.keycloack.namespace }}
-{{- $image := .Values.keycloack.image }}
-{{- $imageVersion := .Values.keycloack.imageVersion | default "latest" }}
+{{- if .Values.keycloak.enabled }}
+{{- $appName := printf "%s-keycloak" .Values.clusterName }}
+{{- $namespace := .Values.keycloak.namespace }}
+{{- $image := .Values.keycloak.image }}
+{{- $imageVersion := .Values.keycloak.imageVersion | default "latest" }}
 
 apiVersion: apps/v1
 kind: StatefulSet
@@ -14,7 +14,7 @@ metadata:
 
 spec:
   serviceName: {{ printf "%s-discovery" $appName }}
-  replicas: {{ .Values.keycloack.replicas | default 2 }}
+  replicas: {{ .Values.keycloak.replicas | default 2 }}
 
   selector:
     matchLabels:
@@ -58,16 +58,10 @@ spec:
             - name: KC_CACHE
               value: "ispn"
 
-            - name: KC_CACHE_STACK
-              value: "kubernetes"
-
             - name: POD_IP
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
-
-            - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
-              value: "$(POD_IP)"
 
             - name: KC_DB
               value: "postgres"
