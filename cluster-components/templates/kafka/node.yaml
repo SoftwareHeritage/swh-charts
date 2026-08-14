@@ -2,6 +2,7 @@
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
 {{- if (ne false $clusterConfig.enabled) -}}
 {{ if $clusterConfig.pools }}
+{{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- range $poolName, $poolConfig := $clusterConfig.pools -}}
 {{- $replicas := $poolConfig.replicas | default $clusterConfig.replicas | default $.Values.kafka.replicas -}}
 {{- $affinity := $poolConfig.affinity | default $clusterConfig.affinity | default $.Values.kafka.affinity -}}
@@ -11,7 +12,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
   name: {{ $poolName }}
-  namespace: {{ $.Values.kafka.namespace }}
+  namespace: {{ $namespace }}
   labels:
     strimzi.io/cluster: {{ $clusterName }}
 spec:

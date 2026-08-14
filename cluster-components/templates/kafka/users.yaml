@@ -2,13 +2,14 @@
 {{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
 {{- if (ne false $clusterConfig.enabled) -}}
 {{- $bootstrapServer := print $clusterName "-kafka-bootstrap:9093" -}}
+{{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- range $userName, $userConfig := $clusterConfig.users -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaUser
 metadata:
   name: {{ $userName }}
-  namespace: {{ $.Values.kafka.namespace }}
+  namespace: {{ $namespace }}
   labels:
     strimzi.io/cluster: {{ $clusterName }}
 spec:

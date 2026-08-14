@@ -6,12 +6,13 @@
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
 {{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.kafka.metricsEnabled -}}
 {{- $kafkaVersion := $clusterConfig.version | default $.Values.kafka.version -}}
+{{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: {{ $clusterName }}
-  namespace: {{ $.Values.kafka.namespace }}
+  namespace: {{ $namespace }}
   annotations:
     strimzi.io/kraft: enabled
     {{- if $clusterConfig.pools }}

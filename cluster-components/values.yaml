@@ -448,6 +448,7 @@ rabbitmq:
 
 kafka:
   enabled: false
+  # Namespace where to run the kafka instances (can be overridden per instance)
   namespace: kafka-system
   # Number of replicas (can be overridden per instance)
   # replicas: 1
@@ -478,6 +479,7 @@ kafka:
     #     cleanup.policy: compact
   deployments:
     # cluster-name:
+    #   # namespace: swh-cassandra
     #   # zookeeper:
     #   #   storage:
     #   #     type: persistent-claim
