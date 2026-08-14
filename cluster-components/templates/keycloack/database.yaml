@@ -1,25 +1,25 @@
-{{- if .Values.postgresql.enabled }}
+{{- if .Values.postgresqlTest.enabled }}
 
-{{- $namespace := .Values.postgresql.namespace }}
+{{- $namespace := .Values.postgresqlTest.namespace }}
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgres
+  name: postgres-test
   namespace: {{ $namespace }}
   labels:
-    app: postgres
+    app: postgres-test
 
 spec:
   type: ClusterIP
 
   selector:
-    app: postgres
+    app: postgres-test
 
   ports:
     - name: postgres
       protocol: TCP
       port: 5432
-      targetPort: 5432
+      targetPort: postgres
 
 {{- end }}
