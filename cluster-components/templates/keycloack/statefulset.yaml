@@ -1,0 +1,129 @@
+{{- if .Values.keycloack.enabled }}
+{{- $appName := printf "%s-keycloack" .Values.clusterName }}
+{{- $namespace := .Values.keycloack.namespace }}
+{{- $image := .Values.keycloack.image }}
+{{- $imageVersion := .Values.keycloack.imageVersion | default "latest" }}
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ $appName }}
+  namespace: {{ $namespace }}
+  labels:
+    app: {{ $appName }}
+
+spec:
+  serviceName: keycloak-discovery
+  replicas: {{ .Values.keycloack.replicas | default 2 }}
+
+  selector:
+    matchLabels:
+      app: {{ $appName }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ $appName }}
+
+    spec:
+      restartPolicy: Always
+
+      containers:
+        - name: {{ $appName }}
+          image: "{{ $image }}:{{ $imageVersion }}"
+          imagePullPolicy: IfNotPresent
+
+          args:
+            - start
+
+          env:
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "admin"
+
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: "admin"
+
+            - name: KC_PROXY_HEADERS
+              value: "xforwarded"
+
+            - name: KC_HTTP_ENABLED
+              value: "true"
+
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+
+            - name: KC_HEALTH_ENABLED
+              value: "true"
+
+            - name: KC_CACHE
+              value: "ispn"
+
+            - name: KC_CACHE_STACK
+              value: "kubernetes"
+
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+
+            - name: KC_CACHE_EMBEDDED_NETWORK_BIND_ADDRESS
+              value: "$(POD_IP)"
+
+            - name: KC_DB
+              value: "postgres"
+
+            - name: KC_DB_URL_HOST
+              value: "postgres"
+
+            - name: KC_DB_URL_DATABASE
+              value: "keycloak"
+
+            - name: KC_DB_USERNAME
+              value: "keycloak"
+
+            - name: KC_DB_PASSWORD
+              value: "keycloak"
+
+          ports:
+            - name: http
+              containerPort: 8080
+
+            - name: management
+              containerPort: 9000
+
+            - name: jgroups
+              containerPort: 7800
+
+            - name: jgroups-fd
+              containerPort: 57800
+
+          startupProbe:
+            httpGet:
+              path: /health/started
+              port: management
+            periodSeconds: 1
+            failureThreshold: 600
+
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: management
+            periodSeconds: 10
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: management
+            periodSeconds: 10
+            failureThreshold: 3
+
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2000Mi
+            requests:
+              cpu: 500m
+              memory: 1700Mi
+
+{{- end }}
