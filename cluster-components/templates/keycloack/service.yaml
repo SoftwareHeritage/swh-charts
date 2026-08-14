@@ -9,10 +9,13 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $appName }}
+
 spec:
   type: ClusterIP
+
   selector:
     app: {{ $appName }}
+
   ports:
     - name: http
       protocol: TCP
@@ -27,9 +30,11 @@ metadata:
   namespace: {{ $namespace }}
   labels:
     app: {{ $appName }}
+
 spec:
   clusterIP: None
   type: ClusterIP
+
   selector:
     app: {{ $appName }}
 
