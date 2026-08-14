@@ -486,3 +486,6 @@ openbao:
       noVerifySSL: true
       namespacesToManageInOpenbaoClientCluster:
       - vso
+
+keycloack:
+  enabled: false

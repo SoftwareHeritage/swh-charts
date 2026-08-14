@@ -73,7 +73,7 @@ spec:
               value: "postgres"
 
             - name: KC_DB_URL_HOST
-              value: "postgres"
+              value: "postgres-test"
 
             - name: KC_DB_URL_DATABASE
               value: "keycloak"
