@@ -3,10 +3,11 @@
 {{- if (ne false $clusterConfig.enabled) -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
-{{- range $topicName, $topicConfig := $clusterConfig.topics -}}
-{{- $specificTopicConfig := $topicConfig.config | default dict -}}
-{{- $defaultTopicConfig := $clusterConfig.topics.config | default $.Values.kafka.default.topics.config | default dict -}}
-{{- $enrichedTopicConfig := mustMerge $specificTopicConfig $defaultTopicConfig -}}
+{{- $clusterTopicsEntries := dig "topics" "entries" dict $clusterConfig -}}
+{{- $defaultTopicsConfig := dig "topics" "defaultConfig" dict $clusterConfig | default dict -}}
+{{- range $topicName, $topicConfig := $clusterTopicsEntries -}}
+{{- $specificTopicConfig := dig "config" dict $topicConfig -}}
+{{- $enrichedTopicConfig := mustMerge $specificTopicConfig $defaultTopicsConfig -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaTopic
@@ -17,11 +18,11 @@ metadata:
     strimzi.io/cluster: {{ $clusterName }}
 spec:
   topicName: {{ $topicName }}
-  partitions: {{ get $topicConfig "partitions" | default $.Values.kafka.default.topics.partitions | default 1 }}
-  replicas: {{ get $topicConfig "replicas" | default $.Values.kafka.default.topics.replicas | default 1 }}
-  {{- if $enrichedTopicConfig }}
+  partitions: {{ get $enrichedTopicConfig "partitions" | default 1 }}
+  replicas: {{ get $enrichedTopicConfig "replicas" | default 1 }}
+  {{- if $enrichedTopicConfig.extraConfig }}
   config:
-    {{- toYaml $enrichedTopicConfig | nindent 4 }}
+    {{- toYaml $enrichedTopicConfig.extraConfig | nindent 4 }}
   {{ end }}
 {{ end }}
 {{ end }}

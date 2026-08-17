@@ -475,7 +475,7 @@ kafka:
     topics: {}
     #   partitions: 32
     #   replicas: 2
-    #   config:
+    #   extraConfig:
     #     cleanup.policy: compact
   deployments:
     # cluster-name:

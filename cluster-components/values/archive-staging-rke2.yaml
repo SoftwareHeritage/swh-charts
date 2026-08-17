@@ -687,12 +687,6 @@ cassandra:
 
 kafka:
   enabled: true
-  default:
-    topics:
-      partitions: 4
-      replicas: 2
-      config:
-        cleanup.policy: compact
   deployments:
     kafka-cluster-next-version:
       enabled: true
@@ -739,28 +733,34 @@ kafka:
                 class: local-persistent
 
       topics:
-        swh.journal.objects.origin: {}
-        swh.journal.objects.origin_visit: {}
-        swh.journal.objects.origin_visit_status: {}
-        swh.journal.objects.snapshot: {}
-        swh.journal.objects.release: {}
-        swh.journal.objects.revision: {}
-        swh.journal.objects.directory: {}
-        swh.journal.objects.content: {}
-        swh.journal.objects.skipped_content: {}
-        swh.journal.objects.extid: {}
-        swh.journal.objects.metadata_authority: {}
-        swh.journal.objects.metadata_fetcher: {}
-        swh.journal.objects.raw_extrinsic_metadata: {}
-        swh.journal.indexed.content_ctags: {}
-        swh.journal.indexed.content_fossology_license: {}
-        swh.journal.indexed.content_language: {}
-        swh.journal.indexed.content_metadata: {}
-        swh.journal.indexed.content_mimetype: {}
-        swh.journal.indexed.directory_intrinsic_metadata: {}
-        swh.journal.indexed.origin_extrinsic_metadata: {}
-        swh.journal.indexed.origin_intrinsic_metadata: {}
-        swh.journal.indexed.revision_intrinsic_metadata: {}
+        defaultConfig:
+          partitions: 4
+          replicas: 2
+          extraConfig:
+            cleanup.policy: compact
+        entries:
+          swh.journal.objects.origin: {}
+          swh.journal.objects.origin_visit: {}
+          swh.journal.objects.origin_visit_status: {}
+          swh.journal.objects.snapshot: {}
+          swh.journal.objects.release: {}
+          swh.journal.objects.revision: {}
+          swh.journal.objects.directory: {}
+          swh.journal.objects.content: {}
+          swh.journal.objects.skipped_content: {}
+          swh.journal.objects.extid: {}
+          swh.journal.objects.metadata_authority: {}
+          swh.journal.objects.metadata_fetcher: {}
+          swh.journal.objects.raw_extrinsic_metadata: {}
+          swh.journal.indexed.content_ctags: {}
+          swh.journal.indexed.content_fossology_license: {}
+          swh.journal.indexed.content_language: {}
+          swh.journal.indexed.content_metadata: {}
+          swh.journal.indexed.content_mimetype: {}
+          swh.journal.indexed.directory_intrinsic_metadata: {}
+          swh.journal.indexed.origin_extrinsic_metadata: {}
+          swh.journal.indexed.origin_intrinsic_metadata: {}
+          swh.journal.indexed.revision_intrinsic_metadata: {}
 
 kafkabackup:
   enabled: true
