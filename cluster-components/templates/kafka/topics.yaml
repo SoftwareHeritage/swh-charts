@@ -5,7 +5,7 @@
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $topicName, $topicConfig := $clusterConfig.topics -}}
 {{- $specificTopicConfig := $topicConfig.config | default dict -}}
-{{- $defaultTopicConfig := $.Values.kafka.default.topics.config | default dict -}}
+{{- $defaultTopicConfig := $clusterConfig.topics.config | default $.Values.kafka.default.topics.config | default dict -}}
 {{- $enrichedTopicConfig := mustMerge $specificTopicConfig $defaultTopicConfig -}}
 ---
 apiVersion: kafka.strimzi.io/v1beta2
