@@ -687,9 +687,6 @@ cassandra:
 
 kafka:
   enabled: true
-  replicas: 1
-  replicationFactor: 1
-  minInSyncReplicas: 1
   default:
     topics:
       partitions: 4
@@ -701,6 +698,9 @@ kafka:
       enabled: true
       namespace: swh-cassandra-next-version
       clusterName: kafka-cluster
+      replicas: 1
+      replicationFactor: 1
+      minInSyncReplicas: 1
       metricsEnabled: true
       pools:
         pool-a:
