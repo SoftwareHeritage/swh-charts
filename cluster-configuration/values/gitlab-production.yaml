@@ -26,3 +26,6 @@ vaultSecretsOperator:
   defaultVaultConnection:
     enabled: true
     address: https://openbao.admin.swh.network
+
+redis:
+  enabled: true
