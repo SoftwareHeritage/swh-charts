@@ -24,3 +24,20 @@ gitlabRunner:
     create: true
 
   gitlabUrl: https://gitlab-staging.swh.network
+
+redis:
+  enabled: true
+  deployments:
+    gitlab:
+      enabled: true
+      namespace: gitlab-redis
+      serviceMonitor:
+        enabled: true
+      redisExporter:
+        enabled: true
+      storage:
+        volumeClaimTemplate:
+          spec:
+            resources:
+              requests:
+                storage: 10Gi
