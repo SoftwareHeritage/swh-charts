@@ -4,7 +4,8 @@
 {{- $replicas := $clusterConfig.replicas | default $.Values.kafka.replicas -}}
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
-{{- $metricsEnabled := $clusterConfig.metricsEnabled | default $.Values.kafka.metricsEnabled -}}
+{{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
+{{- $kafkaExporterConfig := dig "metrics" "kafkaExporterConfig" dict $clusterConfig | default (dig "metrics" "kafkaExporterConfig" dict $.Values.kafka) -}}
 {{- $kafkaVersion := $clusterConfig.version | default $.Values.kafka.version -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
@@ -20,8 +21,9 @@ metadata:
     strimzi.io/node-pools: enabled
     {{- end }}
 spec:
-  {{- if $metricsEnabled }}
-  kafkaExporter: {}
+  {{- if and $metricsEnabled $kafkaExporterConfig }}
+  kafkaExporter:
+    {{ toYaml $kafkaExporterConfig | nindent 4 }}
   {{- end }}
   kafka:
     version: {{ $kafkaVersion }}
@@ -43,6 +45,10 @@ spec:
         tls: true
         # authentication:
         #   type: scram-sha-512
+    {{- if $metricsEnabled }}
+    metricsConfig:
+      type: strimziMetricsReporter
+    {{- end }}
     # authorization:
     #   type: simple
     config:
