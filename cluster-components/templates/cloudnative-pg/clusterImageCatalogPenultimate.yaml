@@ -4,16 +4,24 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ClusterImageCatalog
 metadata:
   name: postgresql-penultimate
+  labels:
+    images.cnpg.io/family: postgresql
+    images.cnpg.io/type: standard
+    images.cnpg.io/os: bookworm
+    images.cnpg.io/date: '20260817'
+    images.cnpg.io/publisher: cnpg.io
 spec:
   images:
-    - major: 13
-      image: ghcr.io/cloudnative-pg/postgresql:13.21-8-bookworm@sha256:33bcd69a8d5da0ea1fc7543760b4ad68a2cc4defde79bba634122680b1554195
-    - major: 14
-      image: ghcr.io/cloudnative-pg/postgresql:14.18-8-bookworm@sha256:d0b2b6300352d7289f77e61b4b130274979a552f1fdce668606cb69ecd66632e
-    - major: 15
-      image: ghcr.io/cloudnative-pg/postgresql:15.13-8-bookworm@sha256:ed71acfd5736bcd0ae0fa3283370e48b15a7c2ed26550e8a10b9d55b242f5ab1
-    - major: 16
-      image: ghcr.io/cloudnative-pg/postgresql:16.9-8-bookworm@sha256:9302e432a0366108e0d742e989655a0a8cb18459cfde8076ea2165b076d43c70
-    - major: 17
-      image: ghcr.io/cloudnative-pg/postgresql:17.5-8-bookworm@sha256:83996acbde2fa906e9ac6fa40aa8d34d6089c18d4998d831e364b4e476d3370a
+  - major: 13
+    image: ghcr.io/cloudnative-pg/postgresql:13.22-202511100817-standard-bookworm@sha256:e65cbf9ba18d313acde4bcdc1bc8eb636b0e005f83f23b44aba3f957ecca1e66
+  - major: 14
+    image: ghcr.io/cloudnative-pg/postgresql:14.24-202608170814-standard-bookworm@sha256:079783b585ec65ecb77702fb602053f9b0b4dc0e5b55c65faee43f21ce0d8380
+  - major: 15
+    image: ghcr.io/cloudnative-pg/postgresql:15.19-202608170814-standard-bookworm@sha256:26ba4982eec1879a5fee632ccccdf37ff709250b1740e2a803468c5d34e98043
+  - major: 16
+    image: ghcr.io/cloudnative-pg/postgresql:16.15-202608170814-standard-bookworm@sha256:0d51ec3786f2b3c7022756c32e04cc5d575f4666c51599ef5b08552529bfac6d
+  - major: 17
+    image: ghcr.io/cloudnative-pg/postgresql:17.11-202608170816-standard-bookworm@sha256:968fde04bca2be879ca14e1614a3987e149b77b42a51fe460fff252f3e145fce
+  - major: 18
+    image: ghcr.io/cloudnative-pg/postgresql:18.6-202608170814-standard-bookworm@sha256:9446e83aa490df3f14ebf5bf2f6002a1347728690ff38f35dd7a85b925a62468
 {{ end }}
