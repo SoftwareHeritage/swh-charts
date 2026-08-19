@@ -199,6 +199,13 @@ kafka:
   deployments:
     kafka-cluster:
       namespace: swh
+      metrics:
+        enabled: true
+        # either jmxPrometheusExporter or strimziMetricsReporter
+        type: jmxPrometheusExporter
+        kafkaExporterConfig:
+          topicRegex: ".*"
+          groupRegex: ".*"
       # storage:
       #   type: jbod
       #   volumes:

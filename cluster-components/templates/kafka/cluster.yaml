@@ -5,6 +5,7 @@
 {{- $replicationFactor := $clusterConfig.replicationFactor | default $.Values.kafka.replicationFactor -}}
 {{- $minInSyncReplica := $clusterConfig.minInSyncReplicas | default $.Values.kafka.minInSyncReplicas -}}
 {{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
+{{- $metricsType := dig "metrics" "type" nil $clusterConfig | default (dig "metrics" "type" "strimziMetricsReporter" $.Values.kafka) -}}
 {{- $kafkaExporterConfig := dig "metrics" "kafkaExporterConfig" dict $clusterConfig | default (dig "metrics" "kafkaExporterConfig" dict $.Values.kafka) -}}
 {{- $kafkaVersion := $clusterConfig.version | default $.Values.kafka.version -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
@@ -47,7 +48,13 @@ spec:
         #   type: scram-sha-512
     {{- if $metricsEnabled }}
     metricsConfig:
-      type: strimziMetricsReporter
+      type: {{ $metricsType }}
+      {{- if eq $metricsType "jmxPrometheusExporter" }}
+      valueFrom:
+        configMapKeyRef:
+          name: {{ $clusterName }}-metrics
+          key: kafka-metrics-config.yml
+      {{- end }}
     {{- end }}
     # authorization:
     #   type: simple
