@@ -22,7 +22,6 @@ metallb:
         namespaces:
           - ingress-nginx
 
-
 # Activate prometheus as this is not previously done (in contrast with other clusters
 # provisioned by terraform which does the prometheus configuration too)
 prometheus:

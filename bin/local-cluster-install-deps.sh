@@ -330,6 +330,45 @@ else
   _kubectl_delete $mtv_file
 fi
 
+prometheus_enabled=$(get_value prometheus enabled)
+prometheus_version=$(get_value prometheus version)
+prometheus_ns=$(get_value prometheus namespace)
+if [ "${prometheus_enabled}" = "true" ]; then
+  # ARGOCD_URL="https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml"
+  ADMIN_INGRESS_IP=172.18.255.0
+  PROMSTACK_VALUES_FILE=$CLUSTER_TEMP_TMP/argocd-values.yaml
+cat > "${PROMSTACK_VALUES_FILE}" << EOF
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+    - grafana.local
+    tls: []
+    annotations:
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      # If you encounter a redirect loop or are getting a 307 response code
+      # then you need to force the nginx ingress to connect to the backend
+      # using HTTPS.
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+EOF
+
+  $HELM status kube-prometheus-stack \
+    --namespace "${prometheus_ns}" 2>/dev/null || \
+    $HELM upgrade --install kube-prometheus-stack \
+        --values "${PROMSTACK_VALUES_FILE}" \
+        --version "${prometheus_version}" \
+        prometheus-community/kube-prometheus-stack \
+        -n "${prometheus_ns}" --create-namespace
+else
+  _helm_uninstall kube-prometheus-stack "${prometheus_ns}"
+fi
+
+
 ############################################################
 # Extra specific consideration for the cluster of type kind
 ############################################################

@@ -244,3 +244,11 @@ osporadar:
   namespace: osporadar
   version: main
   valuesOverride: {}
+
+# Allow prometheus-community/kube-prometheus-stack (prom & grafana)
+# Specifically for local-cluster (in real prod-like environment, it's
+# installed through k8s-cluster-config)
+prometheus:
+  enabled: false
+  namespace: monitoring
+  version: 88.3.0
