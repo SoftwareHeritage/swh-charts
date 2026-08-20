@@ -2,6 +2,7 @@
 # This defines the service-monitor to monitor the service which scrapes internal metrics
 # This may redefine some metrics, see the relabeling configuration dict key if provided
 {{- range $deploymentName, $deploymentConfig := .Values.scrapeClusterMetrics.deployments -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
 {{- $metricsEndpointPortName := get $deploymentConfig "metricsEndpointPortName" | default "metrics" -}}
 {{- $path := $deploymentConfig.path | default "" }}
 {{- $scheme := $deploymentConfig.scheme | default "" }}
@@ -38,5 +39,6 @@ spec:
       relabelings:
         {{- toYaml $deploymentConfig.relabelings | nindent 8 }}
       {{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
