@@ -13,6 +13,9 @@ metadata:
   name: {{ $deploymentName }}-internal-servers-sm
   labels:
     app: {{ $deploymentName }}
+    {{- if $deploymentConfig.labels }}
+      {{- toYaml $deploymentConfig.labels | nindent 4 }}
+    {{- end }}
 spec:
   selector:
     {{- if $deploymentConfig.matchLabels }}

@@ -190,6 +190,26 @@ cloudnativePg:
       initdb:
         enabled: true
 
+scrapeClusterMetrics:
+  enabled: false
+  deployments:
+    kafka-cluster:
+      enabled: false
+      namespace: swh
+      metricsEndpointPortName: tcp-prometheus
+      path: "/metrics"
+      scheme: http
+      labels:
+        release: kube-prometheus-stack
+      matchLabels:
+        app.kubernetes.io/instance: kafka-cluster
+        app.kubernetes.io/name: kafka-exporter
+      # The kafka-exporter deployed by strimzi does not deploy a service. Only a pod,
+      # but the service monitor will need a service to scrape, so deploy one.
+      service:
+        enabled: true
+        port: 9404
+
 kafka:
   enabled: false
   replicas: 1
