@@ -63,7 +63,9 @@ metadata:
   name: {{ $clusterName }}-entity-operator-metrics
   namespace: {{ $namespace }}
   labels:
-    release: kube-prometheus-stack
+  {{- if $metricsLabels }}
+    {{- toYaml $metricsLabels | nindent 4 }}
+  {{- end }}
 spec:
   namespaceSelector:
     any: true
@@ -83,7 +85,9 @@ metadata:
   name: {{ $clusterName }}-cluster-operator-metrics
   namespace: {{ $namespace }}
   labels:
-    release: kube-prometheus-stack
+  {{- if $metricsLabels }}
+    {{- toYaml $metricsLabels | nindent 4 }}
+  {{- end }}
 spec:
   namespaceSelector:
     any: true
