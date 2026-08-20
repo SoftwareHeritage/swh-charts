@@ -4,6 +4,7 @@
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
+{{- $metricsLabels := dig "metrics" "extraLabels" dict $clusterConfig | default (dig "metrics" "extraLabels" dict $.Values.kafka) -}}
 {{- if $metricsEnabled }}
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -12,7 +13,9 @@ metadata:
   name: {{ $clusterName }}-resources-metrics
   namespace: {{ $namespace }}
   labels:
-    release: kube-prometheus-stack
+  {{- if $metricsLabels }}
+    {{- toYaml $metricsLabels | nindent 4 }}
+  {{- end }}
 spec:
   namespaceSelector:
     any: true

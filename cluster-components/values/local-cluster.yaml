@@ -220,6 +220,8 @@ kafka:
       namespace: swh
       metrics:
         enabled: true
+        extraLabels:
+          release: kube-prometheus-stack
         # either jmxPrometheusExporter or strimziMetricsReporter
         type: jmxPrometheusExporter
         kafkaExporterConfig:

@@ -689,6 +689,8 @@ kafka:
   enabled: true
   metrics:
     enabled: true
+    extraLabels:
+      app.kubernetes.io/instance: rancher-monitoring
     kafkaExporterConfig:
       topicRegex: ".*"
       groupRegex: ".*"
