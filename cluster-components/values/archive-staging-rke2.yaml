@@ -691,6 +691,7 @@ kafka:
     enabled: true
     extraLabels:
       app.kubernetes.io/instance: rancher-monitoring
+    type: jmxPrometheusExporter
     kafkaExporterConfig:
       topicRegex: ".*"
       groupRegex: ".*"
