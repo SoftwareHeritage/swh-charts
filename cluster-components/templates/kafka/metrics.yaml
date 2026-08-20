@@ -1,0 +1,97 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- if (ne false $clusterConfig.enabled) -}}
+{{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
+{{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
+{{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
+{{- if $metricsEnabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ $clusterName }}-resources-metrics
+  namespace: {{ $namespace }}
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchExpressions:
+      - key: "strimzi.io/kind"
+        operator: In
+        values: ["Kafka", "KafkaConnect", "KafkaMirrorMaker2"]
+  podMetricsEndpoints:
+  - path: /metrics
+    port: tcp-prometheus
+    relabelings:
+    - separator: ;
+      regex: __meta_kubernetes_pod_label_(strimzi_io_.+)
+      replacement: $1
+      action: labelmap
+    - sourceLabels: [__meta_kubernetes_namespace]
+      separator: ;
+      regex: (.*)
+      targetLabel: namespace
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_name]
+      separator: ;
+      regex: (.*)
+      targetLabel: kubernetes_pod_name
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_node_name]
+      separator: ;
+      regex: (.*)
+      targetLabel: node_name
+      replacement: $1
+      action: replace
+    - sourceLabels: [__meta_kubernetes_pod_host_ip]
+      separator: ;
+      regex: (.*)
+      targetLabel: node_ip
+      replacement: $1
+      action: replace
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ $clusterName }}-entity-operator-metrics
+  namespace: {{ $namespace }}
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: entity-operator
+  podMetricsEndpoints:
+  - path: /metrics
+    port: healthcheck-to
+  - path: /metrics
+    port: healthcheck-uo
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ $clusterName }}-cluster-operator-metrics
+  namespace: {{ $namespace }}
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      strimzi.io/kind: cluster-operator
+  podMetricsEndpoints:
+  - path: /metrics
+    port: http
+
+{{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
