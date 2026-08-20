@@ -9,7 +9,7 @@
 {{- $affinity := $poolConfig.affinity | default $clusterConfig.affinity | default $.Values.kafka.affinity -}}
 {{- $roles := $poolConfig.roles -}}
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaNodePool
 metadata:
   name: {{ $poolName }}

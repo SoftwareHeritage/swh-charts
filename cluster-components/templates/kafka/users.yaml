@@ -6,7 +6,7 @@
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $userName, $userConfig := $clusterConfig.users -}}
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaUser
 metadata:
   name: {{ $userName }}

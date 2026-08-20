@@ -9,7 +9,7 @@
 {{- $specificTopicConfig := dig "config" dict $topicConfig -}}
 {{- $enrichedTopicConfig := mustMerge $specificTopicConfig $defaultTopicsConfig -}}
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: KafkaTopic
 metadata:
   name: {{ $topicName | replace "_" "-" }}

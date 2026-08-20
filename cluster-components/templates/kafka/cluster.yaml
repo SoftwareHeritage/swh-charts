@@ -11,7 +11,7 @@
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 ---
-apiVersion: kafka.strimzi.io/v1beta2
+apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
   name: {{ $clusterName }}
