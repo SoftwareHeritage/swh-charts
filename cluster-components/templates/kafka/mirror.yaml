@@ -71,6 +71,9 @@ spec:
         offset-syncs.topic.location: "target"
         refresh.topics.interval.seconds: 600
         offset.lag.max: 100
+        # Keep the same name between source and target (by default prepend the
+        # name of the cluster in the topic)
+        replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     checkpointConnector:
       tasksMax: 1
       config:
@@ -84,6 +87,9 @@ spec:
         offset-syncs.topic.location: "target"
         refresh.topics.interval.seconds: 600
         offset.lag.max: 100
+        # Keep the same name between source and target (by default prepend the
+        # name of the cluster in the topic)
+        replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     topicsPattern: {{ $topicsPattern | quote }}
     groupsPattern: {{ $groupsPattern | quote }}
 {{- end }}
