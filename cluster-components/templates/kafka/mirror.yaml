@@ -1,0 +1,78 @@
+{{ if .Values.kafka.enabled -}}
+{{- range $clusterName, $clusterConfig := .Values.kafka.deployments -}}
+{{- if (ne false $clusterConfig.enabled) -}}
+{{- $kafkaVersion := $clusterConfig.version | default $.Values.kafka.version -}}
+{{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
+{{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
+{{- $mirrorMakerConfig := dig "mirrorMaker" dict $clusterConfig | default (dig "mirrorMaker" dict $.Values.kafka) -}}
+{{- if ne false $mirrorMakerConfig.enabled -}}
+{{- $mirrorMakerName := print $clusterName "-mirror-maker-2" -}}
+{{- $replicas := $mirrorMakerConfig.replicas | default 1 -}}
+{{- $mirrorSource := required (print "Kafka <kafka.mirrorMaker.source> entry required") $mirrorMakerConfig.source -}}
+{{- $topicsPattern := $mirrorMakerConfig.topicsPattern | default ".*" -}}
+{{- $groupsPattern := $mirrorMakerConfig.groupsPattern | default ".*" -}}
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaMirrorMaker2
+metadata:
+  name: {{ $mirrorMakerName }}
+  namespace: {{ $namespace }}
+spec:
+  version: {{ $kafkaVersion }}
+  {{- if $replicas }}
+  replicas: {{ $replicas }}
+  {{- end }}
+  # Target is our kubernetes cluster declared
+  target:
+    alias: {{ $clusterName }}
+    bootstrapServers: {{ $clusterName }}-kafka-bootstrap:9092
+    groupId: {{ $mirrorMakerName}}-group
+    # internal topics should be prefixed with __ to be excluded from mirroring
+    # by default
+    configStorageTopic: __{{ $mirrorMakerName }}-config
+    offsetStorageTopic: __{{ $mirrorMakerName }}-offset
+    statusStorageTopic: __{{ $mirrorMakerName }}-status
+    config:
+      # -1 means it will use the default replication factor configured in the
+      # -broker
+      config.storage.replication.factor: -1
+      offset.storage.replication.factor: -1
+      status.storage.replication.factor: -1
+      # It is the fastest strategy and is compatible with MirrorMaker
+      # connectors, significantly improving worker start-up time
+      plugin.discovery: service_load
+  mirrors:
+  - source:
+      {{- toYaml $mirrorSource | nindent 6 }}
+    sourceConnector:
+      tasksMax: 1
+      config:
+        # -1 means it will use the default replication factor configured in
+        # -the broker
+        replication.factor: -1
+        offset-syncs.topic.replication.factor: -1
+        sync.topic.acls.enabled: "false"
+        # It is recommended to store offset-sync topic in the target so that
+        # MirrorMaker can be granted read-only access to the source cluster
+        offset-syncs.topic.location: "target"
+        refresh.topics.interval.seconds: 600
+        offset.lag.max: 100
+    checkpointConnector:
+      tasksMax: 1
+      config:
+        # -1 means it will use the default replication factor configured in
+        # -the broker
+        checkpoints.topic.replication.factor: -1
+        sync.group.offsets.enabled: "false"
+        refresh.groups.interval.seconds: 600
+        # This configuration has to match with the sourceConnector in order to
+        # work correctly
+        offset-syncs.topic.location: "target"
+        refresh.topics.interval.seconds: 600
+        offset.lag.max: 100
+    topicsPattern: {{ $topicsPattern | quote }}
+    groupsPattern: {{ $groupsPattern | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -469,6 +469,10 @@ kafka:
   # metricsEnabled: false
   # Kafka version (can be overridden per instance)
   version: 4.2.0
+  # Default configuration to enable mirror kafka server to declared instance
+  # This can be overridden per instance
+  mirrorMaker:
+    enabled: false
   # Default configuration to avoid duplication at $key (e.g. topics) level
   # Can be overridden per instance (and $key) level
   default:

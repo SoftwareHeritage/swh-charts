@@ -737,6 +737,14 @@ kafka:
         entries:
           swh.journal.objects.origin_visit_status: {}
 
+      mirrorMaker:
+        enabled: true
+        source:
+          bootstrapServers: kafka1.internal.staging.swh.network:9092,kafka3.internal.staging.swh.network:9092
+          alias: kafka-source
+        topicsPattern: ".*origin_visit_status"
+        groupsPattern: ".*origin-visit-status"
+
     kafka-cluster-next-version:
       enabled: true
       namespace: swh-cassandra-next-version
