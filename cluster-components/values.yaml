@@ -468,7 +468,7 @@ kafka:
   # Activate metrics (can be overridden per instance)
   # metricsEnabled: false
   # Kafka version (can be overridden per instance)
-  version: 4.1.1
+  version: 4.2.0
   # Default configuration to avoid duplication at $key (e.g. topics) level
   # Can be overridden per instance (and $key) level
   default:
