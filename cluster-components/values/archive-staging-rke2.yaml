@@ -696,6 +696,47 @@ kafka:
       topicRegex: ".*"
       groupRegex: ".*"
   deployments:
+    kafka:
+      enabled: true
+      namespace: swh-cassandra
+      # Topics replicated across all 3 nodes (durability)
+      replicationFactor: 3
+      # Writes require 2 in-sync replica (1 node down fault tolerance)
+      minInSyncReplicas: 2
+      pools:
+        kraft-pool:
+          replicas: 3
+          roles:
+            - broker
+            - controller
+          storage:
+            type: jbod
+            volumes:
+              - id: 0
+                type: persistent-claim
+                size: 100Gi
+                deleteClaim: false
+                class: local-persistent
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: "strimzi-kafka"
+                    operator: In
+                    values:
+                    - "true"
+      topics:
+        defaultConfig:
+          partitions: 3
+          replicas: 3
+          extraConfig:
+            min.insync.replicas: 2
+            cleanup.policy: compact
+            compression.type: snappy
+        entries:
+          swh.journal.objects.origin_visit_status: {}
+
     kafka-cluster-next-version:
       enabled: true
       namespace: swh-cassandra-next-version
