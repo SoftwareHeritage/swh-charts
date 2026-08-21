@@ -11,6 +11,10 @@
 {{- $mirrorSource := required (print "Kafka <kafka.mirrorMaker.source> entry required") $mirrorMakerConfig.source -}}
 {{- $topicsPattern := $mirrorMakerConfig.topicsPattern | default ".*" -}}
 {{- $groupsPattern := $mirrorMakerConfig.groupsPattern | default ".*" -}}
+{{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
+{{- $metricsType := dig "metrics" "type" nil $clusterConfig | default (dig "metrics" "type" "strimziMetricsReporter" $.Values.kafka) -}}
+{{- $kafkaExporterConfig := dig "metrics" "kafkaExporterConfig" dict $clusterConfig | default (dig "metrics" "kafkaExporterConfig" dict $.Values.kafka) -}}
+
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaMirrorMaker2
@@ -41,6 +45,16 @@ spec:
       # It is the fastest strategy and is compatible with MirrorMaker
       # connectors, significantly improving worker start-up time
       plugin.discovery: service_load
+  {{- if $metricsEnabled }}
+  metricsConfig:
+    type: {{ $metricsType }}
+    {{- if eq $metricsType "jmxPrometheusExporter" }}
+    valueFrom:
+      configMapKeyRef:
+        name: {{ $clusterName }}-mirror-maker2-metrics
+        key: kafka-mirror-maker2-metrics-config.yml
+    {{- end }}
+  {{- end }}
   mirrors:
   - source:
       {{- toYaml $mirrorSource | nindent 6 }}
