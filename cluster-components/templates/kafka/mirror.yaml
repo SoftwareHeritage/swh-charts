@@ -69,7 +69,7 @@ spec:
         # It is recommended to store offset-sync topic in the target so that
         # MirrorMaker can be granted read-only access to the source cluster
         offset-syncs.topic.location: "target"
-        refresh.topics.interval.seconds: 600
+        refresh.topics.interval.seconds: 60
         offset.lag.max: 100
         # Keep the same name between source and target (by default prepend the
         # name of the cluster in the topic)
@@ -80,13 +80,13 @@ spec:
         # -1 means it will use the default replication factor configured in
         # -the broker
         checkpoints.topic.replication.factor: -1
+        # Enables consumer group offset synchronization.
         sync.group.offsets.enabled: "false"
-        refresh.groups.interval.seconds: 600
+        # The frequency of checks for new consumer groups.
+        refresh.groups.interval.seconds: 60)
         # This configuration has to match with the sourceConnector in order to
         # work correctly
         offset-syncs.topic.location: "target"
-        refresh.topics.interval.seconds: 600
-        offset.lag.max: 100
         # Keep the same name between source and target (by default prepend the
         # name of the cluster in the topic)
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
