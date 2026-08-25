@@ -59,36 +59,42 @@ spec:
   - source:
       {{- toYaml $mirrorSource | nindent 6 }}
     sourceConnector:
+      # The maximum number of tasks for the Kafka Connector.
       tasksMax: 1
       config:
-        # -1 means it will use the default replication factor configured in
-        # -the broker
+        # The replication factor for newly created remote topics (-1 uses the target
+        # broker default)
         replication.factor: -1
+        # The replication factor for the internal offset-syncs topic
         offset-syncs.topic.replication.factor: -1
+        # Controls whether topic ACLs are synchronized from the source cluster
         sync.topic.acls.enabled: "false"
-        # It is recommended to store offset-sync topic in the target so that
-        # MirrorMaker can be granted read-only access to the source cluster
+        # The cluster where the internal offset-syncs topic is created (e.g., target)
         offset-syncs.topic.location: "target"
+        # The interval in seconds to check for new topics matching the topicsPattern
         refresh.topics.interval.seconds: 60
+        # The maximum offset lag allowed before triggering synchronization
         offset.lag.max: 100
-        # Keep the same name between source and target (by default prepend the
-        # name of the cluster in the topic)
+        # The replication policy class used; IdentityReplicationPolicy keeps topic names
+        # identical without prepending the source cluster alias
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     checkpointConnector:
+      # The maximum number of tasks for the Kafka Connector.
       tasksMax: 1
       config:
-        # -1 means it will use the default replication factor configured in
-        # -the broker
+        # Replication factor for the internal checkpoints topic (-1 uses the broker's
+        # default replication factor)
         checkpoints.topic.replication.factor: -1
-        # Enables consumer group offset synchronization.
+        # Disables synchronizing consumer group offsets directly into the target
+        # cluster's __consumer_offsets topic
         sync.group.offsets.enabled: "false"
-        # The frequency of checks for new consumer groups.
-        refresh.groups.interval.seconds: 60)
-        # This configuration has to match with the sourceConnector in order to
-        # work correctly
+        # The interval in seconds to check for new consumer groups to track
+        refresh.groups.interval.seconds: 60
+        # The location of the offset-syncs topic, which must match the sourceConnector
+        # location to read offset mappings correctly
         offset-syncs.topic.location: "target"
-        # Keep the same name between source and target (by default prepend the
-        # name of the cluster in the topic)
+        # The replication policy class used; IdentityReplicationPolicy keeps topic names
+        # identical without prepending the source cluster alias
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     topicsPattern: {{ $topicsPattern | quote }}
     groupsPattern: {{ $groupsPattern | quote }}
