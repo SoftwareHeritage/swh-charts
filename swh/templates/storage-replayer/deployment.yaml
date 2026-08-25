@@ -1,25 +1,25 @@
 {{ if .Values.storageReplayer.enabled -}}
 {{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . -}}
-{{- range $deployment, $deploymentConfig := .Values.storageReplayer.deployments -}}
+{{- range $deploymentName, $deploymentConfig := .Values.storageReplayer.deployments -}}
 {{- if (ne false $deploymentConfig.enabled) -}}
 {{- $deploymentConfig = mustMerge (deepCopy $deploymentConfig) (deepCopy $.Values.storageReplayer) -}}
 {{- $configurationToChecksum := include "swh.storageReplayer.configmap"
-  (dict "deployment" $deployment
-        "deployment_config" $deploymentConfig
-        "Values" $.Values) -}}
+  (dict "deploymentName"   $deploymentName
+        "deploymentConfig" $deploymentConfig
+        "Values"           $.Values) -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: storage-replayer-{{ $deployment }}
+  name: storage-replayer-{{ $deploymentName }}
   labels:
-    app: storage-replayer-{{ $deployment }}
+    app: storage-replayer-{{ $deploymentName }}
 spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: storage-replayer-{{ $deployment }}
+      app: storage-replayer-{{ $deploymentName }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -27,7 +27,7 @@ spec:
   template:
     metadata:
       labels:
-        app: storage-replayer-{{ $deployment }}
+        app: storage-replayer-{{ $deploymentName }}
       annotations:
         checksum/config: {{ $configurationToChecksum | sha256sum }}
         checksum/config_utils: {{ $storageUtilsToChecksum | sha256sum }}
@@ -92,7 +92,7 @@ spec:
             - name: STATSD_PORT
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
-              value: deployment:storage-replayer-{{ $deployment }}
+              value: deployment:storage-replayer-{{ $deploymentName }}
           {{- if $deploymentConfig.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
@@ -119,7 +119,7 @@ spec:
         emptyDir: {}
       - name: configuration-template
         configMap:
-          name: storage-replayer-configuration-{{ $deployment }}-template
+          name: storage-replayer-configuration-{{ $deploymentName }}-template
           items:
           - key: "config.yml.template"
             path: "config.yml.template"

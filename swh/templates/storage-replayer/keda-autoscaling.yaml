@@ -1,12 +1,12 @@
 {{ if .Values.storageReplayer.enabled }}
-{{ range $deployment_name, $deploymentConfig := .Values.storageReplayer.deployments }}
+{{ range $deploymentName, $deploymentConfig := .Values.storageReplayer.deployments }}
 {{ if and (ne false $deploymentConfig.enabled)
            (hasKey $deploymentConfig "autoScaling") }}
 {{- $deploymentConfig = mustMerge (deepCopy $deploymentConfig) (deepCopy $.Values.storageReplayer) -}}
 {{ include "swh.storageReplayer.autoscaling"
-  (dict "deployment_name" $deployment_name
-        "deployment_config" $deploymentConfig
-        "Values" $.Values) }}
+  (dict "deploymentName"   $deploymentName
+        "deploymentConfig" $deploymentConfig
+        "Values"           $.Values) }}
 {{ end }}
 {{ end }}
 {{ end }}
