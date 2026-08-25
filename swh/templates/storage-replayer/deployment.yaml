@@ -1,10 +1,11 @@
 {{ if .Values.storageReplayer.enabled -}}
 {{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . -}}
-{{- range $deployment, $deployment_config := .Values.storageReplayer.deployments -}}
-{{- if (ne false $deployment_config.enabled) -}}
+{{- range $deployment, $deploymentConfig := .Values.storageReplayer.deployments -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
+{{- $deploymentConfig = mustMerge (deepCopy $deploymentConfig) (deepCopy $.Values.storageReplayer) -}}
 {{- $configurationToChecksum := include "swh.storageReplayer.configmap"
   (dict "deployment" $deployment
-        "deployment_config" $deployment_config
+        "deployment_config" $deploymentConfig
         "Values" $.Values) -}}
 ---
 apiVersion: apps/v1
@@ -31,12 +32,12 @@ spec:
         checksum/config: {{ $configurationToChecksum | sha256sum }}
         checksum/config_utils: {{ $storageUtilsToChecksum | sha256sum }}
     spec:
-      {{- if $.Values.storageReplayer.affinity }}
+      {{- if $deploymentConfig.affinity }}
       affinity:
-        {{- toYaml $.Values.storageReplayer.affinity | nindent 8 }}
+        {{- toYaml $deploymentConfig.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled $.Values.storageReplayer.priorityClassName }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.storageReplayer.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $deploymentConfig.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $deploymentConfig.priorityClassName }}
       {{ end }}
       initContainers:
         - name: prepare-configuration
@@ -47,7 +48,7 @@ spec:
           args:
           - -c
           - eval echo "\"$(</etc/swh/configuration-template/config.yml.template)\"" > /etc/swh/config.yml
-          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $.Values.storageReplayer
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $deploymentConfig
                                                                       "Values" $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
@@ -56,10 +57,10 @@ spec:
             mountPath: /etc/swh/configuration-template
           {{ include "swh.storage.cassandra.keyspaceManagementContainers"
             (dict "Values" $.Values
-                  "configurationRef" $.Values.storageReplayer.storageConfigurationRef
+                  "configurationRef" $deploymentConfig.storageConfigurationRef
                   "imagePrefixName" "swh_storage_replayer_image") | nindent 8 }}
 
-          {{- if $.Values.storageReplayer.checkDbVersion }}
+          {{- if $deploymentConfig.checkDbVersion }}
           {{ include "swh.checkDatabaseVersionContainer" (dict "Values" $.Values
                                                                "imagePrefixName" "swh_storage_replayer_image"
                                                                "module" "storage") | nindent 8 }}
@@ -68,15 +69,15 @@ spec:
         - name: storage-replayer
           resources:
             requests:
-              memory: {{ get $deployment_config "requestedMemory" | default "512Mi" }}
-              cpu: {{ get $deployment_config "requestedCpu" | default "500m" }}
-          {{- if or ( get $deployment_config "limitedCpu" ) ( get $deployment_config "limitedMemory" ) }}
+              memory: {{ get $deploymentConfig "requestedMemory" | default "512Mi" }}
+              cpu: {{ get $deploymentConfig "requestedCpu" | default "500m" }}
+          {{- if or ( get $deploymentConfig "limitedCpu" ) ( get $deploymentConfig "limitedMemory" ) }}
             limits:
-            {{- if ( get $deployment_config "limitedMemory" ) }}
-              memory: {{ get $deployment_config "limitedMemory" }}
+            {{- if ( get $deploymentConfig "limitedMemory" ) }}
+              memory: {{ get $deploymentConfig "limitedMemory" }}
             {{- end }}
-            {{- if ( get $deployment_config "limitedCpu" ) }}
-              cpu: {{ get $deployment_config "limitedCpu" }}
+            {{- if ( get $deploymentConfig "limitedCpu" ) }}
+              cpu: {{ get $deploymentConfig "limitedCpu" }}
             {{- end }}
           {{ end }}
           image: {{ $.Values.swh_storage_replayer_image }}:{{ $.Values.swh_storage_replayer_image_version }}
@@ -92,7 +93,7 @@ spec:
               value: {{ $.Values.statsdPort | default "9125" | quote }}
             - name: STATSD_TAGS
               value: deployment:storage-replayer-{{ $deployment }}
-          {{- if $.Values.storageReplayer.sentry.enabled }}
+          {{- if $deploymentConfig.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
@@ -100,8 +101,8 @@ spec:
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ $.Values.storageReplayer.sentry.secretKeyRef }}
-                  key: {{ $.Values.storageReplayer.sentry.secretKeyName }}
+                  name: {{ $deploymentConfig.sentry.secretKeyRef }}
+                  key: {{ $deploymentConfig.sentry.secretKeyName }}
                   # 'name' secret must exist & include key "host"
                   optional: true
             - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
