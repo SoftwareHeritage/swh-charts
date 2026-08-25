@@ -74,7 +74,7 @@ spec:
         # The interval in seconds to check for new topics matching the topicsPattern
         refresh.topics.interval.seconds: 60
         # The maximum offset lag allowed before triggering synchronization
-        offset.lag.max: 100
+        # offset.lag.max: 100
         # The replication policy class used; IdentityReplicationPolicy keeps topic names
         # identical without prepending the source cluster alias
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
