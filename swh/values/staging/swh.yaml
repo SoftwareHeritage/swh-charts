@@ -292,6 +292,8 @@ storageReplayer:
     # testing consuming from mirrored topic ovs (#5911)
     test-strimzi-ovs:
       enabled: true
+      error_reporter:
+        enabled: false
       journalClientConfigurationRef: storageReplayerStrimziKafkaJCConfiguration
       journalClientOverrides:
         group_id: test-strimzi-kafka-cass-replay-ovs
