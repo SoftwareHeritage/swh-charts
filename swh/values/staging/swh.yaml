@@ -289,6 +289,30 @@ storageReplayer:
       requestedMemory: 50Mi
       autoScaling:
         maxReplicaCount: 5
+    # testing consuming from mirrored topic ovs (#5911)
+    test-strimzi-ovs:
+      enabled: true
+      journalClientConfigurationRef: storageReplayerStrimziKafkaJCConfiguration
+      journalClientOverrides:
+        group_id: test-strimzi-kafka-cass-replay-ovs
+        object_types:
+          - origin_visit_status
+        batch_size: 1000
+      # Full replay
+      requestedCpu: 500m
+      requestedMemory: 300Mi
+      # Follow up consumption
+      # requestedCpu: 55m
+      # requestedMemory: 200Mi
+      autoScaling:
+        maxReplicaCount: 5
+
+# testing consuming from mirrored topic ovs (#5911)
+storageReplayerStrimziKafkaJCConfiguration:
+  cls: kafka
+  brokersConfigurationRef: strimziKafkaBrokers
+  prefix: swh.journal.objects
+  message.max.bytes: "524288000"
 
 toolbox:
   enabled: true

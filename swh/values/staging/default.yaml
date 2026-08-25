@@ -501,6 +501,9 @@ internalSecuredKafkaBrokers:
   - journal2.internal.staging.swh.network:9094
   - kafka3.internal.staging.swh.network:9094
 
+strimziKafkaBrokers:
+  - kafka-kafka-brokers:9092
+
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   cls: kafka
