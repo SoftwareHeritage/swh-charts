@@ -739,6 +739,7 @@ kafka:
 
       mirrorMaker:
         enabled: true
+        replicas: 8
         sourceConnectorTasksMax: 16
         checkpointConnectorTasksMax: 4
         source:
