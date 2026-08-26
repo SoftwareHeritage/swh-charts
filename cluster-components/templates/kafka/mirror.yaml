@@ -75,6 +75,14 @@ spec:
     sourceConnector:
       # The maximum number of tasks for the Kafka Connector.
       tasksMax: {{ $sourceConnectorTasksMax }}
+      # Whether automatic restart for failed connectors and tasks should be enabled or
+      # disabled.
+      autoRestart:
+        enabled: true
+        # The maximum number of connector restarts that the operator will try. If the
+        # connector remains in a failed state after reaching this limit, it must be
+        # restarted manually by the user. Defaults to an unlimited number of restarts.
+        maxRestarts: 3
       config:
         # The replication factor for newly created remote topics (-1 uses the target
         # broker default)
@@ -95,6 +103,9 @@ spec:
     checkpointConnector:
       # The maximum number of tasks for the Kafka Connector.
       tasksMax: {{ $checkpointConnectorTasksMax }}
+      autoRestart:
+        enabled: true
+        maxRestarts: 3
       config:
         # Replication factor for the internal checkpoints topic (-1 uses the broker's
         # default replication factor)
