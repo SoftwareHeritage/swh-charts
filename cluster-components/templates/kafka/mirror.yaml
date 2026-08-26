@@ -34,6 +34,12 @@ spec:
     limits:
       memory: "2Gi"
       cpu: "2000m"
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 30
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 10
   # Target is our kubernetes cluster declared
   target:
     alias: {{ $clusterName }}
