@@ -739,6 +739,8 @@ kafka:
 
       mirrorMaker:
         enabled: true
+        sourceConnectorTasksMax: 16
+        checkpointConnectorTasksMax: 4
         source:
           bootstrapServers: kafka1.internal.staging.swh.network:9092,kafka3.internal.staging.swh.network:9092
           alias: kafka-source

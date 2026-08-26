@@ -14,7 +14,8 @@
 {{- $metricsEnabled := dig "metrics" "enabled" false $clusterConfig | default (dig "metrics" "enabled" false $.Values.kafka) -}}
 {{- $metricsType := dig "metrics" "type" nil $clusterConfig | default (dig "metrics" "type" "strimziMetricsReporter" $.Values.kafka) -}}
 {{- $kafkaExporterConfig := dig "metrics" "kafkaExporterConfig" dict $clusterConfig | default (dig "metrics" "kafkaExporterConfig" dict $.Values.kafka) -}}
-
+{{- $sourceConnectorTasksMax := $mirrorMakerConfig.sourceConnectorTasksMax | default 1 -}}
+{{- $checkpointConnectorTasksMax := $mirrorMakerConfig.checkpointConnectorTasksMax | default 1 -}}
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaMirrorMaker2
@@ -60,7 +61,7 @@ spec:
       {{- toYaml $mirrorSource | nindent 6 }}
     sourceConnector:
       # The maximum number of tasks for the Kafka Connector.
-      tasksMax: 1
+      tasksMax: {{ $sourceConnectorTasksMax }}
       config:
         # The replication factor for newly created remote topics (-1 uses the target
         # broker default)
@@ -80,7 +81,7 @@ spec:
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     checkpointConnector:
       # The maximum number of tasks for the Kafka Connector.
-      tasksMax: 1
+      tasksMax: {{ $checkpointConnectorTasksMax }}
       config:
         # Replication factor for the internal checkpoints topic (-1 uses the broker's
         # default replication factor)
