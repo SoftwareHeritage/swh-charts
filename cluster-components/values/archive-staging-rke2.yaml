@@ -726,16 +726,6 @@ kafka:
                     operator: In
                     values:
                     - "true"
-      topics:
-        defaultConfig:
-          partitions: 3
-          replicas: 3
-          extraConfig:
-            min.insync.replicas: 2
-            cleanup.policy: compact
-            compression.type: snappy
-        entries:
-          swh.journal.objects.origin_visit_status: {}
 
       mirrorMaker:
         enabled: true
