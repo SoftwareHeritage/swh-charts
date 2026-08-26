@@ -98,7 +98,7 @@ kafka:
   # version: 0.48.0
   # supported kafka versions: 4.0.0*, 4.1.0
   # version: 0.49.1 (crds deprecated, needs an update to kafka.strimzi.io/v1)
-  # supported kafka versions: 4.0.0*, 4.0.1, 4.1.0, 4.1.1*
+  # supported kafka versions: 4.0.0, 4.0.1, 4.1.0, 4.1.1*
   # version: 0.50.1
   # supported kafka versions: 4.0.0, 4.0.1, 4.1.0, 4.1.1*
   # version: 0.51.0
