@@ -502,7 +502,7 @@ internalSecuredKafkaBrokers:
   - kafka3.internal.staging.swh.network:9094
 
 strimziKafkaBrokers:
-  - kafka-kafka-brokers.swh-cassandra:9092
+  - kafka-kafka-brokers.kafka-system:9092
 
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers

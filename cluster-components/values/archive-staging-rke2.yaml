@@ -698,7 +698,6 @@ kafka:
   deployments:
     kafka:
       enabled: true
-      namespace: swh-cassandra
       # Topics replicated across all 3 nodes (durability)
       replicationFactor: 3
       # Writes require 2 in-sync replica (1 node down fault tolerance)
