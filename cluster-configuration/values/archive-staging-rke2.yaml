@@ -187,6 +187,7 @@ osporadar:
     # We will see later to have a clean environment
     development:
       enabled: true
+      debug: true
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
