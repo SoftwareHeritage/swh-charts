@@ -5,6 +5,7 @@
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
 {{- range $userName, $userConfig := $clusterConfig.users -}}
+{{- $userSecret := $userConfig.secret | default dict -}}
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaUser
@@ -18,11 +19,13 @@ spec:
     type: scram-sha-512
     # https://strimzi.io/docs/operators/in-development/deploying#scram_sha_512_authentication
     username: {{ $userName }}
-    # password:
-    #   valueFrom:
-    #     secretKeyRef:
-    #       name: {{ $userConfig.secret.ref }}
-    #       key: {{ $userConfig.secret.key }}
+    {{- if $userSecret }}
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: {{ $userSecret.ref }}
+          key: {{ $userSecret.key }}
+    {{- end }}
   authorization:
     type: simple
     acls:

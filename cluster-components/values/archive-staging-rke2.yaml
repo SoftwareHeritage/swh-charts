@@ -737,6 +737,22 @@ kafka:
         topicsPattern: ".*origin_visit_status"
         groupsPattern: ".*origin-visit-status"
 
+      users:
+        swh-journal-client:
+          # Either generate a specify a secret here or the secret will be generated
+          # in the same namespace with the name of the user
+          secret:
+            ref: swh-journal-client-secret
+            key: password
+          resources:
+            - topics:
+                - swh.journal.objects.origin_visit_status
+              groups:
+                - test-strimzi-kafka-cass-replay-ovs
+              operations:
+                - Describe
+                - Read
+
     kafka-cluster-next-version:
       enabled: true
       namespace: swh-cassandra-next-version
