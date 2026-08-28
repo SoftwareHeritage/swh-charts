@@ -16,9 +16,8 @@ metadata:
     strimzi.io/cluster: {{ $clusterName }}
 spec:
   authentication:
-    type: scram-sha-512
     # https://strimzi.io/docs/operators/in-development/deploying#scram_sha_512_authentication
-    username: {{ $userName }}
+    type: scram-sha-512
     {{- if $userSecret }}
     password:
       valueFrom:
