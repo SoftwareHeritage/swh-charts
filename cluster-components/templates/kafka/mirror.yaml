@@ -16,12 +16,19 @@
 {{- $kafkaExporterConfig := dig "metrics" "kafkaExporterConfig" dict $clusterConfig | default (dig "metrics" "kafkaExporterConfig" dict $.Values.kafka) -}}
 {{- $sourceConnectorTasksMax := $mirrorMakerConfig.sourceConnectorTasksMax | default 1 -}}
 {{- $checkpointConnectorTasksMax := $mirrorMakerConfig.checkpointConnectorTasksMax | default 1 -}}
+{{- $groupId := print $mirrorMakerName "-group" -}}
+{{- $configStorageTopic := print "__" $mirrorMakerName "-config" -}}
+{{- $offsetStorageTopic := print "__" $mirrorMakerName "-offset" -}}
+{{- $statusStorageTopic := print "__" $mirrorMakerName "-status" -}}
+{{- $mirrorMakerUserName := print $mirrorMakerName "-user" -}}
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: KafkaMirrorMaker2
 metadata:
   name: {{ $mirrorMakerName }}
   namespace: {{ $namespace }}
+  labels:
+    strimzi.io/cluster: {{ $clusterName }}
 spec:
   version: {{ $kafkaVersion }}
   {{- if $replicas }}
@@ -43,13 +50,23 @@ spec:
   # Target is our kubernetes cluster declared
   target:
     alias: {{ $clusterName }}
-    bootstrapServers: {{ $clusterName }}-kafka-bootstrap:9092
-    groupId: {{ $mirrorMakerName}}-group
+    bootstrapServers: {{ $clusterName }}-kafka-bootstrap:9093
+    authentication:
+        type: scram-sha-512
+        username: {{ $mirrorMakerUserName }}
+        passwordSecret:
+          secretName: {{ $mirrorMakerUserName }}
+          password: password
+    tls:
+      trustedCertificates:
+        - secretName: {{ $clusterName }}-cluster-ca-cert
+          pattern: "*.crt"
+    groupId: {{ $groupId }}
     # internal topics should be prefixed with __ to be excluded from mirroring
     # by default
-    configStorageTopic: __{{ $mirrorMakerName }}-config
-    offsetStorageTopic: __{{ $mirrorMakerName }}-offset
-    statusStorageTopic: __{{ $mirrorMakerName }}-status
+    configStorageTopic: {{ $configStorageTopic }}
+    offsetStorageTopic: {{ $offsetStorageTopic }}
+    statusStorageTopic: {{ $statusStorageTopic }}
     config:
       # -1 means it will use the default replication factor configured in the
       # -broker
@@ -135,6 +152,89 @@ spec:
         replication.policy.class: "org.apache.kafka.connect.mirror.IdentityReplicationPolicy"
     topicsPattern: {{ $topicsPattern | quote }}
     groupsPattern: {{ $groupsPattern | quote }}
+
+# Enable the KafkaUser to use to authenticate mirror maker to the target cluster
+# It's mandatory when enable the authorization type simple in the kafka cluster...
+---
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: {{ $mirrorMakerUserName }}
+  namespace: {{ $namespace }}
+  labels:
+    strimzi.io/cluster: {{ $clusterName }}
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      # cluster group
+      - resource:
+          type: group
+          name: {{ $groupId }}
+        operations:
+          - Read
+      # access to config.storage.topic
+      - resource:
+          type: topic
+          name: {{ $configStorageTopic }}
+        operations:
+          - Create
+          - Describe
+          - DescribeConfigs
+          - Read
+          - Write
+      # access to status.storage.topic
+      - resource:
+          type: topic
+          name: {{ $statusStorageTopic }}
+        operations:
+          - Create
+          - Describe
+          - DescribeConfigs
+          - Read
+          - Write
+      # access to offset.storage.topic
+      - resource:
+          type: topic
+          name: {{ $offsetStorageTopic }}
+        operations:
+          - Create
+          - Describe
+          - DescribeConfigs
+          - Read
+          - Write
+      # MirrorSourceConnector
+      - resource: # Needed for every topic which is mirrored
+          type: topic
+          name: "*"
+          patternType: literal
+        operations:
+          - Create
+          - Alter
+          - AlterConfigs
+          - Write
+      # MirrorCheckpointConnector
+      - resource:
+          type: cluster
+        operations:
+          - Describe
+      - resource:
+          type: topic
+          name: {{ $clusterName }}-source.checkpoints.internal
+        operations:
+          - Create
+          - Describe
+          - Read
+          - Write
+      - resource: # Needed for every group for which the offset is synced
+          type: group
+          name: "*"
+          patternType: literal
+        operations:
+          - Read
+          - Describe
 {{- end }}
 {{- end }}
 {{- end }}
