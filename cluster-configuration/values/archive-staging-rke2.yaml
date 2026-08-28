@@ -138,7 +138,6 @@ vaultSecretsOperator:
 
 osporadar:
   enabled: true
-  version: mr/external-tls
   valuesOverride:
     # Database secret references (created in openbao)
     secretNameRef: swh-osporadar-secret
