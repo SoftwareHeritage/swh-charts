@@ -504,6 +504,9 @@ internalSecuredKafkaBrokers:
 strimziKafkaBrokers:
   - kafka-kafka-brokers.kafka-system:9092
 
+internalSecuredStrimziKafkaBrokers:
+  - kafka-kafka-brokers.kafka-system:9093
+
 indexerJournalWriterConfiguration:
   brokersConfigurationRef: kafkaBrokers
   cls: kafka

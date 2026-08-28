@@ -312,9 +312,21 @@ storageReplayer:
 # testing consuming from mirrored topic ovs (#5911)
 storageReplayerStrimziKafkaJCConfiguration:
   cls: kafka
-  brokersConfigurationRef: strimziKafkaBrokers
+  brokersConfigurationRef: internalSecuredStrimziKafkaBrokers
   prefix: swh.journal.objects
   message.max.bytes: "524288000"
+  # authentication part
+  sasl.mechanism: SCRAM-SHA-512
+  security.protocol: SASL_SSL
+  sasl.username: ${BROKER_USER}
+  sasl.password: ${BROKER_USER_PASSWORD}
+  secrets:
+    BROKER_USER:
+      secretKeyRef: swh-journal-client-secret
+      secretKeyName: username
+    BROKER_USER_PASSWORD:
+      secretKeyRef: swh-journal-client-secret
+      secretKeyName: password
 
 toolbox:
   enabled: true
