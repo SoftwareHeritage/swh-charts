@@ -149,7 +149,7 @@ osporadar:
     ingress:
       enabled: true
       # Set to true when TLS is handled by a reverse-proxy in front of the ingress
-      externalTLS: true
+      externalTls: true
       annotations:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/auth-type: basic
