@@ -296,7 +296,7 @@ storageReplayer:
         enabled: false
       journalClientConfigurationRef: storageReplayerStrimziKafkaJCConfiguration
       journalClientOverrides:
-        group_id: test-strimzi-kafka-cass-replay-ovs
+        group_id: swh-journal-client-strimzi-kafka-cass-replay-ovs
         object_types:
           - origin_visit_status
         batch_size: 1000
