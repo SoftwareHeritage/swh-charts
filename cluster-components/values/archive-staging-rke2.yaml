@@ -741,9 +741,9 @@ kafka:
         swh-journal-client:
           # Either generate a specify a secret here or the secret will be generated
           # in the same namespace with the name of the user
-          # secret:
-          #   ref: swh-journal-client-secret
-          #   key: password
+          secret:
+            ref: swh-journal-client-secret
+            key: password
           resources:
             - topics:
                 - swh.journal.objects.origin_visit_status
