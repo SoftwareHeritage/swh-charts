@@ -2,7 +2,10 @@
 {{- $storageUtilsToChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . -}}
 {{- range $deploymentName, $deploymentConfig := .Values.storageReplayer.deployments -}}
 {{- if (ne false $deploymentConfig.enabled) -}}
-{{- $deploymentConfig = mustMerge (deepCopy $deploymentConfig) (deepCopy $.Values.storageReplayer) -}}
+{{- $deploymentConfig := include "swh.storageReplayer.mergeConfig"
+      (dict "deploymentConfig" $deploymentConfig
+            "topConfig"        $.Values.storageReplayer) | fromYaml -}}
+
 {{- $configurationToChecksum := include "swh.storageReplayer.configmap"
   (dict "deploymentName"   $deploymentName
         "deploymentConfig" $deploymentConfig

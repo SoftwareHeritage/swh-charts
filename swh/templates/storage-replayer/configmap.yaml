@@ -1,7 +1,9 @@
 {{ if .Values.storageReplayer.enabled -}}
 {{- range $deploymentName, $deploymentConfig := .Values.storageReplayer.deployments -}}
-{{- $deploymentConfig = mustMerge (deepCopy $deploymentConfig) (deepCopy $.Values.storageReplayer) -}}
 {{- if (ne false $deploymentConfig.enabled) -}}
+{{- $deploymentConfig := include "swh.storageReplayer.mergeConfig"
+      (dict "deploymentConfig" $deploymentConfig
+            "topConfig"        $.Values.storageReplayer) | fromYaml -}}
 {{ include "swh.storageReplayer.configmap" (dict "deploymentName"   $deploymentName
                                                  "deploymentConfig" $deploymentConfig
                                                  "Values"           $.Values) }}
