@@ -63,6 +63,8 @@ vaultStaticSecrets:
       enabled: true
     webhooks-secrets:
       enabled: true
+    swh-journal-client-secret:
+      enabled: true
 
 clusterNetworkRanges:
   # cluster internal range ip
