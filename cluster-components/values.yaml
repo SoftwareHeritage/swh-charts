@@ -809,8 +809,13 @@ keycloak:
   replicas: 2
   image: quay.io/keycloak/keycloak
   imageVersion: latest
-  postgresSecret: swh-keycloak-postgres-secret
-  adminSecret: swh-keycloak-admin-secret
+  postgresSecret:
+    name: swh-keycloak-postgres-secret
+  adminSecret:
+    name: swh-keycloak-admin-secret
+  database:
+    host: cluster-pg-admin-dali
+    name: keycloak
 
 postgresqlTest:
   enabled: false
