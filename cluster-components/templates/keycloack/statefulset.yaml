@@ -3,7 +3,7 @@
 {{- $namespace := .Values.keycloak.namespace }}
 {{- $image := .Values.keycloak.image }}
 {{- $imageVersion := .Values.keycloak.imageVersion | default "latest" }}
-
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -41,13 +41,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.keycloak.adminSecret.name }}
-                  key: username
+                  key: {{ .Values.keycloak.adminSecret.key }}
 
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.keycloak.adminSecret.name }}
-                  key: password
+                  key: {{ .Values.keycloak.adminSecret.key }}
 
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
@@ -82,13 +82,13 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.keycloak.postgresSecret.name | quote }}
-                  key: username
+                  key: {{ .Values.keycloak.postgresSecret.key }}
 
             - name: KC_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Values.keycloak.postgresSecret.name | quote }}
-                  key: password
+                  key: {{ .Values.keycloak.postgresSecret.key }}
 
           ports:
             - name: http
