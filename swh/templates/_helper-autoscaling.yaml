@@ -93,6 +93,8 @@ spec:
 {{- $userSecretDef := get $journalClientConfigurationSecrets $usernameSecretKey -}}
 {{- $passwordSecretKey := get .kafkaConfiguration "sasl.password" | replace "${" "" | replace "}" "" -}}
 {{- $passwordSecretDef := get $journalClientConfigurationSecrets $passwordSecretKey }}
+{{- $securityProtocol := dig "security.protocol" "SASL_SSL" .kafkaConfiguration -}}
+{{- $tlsEnabled := eq $securityProtocol "SASL_SSL" }}
     authenticationRef:
       name: keda-{{ .name }}-authentication
 ---
@@ -104,7 +106,9 @@ metadata:
 type: Opaque
 stringData:
   sasl: "scram_sha512"
+{{- if $tlsEnabled }}
   tls: "enable"
+{{- end }}
 ---
 apiVersion: keda.sh/v1alpha1
 kind: TriggerAuthentication
@@ -122,9 +126,11 @@ spec:
   - parameter: sasl
     name: keda-{{ .name }}-secrets
     key: sasl
+  {{- if $tlsEnabled }}
   - parameter: tls
     name: keda-{{ .name }}-secrets
     key: tls
+  {{- end }}
 {{- end -}}
 
 {{- end -}}
