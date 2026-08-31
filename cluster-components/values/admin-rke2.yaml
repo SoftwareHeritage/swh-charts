@@ -207,6 +207,7 @@ openbao:
         - cnpg
         - cnpg-next-version
         - kafkabackup
+        - kafka-system
         - metallb
         - osporadar
         - svix-server
