@@ -196,6 +196,13 @@ cloudnativePg:
         secretKeyRef: swh-vulns-osv-postgresql-secret
       initdb:
         enabled: true
+    keycloak:
+      enabled: false
+      database:
+        name: keycloak
+        secretKeyRef: swh-keycloak-postgres-secret
+      initdb:
+        enabled: true
 
 scrapeClusterMetrics:
   enabled: false
@@ -487,5 +494,5 @@ openbao:
       namespacesToManageInOpenbaoClientCluster:
       - vso
 
-keycloack:
+keycloak:
   enabled: false
