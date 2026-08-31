@@ -38,10 +38,16 @@ spec:
 
           env:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.keycloak.adminSecret.name }}
+                  key: username
 
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
-              value: "admin"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.keycloak.adminSecret.name }}
+                  key: password
 
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
@@ -67,16 +73,22 @@ spec:
               value: "postgres"
 
             - name: KC_DB_URL_HOST
-              value: "postgres-test"
+              value: {{ .Values.keycloak.database.host | quote }}
 
             - name: KC_DB_URL_DATABASE
-              value: "keycloak"
+              value: {{ .Values.keycloak.database.name | quote }}
 
             - name: KC_DB_USERNAME
-              value: "keycloak"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.keycloak.postgresSecret.name | quote }}
+                  key: username
 
             - name: KC_DB_PASSWORD
-              value: "keycloak"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.keycloak.postgresSecret.name | quote }}
+                  key: password
 
           ports:
             - name: http
