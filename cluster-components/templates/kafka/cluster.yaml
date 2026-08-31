@@ -36,16 +36,28 @@ spec:
     {{- end }}
     {{- end }}
     listeners:
-      - name: plain
+      - name: internal-plain
         port: 9092
         type: internal
         tls: false
-      - name: tls
+      - name: internal-authenticated
         port: 9093
+        type: internal
+        tls: false
+        authentication:
+          type: scram-sha-512
+      - name: internal-tls-authenticated
+        port: 9094
         type: internal
         tls: true
         authentication:
           type: scram-sha-512
+      # - name: external-tls-authenticated
+      #   port: 9095
+      #   tls: true
+      #   type: loadbalancer
+      #   authentication:
+      #     type: scram-sha-512
     # Enable acls
     authorization:
       type: simple

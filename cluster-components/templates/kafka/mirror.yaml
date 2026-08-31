@@ -50,7 +50,7 @@ spec:
   # Target is our kubernetes cluster declared
   target:
     alias: {{ $clusterName }}
-    bootstrapServers: {{ $clusterName }}-kafka-bootstrap:9093
+    bootstrapServers: {{ $clusterName }}-kafka-bootstrap:9094
     authentication:
         type: scram-sha-512
         username: {{ $mirrorMakerUserName }}
