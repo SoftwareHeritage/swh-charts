@@ -206,6 +206,11 @@ spec:
           - Read
           - Write
       # MirrorSourceConnector
+      - resource: # Not needed if offset-syncs.topic.location=target
+          type: topic
+          name: mm2-offset-syncs.{{ $clusterName }}-source.internal
+        operations:
+          - Read
       - resource: # Needed for every topic which is mirrored
           type: topic
           name: "*"
