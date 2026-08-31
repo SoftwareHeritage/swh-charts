@@ -317,7 +317,7 @@ storageReplayerStrimziKafkaJCConfiguration:
   message.max.bytes: "524288000"
   # authentication part
   sasl.mechanism: SCRAM-SHA-512
-  security.protocol: SASL_SSL
+  security.protocol: SASL_PLAINTEXT
   sasl.username: ${BROKER_USER}
   sasl.password: ${BROKER_USER_PASSWORD}
   secrets:
