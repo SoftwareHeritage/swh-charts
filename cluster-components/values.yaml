@@ -814,8 +814,10 @@ keycloak:
   imageVersion: latest
   postgresSecret:
     name: swh-keycloak-postgres-secret
+    key: swh-keycloak-postgres-secret
   adminSecret:
     name: swh-keycloak-admin-secret
+    key: swh-keycloak-admin-secret
   database:
     host: cluster-pg-admin-dali
     name: keycloak
