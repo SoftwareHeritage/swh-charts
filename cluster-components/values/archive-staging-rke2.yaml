@@ -749,6 +749,7 @@ kafka:
                 - swh.journal.objects.origin_visit_status
               groups:
                 - test-strimzi-kafka-cass-replay-ovs
+                - swh-journal-client-strimzi-kafka-cass-replay-ovs
               operations:
                 - Describe
                 - Read
