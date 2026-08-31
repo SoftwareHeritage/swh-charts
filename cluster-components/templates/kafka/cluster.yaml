@@ -36,17 +36,20 @@ spec:
     {{- end }}
     {{- end }}
     listeners:
-      - name: internalplain
+      # internal with no authentication
+      - name: plain
         port: 9092
         type: internal
         tls: false
-      - name: internalauthenticated
+      # internal-use with authentication
+      - name: intauth
         port: 9093
         type: internal
         tls: false
         authentication:
           type: scram-sha-512
-      - name: internaltlsauthenticated
+      # internal with tls and authentication
+      - name: inttlsauth
         port: 9094
         type: internal
         tls: true
