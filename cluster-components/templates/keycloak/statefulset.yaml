@@ -40,14 +40,14 @@ spec:
             - name: KC_BOOTSTRAP_ADMIN_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.keycloak.adminSecret.name }}
-                  key: {{ .Values.keycloak.adminSecret.key }}
+                  name: {{ .Values.keycloak.adminSecret.ref | quote }}
+                  key: {{ .Values.keycloak.adminSecret.userKeyRef }}
 
             - name: KC_BOOTSTRAP_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.keycloak.adminSecret.name }}
-                  key: {{ .Values.keycloak.adminSecret.key }}
+                  name: {{ .Values.keycloak.adminSecret.ref | quote }}
+                  key: {{ .Values.keycloak.adminSecret.passwordKeyRef }}
 
             - name: KC_PROXY_HEADERS
               value: "xforwarded"
@@ -81,14 +81,14 @@ spec:
             - name: KC_DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.keycloak.postgresSecret.name | quote }}
-                  key: {{ .Values.keycloak.postgresSecret.key }}
+                  name: {{ .Values.keycloak.database.secret.ref | quote }}
+                  key: {{ .Values.keycloak.database.secret.userKeyRef }}
 
             - name: KC_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.keycloak.postgresSecret.name | quote }}
-                  key: {{ .Values.keycloak.postgresSecret.key }}
+                  name: {{ .Values.keycloak.database.secret.ref | quote }}
+                  key: {{ .Values.keycloak.database.secret.passwordKeyRef }}
 
           ports:
             - name: http
