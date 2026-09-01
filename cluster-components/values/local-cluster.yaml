@@ -487,3 +487,16 @@ openbao:
 
 keycloak:
   enabled: false
+  namespace: keycloak
+  adminSecret:
+    ref: swh-keycloak-admin-secret
+    userKeyRef: username
+    passwordKeyRef: password
+  database:
+    host: keycloak-rw
+    name: keycloak
+    # Report to cloudnativePg database deployment for this to be functional
+    secret:
+      ref: swh-keycloak-postgres-secret
+      userKeyRef: username
+      passwordKeyRef: password

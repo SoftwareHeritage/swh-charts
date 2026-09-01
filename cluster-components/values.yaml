@@ -809,14 +809,16 @@ keycloak:
   replicas: 1
   image: quay.io/keycloak/keycloak
   imageVersion: latest
-  adminSecret:
-    ref: swh-keycloak-admin-secret
-    userKeyRef: username
-    passwordKeyRef: password
-  database:
-    host: cluster-pg-admin-dali
-    name: keycloak
-    secret:
-      ref: swh-keycloak-postgres-secret
-      userKeyRef: username
-      passwordKeyRef: password
+  # Administration username/password authentication
+  # adminSecret:
+  #   ref: swh-keycloak-admin-secret
+  #   userKeyRef: username
+  #   passwordKeyRef: password
+  # Relative db host/name and db authentication
+  # database:
+  #   host: cluster-pg-admin-dali
+  #   name: keycloak
+  #   secret:
+  #     ref: swh-keycloak-postgres-secret
+  #     userKeyRef: username
+  #     passwordKeyRef: password
