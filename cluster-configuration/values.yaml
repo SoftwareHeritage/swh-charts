@@ -108,7 +108,7 @@ kafka:
   # version: 1.1.0
   # supported kafka versions: 4.2.0*, 4.2.1, 4.3.0
   version: 1.2.0
-  # supported kafka versions: 4.2.0*, 4.2.1, 4.3.0, 4.3.1
+  # supported kafka versions: 4.2.0, 4.2.1, 4.3.0, *4.3.1
 
 cassandra:
   enabled: false
