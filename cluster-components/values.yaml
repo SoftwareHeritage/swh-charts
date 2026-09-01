@@ -809,7 +809,7 @@ kafkabackup:
 keycloak:
   enabled: false
   namespace: keycloak
-  replicas: 2
+  replicas: 1
   image: quay.io/keycloak/keycloak
   imageVersion: latest
   adminSecret:
