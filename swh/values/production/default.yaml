@@ -640,13 +640,6 @@ pathslicingSaamZfsObjstorageConfiguration:
   compression: none
   allow_delete: true
 
-pathslicingBancoXfsObjstorageConfiguration:
-  cls: pathslicing
-  root: "/srv/softwareheritage/objects-xfs"
-  slicing: 0:1/0:2/2:4/4:6
-  compression: gzip
-  allow_delete: true
-
 multiplexerForLocalStorages:
   cls: multiplexer
   readonly: true
@@ -787,12 +780,6 @@ remoteCountersConfiguration:
   url: http://counters-rpc-ingress-swh-cassandra
   enable_requests_retry: true
 
-remoteBancoReadOnlyObjstorageConfiguration:
-  cls: remote
-  name: banco
-  url: http://objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
-  enable_requests_retry: true
-
 remoteSaamReadOnlyObjstorageConfiguration:
   cls: remote
   name: saam
@@ -802,11 +789,6 @@ remoteSaamReadOnlyObjstorageConfiguration:
 saamZfsDeleteObjstorageConfiguration:
   cls: remote
   url: http://objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
-  enable_requests_retry: false
-
-bancoXfsDeleteObjstorageConfiguration:
-  cls: remote
-  url: http://objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
   enable_requests_retry: false
 
 producerCeleryConfiguration:
@@ -1113,15 +1095,6 @@ externalServices:
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-delete-saam-zfs-swh-cassandra:
       internalName: objstorage-delete-saam-zfs-rpc-ingress-swh-cassandra
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-ro-banco-xfs:
-      internalName: objstorage-ro-banco-xfs-rpc-ingress
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-ro-banco-xfs-swh-cassandra:
-      internalName: objstorage-ro-banco-xfs-rpc-ingress-swh-cassandra
-      target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-delete-banco-xfs-swh-cassandra:
-      internalName: objstorage-delete-banco-xfs-rpc-ingress-swh-cassandra
       target: archive-production-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     storage-rw-postgresql:
       internalName: storage-rw-postgresql-ingress

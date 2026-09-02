@@ -3017,8 +3017,6 @@ alter:
   removalObjstorages:
     saam-zfs:
       objstorageConfigurationRef: saamZfsDeleteObjstorageConfiguration
-    banco-xfs:
-      objstorageConfigurationRef: bancoXfsDeleteObjstorageConfiguration
     azure:
       objstorageConfigurationRef: azureDeleteObjstorageConfiguration
     s3:

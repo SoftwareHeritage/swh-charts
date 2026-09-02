@@ -47,7 +47,6 @@ ingressNginx:
                 operator: NotIn
                 values:
                   - saam
-                  - banco
 
 certManager:
   enabled: true
