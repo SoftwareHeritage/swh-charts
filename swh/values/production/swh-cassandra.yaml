@@ -2242,7 +2242,7 @@ loaders:
         - swh.loader.git.tasks.UpdateGitRepository
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
-      replicas: 16
+      replicas: 32
       requestedMemory: 768Mi
       requestedCpu: 100m
       tmpEphemeralStorage:
