@@ -10,6 +10,7 @@
 {{- $kafkaVersion := $clusterConfig.version | default $.Values.kafka.version -}}
 {{- $namespace := $clusterConfig.namespace | default $.Values.kafka.namespace -}}
 {{- $clusterName = $clusterConfig.clusterName | default $clusterName -}}
+{{- $aclsEnabled := dig "acls" "enabled" $.Values.kafka.acls.enabled $clusterConfig -}}
 ---
 apiVersion: kafka.strimzi.io/v1
 kind: Kafka
@@ -35,12 +36,18 @@ spec:
     {{- toYaml $clusterConfig.storage | nindent 6 }}
     {{- end }}
     {{- end }}
+    {{- if $aclsEnabled }}
+    # Enable acls
+    authorization:
+      type: simple
+    {{- end }}
     listeners:
       # internal with no authentication
       - name: plain
         port: 9092
         type: internal
         tls: false
+      {{- if $aclsEnabled }}
       # internal-use with authentication
       - name: intauth
         port: 9093
@@ -61,9 +68,7 @@ spec:
       #   type: loadbalancer
       #   authentication:
       #     type: scram-sha-512
-    # Enable acls
-    authorization:
-      type: simple
+      {{- end }}
     {{- if $metricsEnabled }}
     metricsConfig:
       type: {{ $metricsType }}

@@ -455,6 +455,9 @@ kafka:
   # Replication factor
   # replicationFactor: 2
   # minInSyncReplicas: 1
+  # Whether to enable acls or not (can be overridden per instance)
+  acls:
+    enabled: true
   # Allow affinity declaration (can be overridden per instance)
   # affinity:
   #   nodeAffinity:
