@@ -1,13 +1,3 @@
-{{/*
-   * Compute the configuration merge policy between top-level common declaration and the
-   * instance declaration.
-   */}}
-{{ define "swh.storageReplayer.mergeConfig" }}
-{{- $topConfig := deepCopy .topConfig -}}
-{{- $_ := unset $topConfig "deployments" -}}
-{{ mustMerge .deploymentConfig $topConfig | toYaml }}
-{{ end }}
-
 {{ define "swh.storageReplayer.configmap" }}
 {{- $journalClientConfigurationRef := .deploymentConfig.journalClientConfigurationRef -}}
 {{- $journalClientConfiguration := required (print "journalClientConfigurationRef <" $journalClientConfigurationRef "> not found in storageReplayer <" .deploymentName ">  configuration") (get .Values $journalClientConfigurationRef) -}}

@@ -2,7 +2,7 @@
 {{ range $deploymentName, $deploymentConfig := .Values.storageReplayer.deployments }}
 {{ if and (ne false $deploymentConfig.enabled)
            (hasKey $deploymentConfig "autoScaling") }}
-{{- $deploymentConfig := include "swh.storageReplayer.mergeConfig"
+{{- $deploymentConfig := include "swh.mergeDeploymentConfig"
       (dict "deploymentConfig" $deploymentConfig
             "topConfig"        $.Values.storageReplayer) | fromYaml -}}
 {{ include "swh.storageReplayer.autoscaling"

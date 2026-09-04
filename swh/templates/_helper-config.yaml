@@ -1,3 +1,13 @@
+{{/* Merge top-level config into an instance deployment config giving priority
+   * to the latter */}}
+{{- define "swh.mergeDeploymentConfig" -}}
+{{- $topConfig := deepCopy .topConfig -}}
+{{- $_ := unset $topConfig "deployments" -}}
+{{- $merged := mustMerge .deploymentConfig $topConfig -}}
+{{ $merged | toYaml }}
+{{- end -}}
+
+
 {{/*
 Generate the configuration for a remote service
 */}}
