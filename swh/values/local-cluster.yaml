@@ -106,13 +106,13 @@ postgresqlRWStorageConfiguration:
   host: archive-rw
   port: 5432
   db: swh
-  user: ${POSTGRESQL_USERNAME}
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_STORAGE_USERNAME}
+  pass: ${POSTGRESQL_STORAGE_PASSWORD}
   secrets:
-    POSTGRESQL_USERNAME:
+    POSTGRESQL_STORAGE_USERNAME:
       secretKeyRef: swh-swh-postgresql-secret
       secretKeyName: username
-    POSTGRESQL_PASSWORD:
+    POSTGRESQL_STORAGE_PASSWORD:
       secretKeyRef: swh-swh-postgresql-secret
       secretKeyName: password
 
@@ -162,6 +162,7 @@ postgresqlIndexerStorageConfiguration:
   db: swh-indexer
   user: ${POSTGRESQL_IDX_USERNAME}
   pass: ${POSTGRESQL_IDX_PASSWORD}
+
   secrets:
     POSTGRESQL_IDX_USERNAME:
       secretKeyRef: swh-indexer-storage-swh-postgresql-secret
@@ -175,13 +176,13 @@ postgresqlSchedulerConfiguration:
   host: scheduler-rw
   port: 5432
   db: swh-scheduler
-  user: ${POSTGRESQL_USERNAME}
-  pass: ${POSTGRESQL_PASSWORD}
+  user: ${POSTGRESQL_SCHEDULER_USERNAME}
+  pass: ${POSTGRESQL_SCHEDULER_PASSWORD}
   secrets:
-    POSTGRESQL_USERNAME:
+    POSTGRESQL_SCHEDULER_USERNAME:
       secretKeyRef: swh-scheduler-swh-postgresql-secret
       secretKeyName: username
-    POSTGRESQL_PASSWORD:
+    POSTGRESQL_SCHEDULER_PASSWORD:
       secretKeyRef: swh-scheduler-swh-postgresql-secret
       secretKeyName: password
 
@@ -1987,6 +1988,54 @@ datasetsGenerator:
               persistentVolumeClaim:
                 claimName: graph-20240408-persistent-pvc
 
+storageOsvPostgresqlConfiguration:
+  cls: postgresql
+  host: vulns-osv-rw
+  port: 5432
+  db: swh-vulns-osv
+  user: ${POSTGRESQL_OSV_USERNAME}
+  pass: ${POSTGRESQL_OSV_PASSWORD}
+  secrets:
+    POSTGRESQL_OSV_USERNAME:
+      secretKeyRef: swh-vulns-osv-postgresql-secret
+      secretKeyName: username
+    POSTGRESQL_OSV_PASSWORD:
+      secretKeyRef: swh-vulns-osv-postgresql-secret
+      secretKeyName: password
+
+vulnsOsv:
+  enabled: false
+  rpc:
+    enabled: true
+    deployments:
+      local:
+        enabled: true
+        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+        storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
+        schedulerConfigurationRef: postgresqlSchedulerConfiguration
+        celeryConfigurationRef: celeryConfiguration
+
+        backend:
+          initialize:
+            adminSecret: swh-postgresql-postgres-secret
+            database: swh-vulns-osv
+            host: vulns-osv-rw
+        hosts:
+          - vulns-osv.local
+        ingress:
+          enabled: true
+          extraAnnotations:
+            nginx.ingress.kubernetes.io/proxy-body-size: 4G
+            nginx.ingress.kubernetes.io/proxy-buffering: "on"
+            nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+          endpoints:
+            default:
+              paths:
+                - path: /
+
+  crawlers:
+    enabled: false
+
 staticWebsites:
   enabled: false
   deployments:
@@ -2023,7 +2072,7 @@ staticWebsites:
         #      - path: /static(/|$)(.*)
         #        pathType: ImplementationSpecific
         #        port: 80
-  
+
 # docs.swh.org migration into k8s
     docs-swh:
       enabled: true

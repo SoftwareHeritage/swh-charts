@@ -2307,3 +2307,63 @@ vulnsGrpc:
 
   # Deployments dict of instances
   deployments: {}
+
+# Service Composed of a rpc service (that crawser use to report osv data) & crawlers
+vulnsOsv:
+  enabled: false
+  logLevel: INFO
+  # sentry configuration
+  sentry:
+    enabled: false
+    # secretKeyRef: vulns-sentry-secret
+    # secretKeyName: sentry-dsn
+  # List of rpc services to deploy (independent from each other)
+  rpc:
+    enabled: false
+    port: 5016
+    # The necessary configuration ref to use to connect to other swh services
+    # (can be overridden per deployment instance)
+    # storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+    # storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
+    # schedulerConfigurationRef: postgresqlSchedulerConfiguration
+    # celeryConfigurationRef: celeryConfiguration
+
+    # Gunicorn configuration (can be overridden per instance)
+    # gunicorn:
+    #   threads: 4
+    #   workers: 1
+    #   timeout: 60
+    # How to scale service (horizontal, keda or empty for none). This can be overriden
+    # per instance
+    # autoScaling:
+    #   type: horizontal
+    # Manipulate the database (can be overridden per instance)
+    backend:
+      # initialize:
+      #   adminSecret: swh-postgresql-postgres-secret
+      #   database: swh-vulns-osv
+      #   host: db-swh-vulns-osv-rw
+      check: true
+      migrate: true
+
+    # Autoscaling setup (empty by default, can be overridden per instance)
+    autoScaling: {}
+
+    # List of hosts for ingress (can be overridden per instance)
+    hosts: []
+    # Whether to enable ingress or not (should be declared per instance)
+    ingress:
+      enabled: false
+      # extraAnnotations:
+      #   nginx.ingress.kubernetes.io/rewrite-target: /
+      #   endpoints:
+      #     default:
+      #       paths:
+      #         - path: /
+
+    # Dict of deployment instances (name, deploymentConfig)
+    deployments: {}
+
+  crawlers:
+    enabled: false
+    deployments: {}
