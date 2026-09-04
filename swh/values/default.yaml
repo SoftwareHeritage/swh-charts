@@ -724,3 +724,17 @@ vulnsGrpc:
     secretKeyRef: vulns-sentry-secret
     secretKeyName: sentry-dsn
 
+vulnsOsv:
+  sentry:
+    enabled: true
+    secretKeyRef: vulns-sentry-secret
+    secretKeyName: sentry-dsn
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: "swh/rpc"
+            operator: In
+            values:
+            - "true"

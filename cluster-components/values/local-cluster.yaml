@@ -189,6 +189,13 @@ cloudnativePg:
         secretKeyRef: swh-osporadar-swh-osporadar-secret
       initdb:
         enabled: true
+    vulns-osv:
+      enabled: false
+      database:
+        name: swh-vulns-osv
+        secretKeyRef: swh-vulns-osv-postgresql-secret
+      initdb:
+        enabled: true
 
 scrapeClusterMetrics:
   enabled: false
