@@ -1,0 +1,252 @@
+{{- $topRpcLevelConfig := .Values.vulnsOsv.rpc -}}
+{{- if and .Values.vulnsOsv.enabled $topRpcLevelConfig.enabled }}
+{{- range $rpcName, $deploymentConfig := $topRpcLevelConfig.deployments -}}
+{{- if (ne false $deploymentConfig.enabled) }}
+{{- $serviceType := print "vulns-osv-" $rpcName "-rpc" -}}
+{{- $rpcConfig := include "swh.mergeDeploymentConfig"
+      (dict "deploymentConfig" $deploymentConfig
+            "topConfig"        $topRpcLevelConfig) | fromYaml -}}
+{{- $namespace := $rpcConfig.namespace | default $.Values.namespace -}}
+{{- $configChecksum := $rpcConfig | toJson | sha256sum -}}
+{{- $checkBackendVersion := $rpcConfig.backend.check | default false -}}
+{{- $migrateBackend := $rpcConfig.backend.migrate | default false -}}
+{{- $initializeBackendConfig := $rpcConfig.backend.initialize | default false -}}
+{{- $logLevel := $rpcConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
+{{- $gunicornConfig :=
+      fromYaml (include "swh.gunicorn.config"
+                 (dict "configuration" $rpcConfig.gunicorn)) -}}
+
+{{- $autoScaling := $rpcConfig.autoScaling -}}
+{{- if $autoScaling }}
+#### Autoscaling
+{{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
+{{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
+{{ include $autoScalerFn (dict "serviceType"    $serviceType
+                                "configuration" $rpcConfig
+                                "Values"        $.Values) }}
+{{- end }}
+
+#### Service
+{{ include "swh.service" (dict "serviceType"    $serviceType
+                                "configuration" $rpcConfig
+                                "Values"        $.Values) }}
+
+{{- if $rpcConfig.ingress.enabled }}
+#### Ingress
+{{ include "swh.ingress" (dict "Values"         $.Values
+                                "serviceType"   $serviceType
+                                "configuration" $rpcConfig) }}
+{{- end }}
+
+#### ConfigMap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $serviceType }}-configuration-template
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration"
+                  (dict "configurationRef" $rpcConfig.storageConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+
+    {{- include "swh.postgresql"
+                (dict "serviceType"      "vulnerabilities_storage"
+                      "configurationRef" $rpcConfig.storageOsvConfigurationRef
+                      "Values"           $.Values) | nindent 4 }}
+
+    {{- include "swh.schedulerConfiguration"
+                  (dict "configurationRef" $rpcConfig.schedulerConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+
+    {{- include "celery.configuration"
+                  (dict "configurationRef" $rpcConfig.celeryConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+      # task_acks_late: true
+      task_modules:
+        - swh.vulns.osv.tasks
+      task_queues:
+        - swh.vulns.osv.tasks.ProcessOSVReport
+
+{{ include "swh.gunicorn.logging"
+  (dict "serviceType"              $serviceType
+        "defaultLoggingConfig"     $.Values.rpcGunicornLoggingConfig
+        "rpcGunicornLoggingConfig" $rpcConfig.rpcGunicornLoggingConfig
+        "Values"                   $.Values) }}
+
+#### Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $serviceType }}
+  labels:
+    app: {{ $serviceType }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $rpcConfig.replicas -}}
+  replicas: {{ $rpcConfig.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceType }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceType }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+    spec:
+      {{- if $.Values.vulnsOsv.affinity }}
+      affinity:
+        {{- toYaml $.Values.vulnsOsv.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $rpcConfig.priorityClassName }}
+      priorityClassName: {{ $namespace }}-{{ $rpcConfig.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $rpcConfig
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+        {{- if $initializeBackendConfig }}
+        {{ include "swh.initializeBackend"
+          (dict "module"          "vulns"
+                "moduleConfigKey" "vulnerabilities_storage"
+                "imagePrefixName" "swh_toolbox_image"
+                "config"          $initializeBackendConfig
+                "Values"          $.Values) | nindent 8 }}
+        {{- end }}
+        {{- if $checkBackendVersion }}
+        {{ include "swh.checkDatabaseVersionContainer"
+          (dict "module"          "vulns"
+                "moduleConfigKey" "vulnerabilities_storage"
+                "imagePrefixName" "swh_toolbox_image"
+                "Values"          $.Values) | nindent 8 }}
+        {{- end }}
+        {{- if $migrateBackend }}
+        {{ include "swh.migrateBackend"
+          (dict "module"          "vulns"
+                "moduleConfigKey" "vulnerabilities_storage"
+                "imagePrefixName" "swh_toolbox_image"
+                "Values"          $.Values) | nindent 8 }}
+        {{- end }}
+      containers:
+        - name: {{ $serviceType }}
+          resources:
+            requests:
+              memory: {{ $rpcConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $rpcConfig.requestedCpu | default "500m" }}
+          {{- if or $rpcConfig.limitedMemory $rpcConfig.limitedCpu }}
+            limits:
+            {{- if $rpcConfig.limitedMemory }}
+              memory: {{ $rpcConfig.limitedMemory }}
+            {{- end }}
+            {{- if $rpcConfig.limitedCpu }}
+              cpu: {{ $rpcConfig.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          image: {{ $.Values.swh_vulns_osv_image }}:{{ $.Values.swh_vulns_osv_image_version }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $rpcConfig.port }}
+              name: rpc
+          readinessProbe:
+            httpGet:
+              path: /
+              port: rpc
+            initialDelaySeconds: 15
+            failureThreshold: 30
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: rpc
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          command:
+          - /bin/bash
+          args:
+          - -c
+          - /opt/swh/entrypoint.sh
+          env:
+            - name: THREADS
+              value: {{ $gunicornConfig.threads | quote }}
+            - name: WORKERS
+              value: {{ $gunicornConfig.workers | quote }}
+            - name: TIMEOUT
+              value: {{ $gunicornConfig.timeout | quote }}
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:vulns-osv
+            - name: STATSD_SERVICE_TYPE
+              value: vulns-osv-rpc
+            - name: SWH_LOG_LEVEL
+              value: {{ $logLevel }}
+            - name: SWH_LOG_CONFIG_JSON
+              value: /etc/swh/logging/logging-gunicorn.json
+          {{- if $.Values.vulnsOsv.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.vulns
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.vulnsOsv.sentry.secretKeyRef }}
+                  key: {{ $.Values.vulnsOsv.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-logging
+            mountPath: /etc/swh/logging
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: configuration-logging
+        configMap:
+          name: {{ $serviceType }}-configuration-logging
+          items:
+          - key: "logging-gunicorn.json"
+            path: "logging-gunicorn.json"
+      - name: backend-utils
+        configMap:
+          name: backend-utils
+          defaultMode: 0555
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+{{ end }}
+{{- end }}
+{{- end }}
