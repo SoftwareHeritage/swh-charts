@@ -2323,10 +2323,7 @@ vulnsOsv:
     port: 5016
     # The necessary configuration ref to use to connect to other swh services
     # (can be overridden per deployment instance)
-    # storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
     # storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
-    # schedulerConfigurationRef: postgresqlSchedulerConfiguration
-    # celeryConfigurationRef: celeryConfiguration
 
     # Gunicorn configuration (can be overridden per instance)
     # gunicorn:
@@ -2366,4 +2363,12 @@ vulnsOsv:
 
   crawlers:
     enabled: false
-    deployments: {}
+    deployments:
+      local:
+        enabled: true
+        # The necessary configuration ref to use to connect to other swh services
+        # (can be overridden per deployment instance)
+        # storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+        # storageOsvConfigurationRef: storageOsvRpcConfiguration
+        # schedulerConfigurationRef: postgresqlSchedulerConfiguration
+        # celeryConfigurationRef: celeryConfiguration

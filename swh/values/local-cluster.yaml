@@ -2003,6 +2003,11 @@ storageOsvPostgresqlConfiguration:
       secretKeyRef: swh-vulns-osv-postgresql-secret
       secretKeyName: password
 
+remoteOsvStorageConfiguration:
+  cls: remote
+  url: http://vulns-osv-local-rpc:5016
+  enable_requests_retry: true
+
 vulnsOsv:
   enabled: false
   rpc:
@@ -2010,10 +2015,7 @@ vulnsOsv:
     deployments:
       local:
         enabled: true
-        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
         storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
-        schedulerConfigurationRef: postgresqlSchedulerConfiguration
-        celeryConfigurationRef: celeryConfiguration
 
         backend:
           initialize:
@@ -2035,6 +2037,13 @@ vulnsOsv:
 
   crawlers:
     enabled: false
+    deployments:
+      local:
+        # debug: true
+        storageOsvConfigurationRef: remoteOsvStorageConfiguration
+        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+        schedulerConfigurationRef: postgresqlSchedulerConfiguration
+        celeryConfigurationRef: celeryConfiguration
 
 staticWebsites:
   enabled: false

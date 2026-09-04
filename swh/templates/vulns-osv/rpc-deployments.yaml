@@ -47,27 +47,10 @@ metadata:
   name: {{ $serviceType }}-configuration-template
 data:
   config.yml.template: |
-    {{- include "swh.storageConfiguration"
-                  (dict "configurationRef" $rpcConfig.storageConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-
     {{- include "swh.postgresql"
                 (dict "serviceType"      "vulnerabilities_storage"
                       "configurationRef" $rpcConfig.storageOsvConfigurationRef
                       "Values"           $.Values) | nindent 4 }}
-
-    {{- include "swh.schedulerConfiguration"
-                  (dict "configurationRef" $rpcConfig.schedulerConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-
-    {{- include "celery.configuration"
-                  (dict "configurationRef" $rpcConfig.celeryConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-      # task_acks_late: true
-      task_modules:
-        - swh.vulns.osv.tasks
-      task_queues:
-        - swh.vulns.osv.tasks.ProcessOSVReport
 
 {{ include "swh.gunicorn.logging"
   (dict "serviceType"              $serviceType

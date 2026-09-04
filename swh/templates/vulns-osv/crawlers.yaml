@@ -1,0 +1,192 @@
+{{- $topRpcLevelConfig := .Values.vulnsOsv.crawlers -}}
+{{- if and .Values.vulnsOsv.enabled $topRpcLevelConfig.enabled }}
+{{- range $crawlerName, $deploymentConfig := $topRpcLevelConfig.deployments -}}
+{{- if (ne false $deploymentConfig.enabled) }}
+{{- $serviceName := print "vulns-osv-" $crawlerName "-crawler" -}}
+{{- $crawlerConfig := include "swh.mergeDeploymentConfig"
+      (dict "deploymentConfig" $deploymentConfig
+            "topConfig"        $topRpcLevelConfig) | fromYaml -}}
+{{- $namespace := $crawlerConfig.namespace | default $.Values.namespace -}}
+{{- $configChecksum := $crawlerConfig | toJson | sha256sum -}}
+{{- $logLevel := $crawlerConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
+
+#### Autoscaling
+{{- if $crawlerConfig.autoScaling }}
+{{ include "swh.keda.celeryAutoscaler"
+             (dict "name"          $serviceName
+                   "configuration" $crawlerConfig
+                   "Values"        $.Values) }}
+{{- end }}
+
+#### ConfigMap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $serviceName }}-configuration-template
+  namespace: {{ $namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration"
+                  (dict "configurationRef" $crawlerConfig.storageConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+
+    {{- include "swh.service.fromYaml"
+                (dict "service"         "vulnerabilities_storage"
+                      "configurationRef" $crawlerConfig.storageOsvConfigurationRef
+                      "Values"           $.Values) | nindent 4 }}
+
+    {{- include "swh.schedulerConfiguration"
+                  (dict "configurationRef" $crawlerConfig.schedulerConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+
+    {{- include "celery.configuration"
+                  (dict "configurationRef" $crawlerConfig.celeryConfigurationRef
+                        "Values"           $.Values) | nindent 4 }}
+      # task_acks_late: true
+      task_modules:
+        - swh.vulns.osv.tasks
+      task_queues:
+        - swh.vulns.osv.tasks.ProcessOSVReport
+
+#### Deployment
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $namespace }}
+  name: {{ $serviceName }}
+  labels:
+    app: {{ $serviceName }}
+spec:
+  revisionHistoryLimit: 2
+  {{ if $crawlerConfig.replicas -}}
+  replicas: {{ $crawlerConfig.replicas }}
+  {{ end -}}
+  selector:
+    matchLabels:
+      app: {{ $serviceName }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: {{ $serviceName }}
+      annotations:
+        checksum/config: {{ $configChecksum }}
+    spec:
+      {{- if $.Values.vulnsOsv.affinity }}
+      affinity:
+        {{- toYaml $.Values.vulnsOsv.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $crawlerConfig.priorityClassName }}
+      priorityClassName: {{ $namespace }}-{{ $crawlerConfig.priorityClassName }}
+      {{ end }}
+      terminationGracePeriodSeconds: {{ $.Values.loaders.terminationGracePeriodSeconds | default 3600 }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig"
+                            (dict "deploymentConfig" $crawlerConfig
+                                  "Values"           $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+      containers:
+        - name: {{ $serviceName }}
+          resources:
+            requests:
+              memory: {{ $crawlerConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $crawlerConfig.requestedCpu | default "500m" }}
+          {{- if or $crawlerConfig.limitedMemory $crawlerConfig.limitedCpu }}
+            limits:
+            {{- if $crawlerConfig.limitedMemory }}
+              memory: {{ $crawlerConfig.limitedMemory }}
+            {{- end }}
+            {{- if $crawlerConfig.limitedCpu }}
+              cpu: {{ $crawlerConfig.limitedCpu }}
+            {{- end }}
+        {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/pre-stop.sh"]
+          image: {{ $.Values.swh_vulns_osv_image }}:{{ $.Values.swh_vulns_osv_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          {{- if $crawlerConfig.debug }}
+          - sleep
+          args:
+            - infinity
+          {{- else }}
+          - /opt/swh/entrypoint.sh
+          args:
+          - compute-report-tasks
+          {{- end }}
+          env:
+            - name: MAX_TASKS_PER_CHILD
+              value: {{ get $crawlerConfig "maxTasksPerChild" | default 10 | quote }}
+            - name: STATSD_HOST
+              value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
+            - name: STATSD_PORT
+              value: {{ $.Values.statsdPort | default "9125" | quote }}
+            - name: STATSD_TAGS
+              value: deployment:vulns-osv
+            - name: STATSD_SERVICE_TYPE
+              value: vulns-osv-crawlers
+            - name: SWH_LOG_LEVEL
+              value: {{ $logLevel }}
+          {{- if $.Values.vulnsOsv.sentry.enabled }}
+            - name: SWH_SENTRY_ENVIRONMENT
+              value: {{ $.Values.sentry.environment }}
+            - name: SWH_MAIN_PACKAGE
+              value: swh.vulns
+            - name: SWH_SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.vulnsOsv.sentry.secretKeyRef }}
+                  key: {{ $.Values.vulnsOsv.sentry.secretKeyName }}
+                  # if the setting doesn't exist, sentry issue pushes will be disabled
+                  optional: false
+            - name: SWH_SENTRY_DISABLE_LOGGING_EVENTS
+              value: "true"
+          {{- end }}
+          volumeMounts:
+          - name: celery-utils
+            mountPath: /pre-stop.sh
+            subPath: "pre-stop.sh"
+          - name: configuration
+            mountPath: /etc/swh
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceName }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: celery-utils
+        configMap:
+          name: celery-utils
+          defaultMode: 0777
+          items:
+          - key: "pre-stop-idempotent.sh"
+            path: "pre-stop.sh"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+{{ end }}
+{{- end }}
+{{- end }}
