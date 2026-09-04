@@ -634,6 +634,11 @@ data:
 
     set -eu
 
+    DEBUG=${DEBUG-""}
+    if [ "${DEBUG}" != "" ]; then
+      set -x
+    fi
+
     TEMP_FILE=/tmp/db-version.txt
     CONFIG_FILE=$SWH_CONFIG_FILENAME
     EXTRA_CMD=""
@@ -655,6 +660,10 @@ data:
 
     if [ ! -z $MODULE_CONFIG_KEY ]; then
       EXTRA_CMD="--module-config-key=$MODULE_CONFIG_KEY"
+    fi
+
+    if [ "${DEBUG}" != "" ]; then
+      sleep infinity
     fi
 
     # checking the database status
@@ -688,6 +697,11 @@ data:
     #!/usr/bin/env bash
 
     set -eu
+
+    DEBUG=${DEBUG-""}
+    if [ "${DEBUG}" != "" ]; then
+      set -x
+    fi
 
     TEMP_FILE=/tmp/db-version.txt
     CONFIG_FILE=$SWH_CONFIG_FILENAME
@@ -723,6 +737,10 @@ data:
     # trim it
     DB_VERSION=${DB_VERSION#"${DB_VERSION%%[![:space:]]*}"}
 
+    if [ "${DEBUG}" != "" ]; then
+      sleep infinity
+    fi
+
     if [ "${DB_VERSION}" = "None" ]; then
       echo "The database should be initialized..."
 
@@ -739,6 +757,11 @@ data:
     #!/usr/bin/env bash
 
     set -eu
+
+    DEBUG=${DEBUG-""}
+    if [ "${DEBUG}" != "" ]; then
+      set -x
+    fi
 
     TEMP_FILE=/tmp/db-version.txt
     CONFIG_FILE=$SWH_CONFIG_FILENAME
@@ -775,6 +798,10 @@ data:
     DB_VERSION=$(awk -F':' '/^version: / {print $2}' ${TEMP_FILE})
     # trim
     DB_VERSION=${DB_VERSION#"${DB_VERSION%%[![:space:]]*}"}
+
+    if [ "${DEBUG}" != "" ]; then
+      sleep infinity
+    fi
 
     if [ "${DB_VERSION}" = "None" ]; then
       # This must be run as "postgres" user (for pg extensions installation)
