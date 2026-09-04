@@ -2003,6 +2003,15 @@ storageOsvPostgresqlConfiguration:
       secretKeyRef: swh-vulns-osv-postgresql-secret
       secretKeyName: password
 
+remoteOsvStorageConfiguration:
+  cls: remote
+  url: http://vulns-osv-local-rpc:5016
+  enable_requests_retry: true
+
+kedaAutoscaler:
+  secretKeyRef: rabbitmq-scheduler-secrets
+  secretKeyName: host
+
 vulnsOsv:
   enabled: false
   rpc:
@@ -2010,10 +2019,7 @@ vulnsOsv:
     deployments:
       local:
         enabled: true
-        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
         storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
-        schedulerConfigurationRef: postgresqlSchedulerConfiguration
-        celeryConfigurationRef: celeryConfiguration
 
         backend:
           initialize:
@@ -2035,6 +2041,21 @@ vulnsOsv:
 
   crawlers:
     enabled: false
+    deployments:
+      local:
+        enabled: true
+        autoScaling:
+          queueThreshold: 1
+          maxReplicaCount: 2
+          stopWhenNoActivity: true
+        queues:
+        - swh.vulns.osv.tasks.ProcessOSVReport
+
+        # debug: true
+        storageOsvConfigurationRef: remoteOsvStorageConfiguration
+        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+        schedulerConfigurationRef: postgresqlSchedulerConfiguration
+        celeryConfigurationRef: celeryConfiguration
 
 staticWebsites:
   enabled: false
