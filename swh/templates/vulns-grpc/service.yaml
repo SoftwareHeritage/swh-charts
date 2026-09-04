@@ -1,9 +1,9 @@
-{{- if .Values.vulns.enabled }}
-{{- range $vulnsInstanceName, $vulnsConfig := .Values.vulns.deployments }}
+{{- if .Values.vulnsGrpc.enabled }}
+{{- range $vulnsInstanceName, $vulnsConfig := .Values.vulnsGrpc.deployments }}
 {{- $serviceType := ( print "vulns-" $vulnsInstanceName ) -}}
 {{- if ne false $vulnsConfig.enabled }}
 {{- if not (hasKey $vulnsConfig "port") }}
-{{- $vulnsConfig := set $vulnsConfig "port" $.Values.vulns.port -}}
+{{- $vulnsConfig := set $vulnsConfig "port" $.Values.vulnsGrpc.port -}}
 {{- end -}}
 {{ include "swh.service" (dict "serviceType"   $serviceType
                                "configuration" $vulnsConfig

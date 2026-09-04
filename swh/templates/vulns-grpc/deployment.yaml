@@ -1,13 +1,13 @@
-{{ if .Values.vulns.enabled -}}
+{{ if .Values.vulnsGrpc.enabled -}}
 {{- $backendUtilsChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum -}}
-{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulns.deployments }}
+{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulnsGrpc.deployments }}
 {{- if and (ne false $vulnsConfig.enabled)
            (or (not (hasKey $vulnsConfig "startService")) (get $vulnsConfig "startService")) -}}
 {{- $serviceType := ( print "vulns-" $vulnsInstanceName ) -}}
 {{- $configArgsDict := dict "serviceType" $serviceType
                             "configuration" $vulnsConfig
                             "Values" $.Values -}}
-{{- $securityContext := $vulnsConfig.securityContext | default $.Values.vulns.securityContext -}}
+{{- $securityContext := $vulnsConfig.securityContext | default $.Values.vulnsGrpc.securityContext -}}
 {{- $port := $vulnsConfig.port -}}
 {{- $datasetName := dig "dataset" "name" "" $vulnsConfig | default $vulnsInstanceName -}}
 {{- $fetchVulnsDataset := dig "dataset" "fetch" false $vulnsConfig -}}
@@ -17,9 +17,9 @@
 {{- $vulnSubgraphWccsPath := print $vulnsDatasetPath "/connected_components.wccs" -}}
 {{- $graphName := dig "dataset" "graphName" "" $vulnsConfig | default $vulnsInstanceName -}}
 {{- $graphDatasetPath := print "/srv/graph/" $graphName "/compressed/graph" -}}
-{{- $vulnsImage := get $vulnsConfig "image" | default $.Values.vulns.image | default $.Values.swh_vulns_image -}}
-{{- $vulnsImageVersion := get $vulnsConfig "imageVersion" | default $.Values.vulns.imageVersion | default $.Values.swh_vulns_image_version -}}
-{{- $logLevel := $vulnsConfig.logLevel | default $.Values.vulns.logLevel | default "INFO" | upper -}}
+{{- $vulnsImage := get $vulnsConfig "image" | default $.Values.vulnsGrpc.image | default $.Values.swh_vulns_image -}}
+{{- $vulnsImageVersion := get $vulnsConfig "imageVersion" | default $.Values.vulnsGrpc.imageVersion | default $.Values.swh_vulns_image_version -}}
+{{- $logLevel := $vulnsConfig.logLevel | default $.Values.vulnsGrpc.logLevel | default "INFO" | upper -}}
 {{- $toolbox := and $vulnsConfig.toolbox $vulnsConfig.toolbox.enabled -}}
 ---
 apiVersion: apps/v1
@@ -32,7 +32,7 @@ metadata:
 spec:
   revisionHistoryLimit: 2
   {{ if $vulnsConfig.replicas -}}
-  replicas: {{ $vulnsConfig.replicas | default $.Values.vulns.replicas }}
+  replicas: {{ $vulnsConfig.replicas | default $.Values.vulnsGrpc.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -52,30 +52,30 @@ spec:
       securityContext:
         {{- toYaml $securityContext | nindent 8 }}
       {{- end }}
-      {{- $nodeSelector := $vulnsConfig.nodeSelector | default $.Values.vulns.nodeSelector | default dict -}}
+      {{- $nodeSelector := $vulnsConfig.nodeSelector | default $.Values.vulnsGrpc.nodeSelector | default dict -}}
       {{- if $nodeSelector }}
       nodeSelector:
         {{- toYaml $nodeSelector | nindent 8 }}
       {{- end }}
-      {{- $affinity := $vulnsConfig.affinity | default $.Values.vulns.affinity | default dict -}}
+      {{- $affinity := $vulnsConfig.affinity | default $.Values.vulnsGrpc.affinity | default dict -}}
       {{- if $affinity }}
       affinity:
         {{- toYaml $affinity | nindent 8 }}
       {{- end }}
 
-      {{- if and $.Values.podPriority.enabled $.Values.vulns.priorityClassName }}
-      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.vulns.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $.Values.vulnsGrpc.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $.Values.vulnsGrpc.priorityClassName }}
       {{- end }}
       initContainers:
         {{- if $fetchVulnsDataset }}
         {{- $datasetUrl := required "Dataset url must be provided" (dig "dataset" "url" "" $vulnsConfig) -}}
-        {{ include "swh.vulns.fetchDataset" (dict "Values" $.Values
+        {{ include "swh.vulnsGrpc.fetchDataset" (dict "Values" $.Values
                                                   "imagePrefixName" "swh_vulns_image"
                                                   "imageVersion" $vulnsImageVersion
                                                   "datasetUrl" $datasetUrl
                                                   "datasetPath" $vulnsDatasetPath
                                                   "extraVolumes" $vulnsConfig.extraVolumes) | nindent 8 }}
-        {{ include "swh.vulns.waitForDataset" (dict "Values" $.Values
+        {{ include "swh.vulnsGrpc.waitForDataset" (dict "Values" $.Values
                                                     "datasetPath" $vulnsDatasetPath
                                                     "extraVolumes" $vulnsConfig.extraVolumes) | nindent 8 }}
         {{ end }}
@@ -146,7 +146,7 @@ spec:
             - name: RUST_LOG
               value: "debug"
             {{ end }}
-          {{- if $.Values.vulns.sentry.enabled }}
+          {{- if $.Values.vulnsGrpc.sentry.enabled }}
             - name: SWH_SENTRY_ENVIRONMENT
               value: {{ $.Values.sentry.environment }}
             - name: SWH_MAIN_PACKAGE
@@ -154,8 +154,8 @@ spec:
             - name: SWH_SENTRY_DSN
               valueFrom:
                 secretKeyRef:
-                  name: {{ $.Values.vulns.sentry.secretKeyRef }}
-                  key: {{ $.Values.vulns.sentry.secretKeyName }}
+                  name: {{ $.Values.vulnsGrpc.sentry.secretKeyRef }}
+                  key: {{ $.Values.vulnsGrpc.sentry.secretKeyName }}
                   # 'name' secret should exist & include key
                   # if the setting doesn't exist, sentry pushes will be disabled
                   optional: true

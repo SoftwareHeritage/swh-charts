@@ -1414,7 +1414,7 @@ volumes:
           requests:
             storage: 1Gi
 
-vulns:
+vulnsGrpc:
   enabled: true
   deployments:
     2024-08-23-popular-4-shell:

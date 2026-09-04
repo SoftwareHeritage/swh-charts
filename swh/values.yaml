@@ -2283,7 +2283,7 @@ ingestion_benchmarks:
     # requestedMemory: 150Mi
     # requestedCpu: 50m
 
-vulns:
+vulnsGrpc:
   enabled: false
   sentry:
     enabled: false

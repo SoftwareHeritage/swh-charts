@@ -1,11 +1,11 @@
 {{/* Generate the initialize graph backend container configuration if needed */}}
-{{- define "swh.vulns.volume.witnessfile" -}}
+{{- define "swh.vulnsGrpc.volume.witnessfile" -}}
 - name: {{ .witness_file_env_variable_name | default "WITNESS_FILE" }}
   value: {{ .datasetPath }}/{{ .filename | default ".vulns-is-initialized" }}
 {{- end -}}
 
 {{/* Generate the init container to fetch the dataset when required */}}
-{{- define "swh.vulns.fetchDataset" -}}
+{{- define "swh.vulnsGrpc.fetchDataset" -}}
 {{- $imageVersion := get . "imageVersion" | default ( get .Values (print .imagePrefixName "_version") ) |
         required (print .imagePrefixName "_version is mandatory in values.yaml ") -}}
 - name: {{ .containerName | default "fetch-vulns-dataset" }}
@@ -13,8 +13,8 @@
   command:
   - /entrypoints/vulns-fetch-dataset.sh
   env:
-  {{- include "swh.vulns.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 2 }}
-  {{- include "swh.vulns.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_DOWNLOADING_FILE"
+  {{- include "swh.vulnsGrpc.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 2 }}
+  {{- include "swh.vulnsGrpc.volume.witnessfile" (dict "witness_file_env_variable_name" "WITNESS_DOWNLOADING_FILE"
                                                    "filename" ".vulns-is-downloading"
                                                    "datasetPath" .datasetPath) | nindent 2 }}
   - name: DATASET_URL
@@ -32,14 +32,14 @@
 {{- end -}}
 
 {{/* init-container to wait for dataset presence. */}}
-{{- define "swh.vulns.waitForDataset" -}}
+{{- define "swh.vulnsGrpc.waitForDataset" -}}
 - name: wait-for-dataset
   image: {{ .Values.swh_utils_image }}:{{ .Values.swh_utils_image_version }}
   imagePullPolicy: IfNotPresent
   command:
   - /entrypoints/wait-for-dataset.sh
   env:
-    {{- include "swh.vulns.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 4 }}
+    {{- include "swh.vulnsGrpc.volume.witnessfile" (dict "datasetPath" .datasetPath) | nindent 4 }}
     - name: SERVICE_NAME
       value: "vulns"
     - name: PERIOD

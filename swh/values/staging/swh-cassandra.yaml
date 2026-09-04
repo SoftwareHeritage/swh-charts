@@ -2909,7 +2909,7 @@ volumes:
           requests:
             storage: 1Gi
 
-vulns:
+vulnsGrpc:
   enabled: true
   deployments:
     popular:

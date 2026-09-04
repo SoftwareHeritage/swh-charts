@@ -2886,7 +2886,7 @@ volumes:
           requests:
             storage: 1Gi
 
-vulns:
+vulnsGrpc:
   enabled: true
   deployments:
      grpc-20260604:

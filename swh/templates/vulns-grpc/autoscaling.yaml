@@ -1,9 +1,9 @@
-{{ if .Values.vulns.enabled -}}
-{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulns.deployments }}
+{{ if .Values.vulnsGrpc.enabled -}}
+{{ range $vulnsInstanceName, $vulnsConfig := .Values.vulnsGrpc.deployments }}
 {{- $serviceType := ( print "vulns-" $vulnsInstanceName ) -}}
-{{- $replicas := $vulnsConfig.replicas | default $.Values.vulns.replicas -}}
+{{- $replicas := $vulnsConfig.replicas | default $.Values.vulnsGrpc.replicas -}}
 {{- $autoscaling := (and $vulnsConfig.autoscaling $vulnsConfig.autoscaling.enabled) |
-    default (and $.Values.vulns.autoscaling $.Values.vulns.autoscaling.enabled) -}}
+    default (and $.Values.vulnsGrpc.autoscaling $.Values.vulnsGrpc.autoscaling.enabled) -}}
 {{- if and $vulnsConfig.enabled (empty $replicas) $autoscaling -}}
 {{- include "swh.autoscale" (dict "Values"        $.Values
                                   "serviceType"   $serviceType
