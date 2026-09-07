@@ -2014,9 +2014,16 @@ kedaAutoscaler:
 
 vulnsOsv:
   enabled: false
+  # debug: true
+  storageOsvConfigurationRef: remoteOsvStorageConfiguration
+  storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+  schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  celeryConfigurationRef: celeryConfiguration
+
   rpc:
     enabled: true
     enabled: true
+    # This is overridden to be specifically set to discuss with a postgresql
     storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
 
     backend:
@@ -2043,14 +2050,7 @@ vulnsOsv:
       queueThreshold: 1
       maxReplicaCount: 2
       stopWhenNoActivity: true
-    queues:
-    - swh.vulns.osv.tasks.ProcessOSVReport
 
-    # debug: true
-    storageOsvConfigurationRef: remoteOsvStorageConfiguration
-    storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
-    schedulerConfigurationRef: postgresqlSchedulerConfiguration
-    celeryConfigurationRef: celeryConfiguration
 
 staticWebsites:
   enabled: false

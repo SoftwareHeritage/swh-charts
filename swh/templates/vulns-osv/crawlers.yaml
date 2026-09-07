@@ -1,5 +1,9 @@
+{{- $topVulnsConfig := .Values.vulnsOsv -}}
 {{- $crawlerConfig := .Values.vulnsOsv.crawlers -}}
-{{- if and .Values.vulnsOsv.enabled $crawlerConfig.enabled }}
+{{- if and $topVulnsConfig.enabled $crawlerConfig.enabled }}
+{{- $crawlerConfig = include "swh.mergeDeploymentConfig"
+      (dict "deploymentConfig" $crawlerConfig
+            "topConfig"        $topVulnsConfig) | fromYaml -}}
 {{- $serviceName := print "vulns-osv-crawler" -}}
 {{- $namespace := $crawlerConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $crawlerConfig | toJson | sha256sum -}}
