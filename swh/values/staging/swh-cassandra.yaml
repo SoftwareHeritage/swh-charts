@@ -3201,7 +3201,7 @@ staticWebsites:
            paths:
              - path: /
                port: 80
-    
+
     # docs.swh.org migration into swh-cassandra
 
     docs:

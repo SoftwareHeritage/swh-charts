@@ -2023,7 +2023,7 @@ staticWebsites:
         #      - path: /static(/|$)(.*)
         #        pathType: ImplementationSpecific
         #        port: 80
-  
+
 # docs.swh.org migration into k8s
     docs-swh:
       enabled: true
