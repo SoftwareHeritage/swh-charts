@@ -1,19 +1,19 @@
 {{- $topVulnsConfig := .Values.vulnsOsv -}}
-{{- $crawlerConfig := .Values.vulnsOsv.crawlers -}}
-{{- if and $topVulnsConfig.enabled $crawlerConfig.enabled }}
-{{- $crawlerConfig = include "swh.mergeDeploymentConfig"
-      (dict "deploymentConfig" $crawlerConfig
+{{- $parserConfig := .Values.vulnsOsv.parserOSVReport -}}
+{{- if and $topVulnsConfig.enabled $parserConfig.enabled }}
+{{- $parserConfig = include "swh.mergeDeploymentConfig"
+      (dict "deploymentConfig" $parserConfig
             "topConfig"        $topVulnsConfig) | fromYaml -}}
 {{- $serviceName := print "vulns-osv-crawler" -}}
-{{- $namespace := $crawlerConfig.namespace | default $.Values.namespace -}}
-{{- $configChecksum := $crawlerConfig | toJson | sha256sum -}}
-{{- $logLevel := $crawlerConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
+{{- $namespace := $parserConfig.namespace | default $.Values.namespace -}}
+{{- $configChecksum := $parserConfig | toJson | sha256sum -}}
+{{- $logLevel := $parserConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
 
 #### Autoscaling
-{{- if $crawlerConfig.autoScaling }}
+{{- if $parserConfig.autoScaling }}
 {{ include "swh.keda.celeryAutoscaler"
              (dict "name"          $serviceName
-                   "configuration" $crawlerConfig
+                   "configuration" $parserConfig
                    "Values"        $.Values) }}
 {{- end }}
 
@@ -21,7 +21,7 @@
 {{ include "swh.vulnsOsv.configmap"
              (dict "serviceName"   $serviceName
                    "namespace"     $namespace
-                   "config"        $crawlerConfig
+                   "config"        $parserConfig
                    "Values"        $.Values) }}
 
 #### Deployment
@@ -35,8 +35,8 @@ metadata:
     app: {{ $serviceName }}
 spec:
   revisionHistoryLimit: 2
-  {{ if $crawlerConfig.replicas -}}
-  replicas: {{ $crawlerConfig.replicas }}
+  {{ if $parserConfig.replicas -}}
+  replicas: {{ $parserConfig.replicas }}
   {{ end -}}
   selector:
     matchLabels:
@@ -56,8 +56,8 @@ spec:
       affinity:
         {{- toYaml $.Values.vulnsOsv.affinity | nindent 8 }}
       {{- end }}
-      {{- if and $.Values.podPriority.enabled $crawlerConfig.priorityClassName }}
-      priorityClassName: {{ $namespace }}-{{ $crawlerConfig.priorityClassName }}
+      {{- if and $.Values.podPriority.enabled $parserConfig.priorityClassName }}
+      priorityClassName: {{ $namespace }}-{{ $parserConfig.priorityClassName }}
       {{ end }}
       terminationGracePeriodSeconds: {{ $.Values.loaders.terminationGracePeriodSeconds | default 3600 }}
       initContainers:
@@ -67,7 +67,7 @@ spec:
           command:
           - /entrypoints/prepare-configuration.sh
           env: {{ include "swh.secrets.envFromDeploymentConfig"
-                            (dict "deploymentConfig" $crawlerConfig
+                            (dict "deploymentConfig" $parserConfig
                                   "Values"           $.Values) | nindent 10 }}
           volumeMounts:
           - name: configuration
@@ -81,15 +81,15 @@ spec:
         - name: {{ $serviceName }}
           resources:
             requests:
-              memory: {{ $crawlerConfig.requestedMemory | default "512Mi" }}
-              cpu: {{ $crawlerConfig.requestedCpu | default "500m" }}
-          {{- if or $crawlerConfig.limitedMemory $crawlerConfig.limitedCpu }}
+              memory: {{ $parserConfig.requestedMemory | default "512Mi" }}
+              cpu: {{ $parserConfig.requestedCpu | default "500m" }}
+          {{- if or $parserConfig.limitedMemory $parserConfig.limitedCpu }}
             limits:
-            {{- if $crawlerConfig.limitedMemory }}
-              memory: {{ $crawlerConfig.limitedMemory }}
+            {{- if $parserConfig.limitedMemory }}
+              memory: {{ $parserConfig.limitedMemory }}
             {{- end }}
-            {{- if $crawlerConfig.limitedCpu }}
-              cpu: {{ $crawlerConfig.limitedCpu }}
+            {{- if $parserConfig.limitedCpu }}
+              cpu: {{ $parserConfig.limitedCpu }}
             {{- end }}
         {{- end }}
           lifecycle:
@@ -99,7 +99,7 @@ spec:
           image: {{ $.Values.swh_vulns_osv_image }}:{{ $.Values.swh_vulns_osv_image_version }}
           imagePullPolicy: IfNotPresent
           command:
-          {{- if $crawlerConfig.debug }}
+          {{- if $parserConfig.debug }}
           - sleep
           args:
             - infinity
@@ -110,7 +110,7 @@ spec:
           {{- end }}
           env:
             - name: MAX_TASKS_PER_CHILD
-              value: {{ get $crawlerConfig "maxTasksPerChild" | default 10 | quote }}
+              value: {{ get $parserConfig "maxTasksPerChild" | default 10 | quote }}
             - name: STATSD_HOST
               value: {{ $.Values.statsdExternalHost | default "prometheus-statsd-exporter" }}
             - name: STATSD_PORT
@@ -118,7 +118,7 @@ spec:
             - name: STATSD_TAGS
               value: deployment:vulns-osv
             - name: STATSD_SERVICE_TYPE
-              value: vulns-osv-crawlers
+              value: vulns-osv-parser
             - name: SWH_LOG_LEVEL
               value: {{ $logLevel }}
           {{- if $.Values.vulnsOsv.sentry.enabled }}

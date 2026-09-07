@@ -2044,7 +2044,7 @@ vulnsOsv:
           paths:
             - path: /
 
-  crawlers:
+  parserOSVReport:
     enabled: false
     autoScaling:
       queueThreshold: 1

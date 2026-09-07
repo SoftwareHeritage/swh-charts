@@ -2313,7 +2313,10 @@ vulnsGrpc:
   # Deployments dict of instances
   deployments: {}
 
-# Service Composed of a rpc service (that crawser use to report osv data) & crawlers
+# OSV/Vulnerabilities services composed of:
+# - rpc service
+# - osv report parser
+# - cronjob to create osv reports to analyze
 vulnsOsv:
   enabled: false
   logLevel: INFO
@@ -2375,7 +2378,7 @@ vulnsOsv:
   queues:
     - swh.vulns.osv.tasks.ProcessOSVReport
 
-  crawlers:
+  parserOSVReport:
     enabled: false
     # autoScaling:
     #   queueThreshold: 1
