@@ -1,11 +1,6 @@
-{{- $topRpcLevelConfig := .Values.vulnsOsv.crawlers -}}
-{{- if and .Values.vulnsOsv.enabled $topRpcLevelConfig.enabled }}
-{{- range $crawlerName, $deploymentConfig := $topRpcLevelConfig.deployments -}}
-{{- if (ne false $deploymentConfig.enabled) }}
-{{- $serviceName := print "vulns-osv-" $crawlerName "-crawler" -}}
-{{- $crawlerConfig := include "swh.mergeDeploymentConfig"
-      (dict "deploymentConfig" $deploymentConfig
-            "topConfig"        $topRpcLevelConfig) | fromYaml -}}
+{{- $crawlerConfig := .Values.vulnsOsv.crawlers -}}
+{{- if and .Values.vulnsOsv.enabled $crawlerConfig.enabled }}
+{{- $serviceName := print "vulns-osv-crawler" -}}
 {{- $namespace := $crawlerConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $crawlerConfig | toJson | sha256sum -}}
 {{- $logLevel := $crawlerConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
@@ -189,6 +184,4 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-{{ end }}
-{{- end }}
 {{- end }}

@@ -2005,7 +2005,7 @@ storageOsvPostgresqlConfiguration:
 
 remoteOsvStorageConfiguration:
   cls: remote
-  url: http://vulns-osv-local-rpc:5016
+  url: http://vulns-osv-rpc:5016
   enable_requests_retry: true
 
 kedaAutoscaler:
@@ -2039,21 +2039,18 @@ vulnsOsv:
 
   crawlers:
     enabled: false
-    deployments:
-      local:
-        enabled: true
-        autoScaling:
-          queueThreshold: 1
-          maxReplicaCount: 2
-          stopWhenNoActivity: true
-        queues:
-        - swh.vulns.osv.tasks.ProcessOSVReport
+    autoScaling:
+      queueThreshold: 1
+      maxReplicaCount: 2
+      stopWhenNoActivity: true
+    queues:
+    - swh.vulns.osv.tasks.ProcessOSVReport
 
-        # debug: true
-        storageOsvConfigurationRef: remoteOsvStorageConfiguration
-        storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
-        schedulerConfigurationRef: postgresqlSchedulerConfiguration
-        celeryConfigurationRef: celeryConfiguration
+    # debug: true
+    storageOsvConfigurationRef: remoteOsvStorageConfiguration
+    storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+    schedulerConfigurationRef: postgresqlSchedulerConfiguration
+    celeryConfigurationRef: celeryConfiguration
 
 staticWebsites:
   enabled: false
