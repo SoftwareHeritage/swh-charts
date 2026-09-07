@@ -2317,6 +2317,15 @@ vulnsGrpc:
 vulnsOsv:
   enabled: false
   logLevel: INFO
+
+  # Various required configuration ref (can be overridden per sub category [rpc,
+  # crawler, ...]
+
+  # storageOsvConfigurationRef: remoteOsvStorageConfiguration
+  # storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+  # schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  # celeryConfigurationRef: celeryConfiguration
+
   # sentry configuration
   sentry:
     enabled: false
@@ -2326,8 +2335,7 @@ vulnsOsv:
   rpc:
     enabled: false
     port: 5016
-    # The necessary configuration ref to use to connect to other swh services
-    # (can be overridden per deployment instance)
+    # The necessary configuration ref to use to connect to the postgresql backend
     # storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
 
     # Gunicorn configuration (can be overridden per instance)
@@ -2363,17 +2371,11 @@ vulnsOsv:
       #       paths:
       #         - path: /
 
-    # Dict of deployment instances (name, deploymentConfig)
-    deployments: {}
-
   crawlers:
     enabled: false
-    deployments:
-      local:
-        enabled: true
-        # The necessary configuration ref to use to connect to other swh services
-        # (can be overridden per deployment instance)
-        # storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
-        # storageOsvConfigurationRef: storageOsvRpcConfiguration
-        # schedulerConfigurationRef: postgresqlSchedulerConfiguration
-        # celeryConfigurationRef: celeryConfiguration
+    # autoScaling:
+    #   queueThreshold: 1
+    #   maxReplicaCount: 2
+    #   stopWhenNoActivity: true
+    queues:
+    - swh.vulns.osv.tasks.ProcessOSVReport

@@ -1,5 +1,9 @@
-{{- $rpcConfig := .Values.vulnsOsv.rpc -}}
-{{- if and .Values.vulnsOsv.enabled $rpcConfig.enabled }}
+{{- $topVulnsConfig := .Values.vulnsOsv -}}
+{{- $rpcConfig := $topVulnsConfig.rpc -}}
+{{- if and $topVulnsConfig.enabled $rpcConfig.enabled }}
+{{- $rpcConfig = include "swh.mergeDeploymentConfig"
+      (dict "deploymentConfig" $rpcConfig
+            "topConfig"        $topVulnsConfig) | fromYaml -}}
 {{- $serviceType := print "vulns-osv-rpc" -}}
 {{- $namespace := $rpcConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $rpcConfig | toJson | sha256sum -}}
