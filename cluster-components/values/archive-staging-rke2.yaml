@@ -382,6 +382,17 @@ cloudnativePg:
       initdb:
         enabled: true
 
+    next-version-db-swh-vulns-osv:
+      enabled: true
+      namespace: swh-cassandra-next-version
+      testing: true
+      instances: 1
+      database:
+        name: swh-vulns-osv
+        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      initdb:
+        enabled: true
+
     #############
     # Staging test db
     #############
