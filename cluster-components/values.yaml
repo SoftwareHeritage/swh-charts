@@ -811,7 +811,7 @@ keycloak:
   namespace: keycloak
   replicas: 1
   image: quay.io/keycloak/keycloak
-  imageVersion: latest
+  imageVersion: "26.7"
   # Administration username/password authentication
   # adminSecret:
   #   ref: swh-keycloak-admin-secret
