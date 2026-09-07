@@ -2016,28 +2016,26 @@ vulnsOsv:
   enabled: false
   rpc:
     enabled: true
-    deployments:
-      local:
-        enabled: true
-        storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
+    enabled: true
+    storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
 
-        backend:
-          initialize:
-            adminSecret: swh-postgresql-postgres-secret
-            database: swh-vulns-osv
-            host: vulns-osv-rw
-        hosts:
-          - vulns-osv.local
-        ingress:
-          enabled: true
-          extraAnnotations:
-            nginx.ingress.kubernetes.io/proxy-body-size: 4G
-            nginx.ingress.kubernetes.io/proxy-buffering: "on"
-            nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
-          endpoints:
-            default:
-              paths:
-                - path: /
+    backend:
+      initialize:
+        adminSecret: swh-postgresql-postgres-secret
+        database: swh-vulns-osv
+        host: vulns-osv-rw
+    hosts:
+      - vulns-osv.local
+    ingress:
+      enabled: true
+      extraAnnotations:
+        nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        nginx.ingress.kubernetes.io/proxy-buffering: "on"
+        nginx.ingress.kubernetes.io/client-body-buffer-size: 128K
+      endpoints:
+        default:
+          paths:
+            - path: /
 
   crawlers:
     enabled: false

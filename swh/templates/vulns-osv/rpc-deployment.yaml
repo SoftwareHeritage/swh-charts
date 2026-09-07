@@ -1,11 +1,6 @@
-{{- $topRpcLevelConfig := .Values.vulnsOsv.rpc -}}
-{{- if and .Values.vulnsOsv.enabled $topRpcLevelConfig.enabled }}
-{{- range $rpcName, $deploymentConfig := $topRpcLevelConfig.deployments -}}
-{{- if (ne false $deploymentConfig.enabled) }}
-{{- $serviceType := print "vulns-osv-" $rpcName "-rpc" -}}
-{{- $rpcConfig := include "swh.mergeDeploymentConfig"
-      (dict "deploymentConfig" $deploymentConfig
-            "topConfig"        $topRpcLevelConfig) | fromYaml -}}
+{{- $rpcConfig := .Values.vulnsOsv.rpc -}}
+{{- if and .Values.vulnsOsv.enabled $rpcConfig.enabled }}
+{{- $serviceType := print "vulns-osv-rpc" -}}
 {{- $namespace := $rpcConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $rpcConfig | toJson | sha256sum -}}
 {{- $checkBackendVersion := $rpcConfig.backend.check | default false -}}
@@ -230,6 +225,4 @@ spec:
         configMap:
           name: config-utils
           defaultMode: 0555
-{{ end }}
-{{- end }}
 {{- end }}
