@@ -2371,11 +2371,20 @@ vulnsOsv:
       #       paths:
       #         - path: /
 
+  # Subscribed queues
+  queues:
+    - swh.vulns.osv.tasks.ProcessOSVReport
+
   crawlers:
     enabled: false
     # autoScaling:
     #   queueThreshold: 1
     #   maxReplicaCount: 2
     #   stopWhenNoActivity: true
-    queues:
-    - swh.vulns.osv.tasks.ProcessOSVReport
+
+  createReportsCronjob:
+    enabled: false
+    logLevel: INFO
+    # Every monday at 7am
+    cron: "7 0 * * mon"
+    concurrencyPolicy: Forbid

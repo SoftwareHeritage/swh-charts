@@ -18,37 +18,11 @@
 {{- end }}
 
 #### ConfigMap
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ $serviceName }}-configuration-template
-  namespace: {{ $namespace }}
-data:
-  config.yml.template: |
-    {{- include "swh.storageConfiguration"
-                  (dict "configurationRef" $crawlerConfig.storageConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-
-    {{- include "swh.service.fromYaml"
-                (dict "service"         "vulnerabilities_storage"
-                      "configurationRef" $crawlerConfig.storageOsvConfigurationRef
-                      "Values"           $.Values) | nindent 4 }}
-
-    {{- include "swh.schedulerConfiguration"
-                  (dict "configurationRef" $crawlerConfig.schedulerConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-
-    {{- include "celery.configuration"
-                  (dict "configurationRef" $crawlerConfig.celeryConfigurationRef
-                        "Values"           $.Values) | nindent 4 }}
-      # task_acks_late: true
-      task_modules:
-        - swh.vulns.osv.tasks
-      task_queues:
-      {{- range $queue := $crawlerConfig.queues }}
-        - {{ $queue }}
-      {{- end }}
+{{ include "swh.vulnsOsv.configmap"
+             (dict "serviceName"   $serviceName
+                   "namespace"     $namespace
+                   "config"        $crawlerConfig
+                   "Values"        $.Values) }}
 
 #### Deployment
 ---
