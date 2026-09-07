@@ -1,0 +1,35 @@
+{{/* Generate the configmap  */}}
+{{- define "swh.vulnsOsv.configmap" -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .serviceName }}-configuration-template
+  namespace: {{ .namespace }}
+data:
+  config.yml.template: |
+    {{- include "swh.storageConfiguration"
+                  (dict "configurationRef" .config.storageConfigurationRef
+                        "Values"           .Values) | nindent 4 }}
+
+    {{- include "swh.service.fromYaml"
+                (dict "service"          "vulnerabilities_storage"
+                      "configurationRef" .config.storageOsvConfigurationRef
+                      "Values"           .Values) | nindent 4 }}
+
+    {{- include "swh.schedulerConfiguration"
+                  (dict "configurationRef" .config.schedulerConfigurationRef
+                        "Values"           .Values) | nindent 4 }}
+
+    {{- include "celery.configuration"
+                  (dict "configurationRef" .config.celeryConfigurationRef
+                        "Values"           .Values) | nindent 4 }}
+      # task_acks_late: true
+      task_modules:
+        - swh.vulns.osv.tasks
+      task_queues:
+      {{- range $queue := .config.queues }}
+        - {{ $queue }}
+      {{- end }}
+
+{{- end }}

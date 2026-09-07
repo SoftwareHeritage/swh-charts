@@ -2051,6 +2051,10 @@ vulnsOsv:
       maxReplicaCount: 2
       stopWhenNoActivity: true
 
+  createReportsCronjob:
+    enabled: false
+    logLevel: DEBUG
+    cron: "* * * * *"
 
 staticWebsites:
   enabled: false
