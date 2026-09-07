@@ -2264,8 +2264,11 @@ staticWebsites:
   enabled: false
   # namespace: swh-cassandra
   replicas: 1
-  # deployments: {}
   port: 80
+  # Instances of web sites to deploy
+  deployments:
+    dataportal:
+      image: container-registry.softwareheritage.org/swh/infra/swh-apps/dataportal
 
 ingestion_benchmarks:
   enabled: false
