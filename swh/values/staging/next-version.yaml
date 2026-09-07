@@ -1759,7 +1759,6 @@ staticWebsites:
 
     # docs-swh website migration
     docs:
-      image: container-registry.softwareheritage.org/swh/infra/swh-apps/docs
       enabled: true
       replicas: 1
       hosts:

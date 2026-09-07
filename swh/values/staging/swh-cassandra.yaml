@@ -3204,7 +3204,6 @@ staticWebsites:
     # docs.swh.org migration into swh-cassandra
 
     docs:
-      image: container-registry.softwareheritage.org/swh/infra/swh-apps/docs
       enabled: true
       replicas: 1
       hosts:

@@ -2269,6 +2269,8 @@ staticWebsites:
   deployments:
     dataportal:
       image: container-registry.softwareheritage.org/swh/infra/swh-apps/dataportal
+    docs:
+      image: container-registry.softwareheritage.org/swh/infra/swh-apps/docs
 
 ingestion_benchmarks:
   enabled: false

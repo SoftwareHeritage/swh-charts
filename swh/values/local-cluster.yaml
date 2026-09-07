@@ -2024,9 +2024,8 @@ staticWebsites:
         #        port: 80
 
 # docs.swh.org migration into k8s
-    docs-swh:
+    docs:
       enabled: true
-      image: container-registry.softwareheritage.org/swh/infra/swh-apps/docs
       replicas: 1
       hosts:
         - docs-swh.local
