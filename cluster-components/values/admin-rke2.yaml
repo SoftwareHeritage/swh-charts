@@ -154,6 +154,20 @@ cloudnativePg:
         enabled: true
         # Run once a day at 10:05pm (UTC)
         schedule: "0 5 10 * * *"
+    
+    db-keycloak:
+      enabled: true
+      namespace: keycloak
+      instances: 2
+      database:
+        name: keycloak
+        secretKeyRef: keycloak-postgresql-secret
+      initdb:
+        enabled: true
+      backup:
+        enabled: true
+        # Run once a day at 10:25pm (UTC)
+        schedule: "0 25 10 * * *"
 
 renovate:
   enabled: true
