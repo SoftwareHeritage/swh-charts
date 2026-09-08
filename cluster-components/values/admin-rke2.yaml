@@ -255,6 +255,7 @@ openbao:
        - rook-ceph
        - sccache
        - docker-cache
+       - keycloak
     gitlab-staging:
       url: https://192.168.200.13
       # TODO: import TLS certificates for the client cluster and provision them in the container
