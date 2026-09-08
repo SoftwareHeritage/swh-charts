@@ -21,8 +21,8 @@
 {{- $autoScalingType := get $autoScaling "type" | default "horizontal" -}}
 {{- $autoScalerFn := eq $autoScalingType "horizontal" | ternary "swh.autoscale" "swh.keda.gunicornAutoscaler" -}}
 {{ include $autoScalerFn (dict "serviceType"    $serviceType
-                                "configuration" $rpcConfig
-                                "Values"        $.Values) }}
+                               "configuration"  $rpcConfig
+                               "Values"         $.Values) }}
 {{- end }}
 
 #### Service
