@@ -161,7 +161,7 @@ cloudnativePg:
       instances: 2
       database:
         name: keycloak
-        secretKeyRef: swh-keycloak-postgresql-secret
+        secretKeyRef: swh-keycloak-postgres-secret
       initdb:
         enabled: true
       backup:
