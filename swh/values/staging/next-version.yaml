@@ -1832,7 +1832,7 @@ vulnsOsv:
     enabled: true
 
   createReportsCronjob:
-    enabled: false
+    enabled: true
     logLevel: INFO
     # Every monday at 6pm
     cron: "18 0 * * mon"
