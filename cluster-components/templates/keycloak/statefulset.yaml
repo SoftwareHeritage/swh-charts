@@ -92,7 +92,7 @@ spec:
             
             # Metrics are available at the /metrics endepoint 
             - name: KC_METRICS_ENABLED
-              value: true
+              value: "true"
 
           ports:
             - name: http
