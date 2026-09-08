@@ -1,5 +1,5 @@
 host: software-stories.staging.swh.network
-software_stories_image_version: "20260908.1"
+software_stories_image_version: "20260908.2"
 
 podPriority:
   enabled: true
