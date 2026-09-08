@@ -2,7 +2,7 @@
 {{- $appName := printf "%s-keycloak" .Values.clusterName }}
 {{- $namespace := .Values.keycloak.namespace }}
 {{- $image := .Values.keycloak.image }}
-{{- $imageVersion := .Values.keycloak.imageVersion | default "latest" }}
+{{- $imageVersion := .Values.keycloak.imageVersion }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -30,7 +30,7 @@ spec:
 
       containers:
         - name: {{ $appName }}
-          image: "{{ $image }}:{{ $imageVersion }}"
+          image: {{ print $image ":" $imageVersion | quote }}
           imagePullPolicy: IfNotPresent
 
           args:
