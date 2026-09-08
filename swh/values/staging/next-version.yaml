@@ -1793,10 +1793,10 @@ storageOsvPostgresqlConfiguration:
   pass: ${POSTGRESQL_OSV_PASSWORD}
   secrets:
     POSTGRESQL_OSV_USERNAME:
-      secretKeyRef: swh-vulns-osv-postgresql-secret
+      secretKeyRef: swh-postgresql-swh-vulns-osv-secret
       secretKeyName: username
     POSTGRESQL_OSV_PASSWORD:
-      secretKeyRef: swh-vulns-osv-postgresql-secret
+      secretKeyRef: swh-postgresql-swh-vulns-osv-secret
       secretKeyName: password
 
 remoteOsvStorageConfiguration:
