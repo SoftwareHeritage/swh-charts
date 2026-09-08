@@ -4,7 +4,7 @@
 {{- $parserConfig = include "swh.mergeDeploymentConfig"
       (dict "deploymentConfig" $parserConfig
             "topConfig"        $topVulnsConfig) | fromYaml -}}
-{{- $serviceName := print "vulns-osv-crawler" -}}
+{{- $serviceName := print "vulns-osv-parser-report" -}}
 {{- $namespace := $parserConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $parserConfig | toJson | sha256sum -}}
 {{- $logLevel := $parserConfig.logLevel | default $.Values.vulnsOsv.logLevel -}}
