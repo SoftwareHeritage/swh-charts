@@ -291,7 +291,7 @@ keycloak:
     userKeyRef: username
     passwordKeyRef: password
   database:
-    host: keycloak-rw
+    host: db-keycloak-rw
     name: keycloak
     # Report to cloudnativePg database deployment for this to be functional
     secret:
