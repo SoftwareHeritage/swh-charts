@@ -298,3 +298,15 @@ keycloak:
       ref: swh-keycloak-postgres-secret
       userKeyRef: username
       passwordKeyRef: password
+  ingress:
+    enabled: true
+    host: keycloak.internal.admin.swh.network
+    className: nginx
+    tlsEnabled: true
+    secretName: keycloak-swh-tls
+    extraAnnotations:
+      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
+      nginx.ingress.kubernetes.io/proxy-body-size: "4G"
