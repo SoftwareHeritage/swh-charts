@@ -47,7 +47,7 @@ metadata:
 data:
   config.yml.template: |
     {{- include "swh.postgresql"
-                (dict "serviceType"      "vulnerabilities_storage"
+                (dict "serviceType"      "vulns"
                       "configurationRef" $rpcConfig.storageOsvConfigurationRef
                       "Values"           $.Values) | nindent 4 }}
 
