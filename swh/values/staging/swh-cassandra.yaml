@@ -3225,3 +3225,56 @@ staticWebsites:
            paths:
              - path: /
                port: 80
+
+storageOsvPostgresqlConfiguration:
+  cls: postgresql
+  host: db-swh-vulns-osv-rw
+  port: 5432
+  db: swh-vulns-osv
+  user: ${POSTGRESQL_OSV_USERNAME}
+  pass: ${POSTGRESQL_OSV_PASSWORD}
+  secrets:
+    POSTGRESQL_OSV_USERNAME:
+      secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      secretKeyName: username
+    POSTGRESQL_OSV_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      secretKeyName: password
+
+remoteOsvStorageConfiguration:
+  cls: remote
+  url: http://vulns-osv-rpc:5016
+  enable_requests_retry: true
+
+vulnsOsv:
+  enabled: true
+  logLevel: INFO
+  # Various required configuration ref (can be overridden per sub category [rpc,
+  # crawler, ...]
+  storageOsvConfigurationRef: remoteOsvStorageConfiguration
+  storageConfigurationRef: remoteROStorageConfiguration
+  schedulerConfigurationRef: postgresqlSchedulerConfiguration
+  celeryConfigurationRef: consumerCeleryConfiguration
+
+  # List of rpc services to deploy (independent from each other)
+  rpc:
+    enabled: true
+    # The necessary configuration ref to use to connect to the postgresql backend
+    storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
+
+    backend:
+      initialize:
+        adminSecret: swh-postgresql-postgres-secret
+        database: swh-vulns-osv
+        host: next-version-db-swh-vulns-osv-rw
+      check: true
+      migrate: true
+
+  parserOSVReport:
+    enabled: true
+
+  createReportsCronjob:
+    enabled: true
+    logLevel: INFO
+    # Every monday at 6pm
+    cron: "15 0 * * mon"
