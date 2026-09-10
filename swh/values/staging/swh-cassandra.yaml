@@ -1298,6 +1298,9 @@ toolbox:
       depositDbConfigurationRef: postgresqlDepositConfiguration
     webhooks:
       webhooksConfigurationRef: svixConfiguration
+    vulns:
+      vulnsOsvConfigurationRef: storageOsvPostgresqlConfiguration
+
     # To manage record reference tables cleanup
     cassandra-storage-rw:
       moduleName: storage

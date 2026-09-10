@@ -952,6 +952,8 @@ toolbox:
       moduleConfigKey: masking_admin
       maskingAdminConfigurationRef: rwMaskingPostgresqlConfiguration
       storageConfigurationRef: memoryNoopStorageConfiguration
+    vulns:
+      vulnsOsvConfigurationRef: storageOsvPostgresqlConfiguration
 
   bulkLoad: null
 
