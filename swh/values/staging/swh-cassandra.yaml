@@ -3269,7 +3269,7 @@ vulnsOsv:
       initialize:
         adminSecret: swh-postgresql-postgres-secret
         database: swh-vulns-osv
-        host: next-version-db-swh-vulns-osv-rw
+        host: db-swh-vulns-osv-rw
       check: true
       migrate: true
 
