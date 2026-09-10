@@ -115,7 +115,7 @@ pgbouncer:
       port: 5432
       dbname: swh-vault
       auth_user: postgres
-    swh-vulns:
+    swh-vulns-osv:
       host: db-swh-vulns-osv-rw.swh-cassandra
       port: 5432
       dbname: swh-vulns-osv
