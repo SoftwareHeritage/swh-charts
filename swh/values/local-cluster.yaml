@@ -811,6 +811,8 @@ toolbox:
       maskingAdminConfigurationRef: postgresqlSyncMaskingProxyMailmapsConfiguration
       # needed for the `swh storage` cli to work...
       storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
+    vulns:
+      vulnsOsvConfigurationRef: storageOsvPostgresqlConfiguration
     web:
       webDbConfigurationRef: postgresqlWebConfiguration
 
