@@ -652,6 +652,17 @@ cloudnativePg:
         # Run once a day at 0:15am (UTC)
         schedule: "0 15 0 * * *"
 
+    db-swh-vulns-osv:
+      enabled: true
+      namespace: swh-cassandra
+      testing: true
+      instances: 1
+      database:
+        name: swh-vulns-osv
+        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      initdb:
+        enabled: true
+
     db-osporadar:
       enabled: true
       namespace: osporadar
