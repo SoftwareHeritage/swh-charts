@@ -79,6 +79,6 @@ swh_vulns_image_version: '20260910.1'
 swh_vulns_osv_image: container-registry.softwareheritage.org/swh/infra/swh-apps/vulns_osv
 swh_vulns_osv_image_version: '20260910.2'
 swh_web_image: container-registry.softwareheritage.org/swh/infra/swh-apps/web
-swh_web_image_version: '20260909.1'
+swh_web_image_version: '20260910.1'
 swh_webhooks_image: container-registry.softwareheritage.org/swh/infra/swh-apps/webhooks
 swh_webhooks_image_version: '20260707.1'
