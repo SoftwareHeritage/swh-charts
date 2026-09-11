@@ -42,6 +42,10 @@ spec:
       kind: ValidatingWebhookConfiguration
       name: {{ .Values.clusterName }}-certmanager-cert-manager-webhook
       jqPathExpressions:
-        - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "control-plane")
-        - .webhooks[].namespaceSelector.matchExpressions[] | select(.key == "kubernetes.azure.com/managedby")
+        - >-
+          .webhooks[].namespaceSelector.matchExpressions[] | select(
+            .key == "control-plane" or
+            .key == "kubernetes.azure.com/managedby" or
+            . == {"key": "name", "operator": "NotIn", "values": [{{ .Values.certManager.namespace | default "cert-manager" | quote }}]}
+          )
 {{ end }}
