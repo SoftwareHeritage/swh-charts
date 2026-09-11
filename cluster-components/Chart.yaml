@@ -46,6 +46,6 @@ dependencies:
 
 - name: gitlab-runner
   alias: gitlabRunner
-  version: 0.88.3
+  version: 0.92.1
   repository: https://charts.gitlab.io
   condition: gitlabRunner.enabled
