@@ -234,7 +234,6 @@ cc-template-test-staging-rke2:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/test-staging-rke2.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 cc-template-staging:
@@ -242,7 +241,6 @@ cc-template-staging:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/archive-staging-rke2.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 # Next-version is declared within the staging file
@@ -253,7 +251,6 @@ cc-template-production:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/archive-production-rke2.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 cc-template-admin:
@@ -261,7 +258,6 @@ cc-template-admin:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/admin-rke2.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 cc-template-gitlab-staging:
@@ -269,7 +265,6 @@ cc-template-gitlab-staging:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/gitlab-staging.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 cc-template-gitlab-production:
@@ -277,7 +272,6 @@ cc-template-gitlab-production:
       --values $(CC_CHART)/values.yaml \
       --values $(CC_CHART)/values/default.yaml \
       --values $(CC_CHART)/values/gitlab-production.yaml \
-      $(CC_VALUES_OVERRIDE) \
       --debug
 
 ccf-template:
