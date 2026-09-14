@@ -19,12 +19,13 @@ spec:
   {{- if .Values.keycloak.ingress.tlsEnabled }}
   tls:
     - hosts:
-        - {{ .Values.keycloak.ingress.host | quote }}
+        {{- .Values.keycloak.ingress.hosts | toYaml | nindent 8 }}
       secretName: {{ .Values.keycloak.ingress.secretName | quote }}
   {{- end }}
 
   rules:
-    - host: {{ .Values.keycloak.ingress.host | quote }}
+    {{- range $host := .Values.keycloak.ingress.hosts }}
+    - host: {{ $host | quote }}
       http:
         paths:
           - path: /
@@ -34,5 +35,6 @@ spec:
                 name: {{ $appName }}
                 port:
                   number: 8080
+    {{- end }}
 
 {{- end }}

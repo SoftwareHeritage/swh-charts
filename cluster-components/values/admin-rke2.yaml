@@ -300,7 +300,9 @@ keycloak:
       passwordKeyRef: password
   ingress:
     enabled: true
-    host: keycloak.internal.admin.swh.network
+    hosts: 
+      - keycloak.internal.admin.swh.network
+      - auth.softwareheritage.org
     className: nginx
     tlsEnabled: true
     secretName: keycloak-swh-tls

@@ -512,7 +512,8 @@ keycloak:
       passwordKeyRef: password
   ingress:
     enabled: true
-    host: keycloak.local
+    hosts: 
+      - keycloak.local
     className: nginx
     tlsEnabled: false
     extraAnnotations:
