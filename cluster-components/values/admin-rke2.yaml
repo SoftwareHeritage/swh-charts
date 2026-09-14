@@ -284,7 +284,7 @@ openbao:
        - cnpg
 
 keycloak:
-  enabled: true
+  enabled: false
   namespace: keycloak
   adminSecret:
     ref: swh-keycloak-admin-secret
