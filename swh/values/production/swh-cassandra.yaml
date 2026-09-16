@@ -2891,6 +2891,7 @@ vulnsGrpc:
   deployments:
      grpc-20260604:
       enabled: true
+      requestedMemory: 32Gi
       toolbox:
         enabled: false
       dataset:
