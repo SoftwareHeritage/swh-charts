@@ -2243,8 +2243,9 @@ loaders:
         - swh.loader.git.tasks.LoadDiskGitRepository
         - swh.loader.git.tasks.UncompressAndLoadDiskGitRepository
       replicas: 32
-      requestedMemory: 768Mi
+      requestedMemory: 1Gi
       requestedCpu: 100m
+      limitedMemory: 8Gi
       tmpEphemeralStorage:
         emptyDir:
           medium: Memory
