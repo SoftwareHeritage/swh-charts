@@ -2931,7 +2931,7 @@ graph:
       enabled: true
       type: grpc
       port: 50091
-      requestedMemory: 400Gi
+      requestedMemory: 32Gi
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
         name: 2026-06-04
