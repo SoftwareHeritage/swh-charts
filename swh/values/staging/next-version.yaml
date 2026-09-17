@@ -1017,9 +1017,16 @@ elasticsearchConfiguration:
   cls: elasticsearch
   indexes:
     origin:
-      index: origin-v0.11
+      index: origin-v0.26
       read_alias: origin-read
       write_alias: origin-write
+
+reindexEsConfiguration:
+  elasticsearchInstancesRef: elasticsearchHosts
+  cls: elasticsearch
+  indexes:
+    origin:
+      index: origin-v0.26
 
 remoteSearchConfiguration:
   cls: remote
@@ -1070,6 +1077,28 @@ search:
         requestedMemory: 50Mi
         journalClientOverrides:
           group_id: swh-search-next-version.journal-client-indexed-v0.11
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
+
+      reindex-objects-next-version:
+        enabled: true
+        elasticsearchConfigurationRef: reindexEsConfiguration
+        journalClientOverrides:
+          group_id: swh-search-next-version.journal-client-origins-v0.26
+          prefix: swh.journal.objects
+          object_types:
+            - origin
+            - origin_visit_status
+
+      reindex-indexed-next-version:
+        enabled: true
+        elasticsearchConfigurationRef: reindexEsConfiguration
+        requestedCpu: 10m
+        requestedMemory: 50Mi
+        journalClientOverrides:
+          group_id: swh-search-next-version.journal-client-indexed-v0.26
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
