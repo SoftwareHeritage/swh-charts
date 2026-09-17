@@ -2258,6 +2258,30 @@ search:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
           batch_size: 25
+      objects-v0.26:
+        enabled: true
+        replicas: 8
+        requestedCpu: 10m
+        requestedMemory: 50Mi
+        journalClientOverrides:
+          group_id: swh.search.journal-client-objects-v0.26
+          prefix: swh.journal.objects
+          object_types:
+          - origin
+          - origin_visit_status
+          batch_size: 25
+      indexed-v0.26:
+        enabled: true
+        replicas: 8
+        requestedCpu: 10m
+        requestedMemory: 50Mi
+        journalClientOverrides:
+          group_id: swh.search.journal-client-indexed-v0.26
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
+          batch_size: 25
 
 scheduler:
   enabled: true
