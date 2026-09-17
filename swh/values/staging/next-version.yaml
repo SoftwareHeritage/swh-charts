@@ -1085,7 +1085,8 @@ search:
       reindex-objects-next-version:
         enabled: true
         journalClientOverrides:
-          group_id: swh-search-next-version.journal-client-origins-v0.26-2
+          auto_offset_reset: earliest
+          group_id: swh-search-next-version.journal-client-origins-v0.26-3
           prefix: swh.journal.objects
           object_types:
             - origin
@@ -1096,7 +1097,8 @@ search:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
-          group_id: swh-search-next-version.journal-client-indexed-v0.26-2
+          auto_offset_reset: earliest
+          group_id: swh-search-next-version.journal-client-indexed-v0.26-3
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
