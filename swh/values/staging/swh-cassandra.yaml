@@ -2258,7 +2258,7 @@ search:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
           batch_size: 25
-      objects-v0.26:
+      objects-v0-26:
         enabled: true
         replicas: 8
         requestedCpu: 10m
@@ -2270,7 +2270,7 @@ search:
           - origin
           - origin_visit_status
           batch_size: 25
-      indexed-v0.26:
+      indexed-v0-26:
         enabled: true
         replicas: 8
         requestedCpu: 10m
