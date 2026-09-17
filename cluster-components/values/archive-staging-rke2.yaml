@@ -487,6 +487,9 @@ cloudnativePg:
         parameters:
           # Setup used in the previous instance (defaulted to 128MB so far)
           shared_buffers: 32GB
+      requestedCpu: 500m
+      requestedMemory: 34Gi
+      limitedMemory: 64Gi
       database:
         name: swh
         secretKeyRef: swh-postgresql-swh-secret
@@ -523,6 +526,9 @@ cloudnativePg:
       namespace: cnpg
       grantGuestAccess: false
       instances: 2
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       recovery:
         enabled: true
       database:
@@ -537,6 +543,9 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
+      requestedCpu: 200m
+      requestedMemory: 1Gi
+      limitedMemory: 2Gi
       database:
         name: swh-coar-notify
         secretKeyRef: swh-postgresql-swh-coar-notify-secret
@@ -553,6 +562,9 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
+      requestedCpu: 200m
+      requestedMemory: 4Gi
+      limitedMemory: 8Gi
       database:
         name: swh-deposit
         secretKeyRef: swh-postgresql-swh-deposit-secret
@@ -567,6 +579,9 @@ cloudnativePg:
       enabled: true
       namespace: cnpg
       instances: 2
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       database:
         name: swh-indexer
         secretKeyRef: swh-postgresql-swh-indexer-secret
@@ -584,6 +599,9 @@ cloudnativePg:
       namespace: cnpg
       grantGuestAccess: false
       instances: 2
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       roles:
       - name: swhmailmap
         ensure: present
@@ -610,6 +628,9 @@ cloudnativePg:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
       customQueriesRef: customQueriesSwhScheduler
+      requestedCpu: 2000m
+      requestedMemory: 4Gi
+      limitedMemory: 8Gi
       initdb:
         enabled: true
       backup:
@@ -624,6 +645,9 @@ cloudnativePg:
       database:
         name: swh-scrubber
         secretKeyRef: swh-postgresql-swh-scrubber-secret
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       initdb:
         enabled: true
       backup:
@@ -638,6 +662,9 @@ cloudnativePg:
       database:
         name: swh-svix
         secretKeyRef: swh-postgresql-swh-svix-secret
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       initdb:
         enabled: true
       storage:
@@ -658,6 +685,9 @@ cloudnativePg:
       database:
         name: swh-vault
         secretKeyRef: swh-postgresql-swh-vault-secret
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       initdb:
         enabled: true
       backup:
@@ -672,6 +702,9 @@ cloudnativePg:
       database:
         name: swh-web
         secretKeyRef: swh-postgresql-swh-web-secret
+      requestedCpu: 200m
+      requestedMemory: 2Gi
+      limitedMemory: 4Gi
       initdb:
         enabled: true
       backup:
@@ -687,6 +720,9 @@ cloudnativePg:
       database:
         name: swh-vulns-osv
         secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      requestedCpu: 200m
+      requestedMemory: 1Gi
+      limitedMemory: 2Gi
       initdb:
         enabled: true
 
@@ -697,6 +733,9 @@ cloudnativePg:
       database:
         name: swh-osporadar
         secretKeyRef: swh-postgresql-swh-osporadar-secret
+      requestedCpu: 200m
+      requestedMemory: 1Gi
+      limitedMemory: 2Gi
       initdb:
         enabled: true
       backup:
