@@ -1063,7 +1063,7 @@ search:
     journalConfigurationRef: nonPrivilegedReadJournalClientConfiguration
     deployments:
       objects-next-version:
-        enabled: true
+        enabled: false
         journalClientOverrides:
           group_id: swh-search-next-version.journal-client-origins-v0.11
           prefix: swh.journal.objects
@@ -1072,7 +1072,7 @@ search:
             - origin_visit_status
 
       indexed-next-version:
-        enabled: true
+        enabled: false
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
@@ -1084,9 +1084,8 @@ search:
 
       reindex-objects-next-version:
         enabled: true
-        elasticsearchConfigurationRef: reindexEsConfiguration
         journalClientOverrides:
-          group_id: swh-search-next-version.journal-client-origins-v0.26
+          group_id: swh-search-next-version.journal-client-origins-v0.26-2
           prefix: swh.journal.objects
           object_types:
             - origin
@@ -1094,11 +1093,10 @@ search:
 
       reindex-indexed-next-version:
         enabled: true
-        elasticsearchConfigurationRef: reindexEsConfiguration
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
-          group_id: swh-search-next-version.journal-client-indexed-v0.26
+          group_id: swh-search-next-version.journal-client-indexed-v0.26-2
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
