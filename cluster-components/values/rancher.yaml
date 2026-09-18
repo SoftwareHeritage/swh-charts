@@ -1,3 +1,5 @@
+clusterName: rancher
+
 alertmanagerConfig:
   enabled: true
   namespace: monitoring
