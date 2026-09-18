@@ -205,6 +205,7 @@ openbao:
   debug: false
   deployments:
     test-staging-rke2:
+      period: "17 * * * *"
       url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-hb9j7h5g
       namespacesToManageInOpenbaoClientCluster:
         - cattle-monitoring-system
@@ -213,6 +214,7 @@ openbao:
         - rabbitmq
         - rook-ceph
     archive-staging-rke2:
+      period: "24 * * * *"
       url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-9n5h9nrf
       namespacesToManageInOpenbaoClientCluster:
         - cassandra
@@ -231,6 +233,7 @@ openbao:
         - swh-cassandra-next-version
         - rook-ceph
     archive-production-rke2:
+      period: "31 * * * *"
       url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-75xcg59s
       namespacesToManageInOpenbaoClientCluster:
         - cassandra
@@ -243,6 +246,7 @@ openbao:
         - swh-benchmarks
         - cnpg
     admin-rke2:
+      period: "38 * * * *"
       url: https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/c-m-682nvssh
       namespacesToManageInOpenbaoClientCluster:
        - cattle-monitoring-system
@@ -257,6 +261,7 @@ openbao:
        - docker-cache
        - keycloak
     gitlab-staging:
+      period: "45 * * * *"
       url: https://192.168.200.13
       # TODO: import TLS certificates for the client cluster and provision them in the container
       noVerifySSL: true
@@ -267,6 +272,7 @@ openbao:
        - monitoring
        - cnpg
     gitlab-production:
+      period: "52 * * * *"
       url: https://192.168.200.4
       noVerifySSL: true
       namespacesToManageInOpenbaoClientCluster:
@@ -276,6 +282,7 @@ openbao:
        - monitoring
        - cnpg
     rancher:
+      period: "59 * * * *"
       url: "https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/local"
       namespacesToManageInOpenbaoClientCluster:
        - cattle-system
