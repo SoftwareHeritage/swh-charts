@@ -279,6 +279,7 @@ openbao:
       url: "https://rancher.euwest.azure.internal.softwareheritage.org/k8s/clusters/local"
       namespacesToManageInOpenbaoClientCluster:
        - cattle-system
+       - cattle-monitoring-system
        - cert-manager
        - monitoring
        - cnpg
