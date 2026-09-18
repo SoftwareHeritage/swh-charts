@@ -2241,21 +2241,9 @@ search:
           - origin
           - origin_visit_status
           batch_size: 25
-      indexed-v5:
-        enabled: true
-        replicas: 2
-        requestedCpu: 10m
-        requestedMemory: 50Mi
-        journalClientOverrides:
-          group_id: swh.search.journal-client-indexed-v5-v0.11
-          prefix: swh.journal.indexed
-          object_types:
-          - origin_intrinsic_metadata
-          - origin_extrinsic_metadata
-          batch_size: 25
       objects-v0-26:
         enabled: true
-        replicas: 8
+        replicas: 16
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
@@ -2267,7 +2255,7 @@ search:
           batch_size: 25
       indexed-v0-26:
         enabled: true
-        replicas: 8
+        replicas: 2
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
