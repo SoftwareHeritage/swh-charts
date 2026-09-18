@@ -1362,12 +1362,6 @@ search:
       workers: 4
       threads: 2
       timeout: 3600
-    autoScaling:
-      type: keda
-      minReplicaCount: 2
-      maxReplicaCount: 6
-      # add margin to avoid errors if there is a peak of requests
-      factor: 1.5
     requestedCpu: 250m
     requestedMemory: 512Mi
     # autoScaling:
@@ -1378,6 +1372,7 @@ search:
       # instance-name (will be suffixed by -rpc)
       search:
         enabled: true
+        replicas: 6
         hosts:
           - search-rpc-ingress-swh-cassandra
           - search.internal.softwareheritage.org

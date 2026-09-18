@@ -3,9 +3,6 @@ clusterName: archive-production-rke2
 sentry:
   environment: production
 
-# Keep swh-search at a version compatible with index v0.11 for now
-swh_search_image_version: '20260813.1'
-
 clusterNetworkRanges:
   # cluster internal range ip
   - 10.42.0.0/16
@@ -227,7 +224,7 @@ elasticsearchConfiguration:
   cls: elasticsearch
   indexes:
     origin:
-      index: origin-v0.11
+      index: origin-v0.26
       read_alias: origin-read
       write_alias: origin-write
 
