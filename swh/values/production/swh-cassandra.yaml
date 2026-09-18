@@ -1423,6 +1423,7 @@ search:
           object_types:
           - origin
           - origin_visit_status
+          batch_size: 30
       indexed:
         enabled: true
         replicas: 1
@@ -1432,9 +1433,10 @@ search:
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
+          batch_size: 30
       objects-v0-26:
         enabled: true
-        replicas: 16
+        replicas: 12
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
@@ -1443,9 +1445,10 @@ search:
           object_types:
           - origin
           - origin_visit_status
+          batch_size: 30
       indexed-v0-26:
         enabled: true
-        replicas: 16
+        replicas: 12
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
@@ -1454,6 +1457,7 @@ search:
           object_types:
           - origin_intrinsic_metadata
           - origin_extrinsic_metadata
+          batch_size: 30
 
 counters:
   enabled: true
