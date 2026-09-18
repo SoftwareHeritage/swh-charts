@@ -2,7 +2,7 @@ clusterName: rancher
 
 alertmanagerConfig:
   enabled: true
-  namespace: monitoring
+  namespace: cattle-monitoring-system
   ircRelayHost: https://alertmanager-irc-relay.admin.swh.network/swh-sysadm
   inhibitRules:
     - targetMatch:
