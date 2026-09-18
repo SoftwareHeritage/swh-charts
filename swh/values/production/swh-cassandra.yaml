@@ -1372,7 +1372,7 @@ search:
       # instance-name (will be suffixed by -rpc)
       search:
         enabled: true
-        replicas: 6
+        replicas: 12
         hosts:
           - search-rpc-ingress-swh-cassandra
           - search.internal.softwareheritage.org
@@ -1417,8 +1417,6 @@ search:
       objects:
         enabled: true
         replicas: 1
-        # requestedCpu: 10m
-        # requestedMemory: 50Mi
         journalClientOverrides:
           group_id: swh.search.journal_client-v0.11
           prefix: swh.journal.objects
@@ -1428,10 +1426,30 @@ search:
       indexed:
         enabled: true
         replicas: 1
-        # requestedCpu: 10m
-        # requestedMemory: 50Mi
         journalClientOverrides:
           group_id: swh.search.journal_client.indexed-v0.11
+          prefix: swh.journal.indexed
+          object_types:
+          - origin_intrinsic_metadata
+          - origin_extrinsic_metadata
+      objects-v0-26:
+        enabled: true
+        replicas: 16
+        requestedCpu: 250m
+        requestedMemory: 200Mi
+        journalClientOverrides:
+          group_id: swh.search.journal-client-objects-v0.26
+          prefix: swh.journal.objects
+          object_types:
+          - origin
+          - origin_visit_status
+      indexed-v0-26:
+        enabled: true
+        replicas: 16
+        requestedCpu: 250m
+        requestedMemory: 200Mi
+        journalClientOverrides:
+          group_id: swh.search.journal-client-indexed-v0.26
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
