@@ -10,10 +10,11 @@
 
 #### ConfigMap
 {{ include "swh.vulnsOsv.configmap"
-             (dict "serviceName"   $serviceName
-                   "namespace"     $namespace
-                   "config"        $jobConfig
-                   "Values"        $.Values) }}
+             (dict "serviceName"           $serviceName
+                   "namespace"             $namespace
+                   "config"                $jobConfig
+                   "vulnsStorageConfigKey" "vulns"
+                   "Values"                $.Values) }}
 #### CronJob
 
 ---

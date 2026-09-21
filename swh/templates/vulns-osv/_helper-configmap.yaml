@@ -1,5 +1,6 @@
 {{/* Generate the configmap  */}}
 {{- define "swh.vulnsOsv.configmap" -}}
+{{- $vulnsStorageConfigKey := .vulnsStorageConfigKey | default "vulnerabilities_storage" -}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -13,7 +14,7 @@ data:
                         "Values"           .Values) | nindent 4 }}
 
     {{- include "swh.service.fromYaml"
-                (dict "service"          "vulnerabilities_storage"
+                (dict "service"          $vulnsStorageConfigKey
                       "configurationRef" .config.storageOsvConfigurationRef
                       "Values"           .Values) | nindent 4 }}
 
