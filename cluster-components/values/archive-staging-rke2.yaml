@@ -309,7 +309,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-indexer:
       enabled: true
@@ -327,7 +327,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-masking:
       enabled: true
@@ -343,7 +343,7 @@ cloudnativePg:
         source: next-version-db-swh-masking
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     # Specific swh-scheduler database mounted from a backup from swh-scheduler-k8s
     # (minimalistic swh-scheduler db)
@@ -362,7 +362,7 @@ cloudnativePg:
         source: next-version-db-swh-scheduler
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-svix:
       enabled: true
@@ -376,7 +376,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-vault:
       enabled: true
@@ -390,7 +390,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-web:
       enabled: true
@@ -404,7 +404,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     next-version-db-swh-vulns-osv:
       enabled: true
@@ -418,7 +418,7 @@ cloudnativePg:
         enabled: true
       requestedCpu: 50m
       requestedMemory: 256Mi
-      limitedMemory: 1024Mi
+      limitedMemory: 1Gi
 
     #############
     # Staging test db
@@ -628,7 +628,7 @@ cloudnativePg:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
       customQueriesRef: customQueriesSwhScheduler
-      requestedCpu: 2000m
+      requestedCpu: '2'
       requestedMemory: 4Gi
       limitedMemory: 8Gi
       initdb:
