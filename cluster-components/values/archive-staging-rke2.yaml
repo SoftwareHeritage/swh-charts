@@ -729,7 +729,7 @@ cloudnativePg:
     db-osporadar:
       enabled: true
       namespace: osporadar
-      instances: 2
+      instances: 1
       database:
         name: swh-osporadar
         secretKeyRef: swh-postgresql-swh-osporadar-secret
