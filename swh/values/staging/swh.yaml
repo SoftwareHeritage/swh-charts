@@ -341,6 +341,10 @@ toolbox:
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
 
+keycloakConfiguration:
+  server_url: https://auth.staging.swh.network/
+  realm_name: SoftwareHeritageStaging
+
 web:
   enabled: true
   logLevel: INFO
