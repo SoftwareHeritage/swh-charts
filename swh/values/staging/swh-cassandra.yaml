@@ -3287,5 +3287,5 @@ vulnsOsv:
   createReportsCronjob:
     enabled: true
     logLevel: INFO
-    # Every monday at 6pm
-    cron: "15 0 * * mon"
+    # Every tue at 6pm
+    cron: "15 0 * * tue"
