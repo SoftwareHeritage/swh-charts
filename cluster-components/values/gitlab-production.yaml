@@ -22,6 +22,10 @@ vaultStaticSecrets:
       enabled: true
       namespaces:
         - monitoring
+    gitlab-runner:
+      enabled: true
+      namespaces:
+        - gitlab-runner
 
 cloudnativePg:
   enabled: true
