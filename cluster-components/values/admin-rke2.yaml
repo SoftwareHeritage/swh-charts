@@ -307,7 +307,7 @@ keycloak:
       passwordKeyRef: password
   ingress:
     enabled: true
-    hosts: 
+    hosts:
       - keycloak.internal.admin.swh.network
       - auth.softwareheritage.org
     className: nginx
