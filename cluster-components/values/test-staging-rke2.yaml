@@ -4,6 +4,34 @@ clusterName: test-staging-rke2
 alertmanagerConfig:
   enabled: true
 
+# Install the secrets references in the namespace as vault-static-secrets
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    swh-postgresql-postgres-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+      type: cnpg
+    swh-postgresql-guest-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+      type: cnpg
+    swh-postgresql-test-db-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+      type: cnpg
+    cluster-staging-db1-postgres-user-credential:
+      enabled: true
+      namespaces:
+        - cnpg
+    rabbitmq-scheduler-secret:
+      enabled: true
+      namespaces:
+        - rabbitmq
+
 metallb:
   enabled: true
   ipAddressPools:
