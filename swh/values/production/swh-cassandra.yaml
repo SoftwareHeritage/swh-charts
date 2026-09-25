@@ -1289,6 +1289,7 @@ scheduler:
         - "cook-"
         - "check-"
         - "load-deposit"
+        - "process-osv-"
     runner-priority:
       enabled: true
       logLevel: INFO
