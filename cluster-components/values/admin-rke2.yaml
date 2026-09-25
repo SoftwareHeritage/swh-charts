@@ -16,6 +16,14 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    basic-auth:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
+    alertmanager-irc-relay:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
     alertmanager-irc-relay-config:
       enabled: true
       namespaces:
