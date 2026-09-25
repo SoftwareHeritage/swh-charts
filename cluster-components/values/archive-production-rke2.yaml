@@ -412,3 +412,15 @@ cloudnativePg:
           maintenance_work_mem: 4GB
           # Update nb of connections (this limit can be reached currently)
           max_connections: "200"
+    db-swh-vulns-osv:
+      enabled: true
+      namespace: swh-cassandra
+      instances: 1
+      database:
+        name: swh-vulns-osv
+        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+      requestedCpu: 200m
+      requestedMemory: 1Gi
+      limitedMemory: 2Gi
+      initdb:
+        enabled: true
