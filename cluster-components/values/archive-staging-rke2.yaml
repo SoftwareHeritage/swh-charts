@@ -7,6 +7,123 @@ alertmanager:
 alertmanagerConfig:
   enabled: true
 
+# Install the secrets references in the namespace as vault-static-secrets
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    cnpg-minio-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+        - swh-cassandra
+        - swh-cassandra-next-version
+    swh-postgresql-postgres-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+        - swh-cassandra
+        - swh-cassandra-next-version
+        - osporadar
+    swh-postgresql-guest-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+        - swh-cassandra
+        - swh-cassandra-next-version
+        - osporadar
+    swh-postgresql-swh-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-deposit-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-indexer-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-masking-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+      type: cnpg
+    swh-postgresql-swh-scheduler-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-scrubber-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-svix-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-vault-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-web-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - cnpg-next-version
+    swh-postgresql-swh-vulns-osv-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - swh-cassandra
+        - swh-cassandra-next-version
+    swh-postgresql-swhmailmap-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-blocking-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-coar-notify-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-osporadar-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - osporadar
+    rabbitmq-scheduler-secret:
+      enabled: true
+      namespaces:
+        - swh-cassandra-next-version
+    swh-journal-client-secret:
+      enabled: true
+      namespaces:
+        - kafka-system
+
 metallb:
   enabled: true
   # Generic ipAddressPool (e.g. for main cluster ingress)
