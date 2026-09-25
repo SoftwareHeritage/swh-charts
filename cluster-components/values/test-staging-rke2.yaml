@@ -107,7 +107,7 @@ clusterPgStagingDb1:
       port: "5433"
 
 cloudnativePg:
-  enabled: true
+  enabled: false
   testing: true
   grantGuestAccess: true
   namespace: cnpg
@@ -133,7 +133,7 @@ cloudnativePg:
   # Exists as many cluster as we want
   deployments:
     test-db:
-      enabled: true
+      enabled: false
       instances: 1
       database:
         name: test-db
@@ -150,7 +150,7 @@ rabbitmq:
       secretRef: rabbitmq-scheduler-secret
 
 redis:
-  enabled: true
+  enabled: false
   deployments:
     redis:
       appName: redis
