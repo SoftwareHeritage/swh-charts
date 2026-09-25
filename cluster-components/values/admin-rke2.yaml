@@ -16,6 +16,10 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    openbao-initial-secrets:
+      enabled: true
+      namespaces:
+        - openbao
     basic-auth:
       enabled: true
       namespaces:
