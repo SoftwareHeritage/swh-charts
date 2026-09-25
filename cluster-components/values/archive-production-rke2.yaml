@@ -10,6 +10,78 @@ alerting:
 alertmanagerConfig:
   enabled: true
 
+# Install the secrets references in the namespace as vault-static-secrets
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    cnpg-minio-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+        - swh-cassandra
+    swh-postgresql-postgres-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - swh-cassandra
+    swh-postgresql-guest-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - swh-cassandra
+    swh-postgresql-swh-blocking-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-masking-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swhmailmap-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-vault-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-deposit-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-web-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-svix-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-scrubber-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-scheduler-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    swh-postgresql-swh-vulns-osv-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - swh-cassandra
+
 metallb:
   enabled: true
   ipAddressPools:
