@@ -74,8 +74,6 @@ vaultStaticSecrets:
       enabled: true
     swh-archive-broker-secret:
       enabled: true
-    swh-postgresql-guest-secret:
-      enabled: true
     swh-postgresql-swh-storage-secret:
       enabled: true
     swh-postgresql-swh-scheduler-secret:
