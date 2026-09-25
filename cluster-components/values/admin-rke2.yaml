@@ -12,6 +12,60 @@ alertmanagerIrcRelay:
 alertmanagerConfig:
   enabled: true
 
+# Install the secrets references in the namespace as vault-static-secrets
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    dockerhub-authentication:
+      enabled: true
+      namespaces:
+        - docker-cache
+    redis-secret:
+      enabled: true
+      namespaces:
+        - redis
+    cnpg-minio-secret:
+      enabled: true
+      namespaces:
+        - cnpg
+        - keycloak
+    swh-postgresql-postgres-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - keycloak
+    swh-postgresql-guest-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - keycloak
+    cpng-minio-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+    netbox-postgresql-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - cnpg
+        - netbox
+    swh-keycloak-postgres-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - keycloak
+    renovate-cronjob-secret:
+      enabled: true
+      namespaces:
+        - renovate
+    swh-keycloak-admin-secret:
+      enabled: true
+      namespaces:
+        - keycloak
+
 metallb:
   enabled: true
   ipAddressPools:
