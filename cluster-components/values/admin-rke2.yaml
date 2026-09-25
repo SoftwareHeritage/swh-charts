@@ -16,6 +16,10 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    alertmanager-irc-relay-config:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
     dockerhub-authentication:
       enabled: true
       namespaces:

@@ -11,6 +11,10 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    alertmanager-irc-relay-config:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
     cnpg-minio-secret:
       enabled: true
       namespaces:

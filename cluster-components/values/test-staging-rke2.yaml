@@ -8,6 +8,10 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    alertmanager-irc-relay-config:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
     swh-postgresql-postgres-secret:
       enabled: true
       namespaces:

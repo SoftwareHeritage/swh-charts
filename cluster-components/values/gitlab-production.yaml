@@ -15,6 +15,14 @@ alertmanagerConfig:
       - name: alertname
         value: KubeMemoryOvercommit
 
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    alertmanager-irc-relay-config:
+      enabled: true
+      namespaces:
+        - monitoring
+
 cloudnativePg:
   enabled: true
 

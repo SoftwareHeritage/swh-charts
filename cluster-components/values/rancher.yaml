@@ -1,5 +1,13 @@
 clusterName: rancher
 
+vaultStaticSecrets:
+  enabled: true
+  secrets:
+    alertmanager-irc-relay-config:
+      enabled: true
+      namespaces:
+        - cattle-monitoring-system
+
 alertmanagerConfig:
   enabled: true
   namespace: cattle-monitoring-system
