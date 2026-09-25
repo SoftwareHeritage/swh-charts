@@ -1,3 +1,8 @@
+vaultStaticSecrets:
+  secrets:
+    swh-postgresql-guest-secret:
+      enabled: true
+
 rpcRWStorageConfiguration:
   cls: remote
   url: http://storage-rw-postgresql-ingress
