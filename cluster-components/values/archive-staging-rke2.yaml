@@ -90,6 +90,10 @@ vaultStaticSecrets:
       namespaces:
         - cnpg
         - cnpg-next-version
+    svix-server-secrets:
+      enabled: true
+      namespaces:
+        - svix-server
     swh-postgresql-swh-vault-secret:
       enabled: true
       type: cnpg
