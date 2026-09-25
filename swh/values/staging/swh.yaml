@@ -1,3 +1,10 @@
+vaultStaticSecrets:
+  secrets:
+    swh-postgresql-guest-secret:
+      enabled: true
+    swh-postgresql-postgres-secret:
+      enabled: true
+
 directPostgresqlReplayerStorageConfiguration:
   pipelineStepsRef: storagePipelineSteps
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
