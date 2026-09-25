@@ -11,6 +11,15 @@ alertmanagerConfig:
 vaultStaticSecrets:
   enabled: true
   secrets:
+    kafkabackup-ssh-key:
+      enabled: true
+      namespaces:
+        - kafkabackup
+      type: ssh
+    kafkabackup-storage-secrets:
+      enabled: true
+      namespaces:
+        - kafkabackup
     alertmanager-irc-relay-config:
       enabled: true
       namespaces:
