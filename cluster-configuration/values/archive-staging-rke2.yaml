@@ -186,7 +186,7 @@ osporadar:
     # For devfixtures to be installed at least for now
     # We will see later to have a clean environment
     development:
-      enabled: true
+      enabled: false
       debug: false
     affinity:
       nodeAffinity:
