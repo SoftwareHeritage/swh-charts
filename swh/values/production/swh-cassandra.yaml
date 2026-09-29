@@ -2039,7 +2039,7 @@ webhooks:
   priorityClassName: frontend-rpc-workload
   deployments:
     origin-visit-status:
-      replicas: 2
+      replicas: 8
       dnsConfigurationRef: dnsConfiguration
       requestedCpu: 100m
       requestedMemory: 100Mi
