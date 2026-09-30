@@ -251,6 +251,7 @@ renovate:
   # Repositories to scan for updates
   repositories:
     - swh/infra/swh-apps
+    - swh/devel/swh-osporadar-deployment
 
 volumes:
   enabled: true
