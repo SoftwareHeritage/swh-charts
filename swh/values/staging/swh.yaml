@@ -354,7 +354,7 @@ keycloakConfiguration:
 
 web:
   enabled: true
-  logLevel: INFO
+  logLevel: DEBUG
   deployments:
     postgresql:
       # small footprint because this webapp is almost not used, only for tests
