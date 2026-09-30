@@ -418,6 +418,7 @@ web:
       djangoAppsRef: webDjangoApps
       graphConfigurationRef: webGraphConfiguration
       extraConfig:
+        debug: true
         search_config:
           metadata_backend: swh-search
         inbound_email:
