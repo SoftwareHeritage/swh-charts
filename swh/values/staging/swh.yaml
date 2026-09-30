@@ -367,8 +367,13 @@ web:
         enabled: true
         secretName: swh-web-crt
         extraAnnotations:
-          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/proxy-next-upstream: "error"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "100"
+          nginx.ingress.kubernetes.io/proxy-next-upstream-timeout: "100"
         tlsEnabled: true
+        tlsExtraAnnotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
         endpoints:
           default:
             paths:
