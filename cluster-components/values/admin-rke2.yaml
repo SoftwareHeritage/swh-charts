@@ -244,6 +244,7 @@ renovate:
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-cronjob-secret
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
+  logLevel: "debug"
   cachedir:
     enabled: true
   # Where is stored the centralized renovate configuration
