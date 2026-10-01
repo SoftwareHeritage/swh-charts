@@ -140,6 +140,10 @@ vaultStaticSecrets:
       enabled: true
       namespaces:
         - kafka-system
+    renovate-cronjob-secret:
+      enabled: true
+      namespaces:
+        - renovate
 
 metallb:
   enabled: true
@@ -1356,4 +1360,27 @@ volumes:
           requests:
             storage: 1Gi
         storageClassName: local-persistent
+    renovate-cache-pvc:
+      enabled: true
+      namespace: renovate
+      appName: renovate-cache-pvc
+      spec:
+        storageClassName: local-persistent
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
+renovate:
+  enabled: true
+  # Name of the Kubernetes Secret containing sensitive variables
+  secretName: renovate-cronjob-secret
+  gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
+  logLevel: "debug"
+  cachedir:
+    enabled: true
+  # Repositories to scan for updates
+  repositories:
+    - swh/devel/swh-osporadar-deployment
