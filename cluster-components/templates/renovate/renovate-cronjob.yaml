@@ -49,9 +49,11 @@ spec:
                 # Repositories auto-discover
                 - name: RENOVATE_AUTODISCOVER
                   value: {{ $autodiscover | quote }}
-                # no-interactif mode
+                # Controls Renovate's behavior regarding repository config
+                # files ("optional" will make renovate read the local
+                # renovate.json repository config file
                 - name: RENOVATE_REQUIRE_CONFIG
-                  value: "ignored"
+                  value: "optional"
                 # Onboarding enabling
                 - name: RENOVATE_ONBOARDING
                   value: "false"
