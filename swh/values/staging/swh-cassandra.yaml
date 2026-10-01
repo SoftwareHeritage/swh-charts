@@ -1170,6 +1170,7 @@ graphql:
         workers: 2
         timeout: 3600
       hosts:
+        - webapp.staging.swh.network
         - webapp-cassandra.internal.staging.swh.network
       ingress:
         enabled: true
