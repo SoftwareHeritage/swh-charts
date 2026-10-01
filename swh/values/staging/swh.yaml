@@ -77,7 +77,7 @@ graphql:
         workers: 2
         timeout: 3600
       hosts:
-        - graphql.internal.staging.swh.network
+        - webapp-postgresql.internal.staging.swh.network
       ingress:
         enabled: true
         extraAnnotations:
