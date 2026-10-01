@@ -91,10 +91,7 @@ graphql:
               - path: /graphql/
       auth:
         enabled: true
-        server: https://auth.softwareheritage.org/auth/
-        realm: SoftwareHeritageStaging
-        client: swh-web
-        cacheUrl: memcached://memcached:11211
+        authConfigurationRef: graphqlKeycloakConfiguration
       maxRawContentSize: 10000
       requestedCpu: 25m
       requestedMemory: 150Mi
@@ -347,6 +344,13 @@ toolbox:
       moduleName: scrubber
       scrubberDbConfigurationRef: postgresqlScrubberConfiguration
       storageConfigurationRef: scrubberROStorageConfiguration
+
+graphqlKeycloakConfiguration:
+  server: https://auth.staging.swh.network/
+  realm: SoftwareHeritageStaging
+  client: swh-web
+  cache:
+    url: memcached://memcached:11211
 
 keycloakConfiguration:
   server_url: https://auth.staging.swh.network/

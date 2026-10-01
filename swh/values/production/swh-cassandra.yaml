@@ -660,10 +660,8 @@ graphql:
               - path: /graphql/
       auth:
         enabled: false
-        server: https://auth.softwareheritage.org/auth/
-        realm: SoftwareHeritage
-        client: swh-web
-        cacheUrl: memcached://memcached:11211
+        authConfigurationRef: graphqlKeycloakConfiguration
+
       maxRawContentSize: 10000
     # Main instance to serve https://archive.softwaheritage.org/graphql/
     archive:
@@ -688,10 +686,7 @@ graphql:
               - path: /graphql/
       auth:
         enabled: true
-        server: https://auth.softwareheritage.org/auth/
-        realm: SoftwareHeritage
-        client: swh-web
-        cacheUrl: memcached://memcached:11211
+        authConfigurationRef: graphqlKeycloakConfiguration
       maxRawContentSize: 10000
 
 toolbox:

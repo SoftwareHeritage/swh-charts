@@ -71,6 +71,13 @@ clusterNetworkRanges:
   - 10.42.0.0/16
   - 10.43.0.0/16
 
+graphqlKeycloakConfiguration:
+  server: https://auth.softwareheritage.org/auth/
+  realm: SoftwareHeritageStaging
+  client: swh-web
+  cache:
+    url: memcached://memcached:11211
+
 keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/
   realm_name: SoftwareHeritageStaging

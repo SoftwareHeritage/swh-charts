@@ -95,6 +95,13 @@ vaultStaticSecrets:
     swh-postgresql-swhmailmap-secret:
       enabled: true
 
+graphqlKeycloakConfiguration:
+  server: https://auth.softwareheritage.org/auth/
+  realm: SoftwareHeritage
+  client: swh-web
+  cache:
+    url: memcached://memcached:11211
+
 keycloakConfiguration:
   server_url: https://auth.softwareheritage.org/auth/
   realm_name: SoftwareHeritage

@@ -34,15 +34,13 @@ data:
       user: {{ .configuration.authenticatedUserMaxQueryCost | default $.Values.graphql.authenticatedUserMaxQueryCost }}
 
     {{ if .configuration.auth.enabled -}}
-    auth:
-      server: {{ .configuration.auth.server | default "" }}
-      {{ if .configuration.auth.publicServer -}}
-      public_server: {{ .configuration.auth.publicServer }}
-      {{ end -}}
-      realm: {{ .configuration.auth.realm | default "" }}
-      client: {{ .configuration.auth.client | default "swh-web" }}
-      cache:
-        url: {{ .configuration.auth.cacheUrl | default "memory://" }}
+    {{- $authConfigurationRef :=
+          required
+            (print "Key .auth.authConfigurationRef is mandatory in .configuration")
+            (get .configuration.auth "authConfigurationRef") -}}
+    {{ include "swh.service.fromYaml" (dict "service" "auth"
+                                            "configurationRef" $authConfigurationRef
+                                            "Values" .Values) | nindent 4 }}
     {{- end }}
 
 {{- end -}}

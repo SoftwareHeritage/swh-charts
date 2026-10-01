@@ -1186,10 +1186,7 @@ graphql:
       auth:
         # temporary disable the authentication to avoid a redirect error from keycloak
         enabled: false
-        server: https://auth.softwareheritage.org/auth/
-        realm: SoftwareHeritageStaging
-        client: swh-web
-        cacheUrl: memcached://memcached:11211
+        authConfigurationRef: graphqlKeycloakConfiguration
       maxRawContentSize: 10000
 
 vault:
