@@ -297,6 +297,7 @@ openbao:
         - metallb
         - osporadar
         - osporadar-test
+        - renovate
         - svix-server
         - swh
         - swh-cassandra
