@@ -2225,21 +2225,9 @@ search:
     storageConfigurationRef: remoteReadOnlyStorageConfiguration
     journalConfigurationRef: searchJournalClientConfiguration
     deployments:
-      objects-v5:
-        enabled: true
-        replicas: 2
-        requestedCpu: 10m
-        requestedMemory: 50Mi
-        journalClientOverrides:
-          group_id: swh.search.journal-client-objects-v5-v0.11
-          prefix: swh.journal.objects
-          object_types:
-          - origin
-          - origin_visit_status
-          batch_size: 25
       objects-v0-26:
         enabled: true
-        replicas: 16
+        replicas: 4
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
