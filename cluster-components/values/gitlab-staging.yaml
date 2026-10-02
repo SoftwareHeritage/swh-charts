@@ -26,6 +26,14 @@ vaultStaticSecrets:
       enabled: true
       namespaces:
         - gitlab-runner
+    gitlab-runner-shared:
+      enabled: true
+      namespaces:
+        - gitlab-runner
+    gitlab-runner-image-builder:
+      enabled: true
+      namespaces:
+        - gitlab-runner
 
 cloudnativePg:
   enabled: true
