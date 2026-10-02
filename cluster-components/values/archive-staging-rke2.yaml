@@ -1379,6 +1379,8 @@ renovate:
   secretName: renovate-cronjob-secret
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
   logLevel: "debug"
+  # every 15th minute
+  schedule: "*/15 * * * * *"
   cachedir:
     enabled: true
   # Repositories to scan for updates
