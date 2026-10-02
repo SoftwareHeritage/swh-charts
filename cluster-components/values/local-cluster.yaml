@@ -196,14 +196,6 @@ cloudnativePg:
         secretKeyRef: swh-vulns-osv-postgresql-secret
       initdb:
         enabled: true
-    keycloak:
-      enabled: false
-      namespace: keycloak
-      database:
-        name: keycloak
-        secretKeyRef: swh-keycloak-postgres-secret
-      initdb:
-        enabled: true
 
 scrapeClusterMetrics:
   enabled: false
@@ -494,31 +486,3 @@ openbao:
       noVerifySSL: true
       namespacesToManageInOpenbaoClientCluster:
       - vso
-
-keycloak:
-  enabled: false
-  namespace: keycloak
-  adminSecret:
-    ref: swh-keycloak-admin-secret
-    userKeyRef: username
-    passwordKeyRef: password
-  database:
-    host: keycloak-rw
-    name: keycloak
-    # Report to cloudnativePg database deployment for this to be functional
-    secret:
-      ref: swh-keycloak-postgres-secret
-      userKeyRef: username
-      passwordKeyRef: password
-  ingress:
-    enabled: true
-    hosts: 
-      - keycloak.local
-    className: nginx
-    tlsEnabled: false
-    extraAnnotations:
-      nginx.ingress.kubernetes.io/proxy-connect-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-send-timeout: "90"
-      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-      nginx.ingress.kubernetes.io/proxy-request-buffering: "on"
-      nginx.ingress.kubernetes.io/proxy-body-size: "4G"

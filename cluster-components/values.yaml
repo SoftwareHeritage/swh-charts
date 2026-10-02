@@ -810,23 +810,3 @@ kafkabackup:
     secretKeyName: "kafkabackup-ssh-key"
     knownHosts: [] # list of strings, one for each known_hosts line
   kafkaHosts: {}  # Specify /etc/hosts overrides for kafka brokers
-
-keycloak:
-  enabled: false
-  namespace: keycloak
-  replicas: 1
-  image: quay.io/keycloak/keycloak
-  imageVersion: "26.7"
-  # Administration username/password authentication
-  # adminSecret:
-  #   ref: swh-keycloak-admin-secret
-  #   userKeyRef: username
-  #   passwordKeyRef: password
-  # Relative db host/name and db authentication
-  # database:
-  #   host: cluster-pg-admin-dali
-  #   name: keycloak
-  #   secret:
-  #     ref: swh-keycloak-postgres-secret
-  #     userKeyRef: username
-  #     passwordKeyRef: password
