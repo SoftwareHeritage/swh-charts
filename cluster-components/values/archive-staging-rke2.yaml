@@ -1378,7 +1378,6 @@ renovate:
   # Name of the Kubernetes Secret containing sensitive variables
   secretName: renovate-cronjob-secret
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
-  logLevel: "debug"
   # every 15th minute
   schedule: "*/15 * * * * *"
   cachedir:
