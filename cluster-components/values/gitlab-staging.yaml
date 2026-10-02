@@ -30,13 +30,6 @@ vaultStaticSecrets:
 cloudnativePg:
   enabled: true
 
-gitlabRunner:
-  enabled: true
-  rbac:
-    create: true
-
-  gitlabUrl: https://gitlab-staging.swh.network
-
 redis:
   enabled: true
   deployments:
