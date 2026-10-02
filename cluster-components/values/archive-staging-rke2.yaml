@@ -1379,7 +1379,7 @@ renovate:
   secretName: renovate-cronjob-secret
   gitlabEndpoint: https://gitlab.softwareheritage.org/api/v4
   # every 15th minute
-  schedule: "*/15 * * * * *"
+  schedule: "*/15 * * * *"
   cachedir:
     enabled: true
   # Repositories to scan for updates
