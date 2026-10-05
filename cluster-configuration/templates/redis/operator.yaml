@@ -25,4 +25,5 @@ spec:
       selfHeal: {{ .Values.defaultSelfHeal | default .Values.redis.selfHeal }}
     syncOptions:
     - ServerSideApply=true
+    - ApplyOutOfSyncOnly=true
 {{ end }}

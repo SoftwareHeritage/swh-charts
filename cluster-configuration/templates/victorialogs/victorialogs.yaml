@@ -75,6 +75,7 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}

@@ -91,4 +91,6 @@ spec:
       prune: true
       selfHeal: true
       allowEmpty: false
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
 {{ end }}

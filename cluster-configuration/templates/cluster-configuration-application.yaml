@@ -20,3 +20,5 @@ spec:
       prune: {{ .Values.clusterConfiguration.prune | default .Values.defaultPrune }}
       selfHeal: {{ .Values.clusterConfiguration.selfHeal | default .Values.defaultSelfHeal }}
       allowEmpty: false
+    syncOptions:
+      - ApplyOutOfSyncOnly=true

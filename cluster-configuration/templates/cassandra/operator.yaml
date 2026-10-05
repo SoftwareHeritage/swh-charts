@@ -34,6 +34,7 @@ spec:
       selfHeal: {{ .Values.defaultSelfHeal }}
     syncOptions:
     - ServerSideApply=true
+    - ApplyOutOfSyncOnly=true
   ignoreDifferences:
     - group: admissionregistration.k8s.io
       kind: ValidatingWebhookConfiguration

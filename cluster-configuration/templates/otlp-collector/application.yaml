@@ -30,4 +30,5 @@ spec:
       allowEmpty: false
     syncOptions:
     - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
 {{ end }}

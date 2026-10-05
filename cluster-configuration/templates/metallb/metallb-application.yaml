@@ -27,6 +27,7 @@ spec:
       allowEmpty: false
     syncOptions:
     - RespectIgnoreDifferences=true
+    - ApplyOutOfSyncOnly=true
   ignoreDifferences:
   # The ca bundle is updated by the controller during the runtime
   - group: 'apiextensions.k8s.io'

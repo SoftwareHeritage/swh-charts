@@ -25,4 +25,6 @@ spec:
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
 {{ end }}

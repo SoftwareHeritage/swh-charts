@@ -72,6 +72,7 @@ spec:
   syncPolicy:
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
     automated:
       prune: {{ $prune }}
       selfHeal: {{ $selfHeal }}

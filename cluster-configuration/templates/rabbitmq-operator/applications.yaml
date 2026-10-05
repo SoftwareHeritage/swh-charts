@@ -26,6 +26,8 @@ spec:
     automated:
       prune: {{ .Values.defaultPrune }}
       selfHeal: {{ .Values.defaultSelfHeal }}
+    syncOptions:
+    - ApplyOutOfSyncOnly=true
   ignoreDifferences:
     - group: admissionregistration.k8s.io
       kind: ValidatingWebhookConfiguration

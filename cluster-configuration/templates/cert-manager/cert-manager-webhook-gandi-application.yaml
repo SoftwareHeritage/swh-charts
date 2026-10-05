@@ -33,6 +33,7 @@ spec:
       selfHeal: {{ .Values.defaultSelfHeal }}
     syncOptions:
     - RespectIgnoreDifferences=true
+    - ApplyOutOfSyncOnly=true
   ignoreDifferences:
     - group: cert-manager.io
       kind: Certificate

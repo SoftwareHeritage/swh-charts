@@ -27,6 +27,7 @@ spec:
     - RespectIgnoreDifferences=true
     - ServerSideApply=true
     - CreateNamespace=true
+    - ApplyOutOfSyncOnly=true
   ignoreDifferences:
   - group: cert-manager.io
     kind: Certificate
