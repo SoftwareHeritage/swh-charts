@@ -1,4 +1,6 @@
 host: stories.softwareheritage.org
 
+software_stories_image_version: '20230912.1'
+
 podPriority:
   enabled: true
