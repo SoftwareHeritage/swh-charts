@@ -99,17 +99,17 @@ spec:
   resources:
     requests:
       {{- if $requestedMemory }}
-      memory: {{ $requestedMemory }}
+      memory: {{ $requestedMemory | quote }}
       {{- end }}
       {{- if $requestedCpu }}
-      cpu: {{ $requestedCpu }}
+      cpu: {{ $requestedCpu | quote }}
       {{- end }}
     limits:
       {{- if $limitedMemory }}
-      memory: {{ $limitedMemory }}
+      memory: {{ $limitedMemory | quote }}
       {{- end }}
       {{- if $limitedCpu }}
-      cpu: {{ $limitedCpu }}
+      cpu: {{ $limitedCpu | quote }}
       {{- end }}
   {{ end }}
   {{- if $postgresqlConfig }}
