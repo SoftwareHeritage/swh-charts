@@ -775,7 +775,7 @@ cloudnativePg:
         name: swh-scheduler
         secretKeyRef: swh-postgresql-swh-scheduler-secret
       customQueriesRef: customQueriesSwhScheduler
-      requestedCpu: 2
+      requestedCpu: '2'
       requestedMemory: 4Gi
       limitedMemory: 8Gi
       recovery:
