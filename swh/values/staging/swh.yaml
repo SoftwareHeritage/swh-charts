@@ -345,14 +345,14 @@ toolbox:
       storageConfigurationRef: scrubberROStorageConfiguration
 
 graphqlKeycloakConfiguration:
-  server: https://auth.staging.swh.network/
+  server: https://auth.staging.swh.network/auth/
   realm: SoftwareHeritageStaging
   client: swh-web
   cache:
     url: memcached://memcached:11211
 
 keycloakConfiguration:
-  server_url: https://auth.staging.swh.network/
+  server_url: https://auth.staging.swh.network/auth/
   realm_name: SoftwareHeritageStaging
 
 web:
