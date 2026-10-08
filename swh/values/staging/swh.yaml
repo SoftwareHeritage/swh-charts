@@ -545,7 +545,7 @@ scrubber:
 # Read-only deposit to test keycloak. The main & public staging deposit
 # instance is declared in swh-cassandra.yaml
 deposit:
-  enabled: false
+  enabled: true
   logLevel: INFO
   requestedCpu: 500m
   requestedMemory: 500Mi
