@@ -228,7 +228,7 @@ cloudnativePg:
     db-keycloak:
       enabled: true
       namespace: keycloak
-      instances: 1
+      instances: 2
       database:
         name: keycloak
         secretKeyRef: swh-postgres-keycloak-secret
