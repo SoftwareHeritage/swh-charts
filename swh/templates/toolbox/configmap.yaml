@@ -97,10 +97,10 @@ data:
           "configurationRef" (get $deployment_config "objstorageConfigurationRef")
           "Values" $.Values) | nindent 4 }}
 {{ end }}
-{{- if hasKey $deployment_config "vulnsOsvConfigurationRef" }}
+{{- if hasKey $deployment_config "vulnsConfigurationRef" }}
     {{- include "swh.postgresql"
       (dict "service"          "vulns"
-            "configurationRef" (get $deployment_config "vulnsOsvConfigurationRef")
+            "configurationRef" (get $deployment_config "vulnsConfigurationRef")
             "Values" $.Values) | nindent 4 }}
 {{ end }}
 {{ end }}

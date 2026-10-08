@@ -189,11 +189,11 @@ cloudnativePg:
         secretKeyRef: swh-osporadar-swh-osporadar-secret
       initdb:
         enabled: true
-    vulns-osv:
+    vulns:
       enabled: false
       database:
-        name: swh-vulns-osv
-        secretKeyRef: swh-vulns-osv-postgresql-secret
+        name: swh-vulns
+        secretKeyRef: swh-vulns-postgresql-secret
       initdb:
         enabled: true
     coarnotify:

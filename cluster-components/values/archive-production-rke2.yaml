@@ -84,7 +84,7 @@ vaultStaticSecrets:
       type: cnpg
       namespaces:
         - cnpg
-    swh-postgresql-swh-vulns-osv-secret:
+    swh-postgresql-swh-vulns-secret:
       enabled: true
       type: cnpg
       namespaces:
@@ -497,13 +497,13 @@ cloudnativePg:
           maintenance_work_mem: 4GB
           # Update nb of connections (this limit can be reached currently)
           max_connections: "200"
-    db-swh-vulns-osv:
+    db-swh-vulns:
       enabled: true
       namespace: swh-cassandra
       instances: 1
       database:
-        name: swh-vulns-osv
-        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+        name: swh-vulns
+        secretKeyRef: swh-postgresql-swh-vulns-secret
       requestedCpu: 200m
       requestedMemory: 1Gi
       limitedMemory: 2Gi

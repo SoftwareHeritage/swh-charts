@@ -814,7 +814,7 @@ toolbox:
       # needed for the `swh storage` cli to work...
       storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
     vulns:
-      vulnsOsvConfigurationRef: storageOsvPostgresqlConfiguration
+      vulnsConfigurationRef: storagePostgresqlConfiguration
     web:
       webDbConfigurationRef: postgresqlWebConfiguration
 
@@ -1992,24 +1992,24 @@ datasetsGenerator:
               persistentVolumeClaim:
                 claimName: graph-20240408-persistent-pvc
 
-storageOsvPostgresqlConfiguration:
+storagePostgresqlConfiguration:
   cls: postgresql
-  host: vulns-osv-rw
+  host: vulns-rw
   port: 5432
-  db: swh-vulns-osv
-  user: ${POSTGRESQL_OSV_USERNAME}
-  pass: ${POSTGRESQL_OSV_PASSWORD}
+  db: swh-vulns
+  user: ${POSTGRESQL_VULNS_USERNAME}
+  pass: ${POSTGRESQL_VULNS_PASSWORD}
   secrets:
-    POSTGRESQL_OSV_USERNAME:
-      secretKeyRef: swh-vulns-osv-postgresql-secret
+    POSTGRESQL_VULNS_USERNAME:
+      secretKeyRef: swh-vulns-postgresql-secret
       secretKeyName: username
-    POSTGRESQL_OSV_PASSWORD:
-      secretKeyRef: swh-vulns-osv-postgresql-secret
+    POSTGRESQL_VULNS_PASSWORD:
+      secretKeyRef: swh-vulns-postgresql-secret
       secretKeyName: password
 
-remoteOsvStorageConfiguration:
+remoteVulnsStorageConfiguration:
   cls: remote
-  url: http://vulns-osv-rpc:5016
+  url: http://vulns-rpc:5016
   enable_requests_retry: true
 
 kedaAutoscaler:
@@ -2019,7 +2019,7 @@ kedaAutoscaler:
 vulnsOsv:
   enabled: false
   # debug: true
-  storageOsvConfigurationRef: remoteOsvStorageConfiguration
+  storageVulnsConfigurationRef: remoteVulnsStorageConfiguration
   storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
   schedulerConfigurationRef: postgresqlSchedulerConfiguration
   celeryConfigurationRef: celeryConfiguration
@@ -2028,15 +2028,15 @@ vulnsOsv:
     enabled: true
     enabled: true
     # This is overridden to be specifically set to discuss with a postgresql
-    storageOsvConfigurationRef: storageOsvPostgresqlConfiguration
+    storageVulnsConfigurationRef: storageVulnsPostgresqlConfiguration
 
     backend:
       initialize:
         adminSecret: swh-postgresql-postgres-secret
-        database: swh-vulns-osv
-        host: vulns-osv-rw
+        database: swh-vulns
+        host: vulns-rw
     hosts:
-      - vulns-osv.local
+      - vulns.local
     ingress:
       enabled: true
       extraAnnotations:

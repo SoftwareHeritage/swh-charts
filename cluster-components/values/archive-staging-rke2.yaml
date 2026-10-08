@@ -106,7 +106,7 @@ vaultStaticSecrets:
       namespaces:
         - cnpg
         - cnpg-next-version
-    swh-postgresql-swh-vulns-osv-secret:
+    swh-postgresql-swh-vulns-secret:
       enabled: true
       type: cnpg
       namespaces:
@@ -575,14 +575,14 @@ cloudnativePg:
       requestedMemory: 256Mi
       limitedMemory: 1Gi
 
-    next-version-db-swh-vulns-osv:
+    next-version-db-swh-vulns:
       enabled: true
       namespace: swh-cassandra-next-version
       testing: true
       instances: 1
       database:
-        name: swh-vulns-osv
-        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+        name: swh-vulns
+        secretKeyRef: swh-postgresql-swh-vulns-secret
       initdb:
         enabled: true
       requestedCpu: 50m
@@ -883,14 +883,14 @@ cloudnativePg:
         # Run once a day at 0:15am (UTC)
         schedule: "0 15 0 * * *"
 
-    db-swh-vulns-osv:
+    db-swh-vulns:
       enabled: true
       namespace: swh-cassandra
       testing: true
       instances: 1
       database:
-        name: swh-vulns-osv
-        secretKeyRef: swh-postgresql-swh-vulns-osv-secret
+        name: swh-vulns
+        secretKeyRef: swh-postgresql-swh-vulns-secret
       requestedCpu: 200m
       requestedMemory: 1Gi
       limitedMemory: 2Gi

@@ -111,10 +111,10 @@ pgbouncer:
       port: 5432
       dbname: swh-scheduler
       auth_user: postgres
-    swh-vulns-osv:
-      host: db-swh-vulns-osv-rw.swh-cassandra
+    swh-vulns:
+      host: db-swh-vulns-rw.swh-cassandra
       port: 5432
-      dbname: swh-vulns-osv
+      dbname: swh-vulns
       auth_user: postgres
     swh-masking:
       host: db-swh-masking-ro

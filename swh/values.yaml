@@ -2353,8 +2353,8 @@ vulnsOsv:
     backend:
       # initialize:
       #   adminSecret: swh-postgresql-postgres-secret
-      #   database: swh-vulns-osv
-      #   host: db-swh-vulns-osv-rw
+      #   database: swh-vulns
+      #   host: db-swh-vulns-rw
       check: true
       migrate: true
 
