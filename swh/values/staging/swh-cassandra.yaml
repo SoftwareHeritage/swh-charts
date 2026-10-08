@@ -2910,7 +2910,7 @@ vulnsGrpc:
     popular:
       enabled: true
       dataset:
-        fetch: true
+        fetch: false
         url: s3://softwareheritage/derived_datasets/2024-08-23-popular-4-shell/vulnerabilities
         name: 2024-08-23
         graphName: 2024-08-23_popular-4-shell
