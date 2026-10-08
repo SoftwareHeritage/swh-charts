@@ -2911,7 +2911,8 @@ vulnsGrpc:
       toolbox:
         enabled: false
       dataset:
-        fetch: true
+        # Enable back if the dataset version changes and it needs to be installed again
+        fetch: false
         url: s3://softwareheritage/derived_datasets/2026-06-04/vulnerabilities
         name: 2026-06-04
         graphName: 2026-06-04
