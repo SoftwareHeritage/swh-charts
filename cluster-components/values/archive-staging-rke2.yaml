@@ -144,7 +144,7 @@ vaultStaticSecrets:
       enabled: true
       namespaces:
         - renovate
-    swh-postgres-keycloak-secret:
+    swh-keycloak-postgres-secret:
       enabled: true
       type: cnpg
       namespaces:
