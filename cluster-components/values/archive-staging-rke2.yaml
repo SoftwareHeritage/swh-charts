@@ -888,6 +888,18 @@ cloudnativePg:
       backup:
         enabled: false
 
+    db-keycloak:
+      enabled: true
+      namespace: keycloak
+      instances: 1
+      database:
+        name: keycloak
+        secretKeyRef: swh-keycloak-postgres-secret
+      initdb:
+        enabled: true
+      backup:
+        enabled: false
+
 rabbitmq:
   enabled: true
   namespace: swh-cassandra-next-version
