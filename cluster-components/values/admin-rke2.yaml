@@ -294,6 +294,7 @@ openbao:
         - cnpg-next-version
         - kafkabackup
         - kafka-system
+        - keycloak
         - metallb
         - osporadar
         - osporadar-test
