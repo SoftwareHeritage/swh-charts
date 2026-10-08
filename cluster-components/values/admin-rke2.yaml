@@ -235,7 +235,7 @@ cloudnativePg:
       initdb:
         enabled: true
       backup:
-        enabled: false
+        enabled: true
         # Run once a day at 10:25pm (UTC)
         schedule: "0 25 10 * * *"
 
