@@ -400,13 +400,6 @@ graphql:
   authenticatedUserMaxQueryCost: 500
   debug: no
   introspection: yes
-  sentry:
-    enabled: false
-    # name of the secret containing the $secretKeyName value
-    # it defines the sentry token, host and projet to access
-    # like https://token@sentry.host/id
-    # secretKeyRef: common-secrets
-    # secretKeyName: graphql-sentry-dsn
   deployments:
     instance-name:
       enabled: false
