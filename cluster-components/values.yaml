@@ -625,7 +625,7 @@ redis:
   redisExporter:
     enabled: false
     image: quay.io/opstree/redis-exporter
-    tag: "v1.44.0"
+    tag: "v1.88.0"
     imagePullPolicy: IfNotPresent
     resources: {}
       # requests:
