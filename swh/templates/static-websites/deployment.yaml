@@ -4,8 +4,9 @@
 {{- $appName := print "website-" $websiteName -}}
 {{- $namespace := $websiteConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace -}}
 {{- $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas -}}
-{{- $imageName := print $websiteConfig.registry "/" $websiteConfig.repository -}}
-{{- $imageVersion := $websiteConfig.imageVersion | default "latest" -}}
+{{- $imageDict := $websiteConfig.image | default dict -}}
+{{- $imageName := print $imageDict.registry "/" $imageDict.repository -}}
+{{- $imageVersion := $imageDict.imageVersion | default "latest" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment

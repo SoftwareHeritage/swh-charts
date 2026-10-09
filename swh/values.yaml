@@ -2264,13 +2264,15 @@ staticWebsites:
   # Instances of web sites to deploy
   deployments:
     dataportal:
-      registry: container-registry.softwareheritage.org
-      repository: swh/infra/swh-apps/dataportal
-      version: latest
+      image:
+        registry: container-registry.softwareheritage.org
+        repository: swh/infra/swh-apps/dataportal
+        version: latest
     docs:
-      registry: container-registry.softwareheritage.org
-      repository: swh/infra/swh-apps/docs
-      version: latest
+      image:
+        registry: container-registry.softwareheritage.org
+        repository: swh/infra/swh-apps/docs
+        version: latest
 
 ingestion_benchmarks:
   enabled: false
