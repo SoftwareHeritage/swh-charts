@@ -10,6 +10,9 @@
   "baseBranchPatterns": [
     "swh-next-version"
   ],
+  "useBaseBranchConfig": "merge",
+  "autoMerge": false,
+  "rebaseWhen": "behind"
   "enabledManagers": [
     "helm-values"
   ],
