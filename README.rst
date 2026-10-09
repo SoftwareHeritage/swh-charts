@@ -53,6 +53,6 @@ Dependency tools
 local-cluster
 ^^^^^^^^^^^^^
 
-For the local-cluster deployment, either one of the following is necessary:
+For the local-cluster deployment, either one of the following tool is necessary:
 - kind: https://kind.sigs.k8s.io/
 - minikube: https://minikube.sigs.k8s.io/docs/
