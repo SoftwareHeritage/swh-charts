@@ -1,0 +1,24 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "swh/infra/sysadm-environment:renovate.json"
+  ],
+  "automerge": false,
+  "draftPR": false,
+  "enabledManagers": [
+    "helm-values"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [ "helm-values" ],
+      "semanticCommitScope": "helm",
+      "groupName": "helm"
+    }
+  ],
+  "helm-values": {
+    "enabled": true,
+    "managerFilePatterns": [
+      "/swh/values\\.yaml/"
+    ]
+  }
+}

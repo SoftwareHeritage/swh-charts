@@ -1405,4 +1405,5 @@ renovate:
     enabled: true
   # Repositories to scan for updates
   repositories:
+    - swh/infra/ci-cd/swh-charts
     - swh/devel/swh-osporadar-deployment
