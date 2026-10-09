@@ -93,7 +93,7 @@ vaultStaticSecrets:
       enabled: true
       type: cnpg
       namespaces:
-        - swh-cassandra
+        - cnpg
 
 metallb:
   enabled: true
