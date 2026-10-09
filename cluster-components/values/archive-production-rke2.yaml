@@ -504,3 +504,14 @@ cloudnativePg:
       limitedMemory: 2Gi
       initdb:
         enabled: true
+    db-swh-coar-notify:
+      enabled: true
+      instances: 1
+      database:
+        name: swh-coar-notify
+        secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      requestedCpu: 200m
+      requestedMemory: 1Gi
+      limitedMemory: 2Gi
+      initdb:
+        enabled: true
