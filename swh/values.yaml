@@ -857,7 +857,7 @@ storage:
 
 web:
   enabled: false
-  staticImage: nginx:1.27.4
+  staticImage: nginx:1.31.6
   port: 5004
   logLevel: INFO
   migrations:
@@ -1019,14 +1019,14 @@ memcached:
   # Deploy a memcached instance used by the webapp and graphql for sessions caching
   enabled: false
   priorityClassName: storages
-  image: memcached:1.6.23
+  image: memcached:1.6.45
   memory: 256
   requestedCpu: 100m
   requestedMemory: 300Mi
   prometheus:
     # Activate the deployment of the memcached exporter and ServiceMonitor
     enabled: true
-    image: quay.io/prometheus/memcached-exporter:v0.14.2
+    image: quay.io/prometheus/memcached-exporter:v0.17.0
 
 toolbox:
   enabled: false
@@ -1497,7 +1497,7 @@ scrubber:
 
 deposit:
   enabled: false
-  staticImage: nginx:1.27.4
+  staticImage: nginx:1.31.6
   port: 5006
   extraPorts:
     webstatic: 80
@@ -2267,12 +2267,12 @@ staticWebsites:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/dataportal
-        version: "20260907.1"
+        version: "20261009.1"
     docs:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/docs
-        version: "20260722.2"
+        version: "20261009.1"
 
 ingestion_benchmarks:
   enabled: false

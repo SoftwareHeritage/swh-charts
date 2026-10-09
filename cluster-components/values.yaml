@@ -625,7 +625,7 @@ redis:
   redisExporter:
     enabled: false
     image: quay.io/opstree/redis-exporter
-    tag: "v1.44.0"
+    tag: "v1.89.0"
     imagePullPolicy: IfNotPresent
     resources: {}
       # requests:
@@ -745,7 +745,7 @@ renovate:
   # renovate docker image
   image:
     repository: renovate/renovate
-    tag: 44.148-full
+    tag: 44.149-full
   # level and debug option | info | warn | error
   logLevel: "info"
   # (required) Name of the Kubernetes Secret containing sensitive variables
