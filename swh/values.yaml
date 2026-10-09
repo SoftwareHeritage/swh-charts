@@ -2307,9 +2307,6 @@ vulnsGrpc:
   #   name: dataset-name
   #   graphName: associated-graph-name
 
-  # Sentry configuration
-  sentry: {}
-
   # Deployments dict of instances
   deployments: {}
 
