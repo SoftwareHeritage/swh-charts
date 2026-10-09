@@ -3197,7 +3197,6 @@ staticWebsites:
                port: 80
 
     # docs.swh.org migration into swh-cassandra
-
     docs:
       enabled: true
       replicas: 1
