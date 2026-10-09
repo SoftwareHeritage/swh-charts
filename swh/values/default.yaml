@@ -661,7 +661,6 @@ coarNotify:
     enabled: true
     secretKeyRef: coarnotify-sentry-secret
     secretKeyName: coarnotify-sentry-dsn
-
   deployment:
     affinity:
       nodeAffinity:
