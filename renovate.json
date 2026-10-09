@@ -1,10 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "swh/infra/sysadm-environment:renovate.json"
-  ],
+  "dependencyDashboard": true,
   "automerge": false,
   "draftPR": false,
+  "separateMajorMinor": false,
+  "separateMinorPatch": false,
+  "separateMultipleMajor": false,
+  "separateMultipleMinor": false,
   "enabledManagers": [
     "helm-values"
   ],
