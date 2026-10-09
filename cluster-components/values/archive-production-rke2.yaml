@@ -89,6 +89,11 @@ vaultStaticSecrets:
       type: cnpg
       namespaces:
         - swh-cassandra
+    swh-postgresql-swh-coar-notify-secret:
+      enabled: true
+      type: cnpg
+      namespaces:
+        - swh-cassandra
 
 metallb:
   enabled: true
