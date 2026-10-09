@@ -1,11 +1,11 @@
 {{- if .Values.staticWebsites.enabled }}
 {{ range $websiteName, $websiteConfig := .Values.staticWebsites.deployments }}
 {{- if $websiteConfig.enabled  -}}
-{{ $appName := print "website-" $websiteName }}
-{{ $namespace := $websiteConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace }}
-{{ $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas }}
-{{ $image := $websiteConfig.image -}}
-{{ $imageVersion := $websiteConfig.imageVersion | default "latest" -}}
+{{- $appName := print "website-" $websiteName -}}
+{{- $namespace := $websiteConfig.namespace | default $.Values.staticWebsites.namespace | default $.Values.namespace -}}
+{{- $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas -}}
+{{- $imageName := print $websiteConfig.registry "/" $websiteConfig.repository -}}
+{{- $imageVersion := $websiteConfig.imageVersion | default "latest" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,11 +32,10 @@ spec:
       {{- end }}
       containers:
         - name: {{ $appName }}
-          image: {{ $image }}:{{ $imageVersion }}
+          image: {{ $imageName }}:{{ $imageVersion }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
-
-{{- end }}
+{{ end }}
 {{- end }}
 {{- end }}
