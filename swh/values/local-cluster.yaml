@@ -392,7 +392,7 @@ djangoCoarNotifyConfiguration:
   secrets:
     DJANGO_SECRET_KEY:
       secretKeyRef: coarnotify-django-secret
-      secretKeyName: coarnotify-django-secret-key
+      secretKeyName: key
 
 postgresqlRWCoarNotifyConfiguration:
   host: ${POSTGRESQL_HOSTNAME}
@@ -419,7 +419,7 @@ postgresqlRWCoarNotifyConfiguration:
 
 coarNotify:
   enabled: false
-  storageConfigurationRef: cassandraRWNoObjstorageStorageConfiguration
+  storageConfigurationRef: postgresqlRWNoObjstorageStorageConfiguration
   schedulerConfigurationRef: remoteSchedulerConfiguration
   databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
   extraConfigRef: extraConfigCoarNotifyConfiguration
@@ -431,6 +431,7 @@ coarNotify:
     replicas: 1
     affinity: {}
   sentry:
+    enabled: false
     secretKeyRef: common-secrets
     secretKeyName: coarnotify-sentry-dsn
   worker:
@@ -2108,4 +2109,3 @@ staticWebsites:
            paths:
              - path: /
                port: 80
-

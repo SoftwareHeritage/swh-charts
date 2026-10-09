@@ -196,6 +196,14 @@ cloudnativePg:
         secretKeyRef: swh-vulns-osv-postgresql-secret
       initdb:
         enabled: true
+    coarnotify:
+      enabled: false
+      instances: 1
+      database:
+        name: swh-coarnotify
+        secretKeyRef: swh-coarnotify-swh-postgresql-secret
+      initdb:
+        enabled: true
 
 scrapeClusterMetrics:
   enabled: false
