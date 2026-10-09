@@ -12,7 +12,7 @@
   ],
   "useBaseBranchConfig": "merge",
   "autoMerge": false,
-  "rebaseWhen": "behind"
+  "rebaseWhen": "behind",
   "enabledManagers": [
     "helm-values"
   ],
