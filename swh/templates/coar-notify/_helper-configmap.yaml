@@ -38,7 +38,7 @@
                   "dsn" "${SWH_SENTRY_DSN}")))
         (dict)
         $enable_sentry)
-      (dict 
+      (dict
         "task_acks_late" true
         "task_modules" (list "swh.coarnotify.tasks")
         "task_queues" (include "coarNotifyWorker.defaultQueues" (dict) | fromYamlArray)))) | mustMerge $coarNotifyWorkerConfig -}}
