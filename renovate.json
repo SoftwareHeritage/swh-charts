@@ -15,19 +15,17 @@
   "enabledManagers": [
     "helm-values"
   ],
+  "helm-values": {
+    "enabled": true,
+  },
+  "includePaths": ["swh/values.yaml"],
   "packageRules": [
     {
       "matchManagers": ["helm-values"],
-      "matchFiles": [
-        "^swh/values\\.yaml$"
-      ],
       "semanticCommitScope": "helm",
       "groupName": null,
       "separateMajorMinor": true,
       "separateMinorPatch": true
     }
   ]
-  "helm-values": {
-    "enabled": true,
-  }
 }
