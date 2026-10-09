@@ -745,7 +745,7 @@ renovate:
   # renovate docker image
   image:
     repository: renovate/renovate
-    tag: 44.127-full
+    tag: 44.145-full
   # level and debug option | info | warn | error
   logLevel: "info"
   # (required) Name of the Kubernetes Secret containing sensitive variables
