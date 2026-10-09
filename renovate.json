@@ -11,7 +11,7 @@
     "swh-next-version"
   ],
   "useBaseBranchConfig": "merge",
-  "autoMerge": false,
+  "automerge": false,
   "rebaseWhen": "behind",
   "enabledManagers": [
     "helm-values"
