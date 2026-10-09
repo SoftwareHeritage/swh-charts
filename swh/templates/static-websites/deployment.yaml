@@ -6,7 +6,7 @@
 {{- $replicas := $websiteConfig.replicas | default $.Values.staticWebsites.replicas -}}
 {{- $imageDict := $websiteConfig.image | default dict -}}
 {{- $imageName := print $imageDict.registry "/" $imageDict.repository -}}
-{{- $imageVersion := $imageDict.imageVersion | default "latest" -}}
+{{- $imageVersion := $imageDict.version | default "latest" -}}
 ---
 apiVersion: apps/v1
 kind: Deployment
