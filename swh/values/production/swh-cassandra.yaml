@@ -1284,6 +1284,7 @@ scheduler:
         - "cook-"
         - "check-"
         - "load-deposit"
+        - "coarnotify-"
         - "process-osv-"
     runner-priority:
       enabled: true
