@@ -448,6 +448,20 @@ cloudnativePg:
       requestedMemory: 256Mi
       limitedMemory: 1Gi
 
+    next-version-db-swh-coar-notify:
+      enabled: true
+      namespace: cnpg-next-version
+      testing: true
+      instances: 1
+      database:
+        name: swh
+        secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      initdb:
+        enabled: true
+      requestedCpu: 50m
+      requestedMemory: 256Mi
+      limitedMemory: 1Gi
+
     next-version-db-swh-deposit:
       enabled: true
       namespace: cnpg-next-version
