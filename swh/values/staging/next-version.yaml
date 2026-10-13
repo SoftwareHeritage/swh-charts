@@ -1745,6 +1745,42 @@ datasetsGenerator:
               persistentVolumeClaim:
                 claimName: graph-next-version-sensitive-20251127-generated-persistent-pvc
 
+postgresqlRWCoarNotifyConfiguration:
+  host: db-swh-coar-notify-rw.cnpg-next-version
+  port: 5432
+  db: swh-coar-notify
+  user: ${POSTGRESQL_USERNAME}
+  pass: ${POSTGRESQL_PASSWORD}
+  secrets:
+    POSTGRESQL_USERNAME:
+      secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      secretKeyName: username
+    POSTGRESQL_PASSWORD:
+      secretKeyRef: swh-postgresql-swh-coar-notify-secret
+      secretKeyName: password
+
+storageRWCoarNotifyConfiguration:
+  pipelineStepsRef: coarNotifyStoragePipelineSteps
+  storageConfigurationRef: remoteRWPostgresqlStorageConfiguration
+
+coarNotify:
+  enabled: true
+  migrationsEnabled: true
+  type: coar-notify
+  storageConfigurationRef: storageRWCoarNotifyConfiguration
+  schedulerConfigurationRef: remoteSchedulerConfiguration
+  databaseCoarNotifyConfigurationRef: postgresqlRWCoarNotifyConfiguration
+  extraConfigRef: extraConfigCoarNotifyConfiguration
+  djangoSecretRef: djangoCoarNotifyConfiguration
+  allowed_hosts:
+    - coar-notify-next-version.swh-cassandra-next-version
+  worker:
+    enabled: true
+    celeryConfigurationRef: consumerCeleryConfiguration
+    replicas: 1
+  ingress:
+    enabled: false
+
 staticWebsites:
   enabled: true
   deployments:

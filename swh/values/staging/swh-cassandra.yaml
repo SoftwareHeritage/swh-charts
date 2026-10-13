@@ -2516,14 +2516,6 @@ postgresqlRWCoarNotifyConfiguration:
       secretKeyRef: swh-postgresql-swh-coar-notify-secret
       secretKeyName: password
 
-extraConfigCoarNotifyConfiguration:
-    coar_notify_client: swh.coarnotify.client.COARNotifyClient
-    serve_assets: true
-
-coarNotifyStoragePipelineSteps:
-  - cls: filter
-  - cls: retry
-
 coarNotifyRpcRWStorageConfiguration:
   cls: remote
   url: http://storage-cassandra-read-write-ingress
@@ -2531,12 +2523,6 @@ coarNotifyRpcRWStorageConfiguration:
 storageRWCoarNotifyConfiguration:
   pipelineStepsRef: coarNotifyStoragePipelineSteps
   storageConfigurationRef: coarNotifyRpcRWStorageConfiguration
-
-djangoCoarNotifyConfiguration:
-  secrets:
-    DJANGO_SECRET_KEY:
-      secretKeyRef: swh-coarnotify-django-secret
-      secretKeyName: coarnotify-django-secret-key
 
 coarNotify:
   enabled: true
