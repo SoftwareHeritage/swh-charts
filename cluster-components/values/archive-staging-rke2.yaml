@@ -127,6 +127,7 @@ vaultStaticSecrets:
       type: cnpg
       namespaces:
         - cnpg
+        - cnpg-next-version
     swh-postgresql-swh-osporadar-secret:
       enabled: true
       type: cnpg
