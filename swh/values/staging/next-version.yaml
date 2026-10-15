@@ -1282,7 +1282,7 @@ deposit:
 checkerDeposit:
   enabled: true
   storageConfigurationRef: remoteROStorageConfiguration
-  celeryConfigurationRef: consumerCeleryConfiguration
+  celeryConfigurationRef: celeryConfiguration
   depositConfigurationRef: depositConfiguration
 
 provenanceGraphGrpcConfiguration:
@@ -1776,7 +1776,7 @@ coarNotify:
     - coar-notify-next-version.swh-cassandra-next-version
   worker:
     enabled: true
-    celeryConfigurationRef: consumerCeleryConfiguration
+    celeryConfigurationRef: celeryConfiguration
     replicas: 1
   ingress:
     enabled: false
