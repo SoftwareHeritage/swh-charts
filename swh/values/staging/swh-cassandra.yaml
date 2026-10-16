@@ -1906,6 +1906,11 @@ listers:
       - swh.lister.golang.tasks.IncrementalGolangLister
       autoScaling:
         maxReplicaCount: 1
+    grokmirror:
+      queues:
+      - swh.lister.grokmirror.tasks.GrokmirrorListerTask
+      autoScaling:
+        maxReplicaCount: 1
     hackage:
       queues:
       - swh.lister.hackage.tasks.HackageListerTask
