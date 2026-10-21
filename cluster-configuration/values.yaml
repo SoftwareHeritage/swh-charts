@@ -27,7 +27,8 @@ certManager:
   namespace: cert-manager
   version: v1.17.4
   webhookGandiEnabled: false
-  webhookGandiVersion: v0.2.0
+  webhookGandiVersion: 'cert-manager-webhook-gandi-v0.6.5'
+  webhookGandiImageVersion: 'v0.6.5'
   useGandiDNS: false
 
 metallb:
