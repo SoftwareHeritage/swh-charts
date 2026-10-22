@@ -94,6 +94,7 @@ stagingNetworkRanges:
   - 192.168.100.29/32
 
 searchJournalClientConfiguration:
+  cls: kafka
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 

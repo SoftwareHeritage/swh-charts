@@ -28,6 +28,7 @@ data:
     {{- include "swh.journalClientConfiguration"
                   (dict "configurationRef" $journalConfigurationRef
                         "overrides"        $journalConfigOverrides
+                        "serviceType"      "journal"
                         "Values"           $.Values) | nindent 4 }}
     masking_db: {{ $connstring }}
 

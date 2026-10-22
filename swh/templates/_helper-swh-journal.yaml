@@ -34,7 +34,7 @@ Generate the configuration for a journal configuration key
 {{- $_ := unset $configuration "secrets" -}}
 {{- $_ := unset $configuration "brokersConfigurationRef" -}}
 {{- $_ := required (print "group_id property is mandatory in <" .configurationRef "> map") (get $configuration "group_id") -}}
-{{ .serviceType | default "journal" }}:
+{{ .serviceType | default "journal_client" }}:
   brokers:
 {{ toYaml $brokers | indent 4 }}
 {{ toYaml $configuration | indent 2 }}
