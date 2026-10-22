@@ -2267,7 +2267,7 @@ staticWebsites:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/dataportal
-        version: "20261020.1"
+        version: "20261021.1"
     docs:
       image:
         registry: container-registry.softwareheritage.org
