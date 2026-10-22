@@ -235,10 +235,10 @@ data:
     mkdir -p $(dirname "${WITNESS_REINDEXING_FILE}")
     touch "${WITNESS_REINDEXING_FILE}"
 
-    # For old datasets missing a .ef or in the wrong format, this fails with
+    # For old datasets missing a .ef or in an old format, this fails with
     # `Cannot map Elias-Fano pointer list .../graph.ef`. The solution is to
     # reindex the dataset
-    swh graph reindex --ef "${DATASET_LOCATION}/${GRAPH_NAME}" && \
+    swh graph reindex --force --ef "${DATASET_LOCATION}/${GRAPH_NAME}" && \
       touch "${WITNESS_REINDEX_FILE}"
 
     # We are done so we clean up the download witness file
