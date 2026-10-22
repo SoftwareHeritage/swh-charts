@@ -238,6 +238,7 @@ journalClientConfiguration:
   group_id: swh.scheduler.journal_client
 
 searchJournalClientConfiguration:
+  cls: kafka
   brokersConfigurationRef: kafkaBrokers
   group_id: swh.search.journal_client
 

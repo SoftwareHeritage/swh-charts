@@ -298,6 +298,7 @@ webhookJournalClientConfiguration:
   group_id: swh-webhooks
 
 searchJournalClientConfiguration:
+  cls: kafka
   brokersConfigurationRef: readOnlyInternalKafkaBrokers
   group_id: swh-search
   prefix: swh.journal.objects

@@ -16,5 +16,6 @@ data:
                             "Values" $.Values) | nindent 4 }}
   {{- include "swh.journalClientConfiguration" (dict "configurationRef" $journalClientConfigurationRef
                             "overrides" $journalClientOverrides
+                            "serviceType" "journal"
                             "Values" .Values) | nindent 4 }}
 {{ end }}

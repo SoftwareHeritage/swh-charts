@@ -1065,6 +1065,7 @@ search:
       objects-next-version:
         enabled: false
         journalClientOverrides:
+          cls: kafka
           group_id: swh-search-next-version.journal-client-origins-v0.11
           prefix: swh.journal.objects
           object_types:
@@ -1076,6 +1077,7 @@ search:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
+          cls: kafka
           group_id: swh-search-next-version.journal-client-indexed-v0.11
           prefix: swh.journal.indexed
           object_types:
@@ -1085,6 +1087,7 @@ search:
       reindex-objects-next-version:
         enabled: true
         journalClientOverrides:
+          cls: kafka
           auto_offset_reset: earliest
           group_id: swh-search-next-version.journal-client-origins-v0.26-3
           prefix: swh.journal.objects
@@ -1097,6 +1100,7 @@ search:
         requestedCpu: 10m
         requestedMemory: 50Mi
         journalClientOverrides:
+          cls: kafka
           auto_offset_reset: earliest
           group_id: swh-search-next-version.journal-client-indexed-v0.26-3
           prefix: swh.journal.indexed
