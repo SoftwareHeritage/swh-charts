@@ -1499,6 +1499,7 @@ graph:
       graphName: example
       graphConfigurationRef: plainGrpcGraphConfiguration
       dataset:
+        reindex: true
         fetch: true
         name: test
         downloadMethod: git
