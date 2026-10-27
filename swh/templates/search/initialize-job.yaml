@@ -1,0 +1,85 @@
+{{ if and .Values.search.enabled .Values.search.rpc.enabled -}}
+{{- $configUtilsPathChecksum := include (print $.Template.BasePath "/utils/config-utils.yaml") . | sha256sum -}}
+{{- $databaseUtilsPathChecksum := include (print $.Template.BasePath "/utils/backend-utils.yaml") . | sha256sum  -}}
+{{- range $deploymentName, $deploymentConfig := .Values.search.rpc.deployments -}}
+{{- if (ne false $deploymentConfig.enabled) -}}
+{{- $serviceType := print $deploymentName "-rpc" -}}
+{{- $configArgsDict := dict "serviceType"   $serviceType
+                            "configuration" $deploymentConfig
+                            "Values"        $.Values -}}
+{{- $configChecksum := include "swh.search.configmap" $configArgsDict | sha256sum -}}
+{{- $configLoggingChecksum := include "swh.search.gunicorn.logging" $configArgsDict | sha256sum -}}
+{{- $config := omit (deepCopy $deploymentConfig) "deployments" |
+                 mustMergeOverwrite (omit (deepCopy $.Values.search.rpc) "deployments") -}}
+{{- $affinity := $config.affinity -}}
+{{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
+                                  (dict "configuration" $config.gunicorn)) -}}
+{{- $initializeSearchBackend := and $config.backend $config.backend.initialize | default false -}}
+{{- if $initializeSearchBackend -}}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ $serviceType }}-init
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+spec:
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ $configChecksum }}
+        checksum/config-logging: {{ $configLoggingChecksum }}
+        checksum/config-utils: {{ $configUtilsPathChecksum }}
+        checksum/backend-utils: {{ $databaseUtilsPathChecksum }}
+    spec:
+      restartPolicy: OnFailure
+      {{- if $config.affinity }}
+      affinity:
+        {{- toYaml $config.affinity | nindent 8 }}
+      {{- end }}
+      {{- if and $.Values.podPriority.enabled $config.priorityClassName }}
+      priorityClassName: {{ $.Values.namespace }}-{{ $config.priorityClassName }}
+      {{ end }}
+      initContainers:
+        - name: prepare-configuration
+          image: {{ $.Values.swh_utils_image }}:{{ $.Values.swh_utils_image_version }}
+          imagePullPolicy: IfNotPresent
+          command:
+          - /entrypoints/prepare-configuration.sh
+          env: {{ include "swh.secrets.envFromDeploymentConfig" (dict "deploymentConfig" $config
+                                                                      "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: config-utils
+            mountPath: /entrypoints
+            readOnly: true
+          - name: configuration
+            mountPath: /etc/swh
+          - name: configuration-template
+            mountPath: /etc/swh/configuration-template
+      containers:
+        {{ include "swh.initializeSearchBackend"
+          (dict "Values" $.Values
+                "imagePrefixName" "swh_search_image"
+                "module" "search") | nindent 8 }}
+      volumes:
+      - name: configuration
+        emptyDir: {}
+      - name: configuration-template
+        configMap:
+          name: {{ $serviceType }}-configuration-template
+          items:
+          - key: "config.yml.template"
+            path: "config.yml.template"
+      - name: config-utils
+        configMap:
+          name: config-utils
+          defaultMode: 0555
+      - name: backend-utils
+        configMap:
+          name: backend-utils
+          defaultMode: 0555
+{{ end }}
+{{ end -}}
+{{- end -}}
+{{- end -}}

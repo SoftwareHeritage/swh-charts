@@ -11,7 +11,6 @@
 {{- $configLoggingChecksum := include "swh.search.gunicorn.logging" $configArgsDict | sha256sum -}}
 {{- $config := omit (deepCopy $deploymentConfig) "deployments" |
                  mustMergeOverwrite (omit (deepCopy $.Values.search.rpc) "deployments") -}}
-{{- $initializeSearchBackend := and $config.backend $config.backend.initialize | default false -}}
 {{- $affinity := $config.affinity -}}
 {{- $gunicornConfig := fromYaml (include "swh.gunicorn.config"
                                   (dict "configuration" $config.gunicorn)) -}}
@@ -68,12 +67,6 @@ spec:
             mountPath: /etc/swh
           - name: configuration-template
             mountPath: /etc/swh/configuration-template
-        {{- if $initializeSearchBackend }}
-        {{ include "swh.initializeSearchBackend"
-          (dict "Values" $.Values
-                "imagePrefixName" "swh_search_image"
-                "module" "search") | nindent 8 }}
-        {{- end }}
       containers:
         - name: {{ $serviceType }}
           resources:
