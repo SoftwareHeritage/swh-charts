@@ -1435,7 +1435,7 @@ search:
           batch_size: 30
       objects-v0-26:
         enabled: true
-        replicas: 1
+        replicas: 0
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
@@ -1447,7 +1447,7 @@ search:
           batch_size: 30
       indexed-v0-26:
         enabled: true
-        replicas: 1
+        replicas: 0
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
