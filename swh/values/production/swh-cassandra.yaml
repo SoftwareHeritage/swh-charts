@@ -1358,8 +1358,8 @@ search:
     priorityClassName: frontend-rpc
     elasticsearchConfigurationRef: elasticsearchConfiguration
     gunicorn:
-      workers: 4
-      threads: 2
+      workers: 8
+      threads: 1
       timeout: 3600
     requestedCpu: 250m
     requestedMemory: 512Mi
@@ -1371,7 +1371,7 @@ search:
       # instance-name (will be suffixed by -rpc)
       search:
         enabled: true
-        replicas: 12
+        replicas: 24
         hosts:
           - search-rpc-ingress-swh-cassandra
           - search.internal.softwareheritage.org
@@ -1435,11 +1435,11 @@ search:
           batch_size: 30
       objects-v0-26:
         enabled: true
-        replicas: 0
+        replicas: 16
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
-          group_id: swh.search.journal-client-objects-v0.26
+          group_id: swh.search.journal-client-objects-v0.26.2
           prefix: swh.journal.objects
           object_types:
           - origin
@@ -1447,11 +1447,11 @@ search:
           batch_size: 30
       indexed-v0-26:
         enabled: true
-        replicas: 0
+        replicas: 16
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
-          group_id: swh.search.journal-client-indexed-v0.26
+          group_id: swh.search.journal-client-indexed-v0.26.2
           prefix: swh.journal.indexed
           object_types:
           - origin_intrinsic_metadata
