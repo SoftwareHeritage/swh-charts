@@ -2267,12 +2267,12 @@ staticWebsites:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/dataportal
-        version: "20261026.1"
+        version: "20261103.1"
     docs:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/docs
-        version: "20261027.2"
+        version: "20261103.2"
 
 ingestion_benchmarks:
   enabled: false
