@@ -242,6 +242,10 @@ victorialogs:
     enabled: false
   insert:
     name: victorialogs-insert
+    ingress:
+      enabled: false
+      # host:
+      # annotations:
   select:
     name: victorialogs-select
     ingress:

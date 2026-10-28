@@ -2,6 +2,7 @@
 {{- $appName := print .Values.clusterName "-vl" -}}
 {{- $storageVolumes := .Values.victorialogs.storage.volumes }}
 {{- $selectIngress := .Values.victorialogs.select.ingress }}
+{{- $insertIngress := .Values.victorialogs.insert.ingress }}
 {{- $serviceMonitor := .Values.victorialogs.serviceMonitor }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -26,6 +27,25 @@ spec:
           vmServiceScrape:
             enabled: true
             useServiceMonitor: true
+          {{- end }}
+          {{- if $insertIngress.enabled }}
+          ingress:
+            enabled: true
+            hosts:
+              - name: {{ $insertIngress.host }}
+                path:
+                  - /insert/
+            ingressClassName: nginx
+            {{- if $insertIngress.annotations }}
+            annotations:
+              {{- toYaml $insertIngress.annotations | nindent 14 }}
+            {{- end }}
+            {{- if $insertIngress.tls }}
+            tls:
+            - secretName: victorialogs-tls
+              hosts:
+              - {{ $insertIngress.host }}
+            {{- end }}
           {{- end }}
         vlselect:
           fullnameOverride: {{ .Values.victorialogs.select.name }}

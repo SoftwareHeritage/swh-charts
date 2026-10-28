@@ -135,6 +135,13 @@ vaultSecretsOperator:
 
 victorialogs:
   enabled: true
+  insert:
+    ingress:
+      enabled: true
+      host: victorialogs.internal.admin.swh.network
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
+      tls: true
   storage:
     retentionPeriod: 30d
     replicaCount: 1
