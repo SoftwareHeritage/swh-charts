@@ -1423,16 +1423,6 @@ search:
           - origin
           - origin_visit_status
           batch_size: 30
-      indexed:
-        enabled: true
-        replicas: 1
-        journalClientOverrides:
-          group_id: swh.search.journal_client.indexed-v0.11
-          prefix: swh.journal.indexed
-          object_types:
-          - origin_intrinsic_metadata
-          - origin_extrinsic_metadata
-          batch_size: 30
       objects-v0-26:
         enabled: true
         replicas: 16
@@ -1447,7 +1437,7 @@ search:
           batch_size: 30
       indexed-v0-26:
         enabled: true
-        replicas: 16
+        replicas: 1
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
