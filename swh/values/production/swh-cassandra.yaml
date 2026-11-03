@@ -2660,7 +2660,7 @@ objstorageReplayer:
       autoScaling:
         minReplicaCount: 24
         stopWhenNoActivity: false
-        maxReplicaCount: 48
+        maxReplicaCount: 64
         advancedKedaConfig:
           horizontalPodAutoscalerConfig:
             behavior:
