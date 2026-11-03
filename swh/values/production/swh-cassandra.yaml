@@ -1425,7 +1425,7 @@ search:
           batch_size: 30
       objects-v0-26:
         enabled: true
-        replicas: 16
+        replicas: 48
         requestedCpu: 250m
         requestedMemory: 200Mi
         journalClientOverrides:
