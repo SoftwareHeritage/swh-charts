@@ -627,7 +627,7 @@ roObjstorageForS3Replayer:
       - ${WINERY_RO_PASSWORD}
     timeout:
       - 0.5  # Connect
-      - 10   # Read
+      - 30   # Read
     enable_requests_retry: true
   - cls: remote
     name: saam
