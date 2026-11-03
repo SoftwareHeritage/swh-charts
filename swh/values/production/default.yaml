@@ -232,6 +232,10 @@ elasticsearchConfiguration:
       index: origin-v0.26.2
       read_alias: origin-read
       write_alias: origin-write
+  client_settings:
+    request_timeout: 60
+    max_retries: 0
+    max_dead_node_backoff: 5
 
 journalClientConfiguration:
   brokersConfigurationRef: kafkaBrokers
