@@ -1415,7 +1415,7 @@ search:
     deployments:
       objects:
         enabled: true
-        replicas: 1
+        replicas: 4
         journalClientOverrides:
           group_id: swh.search.journal_client-v0.11
           prefix: swh.journal.objects
