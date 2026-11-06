@@ -4,7 +4,7 @@
 {{- $rpcConfig = include "swh.mergeDeploymentConfig"
       (dict "deploymentConfig" $rpcConfig
             "topConfig"        $topVulnsConfig) | fromYaml -}}
-{{- $serviceType := print "vulns-osv-rpc" -}}
+{{- $serviceType := print "vulns-rpc" -}}
 {{- $namespace := $rpcConfig.namespace | default $.Values.namespace -}}
 {{- $configChecksum := $rpcConfig | toJson | sha256sum -}}
 {{- $checkBackendVersion := $rpcConfig.backend.check | default false -}}
