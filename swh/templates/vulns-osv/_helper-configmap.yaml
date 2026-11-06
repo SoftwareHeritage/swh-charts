@@ -15,7 +15,7 @@ data:
 
     {{- include "swh.service.fromYaml"
                 (dict "service"          $vulnsStorageConfigKey
-                      "configurationRef" .config.storageConfigurationRef
+                      "configurationRef" .config.storageVulnsConfigurationRef
                       "Values"           .Values) | nindent 4 }}
 
     {{- include "swh.schedulerConfiguration"

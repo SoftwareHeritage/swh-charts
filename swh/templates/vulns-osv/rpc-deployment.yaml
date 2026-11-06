@@ -48,7 +48,7 @@ data:
   config.yml.template: |
     {{- include "swh.postgresql"
                 (dict "serviceType"      "vulns"
-                      "configurationRef" $rpcConfig.storageConfigurationRef
+                      "configurationRef" $rpcConfig.storageVulnsConfigurationRef
                       "Values"           $.Values) | nindent 4 }}
 
 {{ include "swh.gunicorn.logging"

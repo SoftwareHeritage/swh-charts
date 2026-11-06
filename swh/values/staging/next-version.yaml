@@ -953,7 +953,7 @@ toolbox:
       maskingAdminConfigurationRef: rwMaskingPostgresqlConfiguration
       storageConfigurationRef: memoryNoopStorageConfiguration
     vulns:
-      vulnsConfigurationRef: storagePostgresqlConfiguration
+      vulnsConfigurationRef: storageVulnsPostgresqlConfiguration
 
   bulkLoad: null
 
@@ -1853,7 +1853,7 @@ staticWebsites:
              - path: /
                port: 80
 
-storagePostgresqlConfiguration:
+storageVulnsPostgresqlConfiguration:
   cls: postgresql
   host: next-version-db-swh-vulns-rw
   port: 5432
