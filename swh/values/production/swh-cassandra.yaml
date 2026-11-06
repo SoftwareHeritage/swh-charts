@@ -3227,7 +3227,7 @@ vaultStaticSecrets:
       namespaces:
         - swh-cassandra
 
-storagePostgresqlConfiguration:
+storageVulnsPostgresqlConfiguration:
   cls: postgresql
   host: db-swh-vulns-rw
   port: 5432
