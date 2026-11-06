@@ -9,7 +9,7 @@
 {{- $logLevel := $jobConfig.logLevel -}}
 
 #### ConfigMap
-{{ include "swh.vulnsOsv.configmap"
+{{ include "swh.vulns.configmap"
              (dict "serviceName"           $serviceName
                    "namespace"             $namespace
                    "config"                $jobConfig
