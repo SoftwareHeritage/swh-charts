@@ -3226,7 +3226,7 @@ storagePostgresqlConfiguration:
       secretKeyRef: swh-postgresql-swh-vulns-secret
       secretKeyName: password
 
-remoteStorageConfiguration:
+remoteVulnsStorageConfiguration:
   cls: remote
   url: http://vulns-rpc:5016
   enable_requests_retry: true
@@ -3236,7 +3236,7 @@ vulnsOsv:
   logLevel: INFO
   # Various required configuration ref (can be overridden per sub category [rpc,
   # crawler, ...]
-  storageConfigurationRef: remoteStorageConfiguration
+  storageVulnsConfigurationRef: remoteVulnsStorageConfiguration
   storageConfigurationRef: remoteROStorageConfiguration
   schedulerConfigurationRef: postgresqlSchedulerConfiguration
   celeryConfigurationRef: consumerCeleryConfiguration
@@ -3245,7 +3245,7 @@ vulnsOsv:
   rpc:
     enabled: true
     # The necessary configuration ref to use to connect to the postgresql backend
-    storageConfigurationRef: storagePostgresqlConfiguration
+    storageVulnsConfigurationRef: storagePostgresqlConfiguration
 
     backend:
       initialize:
