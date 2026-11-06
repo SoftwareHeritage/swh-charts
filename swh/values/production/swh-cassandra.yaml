@@ -729,7 +729,7 @@ toolbox:
     vault:
       vaultDbConfigurationRef: postgresqlVaultConfiguration
     vulns:
-      vulnsConfigurationRef: storagePostgresqlConfiguration
+      vulnsConfigurationRef: storageVulnsPostgresqlConfiguration
     web:
       webDbConfigurationRef: postgresqlWebConfiguration
     webhooks:
