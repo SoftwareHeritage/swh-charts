@@ -11,11 +11,9 @@ spec:
   revisionHistoryLimit: 2
   project: {{ .Values.defaultProject }}
   source:
-    repoURL: 'https://github.com/cloudnative-pg/plugin-barman-cloud'
-    targetRevision: v{{ .Values.cloudnativePg.barmanPluginVersion }}
-    path: .
-    directory:
-      include: 'manifest.yaml'
+    chart: plugin-barman-cloud
+    repoURL: https://cloudnative-pg.github.io/charts
+    targetRevision: {{ .Values.cloudnativePg.barmanPluginVersion }}
   destination:
     server: {{ .Values.clusterUrl }}
     namespace: {{ .Values.cloudnativePg.namespace | default "cnpg-system" | quote }}
