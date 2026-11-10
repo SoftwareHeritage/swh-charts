@@ -94,6 +94,8 @@ data:
         level: {{ $log_level }}
       celery.task:
         level: {{ $log_level }}
+      swh.loader.git.base.stats:
+        level: WARNING
 
     root:
       level: {{ $log_level }}
