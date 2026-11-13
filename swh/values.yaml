@@ -2272,7 +2272,7 @@ staticWebsites:
       image:
         registry: container-registry.softwareheritage.org
         repository: swh/infra/swh-apps/docs
-        version: "20261112.3"
+        version: "20261113.1"
 
 ingestion_benchmarks:
   enabled: false
