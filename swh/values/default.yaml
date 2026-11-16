@@ -339,7 +339,7 @@ vault:
 # List of django apps the webapp must declare
 webDjangoApps:
   - swh.web.add_forge_now
-  - swh.web.archive_coverage
+#  - swh.web.archive_coverage
   - swh.web.badges
   - swh.web.banners
   - swh.web.deposit
