@@ -511,7 +511,7 @@ cloudnativePg:
         enabled: true
     db-swh-coar-notify:
       enabled: true
-      instances: 1
+      instances: 3
       database:
         name: swh-coar-notify
         secretKeyRef: swh-postgresql-swh-coar-notify-secret
