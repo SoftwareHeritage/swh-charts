@@ -500,7 +500,7 @@ cloudnativePg:
     db-swh-vulns:
       enabled: true
       namespace: swh-cassandra
-      instances: 1
+      instances: 3
       database:
         name: swh-vulns
         secretKeyRef: swh-postgresql-swh-vulns-secret
