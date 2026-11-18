@@ -778,7 +778,6 @@ remoteVaultConfiguration:
 remoteReadOnlyIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-read-only-rpc-ingress-swh-cassandra
-  enable_requests_retry: true
 
 remoteReadWriteIndexerStorageConfiguration:
   cls: remote

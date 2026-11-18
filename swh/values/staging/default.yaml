@@ -380,7 +380,6 @@ remoteVaultConfiguration:
 remoteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-rpc-ingress
-  enable_requests_retry: true
 
 remoteCountersConfiguration:
   cls: remote
