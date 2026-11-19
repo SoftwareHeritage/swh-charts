@@ -134,6 +134,13 @@ multiplexerReadOnlyObjstorageConfiguration:
 
 multiplexerReadWriteObjstorageConfiguration:
   cls: multiplexer
+  secrets:
+    S3_BUCKET_KEY:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-key
+    S3_BUCKET_SECRET:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-secret
   objstorages:
   - cls: remote
     name: db1
@@ -146,13 +153,6 @@ multiplexerReadWriteObjstorageConfiguration:
     key: ${S3_BUCKET_KEY}
     secret: ${S3_BUCKET_SECRET}
     timeout: 120
-    secrets:
-      S3_BUCKET_KEY:
-        secretKeyRef: swh-objstorage-s3
-        secretKeyName: bucket-key
-      S3_BUCKET_SECRET:
-        secretKeyRef: swh-objstorage-s3
-        secretKeyName: bucket-secret
   - cls: read-only
     name: storage1
     storage:
