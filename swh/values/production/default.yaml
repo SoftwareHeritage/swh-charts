@@ -508,13 +508,12 @@ wineryObjstorageRWSecrets: &winery-objstorage-secrets-rw
     secretKeyName: password
 
 s3RWObjectStorageSecrets: &s3-rw-secrets
-  secrets:
-    S3_BUCKET_KEY:
-      secretKeyRef: swh-objstorage-s3
-      secretKeyName: bucket-key
-    S3_BUCKET_SECRET:
-      secretKeyRef: swh-objstorage-s3
-      secretKeyName: bucket-secret
+  S3_BUCKET_KEY:
+    secretKeyRef: swh-objstorage-s3
+    secretKeyName: bucket-key
+  S3_BUCKET_SECRET:
+    secretKeyRef: swh-objstorage-s3
+    secretKeyName: bucket-secret
 
 objstorageROSecrets: &objstorage-secrets-ro
   <<: *azure-storage-secrets-ro
@@ -620,7 +619,7 @@ s3RWObjectstorageConfiguration: &s3-rw-configuration
 
 s3RWObjectstorageConfigurationWithSecrets: &s3-rw-configuration-with-secrets
   <<: *s3-rw-configuration
-  <<: *s3-rw-secrets
+  secrets: *s3-rw-secrets
 
 s3DeleteObjectstorageConfigurationWithSecrets:
   <<: *s3-rw-configuration-with-secrets
