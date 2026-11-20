@@ -745,7 +745,7 @@ postgresqlRWStorageConfiguration:
 rwStoragePostgresqlWithWineryObjstorageConfiguration:
   storageConfigurationRef: primaryPostgresqlRWStorageConfiguration
   journalWriterConfigurationRef: storageJournalWriterConfiguration
-  objstorageConfigurationRef: rwObjstorageWineryAndAzure
+  objstorageConfigurationRef: rwObjstorageWineryAndAzureAndS3
   pipelineStepsRef: rwStoragePipelineBlockingSteps
   secrets: *objstorage-secrets-rw
 
@@ -757,7 +757,7 @@ postgresqlRWNoObjstorageStorageConfiguration:
 rwStorageCassandraWithWineryObjstorageConfiguration:
   storageConfigurationRef: cassandraStorage
   journalWriterConfigurationRef: storageJournalWriterConfiguration
-  objstorageConfigurationRef: rwObjstorageWineryAndAzure
+  objstorageConfigurationRef: rwObjstorageWineryAndAzureAndS3
   pipelineStepsRef: rwStoragePipelineBlockingSteps
   secrets: *objstorage-secrets-rw
 
