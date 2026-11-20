@@ -615,6 +615,7 @@ s3RWObjectstorageConfiguration: &s3-rw-configuration
   container_name: softwareheritage
   key: ${S3_BUCKET_KEY}
   secret: ${S3_BUCKET_SECRET}
+  host: s3.us-east-1.amazonaws.com
   timeout: 120
 
 s3RWObjectstorageConfigurationWithSecrets: &s3-rw-configuration-with-secrets
