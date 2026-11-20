@@ -514,6 +514,7 @@ objstorageROSecrets: &objstorage-secrets-ro
 objstorageRWSecrets: &objstorage-secrets-rw
   <<: *azure-storage-secrets-rw
   <<: *winery-objstorage-secrets-rw
+  <<: *s3-rw-secrets
 
 roObjstorageConfiguration:
   configurationRef: roObjstorageBestEffort
@@ -679,6 +680,13 @@ rwObjstorageWineryAndAzure:
   objstorages:
   - *winery-objstorage-conf-rw
   - *azure-storage-conf-rw
+
+rwObjstorageWineryAndAzureAndS3:
+  cls: multiplexer
+  objstorages:
+  - *winery-objstorage-conf-rw
+  - *azure-storage-conf-rw
+  - *s3-rw-configuration
 
 rwStoragePipelineBlockingSteps:
   - cls: blocking
@@ -1353,6 +1361,8 @@ s3RWObjectstorageConfiguration: &s3-rw-configuration
   key: ${S3_BUCKET_KEY}
   secret: ${S3_BUCKET_SECRET}
   timeout: 120
+
+s3RWObjectStorageSecrets: &s3-rw-secrets
   secrets:
     S3_BUCKET_KEY:
       secretKeyRef: swh-objstorage-s3
@@ -1361,8 +1371,12 @@ s3RWObjectstorageConfiguration: &s3-rw-configuration
       secretKeyRef: swh-objstorage-s3
       secretKeyName: bucket-secret
 
-s3DeleteObjectstorageConfiguration:
+s3RWObjectstorageConfigurationWithSecrets: &s3-rw-configuration-with-secrets
   <<: *s3-rw-configuration
+  <<: *s3-rw-secrets
+
+s3DeleteObjectstorageConfigurationWithSecrets:
+  <<: *s3-rw-configuration-with-secrets
   allow_delete: true
 
 webAlter:

@@ -2645,7 +2645,7 @@ objstorageReplayer:
         db: 1
     s3:
       enabled: true
-      destinationObjstorageConfigurationRef: s3RWObjectstorageConfiguration
+      destinationObjstorageConfigurationRef: s3RWObjectstorageConfigurationWithSecrets
       sourceObjstorageConfigurationRef: roObjstorageForS3ReplayerConfiguration
       replicas: null  # handled by keda autoscaling
       fetchConcurrency: 8
@@ -3034,7 +3034,7 @@ alter:
     azure:
       objstorageConfigurationRef: azureDeleteObjstorageConfiguration
     s3:
-      objstorageConfigurationRef: s3DeleteObjectstorageConfiguration
+      objstorageConfigurationRef: s3DeleteObjectstorageConfigurationWithSecrets
     winery:
       objstorageConfigurationRef: rwObjstorageWineryConfiguration
   removalJournals:
