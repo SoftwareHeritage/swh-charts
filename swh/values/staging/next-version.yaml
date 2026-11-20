@@ -1172,7 +1172,6 @@ indexerStorage:
 remoteIndexerStorageConfiguration:
   cls: remote
   url: http://indexer-storage-rw:5007
-  enable_requests_retry: true
 
 indexers:
   enabled: true
