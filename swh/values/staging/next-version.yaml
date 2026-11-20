@@ -1446,10 +1446,13 @@ volumes:
             storage: 1Gi
 
 vulnsGrpc:
-  enabled: true
+  enabled: false
   deployments:
+    # The vulns dataset is a sensitive one so we need to enable authentication to fetch
+    # those. Low priority so disabled for now
+    # https://gitlab.softwareheritage.org/swh/infra/sysadm-environment/-/work_items/5973#note_291873
     2024-08-23-popular-4-shell:
-      enabled: true
+      enabled: false
       dataset:
         fetch: true
         url: s3://softwareheritage/derived_datasets/2024-08-23-popular-4-shell/vulnerabilities
