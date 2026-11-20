@@ -720,6 +720,9 @@ podPriority:
 addForgeNowConfiguration:
   email_address: add-forge-now@webapp.staging.swh.network
 
+# For test purposes
+swh_objstorage_image_version: '20261119.1'
+
 objstorage:
   affinity:
     nodeAffinity:
