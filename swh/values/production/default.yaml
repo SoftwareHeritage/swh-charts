@@ -507,6 +507,15 @@ wineryObjstorageRWSecrets: &winery-objstorage-secrets-rw
     secretKeyRef: swh-objstorage-winery-rw
     secretKeyName: password
 
+s3RWObjectStorageSecrets: &s3-rw-secrets
+  secrets:
+    S3_BUCKET_KEY:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-key
+    S3_BUCKET_SECRET:
+      secretKeyRef: swh-objstorage-s3
+      secretKeyName: bucket-secret
+
 objstorageROSecrets: &objstorage-secrets-ro
   <<: *azure-storage-secrets-ro
   <<: *winery-objstorage-secrets-ro
@@ -599,6 +608,23 @@ wineryObjstorageRWConfiguration: &winery-objstorage-conf-rw
     - ${WINERY_RW_USERNAME}
     - ${WINERY_RW_PASSWORD}
   enable_requests_retry: true
+
+s3RWObjectstorageConfiguration: &s3-rw-configuration
+  cls: s3
+  compression: gzip
+  path_prefix: content
+  container_name: softwareheritage
+  key: ${S3_BUCKET_KEY}
+  secret: ${S3_BUCKET_SECRET}
+  timeout: 120
+
+s3RWObjectstorageConfigurationWithSecrets: &s3-rw-configuration-with-secrets
+  <<: *s3-rw-configuration
+  <<: *s3-rw-secrets
+
+s3DeleteObjectstorageConfigurationWithSecrets:
+  <<: *s3-rw-configuration-with-secrets
+  allow_delete: true
 
 roObjstorageForWineryReplayer:
   cls: multiplexer
@@ -1352,32 +1378,6 @@ datasetsJournalClientConfiguration:
   group_id: swh-datasets-journal-export-graph
   prefix: swh.journal.objects
   privileged: true
-
-s3RWObjectstorageConfiguration: &s3-rw-configuration
-  cls: s3
-  compression: gzip
-  path_prefix: content
-  container_name: softwareheritage
-  key: ${S3_BUCKET_KEY}
-  secret: ${S3_BUCKET_SECRET}
-  timeout: 120
-
-s3RWObjectStorageSecrets: &s3-rw-secrets
-  secrets:
-    S3_BUCKET_KEY:
-      secretKeyRef: swh-objstorage-s3
-      secretKeyName: bucket-key
-    S3_BUCKET_SECRET:
-      secretKeyRef: swh-objstorage-s3
-      secretKeyName: bucket-secret
-
-s3RWObjectstorageConfigurationWithSecrets: &s3-rw-configuration-with-secrets
-  <<: *s3-rw-configuration
-  <<: *s3-rw-secrets
-
-s3DeleteObjectstorageConfigurationWithSecrets:
-  <<: *s3-rw-configuration-with-secrets
-  allow_delete: true
 
 webAlter:
   alter_settings:
