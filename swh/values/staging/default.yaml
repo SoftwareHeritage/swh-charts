@@ -143,8 +143,8 @@ multiplexerReadWriteObjstorageConfiguration:
       secretKeyName: bucket-secret
   objstorages:
   - cls: remote
-    name: db1
-    url: http://objstorage-db1-rw-rpc-ingress
+    name: storage1
+    url: http://objstorage-storage1-rw-rpc-ingress
     enable_requests_retry: true
   - cls: s3
     compression: gzip
@@ -154,10 +154,10 @@ multiplexerReadWriteObjstorageConfiguration:
     secret: ${S3_BUCKET_SECRET}
     timeout: 120
   - cls: read-only
-    name: storage1
+    name: db1
     storage:
       cls: remote
-      url: http://objstorage-storage1-ro-rpc-ingress
+      url: http://objstorage-db1-ro-rpc-ingress
       enable_requests_retry: true
 
 storagePipelineSteps:
@@ -658,8 +658,8 @@ externalServices:
     objstorage-multiplexer-read-write-rpc-ingress:
       internalName: objstorage-multiplexer-read-write-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
-    objstorage-db1-read-write:
-      internalName: objstorage-db1-rw-rpc-ingress
+    objstorage-storage1-read-write:
+      internalName: objstorage-storage1-rw-rpc-ingress
       target: archive-staging-rke2-ingress-nginx-controller.ingress-nginx.svc.cluster.local
     objstorage-read-only:
       internalName: objstorage-read-only-rpc-ingress
